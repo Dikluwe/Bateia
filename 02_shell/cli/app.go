@@ -1,0 +1,93 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/cli/app.md
+ * @layer L2
+ * @updated 2026-07-25
+ */
+
+package cli
+
+import (
+	"context"
+	"flag"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
+	"bateia/02_shell/report"
+)
+
+type CLIApp struct {
+	funnel *usecase.SearchFunnel
+}
+
+func NewCLIApp(funnel *usecase.SearchFunnel) *CLIApp {
+	return &CLIApp{funnel: funnel}
+}
+
+func (a *CLIApp) Run(args []string) error {
+	fs := flag.NewFlagSet("bateia", flag.ContinueOnError)
+
+	queryFlag := fs.String("query", "", "Query de busca por arquitetura ou padrão de código (obrigatório)")
+	langFlag := fs.String("lang", "go", "Linguagem-alvo (default: go)")
+	maxFlag := fs.Int("max", 20, "Número de candidatos para descoberta no topo do funil")
+	outputFlag := fs.String("output", "relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
+	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
+
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+
+	if *queryFlag == "" {
+		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural")
+		fmt.Println("Uso: bateia -query \"hexagonal architecture\" [-lang go] [-max 20] [-output relatorio.md]")
+		fs.PrintDefaults()
+		return fmt.Errorf("parâmetro -query é obrigatório")
+	}
+
+	var mustHave []string
+	if *mustHaveFlag != "" {
+		parts := strings.Split(*mustHaveFlag, ",")
+		for _, p := range parts {
+			trimmed := strings.TrimSpace(p)
+			if trimmed != "" {
+				mustHave = append(mustHave, trimmed)
+			}
+		}
+	}
+
+	filter := domain.QueryFilter{
+		Query:      *queryFlag,
+		Language:   *langFlag,
+		MaxResults: *maxFlag,
+		MustHave:   mustHave,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+
+	log.Printf("Iniciando busca no Bateia para: '%s' (linguagem: %s)...", filter.Query, filter.Language)
+	searchReport, err := a.funnel.Execute(ctx, filter)
+	if err != nil {
+		return fmt.Errorf("erro na execução do funil de busca: %w", err)
+	}
+
+	// Gerar Relatório Markdown usando o gerador de apresentação de L2
+	mdContent := report.GenerateMarkdownReport(searchReport)
+	err = os.WriteFile(*outputFlag, []byte(mdContent), 0644)
+	if err != nil {
+		return fmt.Errorf("erro ao salvar o relatório em %s: %w", *outputFlag, err)
+	}
+
+	absPath, _ := filepath.Abs(*outputFlag)
+	fmt.Printf("\nBusca concluída! Relatório gerado com sucesso em: %s\n", absPath)
+	fmt.Printf("Funil: %d descobertos -> %d triados -> %d extraídos (%d descartados: %s)\n",
+		searchReport.TopCandidates, searchReport.TriagedCount, searchReport.ExtractedCount, searchReport.DiscardedCount, searchReport.DiscardReason)
+
+	return nil
+}

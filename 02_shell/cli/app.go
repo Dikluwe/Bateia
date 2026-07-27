@@ -36,7 +36,7 @@ func (a *CLIApp) Run(args []string) error {
 	queryFlag := fs.String("query", "", "Query de busca por arquitetura ou padrão de código (obrigatório)")
 	langFlag := fs.String("lang", "go", "Linguagem-alvo (default: go)")
 	maxFlag := fs.Int("max", 20, "Número de candidatos para descoberta no topo do funil")
-	outputFlag := fs.String("output", "relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
+	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
 	if err := fs.Parse(args); err != nil {
@@ -45,7 +45,7 @@ func (a *CLIApp) Run(args []string) error {
 
 	if *queryFlag == "" {
 		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural")
-		fmt.Println("Uso: bateia -query \"hexagonal architecture\" [-lang go] [-max 20] [-output relatorio.md]")
+		fmt.Println("Uso: bateia -query \"hexagonal architecture\" [-lang go] [-max 20] [-output 00_nucleo/relatorios/relatorio.md]")
 		fs.PrintDefaults()
 		return fmt.Errorf("parâmetro -query é obrigatório")
 	}
@@ -79,6 +79,7 @@ func (a *CLIApp) Run(args []string) error {
 
 	// Gerar Relatório Markdown usando o gerador de apresentação de L2
 	mdContent := report.GenerateMarkdownReport(searchReport)
+	_ = os.MkdirAll(filepath.Dir(*outputFlag), 0755)
 	err = os.WriteFile(*outputFlag, []byte(mdContent), 0644)
 	if err != nil {
 		return fmt.Errorf("erro ao salvar o relatório em %s: %w", *outputFlag, err)

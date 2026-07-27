@@ -1,0 +1,81 @@
+# AGENTS.md — Diretrizes Unificadas do Agente (Projeto Bateia)
+
+Este arquivo é a **Fonte Única da Verdade (SSOT)** de regras e restrições estruturais para Agentes de IA (Antigravity, Claude Code, Cursor, Aider, etc.) trabalhando no repositório **Bateia**.
+
+---
+
+## 1. O Que É Este Projeto
+
+**Bateia** é um motor de busca de código e análise arquitetural em Go baseado no **Funil de Redução de 3 Estágios** (Descoberta -> Triagem -> Extração). Ele permite que desenvolvedores e agentes estatísticos busquem padrões arquiteturais no GitHub/Sourcegraph de forma idempotente, imutável por `repo@commit` e com estrito controle de cota de API.
+
+---
+
+## 2. O Reticulado de Camadas (Five-Layer Lattice Tekt v1.4)
+
+```text
+L₄ (Wiring)     04_wiring/main.go    Composition root, injeção de dependência — importa L₁, L₂, L₃
+L₂ (Shell)      02_shell/            CLI (cli/), apresentador Markdown (report/) — importa L₀, L₁
+L₃ (Infra)      03_infra/            DiskCacheStore, Sourcegraph, GitHub — importa L₀, L₁
+L₁ (Core)       01_core/             Domínio, Parsers puros, SearchFunnel Usecase — ZERO I/O, importa L₀
+L₀ (Nucleus)    00_nucleo/           Prompts espelhados, ADRs e Relatórios apenas — ZERO CÓDIGO GO
+```
+
+### Leis de Gravidade e Restrições Absolutas:
+
+* **Lei da Gravidade:** Dependências fluem **apenas para baixo**. Nenhuma camada inferior importa de camadas superiores ou infraestrutura.
+* **Restrição de $L_1$ (Núcleo Puro):** ZERO I/O. Proibido realizar requisições HTTP, acesso a disco, banco de dados ou chamadas diretas a APIs externas. O `SearchFunnel` depende estritamente das interfaces puras `SearchProvider`, `ContentProvider` e `CacheStore`.
+* **Restrição de $L_2$ (Casca):** Não pode importar adaptadores concretos de $L_3$. A CLI recebe o orquestrador pronto via $L_4$.
+* **Restrição de $L_3$ (Infraestrutura):** Implementa as interfaces de $L_1$. Proibido importar $L_2$ ou $L_4$.
+* **Restrição de $L_4$ (Fiação Pura):** ZERO LÓGICA DE NEGÓCIO. Ponto de entrada em `04_wiring/main.go` reservado exclusivamente para instanciação dos adaptadores de $L_3$ e injeção em $L_1$ e $L_2$.
+
+---
+
+## 3. Prompts Espelhados em $L_0$ (`00_nucleo/prompts/`)
+
+Os prompts em `00_nucleo/prompts/` são sementes $L_0$ estruturadas em subpastas que espelham exatamente o caminho do futuro código Go (substituindo `.go` por `.md`):
+
+- `00_nucleo/prompts/01_core/domain/types.md` $\rightarrow$ `01_core/domain/types.go` & `interfaces.go`
+- `00_nucleo/prompts/01_core/parser/gomod.md` $\rightarrow$ `01_core/parser/gomod.go` & `gomod_test.go`
+- `00_nucleo/prompts/01_core/parser/structure.md` $\rightarrow$ `01_core/parser/structure.go` & `structure_test.go`
+- `00_nucleo/prompts/01_core/usecase/funnel.md` $\rightarrow$ `01_core/usecase/funnel.go` & `funnel_test.go`
+- `00_nucleo/prompts/02_shell/cli/app.md` $\rightarrow$ `02_shell/cli/app.go`
+- `00_nucleo/prompts/02_shell/report/generator.md` $\rightarrow$ `02_shell/report/generator.go` & `generator_test.go`
+- `00_nucleo/prompts/03_infra/cache/cache_store.md` $\rightarrow$ `03_infra/cache/cache_store.go` & `cache_store_test.go`
+- `00_nucleo/prompts/03_infra/sourcegraph/client.md` $\rightarrow$ `03_infra/sourcegraph/client.go`
+- `00_nucleo/prompts/03_infra/github/client.md` $\rightarrow$ `03_infra/github/client.go`
+- `00_nucleo/prompts/04_wiring/main.md` $\rightarrow$ `04_wiring/main.go`
+
+---
+
+## 4. Cabeçalho Obrigatório de Linhagem Causal
+
+Todo arquivo Go gerado ou modificado em $L_1$, $L_2$, $L_3$ ou $L_4$ DEVE conter obrigatoriamente no topo:
+
+```go
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/<caminho_do_prompt>.md
+ * @layer L<1_a_4>
+ * @updated YYYY-MM-DD
+ */
+```
+
+---
+
+## 5. Tríade da Nucleação
+
+Toda adição ou refatoração relevante exige **três artefatos**:
+
+1. **Prompt Spec ($L_0$):** Especificação estruturada do componente em `00_nucleo/prompts/`.
+2. **Código + Testes ($L_1$–$L_4$):** Implementação Go e testes unitários.
+3. **Verificação no Linteiro:** Passagem com zero erros no `crystalline-lint`.
+
+---
+
+## 6. Stack de Verificação
+
+Toda alteração deve passar pela seguinte pilha:
+
+1. **Linteiro Cristalino:** `crystalline-lint .` (deve retornar `✓ No violations found`).
+2. **Testes Unitários:** `go test ./...` (deve passar 100% dos testes sem I/O em $L_1$).
+3. **Compilação:** `go build -o bateia ./04_wiring/main.go`.

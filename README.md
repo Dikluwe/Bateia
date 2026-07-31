@@ -51,6 +51,10 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 | 🐪 **Perl** | `perl` | `cpanfile`, `Makefile.PL` | Dancer2, DBI, Mojolicious, Test::More, PerlCritic |
 | 🍃 **Groovy** | `groovy` | `build.gradle` | Spock, Ratpack, GORM, CodeNarc |
 | 📜 **COBOL** | `cobol` | `*.cbl`, `*.cob` | GnuCOBOL, CobUnit, ESQL, CICS, COBC |
+| 👑 **Nim** | `nim` | `*.nimble` | Jester, Norm, UnitTest, Parsimonious, Nimble |
+| 💎 **Crystal** | `crystal` | `shard.yml` | Kemal, Crystal-DB, Spec, Shards |
+| ⚡ **V (Vlang)** | `v`, `vlang` | `v.mod` | VWeb, V-SQLite, VTest, V fmt |
+| 🔴 **Erlang** | `erlang` | `rebar.config` | Cowboy, Epgsql, Mnesia, EUnit, Rebar3 |
 
 ---
 

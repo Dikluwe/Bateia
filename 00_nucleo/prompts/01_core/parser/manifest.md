@@ -54,6 +54,10 @@ Criar as funções:
    - Suffix `.fsproj` → `"fsharp"`
    - `"cpanfile"`, `"makefile.pl"` → `"perl"`
    - Suffix `.cbl`, Suffix `.cob` → `"cobol"`
+   - Suffix `.nimble` → `"nim"`
+   - `"shard.yml"` → `"crystal"`
+   - `"v.mod"` → `"v"`
+   - `"rebar.config"` → `"erlang"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -66,9 +70,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "cpanfile" e um conteúdo válido de Perl
+Dado o arquivo "shard.yml" e um conteúdo válido de Crystal
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseCpanfile e retorna um Manifest com Language "perl".
+Então o Dispatcher chama ParseShardYaml e retorna um Manifest com Language "crystal".
 ```
 
 ---
@@ -85,4 +89,4 @@ Então o Dispatcher chama ParseCpanfile e retorna um Manifest com Language "perl
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a F#, Perl, Groovy e COBOL | manifest.go |
+| 2026-07-31 | Adiciona suporte a Nim, Crystal, V e Erlang | manifest.go |

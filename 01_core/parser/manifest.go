@@ -43,6 +43,9 @@ func DetectManifestType(filename string) string {
 	if strings.HasSuffix(base, ".cbl") || strings.HasSuffix(base, ".cob") {
 		return "cobol"
 	}
+	if strings.HasSuffix(base, ".nimble") {
+		return "nim"
+	}
 
 	switch base {
 	case "go.mod":
@@ -93,6 +96,12 @@ func DetectManifestType(filename string) string {
 		return "fortran"
 	case "cpanfile", "makefile.pl":
 		return "perl"
+	case "shard.yml":
+		return "crystal"
+	case "v.mod":
+		return "v"
+	case "rebar.config":
+		return "erlang"
 	default:
 		return ""
 	}
@@ -163,6 +172,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseCpanfile(ref, content)
 	case "cobol":
 		return ParseCobolSource(ref, content)
+	case "nim":
+		return ParseNimble(ref, content)
+	case "crystal":
+		return ParseShardYaml(ref, content)
+	case "v":
+		return ParseVMod(ref, content)
+	case "erlang":
+		return ParseRebarConfig(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

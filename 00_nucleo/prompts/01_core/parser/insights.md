@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`, `pubspec.yaml`, `build.sbt`, `project.clj`, `build.zig.zon`, `.dproj`, `.lpi`, `fpm.toml`, `.vbp`, `.fsproj`, `cpanfile`, `.cbl`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `jest`, `pytest`, `criterion`, `junit`, `dunit`, `funit`, `vbwatch`, `expecto`, `test-more`, `spock`, `cobunit`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `spring-boot`, `inifiles`, `fpm`, `fsharp.configuration`, `config-simple`, `gnucobol`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `firedac`, `zeos`, `lapack`, `adodb`, `fsql`, `dbi`, `gorm-groovy`, `esql`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `fastapi`, `indy`, `vcl`, `fpm`, `mscomctl`, `giraffe`, `dancer2`, `ratpack`, `cics`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `fpc`, `gfortran`, `vbc`, `fantomas`, `perlcritic`, `cobc`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`, `pubspec.yaml`, `build.sbt`, `project.clj`, `build.zig.zon`, `.dproj`, `.lpi`, `fpm.toml`, `.vbp`, `.fsproj`, `cpanfile`, `.cbl`, `*.nimble`, `shard.yml`, `v.mod`, `rebar.config`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `jest`, `pytest`, `criterion`, `junit`, `unittest`, `spec`, `vtest`, `eunit`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `spring-boot`, `parsimonious`, `inifiles`, `rebar3`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `norm`, `crystal-db`, `v-sqlite`, `epgsql`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `fastapi`, `jester`, `kemal`, `vweb`, `cowboy`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `nimble`, `shards`, `v fmt`, `rebar3`, etc.)
 
 ---
 

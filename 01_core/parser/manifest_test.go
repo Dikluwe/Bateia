@@ -51,6 +51,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"App.fsproj", "fsharp"},
 		{"cpanfile", "perl"},
 		{"MAIN.cbl", "cobol"},
+		{"app.nimble", "nim"},
+		{"shard.yml", "crystal"},
+		{"v.mod", "v"},
+		{"rebar.config", "erlang"},
 		{"unknown.txt", ""},
 	}
 

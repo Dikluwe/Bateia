@@ -774,6 +774,88 @@ var cobolDevopsFiles = []toolSpec{
 	{Key: "cobc", Patterns: []string{"cobc"}},
 }
 
+var nimTestingTools = []toolSpec{
+	{Key: "unittest", Patterns: []string{"unittest"}},
+}
+
+var nimConfigTools = []toolSpec{
+	{Key: "parsimonious", Patterns: []string{"parsimonious"}},
+}
+
+var nimDatabaseTools = []toolSpec{
+	{Key: "norm", Patterns: []string{"norm"}},
+}
+
+var nimObservabilityTools = []toolSpec{
+	{Key: "jester", Patterns: []string{"jester"}},
+}
+
+var nimDevopsFiles = []toolSpec{
+	{Key: "nimble", Patterns: []string{"*.nimble"}},
+}
+
+var crystalTestingTools = []toolSpec{
+	{Key: "spec", Patterns: []string{"spec"}},
+}
+
+var crystalConfigTools = []toolSpec{
+	{Key: "habitat", Patterns: []string{"habitat"}},
+}
+
+var crystalDatabaseTools = []toolSpec{
+	{Key: "crystal-db", Patterns: []string{"db"}},
+}
+
+var crystalObservabilityTools = []toolSpec{
+	{Key: "kemal", Patterns: []string{"kemal"}},
+}
+
+var crystalDevopsFiles = []toolSpec{
+	{Key: "shards", Patterns: []string{"shard.yml"}},
+}
+
+var vTestingTools = []toolSpec{
+	{Key: "vtest", Patterns: []string{"vtest"}},
+}
+
+var vConfigTools = []toolSpec{
+	{Key: "vmod", Patterns: []string{"v.mod"}},
+}
+
+var vDatabaseTools = []toolSpec{
+	{Key: "v-sqlite", Patterns: []string{"sqlite"}},
+}
+
+var vObservabilityTools = []toolSpec{
+	{Key: "vweb", Patterns: []string{"vweb"}},
+}
+
+var vDevopsFiles = []toolSpec{
+	{Key: "v-fmt", Patterns: []string{"v.mod"}},
+}
+
+var erlangTestingTools = []toolSpec{
+	{Key: "eunit", Patterns: []string{"eunit"}},
+	{Key: "ct", Patterns: []string{"common_test"}},
+}
+
+var erlangConfigTools = []toolSpec{
+	{Key: "rebar3", Patterns: []string{"rebar.config"}},
+}
+
+var erlangDatabaseTools = []toolSpec{
+	{Key: "epgsql", Patterns: []string{"epgsql"}},
+	{Key: "mnesia", Patterns: []string{"mnesia"}},
+}
+
+var erlangObservabilityTools = []toolSpec{
+	{Key: "cowboy", Patterns: []string{"cowboy"}},
+}
+
+var erlangDevopsFiles = []toolSpec{
+	{Key: "rebar3", Patterns: []string{"rebar.config"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -958,6 +1040,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = cobolDatabaseTools
 		oTools = cobolObservabilityTools
 		devOps = cobolDevopsFiles
+	} else if lang == "nim" {
+		tTools = nimTestingTools
+		cTools = nimConfigTools
+		dTools = nimDatabaseTools
+		oTools = nimObservabilityTools
+		devOps = nimDevopsFiles
+	} else if lang == "crystal" {
+		tTools = crystalTestingTools
+		cTools = crystalConfigTools
+		dTools = crystalDatabaseTools
+		oTools = crystalObservabilityTools
+		devOps = crystalDevopsFiles
+	} else if lang == "v" || lang == "vlang" {
+		tTools = vTestingTools
+		cTools = vConfigTools
+		dTools = vDatabaseTools
+		oTools = vObservabilityTools
+		devOps = vDevopsFiles
+	} else if lang == "erlang" {
+		tTools = erlangTestingTools
+		cTools = erlangConfigTools
+		dTools = erlangDatabaseTools
+		oTools = erlangObservabilityTools
+		devOps = erlangDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

@@ -34,6 +34,8 @@ func DetectManifestType(filename string) string {
 		return "pomxml"
 	case "build.gradle", "build.gradle.kts":
 		return "gradle"
+	case "composer.json":
+		return "composer"
 	default:
 		return ""
 	}
@@ -58,6 +60,8 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParsePomXml(ref, content)
 	case "gradle":
 		return ParseBuildGradle(ref, content)
+	case "composer":
+		return ParseComposerJson(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

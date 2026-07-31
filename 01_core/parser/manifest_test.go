@@ -28,6 +28,7 @@ func TestDetectManifestType(t *testing.T) {
 		{"pom.xml", "pomxml"},
 		{"build.gradle", "gradle"},
 		{"build.gradle.kts", "gradle"},
+		{"composer.json", "composer"},
 		{"unknown.txt", ""},
 	}
 

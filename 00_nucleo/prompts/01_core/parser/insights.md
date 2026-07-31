@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `pytest`, `criterion`, `junit`, `mockito`, `kotest`, `assertj`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `pydantic-settings`, `config-rs`, `spring-boot-starter`, `archaius`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqlalchemy`, `sqlx`, `hibernate`, `flyway`, `liquibase`, `r2dbc`, `spring-data`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `winston`, `fastapi`, `tokio`, `spring-web`, `quarkus`, `micronaut`, `jackson`, `slf4j`, `micrometer`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `ruff`, `clippy`, `spotless`, `checkstyle`, `detekt`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `pytest`, `criterion`, `junit`, `phpunit`, `pest`, `mockery`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `vlucas/phpdotenv`, `symfony/dotenv`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqlalchemy`, `sqlx`, `hibernate`, `doctrine`, `illuminate/database`, `eloquent`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `winston`, `fastapi`, `tokio`, `laravel`, `symfony`, `monolog`, `guzzlehttp`, `sentry`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `ruff`, `clippy`, `phpstan`, `psalm`, `php-cs-fixer`, etc.)
 
 ---
 

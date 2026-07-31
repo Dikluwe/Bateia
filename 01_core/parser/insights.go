@@ -238,6 +238,41 @@ var javaDevopsFiles = []toolSpec{
 	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
 }
 
+var phpTestingTools = []toolSpec{
+	{Key: "phpunit", Patterns: []string{"phpunit"}},
+	{Key: "pest", Patterns: []string{"pest"}},
+	{Key: "mockery", Patterns: []string{"mockery"}},
+	{Key: "codeception", Patterns: []string{"codeception"}},
+	{Key: "behat", Patterns: []string{"behat"}},
+}
+
+var phpConfigTools = []toolSpec{
+	{Key: "vlucas/phpdotenv", Patterns: []string{"vlucas/phpdotenv"}},
+	{Key: "symfony/dotenv", Patterns: []string{"symfony/dotenv"}},
+}
+
+var phpDatabaseTools = []toolSpec{
+	{Key: "doctrine", Patterns: []string{"doctrine/orm", "doctrine/dbal"}},
+	{Key: "eloquent", Patterns: []string{"illuminate/database"}},
+	{Key: "propel", Patterns: []string{"propel"}},
+}
+
+var phpObservabilityTools = []toolSpec{
+	{Key: "laravel", Patterns: []string{"laravel/framework"}},
+	{Key: "symfony", Patterns: []string{"symfony/http-kernel", "symfony/framework-bundle"}},
+	{Key: "monolog", Patterns: []string{"monolog/monolog"}},
+	{Key: "guzzle", Patterns: []string{"guzzlehttp/guzzle"}},
+	{Key: "sentry", Patterns: []string{"sentry/sentry"}},
+}
+
+var phpDevopsFiles = []toolSpec{
+	{Key: "phpstan", Patterns: []string{"phpstan", "phpstan.neon"}},
+	{Key: "psalm", Patterns: []string{"psalm", "psalm.xml"}},
+	{Key: "php-cs-fixer", Patterns: []string{"php-cs-fixer", ".php-cs-fixer.php"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -290,6 +325,12 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = javaDatabaseTools
 		oTools = javaObservabilityTools
 		devOps = javaDevopsFiles
+	} else if lang == "php" {
+		tTools = phpTestingTools
+		cTools = phpConfigTools
+		dTools = phpDatabaseTools
+		oTools = phpObservabilityTools
+		devOps = phpDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

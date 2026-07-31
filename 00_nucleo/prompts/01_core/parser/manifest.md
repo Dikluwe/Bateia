@@ -32,11 +32,15 @@ Criar as funções:
    - `"pom.xml"` → `"pomxml"`
    - `"build.gradle"`, `"build.gradle.kts"` → `"gradle"`
    - `"composer.json"` → `"composer"`
+   - `"cmakelists.txt"` → `"cmake"`
+   - `"vcpkg.json"` → `"vcpkg"`
+   - `"conanfile.txt"` → `"conan"`
+   - Suffix `.csproj` → `"csharp"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
    - Identifica o tipo do manifesto via `DetectManifestType(filename)`.
-   - Roteia para `ParseGoMod`, `ParsePackageJson`, `ParsePyProjectToml`, `ParseRequirementsTxt`, `ParseCargoToml`, `ParsePomXml`, `ParseBuildGradle` ou `ParseComposerJson`.
+   - Roteia para o parser específico correspondente.
    - Retorna erro caso o arquivo não seja suportado.
 
 ---
@@ -44,9 +48,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "composer.json" e um conteúdo válido
+Dado o arquivo "app.csproj" e um conteúdo válido
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseComposerJson e retorna um Manifest com Language "php".
+Então o Dispatcher chama ParseCsProj e retorna um Manifest com Language "csharp".
 ```
 
 ---
@@ -63,4 +67,4 @@ Então o Dispatcher chama ParseComposerJson e retorna um Manifest com Language "
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a manifestos Python, Rust, Java/Kotlin e PHP (composer.json) | manifest.go |
+| 2026-07-31 | Adiciona suporte a manifestos C/C++ e C# / .NET | manifest.go |

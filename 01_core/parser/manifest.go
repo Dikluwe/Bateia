@@ -19,6 +19,10 @@ import (
 func DetectManifestType(filename string) string {
 	base := filepath.Base(strings.ToLower(filename))
 
+	if strings.HasSuffix(base, ".csproj") {
+		return "csharp"
+	}
+
 	switch base {
 	case "go.mod":
 		return "gomod"
@@ -36,6 +40,12 @@ func DetectManifestType(filename string) string {
 		return "gradle"
 	case "composer.json":
 		return "composer"
+	case "cmakelists.txt":
+		return "cmake"
+	case "vcpkg.json":
+		return "vcpkg"
+	case "conanfile.txt":
+		return "conan"
 	default:
 		return ""
 	}
@@ -62,6 +72,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseBuildGradle(ref, content)
 	case "composer":
 		return ParseComposerJson(ref, content)
+	case "cmake":
+		return ParseCMakeListsTxt(ref, content)
+	case "vcpkg":
+		return ParseVcpkgJson(ref, content)
+	case "conan":
+		return ParseConanfileTxt(ref, content)
+	case "csharp":
+		return ParseCsProj(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

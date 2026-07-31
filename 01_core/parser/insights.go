@@ -273,6 +273,80 @@ var phpDevopsFiles = []toolSpec{
 	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
 }
 
+var cppTestingTools = []toolSpec{
+	{Key: "gtest", Patterns: []string{"gtest", "googletest"}},
+	{Key: "catch2", Patterns: []string{"catch2"}},
+	{Key: "doctest", Patterns: []string{"doctest"}},
+	{Key: "boost.test", Patterns: []string{"boost_test"}},
+}
+
+var cppConfigTools = []toolSpec{
+	{Key: "fmt", Patterns: []string{"fmt"}},
+	{Key: "spdlog", Patterns: []string{"spdlog"}},
+	{Key: "boost", Patterns: []string{"boost"}},
+}
+
+var cppDatabaseTools = []toolSpec{
+	{Key: "sqlite3", Patterns: []string{"sqlite", "sqlite3"}},
+	{Key: "pqxx", Patterns: []string{"pqxx"}},
+	{Key: "mysqlclient", Patterns: []string{"mysql"}},
+	{Key: "hiredis", Patterns: []string{"hiredis"}},
+}
+
+var cppObservabilityTools = []toolSpec{
+	{Key: "qt", Patterns: []string{"qt", "qt5", "qt6"}},
+	{Key: "opencv", Patterns: []string{"opencv"}},
+	{Key: "grpc", Patterns: []string{"grpc"}},
+	{Key: "protobuf", Patterns: []string{"protobuf"}},
+	{Key: "opentelemetry", Patterns: []string{"opentelemetry"}},
+}
+
+var cppDevopsFiles = []toolSpec{
+	{Key: "clang-format", Patterns: []string{".clang-format"}},
+	{Key: "clang-tidy", Patterns: []string{".clang-tidy"}},
+	{Key: "CMakeLists", Patterns: []string{"CMakeLists.txt"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var csharpTestingTools = []toolSpec{
+	{Key: "xunit", Patterns: []string{"xunit"}},
+	{Key: "nunit", Patterns: []string{"nunit"}},
+	{Key: "mstest", Patterns: []string{"mstest"}},
+	{Key: "moq", Patterns: []string{"moq"}},
+	{Key: "fluentassertions", Patterns: []string{"fluentassertions"}},
+}
+
+var csharpConfigTools = []toolSpec{
+	{Key: "configuration", Patterns: []string{"microsoft.extensions.configuration"}},
+	{Key: "options", Patterns: []string{"microsoft.extensions.options"}},
+}
+
+var csharpDatabaseTools = []toolSpec{
+	{Key: "entity-framework", Patterns: []string{"microsoft.entityframeworkcore"}},
+	{Key: "dapper", Patterns: []string{"dapper"}},
+	{Key: "npgsql", Patterns: []string{"npgsql"}},
+	{Key: "sqlclient", Patterns: []string{"microsoft.data.sqlclient"}},
+	{Key: "mongodb", Patterns: []string{"mongodb.driver"}},
+}
+
+var csharpObservabilityTools = []toolSpec{
+	{Key: "serilog", Patterns: []string{"serilog"}},
+	{Key: "nlog", Patterns: []string{"nlog"}},
+	{Key: "mediatr", Patterns: []string{"mediatr"}},
+	{Key: "fluentvalidation", Patterns: []string{"fluentvalidation"}},
+	{Key: "automapper", Patterns: []string{"automapper"}},
+	{Key: "polly", Patterns: []string{"polly"}},
+	{Key: "opentelemetry", Patterns: []string{"opentelemetry"}},
+}
+
+var csharpDevopsFiles = []toolSpec{
+	{Key: "stylecop", Patterns: []string{"stylecop"}},
+	{Key: "editorconfig", Patterns: []string{".editorconfig"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -331,6 +405,18 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = phpDatabaseTools
 		oTools = phpObservabilityTools
 		devOps = phpDevopsFiles
+	} else if lang == "cpp" || lang == "c" || lang == "c++" {
+		tTools = cppTestingTools
+		cTools = cppConfigTools
+		dTools = cppDatabaseTools
+		oTools = cppObservabilityTools
+		devOps = cppDevopsFiles
+	} else if lang == "csharp" || lang == "cs" || lang == "dotnet" {
+		tTools = csharpTestingTools
+		cTools = csharpConfigTools
+		dTools = csharpDatabaseTools
+		oTools = csharpObservabilityTools
+		devOps = csharpDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

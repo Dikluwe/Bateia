@@ -30,6 +30,8 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 | 🦀 **Rust** | `rust`, `rs` | `Cargo.toml` | Tokio, Serde, Axum, Actix-web, SQLx, Criterion |
 | ☕ **Java / Kotlin** | `java`, `kotlin`, `kt` | `pom.xml`, `build.gradle`, `build.gradle.kts` | Spring Boot, JUnit, Mockito, Hibernate, Flyway, Quarkus |
 | 🐘 **PHP** | `php` | `composer.json` | Laravel, Symfony, PHPUnit, Pest, Doctrine, Eloquent |
+| ⚙️ **C / C++** | `c`, `cpp`, `c++` | `CMakeLists.txt`, `vcpkg.json`, `conanfile.txt` | Boost, GoogleTest, Catch2, fmt, spdlog, Qt, OpenCV |
+| 💜 **C# / .NET** | `csharp`, `cs`, `dotnet` | `.csproj` | EntityFramework, Dapper, Serilog, xUnit, NUnit, MediatR |
 
 ---
 
@@ -85,6 +87,16 @@ go build -o bateia ./04_wiring/main.go
 #### 6. Buscar Projetos PHP usando Laravel
 ```bash
 ./bateia -query "laravel" -lang php -max 10 -output relatorios/laravel.md
+```
+
+#### 7. Buscar Projetos C++ usando CMake / Boost
+```bash
+./bateia -query "boost" -lang cpp -max 10 -output relatorios/cpp.md
+```
+
+#### 8. Buscar Projetos C# / .NET usando Entity Framework
+```bash
+./bateia -query "EntityFrameworkCore" -lang csharp -max 10 -output relatorios/dotnet.md
 ```
 
 ---

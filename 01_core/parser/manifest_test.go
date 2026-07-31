@@ -29,6 +29,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"build.gradle", "gradle"},
 		{"build.gradle.kts", "gradle"},
 		{"composer.json", "composer"},
+		{"CMakeLists.txt", "cmake"},
+		{"vcpkg.json", "vcpkg"},
+		{"conanfile.txt", "conan"},
+		{"MyProject.csproj", "csharp"},
 		{"unknown.txt", ""},
 	}
 

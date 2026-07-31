@@ -2,6 +2,7 @@
 
 **Camada**: L₃ — Infraestrutura  
 **Criado em**: 2026-07-25  
+**Atualizado em**: 2026-07-31  
 **Arquivos gerados**: `03_infra/github/client.go`, `03_infra/github/client_test.go`  
 
 ---
@@ -39,23 +40,10 @@ Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utiliz
    - Ler os nós de diretório raiz.
 5. Implementar `ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error)`:
    - Tentar via HTTP (Contents API / Raw fallback). Se falhar ou for leitura ampla, executar clone shallow local `git clone --depth 1` em diretório temporário isolado.
-
----
-
-## Critérios de Verificação
-
-```
-Dado uma resposta 403 Forbidden da Contents API para go.mod
-Quando FetchManifest for executado
-Então aciona o fallback via raw.githubusercontent.com e retorna o Manifest preenchido.
-```
-
----
-
-## Resultado Esperado
-
-- `03_infra/github/client.go`: Adaptador GitHub `Client`.
-- `03_infra/github/client_test.go`: Testes unitários com simulador de fallback.
+6. Implementar `FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error)`:
+   - Consultar `GET https://api.github.com/repos/{owner}/{repo}`.
+   - Atualizar `Stars` (`stargazers_count`) e `Description`.
+   - Tratar rate limit (403/429) e erro 404 com fallback gracioso mantendo os metadados existentes.
 
 ---
 
@@ -64,3 +52,4 @@ Então aciona o fallback via raw.githubusercontent.com e retorna o Manifest pree
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | client.go, client_test.go |
+| 2026-07-31 | Adição de FetchRepoMetadata | client.go, interfaces.go |

@@ -22,6 +22,7 @@ type ContentProvider interface {
 	FetchManifest(ctx context.Context, candidate RepositoryCandidate) (*Manifest, error)
 	FetchTree(ctx context.Context, candidate RepositoryCandidate) ([]DirectoryNode, error)
 	ExtractRepoFiles(ctx context.Context, candidate RepositoryCandidate, paths []string) (*ExtractedRepository, error)
+	FetchRepoMetadata(ctx context.Context, candidate RepositoryCandidate) (RepositoryCandidate, error)
 }
 
 // CacheStore abstrai a persistência e busca de registros em cache no File System.

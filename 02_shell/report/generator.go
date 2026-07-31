@@ -38,8 +38,10 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	} else {
 		for i, res := range report.Results {
 			sb.WriteString(fmt.Sprintf("### %d. [%s/%s](%s)\n\n", i+1, res.Candidate.Owner, res.Candidate.Repo, res.Candidate.URL))
+			sb.WriteString(fmt.Sprintf("- **Score de Relevância**: `%d/100` (`%s`)\n", res.RelevanceScore, res.RelevanceLabel))
+			sb.WriteString(fmt.Sprintf("- **Justificativa**: %s\n", res.RelevanceReason))
 			sb.WriteString(fmt.Sprintf("- **Commit Rastreável**: `%s`\n", res.Ref.Key()))
-			sb.WriteString(fmt.Sprintf("- **Estrelas**: %d\n", res.Candidate.Stars))
+			sb.WriteString(fmt.Sprintf("- **Estrelas**: %s\n", formatStars(res.Candidate.Stars)))
 			sb.WriteString(fmt.Sprintf("- **Descrição**: %s\n", res.Candidate.Description))
 			sb.WriteString(fmt.Sprintf("- **Consultado Em**: %s\n\n", res.ConsultadoEm.Format("2006-01-02 15:04:05")))
 
@@ -97,4 +99,17 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	sb.WriteString("- Presença frequente de `go.mod`, arquivos em `cmd/` e `internal/` para separação limpa de domínios.\n")
 
 	return sb.String()
+}
+
+func formatStars(stars int) string {
+	switch {
+	case stars >= 1_000_000:
+		return fmt.Sprintf("⭐ %.1fM", float64(stars)/1_000_000)
+	case stars >= 1_000:
+		return fmt.Sprintf("⭐ %.1fK (%d)", float64(stars)/1_000, stars)
+	case stars > 0:
+		return fmt.Sprintf("⭐ %d", stars)
+	default:
+		return "⭐ N/A (metadado indisponível)"
+	}
 }

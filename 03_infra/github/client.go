@@ -320,3 +320,45 @@ func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.Repositor
 		Size:    item.Size,
 	}, nil
 }
+
+type githubRepoResponse struct {
+	StargazersCount int    `json:"stargazers_count"`
+	Description     string `json:"description"`
+}
+
+// FetchRepoMetadata realiza o sanity check de metadados na API REST do GitHub obtendo número de estrelas reais e descrição.
+func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", candidate.Owner, candidate.Repo)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return candidate, nil
+	}
+
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	if c.token != "" {
+		req.Header.Set("Authorization", "token "+c.token)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return candidate, nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return candidate, nil
+	}
+
+	var repoResp githubRepoResponse
+	if err := json.NewDecoder(resp.Body).Decode(&repoResp); err != nil {
+		return candidate, nil
+	}
+
+	candidate.Stars = repoResp.StargazersCount
+	if repoResp.Description != "" {
+		candidate.Description = repoResp.Description
+	}
+
+	return candidate, nil
+}

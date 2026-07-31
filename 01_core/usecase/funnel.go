@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sort"
 	"time"
 
 	"bateia/01_core/domain"
@@ -106,13 +107,19 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 			score = parser.EvaluateStructure(tree, filter.MustHave)
 		}
 
+		// 3. Avaliar Score de Relevância e Import Matcher
+		rel := parser.EvaluateRelevance(filter.Query, manifest, cand, tree)
+
 		if score.Approved {
 			triaged = append(triaged, domain.TriagedRepository{
-				Candidate:   cand,
-				Manifest:    manifest,
-				Tree:        tree,
-				Approved:    true,
-				ScoreReason: score.Reason,
+				Candidate:       cand,
+				Manifest:        manifest,
+				Tree:            tree,
+				Approved:        true,
+				ScoreReason:     score.Reason,
+				RelevanceScore:  rel.Score,
+				RelevanceLabel:  rel.Label,
+				RelevanceReason: rel.Reason,
 			})
 		} else {
 			discardedCount++
@@ -123,7 +130,12 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	report.DiscardedCount = discardedCount
 	report.DiscardReason = "Filtro estrutural ou repositório indisponível (404/stale)"
 
-	log.Printf("[ESTÁGIO 2] Triagem concluída: %d aprovados de %d candidatos.", len(triaged), len(candidates))
+	// Ordenar repositórios aprovados por RelevanceScore decrescente
+	sort.SliceStable(triaged, func(i, j int) bool {
+		return triaged[i].RelevanceScore > triaged[j].RelevanceScore
+	})
+
+	log.Printf("[ESTÁGIO 2] Triagem concluída: %d aprovados de %d candidatos (ordenados por relevância).", len(triaged), len(candidates))
 
 	// ==========================================
 	// Estágio 3: Extração (Fundo do Funil)
@@ -134,10 +146,17 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 		maxExtract = len(triaged)
 	}
 
-	log.Printf("[ESTÁGIO 3] Extraindo até %d repositórios finais...", maxExtract)
+	log.Printf("[ESTÁGIO 3] Extraindo até %d repositórios mais relevantes...", maxExtract)
 
 	for i := 0; i < maxExtract; i++ {
 		tRepo := triaged[i]
+
+		// Enriquecer metadados (estrelas e descrição) via GitHub API
+		enrichedCand, errMeta := f.fetcher.FetchRepoMetadata(ctx, tRepo.Candidate)
+		if errMeta == nil {
+			tRepo.Candidate = enrichedCand
+		}
+
 		ref := domain.CommitRef{
 			Owner:  tRepo.Candidate.Owner,
 			Repo:   tRepo.Candidate.Repo,
@@ -147,16 +166,24 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 		// Tentar extração via cache imutável (repo@commit)
 		extracted, hitE, _ := f.store.GetExtracted(ref)
 		if !hitE {
-			log.Printf("[ESTÁGIO 3] Baixando conteúdo para %s...", ref.Key())
+			log.Printf("[ESTÁGIO 3] Baixando conteúdo para %s (Score: %d)...", ref.Key(), tRepo.RelevanceScore)
 			extracted, err = f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, []string{"go.mod", "README.md"})
 			if err != nil {
 				log.Printf("[WARNING] Falha na extração de %s: %v", ref.Key(), err)
 				continue
 			}
+			extracted.Candidate = tRepo.Candidate
 			extracted.Manifest = tRepo.Manifest
+			extracted.RelevanceScore = tRepo.RelevanceScore
+			extracted.RelevanceLabel = tRepo.RelevanceLabel
+			extracted.RelevanceReason = tRepo.RelevanceReason
 			_ = f.store.SaveExtracted(ref, extracted)
 		} else {
-			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s.", ref.Key())
+			extracted.Candidate = tRepo.Candidate
+			extracted.RelevanceScore = tRepo.RelevanceScore
+			extracted.RelevanceLabel = tRepo.RelevanceLabel
+			extracted.RelevanceReason = tRepo.RelevanceReason
+			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), tRepo.RelevanceScore)
 		}
 
 		report.Results = append(report.Results, *extracted)

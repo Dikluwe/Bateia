@@ -71,11 +71,14 @@ type QueryFilter struct {
 
 // TriagedRepository é o resultado da etapa 2 (Meio do funil - Triagem).
 type TriagedRepository struct {
-	Candidate   RepositoryCandidate `json:"candidate"`
-	Manifest    *Manifest           `json:"manifest,omitempty"`
-	Tree        []DirectoryNode     `json:"tree,omitempty"`
-	Approved    bool                `json:"approved"`
-	ScoreReason string              `json:"score_reason"`
+	Candidate       RepositoryCandidate `json:"candidate"`
+	Manifest        *Manifest           `json:"manifest,omitempty"`
+	Tree            []DirectoryNode     `json:"tree,omitempty"`
+	Approved        bool                `json:"approved"`
+	ScoreReason     string              `json:"score_reason"`
+	RelevanceScore  int                 `json:"relevance_score"`
+	RelevanceLabel  string              `json:"relevance_label"`
+	RelevanceReason string              `json:"relevance_reason"`
 }
 
 // ExtractedFile representa o conteúdo lido do repositório final.
@@ -87,12 +90,15 @@ type ExtractedFile struct {
 
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
 type ExtractedRepository struct {
-	Ref          CommitRef           `json:"ref"`
-	Candidate    RepositoryCandidate `json:"candidate"`
-	Manifest     *Manifest           `json:"manifest,omitempty"`
-	Files        []ExtractedFile     `json:"files"`
-	ConsultadoEm time.Time           `json:"consultado_em"`
-	Stale        bool                `json:"stale"`
+	Ref             CommitRef           `json:"ref"`
+	Candidate       RepositoryCandidate `json:"candidate"`
+	Manifest        *Manifest           `json:"manifest,omitempty"`
+	Files           []ExtractedFile     `json:"files"`
+	ConsultadoEm    time.Time           `json:"consultado_em"`
+	Stale           bool                `json:"stale"`
+	RelevanceScore  int                 `json:"relevance_score"`
+	RelevanceLabel  string              `json:"relevance_label"`
+	RelevanceReason string              `json:"relevance_reason"`
 }
 
 // SearchReport é o relatório compilado final entregue ao usuário.

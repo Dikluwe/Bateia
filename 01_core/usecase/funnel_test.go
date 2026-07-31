@@ -54,6 +54,11 @@ func (m *MockContentProvider) ExtractRepoFiles(ctx context.Context, candidate do
 	}, nil
 }
 
+func (m *MockContentProvider) FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
+	candidate.Stars = 1234
+	return candidate, nil
+}
+
 // MockCacheStore simula um cache em memória.
 type MockCacheStore struct {
 	discovery map[string][]domain.RepositoryCandidate

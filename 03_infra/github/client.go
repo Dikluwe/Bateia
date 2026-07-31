@@ -75,7 +75,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		refCommit = "HEAD"
 	}
 
-	manifestFiles := []string{"go.mod", "package.json"}
+	manifestFiles := []string{"go.mod", "package.json", "pyproject.toml", "requirements.txt"}
 	var lastErr error
 
 	for _, targetFile := range manifestFiles {

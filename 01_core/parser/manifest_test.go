@@ -22,6 +22,8 @@ func TestDetectManifestType(t *testing.T) {
 		{"/path/to/go.mod", "gomod"},
 		{"package.json", "packagejson"},
 		{"/root/package.json", "packagejson"},
+		{"pyproject.toml", "pyproject"},
+		{"requirements.txt", "requirements"},
 		{"Cargo.toml", ""},
 		{"unknown.txt", ""},
 	}

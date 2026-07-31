@@ -26,11 +26,13 @@ Criar as funções:
 1. `func DetectManifestType(filename string) string`
    - `"go.mod"` → `"gomod"`
    - `"package.json"` → `"packagejson"`
+   - `"pyproject.toml"` → `"pyproject"`
+   - `"requirements.txt"` → `"requirements"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
    - Identifica o tipo do manifesto via `DetectManifestType(filename)`.
-   - Roteia para `ParseGoMod` ou `ParsePackageJson`.
+   - Roteia para `ParseGoMod`, `ParsePackageJson`, `ParsePyProjectToml` ou `ParseRequirementsTxt`.
    - Retorna erro caso o arquivo não seja suportado.
 
 ---
@@ -38,13 +40,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "package.json" e um conteúdo JSON válido
+Dado o arquivo "pyproject.toml" e um conteúdo válido
 Quando ParseManifest for executada
-Então o Dispatcher chama ParsePackageJson e retorna um Manifest com Language "typescript".
-
-Dado o arquivo "go.mod" e um conteúdo go.mod válido
-Quando ParseManifest for executada
-Então o Dispatcher chama ParseGoMod e retorna um Manifest com GoVersion preenchido.
+Então o Dispatcher chama ParsePyProjectToml e retorna um Manifest com Language "python".
 ```
 
 ---
@@ -61,3 +59,4 @@ Então o Dispatcher chama ParseGoMod e retorna um Manifest com GoVersion preench
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
+| 2026-07-31 | Adiciona suporte a manifestos Python (pyproject.toml e requirements.txt) | manifest.go |

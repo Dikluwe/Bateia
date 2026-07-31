@@ -24,6 +24,10 @@ func DetectManifestType(filename string) string {
 		return "gomod"
 	case "package.json":
 		return "packagejson"
+	case "pyproject.toml":
+		return "pyproject"
+	case "requirements.txt":
+		return "requirements"
 	default:
 		return ""
 	}
@@ -38,6 +42,10 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseGoMod(ref, content)
 	case "packagejson":
 		return ParsePackageJson(ref, content)
+	case "pyproject":
+		return ParsePyProjectToml(ref, content)
+	case "requirements":
+		return ParseRequirementsTxt(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

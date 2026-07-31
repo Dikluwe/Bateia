@@ -111,6 +111,51 @@ var typeScriptDevopsFiles = []toolSpec{
 	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
 }
 
+var pythonTestingTools = []toolSpec{
+	{Key: "pytest", Patterns: []string{"pytest"}},
+	{Key: "unittest", Patterns: []string{"unittest"}},
+	{Key: "coverage", Patterns: []string{"coverage"}},
+	{Key: "httpx", Patterns: []string{"httpx"}},
+	{Key: "factory-boy", Patterns: []string{"factory-boy", "factory_boy"}},
+}
+
+var pythonConfigTools = []toolSpec{
+	{Key: "pydantic-settings", Patterns: []string{"pydantic-settings", "pydantic"}},
+	{Key: "python-dotenv", Patterns: []string{"python-dotenv", "dotenv"}},
+	{Key: "dynaconf", Patterns: []string{"dynaconf"}},
+}
+
+var pythonDatabaseTools = []toolSpec{
+	{Key: "sqlalchemy", Patterns: []string{"sqlalchemy"}},
+	{Key: "alembic", Patterns: []string{"alembic"}},
+	{Key: "django-orm", Patterns: []string{"django"}},
+	{Key: "tortoise-orm", Patterns: []string{"tortoise-orm"}},
+	{Key: "peewee", Patterns: []string{"peewee"}},
+	{Key: "psycopg2", Patterns: []string{"psycopg2", "psycopg"}},
+	{Key: "asyncpg", Patterns: []string{"asyncpg"}},
+	{Key: "redis", Patterns: []string{"redis"}},
+	{Key: "motor", Patterns: []string{"motor", "pymongo"}},
+}
+
+var pythonObservabilityTools = []toolSpec{
+	{Key: "fastapi", Patterns: []string{"fastapi"}},
+	{Key: "flask", Patterns: []string{"flask"}},
+	{Key: "celery", Patterns: []string{"celery"}},
+	{Key: "structlog", Patterns: []string{"structlog"}},
+	{Key: "sentry-sdk", Patterns: []string{"sentry-sdk"}},
+	{Key: "opentelemetry", Patterns: []string{"opentelemetry"}},
+	{Key: "prometheus-client", Patterns: []string{"prometheus-client"}},
+}
+
+var pythonDevopsFiles = []toolSpec{
+	{Key: "ruff", Patterns: []string{"ruff", ".ruff.toml"}},
+	{Key: "black", Patterns: []string{"black"}},
+	{Key: "flake8", Patterns: []string{"flake8", ".flake8"}},
+	{Key: "mypy", Patterns: []string{"mypy", "mypy.ini"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -145,6 +190,12 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = typeScriptDatabaseTools
 		oTools = typeScriptObservabilityTools
 		devOps = typeScriptDevopsFiles
+	} else if lang == "python" || lang == "py" {
+		tTools = pythonTestingTools
+		cTools = pythonConfigTools
+		dTools = pythonDatabaseTools
+		oTools = pythonObservabilityTools
+		devOps = pythonDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

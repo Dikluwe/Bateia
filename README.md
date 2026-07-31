@@ -55,6 +55,10 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 | 💎 **Crystal** | `crystal` | `shard.yml` | Kemal, Crystal-DB, Spec, Shards |
 | ⚡ **V (Vlang)** | `v`, `vlang` | `v.mod` | VWeb, V-SQLite, VTest, V fmt |
 | 🔴 **Erlang** | `erlang` | `rebar.config` | Cowboy, Epgsql, Mnesia, EUnit, Rebar3 |
+| 🎯 **D** | `d`, `dlang` | `dub.json` | Vibe-d, Silly-UnitTest, DUB |
+| ⭐️ **Gleam** | `gleam` | `gleam.toml` | Lustre, Wisp, PGo, Gleam Test |
+| ❄️ **ColdFusion** | `coldfusion`, `cf` | `box.json` | ColdBox, CBORM, CommandBox, MXUnit |
+| ⚡ **ActionScript / Flex** | `actionscript`, `flex` | `flex-config.xml` | FlexUnit, Robotlegs, PureMVC, MXMLC |
 
 ---
 

@@ -55,6 +55,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"shard.yml", "crystal"},
 		{"v.mod", "v"},
 		{"rebar.config", "erlang"},
+		{"dub.json", "d"},
+		{"gleam.toml", "gleam"},
+		{"box.json", "coldfusion"},
+		{"flex-config.xml", "actionscript"},
 		{"unknown.txt", ""},
 	}
 

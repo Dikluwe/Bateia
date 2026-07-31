@@ -58,6 +58,10 @@ Criar as funções:
    - `"shard.yml"` → `"crystal"`
    - `"v.mod"` → `"v"`
    - `"rebar.config"` → `"erlang"`
+   - `"dub.json"` → `"d"`
+   - `"gleam.toml"` → `"gleam"`
+   - `"box.json"` → `"coldfusion"`
+   - `"flex-config.xml"` → `"actionscript"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -70,9 +74,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "shard.yml" e um conteúdo válido de Crystal
+Dado o arquivo "gleam.toml" e um conteúdo válido de Gleam
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseShardYaml e retorna um Manifest com Language "crystal".
+Então o Dispatcher chama ParseGleamToml e retorna um Manifest com Language "gleam".
 ```
 
 ---
@@ -89,4 +93,4 @@ Então o Dispatcher chama ParseShardYaml e retorna um Manifest com Language "cry
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a Nim, Crystal, V e Erlang | manifest.go |
+| 2026-07-31 | Adiciona suporte a D, Gleam, ColdFusion e ActionScript | manifest.go |

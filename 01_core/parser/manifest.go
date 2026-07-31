@@ -102,6 +102,14 @@ func DetectManifestType(filename string) string {
 		return "v"
 	case "rebar.config":
 		return "erlang"
+	case "dub.json":
+		return "d"
+	case "gleam.toml":
+		return "gleam"
+	case "box.json":
+		return "coldfusion"
+	case "flex-config.xml":
+		return "actionscript"
 	default:
 		return ""
 	}
@@ -180,6 +188,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseVMod(ref, content)
 	case "erlang":
 		return ParseRebarConfig(ref, content)
+	case "d":
+		return ParseDubJson(ref, content)
+	case "gleam":
+		return ParseGleamToml(ref, content)
+	case "coldfusion":
+		return ParseBoxJson(ref, content)
+	case "actionscript":
+		return ParseFlexConfig(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

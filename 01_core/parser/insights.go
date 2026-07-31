@@ -856,6 +856,89 @@ var erlangDevopsFiles = []toolSpec{
 	{Key: "rebar3", Patterns: []string{"rebar.config"}},
 }
 
+var dTestingTools = []toolSpec{
+	{Key: "silly-unittest", Patterns: []string{"silly-unittest"}},
+}
+
+var dConfigTools = []toolSpec{
+	{Key: "dub", Patterns: []string{"dub.json"}},
+}
+
+var dDatabaseTools = []toolSpec{
+	{Key: "vibe-d-db", Patterns: []string{"vibe-d"}},
+}
+
+var dObservabilityTools = []toolSpec{
+	{Key: "vibe-d", Patterns: []string{"vibe-d"}},
+}
+
+var dDevopsFiles = []toolSpec{
+	{Key: "dub", Patterns: []string{"dub.json"}},
+}
+
+var gleamTestingTools = []toolSpec{
+	{Key: "gleam-test", Patterns: []string{"gleam/test"}},
+}
+
+var gleamConfigTools = []toolSpec{
+	{Key: "gleam-env", Patterns: []string{"gleam_env"}},
+}
+
+var gleamDatabaseTools = []toolSpec{
+	{Key: "pgo", Patterns: []string{"pgo"}},
+}
+
+var gleamObservabilityTools = []toolSpec{
+	{Key: "lustre", Patterns: []string{"lustre"}},
+	{Key: "wisp", Patterns: []string{"wisp"}},
+}
+
+var gleamDevopsFiles = []toolSpec{
+	{Key: "gleam-fmt", Patterns: []string{"gleam.toml"}},
+}
+
+var coldfusionTestingTools = []toolSpec{
+	{Key: "mxunit", Patterns: []string{"mxunit"}},
+	{Key: "testbox", Patterns: []string{"testbox"}},
+}
+
+var coldfusionConfigTools = []toolSpec{
+	{Key: "commandbox", Patterns: []string{"box.json"}},
+}
+
+var coldfusionDatabaseTools = []toolSpec{
+	{Key: "cborm", Patterns: []string{"cborm"}},
+}
+
+var coldfusionObservabilityTools = []toolSpec{
+	{Key: "coldbox", Patterns: []string{"coldbox"}},
+}
+
+var coldfusionDevopsFiles = []toolSpec{
+	{Key: "box", Patterns: []string{"box.json"}},
+}
+
+var actionscriptTestingTools = []toolSpec{
+	{Key: "flexunit", Patterns: []string{"flexunit"}},
+}
+
+var actionscriptConfigTools = []toolSpec{
+	{Key: "mxml", Patterns: []string{"flex-config.xml"}},
+}
+
+var actionscriptDatabaseTools = []toolSpec{
+	{Key: "as3commons", Patterns: []string{"as3commons"}},
+}
+
+var actionscriptObservabilityTools = []toolSpec{
+	{Key: "robotlegs", Patterns: []string{"robotlegs"}},
+	{Key: "puremvc", Patterns: []string{"puremvc"}},
+}
+
+var actionscriptDevopsFiles = []toolSpec{
+	{Key: "mxmlc", Patterns: []string{"flex-config.xml"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -1064,6 +1147,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = erlangDatabaseTools
 		oTools = erlangObservabilityTools
 		devOps = erlangDevopsFiles
+	} else if lang == "d" || lang == "dlang" {
+		tTools = dTestingTools
+		cTools = dConfigTools
+		dTools = dDatabaseTools
+		oTools = dObservabilityTools
+		devOps = dDevopsFiles
+	} else if lang == "gleam" {
+		tTools = gleamTestingTools
+		cTools = gleamConfigTools
+		dTools = gleamDatabaseTools
+		oTools = gleamObservabilityTools
+		devOps = gleamDevopsFiles
+	} else if lang == "coldfusion" || lang == "cf" {
+		tTools = coldfusionTestingTools
+		cTools = coldfusionConfigTools
+		dTools = coldfusionDatabaseTools
+		oTools = coldfusionObservabilityTools
+		devOps = coldfusionDevopsFiles
+	} else if lang == "actionscript" || lang == "as" || lang == "flex" {
+		tTools = actionscriptTestingTools
+		cTools = actionscriptConfigTools
+		dTools = actionscriptDatabaseTools
+		oTools = actionscriptObservabilityTools
+		devOps = actionscriptDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

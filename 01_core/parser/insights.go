@@ -693,6 +693,87 @@ var basicDevopsFiles = []toolSpec{
 	{Key: "vbc", Patterns: []string{"vbc"}},
 }
 
+var fsharpTestingTools = []toolSpec{
+	{Key: "expecto", Patterns: []string{"expecto"}},
+}
+
+var fsharpConfigTools = []toolSpec{
+	{Key: "fsharp.configuration", Patterns: []string{"fsharp.configuration"}},
+}
+
+var fsharpDatabaseTools = []toolSpec{
+	{Key: "fsql", Patterns: []string{"fsql"}},
+}
+
+var fsharpObservabilityTools = []toolSpec{
+	{Key: "giraffe", Patterns: []string{"giraffe"}},
+}
+
+var fsharpDevopsFiles = []toolSpec{
+	{Key: "fantomas", Patterns: []string{"fantomas"}},
+}
+
+var perlTestingTools = []toolSpec{
+	{Key: "test-more", Patterns: []string{"test::more"}},
+}
+
+var perlConfigTools = []toolSpec{
+	{Key: "config-simple", Patterns: []string{"config::simple"}},
+}
+
+var perlDatabaseTools = []toolSpec{
+	{Key: "dbi", Patterns: []string{"dbi"}},
+}
+
+var perlObservabilityTools = []toolSpec{
+	{Key: "dancer2", Patterns: []string{"dancer2"}},
+	{Key: "mojo", Patterns: []string{"mojolicious"}},
+}
+
+var perlDevopsFiles = []toolSpec{
+	{Key: "perlcritic", Patterns: []string{"perlcritic"}},
+}
+
+var groovyTestingTools = []toolSpec{
+	{Key: "spock", Patterns: []string{"spock"}},
+}
+
+var groovyConfigTools = []toolSpec{
+	{Key: "groovy-json", Patterns: []string{"groovy-json"}},
+}
+
+var groovyDatabaseTools = []toolSpec{
+	{Key: "gorm-groovy", Patterns: []string{"gorm"}},
+}
+
+var groovyObservabilityTools = []toolSpec{
+	{Key: "ratpack", Patterns: []string{"ratpack"}},
+}
+
+var groovyDevopsFiles = []toolSpec{
+	{Key: "codenarc", Patterns: []string{"codenarc"}},
+}
+
+var cobolTestingTools = []toolSpec{
+	{Key: "cobunit", Patterns: []string{"cobunit"}},
+}
+
+var cobolConfigTools = []toolSpec{
+	{Key: "gnucobol", Patterns: []string{"gnucobol"}},
+}
+
+var cobolDatabaseTools = []toolSpec{
+	{Key: "esql", Patterns: []string{"exec sql"}},
+}
+
+var cobolObservabilityTools = []toolSpec{
+	{Key: "cics", Patterns: []string{"exec cics"}},
+}
+
+var cobolDevopsFiles = []toolSpec{
+	{Key: "cobc", Patterns: []string{"cobc"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -853,6 +934,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = basicDatabaseTools
 		oTools = basicObservabilityTools
 		devOps = basicDevopsFiles
+	} else if lang == "fsharp" || lang == "fs" {
+		tTools = fsharpTestingTools
+		cTools = fsharpConfigTools
+		dTools = fsharpDatabaseTools
+		oTools = fsharpObservabilityTools
+		devOps = fsharpDevopsFiles
+	} else if lang == "perl" {
+		tTools = perlTestingTools
+		cTools = perlConfigTools
+		dTools = perlDatabaseTools
+		oTools = perlObservabilityTools
+		devOps = perlDevopsFiles
+	} else if lang == "groovy" {
+		tTools = groovyTestingTools
+		cTools = groovyConfigTools
+		dTools = groovyDatabaseTools
+		oTools = groovyObservabilityTools
+		devOps = groovyDevopsFiles
+	} else if lang == "cobol" {
+		tTools = cobolTestingTools
+		cTools = cobolConfigTools
+		dTools = cobolDatabaseTools
+		oTools = cobolObservabilityTools
+		devOps = cobolDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

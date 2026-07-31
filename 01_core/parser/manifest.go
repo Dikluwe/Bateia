@@ -37,6 +37,12 @@ func DetectManifestType(filename string) string {
 	if strings.HasSuffix(base, ".vbp") {
 		return "basic"
 	}
+	if strings.HasSuffix(base, ".fsproj") {
+		return "fsharp"
+	}
+	if strings.HasSuffix(base, ".cbl") || strings.HasSuffix(base, ".cob") {
+		return "cobol"
+	}
 
 	switch base {
 	case "go.mod":
@@ -85,6 +91,8 @@ func DetectManifestType(filename string) string {
 		return "zig"
 	case "fpm.toml":
 		return "fortran"
+	case "cpanfile", "makefile.pl":
+		return "perl"
 	default:
 		return ""
 	}
@@ -149,6 +157,12 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseFortranFpm(ref, content)
 	case "basic":
 		return ParseBasicVbp(ref, content)
+	case "fsharp":
+		return ParseFsProj(ref, content)
+	case "perl":
+		return ParseCpanfile(ref, content)
+	case "cobol":
+		return ParseCobolSource(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

@@ -47,6 +47,10 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 | 🏛️ **Pascal / Delphi** | `pascal`, `delphi` | `*.dproj`, `*.lpi` | FireDAC, Zeos, Indy, VCL, DUnit, IniFiles |
 | 🧮 **Fortran** | `fortran` | `fpm.toml` | LAPACK, FPM, FUnit, OpenMP, MPI |
 | 💻 **BASIC / VB** | `basic`, `vb` | `*.vbp` | ADODB, DAO, MSComCtl, VBWatch |
+| 🔷 **F#** | `fsharp`, `fs` | `*.fsproj` | Giraffe, Expecto, FSharp.Configuration, Fantomas |
+| 🐪 **Perl** | `perl` | `cpanfile`, `Makefile.PL` | Dancer2, DBI, Mojolicious, Test::More, PerlCritic |
+| 🍃 **Groovy** | `groovy` | `build.gradle` | Spock, Ratpack, GORM, CodeNarc |
+| 📜 **COBOL** | `cobol` | `*.cbl`, `*.cob` | GnuCOBOL, CobUnit, ESQL, CICS, COBC |
 
 ---
 

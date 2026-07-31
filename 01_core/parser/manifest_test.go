@@ -48,6 +48,9 @@ func TestDetectManifestType(t *testing.T) {
 		{"MyProject.dproj", "pascal"},
 		{"fpm.toml", "fortran"},
 		{"Project1.vbp", "basic"},
+		{"App.fsproj", "fsharp"},
+		{"cpanfile", "perl"},
+		{"MAIN.cbl", "cobol"},
 		{"unknown.txt", ""},
 	}
 

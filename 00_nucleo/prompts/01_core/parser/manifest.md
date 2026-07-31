@@ -36,6 +36,10 @@ Criar as funções:
    - `"vcpkg.json"` → `"vcpkg"`
    - `"conanfile.txt"` → `"conan"`
    - Suffix `.csproj` → `"csharp"`
+   - `"project.toml"` → `"julia"`
+   - `"description"` → `"rdescription"`
+   - Suffix `.rockspec` → `"rockspec"`
+   - `"dune-project"`, Suffix `.opam` → `"ocaml"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -48,9 +52,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "app.csproj" e um conteúdo válido
+Dado o arquivo "Project.toml" e um conteúdo válido de Julia
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseCsProj e retorna um Manifest com Language "csharp".
+Então o Dispatcher chama ParseJuliaProjectToml e retorna um Manifest com Language "julia".
 ```
 
 ---
@@ -67,4 +71,4 @@ Então o Dispatcher chama ParseCsProj e retorna um Manifest com Language "csharp
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a manifestos C/C++ e C# / .NET | manifest.go |
+| 2026-07-31 | Adiciona suporte a Julia, R, Lua e OCaml | manifest.go |

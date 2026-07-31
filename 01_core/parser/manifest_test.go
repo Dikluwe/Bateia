@@ -33,6 +33,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"vcpkg.json", "vcpkg"},
 		{"conanfile.txt", "conan"},
 		{"MyProject.csproj", "csharp"},
+		{"Project.toml", "julia"},
+		{"DESCRIPTION", "rdescription"},
+		{"mylib-1.0.rockspec", "rockspec"},
+		{"dune-project", "ocaml"},
 		{"unknown.txt", ""},
 	}
 

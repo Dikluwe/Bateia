@@ -22,6 +22,12 @@ func DetectManifestType(filename string) string {
 	if strings.HasSuffix(base, ".csproj") {
 		return "csharp"
 	}
+	if strings.HasSuffix(base, ".rockspec") {
+		return "rockspec"
+	}
+	if strings.HasSuffix(base, ".opam") {
+		return "ocaml"
+	}
 
 	switch base {
 	case "go.mod":
@@ -46,6 +52,12 @@ func DetectManifestType(filename string) string {
 		return "vcpkg"
 	case "conanfile.txt":
 		return "conan"
+	case "project.toml":
+		return "julia"
+	case "description":
+		return "rdescription"
+	case "dune-project":
+		return "ocaml"
 	default:
 		return ""
 	}
@@ -80,6 +92,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseConanfileTxt(ref, content)
 	case "csharp":
 		return ParseCsProj(ref, content)
+	case "julia":
+		return ParseJuliaProjectToml(ref, content)
+	case "rdescription":
+		return ParseRDescription(ref, content)
+	case "rockspec":
+		return ParseLuaRockspec(ref, content)
+	case "ocaml":
+		return ParseOCamlDune(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

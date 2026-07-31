@@ -347,6 +347,98 @@ var csharpDevopsFiles = []toolSpec{
 	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
 }
 
+var juliaTestingTools = []toolSpec{
+	{Key: "Test", Patterns: []string{"test"}},
+}
+
+var juliaConfigTools = []toolSpec{
+	{Key: "ArgParse", Patterns: []string{"argparse"}},
+	{Key: "Configurations", Patterns: []string{"configurations"}},
+}
+
+var juliaDatabaseTools = []toolSpec{
+	{Key: "LibPQ", Patterns: []string{"libpq"}},
+	{Key: "SQLite", Patterns: []string{"sqlite"}},
+	{Key: "MySQL", Patterns: []string{"mysql"}},
+}
+
+var juliaObservabilityTools = []toolSpec{
+	{Key: "Flux", Patterns: []string{"flux"}},
+	{Key: "Plots", Patterns: []string{"plots"}},
+	{Key: "HTTP", Patterns: []string{"http"}},
+}
+
+var juliaDevopsFiles = []toolSpec{
+	{Key: "Julia", Patterns: []string{"Project.toml"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var rTestingTools = []toolSpec{
+	{Key: "testthat", Patterns: []string{"testthat"}},
+	{Key: "covr", Patterns: []string{"covr"}},
+}
+
+var rConfigTools = []toolSpec{
+	{Key: "config", Patterns: []string{"config"}},
+}
+
+var rDatabaseTools = []toolSpec{
+	{Key: "DBI", Patterns: []string{"dbi"}},
+	{Key: "RSQLite", Patterns: []string{"rsqlite"}},
+	{Key: "RPostgres", Patterns: []string{"rpostgres"}},
+}
+
+var rObservabilityTools = []toolSpec{
+	{Key: "shiny", Patterns: []string{"shiny"}},
+	{Key: "ggplot2", Patterns: []string{"ggplot2"}},
+}
+
+var rDevopsFiles = []toolSpec{
+	{Key: "styler", Patterns: []string{"styler"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var luaTestingTools = []toolSpec{
+	{Key: "busted", Patterns: []string{"busted"}},
+}
+
+var luaConfigTools = []toolSpec{
+	{Key: "penlight", Patterns: []string{"penlight"}},
+}
+
+var luaDatabaseTools = []toolSpec{
+	{Key: "luasql", Patterns: []string{"luasql"}},
+}
+
+var luaObservabilityTools = []toolSpec{
+	{Key: "lapis", Patterns: []string{"lapis"}},
+}
+
+var luaDevopsFiles = []toolSpec{
+	{Key: "luacheck", Patterns: []string{".luacheckrc"}},
+}
+
+var ocamlTestingTools = []toolSpec{
+	{Key: "alcotest", Patterns: []string{"alcotest"}},
+}
+
+var ocamlConfigTools = []toolSpec{
+	{Key: "cmdliner", Patterns: []string{"cmdliner"}},
+}
+
+var ocamlDatabaseTools = []toolSpec{
+	{Key: "caqti", Patterns: []string{"caqti"}},
+}
+
+var ocamlObservabilityTools = []toolSpec{
+	{Key: "dream", Patterns: []string{"dream"}},
+	{Key: "cohttp", Patterns: []string{"cohttp"}},
+}
+
+var ocamlDevopsFiles = []toolSpec{
+	{Key: "dune", Patterns: []string{"dune-project"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -417,6 +509,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = csharpDatabaseTools
 		oTools = csharpObservabilityTools
 		devOps = csharpDevopsFiles
+	} else if lang == "julia" {
+		tTools = juliaTestingTools
+		cTools = juliaConfigTools
+		dTools = juliaDatabaseTools
+		oTools = juliaObservabilityTools
+		devOps = juliaDevopsFiles
+	} else if lang == "r" {
+		tTools = rTestingTools
+		cTools = rConfigTools
+		dTools = rDatabaseTools
+		oTools = rObservabilityTools
+		devOps = rDevopsFiles
+	} else if lang == "lua" {
+		tTools = luaTestingTools
+		cTools = luaConfigTools
+		dTools = luaDatabaseTools
+		oTools = luaObservabilityTools
+		devOps = luaDevopsFiles
+	} else if lang == "ocaml" {
+		tTools = ocamlTestingTools
+		cTools = ocamlConfigTools
+		dTools = ocamlDatabaseTools
+		oTools = ocamlObservabilityTools
+		devOps = ocamlDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

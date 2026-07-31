@@ -1,57 +1,88 @@
-# Prompt: Parser de Manifestos C / C++ (parser/cpp)
+# Prompt L0: Parser de Manifestos C++ (parser/cpp)
 
 **Camada**: L₁ — Núcleo  
 **Criado em**: 2026-07-31  
+**Revisado em**: 2026-07-31 — separação C puro (ADR-0003, Opção A)  
 **Arquivos gerados**: `01_core/parser/cpp.go`, `01_core/parser/cpp_test.go`  
 
 ---
 
 ## Contexto
 
-Na etapa de Triagem do Bateia para os ecossistemas C e C++, o conteúdo de manifestos como `CMakeLists.txt` (CMake), `vcpkg.json` (Vcpkg) ou `conanfile.txt` (Conan) precisa ser analisado para extrair o nome do projeto e suas bibliotecas/dependências.
+`cpp.go` trata os manifestos **compartilhados ou exclusivos de C++**: `CMakeLists.txt`, `vcpkg.json` e `conanfile.txt`. Dada a origem histórica, estes manifestos podiam ser usados tanto em projetos C puro quanto C++. Esta spec formaliza a heurística de detecção automática (ADR-0003, Opção A) que determina `Language: "c"` ou `Language: "cpp"` em tempo de parse.
+
+Manifestos **exclusivos de C puro** (`Makefile`, `meson.build`) pertencem a `c.go`.
 
 ---
 
 ## Restrições Estruturais
 
-- **L₁ (Núcleo)**: Função estritamente pura. Zero I/O, zero leitura de disco ou chamadas HTTP. Recebe a string de conteúdo e retorna a struct `*domain.Manifest`.
+- **L₁ (Núcleo)**: Funções estritamente puras. Zero I/O, zero leitura de disco, zero chamadas HTTP.
 - Depende apenas de `01_core/domain`, `strings`, `regexp`, `encoding/json` e `fmt`.
-- Proibido importar $L_2$, $L_3$ ou $L_4$.
+- Proibido importar L₂, L₃ ou L₄.
+
+---
+
+## Heurísticas de Detecção de Linguagem (ADR-0003 Opção A)
+
+### CMakeLists.txt — `detectCMakeLanguage(content)`
+
+Inspeciona o corpo da declaração `project()`:
+
+| Conteúdo do `project()` | `Language` produzido |
+|---|---|
+| `project(name CXX)` | `"cpp"` |
+| `project(name C CXX)` | `"cpp"` (CXX presente) |
+| `project(name LANGUAGES C)` | `"c"` (apenas C) |
+| `project(name C)` | `"c"` |
+| `project(name)` — sem linguagem | `"cpp"` (padrão histórico) |
+
+Prioridade: se `\bCXX\b` presente → `"cpp"`; senão se `\bC\b` presente → `"c"`; senão → `"cpp"`.
+
+### conanfile.txt — `detectConanLanguage(content)`
+
+- Presença de `compiler.libcxx` no bloco `[settings]` → `"cpp"` (runtime C++ declarado).
+- Ausência → `"c"` (projeto C puro sem runtime C++).
+
+### vcpkg.json
+
+Exclusivo de C++. Sempre produz `Language: "cpp"`. Sem heurística necessária.
 
 ---
 
 ## Instrução
 
-Criar as funções:
-1. `func ParseCMakeListsTxt(ref domain.CommitRef, content string) (*domain.Manifest, error)`
-   - Extrair `project(...)` para `ModuleName`.
-   - Extrair dependências de `find_package(...)` e `target_link_libraries(...)`.
-   - Marcar `Language: "cpp"`.
+Implementar em `cpp.go`:
 
-2. `func ParseVcpkgJson(ref domain.CommitRef, content string) (*domain.Manifest, error)`
-   - Unmarshal JSON de `vcpkg.json`. Extrair `name` e a lista `dependencies`.
-   - Marcar `Language: "cpp"`.
-
-3. `func ParseConanfileTxt(ref domain.CommitRef, content string) (*domain.Manifest, error)`
-   - Extrair dependências declaradas sob o bloco `[requires]`.
-   - Marcar `Language: "cpp"`.
+1. `func detectCMakeLanguage(content string) string` — helper privado, regex sobre o corpo do `project()`.
+2. `func detectConanLanguage(content string) string` — helper privado, regex sobre `compiler.libcxx`.
+3. `func ParseCMakeListsTxt(ref domain.CommitRef, content string) (*domain.Manifest, error)` — usa `detectCMakeLanguage`.
+4. `func ParseVcpkgJson(ref domain.CommitRef, content string) (*domain.Manifest, error)` — sempre `Language: "cpp"`.
+5. `func ParseConanfileTxt(ref domain.CommitRef, content string) (*domain.Manifest, error)` — usa `detectConanLanguage`.
 
 ---
 
 ## Critérios de Verificação
 
 ```
-Dado um CMakeLists.txt com project(my_cpp_app) e find_package(Boost REQUIRED)
-Quando ParseCMakeListsTxt for executada
-Então retorna um Manifest com ModuleName "my_cpp_app", Language "cpp" e 1 dependência "boost".
+project(libuv C)         → Language "c"
+project(my_engine CXX)   → Language "cpp"
+project(mixed C CXX)     → Language "cpp"
+project(name)            → Language "cpp" (padrão)
+LANGUAGES C              → Language "c"
+
+conanfile com compiler.libcxx=libstdc++11  → Language "cpp"
+conanfile sem compiler.libcxx              → Language "c"
+
+vcpkg.json qualquer      → Language "cpp"
 ```
 
 ---
 
 ## Resultado Esperado
 
-- `01_core/parser/cpp.go`: Implementação dos parsers CMake, Vcpkg e Conan.
-- `01_core/parser/cpp_test.go`: Suite de testes cobrindo manifestos C/C++.
+- `01_core/parser/cpp.go`: Parsers CMake, Vcpkg e Conan com detecção automática C/C++.
+- `01_core/parser/cpp_test.go`: 8 testes cobrindo todas as combinações de heurística.
 
 ---
 
@@ -60,3 +91,4 @@ Então retorna um Manifest com ModuleName "my_cpp_app", Language "cpp" e 1 depen
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para C/C++ | cpp.go, cpp_test.go |
+| 2026-07-31 | Opção A: heurística de detecção C vs C++ (ADR-0003) | cpp.go, cpp_test.go |

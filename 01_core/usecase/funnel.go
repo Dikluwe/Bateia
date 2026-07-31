@@ -190,7 +190,12 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	}
 
 	report.ExtractedCount = len(report.Results)
-	log.Printf("[CONCLUÍDO] Funil executado com sucesso! %d repositórios entregues no relatório.", report.ExtractedCount)
+
+	// Extrair Necessidades Ocultas & Insights Arquiteturais dos repositórios validados
+	insights := parser.ExtractArchitecturalInsights(report.Results)
+	report.Insights = &insights
+
+	log.Printf("[CONCLUÍDO] Funil executado com sucesso! %d repositórios entregues no relatório com insights computados.", report.ExtractedCount)
 
 	return report, nil
 }

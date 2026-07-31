@@ -101,14 +101,40 @@ type ExtractedRepository struct {
 	RelevanceReason string              `json:"relevance_reason"`
 }
 
+// PatternMatch representa um padrão de pacote/ferramenta detectado nos repositórios.
+type PatternMatch struct {
+	Name       string   `json:"name"`
+	Count      int      `json:"count"`
+	Percentage float64  `json:"percentage"`
+	FoundIn    []string `json:"found_in"`
+	Versions   []string `json:"versions,omitempty"`
+}
+
+// FilePatternMatch representa um arquivo/diretório de devops detectado.
+type FilePatternMatch struct {
+	Name    string   `json:"name"`
+	Count   int      `json:"count"`
+	FoundIn []string `json:"found_in"`
+}
+
+// ArchitecturalInsights agrupa os achados das 5 categorias de necessidades ocultas.
+type ArchitecturalInsights struct {
+	Testing       []PatternMatch     `json:"testing"`
+	Configuration []PatternMatch     `json:"configuration"`
+	Database      []PatternMatch     `json:"database"`
+	Observability []PatternMatch     `json:"observability"`
+	DevOps        []FilePatternMatch `json:"devops"`
+}
+
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
-	Query          QueryFilter           `json:"query"`
-	GeneratedAt    time.Time             `json:"generated_at"`
-	TopCandidates  int                   `json:"top_candidates"`
-	TriagedCount   int                   `json:"triaged_count"`
-	ExtractedCount int                   `json:"extracted_count"`
-	DiscardedCount int                   `json:"discarded_count"`
-	DiscardReason  string                `json:"discard_reason"`
-	Results        []ExtractedRepository `json:"results"`
+	Query          QueryFilter            `json:"query"`
+	GeneratedAt    time.Time              `json:"generated_at"`
+	TopCandidates  int                    `json:"top_candidates"`
+	TriagedCount   int                    `json:"triaged_count"`
+	ExtractedCount int                    `json:"extracted_count"`
+	DiscardedCount int                    `json:"discarded_count"`
+	DiscardReason  string                 `json:"discard_reason"`
+	Results        []ExtractedRepository  `json:"results"`
+	Insights       *ArchitecturalInsights `json:"insights,omitempty"`
 }

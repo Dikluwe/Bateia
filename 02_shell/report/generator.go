@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"bateia/01_core/domain"
+	"bateia/01_core/parser"
 )
 
 // GenerateMarkdownReport compila o objeto domain.SearchReport no documento Markdown de apresentação L2.
@@ -64,12 +65,16 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 			if len(res.Files) > 0 {
 				sb.WriteString("#### Arquivos Extraídos\n\n")
 				for _, f := range res.Files {
-					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes)</summary>\n\n", f.Path, f.Size))
+					githubURL := parser.GenerateGitHubFileURL(res.Candidate.Owner, res.Candidate.Repo, res.Ref.Commit, f.Path)
+					content, isTruncated := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
+
+					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes) — <a href=\"%s\" target=\"_blank\">Ver no GitHub ↗</a></summary>\n\n", f.Path, f.Size, githubURL))
 					sb.WriteString("```go\n")
-					if len(f.Content) > 1500 {
-						sb.WriteString(f.Content[:1500] + "\n... (conteúdo truncado para visualização no relatório)\n")
-					} else {
-						sb.WriteString(f.Content + "\n")
+					sb.WriteString(content)
+					if isTruncated {
+						sb.WriteString(fmt.Sprintf("\n... 📄 [Conteúdo truncado para visualização no relatório. Ver arquivo completo em: %s]\n", githubURL))
+					} else if !strings.HasSuffix(content, "\n") {
+						sb.WriteString("\n")
 					}
 					sb.WriteString("```\n</details>\n\n")
 				}
@@ -95,8 +100,99 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	}
 
 	sb.WriteString("\n## 3. Descobrimento de Necessidades Ocultas\n\n")
-	sb.WriteString("Padrões estruturais e arquivos de configuração detectados que podem ser relevantes:\n\n")
-	sb.WriteString("- Presença frequente de `go.mod`, arquivos em `cmd/` e `internal/` para separação limpa de domínios.\n")
+	sb.WriteString("Análise do ecossistema técnico e padrões arquiteturais presentes nos repositórios extraídos:\n\n")
+
+	if report.Insights != nil {
+		ins := report.Insights
+
+		// 1. Estratégia de Testes
+		sb.WriteString("### 🧪 1. Estratégia de Testes\n\n")
+		if len(ins.Testing) > 0 {
+			sb.WriteString("| Ferramenta | Repositórios (%) | Repositórios Detectados | Versões Comuns |\n")
+			sb.WriteString("| :--- | :--- | :--- | :--- |\n")
+			for _, m := range ins.Testing {
+				vStr := strings.Join(m.Versions, ", ")
+				if vStr == "" {
+					vStr = "N/A"
+				}
+				sb.WriteString(fmt.Sprintf("| **%s** | %.0f%% (%d/%d) | %s | %s |\n",
+					m.Name, m.Percentage, m.Count, len(report.Results), strings.Join(m.FoundIn, ", "), vStr))
+			}
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("> Nenhuma ferramenta de teste específica detectada nos manifestos.\n\n")
+		}
+
+		// 2. Configuração e Ambiente
+		sb.WriteString("### ⚙️ 2. Configuração e Ambiente\n\n")
+		if len(ins.Configuration) > 0 {
+			sb.WriteString("| Ferramenta | Repositórios (%) | Repositórios Detectados | Versões Comuns |\n")
+			sb.WriteString("| :--- | :--- | :--- | :--- |\n")
+			for _, m := range ins.Configuration {
+				vStr := strings.Join(m.Versions, ", ")
+				if vStr == "" {
+					vStr = "N/A"
+				}
+				sb.WriteString(fmt.Sprintf("| **%s** | %.0f%% (%d/%d) | %s | %s |\n",
+					m.Name, m.Percentage, m.Count, len(report.Results), strings.Join(m.FoundIn, ", "), vStr))
+			}
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("> Nenhuma biblioteca padrão de configuração detectada nos manifestos.\n\n")
+		}
+
+		// 3. Banco de Dados e Migrações
+		sb.WriteString("### 🗄️ 3. Banco de Dados e Migrações\n\n")
+		if len(ins.Database) > 0 {
+			sb.WriteString("| Ferramenta / Driver | Repositórios (%) | Repositórios Detectados | Versões Comuns |\n")
+			sb.WriteString("| :--- | :--- | :--- | :--- |\n")
+			for _, m := range ins.Database {
+				vStr := strings.Join(m.Versions, ", ")
+				if vStr == "" {
+					vStr = "N/A"
+				}
+				sb.WriteString(fmt.Sprintf("| **%s** | %.0f%% (%d/%d) | %s | %s |\n",
+					m.Name, m.Percentage, m.Count, len(report.Results), strings.Join(m.FoundIn, ", "), vStr))
+			}
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("> Nenhum driver ou ORM de banco de dados detectado nos manifestos.\n\n")
+		}
+
+		// 4. Observabilidade e Comunicação
+		sb.WriteString("### 📊 4. Observabilidade e Comunicação\n\n")
+		if len(ins.Observability) > 0 {
+			sb.WriteString("| Ferramenta | Repositórios (%) | Repositórios Detectados | Versões Comuns |\n")
+			sb.WriteString("| :--- | :--- | :--- | :--- |\n")
+			for _, m := range ins.Observability {
+				vStr := strings.Join(m.Versions, ", ")
+				if vStr == "" {
+					vStr = "N/A"
+				}
+				sb.WriteString(fmt.Sprintf("| **%s** | %.0f%% (%d/%d) | %s | %s |\n",
+					m.Name, m.Percentage, m.Count, len(report.Results), strings.Join(m.FoundIn, ", "), vStr))
+			}
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("> Nenhuma biblioteca de observabilidade detectada nos manifestos.\n\n")
+		}
+
+		// 5. Automação e DevOps
+		sb.WriteString("### 🔄 5. Automação e DevOps\n\n")
+		if len(ins.DevOps) > 0 {
+			sb.WriteString("| Arquivo / Recurso | Ocorrências | Repositórios Detectados |\n")
+			sb.WriteString("| :--- | :--- | :--- |\n")
+			for _, m := range ins.DevOps {
+				sb.WriteString(fmt.Sprintf("| **%s** | %d repos | %s |\n",
+					m.Name, m.Count, strings.Join(m.FoundIn, ", ")))
+			}
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("> Nenhum arquivo padrão de automação/DevOps identificado na estrutura.\n\n")
+		}
+	} else {
+		sb.WriteString("- Presença frequente de `go.mod`, arquivos em `cmd/` e `internal/` para separação limpa de domínios.\n")
+	}
 
 	return sb.String()
 }

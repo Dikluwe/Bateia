@@ -48,6 +48,10 @@ func DetectManifestType(filename string) string {
 	}
 
 	switch base {
+	case "makefile":
+		return "c_makefile"
+	case "meson.build":
+		return "meson"
 	case "go.mod":
 		return "gomod"
 	case "package.json":
@@ -232,6 +236,10 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseCorralJson(ref, content)
 	case "odin":
 		return ParseOlsJson(ref, content)
+	case "c_makefile":
+		return ParseMakefile(ref, content)
+	case "meson":
+		return ParseMesonBuild(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

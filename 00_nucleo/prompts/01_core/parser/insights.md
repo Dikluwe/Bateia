@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `pytest`, `unittest`, `coverage`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `pydantic-settings`, `python-dotenv`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `goose`, `gorm`, `prisma`, `typeorm`, `drizzle-orm`, `mongoose`, `sqlalchemy`, `alembic`, `django`, `tortoise-orm`, `peewee`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `opentelemetry`, `winston`, `pino`, `morgan`, `axios`, `fastapi`, `flask`, `celery`, `structlog`, `sentry-sdk`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `prettier`, `ruff`, `black`, `flake8`, `mypy`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `pytest`, `criterion`, `junit`, `mockito`, `kotest`, `assertj`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `pydantic-settings`, `config-rs`, `spring-boot-starter`, `archaius`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqlalchemy`, `sqlx`, `hibernate`, `flyway`, `liquibase`, `r2dbc`, `spring-data`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `winston`, `fastapi`, `tokio`, `spring-web`, `quarkus`, `micronaut`, `jackson`, `slf4j`, `micrometer`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `ruff`, `clippy`, `spotless`, `checkstyle`, `detekt`, etc.)
 
 ---
 

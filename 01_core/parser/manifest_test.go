@@ -24,7 +24,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"/root/package.json", "packagejson"},
 		{"pyproject.toml", "pyproject"},
 		{"requirements.txt", "requirements"},
-		{"Cargo.toml", ""},
+		{"Cargo.toml", "cargo"},
+		{"pom.xml", "pomxml"},
+		{"build.gradle", "gradle"},
+		{"build.gradle.kts", "gradle"},
 		{"unknown.txt", ""},
 	}
 

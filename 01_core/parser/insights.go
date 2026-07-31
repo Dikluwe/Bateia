@@ -156,6 +156,88 @@ var pythonDevopsFiles = []toolSpec{
 	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
 }
 
+var rustTestingTools = []toolSpec{
+	{Key: "criterion", Patterns: []string{"criterion"}},
+	{Key: "tokio-test", Patterns: []string{"tokio-test"}},
+	{Key: "proptest", Patterns: []string{"proptest"}},
+	{Key: "rstest", Patterns: []string{"rstest"}},
+	{Key: "wiremock", Patterns: []string{"wiremock"}},
+}
+
+var rustConfigTools = []toolSpec{
+	{Key: "config-rs", Patterns: []string{"config"}},
+	{Key: "dotenvy", Patterns: []string{"dotenvy", "dotenv"}},
+	{Key: "clap", Patterns: []string{"clap"}},
+	{Key: "figment", Patterns: []string{"figment"}},
+}
+
+var rustDatabaseTools = []toolSpec{
+	{Key: "sqlx", Patterns: []string{"sqlx"}},
+	{Key: "diesel", Patterns: []string{"diesel"}},
+	{Key: "sea-orm", Patterns: []string{"sea-orm"}},
+	{Key: "tokio-postgres", Patterns: []string{"tokio-postgres"}},
+	{Key: "redis", Patterns: []string{"redis"}},
+	{Key: "mongodb", Patterns: []string{"mongodb"}},
+}
+
+var rustObservabilityTools = []toolSpec{
+	{Key: "tokio", Patterns: []string{"tokio"}},
+	{Key: "axum", Patterns: []string{"axum"}},
+	{Key: "actix-web", Patterns: []string{"actix-web"}},
+	{Key: "tracing", Patterns: []string{"tracing", "tracing-subscriber"}},
+	{Key: "serde", Patterns: []string{"serde"}},
+	{Key: "reqwest", Patterns: []string{"reqwest"}},
+	{Key: "opentelemetry", Patterns: []string{"opentelemetry"}},
+}
+
+var rustDevopsFiles = []toolSpec{
+	{Key: "clippy", Patterns: []string{"clippy", "clippy.toml"}},
+	{Key: "cargo-deny", Patterns: []string{"deny.toml"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var javaTestingTools = []toolSpec{
+	{Key: "junit", Patterns: []string{"junit"}},
+	{Key: "mockito", Patterns: []string{"mockito"}},
+	{Key: "kotest", Patterns: []string{"kotest"}},
+	{Key: "assertj", Patterns: []string{"assertj"}},
+	{Key: "testcontainers", Patterns: []string{"testcontainers"}},
+}
+
+var javaConfigTools = []toolSpec{
+	{Key: "spring-boot-starter", Patterns: []string{"spring-boot-starter"}},
+	{Key: "archaius", Patterns: []string{"archaius"}},
+	{Key: "jackson", Patterns: []string{"jackson"}},
+}
+
+var javaDatabaseTools = []toolSpec{
+	{Key: "hibernate", Patterns: []string{"hibernate"}},
+	{Key: "spring-data", Patterns: []string{"spring-data"}},
+	{Key: "flyway", Patterns: []string{"flyway"}},
+	{Key: "liquibase", Patterns: []string{"liquibase"}},
+	{Key: "r2dbc", Patterns: []string{"r2dbc"}},
+	{Key: "mybatis", Patterns: []string{"mybatis"}},
+	{Key: "h2", Patterns: []string{"h2"}},
+}
+
+var javaObservabilityTools = []toolSpec{
+	{Key: "spring-web", Patterns: []string{"spring-boot-starter-web", "spring-web"}},
+	{Key: "quarkus", Patterns: []string{"quarkus"}},
+	{Key: "micronaut", Patterns: []string{"micronaut"}},
+	{Key: "slf4j", Patterns: []string{"slf4j"}},
+	{Key: "logback", Patterns: []string{"logback"}},
+	{Key: "micrometer", Patterns: []string{"micrometer"}},
+}
+
+var javaDevopsFiles = []toolSpec{
+	{Key: "spotless", Patterns: []string{"spotless"}},
+	{Key: "checkstyle", Patterns: []string{"checkstyle"}},
+	{Key: "detekt", Patterns: []string{"detekt"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -196,6 +278,18 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = pythonDatabaseTools
 		oTools = pythonObservabilityTools
 		devOps = pythonDevopsFiles
+	} else if lang == "rust" || lang == "rs" {
+		tTools = rustTestingTools
+		cTools = rustConfigTools
+		dTools = rustDatabaseTools
+		oTools = rustObservabilityTools
+		devOps = rustDevopsFiles
+	} else if lang == "java" || lang == "kotlin" || lang == "kt" {
+		tTools = javaTestingTools
+		cTools = javaConfigTools
+		dTools = javaDatabaseTools
+		oTools = javaObservabilityTools
+		devOps = javaDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

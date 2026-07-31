@@ -28,6 +28,12 @@ func DetectManifestType(filename string) string {
 		return "pyproject"
 	case "requirements.txt":
 		return "requirements"
+	case "cargo.toml":
+		return "cargo"
+	case "pom.xml":
+		return "pomxml"
+	case "build.gradle", "build.gradle.kts":
+		return "gradle"
 	default:
 		return ""
 	}
@@ -46,6 +52,12 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParsePyProjectToml(ref, content)
 	case "requirements":
 		return ParseRequirementsTxt(ref, content)
+	case "cargo":
+		return ParseCargoToml(ref, content)
+	case "pomxml":
+		return ParsePomXml(ref, content)
+	case "gradle":
+		return ParseBuildGradle(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

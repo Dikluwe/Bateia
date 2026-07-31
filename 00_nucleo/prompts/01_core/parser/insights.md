@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `pytest`, `criterion`, `junit`, `phpunit`, `pest`, `mockery`, `gtest`, `catch2`, `xunit`, `nunit`, `test`, `testthat`, `busted`, `alcotest`, `ex_unit`, `rspec`, `quickcheck`, `hspec`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `vlucas/phpdotenv`, `symfony/dotenv`, `spring-boot`, `fmt`, `spdlog`, `microsoft.extensions.configuration`, `pydantic`, `config.jl`, `argparse`, `dune`, `vapor`, `swiftyjson`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqlalchemy`, `sqlx`, `hibernate`, `doctrine`, `illuminate/database`, `eloquent`, `sqlite3`, `microsoft.entityframeworkcore`, `dapper`, `libpq.jl`, `dbi`, `luasql`, `caqti`, `ecto`, `active_record`, `realm`, `persistent`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `winston`, `fastapi`, `tokio`, `laravel`, `symfony`, `monolog`, `guzzlehttp`, `sentry`, `spring-web`, `boost`, `qt`, `serilog`, `nlog`, `mediatr`, `flux.jl`, `shiny`, `lapis`, `dream`, `phoenix`, `rails`, `sinatra`, `alamofire`, `scotty`, `yesod`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `ruff`, `clippy`, `phpstan`, `psalm`, `php-cs-fixer`, `clang-format`, `stylecop`, `juliac`, `styler`, `luacheck`, `dune`, `credo`, `rubocop`, `swiftlint`, `hlint`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`, `pubspec.yaml`, `build.sbt`, `project.clj`, `build.zig.zon`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `jest`, `pytest`, `criterion`, `junit`, `flutter_test`, `scalatest`, `clojure.test`, `zig test`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `spring-boot`, `pureconfig`, `environ`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqflite`, `doobie`, `slick`, `next.jdbc`, `toucan`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `fastapi`, `dio`, `http4s`, `akka-http`, `ring`, `comport`, `httpz`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `flutter_lints`, `scalafmt`, `clj-kondo`, `zig fmt`, etc.)
 
 ---
 

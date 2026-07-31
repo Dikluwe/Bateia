@@ -536,6 +536,99 @@ var haskellDevopsFiles = []toolSpec{
 	{Key: "HLint", Patterns: []string{".hlint.yaml"}},
 }
 
+var dartTestingTools = []toolSpec{
+	{Key: "flutter_test", Patterns: []string{"flutter_test"}},
+}
+
+var dartConfigTools = []toolSpec{
+	{Key: "dotenv", Patterns: []string{"flutter_dotenv"}},
+}
+
+var dartDatabaseTools = []toolSpec{
+	{Key: "sqflite", Patterns: []string{"sqflite"}},
+	{Key: "hive", Patterns: []string{"hive"}},
+	{Key: "isar", Patterns: []string{"isar"}},
+}
+
+var dartObservabilityTools = []toolSpec{
+	{Key: "dio", Patterns: []string{"dio"}},
+	{Key: "provider", Patterns: []string{"provider"}},
+	{Key: "flutter_bloc", Patterns: []string{"flutter_bloc"}},
+}
+
+var dartDevopsFiles = []toolSpec{
+	{Key: "flutter_lints", Patterns: []string{"flutter_lints"}},
+	{Key: "analysis_options", Patterns: []string{"analysis_options.yaml"}},
+}
+
+var scalaTestingTools = []toolSpec{
+	{Key: "scalatest", Patterns: []string{"scalatest"}},
+	{Key: "specs2", Patterns: []string{"specs2"}},
+}
+
+var scalaConfigTools = []toolSpec{
+	{Key: "pureconfig", Patterns: []string{"pureconfig"}},
+}
+
+var scalaDatabaseTools = []toolSpec{
+	{Key: "doobie", Patterns: []string{"doobie"}},
+	{Key: "slick", Patterns: []string{"slick"}},
+	{Key: "quill", Patterns: []string{"quill"}},
+}
+
+var scalaObservabilityTools = []toolSpec{
+	{Key: "http4s", Patterns: []string{"http4s"}},
+	{Key: "akka-http", Patterns: []string{"akka-http"}},
+	{Key: "zio", Patterns: []string{"zio"}},
+}
+
+var scalaDevopsFiles = []toolSpec{
+	{Key: "scalafmt", Patterns: []string{".scalafmt.conf"}},
+}
+
+var clojureTestingTools = []toolSpec{
+	{Key: "clojure.test", Patterns: []string{"clojure.test"}},
+}
+
+var clojureConfigTools = []toolSpec{
+	{Key: "environ", Patterns: []string{"environ"}},
+}
+
+var clojureDatabaseTools = []toolSpec{
+	{Key: "next.jdbc", Patterns: []string{"next.jdbc"}},
+	{Key: "toucan", Patterns: []string{"toucan"}},
+}
+
+var clojureObservabilityTools = []toolSpec{
+	{Key: "ring", Patterns: []string{"ring"}},
+	{Key: "compojure", Patterns: []string{"compojure"}},
+}
+
+var clojureDevopsFiles = []toolSpec{
+	{Key: "clj-kondo", Patterns: []string{".clj-kondo"}},
+}
+
+var zigTestingTools = []toolSpec{
+	{Key: "zig test", Patterns: []string{"std.testing"}},
+}
+
+var zigConfigTools = []toolSpec{
+	{Key: "zig-args", Patterns: []string{"args"}},
+}
+
+var zigDatabaseTools = []toolSpec{
+	{Key: "zig-sqlite", Patterns: []string{"sqlite"}},
+}
+
+var zigObservabilityTools = []toolSpec{
+	{Key: "httpz", Patterns: []string{"httpz"}},
+	{Key: "zap", Patterns: []string{"zap"}},
+}
+
+var zigDevopsFiles = []toolSpec{
+	{Key: "build.zig", Patterns: []string{"build.zig"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -654,6 +747,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = haskellDatabaseTools
 		oTools = haskellObservabilityTools
 		devOps = haskellDevopsFiles
+	} else if lang == "dart" || lang == "flutter" {
+		tTools = dartTestingTools
+		cTools = dartConfigTools
+		dTools = dartDatabaseTools
+		oTools = dartObservabilityTools
+		devOps = dartDevopsFiles
+	} else if lang == "scala" {
+		tTools = scalaTestingTools
+		cTools = scalaConfigTools
+		dTools = scalaDatabaseTools
+		oTools = scalaObservabilityTools
+		devOps = scalaDevopsFiles
+	} else if lang == "clojure" || lang == "clj" {
+		tTools = clojureTestingTools
+		cTools = clojureConfigTools
+		dTools = clojureDatabaseTools
+		oTools = clojureObservabilityTools
+		devOps = clojureDevopsFiles
+	} else if lang == "zig" {
+		tTools = zigTestingTools
+		cTools = zigConfigTools
+		dTools = zigDatabaseTools
+		oTools = zigObservabilityTools
+		devOps = zigDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

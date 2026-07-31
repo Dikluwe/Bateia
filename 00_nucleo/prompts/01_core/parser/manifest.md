@@ -44,6 +44,10 @@ Criar as funções:
    - `"gemfile"` → `"gemfile"`
    - `"package.swift"` → `"swiftpackage"`
    - Suffix `.cabal`, `"stack.yaml"` → `"haskell"`
+   - `"pubspec.yaml"` → `"pubspec"`
+   - `"build.sbt"` → `"sbt"`
+   - `"project.clj"`, `"deps.edn"` → `"clojure"`
+   - `"build.zig.zon"`, `"build.zig"` → `"zig"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -56,9 +60,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "Gemfile" e um conteúdo válido de Ruby
+Dado o arquivo "pubspec.yaml" e um conteúdo válido de Dart/Flutter
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseGemfile e retorna um Manifest com Language "ruby".
+Então o Dispatcher chama ParsePubspecYaml e retorna um Manifest com Language "dart".
 ```
 
 ---
@@ -75,4 +79,4 @@ Então o Dispatcher chama ParseGemfile e retorna um Manifest com Language "ruby"
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a Elixir, Ruby, Swift e Haskell | manifest.go |
+| 2026-07-31 | Adiciona suporte a Dart/Flutter, Scala, Clojure e Zig | manifest.go |

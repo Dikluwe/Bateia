@@ -41,6 +41,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"Gemfile", "gemfile"},
 		{"Package.swift", "swiftpackage"},
 		{"myproject.cabal", "haskell"},
+		{"pubspec.yaml", "pubspec"},
+		{"build.sbt", "sbt"},
+		{"project.clj", "clojure"},
+		{"build.zig.zon", "zig"},
 		{"unknown.txt", ""},
 	}
 

@@ -69,6 +69,14 @@ func DetectManifestType(filename string) string {
 		return "swiftpackage"
 	case "stack.yaml":
 		return "haskell"
+	case "pubspec.yaml":
+		return "pubspec"
+	case "build.sbt":
+		return "sbt"
+	case "project.clj", "deps.edn":
+		return "clojure"
+	case "build.zig.zon", "build.zig":
+		return "zig"
 	default:
 		return ""
 	}
@@ -119,6 +127,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParsePackageSwift(ref, content)
 	case "haskell":
 		return ParseHaskellCabal(ref, content)
+	case "pubspec":
+		return ParsePubspecYaml(ref, content)
+	case "sbt":
+		return ParseBuildSbt(ref, content)
+	case "clojure":
+		return ParseProjectClj(ref, content)
+	case "zig":
+		return ParseBuildZigZon(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

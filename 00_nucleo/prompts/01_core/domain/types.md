@@ -27,8 +27,8 @@ Este componente define a representação agnóstica de todas as entidades do dom
 1. Em `01_core/domain/types.go`, definir os tipos:
    - `CommitRef`: Objeto de valor com `Owner`, `Repo`, `Commit` e método `Key() string` (`owner/repo@commit`).
    - `RepositoryCandidate`: Candidato retornado no topo do funil com campos de rastreabilidade `CommitID`, `ConsultadoEm` (time.Time) e `Stale` (bool).
-   - `Dependency`: Dependência declarada (`Name`, `Version`, `Indirect`).
-   - `Manifest`: Manifesto triado (`Ref`, `ModuleName`, `GoVersion`, `Dependencies`, `ConsultadoEm`).
+   - `Dependency`: Dependência declarada (`Name`, `Version`, `Indirect` bool, `Type` string: `"direct"`, `"dev"`, `"peer"`).
+   - `Manifest`: Manifesto triado (`Ref`, `ModuleName`, `Language` string, `GoVersion`, `Dependencies`, `ConsultadoEm`, `Content` []byte).
    - `DirectoryNode`: Nó na árvore de arquivos (`Path`, `Type`, `Size`).
    - `QueryFilter`: Filtros informados pelo usuário (`Query`, `Language`, `MaxResults`, `MustHave`).
    - `TriagedRepository`: Candidato aprovado na triagem com pontuação/motivo.
@@ -78,3 +78,4 @@ Então retorna "foo/bar"
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | types.go, interfaces.go |
+| 2026-07-31 | Expansão Multi-Linguagem: adiciona Type em Dependency e Language em Manifest | types.go |

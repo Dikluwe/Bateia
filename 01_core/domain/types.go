@@ -43,15 +43,18 @@ type Dependency struct {
 	Name     string `json:"name"`
 	Version  string `json:"version"`
 	Indirect bool   `json:"indirect"`
+	Type     string `json:"type,omitempty"` // "direct", "dev", "peer"
 }
 
-// Manifest representa o manifesto de dependências e módulo triado (ex: go.mod).
+// Manifest representa o manifesto de dependências e módulo triado (ex: go.mod, package.json).
 type Manifest struct {
 	Ref          CommitRef    `json:"ref"`
 	ModuleName   string       `json:"module_name"`
-	GoVersion    string       `json:"go_version"`
+	Language     string       `json:"language,omitempty"` // "go", "typescript", etc.
+	GoVersion    string       `json:"go_version,omitempty"`
 	Dependencies []Dependency `json:"dependencies"`
 	ConsultadoEm time.Time    `json:"consultado_em"`
+	Content      []byte       `json:"content,omitempty"`
 }
 
 // DirectoryNode representa um nó na árvore de arquivos do repositório.

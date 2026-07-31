@@ -18,6 +18,8 @@ import (
 func ParseGoMod(ref domain.CommitRef, content string) (*domain.Manifest, error) {
 	manifest := &domain.Manifest{
 		Ref:          ref,
+		Language:     "go",
+		Content:      []byte(content),
 		Dependencies: make([]domain.Dependency, 0),
 		ConsultadoEm: time.Now().UTC(),
 	}
@@ -87,10 +89,12 @@ func parseDependencyLine(line string) *domain.Dependency {
 		Name:     parts[0],
 		Version:  parts[1],
 		Indirect: false,
+		Type:     "direct",
 	}
 
 	if len(parts) >= 3 && strings.Contains(line, "// indirect") {
 		dep.Indirect = true
+		dep.Type = "indirect"
 	}
 
 	return dep

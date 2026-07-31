@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo de manifestos (`go.mod`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `testcontainers`, `pgtestdb`, `miniredis`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `fsnotify`, `envconfig`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `goose`, `gorm`, `sqlx`, `bun`, `ent`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `opentelemetry`, `grpc`, `prometheus`, `asynq`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `.golangci.yml`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `testcontainers`, `jest`, `vitest`, `mocha`, `@testing-library`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `@nestjs/config`, `config`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `goose`, `gorm`, `prisma`, `typeorm`, `drizzle-orm`, `mongoose`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `opentelemetry`, `winston`, `pino`, `morgan`, `axios`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `prettier`, etc.)
 
 ---
 
@@ -31,9 +31,10 @@ Criar o arquivo `01_core/parser/insights.go` com a função pura:
 `func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights`
 
 1. Processar cada repositório extraído.
-2. Mapear ocorrências de pacotes em `go.mod` (manifesto) agregando contagem, porcentagem de repositórios e versões comuns encontradas.
-3. Mapear presença de arquivos de devops e automação na estrutura de diretórios (`Tree`).
-4. Retornar a struct `ArchitecturalInsights` preenchida com as 5 categorias.
+2. Mapear ocorrências de pacotes no manifesto correspondente (`go.mod` ou `package.json`), selecionando o dicionário apropriado com base em `manifest.Language`.
+3. Agregar contagem, porcentagem de repositórios e versões comuns encontradas.
+4. Mapear presença de arquivos de devops e automação na estrutura de diretórios (`Tree`).
+5. Retornar a struct `ArchitecturalInsights` preenchida com as 5 categorias.
 
 ---
 
@@ -42,3 +43,4 @@ Criar o arquivo `01_core/parser/insights.go` com a função pura:
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 | insights.go, insights_test.go |
+| 2026-07-31 | Suporte Multi-Linguagem (TypeScript/Node.js) | insights.go |

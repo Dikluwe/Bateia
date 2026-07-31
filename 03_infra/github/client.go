@@ -68,71 +68,86 @@ type githubContentItem struct {
 	DownloadURL string `json:"download_url"`
 }
 
-// FetchManifest lê o manifesto (ex: go.mod) via Contents API ou fallback interno via raw.githubusercontent.com (ADR-0001).
+// FetchManifest lê o manifesto (ex: go.mod ou package.json) via Contents API ou fallback raw (ADR-0001).
 func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryCandidate) (*domain.Manifest, error) {
 	refCommit := candidate.CommitID
 	if refCommit == "" {
 		refCommit = "HEAD"
 	}
 
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/go.mod", candidate.Owner, candidate.Repo)
-	if refCommit != "HEAD" {
-		url += "?ref=" + refCommit
-	}
+	manifestFiles := []string{"go.mod", "package.json"}
+	var lastErr error
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	if c.token != "" {
-		req.Header.Set("Authorization", "token "+c.token)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusGone {
-		return nil, fmt.Errorf("MANIFEST_NOT_FOUND (404/410)")
-	}
-
-	var rawContent string
-
-	if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode == http.StatusUnauthorized {
-		raw, errRaw := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, "go.mod")
-		if errRaw != nil {
-			rateInfo := c.parseRateLimit(&resp.Header)
-			return nil, fmt.Errorf("cota de API atingida (%d restantes, reseta %v) e fallback raw falhou: %w", rateInfo.Remaining, rateInfo.ResetAt, errRaw)
+	for _, targetFile := range manifestFiles {
+		url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s", candidate.Owner, candidate.Repo, targetFile)
+		if refCommit != "HEAD" {
+			url += "?ref=" + refCommit
 		}
-		rawContent = raw
-	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status inesperado no GitHub Contents API: %d", resp.StatusCode)
-	} else {
-		var item githubContentItem
-		if err := json.NewDecoder(resp.Body).Decode(&item); err != nil {
+
+		req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+		if err != nil {
 			return nil, err
 		}
 
-		rawContent = item.Content
-		if item.Encoding == "base64" {
-			decoded, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(rawContent, "\n", ""))
-			if err == nil {
-				rawContent = string(decoded)
+		req.Header.Set("Accept", "application/vnd.github.v3+json")
+		if c.token != "" {
+			req.Header.Set("Authorization", "token "+c.token)
+		}
+
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusGone {
+			lastErr = fmt.Errorf("MANIFEST_NOT_FOUND (%s)", targetFile)
+			continue
+		}
+
+		var rawContent string
+
+		if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode == http.StatusUnauthorized {
+			raw, errRaw := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, targetFile)
+			if errRaw != nil {
+				rateInfo := c.parseRateLimit(&resp.Header)
+				lastErr = fmt.Errorf("cota de API atingida (%d restantes, reseta %v) e fallback raw falhou: %w", rateInfo.Remaining, rateInfo.ResetAt, errRaw)
+				continue
+			}
+			rawContent = raw
+		} else if resp.StatusCode != http.StatusOK {
+			lastErr = fmt.Errorf("status inesperado no GitHub Contents API para %s: %d", targetFile, resp.StatusCode)
+			continue
+		} else {
+			var item githubContentItem
+			if err := json.NewDecoder(resp.Body).Decode(&item); err != nil {
+				lastErr = err
+				continue
+			}
+
+			rawContent = item.Content
+			if item.Encoding == "base64" {
+				decoded, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(rawContent, "\n", ""))
+				if err == nil {
+					rawContent = string(decoded)
+				}
 			}
 		}
+
+		ref := domain.CommitRef{
+			Owner:  candidate.Owner,
+			Repo:   candidate.Repo,
+			Commit: candidate.CommitID,
+		}
+
+		return parser.ParseManifest(targetFile, ref, rawContent)
 	}
 
-	ref := domain.CommitRef{
-		Owner:  candidate.Owner,
-		Repo:   candidate.Repo,
-		Commit: candidate.CommitID,
+	if lastErr != nil {
+		return nil, lastErr
 	}
-
-	return parser.ParseGoMod(ref, rawContent)
+	return nil, fmt.Errorf("MANIFEST_NOT_FOUND")
 }
 
 func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, path string) (string, error) {

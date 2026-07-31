@@ -65,6 +65,52 @@ var devopsFiles = []toolSpec{
 	{Key: "docker-compose", Patterns: []string{"docker-compose", "compose.yml"}},
 }
 
+var typeScriptTestingTools = []toolSpec{
+	{Key: "jest", Patterns: []string{"jest"}},
+	{Key: "vitest", Patterns: []string{"vitest"}},
+	{Key: "mocha", Patterns: []string{"mocha"}},
+	{Key: "testing-library", Patterns: []string{"@testing-library"}},
+	{Key: "cypress", Patterns: []string{"cypress"}},
+	{Key: "playwright", Patterns: []string{"@playwright/test"}},
+}
+
+var typeScriptConfigTools = []toolSpec{
+	{Key: "dotenv", Patterns: []string{"dotenv"}},
+	{Key: "nestjs-config", Patterns: []string{"@nestjs/config"}},
+	{Key: "config", Patterns: []string{"config"}},
+	{Key: "convict", Patterns: []string{"convict"}},
+	{Key: "envalid", Patterns: []string{"envalid"}},
+}
+
+var typeScriptDatabaseTools = []toolSpec{
+	{Key: "prisma", Patterns: []string{"prisma", "@prisma/client"}},
+	{Key: "drizzle-orm", Patterns: []string{"drizzle-orm"}},
+	{Key: "typeorm", Patterns: []string{"typeorm"}},
+	{Key: "mongoose", Patterns: []string{"mongoose"}},
+	{Key: "sequelize", Patterns: []string{"sequelize"}},
+	{Key: "knex", Patterns: []string{"knex"}},
+}
+
+var typeScriptObservabilityTools = []toolSpec{
+	{Key: "winston", Patterns: []string{"winston"}},
+	{Key: "pino", Patterns: []string{"pino"}},
+	{Key: "morgan", Patterns: []string{"morgan"}},
+	{Key: "axios", Patterns: []string{"axios"}},
+	{Key: "opentelemetry", Patterns: []string{"@opentelemetry/api"}},
+	{Key: "nestjs-core", Patterns: []string{"@nestjs/core"}},
+	{Key: "express", Patterns: []string{"express"}},
+	{Key: "fastify", Patterns: []string{"fastify"}},
+}
+
+var typeScriptDevopsFiles = []toolSpec{
+	{Key: "eslint", Patterns: []string{"eslint", ".eslintrc"}},
+	{Key: "prettier", Patterns: []string{"prettier", ".prettierrc"}},
+	{Key: "husky", Patterns: []string{"husky"}},
+	{Key: "lint-staged", Patterns: []string{"lint-staged"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -78,12 +124,35 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		}
 	}
 
+	// Detectar linguagem pré-dominante dos resultados
+	lang := "go"
+	for _, repo := range results {
+		if repo.Manifest != nil && repo.Manifest.Language != "" {
+			lang = repo.Manifest.Language
+			break
+		}
+	}
+
+	tTools := testingTools
+	cTools := configTools
+	dTools := databaseTools
+	oTools := observabilityTools
+	devOps := devopsFiles
+
+	if lang == "typescript" || lang == "javascript" || lang == "ts" || lang == "node" {
+		tTools = typeScriptTestingTools
+		cTools = typeScriptConfigTools
+		dTools = typeScriptDatabaseTools
+		oTools = typeScriptObservabilityTools
+		devOps = typeScriptDevopsFiles
+	}
+
 	insights := domain.ArchitecturalInsights{
-		Testing:       analyzeCategory(results, testingTools, totalRepos),
-		Configuration: analyzeCategory(results, configTools, totalRepos),
-		Database:      analyzeCategory(results, databaseTools, totalRepos),
-		Observability: analyzeCategory(results, observabilityTools, totalRepos),
-		DevOps:        analyzeDevOps(results, devopsFiles),
+		Testing:       analyzeCategory(results, tTools, totalRepos),
+		Configuration: analyzeCategory(results, cTools, totalRepos),
+		Database:      analyzeCategory(results, dTools, totalRepos),
+		Observability: analyzeCategory(results, oTools, totalRepos),
+		DevOps:        analyzeDevOps(results, devOps),
 	}
 
 	return insights

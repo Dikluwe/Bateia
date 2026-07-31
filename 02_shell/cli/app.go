@@ -34,7 +34,7 @@ func (a *CLIApp) Run(args []string) error {
 	fs := flag.NewFlagSet("bateia", flag.ContinueOnError)
 
 	queryFlag := fs.String("query", "", "Query de busca por arquitetura ou padrão de código (obrigatório)")
-	langFlag := fs.String("lang", "go", "Linguagem-alvo: go, typescript (ts, node), python (py), rust (rs), java, kotlin (kt), php, c, cpp (c++), csharp (cs, dotnet), julia, r, lua, ocaml")
+	langFlag := fs.String("lang", "go", "Linguagem-alvo: go, typescript (ts, node), python (py), rust (rs), java, kotlin (kt), php, c, cpp (c++), csharp (cs, dotnet), julia, r, lua, ocaml, elixir, ruby, swift, haskell")
 	maxFlag := fs.Int("max", 20, "Número de candidatos para descoberta no topo do funil")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")

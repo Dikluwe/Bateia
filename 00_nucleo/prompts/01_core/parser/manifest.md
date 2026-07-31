@@ -40,6 +40,10 @@ Criar as funções:
    - `"description"` → `"rdescription"`
    - Suffix `.rockspec` → `"rockspec"`
    - `"dune-project"`, Suffix `.opam` → `"ocaml"`
+   - `"mix.exs"` → `"mix"`
+   - `"gemfile"` → `"gemfile"`
+   - `"package.swift"` → `"swiftpackage"`
+   - Suffix `.cabal`, `"stack.yaml"` → `"haskell"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -52,9 +56,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "Project.toml" e um conteúdo válido de Julia
+Dado o arquivo "Gemfile" e um conteúdo válido de Ruby
 Quando ParseManifest for executada
-Então o Dispatcher chama ParseJuliaProjectToml e retorna um Manifest com Language "julia".
+Então o Dispatcher chama ParseGemfile e retorna um Manifest com Language "ruby".
 ```
 
 ---
@@ -71,4 +75,4 @@ Então o Dispatcher chama ParseJuliaProjectToml e retorna um Manifest com Langua
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a Julia, R, Lua e OCaml | manifest.go |
+| 2026-07-31 | Adiciona suporte a Elixir, Ruby, Swift e Haskell | manifest.go |

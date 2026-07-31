@@ -439,6 +439,103 @@ var ocamlDevopsFiles = []toolSpec{
 	{Key: "dune", Patterns: []string{"dune-project"}},
 }
 
+var elixirTestingTools = []toolSpec{
+	{Key: "ExUnit", Patterns: []string{"ex_unit"}},
+}
+
+var elixirConfigTools = []toolSpec{
+	{Key: "Dotenv", Patterns: []string{"dotenv"}},
+}
+
+var elixirDatabaseTools = []toolSpec{
+	{Key: "Ecto", Patterns: []string{"ecto", "ecto_sql"}},
+}
+
+var elixirObservabilityTools = []toolSpec{
+	{Key: "Phoenix", Patterns: []string{"phoenix"}},
+	{Key: "Telemetry", Patterns: []string{"telemetry"}},
+}
+
+var elixirDevopsFiles = []toolSpec{
+	{Key: "Credo", Patterns: []string{"credo"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var rubyTestingTools = []toolSpec{
+	{Key: "RSpec", Patterns: []string{"rspec"}},
+	{Key: "Minitest", Patterns: []string{"minitest"}},
+}
+
+var rubyConfigTools = []toolSpec{
+	{Key: "dotenv-rails", Patterns: []string{"dotenv"}},
+}
+
+var rubyDatabaseTools = []toolSpec{
+	{Key: "ActiveRecord", Patterns: []string{"activerecord", "pg", "mysql2"}},
+	{Key: "Sequel", Patterns: []string{"sequel"}},
+}
+
+var rubyObservabilityTools = []toolSpec{
+	{Key: "Rails", Patterns: []string{"rails"}},
+	{Key: "Sinatra", Patterns: []string{"sinatra"}},
+	{Key: "Puma", Patterns: []string{"puma"}},
+}
+
+var rubyDevopsFiles = []toolSpec{
+	{Key: "RuboCop", Patterns: []string{"rubocop"}},
+	{Key: "Dockerfile", Patterns: []string{"Dockerfile"}},
+	{Key: "GitHub Actions", Patterns: []string{".github/workflows"}},
+}
+
+var swiftTestingTools = []toolSpec{
+	{Key: "XCTest", Patterns: []string{"xctest"}},
+	{Key: "Quick", Patterns: []string{"quick"}},
+}
+
+var swiftConfigTools = []toolSpec{
+	{Key: "SwiftyJSON", Patterns: []string{"swiftyjson"}},
+}
+
+var swiftDatabaseTools = []toolSpec{
+	{Key: "Realm", Patterns: []string{"realm"}},
+	{Key: "SQLite.swift", Patterns: []string{"sqlite"}},
+	{Key: "Fluent", Patterns: []string{"fluent"}},
+}
+
+var swiftObservabilityTools = []toolSpec{
+	{Key: "Alamofire", Patterns: []string{"alamofire"}},
+	{Key: "Vapor", Patterns: []string{"vapor"}},
+}
+
+var swiftDevopsFiles = []toolSpec{
+	{Key: "SwiftLint", Patterns: []string{".swiftlint.yml"}},
+}
+
+var haskellTestingTools = []toolSpec{
+	{Key: "HSpec", Patterns: []string{"hspec"}},
+	{Key: "QuickCheck", Patterns: []string{"quickcheck"}},
+}
+
+var haskellConfigTools = []toolSpec{
+	{Key: "aeson", Patterns: []string{"aeson"}},
+}
+
+var haskellDatabaseTools = []toolSpec{
+	{Key: "persistent", Patterns: []string{"persistent"}},
+	{Key: "postgresql-simple", Patterns: []string{"postgresql-simple"}},
+}
+
+var haskellObservabilityTools = []toolSpec{
+	{Key: "Yesod", Patterns: []string{"yesod"}},
+	{Key: "Scotty", Patterns: []string{"scotty"}},
+	{Key: "Servant", Patterns: []string{"servant"}},
+}
+
+var haskellDevopsFiles = []toolSpec{
+	{Key: "HLint", Patterns: []string{".hlint.yaml"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -533,6 +630,30 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = ocamlDatabaseTools
 		oTools = ocamlObservabilityTools
 		devOps = ocamlDevopsFiles
+	} else if lang == "elixir" {
+		tTools = elixirTestingTools
+		cTools = elixirConfigTools
+		dTools = elixirDatabaseTools
+		oTools = elixirObservabilityTools
+		devOps = elixirDevopsFiles
+	} else if lang == "ruby" {
+		tTools = rubyTestingTools
+		cTools = rubyConfigTools
+		dTools = rubyDatabaseTools
+		oTools = rubyObservabilityTools
+		devOps = rubyDevopsFiles
+	} else if lang == "swift" {
+		tTools = swiftTestingTools
+		cTools = swiftConfigTools
+		dTools = swiftDatabaseTools
+		oTools = swiftObservabilityTools
+		devOps = swiftDevopsFiles
+	} else if lang == "haskell" {
+		tTools = haskellTestingTools
+		cTools = haskellConfigTools
+		dTools = haskellDatabaseTools
+		oTools = haskellObservabilityTools
+		devOps = haskellDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

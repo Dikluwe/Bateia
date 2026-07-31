@@ -28,6 +28,9 @@ func DetectManifestType(filename string) string {
 	if strings.HasSuffix(base, ".opam") {
 		return "ocaml"
 	}
+	if strings.HasSuffix(base, ".cabal") {
+		return "haskell"
+	}
 
 	switch base {
 	case "go.mod":
@@ -58,6 +61,14 @@ func DetectManifestType(filename string) string {
 		return "rdescription"
 	case "dune-project":
 		return "ocaml"
+	case "mix.exs":
+		return "mix"
+	case "gemfile":
+		return "gemfile"
+	case "package.swift":
+		return "swiftpackage"
+	case "stack.yaml":
+		return "haskell"
 	default:
 		return ""
 	}
@@ -100,6 +111,14 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseLuaRockspec(ref, content)
 	case "ocaml":
 		return ParseOCamlDune(ref, content)
+	case "mix":
+		return ParseMixExs(ref, content)
+	case "gemfile":
+		return ParseGemfile(ref, content)
+	case "swiftpackage":
+		return ParsePackageSwift(ref, content)
+	case "haskell":
+		return ParseHaskellCabal(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

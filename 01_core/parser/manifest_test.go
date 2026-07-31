@@ -37,6 +37,10 @@ func TestDetectManifestType(t *testing.T) {
 		{"DESCRIPTION", "rdescription"},
 		{"mylib-1.0.rockspec", "rockspec"},
 		{"dune-project", "ocaml"},
+		{"mix.exs", "mix"},
+		{"Gemfile", "gemfile"},
+		{"Package.swift", "swiftpackage"},
+		{"myproject.cabal", "haskell"},
 		{"unknown.txt", ""},
 	}
 

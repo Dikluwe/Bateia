@@ -939,6 +939,186 @@ var actionscriptDevopsFiles = []toolSpec{
 	{Key: "mxmlc", Patterns: []string{"flex-config.xml"}},
 }
 
+var adaTestingTools = []toolSpec{
+	{Key: "ahunit", Patterns: []string{"ahunit"}},
+}
+
+var adaConfigTools = []toolSpec{
+	{Key: "alire", Patterns: []string{"alire.toml"}},
+}
+
+var adaDatabaseTools = []toolSpec{
+	{Key: "gnatcoll_db", Patterns: []string{"gnatcoll_db"}},
+}
+
+var adaObservabilityTools = []toolSpec{
+	{Key: "aws_sdk", Patterns: []string{"aws"}},
+}
+
+var adaDevopsFiles = []toolSpec{
+	{Key: "alr", Patterns: []string{"alire.toml"}},
+}
+
+var mojoTestingTools = []toolSpec{
+	{Key: "mojotest", Patterns: []string{"test"}},
+}
+
+var mojoConfigTools = []toolSpec{
+	{Key: "pixi", Patterns: []string{"pixi.toml"}},
+}
+
+var mojoDatabaseTools = []toolSpec{
+	{Key: "max", Patterns: []string{"max"}},
+}
+
+var mojoObservabilityTools = []toolSpec{
+	{Key: "light_async", Patterns: []string{"async"}},
+}
+
+var mojoDevopsFiles = []toolSpec{
+	{Key: "mojo", Patterns: []string{"mojoproject.toml"}},
+}
+
+var objcTestingTools = []toolSpec{
+	{Key: "xctest", Patterns: []string{"xctest"}},
+}
+
+var objcConfigTools = []toolSpec{
+	{Key: "cocoapods", Patterns: []string{"podfile"}},
+}
+
+var objcDatabaseTools = []toolSpec{
+	{Key: "realm", Patterns: []string{"realm"}},
+}
+
+var objcObservabilityTools = []toolSpec{
+	{Key: "afnetworking", Patterns: []string{"afnetworking"}},
+}
+
+var objcDevopsFiles = []toolSpec{
+	{Key: "pod", Patterns: []string{"podfile"}},
+}
+
+var haxeTestingTools = []toolSpec{
+	{Key: "utest", Patterns: []string{"utest"}},
+}
+
+var haxeConfigTools = []toolSpec{
+	{Key: "haxelib", Patterns: []string{"haxelib.json"}},
+}
+
+var haxeDatabaseTools = []toolSpec{
+	{Key: "sys-db", Patterns: []string{"db"}},
+}
+
+var haxeObservabilityTools = []toolSpec{
+	{Key: "heaps", Patterns: []string{"heaps"}},
+}
+
+var haxeDevopsFiles = []toolSpec{
+	{Key: "haxe", Patterns: []string{"haxelib.json"}},
+}
+
+var rakuTestingTools = []toolSpec{
+	{Key: "zef", Patterns: []string{"test"}},
+}
+
+var rakuConfigTools = []toolSpec{
+	{Key: "meta6", Patterns: []string{"meta6.json"}},
+}
+
+var rakuDatabaseTools = []toolSpec{
+	{Key: "dbd-pg", Patterns: []string{"dbd"}},
+}
+
+var rakuObservabilityTools = []toolSpec{
+	{Key: "cro", Patterns: []string{"cro"}},
+}
+
+var rakuDevopsFiles = []toolSpec{
+	{Key: "zef", Patterns: []string{"meta6.json"}},
+}
+
+var racketTestingTools = []toolSpec{
+	{Key: "rackunit", Patterns: []string{"rackunit"}},
+}
+
+var racketConfigTools = []toolSpec{
+	{Key: "raco", Patterns: []string{"info.rkt"}},
+}
+
+var racketDatabaseTools = []toolSpec{
+	{Key: "db", Patterns: []string{"db"}},
+}
+
+var racketObservabilityTools = []toolSpec{
+	{Key: "spiffy", Patterns: []string{"web-server"}},
+}
+
+var racketDevopsFiles = []toolSpec{
+	{Key: "raco", Patterns: []string{"info.rkt"}},
+}
+
+var chapelTestingTools = []toolSpec{
+	{Key: "mason-test", Patterns: []string{"test"}},
+}
+
+var chapelConfigTools = []toolSpec{
+	{Key: "mason", Patterns: []string{"mason.toml"}},
+}
+
+var chapelDatabaseTools = []toolSpec{
+	{Key: "chpl-db", Patterns: []string{"db"}},
+}
+
+var chapelObservabilityTools = []toolSpec{
+	{Key: "chpl-net", Patterns: []string{"net"}},
+}
+
+var chapelDevopsFiles = []toolSpec{
+	{Key: "mason", Patterns: []string{"mason.toml"}},
+}
+
+var ponyTestingTools = []toolSpec{
+	{Key: "ponytest", Patterns: []string{"ponytest"}},
+}
+
+var ponyConfigTools = []toolSpec{
+	{Key: "corral", Patterns: []string{"corral.json"}},
+}
+
+var ponyDatabaseTools = []toolSpec{
+	{Key: "pony-db", Patterns: []string{"db"}},
+}
+
+var ponyObservabilityTools = []toolSpec{
+	{Key: "net-ssl", Patterns: []string{"net"}},
+}
+
+var ponyDevopsFiles = []toolSpec{
+	{Key: "corral", Patterns: []string{"corral.json"}},
+}
+
+var odinTestingTools = []toolSpec{
+	{Key: "odin-test", Patterns: []string{"testing"}},
+}
+
+var odinConfigTools = []toolSpec{
+	{Key: "ols", Patterns: []string{"ols.json"}},
+}
+
+var odinDatabaseTools = []toolSpec{
+	{Key: "odin-db", Patterns: []string{"db"}},
+}
+
+var odinObservabilityTools = []toolSpec{
+	{Key: "odin-http", Patterns: []string{"http"}},
+}
+
+var odinDevopsFiles = []toolSpec{
+	{Key: "ols", Patterns: []string{"ols.json"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -1171,6 +1351,60 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = actionscriptDatabaseTools
 		oTools = actionscriptObservabilityTools
 		devOps = actionscriptDevopsFiles
+	} else if lang == "ada" {
+		tTools = adaTestingTools
+		cTools = adaConfigTools
+		dTools = adaDatabaseTools
+		oTools = adaObservabilityTools
+		devOps = adaDevopsFiles
+	} else if lang == "mojo" {
+		tTools = mojoTestingTools
+		cTools = mojoConfigTools
+		dTools = mojoDatabaseTools
+		oTools = mojoObservabilityTools
+		devOps = mojoDevopsFiles
+	} else if lang == "objective-c" || lang == "objc" {
+		tTools = objcTestingTools
+		cTools = objcConfigTools
+		dTools = objcDatabaseTools
+		oTools = objcObservabilityTools
+		devOps = objcDevopsFiles
+	} else if lang == "haxe" {
+		tTools = haxeTestingTools
+		cTools = haxeConfigTools
+		dTools = haxeDatabaseTools
+		oTools = haxeObservabilityTools
+		devOps = haxeDevopsFiles
+	} else if lang == "raku" || lang == "perl6" {
+		tTools = rakuTestingTools
+		cTools = rakuConfigTools
+		dTools = rakuDatabaseTools
+		oTools = rakuObservabilityTools
+		devOps = rakuDevopsFiles
+	} else if lang == "racket" {
+		tTools = racketTestingTools
+		cTools = racketConfigTools
+		dTools = racketDatabaseTools
+		oTools = racketObservabilityTools
+		devOps = racketDevopsFiles
+	} else if lang == "chapel" {
+		tTools = chapelTestingTools
+		cTools = chapelConfigTools
+		dTools = chapelDatabaseTools
+		oTools = chapelObservabilityTools
+		devOps = chapelDevopsFiles
+	} else if lang == "pony" {
+		tTools = ponyTestingTools
+		cTools = ponyConfigTools
+		dTools = ponyDatabaseTools
+		oTools = ponyObservabilityTools
+		devOps = ponyDevopsFiles
+	} else if lang == "odin" {
+		tTools = odinTestingTools
+		cTools = odinConfigTools
+		dTools = odinDatabaseTools
+		oTools = odinObservabilityTools
+		devOps = odinDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

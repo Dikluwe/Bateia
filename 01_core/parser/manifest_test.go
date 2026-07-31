@@ -59,6 +59,15 @@ func TestDetectManifestType(t *testing.T) {
 		{"gleam.toml", "gleam"},
 		{"box.json", "coldfusion"},
 		{"flex-config.xml", "actionscript"},
+		{"alire.toml", "ada"},
+		{"mojoproject.toml", "mojo"},
+		{"Podfile", "objc"},
+		{"haxelib.json", "haxe"},
+		{"META6.json", "raku"},
+		{"info.rkt", "racket"},
+		{"mason.toml", "chapel"},
+		{"corral.json", "pony"},
+		{"ols.json", "odin"},
 		{"unknown.txt", ""},
 	}
 

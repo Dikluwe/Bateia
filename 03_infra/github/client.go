@@ -75,7 +75,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		refCommit = "HEAD"
 	}
 
-	manifestFiles := []string{"go.mod", "package.json", "pyproject.toml", "requirements.txt", "Cargo.toml", "pom.xml", "build.gradle", "composer.json", "CMakeLists.txt", "vcpkg.json", "conanfile.txt", "Project.toml", "DESCRIPTION", "dune-project", "mix.exs", "Gemfile", "Package.swift", "pubspec.yaml", "build.sbt", "project.clj", "build.zig.zon", "fpm.toml", "cpanfile", "Makefile.PL", "shard.yml", "v.mod", "rebar.config", "dub.json", "gleam.toml", "box.json", "flex-config.xml"}
+	manifestFiles := []string{"go.mod", "package.json", "pyproject.toml", "requirements.txt", "Cargo.toml", "pom.xml", "build.gradle", "composer.json", "CMakeLists.txt", "vcpkg.json", "conanfile.txt", "Project.toml", "DESCRIPTION", "dune-project", "mix.exs", "Gemfile", "Package.swift", "pubspec.yaml", "build.sbt", "project.clj", "build.zig.zon", "fpm.toml", "cpanfile", "Makefile.PL", "shard.yml", "v.mod", "rebar.config", "dub.json", "gleam.toml", "box.json", "flex-config.xml", "alire.toml", "mojoproject.toml", "Podfile", "haxelib.json", "META6.json", "info.rkt", "mason.toml", "corral.json", "ols.json"}
 	var lastErr error
 
 	for _, targetFile := range manifestFiles {

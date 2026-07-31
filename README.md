@@ -59,6 +59,15 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 | ⭐️ **Gleam** | `gleam` | `gleam.toml` | Lustre, Wisp, PGo, Gleam Test |
 | ❄️ **ColdFusion** | `coldfusion`, `cf` | `box.json` | ColdBox, CBORM, CommandBox, MXUnit |
 | ⚡ **ActionScript / Flex** | `actionscript`, `flex` | `flex-config.xml` | FlexUnit, Robotlegs, PureMVC, MXMLC |
+| 🛡️ **Ada** | `ada` | `alire.toml` | GNATColl, AHunit, Alire, Alr |
+| 🚀 **Mojo** | `mojo` | `mojoproject.toml`, `pixi.toml` | MojoTest, Pixi, Max, Light_Async |
+| 🍎 **Objective-C** | `objective-c`, `objc` | `Podfile` | AFNetworking, Realm, SDWebImage, XCTest, CocoaPods |
+| 🎯 **Haxe** | `haxe` | `haxelib.json` | Heaps, UTest, Haxelib |
+| 🦋 **Raku** | `raku` | `META6.json` | Cro, DBD-Pg, Zef |
+| 🌐 **Racket** | `racket` | `info.rkt` | RackUnit, Spiffy, Raco |
+| 🧱 **Chapel** | `chapel` | `mason.toml` | Mason, Mason Test |
+| 🐴 **Pony** | `pony` | `corral.json` | PonyTest, Corral |
+| ⚔️ **Odin** | `odin` | `ols.json`, `odin.json` | OLS, Odin Testing |
 
 ---
 

@@ -110,6 +110,24 @@ func DetectManifestType(filename string) string {
 		return "coldfusion"
 	case "flex-config.xml":
 		return "actionscript"
+	case "alire.toml":
+		return "ada"
+	case "mojoproject.toml", "pixi.toml":
+		return "mojo"
+	case "podfile":
+		return "objc"
+	case "haxelib.json":
+		return "haxe"
+	case "meta6.json":
+		return "raku"
+	case "info.rkt":
+		return "racket"
+	case "mason.toml":
+		return "chapel"
+	case "corral.json":
+		return "pony"
+	case "ols.json", "odin.json":
+		return "odin"
 	default:
 		return ""
 	}
@@ -196,6 +214,24 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseBoxJson(ref, content)
 	case "actionscript":
 		return ParseFlexConfig(ref, content)
+	case "ada":
+		return ParseAlireToml(ref, content)
+	case "mojo":
+		return ParseMojoProjectToml(ref, content)
+	case "objc":
+		return ParsePodfile(ref, content)
+	case "haxe":
+		return ParseHaxelibJson(ref, content)
+	case "raku":
+		return ParseMeta6Json(ref, content)
+	case "racket":
+		return ParseInfoRkt(ref, content)
+	case "chapel":
+		return ParseMasonToml(ref, content)
+	case "pony":
+		return ParseCorralJson(ref, content)
+	case "odin":
+		return ParseOlsJson(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

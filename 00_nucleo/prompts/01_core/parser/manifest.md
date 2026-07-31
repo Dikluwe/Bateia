@@ -62,6 +62,15 @@ Criar as funções:
    - `"gleam.toml"` → `"gleam"`
    - `"box.json"` → `"coldfusion"`
    - `"flex-config.xml"` → `"actionscript"`
+   - `"alire.toml"` → `"ada"`
+   - `"mojoproject.toml"`, `"pixi.toml"` → `"mojo"`
+   - `"podfile"` → `"objective-c"`
+   - `"haxelib.json"` → `"haxe"`
+   - `"meta6.json"` → `"raku"`
+   - `"info.rkt"` → `"racket"`
+   - `"mason.toml"` → `"chapel"`
+   - `"corral.json"` → `"pony"`
+   - `"ols.json"`, `"odin.json"` → `"odin"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`

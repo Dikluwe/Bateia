@@ -629,6 +629,70 @@ var zigDevopsFiles = []toolSpec{
 	{Key: "build.zig", Patterns: []string{"build.zig"}},
 }
 
+var pascalTestingTools = []toolSpec{
+	{Key: "dunit", Patterns: []string{"dunit"}},
+}
+
+var pascalConfigTools = []toolSpec{
+	{Key: "inifiles", Patterns: []string{"inifiles"}},
+}
+
+var pascalDatabaseTools = []toolSpec{
+	{Key: "firedac", Patterns: []string{"firedac"}},
+	{Key: "zeos", Patterns: []string{"zeos"}},
+}
+
+var pascalObservabilityTools = []toolSpec{
+	{Key: "indy", Patterns: []string{"indy"}},
+	{Key: "vcl", Patterns: []string{"vcl"}},
+}
+
+var pascalDevopsFiles = []toolSpec{
+	{Key: "fpc", Patterns: []string{"fpc"}},
+}
+
+var fortranTestingTools = []toolSpec{
+	{Key: "funit", Patterns: []string{"funit"}},
+}
+
+var fortranConfigTools = []toolSpec{
+	{Key: "fpm", Patterns: []string{"fpm.toml"}},
+}
+
+var fortranDatabaseTools = []toolSpec{
+	{Key: "lapack", Patterns: []string{"lapack"}},
+}
+
+var fortranObservabilityTools = []toolSpec{
+	{Key: "openmp", Patterns: []string{"openmp"}},
+	{Key: "mpi", Patterns: []string{"mpi"}},
+}
+
+var fortranDevopsFiles = []toolSpec{
+	{Key: "gfortran", Patterns: []string{"Makefile"}},
+}
+
+var basicTestingTools = []toolSpec{
+	{Key: "vbwatch", Patterns: []string{"vbwatch"}},
+}
+
+var basicConfigTools = []toolSpec{
+	{Key: "vbp", Patterns: []string{".vbp"}},
+}
+
+var basicDatabaseTools = []toolSpec{
+	{Key: "adodb", Patterns: []string{"adodb"}},
+	{Key: "dao", Patterns: []string{"dao"}},
+}
+
+var basicObservabilityTools = []toolSpec{
+	{Key: "mscomctl", Patterns: []string{"mscomctl"}},
+}
+
+var basicDevopsFiles = []toolSpec{
+	{Key: "vbc", Patterns: []string{"vbc"}},
+}
+
 // ExtractArchitecturalInsights analisa a lista de repositórios extraídos para calcular ocorrências nas 5 categorias de necessidades ocultas.
 func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.ArchitecturalInsights {
 	totalRepos := len(results)
@@ -771,6 +835,24 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		dTools = zigDatabaseTools
 		oTools = zigObservabilityTools
 		devOps = zigDevopsFiles
+	} else if lang == "pascal" || lang == "delphi" {
+		tTools = pascalTestingTools
+		cTools = pascalConfigTools
+		dTools = pascalDatabaseTools
+		oTools = pascalObservabilityTools
+		devOps = pascalDevopsFiles
+	} else if lang == "fortran" {
+		tTools = fortranTestingTools
+		cTools = fortranConfigTools
+		dTools = fortranDatabaseTools
+		oTools = fortranObservabilityTools
+		devOps = fortranDevopsFiles
+	} else if lang == "basic" || lang == "vb" {
+		tTools = basicTestingTools
+		cTools = basicConfigTools
+		dTools = basicDatabaseTools
+		oTools = basicObservabilityTools
+		devOps = basicDevopsFiles
 	}
 
 	insights := domain.ArchitecturalInsights{

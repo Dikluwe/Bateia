@@ -31,6 +31,12 @@ func DetectManifestType(filename string) string {
 	if strings.HasSuffix(base, ".cabal") {
 		return "haskell"
 	}
+	if strings.HasSuffix(base, ".dproj") || strings.HasSuffix(base, ".lpi") {
+		return "pascal"
+	}
+	if strings.HasSuffix(base, ".vbp") {
+		return "basic"
+	}
 
 	switch base {
 	case "go.mod":
@@ -77,6 +83,8 @@ func DetectManifestType(filename string) string {
 		return "clojure"
 	case "build.zig.zon", "build.zig":
 		return "zig"
+	case "fpm.toml":
+		return "fortran"
 	default:
 		return ""
 	}
@@ -135,6 +143,12 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 		return ParseProjectClj(ref, content)
 	case "zig":
 		return ParseBuildZigZon(ref, content)
+	case "pascal":
+		return ParsePascalDelphi(ref, content)
+	case "fortran":
+		return ParseFortranFpm(ref, content)
+	case "basic":
+		return ParseBasicVbp(ref, content)
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}

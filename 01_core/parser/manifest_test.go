@@ -45,6 +45,9 @@ func TestDetectManifestType(t *testing.T) {
 		{"build.sbt", "sbt"},
 		{"project.clj", "clojure"},
 		{"build.zig.zon", "zig"},
+		{"MyProject.dproj", "pascal"},
+		{"fpm.toml", "fortran"},
+		{"Project1.vbp", "basic"},
 		{"unknown.txt", ""},
 	}
 

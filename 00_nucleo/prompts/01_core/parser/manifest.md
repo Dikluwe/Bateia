@@ -48,6 +48,9 @@ Criar as funções:
    - `"build.sbt"` → `"sbt"`
    - `"project.clj"`, `"deps.edn"` → `"clojure"`
    - `"build.zig.zon"`, `"build.zig"` → `"zig"`
+   - Suffix `.dproj`, Suffix `.lpi` → `"pascal"`
+   - `"fpm.toml"` → `"fortran"`
+   - Suffix `.vbp` → `"basic"`
    - Outros / Desconhecido → `""`
 
 2. `func ParseManifest(filename string, ref domain.CommitRef, content string) (*domain.Manifest, error)`
@@ -60,9 +63,9 @@ Criar as funções:
 ## Critérios de Verificação
 
 ```
-Dado o arquivo "pubspec.yaml" e um conteúdo válido de Dart/Flutter
+Dado o arquivo "fpm.toml" e um conteúdo válido de Fortran
 Quando ParseManifest for executada
-Então o Dispatcher chama ParsePubspecYaml e retorna um Manifest com Language "dart".
+Então o Dispatcher chama ParseFortranFpm e retorna um Manifest com Language "fortran".
 ```
 
 ---
@@ -79,4 +82,4 @@ Então o Dispatcher chama ParsePubspecYaml e retorna um Manifest com Language "d
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
-| 2026-07-31 | Adiciona suporte a Dart/Flutter, Scala, Clojure e Zig | manifest.go |
+| 2026-07-31 | Adiciona suporte a Pascal/Delphi, Fortran e BASIC | manifest.go |

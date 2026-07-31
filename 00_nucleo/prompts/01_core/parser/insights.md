@@ -8,12 +8,12 @@
 
 ## Contexto
 
-Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`, `pubspec.yaml`, `build.sbt`, `project.clj`, `build.zig.zon`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
-1. Estratégia de Testes (`testify`, `jest`, `pytest`, `criterion`, `junit`, `flutter_test`, `scalatest`, `clojure.test`, `zig test`, etc.)
-2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `spring-boot`, `pureconfig`, `environ`, etc.)
-3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `sqflite`, `doobie`, `slick`, `next.jdbc`, `toucan`, etc.)
-4. Observabilidade e Comunicação (`zerolog`, `zap`, `fastapi`, `dio`, `http4s`, `akka-http`, `ring`, `comport`, `httpz`, etc.)
-5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `eslint`, `flutter_lints`, `scalafmt`, `clj-kondo`, `zig fmt`, etc.)
+Os relatórios do Bateia contêm a seção 3 destinada ao "Descobrimento de Necessidades Ocultas". Em vez de textos estáticos genéricos, esta funcionalidade analisa o conteúdo dos manifestos (`go.mod`, `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `pom.xml`, `build.gradle`, `composer.json`, `CMakeLists.txt`, `vcpkg.json`, `.csproj`, `Project.toml`, `DESCRIPTION`, `.rockspec`, `dune-project`, `mix.exs`, `Gemfile`, `Package.swift`, `*.cabal`, `pubspec.yaml`, `build.sbt`, `project.clj`, `build.zig.zon`, `.dproj`, `.lpi`, `fpm.toml`, `.vbp`) e as árvores de arquivos dos repositórios extraídos para extrair métricas e ocorrências de 5 categorias essenciais:
+1. Estratégia de Testes (`testify`, `jest`, `pytest`, `criterion`, `junit`, `dunit`, `funit`, `vbwatch`, etc.)
+2. Configuração e Ambiente (`godotenv`, `viper`, `dotenv`, `spring-boot`, `inifiles`, `fpm`, etc.)
+3. Banco de Dados e Migrações (`pgx`, `gorm`, `prisma`, `firedac`, `zeos`, `lapack`, `adodb`, etc.)
+4. Observabilidade e Comunicação (`zerolog`, `zap`, `fastapi`, `indy`, `vcl`, `fpm`, `mscomctl`, etc.)
+5. Automação e DevOps (`.github/workflows/`, `Dockerfile`, `Makefile`, `fpc`, `gfortran`, `vbc`, etc.)
 
 ---
 

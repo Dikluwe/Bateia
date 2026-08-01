@@ -71,15 +71,100 @@ type sgSearchResponse struct {
 }
 
 // SearchCandidates executa a consulta de descoberta no Sourcegraph satisfazendo domain.SearchProvider.
+// sgLangName converte o nome da linguagem do Bateia para o nome exato aceito pelo Sourcegraph.
+var sgLangName = map[string]string{
+	"go":           "Go",
+	"typescript":   "TypeScript",
+	"ts":           "TypeScript",
+	"javascript":   "JavaScript",
+	"js":           "JavaScript",
+	"node":         "JavaScript",
+	"python":       "Python",
+	"py":           "Python",
+	"rust":         "Rust",
+	"rs":           "Rust",
+	"java":         "Java",
+	"kotlin":       "Kotlin",
+	"kt":           "Kotlin",
+	"php":          "PHP",
+	"c":            "C",
+	"cpp":          "C++",
+	"c++":          "C++",
+	"csharp":       "C#",
+	"cs":           "C#",
+	"dotnet":       "C#",
+	"ruby":         "Ruby",
+	"swift":        "Swift",
+	"scala":        "Scala",
+	"haskell":      "Haskell",
+	"dart":         "Dart",
+	"flutter":      "Dart",
+	"elixir":       "Elixir",
+	"clojure":      "Clojure",
+	"clj":          "Clojure",
+	"erlang":       "Erlang",
+	"ocaml":        "OCaml",
+	"zig":          "Zig",
+	"lua":          "Lua",
+	"perl":         "Perl",
+	"r":            "R",
+	"julia":        "Julia",
+	"groovy":       "Groovy",
+	"nim":          "Nim",
+	"crystal":      "Crystal",
+	"fsharp":       "F#",
+	"fs":           "F#",
+	"fortran":      "Fortran",
+	"cobol":        "COBOL",
+	"pascal":       "Pascal",
+	"delphi":       "Delphi",
+	"ada":          "Ada",
+	"haxe":         "Haxe",
+	"racket":       "Racket",
+}
+
+// shortQuery extrai o(s) primeiro(s) termo(s) relevantes de uma query longa para o fallback sem lang.
+func shortQuery(query string) string {
+	words := strings.Fields(query)
+	stopwords := map[string]bool{
+		"a": true, "o": true, "e": true, "de": true, "do": true, "da": true,
+		"the": true, "an": true, "and": true, "or": true, "with": true,
+		"using": true, "for": true, "in": true, "on": true, "at": true, "to": true,
+		"of": true, "is": true, "are": true, "api": true, "rest": true,
+	}
+	result := make([]string, 0, 3)
+	for _, w := range words {
+		if !stopwords[strings.ToLower(w)] {
+			result = append(result, w)
+		}
+		if len(result) >= 2 {
+			break
+		}
+	}
+	if len(result) == 0 {
+		return words[0]
+	}
+	return strings.Join(result, " ")
+}
+
 func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter) ([]domain.RepositoryCandidate, error) {
-	langTitle := filter.Language
-	if len(filter.Language) > 0 {
-		langTitle = strings.ToUpper(filter.Language[:1]) + filter.Language[1:]
+	// Traduzir nome da linguagem para o formato aceito pelo Sourcegraph
+	sgLang := filter.Language
+	if mapped, ok := sgLangName[strings.ToLower(filter.Language)]; ok {
+		sgLang = mapped
+	} else if len(filter.Language) > 0 {
+		sgLang = strings.ToUpper(filter.Language[:1]) + filter.Language[1:]
 	}
 
+	short := shortQuery(filter.Query)
+
 	queriesToTry := []string{
-		fmt.Sprintf("repo:^github\\.com/ lang:%s %s", langTitle, filter.Query),
-		fmt.Sprintf("repo:^github\\.com/ %s", filter.Query),
+		// 1ª tentativa: query completa com linguagem (sem repo: para API pública funcionar)
+		fmt.Sprintf("lang:%s %s", sgLang, filter.Query),
+		// 2ª tentativa: termos curtos com linguagem
+		fmt.Sprintf("lang:%s %s", sgLang, short),
+		// 3ª tentativa: sem filtro de linguagem, apenas termos curtos
+		short,
 	}
 
 	for _, qStr := range queriesToTry {

@@ -105,6 +105,14 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 			sb.WriteString("    </ul>\n")
 		}
 
+		if len(res.SecurityAdvisories) > 0 {
+			sb.WriteString("    <h4>🛡️ Alertas de Segurança & CVEs (Security Scanner)</h4>\n    <ul>\n")
+			for _, adv := range res.SecurityAdvisories {
+				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#da3633;\">[%s] %s</strong>: %s em <code>%s</code> (%s)</li>\n", html.EscapeString(adv.Severity), html.EscapeString(adv.AdvisoryID), html.EscapeString(adv.Message), html.EscapeString(adv.Package), html.EscapeString(adv.VulnerableVersion)))
+			}
+			sb.WriteString("    </ul>\n")
+		}
+
 		if len(res.Files) > 0 {
 			sb.WriteString("    <h4>Arquivos Extraídos</h4>\n")
 			for _, f := range res.Files {

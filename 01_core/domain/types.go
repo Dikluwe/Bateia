@@ -111,19 +111,29 @@ type ArchViolation struct {
 	Target   string `json:"target,omitempty"`
 }
 
+// SecurityAdvisory representa um alerta de segurança ou CVE conhecido em dependência.
+type SecurityAdvisory struct {
+	Package           string `json:"package"`
+	VulnerableVersion string `json:"vulnerable_version"`
+	Severity          string `json:"severity"` // "CRITICAL", "HIGH", "MEDIUM"
+	AdvisoryID        string `json:"advisory_id"`
+	Message           string `json:"message"`
+}
+
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
 type ExtractedRepository struct {
-	Ref             CommitRef           `json:"ref"`
-	Candidate       RepositoryCandidate `json:"candidate"`
-	Manifest        *Manifest           `json:"manifest,omitempty"`
-	Files           []ExtractedFile     `json:"files"`
-	Symbols         []ASTSymbol         `json:"symbols,omitempty"`
-	ArchViolations  []ArchViolation     `json:"arch_violations,omitempty"`
-	ConsultadoEm    time.Time           `json:"consultado_em"`
-	Stale           bool                `json:"stale"`
-	RelevanceScore  int                 `json:"relevance_score"`
-	RelevanceLabel  string              `json:"relevance_label"`
-	RelevanceReason string              `json:"relevance_reason"`
+	Ref                CommitRef           `json:"ref"`
+	Candidate          RepositoryCandidate `json:"candidate"`
+	Manifest           *Manifest           `json:"manifest,omitempty"`
+	Files              []ExtractedFile     `json:"files"`
+	Symbols            []ASTSymbol         `json:"symbols,omitempty"`
+	ArchViolations     []ArchViolation     `json:"arch_violations,omitempty"`
+	SecurityAdvisories []SecurityAdvisory  `json:"security_advisories,omitempty"`
+	ConsultadoEm       time.Time           `json:"consultado_em"`
+	Stale              bool                `json:"stale"`
+	RelevanceScore     int                 `json:"relevance_score"`
+	RelevanceLabel     string              `json:"relevance_label"`
+	RelevanceReason    string              `json:"relevance_reason"`
 }
 
 // PatternMatch representa um padrão de pacote/ferramenta detectado nos repositórios.

@@ -118,6 +118,14 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				sb.WriteString("\n")
 			}
 
+			if len(res.SecurityAdvisories) > 0 {
+				sb.WriteString("#### 🛡️ Alertas de Segurança & CVEs (Security Scanner)\n")
+				for _, adv := range res.SecurityAdvisories {
+					sb.WriteString(fmt.Sprintf("- **[%s] %s** (%s): %s em `%s` (%s)\n", adv.Severity, adv.AdvisoryID, adv.Package, adv.Message, adv.Package, adv.VulnerableVersion))
+				}
+				sb.WriteString("\n")
+			}
+
 			if len(res.Files) > 0 {
 				sb.WriteString("#### Arquivos Extraídos\n\n")
 				for _, f := range res.Files {

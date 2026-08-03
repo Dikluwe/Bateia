@@ -101,8 +101,8 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 	}
 }
 
-// NormalizeQuery limpa a query removendo sufixos de versão comuns (/v2, /v3) e espaços.
-func NormalizeQuery(q string) string {
+// NormalizeImportPath limpa o caminho de importação removendo sufixos de versão comuns (/v2, /v3) e espaços.
+func NormalizeImportPath(q string) string {
 	q = strings.ToLower(strings.TrimSpace(q))
 	versionSuffixes := []string{"/v2", "/v3", "/v4", "/v5"}
 	for _, s := range versionSuffixes {
@@ -112,7 +112,7 @@ func NormalizeQuery(q string) string {
 }
 
 func matchesDependency(normQuery, depName string) bool {
-	normDep := NormalizeQuery(depName)
+	normDep := NormalizeImportPath(depName)
 	if normDep == normQuery {
 		return true
 	}

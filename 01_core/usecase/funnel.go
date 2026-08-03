@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -36,6 +37,15 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 
 // Execute executa a busca através dos 3 estágios do funil com cache e invariante de redução.
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
+	// Normalizar query antes de iniciar a busca
+	if len(filter.DirectRepos) == 0 {
+		normalized := parser.NormalizeQuery(filter.Query)
+		if normalized != filter.Query {
+			log.Printf("[QUERY NORMALIZER] Query '%s' sanitizada para '%s'", filter.Query, normalized)
+			filter.Query = normalized
+		}
+	}
+
 	visited := make(map[string]bool)
 	return f.executeRecursive(ctx, filter, visited)
 }
@@ -201,7 +211,28 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		extracted, hitE, _ := f.store.GetExtracted(ref)
 		if !hitE {
 			log.Printf("[ESTÁGIO 3] Baixando conteúdo para %s (Score: %d)...", ref.Key(), tRepo.RelevanceScore)
-			extracted, err = f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, []string{"go.mod", "README.md"})
+			targetPaths := []string{"go.mod", "README.md", "package.json", "Cargo.toml"}
+			
+			// Selecionar dinamicamente os 3 primeiros arquivos de código fonte da árvore
+			codeCount := 0
+			for _, node := range tRepo.Tree {
+				if node.Type == "file" || node.Type == "blob" {
+					ext := strings.ToLower(filepath.Ext(node.Path))
+					if (ext == ".go" || ext == ".rs" || ext == ".ts" || ext == ".py" || ext == ".java") && !strings.Contains(node.Path, "_test.go") {
+						targetPaths = append(targetPaths, node.Path)
+						codeCount++
+						if codeCount >= 3 {
+							break
+						}
+					}
+				}
+			}
+
+			if codeCount == 0 {
+				targetPaths = append(targetPaths, "gin.go", "main.go", "app.go", "lib.rs", "index.ts", "cmd/main.go", "types.go", "domain.go", "server.go", "client.go", "01_core/domain/types.go", "01_core/parser/ast.go")
+			}
+
+			extracted, err = f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, targetPaths)
 			if err != nil {
 				log.Printf("[WARNING] Falha na extração de %s: %v", ref.Key(), err)
 				continue
@@ -219,6 +250,17 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			extracted.RelevanceReason = tRepo.RelevanceReason
 			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), tRepo.RelevanceScore)
 		}
+
+		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)
+		var allRepoSymbols []domain.ASTSymbol
+		for idxFile, file := range extracted.Files {
+			syms := parser.ExtractASTSymbols(file.Path, []byte(file.Content))
+			if len(syms) > 0 {
+				extracted.Files[idxFile].Symbols = syms
+				allRepoSymbols = append(allRepoSymbols, syms...)
+			}
+		}
+		extracted.Symbols = allRepoSymbols
 
 		report.Results = append(report.Results, *extracted)
 	}

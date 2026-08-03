@@ -19,6 +19,7 @@ import (
 
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
+	"bateia/02_shell/mcp"
 	"bateia/02_shell/report"
 )
 
@@ -38,6 +39,7 @@ func (a *CLIApp) Run(args []string) error {
 	maxFlag := fs.Int("max", 20, "Número de candidatos para descoberta no topo do funil")
 	depthFlag := fs.Int("depth", 1, "Profundidade da busca recursiva em grafo de dependências (default: 1)")
 	reposFlag := fs.String("repos", "", "Lista separada por vírgulas de repositórios (owner/repo) para Modo Benchmark direto. Ignora o estágio 1 e a flag -lang.")
+	mcpFlag := fs.Bool("mcp", false, "Inicia o Bateia como um Servidor MCP (Model Context Protocol) via stdio")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
@@ -45,11 +47,17 @@ func (a *CLIApp) Run(args []string) error {
 		return err
 	}
 
+	if *mcpFlag {
+		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
+		return mcpServer.Serve(context.Background())
+	}
+
 	if *queryFlag == "" {
 		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural")
 		fmt.Println("Uso: bateia -query \"hexagonal architecture\" [-lang go] [-max 20] [-output 00_nucleo/relatorios/relatorio.md]")
+		fmt.Println("Ou modo MCP: bateia -mcp")
 		fs.PrintDefaults()
-		return fmt.Errorf("parâmetro -query é obrigatório")
+		return fmt.Errorf("parâmetro -query é obrigatório quando não estiver no modo -mcp")
 	}
 
 	var mustHave []string

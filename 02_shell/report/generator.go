@@ -91,6 +91,18 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				sb.WriteString("\n")
 			}
 
+			if len(res.Symbols) > 0 {
+				sb.WriteString("#### Símbolos Estruturais Extraídos (AST)\n")
+				symCount := 0
+				for _, sym := range res.Symbols {
+					if symCount < 8 {
+						sb.WriteString(fmt.Sprintf("- **`%s`** (%s) — em `%s` (linha %d)\n", sym.Name, sym.Kind, filepath.Base(sym.File), sym.Line))
+						symCount++
+					}
+				}
+				sb.WriteString("\n")
+			}
+
 			if len(res.Files) > 0 {
 				sb.WriteString("#### Arquivos Extraídos\n\n")
 				for _, f := range res.Files {

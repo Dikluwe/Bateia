@@ -86,11 +86,21 @@ type TriagedRepository struct {
 	RelevanceReason string              `json:"relevance_reason"`
 }
 
+// ASTSymbol representa um símbolo extraído de um arquivo de código (função, estrutura, interface, etc.).
+type ASTSymbol struct {
+	Name      string `json:"name"`
+	Kind      string `json:"kind"` // "function", "struct", "interface", "type"
+	Signature string `json:"signature,omitempty"`
+	File      string `json:"file,omitempty"`
+	Line      int    `json:"line,omitempty"`
+}
+
 // ExtractedFile representa o conteúdo lido do repositório final.
 type ExtractedFile struct {
-	Path    string `json:"path"`
-	Content string `json:"content"`
-	Size    int64  `json:"size"`
+	Path    string      `json:"path"`
+	Content string      `json:"content"`
+	Size    int64       `json:"size"`
+	Symbols []ASTSymbol `json:"symbols,omitempty"`
 }
 
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
@@ -99,6 +109,7 @@ type ExtractedRepository struct {
 	Candidate       RepositoryCandidate `json:"candidate"`
 	Manifest        *Manifest           `json:"manifest,omitempty"`
 	Files           []ExtractedFile     `json:"files"`
+	Symbols         []ASTSymbol         `json:"symbols,omitempty"`
 	ConsultadoEm    time.Time           `json:"consultado_em"`
 	Stale           bool                `json:"stale"`
 	RelevanceScore  int                 `json:"relevance_score"`

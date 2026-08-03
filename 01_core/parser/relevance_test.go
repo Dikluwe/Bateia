@@ -88,7 +88,7 @@ func TestEvaluateRelevance_GenericTextMatch(t *testing.T) {
 	}
 }
 
-func TestNormalizeQuery(t *testing.T) {
+func TestNormalizeImportPath(t *testing.T) {
 	cases := []struct {
 		input    string
 		expected string
@@ -99,9 +99,9 @@ func TestNormalizeQuery(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := NormalizeQuery(c.input)
+		got := NormalizeImportPath(c.input)
 		if got != c.expected {
-			t.Errorf("NormalizeQuery(%q) = %q; esperava %q", c.input, got, c.expected)
+			t.Errorf("NormalizeImportPath(%q) = %q; esperava %q", c.input, got, c.expected)
 		}
 	}
 }

@@ -32,6 +32,13 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	sb.WriteString(fmt.Sprintf("| **2. Triagem (Meio)** | %d aprovados | Leitura de manifestos e estrutura (%d descartados) |\n", report.TriagedCount, report.DiscardedCount))
 	sb.WriteString(fmt.Sprintf("| **3. Extração (Fundo)** | %d entregues | Extração idempotente e cacheados por `repo@commit` |\n\n", report.ExtractedCount))
 
+	mermaidGraph := GenerateMermaidGraph(report)
+	if mermaidGraph != "" {
+		sb.WriteString("### 📊 Grafo de Dependências (Mermaid.js)\n\n")
+		sb.WriteString(mermaidGraph)
+		sb.WriteString("\n")
+	}
+
 	sb.WriteString("---\n\n")
 	sb.WriteString("## 1. Soluções Exatas Encontradas (Com Rastreabilidade `repo@commit`)\n\n")
 

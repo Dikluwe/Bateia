@@ -43,7 +43,11 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString("    pre { background: #010409; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 0.85rem; border: 1px solid var(--border); }\n")
 	sb.WriteString("    details { margin-top: 1rem; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; }\n")
 	sb.WriteString("    summary { cursor: pointer; font-weight: bold; color: var(--accent); }\n")
-	sb.WriteString("  </style>\n</head>\n<body>\n<div class=\"container\">\n")
+	sb.WriteString("  </style>\n")
+	sb.WriteString("  <script type=\"module\">\n")
+	sb.WriteString("    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';\n")
+	sb.WriteString("    mermaid.initialize({ startOnLoad: true, theme: 'dark' });\n")
+	sb.WriteString("  </script>\n</head>\n<body>\n<div class=\"container\">\n")
 
 	sb.WriteString("  <header>\n")
 	sb.WriteString(fmt.Sprintf("    <h1>🔍 Bateia v1.0 — Relatório Arquitetural</h1>\n"))
@@ -59,6 +63,14 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString(fmt.Sprintf("        <tr><td><strong>2. Triagem</strong></td><td>%d aprovados</td><td>Leitura de manifestos (%d descartados)</td></tr>\n", report.TriagedCount, report.DiscardedCount))
 	sb.WriteString(fmt.Sprintf("        <tr><td><strong>3. Extração</strong></td><td>%d entregues</td><td>Extração idempotente por commit</td></tr>\n", report.ExtractedCount))
 	sb.WriteString("      </tbody>\n    </table>\n")
+
+	mermaidGraph := GenerateMermaidGraph(report)
+	if mermaidGraph != "" {
+		cleanMermaid := strings.TrimPrefix(strings.TrimSuffix(mermaidGraph, "```\n"), "```mermaid\n")
+		sb.WriteString("    <h3>📊 Grafo de Dependências</h3>\n")
+		sb.WriteString(fmt.Sprintf("    <pre class=\"mermaid\">\n%s    </pre>\n", cleanMermaid))
+	}
+
 	sb.WriteString("  </section>\n")
 
 	sb.WriteString("  <h2>Repositórios Extraídos</h2>\n")

@@ -103,6 +103,14 @@ type ExtractedFile struct {
 	Symbols []ASTSymbol `json:"symbols,omitempty"`
 }
 
+// ArchViolation representa uma violação de arquitetura ou acoplamento.
+type ArchViolation struct {
+	Rule     string `json:"rule"`
+	Severity string `json:"severity"` // "HIGH", "MEDIUM", "LOW"
+	Message  string `json:"message"`
+	Target   string `json:"target,omitempty"`
+}
+
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
 type ExtractedRepository struct {
 	Ref             CommitRef           `json:"ref"`
@@ -110,6 +118,7 @@ type ExtractedRepository struct {
 	Manifest        *Manifest           `json:"manifest,omitempty"`
 	Files           []ExtractedFile     `json:"files"`
 	Symbols         []ASTSymbol         `json:"symbols,omitempty"`
+	ArchViolations  []ArchViolation     `json:"arch_violations,omitempty"`
 	ConsultadoEm    time.Time           `json:"consultado_em"`
 	Stale           bool                `json:"stale"`
 	RelevanceScore  int                 `json:"relevance_score"`

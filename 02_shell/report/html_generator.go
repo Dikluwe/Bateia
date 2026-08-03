@@ -97,6 +97,14 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 			sb.WriteString("    </ul>\n")
 		}
 
+		if len(res.ArchViolations) > 0 {
+			sb.WriteString("    <h4>⚠️ Violações Arquiteturais Detectadas (Arch-Linter)</h4>\n    <ul>\n")
+			for _, v := range res.ArchViolations {
+				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#f85149;\">[%s] %s</strong>: %s (alvo: <code>%s</code>)</li>\n", html.EscapeString(v.Severity), html.EscapeString(v.Rule), html.EscapeString(v.Message), html.EscapeString(v.Target)))
+			}
+			sb.WriteString("    </ul>\n")
+		}
+
 		if len(res.Files) > 0 {
 			sb.WriteString("    <h4>Arquivos Extraídos</h4>\n")
 			for _, f := range res.Files {

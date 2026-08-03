@@ -110,6 +110,14 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				sb.WriteString("\n")
 			}
 
+			if len(res.ArchViolations) > 0 {
+				sb.WriteString("#### ⚠️ Violações Arquiteturais Detectadas (Arch-Linter)\n")
+				for _, v := range res.ArchViolations {
+					sb.WriteString(fmt.Sprintf("- **[%s] %s**: %s (alvo: `%s`)\n", v.Severity, v.Rule, v.Message, v.Target))
+				}
+				sb.WriteString("\n")
+			}
+
 			if len(res.Files) > 0 {
 				sb.WriteString("#### Arquivos Extraídos\n\n")
 				for _, f := range res.Files {

@@ -40,7 +40,8 @@ func (a *CLIApp) Run(args []string) error {
 	depthFlag := fs.Int("depth", 1, "Profundidade da busca recursiva em grafo de dependências (default: 1)")
 	reposFlag := fs.String("repos", "", "Lista separada por vírgulas de repositórios (owner/repo) para Modo Benchmark direto. Ignora o estágio 1 e a flag -lang.")
 	mcpFlag := fs.Bool("mcp", false, "Inicia o Bateia como um Servidor MCP (Model Context Protocol) via stdio")
-	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
+	formatFlag := fs.String("format", "markdown", "Formato do relatório de saída: markdown ou html")
+	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
 	if err := fs.Parse(args); err != nil {
@@ -100,10 +101,18 @@ func (a *CLIApp) Run(args []string) error {
 		return fmt.Errorf("erro na execução do funil de busca: %w", err)
 	}
 
-	// Gerar Relatório Markdown usando o gerador de apresentação de L2
-	mdContent := report.GenerateMarkdownReport(searchReport)
+	// Gerar Relatório (Markdown ou HTML)
+	var reportContent string
+	isHTML := strings.ToLower(*formatFlag) == "html" || strings.HasSuffix(strings.ToLower(*outputFlag), ".html")
+
+	if isHTML {
+		reportContent = report.GenerateHTMLReport(searchReport)
+	} else {
+		reportContent = report.GenerateMarkdownReport(searchReport)
+	}
+
 	_ = os.MkdirAll(filepath.Dir(*outputFlag), 0755)
-	err = os.WriteFile(*outputFlag, []byte(mdContent), 0644)
+	err = os.WriteFile(*outputFlag, []byte(reportContent), 0644)
 	if err != nil {
 		return fmt.Errorf("erro ao salvar o relatório em %s: %w", *outputFlag, err)
 	}

@@ -36,6 +36,8 @@ func (a *CLIApp) Run(args []string) error {
 	queryFlag := fs.String("query", "", "Query de busca por arquitetura ou padrão de código (obrigatório)")
 	langFlag := fs.String("lang", "go", "Linguagem alvo (go, typescript/ts/node, python/py, rust/rs, java/kotlin/kt, php, c/cpp/c++, csharp/cs/dotnet, julia, r, lua, ocaml, elixir, ruby, swift, haskell, dart/flutter, scala, clojure/clj, zig, pascal/delphi, fortran, basic/vb, fsharp/fs, perl, groovy, cobol, nim, crystal, v/vlang, erlang, d, gleam, coldfusion/cf, actionscript/flex, ada, mojo, objective-c/objc, haxe, raku, racket, chapel, pony, odin)")
 	maxFlag := fs.Int("max", 20, "Número de candidatos para descoberta no topo do funil")
+	depthFlag := fs.Int("depth", 1, "Profundidade da busca recursiva em grafo de dependências (default: 1)")
+	reposFlag := fs.String("repos", "", "Lista separada por vírgulas de repositórios (owner/repo) para Modo Benchmark direto. Ignora o estágio 1 e a flag -lang.")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo Markdown de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
@@ -61,11 +63,24 @@ func (a *CLIApp) Run(args []string) error {
 		}
 	}
 
+	var directRepos []string
+	if *reposFlag != "" {
+		parts := strings.Split(*reposFlag, ",")
+		for _, p := range parts {
+			trimmed := strings.TrimSpace(p)
+			if trimmed != "" {
+				directRepos = append(directRepos, trimmed)
+			}
+		}
+	}
+
 	filter := domain.QueryFilter{
-		Query:      *queryFlag,
-		Language:   *langFlag,
-		MaxResults: *maxFlag,
-		MustHave:   mustHave,
+		Query:       *queryFlag,
+		Language:    *langFlag,
+		MaxResults:  *maxFlag,
+		MustHave:    mustHave,
+		Depth:       *depthFlag,
+		DirectRepos: directRepos,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)

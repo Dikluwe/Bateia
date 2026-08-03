@@ -27,7 +27,7 @@ Os resultados do Bateia são entregues como um relatório formatado em Markdown 
    - Cabeçalho com Query, Linguagem e Data/Hora de geração UTC.
    - Tabela do **Resumo do Funil de Redução** (Descobertos -> Triados -> Extraídos -> Descartados).
    - **Seção 1: Soluções Exatas Encontradas (Com Rastreabilidade repo@commit)**:
-     - Lista dos repositórios extraídos com link URL, commit imutável, estrelas, descrição, data de consulta, dependências diretas do `go.mod` e blocos de código extraídos (`<details><summary>...`).
+     - Lista dos repositórios extraídos com link URL, commit imutável, estrelas, descrição, data de consulta, dependências diretas do manifesto detectado e blocos de código extraídos (`<details><summary>...`).
    - **Seção 2: Ideias Alternativas & Abordagens Encontradas**:
      - Agrupamento das bibliotecas/frameworks identificados.
    - **Seção 3: Descobrimento de Necessidades Ocultas**:
@@ -57,3 +57,4 @@ Então a string resultante contém o título "# Relatório de Análise Arquitetu
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | generator.go, generator_test.go |
+| 2026-08-03 | Generalização agnóstica de linguagem (Remoção de hardcoding 'go') | generator.go, generator_test.go |

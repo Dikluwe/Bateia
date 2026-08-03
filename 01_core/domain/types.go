@@ -66,10 +66,12 @@ type DirectoryNode struct {
 
 // QueryFilter define os filtros da busca executada pelo usuário.
 type QueryFilter struct {
-	Query      string   `json:"query"`
-	Language   string   `json:"language"`
-	MaxResults int      `json:"max_results"`
-	MustHave   []string `json:"must_have"` // ex: ["cmd", "internal"]
+	Query       string   `json:"query"`
+	Language    string   `json:"language"`
+	MaxResults  int      `json:"max_results"`
+	MustHave    []string `json:"must_have"` // ex: ["cmd", "internal"]
+	Depth       int      `json:"depth"`     // Profundidade da busca recursiva em grafo
+	DirectRepos []string `json:"direct_repos"` // Repositórios injetados diretamente no modo Benchmark
 }
 
 // TriagedRepository é o resultado da etapa 2 (Meio do funil - Triagem).

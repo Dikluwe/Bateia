@@ -8,7 +8,7 @@
 
 ## Contexto
 
-O `SearchFunnel` é a regra de negócio central do Bateia. Ele coordena a busca em três estágios (Descoberta -> Triagem -> Extração), garantindo a invariante de redução de volume (1000 -> 50 -> 5) e a verificação prévia do cache por `repo@commit` para idempotência.
+O `SearchFunnel` é a regra de negócio central do Bateia. Ele coordena a busca em três estágios (Descoberta -> Triagem -> Extração), garantindo a invariante de redução de volume (1000 -> 50 -> 5) e a verificação prévia do cache por `repo@commit` para idempotência. Agora, ele também suporta busca recursiva por grafo de dependências (Estágio 4) para exploração em malha fechada.
 
 ---
 
@@ -35,6 +35,7 @@ O `SearchFunnel` é a regra de negócio central do Bateia. Ele coordena a busca 
    - **Estágio 1 (Descoberta)**: Consultar `store.GetDiscovery`. Se der cache miss ou retornar lista vazia, consultar `searcher.SearchCandidates`. Salvar no cache se `len > 0`.
    - **Estágio 2 (Triagem)**: Para cada candidato, tentar `store.GetManifest`. Se miss, buscar via `fetcher.FetchManifest`. Se retornar 404/stale, marcar candidato e descartar. Avaliar estrutura via `parser.EvaluateStructure`.
    - **Estágio 3 (Extração)**: Limitar a no máximo 10 repositórios validados. Tentar `store.GetExtracted`. Se miss, buscar via `fetcher.ExtractRepoFiles` e salvar no cache.
+   - **Estágio 4 (Recursividade)**: Se `filter.Depth > 1`, iterar pelas principais dependências (ex: as top 3 não-indiretas) encontradas nos manifestos extraídos que não estejam num set de visitados (`visited map[string]bool`). Para cada dependência, gerar uma nova query, decrescer `filter.Depth - 1`, e executar `Execute` recursivamente. Anexar os resultados no relatório atual.
    - Retornar o `SearchReport` totalmente montado.
 
 ---
@@ -65,3 +66,4 @@ Então utiliza os candidatos cacheados sem invocar o searcher de rede.
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | funnel.go, funnel_test.go |
+| 2026-08-03 | Adição da especificação de busca recursiva (Estágio 4) | funnel.go |

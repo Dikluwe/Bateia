@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 	"sort"
+	"strings"
 	"time"
 
 	"bateia/01_core/domain"
@@ -35,6 +36,11 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 
 // Execute executa a busca através dos 3 estágios do funil com cache e invariante de redução.
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
+	visited := make(map[string]bool)
+	return f.executeRecursive(ctx, filter, visited)
+}
+
+func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.QueryFilter, visited map[string]bool) (*domain.SearchReport, error) {
 	report := &domain.SearchReport{
 		Query:       filter,
 		GeneratedAt: time.Now().UTC(),
@@ -46,23 +52,44 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	// ==========================================
 	// Estágio 1: Descoberta (Topo do Funil)
 	// ==========================================
-	log.Printf("[ESTÁGIO 1] Buscando candidatos no topo do funil...")
-	candidates, hit, err := f.store.GetDiscovery(queryKey, 2*time.Hour)
-	if err != nil {
-		log.Printf("[WARNING] Erro ao ler cache de descoberta: %v", err)
-	}
+	var candidates []domain.RepositoryCandidate
+	var hit bool
+	var err error
 
-	if !hit || len(candidates) == 0 {
-		log.Printf("[ESTÁGIO 1] Cache miss/vazio. Consultando provedor de busca...")
-		candidates, err = f.searcher.SearchCandidates(ctx, filter)
-		if err != nil {
-			return nil, fmt.Errorf("falha no estágio 1 (Descoberta): %w", err)
-		}
-		if len(candidates) > 0 {
-			_ = f.store.SaveDiscovery(queryKey, candidates)
+	if len(filter.DirectRepos) > 0 {
+		log.Printf("[ESTÁGIO 1] Modo Benchmark: Injetando %d repositórios diretamente...", len(filter.DirectRepos))
+		for _, repoStr := range filter.DirectRepos {
+			parts := strings.Split(repoStr, "/")
+			if len(parts) == 2 {
+				candidates = append(candidates, domain.RepositoryCandidate{
+					Owner:        parts[0],
+					Repo:         parts[1],
+					URL:          "https://github.com/" + repoStr,
+					Description:  "Repositório Injetado (Benchmark)",
+					CommitID:     "HEAD",
+					ConsultadoEm: time.Now().UTC(),
+				})
+			}
 		}
 	} else {
-		log.Printf("[ESTÁGIO 1] Cache HIT para a busca '%s' (%d candidatos).", filter.Query, len(candidates))
+		log.Printf("[ESTÁGIO 1] Buscando candidatos no topo do funil...")
+		candidates, hit, err = f.store.GetDiscovery(queryKey, 2*time.Hour)
+		if err != nil {
+			log.Printf("[WARNING] Erro ao ler cache de descoberta: %v", err)
+		}
+
+		if !hit || len(candidates) == 0 {
+			log.Printf("[ESTÁGIO 1] Cache miss/vazio. Consultando provedor de busca...")
+			candidates, err = f.searcher.SearchCandidates(ctx, filter)
+			if err != nil {
+				return nil, fmt.Errorf("falha no estágio 1 (Descoberta): %w", err)
+			}
+			if len(candidates) > 0 {
+				_ = f.store.SaveDiscovery(queryKey, candidates)
+			}
+		} else {
+			log.Printf("[ESTÁGIO 1] Cache HIT para a busca '%s' (%d candidatos).", filter.Query, len(candidates))
+		}
 	}
 
 	report.TopCandidates = len(candidates)
@@ -83,6 +110,13 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 			Repo:   cand.Repo,
 			Commit: cand.CommitID,
 		}
+		
+		refKey := cand.Owner + "/" + cand.Repo
+		if visited[refKey] {
+			discardedCount++
+			continue
+		}
+		visited[refKey] = true
 
 		// 1. Tentar manifesto via Cache
 		manifest, hitM, _ := f.store.GetManifest(ref)
@@ -190,6 +224,45 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	}
 
 	report.ExtractedCount = len(report.Results)
+
+	// ==========================================
+	// Estágio 4: Recursividade (Malha de Dependências)
+	// ==========================================
+	if filter.Depth > 1 {
+		log.Printf("[ESTÁGIO 4] Aprofundando busca recursiva (Restam %d rodadas) para query '%s'...", filter.Depth-1, filter.Query)
+		
+		depsToSearch := make([]string, 0)
+		for _, res := range report.Results {
+			if res.Manifest != nil {
+				count := 0
+				for _, dep := range res.Manifest.Dependencies {
+					if !dep.Indirect && count < 3 { // Top 3 dependências diretas
+						depKey := "dep:" + dep.Name
+						if !visited[depKey] {
+							visited[depKey] = true
+							depsToSearch = append(depsToSearch, dep.Name)
+							count++
+						}
+					}
+				}
+			}
+		}
+
+		for _, depName := range depsToSearch {
+			childFilter := filter
+			childFilter.Depth = filter.Depth - 1
+			childFilter.Query = depName
+			
+			childReport, err := f.executeRecursive(ctx, childFilter, visited)
+			if err == nil && childReport != nil {
+				report.Results = append(report.Results, childReport.Results...)
+				report.TriagedCount += childReport.TriagedCount
+				report.DiscardedCount += childReport.DiscardedCount
+				report.TopCandidates += childReport.TopCandidates
+			}
+		}
+		report.ExtractedCount = len(report.Results)
+	}
 
 	// Extrair Necessidades Ocultas & Insights Arquiteturais dos repositórios validados
 	insights := parser.ExtractArchitecturalInsights(report.Results)

@@ -9,6 +9,7 @@ package report
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"bateia/01_core/domain"
@@ -47,8 +48,36 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 			sb.WriteString(fmt.Sprintf("- **Consultado Em**: %s\n\n", res.ConsultadoEm.Format("2006-01-02 15:04:05")))
 
 			if res.Manifest != nil {
-				sb.WriteString(fmt.Sprintf("#### Módulo & Dependências (`go.mod`)\n"))
-				sb.WriteString(fmt.Sprintf("- **Módulo**: `%s` (Go %s)\n", res.Manifest.ModuleName, res.Manifest.GoVersion))
+				langName := res.Manifest.Language
+				if langName == "" {
+					langName = "Desconhecida"
+				} else {
+					langName = strings.ToUpper(langName[:1]) + langName[1:]
+				}
+
+				manifestName := "Manifesto"
+				switch res.Manifest.Language {
+				case "go":
+					manifestName = "go.mod"
+				case "typescript", "javascript", "node":
+					manifestName = "package.json"
+				case "python":
+					manifestName = "pyproject.toml/requirements.txt"
+				case "rust":
+					manifestName = "Cargo.toml"
+				case "ruby":
+					manifestName = "Gemfile"
+				case "java", "kotlin":
+					manifestName = "pom.xml/build.gradle"
+				}
+
+				sb.WriteString(fmt.Sprintf("#### Módulo & Dependências (`%s`)\n", manifestName))
+				
+				versionStr := ""
+				if res.Manifest.GoVersion != "" {
+					versionStr = " " + res.Manifest.GoVersion
+				}
+				sb.WriteString(fmt.Sprintf("- **Módulo**: `%s` (%s%s)\n", res.Manifest.ModuleName, langName, versionStr))
 				if len(res.Manifest.Dependencies) > 0 {
 					sb.WriteString("- **Principais Dependências Directas**:\n")
 					depCount := 0
@@ -69,7 +98,12 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 					content, isTruncated := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
 
 					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes) — <a href=\"%s\" target=\"_blank\">Ver no GitHub ↗</a></summary>\n\n", f.Path, f.Size, githubURL))
-					sb.WriteString("```go\n")
+					
+					ext := strings.TrimPrefix(filepath.Ext(f.Path), ".")
+					if ext == "" {
+						ext = "text"
+					}
+					sb.WriteString(fmt.Sprintf("```%s\n", ext))
 					sb.WriteString(content)
 					if isTruncated {
 						sb.WriteString(fmt.Sprintf("\n... 📄 [Conteúdo truncado para visualização no relatório. Ver arquivo completo em: %s]\n", githubURL))
@@ -86,15 +120,18 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	sb.WriteString("## 2. Ideias Alternativas & Abordagens Encontradas\n\n")
 	sb.WriteString("Agrupamento das técnicas identificadas nos repositórios analisados:\n\n")
 	for _, res := range report.Results {
-		if res.Manifest != nil {
-			frameworks := make([]string, 0)
+		if res.Manifest != nil && len(res.Manifest.Dependencies) > 0 {
+			deps := make([]string, 0)
 			for _, dep := range res.Manifest.Dependencies {
-				if strings.Contains(dep.Name, "gin") || strings.Contains(dep.Name, "fiber") || strings.Contains(dep.Name, "chi") || strings.Contains(dep.Name, "echo") || strings.Contains(dep.Name, "grpc") {
-					frameworks = append(frameworks, dep.Name)
+				if !dep.Indirect {
+					deps = append(deps, dep.Name)
+					if len(deps) >= 6 {
+						break
+					}
 				}
 			}
-			if len(frameworks) > 0 {
-				sb.WriteString(fmt.Sprintf("- **%s/%s**: Utiliza os frameworks `%s`\n", res.Candidate.Owner, res.Candidate.Repo, strings.Join(frameworks, ", ")))
+			if len(deps) > 0 {
+				sb.WriteString(fmt.Sprintf("- **%s/%s**: Principais pacotes/ferramentas: `%s`\n", res.Candidate.Owner, res.Candidate.Repo, strings.Join(deps, ", ")))
 			}
 		}
 	}

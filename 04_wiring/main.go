@@ -12,6 +12,7 @@ import (
 	"os"
 	"strings"
 
+	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/cli"
 	"bateia/03_infra/cache"
@@ -49,17 +50,33 @@ func main() {
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	sourcegraphToken := os.Getenv("SOURCEGRAPH_TOKEN")
 
-	// L4: Instanciar dependências concretas de L3 (Infraestrutura)
-	store, err := cache.NewDiskCacheStore("")
+	// L4: Instanciar dependências concretas de L3 (Infraestrutura com suporte Bleve local)
+	store, err := cache.NewBleveStore("")
 	if err != nil {
-		log.Fatalf("Erro ao inicializar cache em disco L3: %v", err)
+		log.Printf("Aviso: Falha ao inicializar BleveStore (%v). Usando DiskCacheStore tradicional.", err)
+		diskStore, diskErr := cache.NewDiskCacheStore("")
+		if diskErr != nil {
+			log.Fatalf("Erro ao inicializar cache em disco L3: %v", diskErr)
+		}
+		store = nil
+		_ = diskStore
+	} else {
+		defer store.Close()
+	}
+
+	var cacheStore domain.CacheStore
+	if store != nil {
+		cacheStore = store
+	} else {
+		diskStore, _ := cache.NewDiskCacheStore("")
+		cacheStore = diskStore
 	}
 
 	sgClient := sourcegraph.NewClient(sourcegraphToken)
 	ghClient := github.NewClient(githubToken)
 
 	// L4: Injetar adaptadores L3 nas abstrações/interfaces de L1 (Núcleo)
-	funnelUsecase := usecase.NewSearchFunnel(sgClient, ghClient, store)
+	funnelUsecase := usecase.NewSearchFunnel(sgClient, ghClient, cacheStore)
 
 	// L4: Instanciar a Casca L2 (CLI) passando a fiação pronta
 	app := cli.NewCLIApp(funnelUsecase)

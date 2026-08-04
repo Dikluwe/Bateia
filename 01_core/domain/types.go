@@ -161,6 +161,16 @@ type ArchitecturalInsights struct {
 	DevOps        []FilePatternMatch `json:"devops"`
 }
 
+// ArchDiff representa o delta estrutural entre duas versões de um repositório.
+type ArchDiff struct {
+	OldRef         CommitRef    `json:"old_ref"`
+	NewRef         CommitRef    `json:"new_ref"`
+	AddedDeps      []Dependency `json:"added_deps,omitempty"`
+	RemovedDeps    []Dependency `json:"removed_deps,omitempty"`
+	AddedSymbols   []ASTSymbol  `json:"added_symbols,omitempty"`
+	RemovedSymbols []ASTSymbol  `json:"removed_symbols,omitempty"`
+}
+
 // PolyglotContract representa um protocolo ou interface de comunicação compartilhada entre tecnologias.
 type PolyglotContract struct {
 	Protocol     string   `json:"protocol"` // "gRPC", "GraphQL", "MessageBroker", "Caching", "REST"

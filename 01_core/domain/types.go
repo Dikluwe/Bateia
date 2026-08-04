@@ -202,3 +202,25 @@ type SearchReport struct {
 	PolyglotMatrix []PolyglotContract     `json:"polyglot_matrix,omitempty"`
 	Telemetry      *FunnelTelemetry       `json:"telemetry,omitempty"`
 }
+
+// AlgorithmChallenge representa um algoritmo extraído com seus testes e benchmarks associados.
+type AlgorithmChallenge struct {
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Category     string   `json:"category"` // "Sorting", "Graph", "Tree", "DynamicProgramming", "Crypto", "Math", "General"
+	Language     string   `json:"language"`
+	Repository   string   `json:"repository"`
+	FilePath     string   `json:"file_path"`
+	CodeSnippet  string   `json:"code_snippet"`
+	TestCases    []string `json:"test_cases,omitempty"`
+	Benchmarks   []string `json:"benchmarks,omitempty"`
+	Complexity   string   `json:"complexity,omitempty"`
+}
+
+// LabDataset representa o conjunto de desafios e benchmarks extraídos para o Lab de Projetos.
+type LabDataset struct {
+	Query           string               `json:"query"`
+	GeneratedAt     time.Time            `json:"generated_at"`
+	TotalChallenges int                  `json:"total_challenges"`
+	Challenges      []AlgorithmChallenge `json:"challenges"`
+}

@@ -42,7 +42,8 @@ func (a *CLIApp) Run(args []string) error {
 	reposFlag := fs.String("repos", "", "Lista separada por vírgulas de repositórios (owner/repo) para Modo Benchmark direto. Ignora o estágio 1 e a flag -lang.")
 	mcpFlag := fs.Bool("mcp", false, "Inicia o Bateia como um Servidor MCP (Model Context Protocol) via stdio")
 	tuiFlag := fs.Bool("tui", false, "Inicia o Bateia na interface interativa TUI (Terminal User Interface)")
-	formatFlag := fs.String("format", "markdown", "Formato do relatório de saída: markdown ou html")
+	labFlag := fs.Bool("lab", false, "Exporta o resultado no formato de Dataset de Algoritmos & Testes para o Lab de Projetos")
+	formatFlag := fs.String("format", "markdown", "Formato do relatório de saída: markdown, html, json, sqlite ou lab")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
@@ -60,8 +61,8 @@ func (a *CLIApp) Run(args []string) error {
 	}
 
 	if *queryFlag == "" {
-		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural")
-		fmt.Println("Uso: bateia -query \"hexagonal architecture\" [-lang go] [-max 20] [-output 00_nucleo/relatorios/relatorio.md]")
+		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural & Lab de Projetos")
+		fmt.Println("Uso: bateia -query \"quicksort\" [-lang go] [-max 20] [-lab] [-output relatorios/lab_quicksort.json]")
 		fmt.Println("Ou modo TUI interativo: bateia -tui")
 		fmt.Println("Ou modo MCP: bateia -mcp")
 		fs.PrintDefaults()
@@ -108,12 +109,23 @@ func (a *CLIApp) Run(args []string) error {
 		return fmt.Errorf("erro na execução do funil de busca: %w", err)
 	}
 
-	// Gerar Relatório (Markdown, HTML, JSON ou SQLite)
+	// Gerar Relatório (Markdown, HTML, JSON, SQLite ou Lab)
 	var reportContent string
 	fmtLower := strings.ToLower(*formatFlag)
 	outLower := strings.ToLower(*outputFlag)
 
-	if fmtLower == "json" || strings.HasSuffix(outLower, ".json") {
+	if *labFlag || fmtLower == "lab" || strings.HasSuffix(outLower, ".lab.json") {
+		labDataset := parser.ExtractLabDataset(searchReport)
+		if strings.HasSuffix(outLower, ".md") {
+			reportContent = report.GenerateLabMarkdown(labDataset)
+		} else {
+			jsonBytes, err := report.ExportLabJSON(labDataset)
+			if err != nil {
+				return fmt.Errorf("erro ao exportar Lab JSON: %w", err)
+			}
+			reportContent = string(jsonBytes)
+		}
+	} else if fmtLower == "json" || strings.HasSuffix(outLower, ".json") {
 		jsonBytes, err := report.ExportJSONReport(searchReport)
 		if err != nil {
 			return fmt.Errorf("erro ao exportar JSON: %w", err)

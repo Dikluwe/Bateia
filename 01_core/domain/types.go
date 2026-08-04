@@ -161,6 +161,13 @@ type ArchitecturalInsights struct {
 	DevOps        []FilePatternMatch `json:"devops"`
 }
 
+// PolyglotContract representa um protocolo ou interface de comunicação compartilhada entre tecnologias.
+type PolyglotContract struct {
+	Protocol     string   `json:"protocol"` // "gRPC", "GraphQL", "MessageBroker", "Caching", "REST"
+	Technology   string   `json:"technology"`
+	Repositories []string `json:"repositories"`
+}
+
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
 	Query          QueryFilter            `json:"query"`
@@ -172,4 +179,5 @@ type SearchReport struct {
 	DiscardReason  string                 `json:"discard_reason"`
 	Results        []ExtractedRepository  `json:"results"`
 	Insights       *ArchitecturalInsights `json:"insights,omitempty"`
+	PolyglotMatrix []PolyglotContract     `json:"polyglot_matrix,omitempty"`
 }

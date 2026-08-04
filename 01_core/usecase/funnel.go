@@ -267,6 +267,8 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		report.Results = append(report.Results, *extracted)
 	}
 
+	report.PolyglotMatrix = parser.EvaluatePolyglotMatrix(report.Results)
+
 	report.ExtractedCount = len(report.Results)
 
 	// ==========================================

@@ -39,6 +39,16 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 		sb.WriteString("\n")
 	}
 
+	if len(report.PolyglotMatrix) > 0 {
+		sb.WriteString("### 🌐 Matriz Polyglot de Comunicação & Protocolos\n\n")
+		sb.WriteString("| Protocolo / Categoria | Tecnologia | Repositories Encontrados |\n")
+		sb.WriteString("| :--- | :--- | :--- |\n")
+		for _, poly := range report.PolyglotMatrix {
+			sb.WriteString(fmt.Sprintf("| **%s** | `%s` | `%s` |\n", poly.Protocol, poly.Technology, strings.Join(poly.Repositories, ", ")))
+		}
+		sb.WriteString("\n")
+	}
+
 	sb.WriteString("---\n\n")
 	sb.WriteString("## 1. Soluções Exatas Encontradas (Com Rastreabilidade `repo@commit`)\n\n")
 

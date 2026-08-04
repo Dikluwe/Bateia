@@ -71,6 +71,15 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 		sb.WriteString(fmt.Sprintf("    <pre class=\"mermaid\">\n%s    </pre>\n", cleanMermaid))
 	}
 
+	if len(report.PolyglotMatrix) > 0 {
+		sb.WriteString("    <h3>🌐 Matriz Polyglot de Comunicação</h3>\n")
+		sb.WriteString("    <table>\n      <thead><tr><th>Protocolo</th><th>Tecnologia</th><th>Repositórios</th></tr></thead>\n      <tbody>\n")
+		for _, poly := range report.PolyglotMatrix {
+			sb.WriteString(fmt.Sprintf("        <tr><td><strong>%s</strong></td><td><code>%s</code></td><td>%s</td></tr>\n", html.EscapeString(poly.Protocol), html.EscapeString(poly.Technology), html.EscapeString(strings.Join(poly.Repositories, ", "))))
+		}
+		sb.WriteString("      </tbody>\n    </table>\n")
+	}
+
 	sb.WriteString("  </section>\n")
 
 	sb.WriteString("  <h2>Repositórios Extraídos</h2>\n")

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client.md
  * @layer L3
- * @updated 2026-07-25
+ * @updated 2026-08-04
  */
 
 package github
@@ -141,13 +141,69 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			Commit: candidate.CommitID,
 		}
 
-		return parser.ParseManifest(targetFile, ref, rawContent)
+		manifest, err := parser.ParseManifest(targetFile, ref, rawContent)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// Enriquece manifesto com conteúdo do README para README Score Booster
+		if manifest.Content == nil {
+			readmeContent, _ := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, "README.md")
+			if readmeContent != "" {
+				manifest.Content = []byte(readmeContent)
+			}
+		}
+
+		// Se o manifesto não tem dependências, tenta go.sum como fallback (stdlib-only repos)
+		if len(manifest.Dependencies) == 0 && targetFile == "go.mod" {
+			goSumContent, err := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, "go.sum")
+			if err == nil && goSumContent != "" {
+				sumDeps := parseGoSumDependencies(goSumContent)
+				manifest.Dependencies = sumDeps
+			}
+		}
+
+		return manifest, nil
 	}
 
 	if lastErr != nil {
 		return nil, lastErr
 	}
 	return nil, fmt.Errorf("MANIFEST_NOT_FOUND")
+}
+
+// parseGoSumDependencies extrai dependências do go.sum quando o go.mod não as lista.
+func parseGoSumDependencies(content string) []domain.Dependency {
+	seen := make(map[string]bool)
+	var deps []domain.Dependency
+	for _, line := range strings.Split(content, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) < 2 {
+			continue
+		}
+		// Formato: module version/go.mod hash
+		modParts := strings.SplitN(parts[0], "@", 2)
+		if len(modParts) < 2 {
+			continue
+		}
+		modName := modParts[0]
+		modVersion := strings.TrimSuffix(modParts[1], "/go.mod")
+		if seen[modName] {
+			continue
+		}
+		seen[modName] = true
+		deps = append(deps, domain.Dependency{
+			Name:     modName,
+			Version:  modVersion,
+			Indirect: true, // go.sum não distingue direto/indireto
+		})
+	}
+	return deps
 }
 
 func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, path string) (string, error) {

@@ -19,10 +19,14 @@ import (
 // ExtractASTSymbols extrai os símbolos exported/estruturais de um conteúdo de arquivo de código em memória.
 func ExtractASTSymbols(path string, content []byte) []domain.ASTSymbol {
 	ext := filepath.Ext(path)
-	if ext == ".go" {
+	switch ext {
+	case ".go":
 		return extractGoSymbols(path, content)
+	case ".rs":
+		return ExtractRustSymbols(path, content)
+	default:
+		return nil
 	}
-	return nil
 }
 
 func extractGoSymbols(path string, content []byte) []domain.ASTSymbol {

@@ -62,3 +62,47 @@ tokio-test = "0.4.3"
 		t.Errorf("Esperado 2 dependências dev (criterion, tokio-test), obtido %d", devCount)
 	}
 }
+
+func TestExtractRustSymbols(t *testing.T) {
+	code := `
+pub struct LinterEngine {
+    rules: Vec<String>,
+}
+
+pub trait Rule {
+    fn check(&self) -> bool;
+}
+
+pub fn run_linter() {
+    // impl
+}
+
+pub enum Severity {
+    Error,
+    Warning,
+}
+`
+
+	symbols := ExtractRustSymbols("src/lib.rs", []byte(code))
+	if len(symbols) != 5 {
+		t.Fatalf("Esperava 5 símbolos Rust (struct, trait, fn check, fn run_linter, enum), obteve %d", len(symbols))
+	}
+
+	kinds := make(map[string]string)
+	for _, sym := range symbols {
+		kinds[sym.Name] = sym.Kind
+	}
+
+	if kinds["LinterEngine"] != "struct" {
+		t.Errorf("Esperava struct LinterEngine, obteve %s", kinds["LinterEngine"])
+	}
+	if kinds["Rule"] != "interface" {
+		t.Errorf("Esperava interface Rule, obteve %s", kinds["Rule"])
+	}
+	if kinds["run_linter"] != "function" {
+		t.Errorf("Esperava function run_linter, obteve %s", kinds["run_linter"])
+	}
+	if kinds["Severity"] != "enum" {
+		t.Errorf("Esperava enum Severity, obteve %s", kinds["Severity"])
+	}
+}

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-07-25
+ * @updated 2026-08-04
  */
 
 package main
@@ -10,6 +10,7 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 
 	"bateia/01_core/usecase"
 	"bateia/02_shell/cli"
@@ -18,8 +19,33 @@ import (
 	"bateia/03_infra/sourcegraph"
 )
 
+func loadEnvFile(filepath string) {
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		return
+	}
+	lines := strings.Split(string(data), "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		line = strings.TrimPrefix(line, "export ")
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			val := strings.Trim(strings.TrimSpace(parts[1]), "\"'")
+			if os.Getenv(key) == "" && val != "" {
+				_ = os.Setenv(key, val)
+			}
+		}
+	}
+}
+
 func main() {
-	// L4: Ler tokens de ambiente se disponíveis
+	// L4: Ler tokens do arquivo .env se disponíveis
+	loadEnvFile(".env")
+
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	sourcegraphToken := os.Getenv("SOURCEGRAPH_TOKEN")
 

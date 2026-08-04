@@ -40,9 +40,24 @@ type RelevanceResult struct {
 // EvaluateRelevance calcula a relevância do repositório em relação à query pesquisada.
 func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.RepositoryCandidate, tree []domain.DirectoryNode) RelevanceResult {
 	normQuery := NormalizeQuery(query)
+	queryWords := strings.Fields(normQuery)
+
+	// 1. Check repository name match (ex: "Bateia" na query "Bateia Architectural Engine")
+	if cand.Repo != "" {
+		repoLower := strings.ToLower(cand.Repo)
+		for _, w := range queryWords {
+			if strings.ToLower(w) == repoLower {
+				return RelevanceResult{
+					Score:  ScoreModuleName,
+					Label:  LabelModuleName,
+					Reason: fmt.Sprintf("Match exato com o nome do repositório: '%s'", cand.Repo),
+				}
+			}
+		}
+	}
 
 	if manifest != nil {
-		// 1. Check direct imports
+		// 2. Check direct imports
 		for _, dep := range manifest.Dependencies {
 			if !dep.Indirect {
 				if matchesDependency(normQuery, dep.Name) {
@@ -55,10 +70,10 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 			}
 		}
 
-		// 2. Check module name
+		// 3. Check module name
 		if manifest.ModuleName != "" {
 			normModule := NormalizeQuery(manifest.ModuleName)
-			if normModule == normQuery || path.Base(normModule) == normQuery {
+			if normModule == normQuery || path.Base(normModule) == normQuery || strings.EqualFold(manifest.ModuleName, cand.Repo) {
 				return RelevanceResult{
 					Score:  ScoreModuleName,
 					Label:  LabelModuleName,
@@ -67,7 +82,7 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 			}
 		}
 
-		// 3. Check indirect imports
+		// 4. Check indirect imports
 		for _, dep := range manifest.Dependencies {
 			if dep.Indirect {
 				if matchesDependency(normQuery, dep.Name) {
@@ -80,21 +95,27 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 			}
 		}
 
-		// 4. README content keyword scoring (README Score Booster)
+		// 5. README content keyword & prefix scoring (README Score Booster Multilíngue)
 		if manifest.Content != nil {
 			readmeLower := strings.ToLower(string(manifest.Content))
-			queryWords := strings.Fields(normQuery)
 			matchedWords := 0
 			for _, word := range queryWords {
-				if len(word) >= 3 && strings.Contains(readmeLower, word) {
-					matchedWords++
+				wLower := strings.ToLower(word)
+				if len(wLower) >= 3 {
+					prefix := wLower
+					if len(prefix) > 5 {
+						prefix = prefix[:5] // Prefix matching para termos multilíngues (ex: archit/arquit, intel)
+					}
+					if strings.Contains(readmeLower, wLower) || strings.Contains(readmeLower, prefix) {
+						matchedWords++
+					}
 				}
 			}
-			if matchedWords > 0 && matchedWords >= len(queryWords)/2+1 {
+			if matchedWords > 0 {
 				return RelevanceResult{
 					Score:  ScoreReadmeKeyword,
 					Label:  LabelReadmeKeyword,
-					Reason: fmt.Sprintf("Match de %d/%d termos-chave no README do repositório", matchedWords, len(queryWords)),
+					Reason: fmt.Sprintf("Match de %d/%d termos-chave/prefixos no README do repositório", matchedWords, len(queryWords)),
 				}
 			}
 		}

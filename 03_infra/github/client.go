@@ -322,10 +322,22 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 	}
 	defer os.RemoveAll(tempDir)
 
-	repoURL := fmt.Sprintf("https://github.com/%s/%s.git", candidate.Owner, candidate.Repo)
-	cmd := exec.CommandContext(ctx, "git", "clone", "--depth", "1", "--filter=blob:none", repoURL, tempDir)
+	cleanEnv := func() []string {
+		var env []string
+		for _, e := range os.Environ() {
+			if !strings.HasPrefix(e, "GITHUB_TOKEN=") {
+				env = append(env, e)
+			}
+		}
+		return env
+	}
+
+	publicURL := fmt.Sprintf("https://github.com/%s/%s.git", candidate.Owner, candidate.Repo)
+	cmd := exec.CommandContext(ctx, "git", "clone", "--depth", "1", "--filter=blob:none", publicURL, tempDir)
+	cmd.Env = cleanEnv()
 	if err := cmd.Run(); err != nil {
-		cmdSimple := exec.CommandContext(ctx, "git", "clone", "--depth", "1", repoURL, tempDir)
+		cmdSimple := exec.CommandContext(ctx, "git", "clone", "--depth", "1", publicURL, tempDir)
+		cmdSimple.Env = cleanEnv()
 		if err := cmdSimple.Run(); err != nil {
 			return nil, fmt.Errorf("falha ao clonar repositório %s: %w", candidate.URL, err)
 		}

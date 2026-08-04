@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/funnel.md
  * @layer L1
- * @updated 2026-07-25
+ * @updated 2026-08-04
  */
 
 package usecase
@@ -238,17 +238,53 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				continue
 			}
 			extracted.Candidate = tRepo.Candidate
-			extracted.Manifest = tRepo.Manifest
-			extracted.RelevanceScore = tRepo.RelevanceScore
-			extracted.RelevanceLabel = tRepo.RelevanceLabel
-			extracted.RelevanceReason = tRepo.RelevanceReason
+			if tRepo.Manifest != nil {
+				extracted.Manifest = tRepo.Manifest
+			} else {
+				// Tentar recuperar manifesto a partir dos arquivos extraídos (ex: go.mod)
+				for _, f := range extracted.Files {
+					if f.Path == "go.mod" || f.Path == "package.json" || f.Path == "Cargo.toml" {
+						m, errM := parser.ParseManifest(f.Path, ref, f.Content)
+						if errM == nil {
+							extracted.Manifest = m
+							break
+						}
+					}
+				}
+			}
+
+			// Se o manifesto tiver sido recuperado ou existir, anexar README.md e reavaliar Relevância
+			if extracted.Manifest != nil {
+				for _, f := range extracted.Files {
+					if strings.EqualFold(f.Path, "README.md") {
+						extracted.Manifest.Content = []byte(f.Content)
+						break
+					}
+				}
+				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
+				extracted.RelevanceScore = rel.Score
+				extracted.RelevanceLabel = rel.Label
+				extracted.RelevanceReason = rel.Reason
+			} else {
+				extracted.RelevanceScore = tRepo.RelevanceScore
+				extracted.RelevanceLabel = tRepo.RelevanceLabel
+				extracted.RelevanceReason = tRepo.RelevanceReason
+			}
+
 			_ = f.store.SaveExtracted(ref, extracted)
 		} else {
 			extracted.Candidate = tRepo.Candidate
-			extracted.RelevanceScore = tRepo.RelevanceScore
-			extracted.RelevanceLabel = tRepo.RelevanceLabel
-			extracted.RelevanceReason = tRepo.RelevanceReason
-			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), tRepo.RelevanceScore)
+			if extracted.Manifest != nil && extracted.Manifest.Content != nil {
+				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
+				extracted.RelevanceScore = rel.Score
+				extracted.RelevanceLabel = rel.Label
+				extracted.RelevanceReason = rel.Reason
+			} else {
+				extracted.RelevanceScore = tRepo.RelevanceScore
+				extracted.RelevanceLabel = tRepo.RelevanceLabel
+				extracted.RelevanceReason = tRepo.RelevanceReason
+			}
+			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), extracted.RelevanceScore)
 		}
 
 		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)

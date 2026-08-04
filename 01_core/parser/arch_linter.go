@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/arch_linter.md
  * @layer L1
- * @updated 2026-08-03
+ * @updated 2026-08-04
  */
 
 package parser
@@ -35,7 +35,6 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 	for _, dep := range manifest.Dependencies {
 		lowerDep := strings.ToLower(dep.Name)
 		if strings.Contains(lowerDep, "gorm") || strings.Contains(lowerDep, "ent") || strings.Contains(lowerDep, "prisma") {
-			// Se o banco for ORM pesado sem pasta de infraestrutura/repositório
 			hasInfra := false
 			for _, node := range tree {
 				if strings.Contains(node.Path, "infra") || strings.Contains(node.Path, "repository") || strings.Contains(node.Path, "database") {
@@ -51,6 +50,41 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 					Target:   dep.Name,
 				})
 			}
+		}
+	}
+
+	if len(tree) > 0 {
+		hasTests := false
+		hasDevOps := false
+
+		for _, node := range tree {
+			lowerPath := strings.ToLower(node.Path)
+			if strings.Contains(lowerPath, "test") || strings.HasSuffix(lowerPath, "_test.go") || strings.Contains(lowerPath, "spec") {
+				hasTests = true
+			}
+			if strings.Contains(lowerPath, "docker") || strings.Contains(lowerPath, ".github") || strings.Contains(lowerPath, "makefile") {
+				hasDevOps = true
+			}
+		}
+
+		// 3. Ausência de Suíte de Testes
+		if !hasTests {
+			violations = append(violations, domain.ArchViolation{
+				Rule:     "MISSING_TEST_SUITE",
+				Severity: "MEDIUM",
+				Message:  "Nenhum diretório ou arquivo de teste unitário/integração detectado na estrutura do projeto.",
+				Target:   manifest.ModuleName,
+			})
+		}
+
+		// 4. Ausência de Automação DevOps
+		if !hasDevOps {
+			violations = append(violations, domain.ArchViolation{
+				Rule:     "MISSING_DEVOPS_AUTOMATION",
+				Severity: "LOW",
+				Message:  "Nenhum arquivo de automação CI/CD, Dockerfile ou Makefile detectado na raiz do projeto.",
+				Target:   manifest.ModuleName,
+			})
 		}
 	}
 

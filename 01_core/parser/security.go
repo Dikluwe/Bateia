@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/security.md
  * @layer L1
- * @updated 2026-08-03
+ * @updated 2026-08-04
  */
 
 package parser
@@ -42,6 +42,34 @@ var knownAdvisories = []knownAdvisory{
 		severity:    "HIGH",
 		advisoryID:  "CVE-2020-26160",
 		description: "Vulnerabilidade em validação de token JWT descontinuado.",
+	},
+	{
+		pkgSub:      "golang.org/x/net",
+		versionSub:  "v0.16.0",
+		severity:    "CRITICAL",
+		advisoryID:  "CVE-2023-39325 / CVE-2023-44487",
+		description: "Vulnerabilidade HTTP/2 Rapid Reset causando Negação de Serviço (DoS).",
+	},
+	{
+		pkgSub:      "spring-core",
+		versionSub:  "5.3.",
+		severity:    "CRITICAL",
+		advisoryID:  "CVE-2022-22965",
+		description: "Spring4Shell RCE no DataBinder do Spring Framework.",
+	},
+	{
+		pkgSub:      "requests",
+		versionSub:  "2.30",
+		severity:    "HIGH",
+		advisoryID:  "CVE-2023-32681",
+		description: "Vazamento não intencional de cabeçalho Proxy-Authorization em redirecionamentos HTTP.",
+	},
+	{
+		pkgSub:      "pyyaml",
+		versionSub:  "5.",
+		severity:    "HIGH",
+		advisoryID:  "CVE-2020-14343",
+		description: "Execução remota de código via desserialização não confiável no PyYAML.",
 	},
 }
 

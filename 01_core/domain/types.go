@@ -178,6 +178,16 @@ type PolyglotContract struct {
 	Repositories []string `json:"repositories"`
 }
 
+// FunnelTelemetry estatísticas de execução e telemetria de desempenho dos estágios do funil.
+type FunnelTelemetry struct {
+	DiscoveryDurationMs  int64 `json:"discovery_duration_ms"`
+	TriageDurationMs     int64 `json:"triage_duration_ms"`
+	ExtractionDurationMs int64 `json:"extraction_duration_ms"`
+	TotalDurationMs      int64 `json:"total_duration_ms"`
+	CacheHits            int   `json:"cache_hits"`
+	CacheMisses          int   `json:"cache_misses"`
+}
+
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
 	Query          QueryFilter            `json:"query"`
@@ -190,4 +200,5 @@ type SearchReport struct {
 	Results        []ExtractedRepository  `json:"results"`
 	Insights       *ArchitecturalInsights `json:"insights,omitempty"`
 	PolyglotMatrix []PolyglotContract     `json:"polyglot_matrix,omitempty"`
+	Telemetry      *FunnelTelemetry       `json:"telemetry,omitempty"`
 }

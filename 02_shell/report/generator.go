@@ -32,6 +32,21 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	sb.WriteString(fmt.Sprintf("| **2. Triagem (Meio)** | %d aprovados | Leitura de manifestos e estrutura (%d descartados) |\n", report.TriagedCount, report.DiscardedCount))
 	sb.WriteString(fmt.Sprintf("| **3. Extração (Fundo)** | %d entregues | Extração idempotente e cacheados por `repo@commit` |\n\n", report.ExtractedCount))
 
+	if report.Telemetry != nil && report.Telemetry.TotalDurationMs > 0 {
+		sb.WriteString("#### ⏱️ Telemetria de Desempenho do Funil\n\n")
+		sb.WriteString(fmt.Sprintf("- **Tempo Total de Execução**: `%d ms`  \n", report.Telemetry.TotalDurationMs))
+		if report.Telemetry.DiscoveryDurationMs > 0 {
+			sb.WriteString(fmt.Sprintf("- **Tempo de Descoberta (Estágio 1)**: `%d ms`  \n", report.Telemetry.DiscoveryDurationMs))
+		}
+		if report.Telemetry.TriageDurationMs > 0 {
+			sb.WriteString(fmt.Sprintf("- **Tempo de Triagem (Estágio 2)**: `%d ms`  \n", report.Telemetry.TriageDurationMs))
+		}
+		if report.Telemetry.ExtractionDurationMs > 0 {
+			sb.WriteString(fmt.Sprintf("- **Tempo de Extração (Estágio 3)**: `%d ms`  \n", report.Telemetry.ExtractionDurationMs))
+		}
+		sb.WriteString(fmt.Sprintf("- **Métricas de Cache**: `%d Hits` / `%d Misses`  \n\n", report.Telemetry.CacheHits, report.Telemetry.CacheMisses))
+	}
+
 	mermaidGraph := GenerateMermaidGraph(report)
 	if mermaidGraph != "" {
 		sb.WriteString("### 📊 Grafo de Dependências (Mermaid.js)\n\n")

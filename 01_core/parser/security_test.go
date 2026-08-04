@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/security.md
  * @layer L1
- * @updated 2026-08-03
+ * @updated 2026-08-04
  */
 
 package parser
@@ -18,14 +18,21 @@ func TestEvaluateSecurityAdvisories(t *testing.T) {
 		ModuleName: "test-app",
 		Dependencies: []domain.Dependency{
 			{Name: "github.com/dgrijalva/jwt-go", Version: "v3.2.0"},
+			{Name: "golang.org/x/net", Version: "v0.16.0"},
 		},
 	}
 
 	advisories := EvaluateSecurityAdvisories(manifest)
-	if len(advisories) != 1 {
-		t.Fatalf("Esperava 1 alerta de segurança, obteve %d", len(advisories))
+	if len(advisories) != 2 {
+		t.Fatalf("Esperava 2 alertas de segurança, obteve %d", len(advisories))
 	}
-	if advisories[0].Severity != "HIGH" {
-		t.Errorf("Esperava severidade HIGH, obteve %s", advisories[0].Severity)
+
+	severities := make(map[string]bool)
+	for _, a := range advisories {
+		severities[a.Severity] = true
+	}
+
+	if !severities["HIGH"] || !severities["CRITICAL"] {
+		t.Errorf("Esperava severidades HIGH e CRITICAL no teste de segurança")
 	}
 }

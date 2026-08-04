@@ -37,6 +37,8 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 
 // Execute executa a busca através dos 3 estágios do funil com cache e invariante de redução.
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
+	startTotal := time.Now()
+
 	// Normalizar query antes de iniciar a busca
 	if len(filter.DirectRepos) == 0 {
 		normalized := parser.NormalizeQuery(filter.Query)
@@ -47,14 +49,27 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	}
 
 	visited := make(map[string]bool)
-	return f.executeRecursive(ctx, filter, visited)
+	rep, err := f.executeRecursive(ctx, filter, visited)
+	if err != nil {
+		return nil, err
+	}
+
+	if rep.Telemetry == nil {
+		rep.Telemetry = &domain.FunnelTelemetry{}
+	}
+	rep.Telemetry.TotalDurationMs = time.Since(startTotal).Milliseconds()
+	return rep, nil
 }
 
 func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.QueryFilter, visited map[string]bool) (*domain.SearchReport, error) {
+	startStage1 := time.Now()
+	telemetry := &domain.FunnelTelemetry{}
+
 	report := &domain.SearchReport{
 		Query:       filter,
 		GeneratedAt: time.Now().UTC(),
 		Results:     make([]domain.ExtractedRepository, 0),
+		Telemetry:   telemetry,
 	}
 
 	queryKey := fmt.Sprintf("%s_%s_%d", filter.Query, filter.Language, filter.MaxResults)
@@ -89,6 +104,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 
 		if !hit || len(candidates) == 0 {
+			telemetry.CacheMisses++
 			log.Printf("[ESTÁGIO 1] Cache miss/vazio. Consultando provedor de busca...")
 			candidates, err = f.searcher.SearchCandidates(ctx, filter)
 			if err != nil {
@@ -98,9 +114,12 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				_ = f.store.SaveDiscovery(queryKey, candidates)
 			}
 		} else {
+			telemetry.CacheHits++
 			log.Printf("[ESTÁGIO 1] Cache HIT para a busca '%s' (%d candidatos).", filter.Query, len(candidates))
 		}
 	}
+
+	telemetry.DiscoveryDurationMs = time.Since(startStage1).Milliseconds()
 
 	report.TopCandidates = len(candidates)
 	if len(candidates) == 0 {
@@ -110,6 +129,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// ==========================================
 	// Estágio 2: Triagem (Meio do Funil)
 	// ==========================================
+	startStage2 := time.Now()
 	log.Printf("[ESTÁGIO 2] Triando manifestos e estrutura (%d candidatos)...", len(candidates))
 	triaged := make([]domain.TriagedRepository, 0)
 	discardedCount := 0
@@ -130,7 +150,10 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		// 1. Tentar manifesto via Cache
 		manifest, hitM, _ := f.store.GetManifest(ref)
-		if !hitM {
+		if hitM {
+			telemetry.CacheHits++
+		} else {
+			telemetry.CacheMisses++
 			manifest, err = f.fetcher.FetchManifest(ctx, cand)
 			if err != nil {
 				if err.Error() == "MANIFEST_NOT_FOUND (404/410)" {
@@ -170,6 +193,8 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 	}
 
+	telemetry.TriageDurationMs = time.Since(startStage2).Milliseconds()
+
 	report.TriagedCount = len(triaged)
 	report.DiscardedCount = discardedCount
 	report.DiscardReason = "Filtro estrutural ou repositório indisponível (404/stale)"
@@ -185,6 +210,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// Estágio 3: Extração (Fundo do Funil)
 	// Limita o fundo do funil a no máximo 10 repositórios validados
 	// ==========================================
+	startStage3 := time.Now()
 	maxExtract := 10
 	if len(triaged) < maxExtract {
 		maxExtract = len(triaged)
@@ -209,7 +235,22 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		// Tentar extração via cache imutável (repo@commit)
 		extracted, hitE, _ := f.store.GetExtracted(ref)
-		if !hitE {
+		if hitE {
+			telemetry.CacheHits++
+			extracted.Candidate = tRepo.Candidate
+			if extracted.Manifest != nil && extracted.Manifest.Content != nil {
+				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
+				extracted.RelevanceScore = rel.Score
+				extracted.RelevanceLabel = rel.Label
+				extracted.RelevanceReason = rel.Reason
+			} else {
+				extracted.RelevanceScore = tRepo.RelevanceScore
+				extracted.RelevanceLabel = tRepo.RelevanceLabel
+				extracted.RelevanceReason = tRepo.RelevanceReason
+			}
+			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), extracted.RelevanceScore)
+		} else {
+			telemetry.CacheMisses++
 			log.Printf("[ESTÁGIO 3] Baixando conteúdo para %s (Score: %d)...", ref.Key(), tRepo.RelevanceScore)
 			targetPaths := []string{"go.mod", "README.md", "package.json", "Cargo.toml"}
 			
@@ -272,19 +313,6 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			}
 
 			_ = f.store.SaveExtracted(ref, extracted)
-		} else {
-			extracted.Candidate = tRepo.Candidate
-			if extracted.Manifest != nil && extracted.Manifest.Content != nil {
-				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
-				extracted.RelevanceScore = rel.Score
-				extracted.RelevanceLabel = rel.Label
-				extracted.RelevanceReason = rel.Reason
-			} else {
-				extracted.RelevanceScore = tRepo.RelevanceScore
-				extracted.RelevanceLabel = tRepo.RelevanceLabel
-				extracted.RelevanceReason = tRepo.RelevanceReason
-			}
-			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), extracted.RelevanceScore)
 		}
 
 		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)
@@ -302,6 +330,8 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		report.Results = append(report.Results, *extracted)
 	}
+
+	telemetry.ExtractionDurationMs = time.Since(startStage3).Milliseconds()
 
 	report.PolyglotMatrix = parser.EvaluatePolyglotMatrix(report.Results)
 

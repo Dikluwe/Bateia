@@ -101,11 +101,20 @@ func (a *CLIApp) Run(args []string) error {
 		return fmt.Errorf("erro na execução do funil de busca: %w", err)
 	}
 
-	// Gerar Relatório (Markdown ou HTML)
+	// Gerar Relatório (Markdown, HTML, JSON ou SQLite)
 	var reportContent string
-	isHTML := strings.ToLower(*formatFlag) == "html" || strings.HasSuffix(strings.ToLower(*outputFlag), ".html")
+	fmtLower := strings.ToLower(*formatFlag)
+	outLower := strings.ToLower(*outputFlag)
 
-	if isHTML {
+	if fmtLower == "json" || strings.HasSuffix(outLower, ".json") {
+		jsonBytes, err := report.ExportJSONReport(searchReport)
+		if err != nil {
+			return fmt.Errorf("erro ao exportar JSON: %w", err)
+		}
+		reportContent = string(jsonBytes)
+	} else if fmtLower == "sqlite" || fmtLower == "sql" || strings.HasSuffix(outLower, ".sql") || strings.HasSuffix(outLower, ".sqlite") {
+		reportContent = report.ExportSQLiteSchema(searchReport)
+	} else if fmtLower == "html" || strings.HasSuffix(outLower, ".html") {
 		reportContent = report.GenerateHTMLReport(searchReport)
 	} else {
 		reportContent = report.GenerateMarkdownReport(searchReport)

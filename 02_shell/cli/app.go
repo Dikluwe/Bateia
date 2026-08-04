@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"bateia/01_core/domain"
+	"bateia/01_core/parser"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/mcp"
 	"bateia/02_shell/report"
@@ -114,6 +115,8 @@ func (a *CLIApp) Run(args []string) error {
 		reportContent = string(jsonBytes)
 	} else if fmtLower == "sqlite" || fmtLower == "sql" || strings.HasSuffix(outLower, ".sql") || strings.HasSuffix(outLower, ".sqlite") {
 		reportContent = report.ExportSQLiteSchema(searchReport)
+	} else if fmtLower == "adr" {
+		reportContent = parser.GenerateADRDocument(searchReport)
 	} else if fmtLower == "html" || strings.HasSuffix(outLower, ".html") {
 		reportContent = report.GenerateHTMLReport(searchReport)
 	} else {

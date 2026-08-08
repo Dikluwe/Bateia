@@ -136,9 +136,26 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 			}
 
 			if len(res.ArchViolations) > 0 {
-				sb.WriteString("#### ⚠️ Violações Arquiteturais Detectadas (Arch-Linter)\n")
+				sb.WriteString("#### ⚠️ Violações Arquiteturais Detectadas (Arch-Linter)\n\n")
 				for _, v := range res.ArchViolations {
 					sb.WriteString(fmt.Sprintf("- **[%s] %s**: %s (alvo: `%s`)\n", v.Severity, v.Rule, v.Message, v.Target))
+					if v.CodeSnippet != "" || v.Suggestion != "" {
+						sb.WriteString("```text\n")
+						sb.WriteString(fmt.Sprintf("  Error: [%s]\n", v.Rule))
+						lineNo := v.Line
+						if lineNo <= 0 {
+							lineNo = 1
+						}
+						sb.WriteString(fmt.Sprintf("     ╭─[%s:%d:1]\n", v.Target, lineNo))
+						if v.CodeSnippet != "" {
+							sb.WriteString(fmt.Sprintf("  %d │ %s\n", lineNo, v.CodeSnippet))
+							sb.WriteString("     · ^^^^^^^^^^^^^^\n")
+						}
+						if v.Suggestion != "" {
+							sb.WriteString(fmt.Sprintf("     ╰─[Dica: %s]\n", v.Suggestion))
+						}
+						sb.WriteString("```\n")
+					}
 				}
 				sb.WriteString("\n")
 			}

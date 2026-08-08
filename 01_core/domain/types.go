@@ -105,10 +105,13 @@ type ExtractedFile struct {
 
 // ArchViolation representa uma violação de arquitetura ou acoplamento.
 type ArchViolation struct {
-	Rule     string `json:"rule"`
-	Severity string `json:"severity"` // "HIGH", "MEDIUM", "LOW"
-	Message  string `json:"message"`
-	Target   string `json:"target,omitempty"`
+	Rule        string `json:"rule"`
+	Severity    string `json:"severity"` // "HIGH", "MEDIUM", "LOW"
+	Message     string `json:"message"`
+	Target      string `json:"target,omitempty"`
+	Line        int    `json:"line,omitempty"`
+	CodeSnippet string `json:"code_snippet,omitempty"`
+	Suggestion  string `json:"suggestion,omitempty"`
 }
 
 // SecurityAdvisory representa um alerta de segurança ou CVE conhecido em dependência.

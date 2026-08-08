@@ -75,6 +75,14 @@ func ParseCargoToml(ref domain.CommitRef, content string) (*domain.Manifest, err
 				manifest.Dependencies = append(manifest.Dependencies, *dep)
 			}
 		}
+
+		// Dependências de Workspace
+		if currentSection == "[workspace.dependencies]" {
+			dep := parseCargoDepLine(trimmed, "workspace")
+			if dep != nil {
+				manifest.Dependencies = append(manifest.Dependencies, *dep)
+			}
+		}
 	}
 
 	if manifest.ModuleName == "" {

@@ -8,6 +8,7 @@
 package parser
 
 import (
+	"path/filepath"
 	"strings"
 
 	"bateia/01_core/domain"
@@ -45,7 +46,7 @@ func EvaluateStructure(nodes []domain.DirectoryNode, mustHave []string) Structur
 
 	missing := make([]string, 0)
 	for _, req := range mustHave {
-		if !pathSet[req] {
+		if !matchGlobOrExact(req, pathSet, nodes) {
 			missing = append(missing, req)
 		}
 	}
@@ -59,4 +60,23 @@ func EvaluateStructure(nodes []domain.DirectoryNode, mustHave []string) Structur
 	}
 
 	return score
+}
+
+func matchGlobOrExact(req string, pathSet map[string]bool, nodes []domain.DirectoryNode) bool {
+	if pathSet[req] {
+		return true
+	}
+	if strings.Contains(req, "*") || strings.Contains(req, "?") {
+		for _, node := range nodes {
+			matched, _ := filepath.Match(req, node.Path)
+			if matched {
+				return true
+			}
+			matchedBase, _ := filepath.Match(req, filepath.Base(node.Path))
+			if matchedBase {
+				return true
+			}
+		}
+	}
+	return false
 }

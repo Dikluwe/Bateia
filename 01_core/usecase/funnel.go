@@ -39,13 +39,60 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
 	startTotal := time.Now()
 
-	// Normalizar query antes de iniciar a busca
-	if len(filter.DirectRepos) == 0 {
-		normalized := parser.NormalizeQuery(filter.Query)
-		if normalized != filter.Query {
-			log.Printf("[QUERY NORMALIZER] Query '%s' sanitizada para '%s'", filter.Query, normalized)
-			filter.Query = normalized
+	langs := ParseLanguageList(filter.Language)
+	if len(langs) > 1 && (strings.Contains(filter.Language, ",") || filter.Language == "sweep" || filter.Language == "all") {
+		log.Printf("[POLYGLOT SWEEP] Iniciando varredura em %d ecossistemas (%s)...", len(langs), strings.Join(langs, ", "))
+		var mergedResults []domain.ExtractedRepository
+		var topCandidates, triagedCount, discardedCount int
+		visited := make(map[string]bool)
+
+		for _, l := range langs {
+			subFilter := filter
+			subFilter.Language = l
+			subReport, err := f.executeRecursive(ctx, subFilter, visited)
+			if err == nil && subReport != nil {
+				mergedResults = append(mergedResults, subReport.Results...)
+				topCandidates += subReport.TopCandidates
+				triagedCount += subReport.TriagedCount
+				discardedCount += subReport.DiscardedCount
+			}
 		}
+
+		telemetry := &domain.FunnelTelemetry{
+			TotalDurationMs: time.Since(startTotal).Milliseconds(),
+		}
+
+		finalReport := &domain.SearchReport{
+			Query:          filter,
+			GeneratedAt:    time.Now().UTC(),
+			TopCandidates:  topCandidates,
+			TriagedCount:   triagedCount,
+			ExtractedCount: len(mergedResults),
+			DiscardedCount: discardedCount,
+			Results:        mergedResults,
+			Telemetry:      telemetry,
+		}
+
+		insights := parser.ExtractArchitecturalInsights(finalReport.Results)
+		finalReport.Insights = &insights
+		finalReport.PolyglotMatrix = parser.EvaluatePolyglotMatrix(finalReport.Results)
+
+		if len(finalReport.Results) > 0 {
+			targetOnt := ExtractOntologyFromIdea(filter.Query)
+			finalReport.TargetOntology = &targetOnt
+
+			var simResults []domain.IdeaSimilarityResult
+			for _, res := range finalReport.Results {
+				candOnt := ExtractOntologyFromRepo(res)
+				sim := CalculateIdeaSimilarity(targetOnt, candOnt)
+				simResults = append(simResults, sim)
+			}
+			finalReport.SimilarityResults = simResults
+			finalReport.Recommendations = MineOntologicalImprovements(targetOnt, simResults, finalReport.Results)
+			finalReport.LanguageDistribution = CalculateLanguageDistribution(finalReport.Results, simResults)
+		}
+
+		return finalReport, nil
 	}
 
 	visited := make(map[string]bool)
@@ -381,7 +428,35 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	insights := parser.ExtractArchitecturalInsights(report.Results)
 	report.Insights = &insights
 
+	// Estágio 5: Ontologia e Score de Similaridade de Ideias
+	if len(report.Results) > 0 {
+		var targetOnt domain.ProjectOntology
+		if len(filter.DirectRepos) > 0 {
+			for _, res := range report.Results {
+				if res.Ref.Key() == filter.DirectRepos[0] || (res.Ref.Owner+"/"+res.Ref.Repo) == filter.DirectRepos[0] {
+					targetOnt = ExtractOntologyFromRepo(res)
+					break
+				}
+			}
+		}
+		if targetOnt.ProblemDomain == "" {
+			targetOnt = ExtractOntologyFromIdea(filter.Query)
+		}
+		report.TargetOntology = &targetOnt
+
+		var simResults []domain.IdeaSimilarityResult
+		for _, res := range report.Results {
+			candOnt := ExtractOntologyFromRepo(res)
+			sim := CalculateIdeaSimilarity(targetOnt, candOnt)
+			simResults = append(simResults, sim)
+		}
+		report.SimilarityResults = simResults
+		report.Recommendations = MineOntologicalImprovements(targetOnt, simResults, report.Results)
+		report.LanguageDistribution = CalculateLanguageDistribution(report.Results, simResults)
+	}
+
 	log.Printf("[CONCLUÍDO] Funil executado com sucesso! %d repositórios entregues no relatório com insights computados.", report.ExtractedCount)
 
 	return report, nil
 }
+

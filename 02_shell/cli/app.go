@@ -33,6 +33,39 @@ func NewCLIApp(funnel *usecase.SearchFunnel) *CLIApp {
 }
 
 func (a *CLIApp) Run(args []string) error {
+	if len(args) > 0 {
+		cmd := strings.ToLower(args[0])
+		switch cmd {
+		case "similarity", "compare":
+			return a.RunSimilarityCmd(args[1:])
+		case "search", "funnel":
+			return a.runSearchFlags(args[1:])
+		case "mcp":
+			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
+			return mcpServer.Serve(context.Background())
+		case "tui":
+			return RunTUI(a.funnel, "", "go")
+		case "help":
+			a.PrintUsage()
+			return nil
+		}
+	}
+	return a.runSearchFlags(args)
+}
+
+func (a *CLIApp) PrintUsage() {
+	fmt.Println("🔍 Bateia — Motor de Busca de Código, Análise Arquitetural & Inteligência Ontológica")
+	fmt.Println("\nSubcomandos Disponíveis:")
+	fmt.Println("  similarity    Busca projetos parecidos, calcula Score de Similaridade e sugere melhorias")
+	fmt.Println("  search        Executa o funil tradicional de busca por código, manifestos e necessidades ocultas")
+	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
+	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
+	fmt.Println("\nExemplo de Uso:")
+	fmt.Println("  bateia similarity -target \"gofiber/fiber\" -query \"web framework\" -lang go")
+	fmt.Println("  bateia search -query \"quicksort\" -lang go -max 20")
+}
+
+func (a *CLIApp) runSearchFlags(args []string) error {
 	fs := flag.NewFlagSet("bateia", flag.ContinueOnError)
 
 	queryFlag := fs.String("query", "", "Query de busca por arquitetura ou padrão de código (obrigatório)")
@@ -67,13 +100,10 @@ func (a *CLIApp) Run(args []string) error {
 	}
 
 	if *queryFlag == "" {
-		fmt.Println("Bateia — Motor de Busca de Código para Análise Arquitetural & Lab de Projetos")
-		fmt.Println("Uso: bateia -query \"quicksort\" [-lang go] [-max 20] [-lab] [-output relatorios/lab_quicksort.json]")
-		fmt.Println("Ou modo TUI interativo: bateia -tui")
-		fmt.Println("Ou modo MCP: bateia -mcp")
-		fs.PrintDefaults()
+		a.PrintUsage()
 		return fmt.Errorf("parâmetro -query é obrigatório quando não estiver nos modos -tui ou -mcp")
 	}
+
 
 	var mustHave []string
 	if *mustHaveFlag != "" {

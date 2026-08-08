@@ -194,18 +194,33 @@ type FunnelTelemetry struct {
 
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
-	Query          QueryFilter            `json:"query"`
-	GeneratedAt    time.Time              `json:"generated_at"`
-	TopCandidates  int                    `json:"top_candidates"`
-	TriagedCount   int                    `json:"triaged_count"`
-	ExtractedCount int                    `json:"extracted_count"`
-	DiscardedCount int                    `json:"discarded_count"`
-	DiscardReason  string                 `json:"discard_reason"`
-	Results        []ExtractedRepository  `json:"results"`
-	Insights       *ArchitecturalInsights `json:"insights,omitempty"`
-	PolyglotMatrix []PolyglotContract     `json:"polyglot_matrix,omitempty"`
-	Telemetry      *FunnelTelemetry       `json:"telemetry,omitempty"`
+	Query                QueryFilter                 `json:"query"`
+	GeneratedAt          time.Time                   `json:"generated_at"`
+	TopCandidates       int                         `json:"top_candidates"`
+	TriagedCount        int                         `json:"triaged_count"`
+	ExtractedCount      int                         `json:"extracted_count"`
+	DiscardedCount      int                         `json:"discarded_count"`
+	DiscardReason       string                      `json:"discard_reason"`
+	Results             []ExtractedRepository       `json:"results"`
+	Insights            *ArchitecturalInsights      `json:"insights,omitempty"`
+	PolyglotMatrix      []PolyglotContract          `json:"polyglot_matrix,omitempty"`
+	Telemetry           *FunnelTelemetry            `json:"telemetry,omitempty"`
+	TargetOntology      *ProjectOntology            `json:"target_ontology,omitempty"`
+	SimilarityResults   []IdeaSimilarityResult      `json:"similarity_results,omitempty"`
+	Recommendations     []ImprovementRecommendation `json:"recommendations,omitempty"`
+	LanguageDistribution []LanguageDistribution     `json:"language_distribution,omitempty"`
 }
+
+// LanguageDistribution estatísticas compiladas para uma linguagem na varredura poliglota.
+type LanguageDistribution struct {
+	Language      string   `json:"language"`
+	Count         int      `json:"count"`
+	Percentage    float64  `json:"percentage"`
+	TopSimilarity int      `json:"top_similarity"`
+	AvgStars      int      `json:"avg_stars"`
+	DominantTech  []string `json:"dominant_tech,omitempty"`
+}
+
 
 // AlgorithmChallenge representa um algoritmo extraído com seus testes e benchmarks associados.
 type AlgorithmChallenge struct {
@@ -228,3 +243,45 @@ type LabDataset struct {
 	TotalChallenges int                  `json:"total_challenges"`
 	Challenges      []AlgorithmChallenge `json:"challenges"`
 }
+
+// ProjectOntology representa o perfil ontológico extraído de um repositório ou descrição de ideia.
+type ProjectOntology struct {
+	Ref                CommitRef          `json:"ref"`
+	ProblemDomain      string             `json:"problem_domain"`      // Categoria do problema (ex: "Code Intelligence", "Vector Search")
+	IntentKeywords     []string           `json:"intent_keywords"`     // Palavras-chave de intenção/problema
+	Capabilities       []string           `json:"capabilities"`        // Capacidades/Features detectadas
+	EcosystemPackages  []string           `json:"ecosystem_packages"`  // Pacotes/dependências chave do manifesto
+	ArchitecturalStyle string             `json:"architectural_style"` // Estilo arquitetural (ex: "Layered", "Clean", "Monolith")
+	FileStructure      []string           `json:"file_structure"`      // Diretórios chave (ex: "cmd", "internal", "pkg")
+}
+
+// SimilarityVector detalha a pontuação decomposta nos 4 vetores ontológicos.
+type SimilarityVector struct {
+	DomainIntentScore int `json:"domain_intent_score"` // Vet1: 0-100 (Intenção & Semântica)
+	StackMatchScore   int `json:"stack_match_score"`   // Vet2: 0-100 (Stack & Ecossistema)
+	TopologyScore     int `json:"topology_score"`      // Vet3: 0-100 (Topologia Estrutural)
+	CapabilityScore   int `json:"capability_score"`    // Vet4: 0-100 (Cobertura de Capacidades)
+}
+
+// IdeaSimilarityResult representa o resultado da comparação entre a ontologia alvo e um repositório candidato.
+type IdeaSimilarityResult struct {
+	TargetRef       CommitRef        `json:"target_ref"`
+	CandidateRef    CommitRef        `json:"candidate_ref"`
+	CandidateRepo   string           `json:"candidate_repo"`
+	OverallScore    int              `json:"overall_score"`    // Score total ponderado (0-100%)
+	SimilarityLabel string           `json:"similarity_label"` // "Identical Idea", "High Similarity", "Moderate", "Divergent"
+	Vectors         SimilarityVector `json:"vectors"`
+	CommonKeywords  []string         `json:"common_keywords,omitempty"`
+	CommonStack     []string         `json:"common_stack,omitempty"`
+	MissingCapabilities []string     `json:"missing_capabilities,omitempty"`
+}
+
+// ImprovementRecommendation sugestão de melhoria para o projeto alvo derivada de repositórios parecidos.
+type ImprovementRecommendation struct {
+	Category     string   `json:"category"`      // "Testing", "Observability", "Database", "Security", "Architecture"
+	Title        string   `json:"title"`         // Ex: "Adicionar Testcontainers para Testes de Integração"
+	AdoptionRate int      `json:"adoption_rate"` // % de adoção entre projetos parecidos (> 60% similaridade)
+	SuggestedBy  []string `json:"suggested_by"`  // Repositórios de referência que já adotam
+	Reasoning    string   `json:"reasoning"`     // Motivação baseada na ontologia
+}
+

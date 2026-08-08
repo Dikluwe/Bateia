@@ -316,8 +316,69 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 		sb.WriteString("- Presença frequente de `go.mod`, arquivos em `cmd/` e `internal/` para separação limpa de domínios.\n")
 	}
 
+	// 4. Score de Similaridade de Ideias e Matriz Ontológica
+	if len(report.SimilarityResults) > 0 {
+		sb.WriteString("\n---\n\n")
+		sb.WriteString("## 🎯 4. Matriz Ontológica & Score de Similaridade de Ideia (0-100%)\n\n")
+
+		if len(report.LanguageDistribution) > 0 {
+			sb.WriteString("### 📊 Distribuição de Projetos por Ecossistema / Linguagem\n\n")
+			sb.WriteString("| Ecossistema | Repositórios Encontrados | Distribuição (%) | Maior Score de Similaridade | Estrelas Médias | Tecnologias Dominantes |\n")
+			sb.WriteString("| :--- | :--- | :--- | :--- | :--- | :--- |\n")
+			for _, dist := range report.LanguageDistribution {
+				techStr := strings.Join(dist.DominantTech, ", ")
+				if techStr == "" {
+					techStr = "N/A"
+				}
+				sb.WriteString(fmt.Sprintf("| **%s** | %d repos | `%.0f%%` | `%d%%` | %s | `%s` |\n",
+					dist.Language, dist.Count, dist.Percentage, dist.TopSimilarity, formatStars(dist.AvgStars), techStr))
+			}
+			sb.WriteString("\n")
+		}
+
+		if report.TargetOntology != nil {
+			sb.WriteString(fmt.Sprintf("**Domínio Alvo Analisado**: `%s`  \n", report.TargetOntology.ProblemDomain))
+			sb.WriteString(fmt.Sprintf("**Palavras-Chave de Intenção**: `%s`  \n\n", strings.Join(report.TargetOntology.IntentKeywords, ", ")))
+		}
+
+		sb.WriteString("| Repositório Candidato | Score Geral | Classificação | Intenção (Vet1) | Stack (Vet2) | Capacidades (Vet4) | Termos em Comum |\n")
+		sb.WriteString("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n")
+
+		for _, sim := range report.SimilarityResults {
+			badge := "🟢"
+			if sim.OverallScore < 40 {
+				badge = "🔴"
+			} else if sim.OverallScore < 70 {
+				badge = "🟡"
+			}
+
+			commonKW := strings.Join(sim.CommonKeywords, ", ")
+			if commonKW == "" {
+				commonKW = "N/A"
+			}
+
+			sb.WriteString(fmt.Sprintf("| **%s** | %s **%d%%** | `%s` | %d%% | %d%% | %d%% | `%s` |\n",
+				sim.CandidateRepo, badge, sim.OverallScore, sim.SimilarityLabel,
+				sim.Vectors.DomainIntentScore, sim.Vectors.StackMatchScore, sim.Vectors.CapabilityScore, commonKW))
+		}
+		sb.WriteString("\n")
+	}
+
+	// 5. Mineração de Recomendações de Melhorias
+	if len(report.Recommendations) > 0 {
+		sb.WriteString("### 💡 Recomendações de Melhoria Derivadas de Projetos Semelhantes\n\n")
+		sb.WriteString("| Categoria | Recomendações e Melhorias Propostas | Taxa de Adoção | Projetos de Referência | Justificativa Ontológica |\n")
+		sb.WriteString("| :--- | :--- | :--- | :--- | :--- |\n")
+		for _, rec := range report.Recommendations {
+			sb.WriteString(fmt.Sprintf("| **%s** | %s | `%d%%` | `%s` | %s |\n",
+				rec.Category, rec.Title, rec.AdoptionRate, strings.Join(rec.SuggestedBy, ", "), rec.Reasoning))
+		}
+		sb.WriteString("\n")
+	}
+
 	return sb.String()
 }
+
 
 func formatStars(stars int) string {
 	switch {

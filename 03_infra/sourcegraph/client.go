@@ -37,6 +37,17 @@ func NewClient(apiToken string) *Client {
 	}
 }
 
+// NewClientWithEndpoint cria um Client com endpoint customizado (útil para testes com httptest).
+func NewClientWithEndpoint(apiToken string, endpoint string) *Client {
+	return &Client{
+		endpoint: endpoint,
+		apiToken: apiToken,
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
+	}
+}
+
 type graphQLRequest struct {
 	Query     string                 `json:"query"`
 	Variables map[string]interface{} `json:"variables"`

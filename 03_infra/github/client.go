@@ -28,14 +28,27 @@ import (
 // Client é o adaptador para acesso à API do GitHub (Contents API, Raw HTTP e Git Clone) satisfazendo domain.ContentProvider.
 type Client struct {
 	token      string
+	baseURL    string
 	httpClient *http.Client
 }
 
 func NewClient(token string) *Client {
 	return &Client{
-		token: token,
+		token:   token,
+		baseURL: "https://api.github.com",
 		httpClient: &http.Client{
 			Timeout: 20 * time.Second,
+		},
+	}
+}
+
+// NewClientWithBaseURL cria um Client com base URL customizada (útil para testes com httptest).
+func NewClientWithBaseURL(token string, baseURL string) *Client {
+	return &Client{
+		token:   token,
+		baseURL: baseURL,
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
 		},
 	}
 }
@@ -79,7 +92,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 	var lastErr error
 
 	for _, targetFile := range manifestFiles {
-		url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s", candidate.Owner, candidate.Repo, targetFile)
+		url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, targetFile)
 		if refCommit != "HEAD" {
 			url += "?ref=" + refCommit
 		}
@@ -233,7 +246,7 @@ func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, p
 
 // FetchTree recupera a lista de nós do diretório raiz.
 func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents", candidate.Owner, candidate.Repo)
+	url := fmt.Sprintf("%s/repos/%s/%s/contents", c.baseURL, candidate.Owner, candidate.Repo)
 	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
 		url += "?ref=" + candidate.CommitID
 	}
@@ -359,7 +372,7 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 }
 
 func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.RepositoryCandidate, path string) (*domain.ExtractedFile, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s", candidate.Owner, candidate.Repo, path)
+	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, path)
 	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
 		url += "?ref=" + candidate.CommitID
 	}
@@ -411,7 +424,7 @@ type githubRepoResponse struct {
 
 // FetchRepoMetadata realiza o sanity check de metadados na API REST do GitHub obtendo número de estrelas reais e descrição.
 func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", candidate.Owner, candidate.Repo)
+	url := fmt.Sprintf("%s/repos/%s/%s", c.baseURL, candidate.Owner, candidate.Repo)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {

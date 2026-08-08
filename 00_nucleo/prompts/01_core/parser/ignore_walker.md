@@ -1,8 +1,9 @@
-# Especificacao L0: Ignore Walker
+# Especificação L0: Ignore Walker
 
 - **Caminho**: `01_core/parser/ignore_walker.go`
 - **Camada**: $L_1$ (Núcleo Puro - ZERO I/O)
-- **Objetivo**: Filtro de nos de diretório estilo .gitignore em memoria.
+- **Origem & Rastreabilidade**: Descoberto na varredura de 4 camadas (`-depth 4`) pelo Bateia no repositório [`boyter/gocodewalker`](https://github.com/boyter/gocodewalker).
+- **Objetivo**: Filtro de nós de diretório usando padrões estilo `.gitignore` em memória.
 
 ## Contratos
 ```go

@@ -1,10 +1,12 @@
-# Especificacao L0: CLI Manpage Generator
+# Especificação L0: CLI Manpage Generator
 
 - **Caminho**: `02_shell/cli/man.go`
 - **Camada**: $L_2$ (Casca / CLI)
-- **Objetivo**: Gerar o manual oficial UNIX bateia(1) em formato manpage.
+- **Origem & Rastreabilidade**: Descoberto na varredura de 4 camadas (`-depth 4`) pelo Bateia no repositório [`cpuguy83/go-md2man`](https://github.com/cpuguy83/go-md2man).
+- **Objetivo**: Gerar o manual oficial UNIX `bateia(1)` em formato roff para a flag `-man`.
 
 ## Contratos
 ```go
 func GenerateManPage() string
+func PrintManPage()
 ```

@@ -1,8 +1,9 @@
-# Especificacao L0: Symbol Table
+# Especificação L0: Symbol Table
 
 - **Caminho**: `01_core/parser/symbol_table.go`
 - **Camada**: $L_1$ (Núcleo Puro - ZERO I/O)
-- **Objetivo**: Tabela de símbolos de AST organizada por escopos e tipos.
+- **Origem & Rastreabilidade**: Descoberto na varredura de 6 camadas (`-depth 6`) pelo Bateia no repositório [`pingcap/tidb`](https://github.com/pingcap/tidb).
+- **Objetivo**: Tabela de Símbolos de AST organizada hierarquicamente por escopos e tipos para acelerar a extração do Estágio 3.
 
 ## Contratos
 ```go

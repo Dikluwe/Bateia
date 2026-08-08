@@ -1,8 +1,9 @@
-# Especificacao L0: Rule DSL Parser
+# Especificação L0: Rule DSL Parser
 
 - **Caminho**: `01_core/parser/rule_dsl.go`
 - **Camada**: $L_1$ (Núcleo Puro - ZERO I/O)
-- **Objetivo**: Parser declarativo de regras de linter em $L_1$.
+- **Origem & Rastreabilidade**: Descoberto na varredura de 4 camadas (`-depth 4`) pelo Bateia no repositório [`bradleyjkemp/sigma-go`](https://github.com/bradleyjkemp/sigma-go).
+- **Objetivo**: Parser declarativo e avaliador de regras de linter em L1.
 
 ## Contratos
 ```go

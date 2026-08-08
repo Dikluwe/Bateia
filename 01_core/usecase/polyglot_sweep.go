@@ -15,8 +15,14 @@ import (
 	"bateia/01_core/domain"
 )
 
-// DefaultPolyglotSuite lista padrão de ecossistemas para o modo varredura (--sweep).
-var DefaultPolyglotSuite = []string{"go", "typescript", "python", "rust", "java", "cpp"}
+// DefaultPolyglotSuite lista completa de todos os ecossistemas suportados pelo Bateia.
+var DefaultPolyglotSuite = []string{
+	"go", "typescript", "python", "rust", "java", "kotlin", "php", "c", "cpp", "csharp",
+	"julia", "r", "lua", "ocaml", "elixir", "ruby", "swift", "haskell", "dart", "scala",
+	"clojure", "zig", "pascal", "fortran", "basic", "fsharp", "perl", "groovy", "cobol",
+	"nim", "crystal", "v", "erlang", "d", "gleam", "coldfusion", "actionscript", "ada",
+	"mojo", "objc", "haxe", "raku", "racket", "chapel", "pony", "odin",
+}
 
 // ParseLanguageList analisa a string de linguagem da query/CLI e retorna uma lista desmembrada.
 func ParseLanguageList(langInput string) []string {
@@ -70,7 +76,6 @@ func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResu
 		if repo.Manifest != nil && repo.Manifest.Language != "" {
 			lang = strings.ToLower(repo.Manifest.Language)
 		} else if repo.Candidate.Description != "" {
-			// Tentar inferir da descrição ou fallback
 			lang = inferLanguageFromRepo(repo)
 		}
 
@@ -100,6 +105,26 @@ func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResu
 
 	var distributions []domain.LanguageDistribution
 
+	langIcons := map[string]string{
+		"go": "Go 🐹", "typescript": "TypeScript 🟦", "ts": "TypeScript 🟦",
+		"python": "Python 🐍", "py": "Python 🐍", "rust": "Rust 🦀", "rs": "Rust 🦀",
+		"java": "Java ☕", "kotlin": "Kotlin ☕", "kt": "Kotlin ☕", "php": "PHP 🐘",
+		"c": "C ⚙️", "cpp": "C++ ⚙️", "c++": "C++ ⚙️", "csharp": "C# 💜", "cs": "C# 💜", "dotnet": "C# 💜",
+		"julia": "Julia 📊", "r": "R 📊", "lua": "Lua 🌙", "ocaml": "OCaml 🐫",
+		"elixir": "Elixir 💧", "ruby": "Ruby 💎", "swift": "Swift 🐦", "haskell": "Haskell 📜",
+		"dart": "Dart / Flutter 🎯", "flutter": "Dart / Flutter 🎯", "scala": "Scala 🔴",
+		"clojure": "Clojure 🍃", "clj": "Clojure 🍃", "zig": "Zig ⚡", "pascal": "Pascal / Delphi 🏛️",
+		"delphi": "Pascal / Delphi 🏛️", "fortran": "Fortran 🧮", "basic": "BASIC / VB 💻",
+		"vb": "BASIC / VB 💻", "fsharp": "F# 🔷", "fs": "F# 🔷", "perl": "Perl 🐪",
+		"groovy": "Groovy 🍃", "cobol": "COBOL 📜", "nim": "Nim 👑", "crystal": "Crystal 💎",
+		"v": "V (Vlang) ⚡", "vlang": "V (Vlang) ⚡", "erlang": "Erlang 🔴", "d": "D 🎯",
+		"gleam": "Gleam ⭐️", "coldfusion": "ColdFusion ❄️", "cf": "ColdFusion ❄️",
+		"actionscript": "ActionScript ⚡", "flex": "ActionScript ⚡", "ada": "Ada 🛡️",
+		"mojo": "Mojo 🚀", "objc": "Objective-C 🍎", "objective-c": "Objective-C 🍎",
+		"haxe": "Haxe 🎯", "raku": "Raku 🦋", "racket": "Racket 🌐", "chapel": "Chapel 🧱",
+		"pony": "Pony 🐴", "odin": "Odin ⚔️",
+	}
+
 	for lang, st := range langStats {
 		pct := math.Round((float64(st.count) / totalResults) * 100)
 		avgStars := 0
@@ -107,7 +132,6 @@ func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResu
 			avgStars = st.totalStars / st.count
 		}
 
-		// Extrair top 3 pacotes dominantes por ecossistema
 		type pkgCount struct {
 			name  string
 			count int
@@ -126,19 +150,8 @@ func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResu
 		}
 
 		displayName := strings.ToUpper(lang[:1]) + lang[1:]
-		switch lang {
-		case "go":
-			displayName = "Go 🐹"
-		case "typescript", "ts":
-			displayName = "TypeScript 🟦"
-		case "python", "py":
-			displayName = "Python 🐍"
-		case "rust", "rs":
-			displayName = "Rust 🦀"
-		case "java":
-			displayName = "Java ☕"
-		case "cpp", "c++", "c":
-			displayName = "C / C++ ⚙️"
+		if mapped, ok := langIcons[strings.ToLower(lang)]; ok {
+			displayName = mapped
 		}
 
 		distributions = append(distributions, domain.LanguageDistribution{

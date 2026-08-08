@@ -118,7 +118,8 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 
 		for _, node := range tree {
 			lowerPath := strings.ToLower(node.Path)
-			if strings.Contains(lowerPath, "test") || strings.Contains(lowerPath, "benches") || strings.Contains(lowerPath, "spec") || strings.HasSuffix(lowerPath, "_test.go") || strings.HasSuffix(lowerPath, "_test.rs") || strings.HasPrefix(filepathBase(lowerPath), "test_") {
+			if strings.Contains(lowerPath, "test") || strings.Contains(lowerPath, "benches") || strings.Contains(lowerPath, "spec") ||
+				MatchGlobRecursive("**/*test*", lowerPath) || MatchGlobRecursive("**/*spec*", lowerPath) || MatchGlobRecursive("**/tests/**", lowerPath) || MatchGlobRecursive("**/__tests__/**", lowerPath) {
 				hasTests = true
 			}
 			if strings.Contains(lowerPath, "docker") || strings.Contains(lowerPath, ".github") || strings.Contains(lowerPath, "makefile") || strings.Contains(lowerPath, "ci.yml") {

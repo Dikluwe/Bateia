@@ -33,3 +33,28 @@ func TestEvaluateStructure(t *testing.T) {
 		t.Errorf("Deveria ter reprovado pela ausência da pasta 'pkg'")
 	}
 }
+
+func TestMatchGlobRecursive(t *testing.T) {
+	tests := []struct {
+		pattern  string
+		path     string
+		expected bool
+	}{
+		{"src/**/*.rs", "src/parser/ast/rust.rs", true},
+		{"src/**/*.rs", "src/main.rs", true},
+		{"src/**/*.rs", "cmd/main.go", false},
+		{"pkg/**/*_test.go", "pkg/domain/usecase/funnel_test.go", true},
+		{"tests/**/*.py", "tests/unit/auth/test_login.py", true},
+		{"**/__tests__/**/*.ts", "src/components/__tests__/button.spec.ts", true},
+		{"**/*.go", "main.go", true},
+		{"cmd/*", "cmd/app/main.go", false},
+		{"cmd/**", "cmd/app/main.go", true},
+	}
+
+	for _, tt := range tests {
+		result := MatchGlobRecursive(tt.pattern, tt.path)
+		if result != tt.expected {
+			t.Errorf("MatchGlobRecursive(%q, %q) = %v; esperava %v", tt.pattern, tt.path, result, tt.expected)
+		}
+	}
+}

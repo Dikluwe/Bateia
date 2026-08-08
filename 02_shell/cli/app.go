@@ -43,12 +43,18 @@ func (a *CLIApp) Run(args []string) error {
 	mcpFlag := fs.Bool("mcp", false, "Inicia o Bateia como um Servidor MCP (Model Context Protocol) via stdio")
 	tuiFlag := fs.Bool("tui", false, "Inicia o Bateia na interface interativa TUI (Terminal User Interface)")
 	labFlag := fs.Bool("lab", false, "Exporta o resultado no formato de Dataset de Algoritmos & Testes para o Lab de Projetos")
+	manFlag := fs.Bool("man", false, "Exibe a manpage UNIX bateia(1)")
 	formatFlag := fs.String("format", "markdown", "Formato do relatório de saída: markdown, html, json, sqlite ou lab")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
 
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+
+	if *manFlag {
+		PrintManPage()
+		return nil
 	}
 
 	if *mcpFlag {

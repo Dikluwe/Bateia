@@ -49,6 +49,55 @@ func ParseLanguageList(langInput string) []string {
 	return result
 }
 
+// FilterLanguages remove as linguagens especificadas na string de exclusao (ex: "go,typescript").
+func FilterLanguages(languages []string, excludeInput string) []string {
+	if strings.TrimSpace(excludeInput) == "" {
+		return languages
+	}
+
+	excluded := make(map[string]bool)
+	for _, item := range strings.Split(excludeInput, ",") {
+		e := strings.TrimSpace(strings.ToLower(item))
+		if e != "" {
+			excluded[e] = true
+			switch e {
+			case "go":
+				excluded["golang"] = true
+			case "typescript":
+				excluded["ts"] = true
+			case "javascript":
+				excluded["js"] = true
+				excluded["node"] = true
+			case "python":
+				excluded["py"] = true
+			case "rust":
+				excluded["rs"] = true
+			case "csharp":
+				excluded["cs"] = true
+				excluded["dotnet"] = true
+			case "cpp", "c++":
+				excluded["c"] = true
+				excluded["cpp"] = true
+				excluded["c++"] = true
+			}
+		}
+	}
+
+	var result []string
+	for _, l := range languages {
+		lLower := strings.ToLower(l)
+		if !excluded[lLower] {
+			result = append(result, l)
+		}
+	}
+
+	if len(result) == 0 {
+		return DefaultPolyglotSuite
+	}
+	return result
+}
+
+
 // CalculateLanguageDistribution compila a distribuição estatística de repositórios por ecossistema.
 func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResults []domain.IdeaSimilarityResult) []domain.LanguageDistribution {
 	if len(results) == 0 {

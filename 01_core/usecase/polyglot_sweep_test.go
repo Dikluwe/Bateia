@@ -29,6 +29,20 @@ func TestParseLanguageList(t *testing.T) {
 	}
 }
 
+func TestFilterLanguages(t *testing.T) {
+	initial := []string{"go", "typescript", "python", "rust", "java", "cpp"}
+	filtered := usecase.FilterLanguages(initial, "go,typescript")
+
+	for _, l := range filtered {
+		if l == "go" || l == "typescript" {
+			t.Errorf("Linguagem %s deveria ter sido excluida", l)
+		}
+	}
+	if len(filtered) != 4 {
+		t.Errorf("Esperado 4 linguagens remanescentes, recebido: %d", len(filtered))
+	}
+}
+
 func TestCalculateLanguageDistribution(t *testing.T) {
 	repoGo := domain.ExtractedRepository{
 		Ref: domain.CommitRef{Owner: "gofiber", Repo: "fiber"},

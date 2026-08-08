@@ -64,6 +64,12 @@ func ExtractOntologyFromRepo(repo domain.ExtractedRepository) domain.ProjectOnto
 			if strings.Contains(pkgName, "grpc") || strings.Contains(pkgName, "proto") || strings.Contains(pkgName, "graphql") {
 				capabilitiesMap["polyglot_rpc"] = true
 			}
+			if strings.Contains(pkgName, "mcp") || strings.Contains(pkgName, "modelcontextprotocol") || strings.Contains(pkgName, "ai") {
+				capabilitiesMap["ai_context_protocol"] = true
+			}
+			if strings.Contains(pkgName, "treesitter") || strings.Contains(pkgName, "gotreesitter") || strings.Contains(pkgName, "ast") {
+				capabilitiesMap["ast_codegraph"] = true
+			}
 		}
 	}
 

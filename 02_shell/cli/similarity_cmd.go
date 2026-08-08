@@ -14,9 +14,11 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
 	"bateia/02_shell/report"
 )
 
@@ -28,7 +30,8 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 	targetIdeaFlag := fs.String("target-idea", "", "Descrição em texto da ideia/problema alvo para buscar projetos parecidos")
 	queryFlag := fs.String("query", "", "Query de busca por repositórios candidatos")
 	langFlag := fs.String("lang", "go", "Linguagem alvo (ex: go, typescript, python, rust ou 'go,typescript,python,rust')")
-	sweepFlag := fs.Bool("sweep", false, "Executa a varredura poliglota em múltiplos ecossistemas (go, typescript, python, rust, java, cpp)")
+	excludeLangFlag := fs.String("exclude-lang", "", "Linguagens para excluir da varredura poliglota (ex: 'go,typescript')")
+	sweepFlag := fs.Bool("sweep", false, "Executa a varredura poliglota em múltiplos ecossistemas")
 	maxFlag := fs.Int("max", 15, "Número máximo de candidatos no topo do funil")
 	outputFlag := fs.String("output", "relatorios/similaridade.md", "Arquivo de saída para o relatório de similaridade ontológica")
 
@@ -39,6 +42,11 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 	selectedLang := *langFlag
 	if *sweepFlag {
 		selectedLang = "sweep"
+	}
+
+	if *excludeLangFlag != "" {
+		filteredLangs := usecase.FilterLanguages(usecase.ParseLanguageList(selectedLang), *excludeLangFlag)
+		selectedLang = strings.Join(filteredLangs, ",")
 	}
 
 	searchQuery := *queryFlag

@@ -137,6 +137,7 @@ type ExtractedRepository struct {
 	RelevanceScore     int                 `json:"relevance_score"`
 	RelevanceLabel     string              `json:"relevance_label"`
 	RelevanceReason    string              `json:"relevance_reason"`
+	HealthScore        int                 `json:"health_score"`
 }
 
 // PatternMatch representa um padrão de pacote/ferramenta detectado nos repositórios.

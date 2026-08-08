@@ -72,7 +72,15 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	} else {
 		for i, res := range report.Results {
 			sb.WriteString(fmt.Sprintf("### %d. [%s/%s](%s)\n\n", i+1, res.Candidate.Owner, res.Candidate.Repo, res.Candidate.URL))
+			healthBadge := "💚"
+			if res.HealthScore < 60 {
+				healthBadge = "🔴"
+			} else if res.HealthScore < 80 {
+				healthBadge = "🟡"
+			}
+
 			sb.WriteString(fmt.Sprintf("- **Score de Relevância**: `%d/100` (`%s`)\n", res.RelevanceScore, res.RelevanceLabel))
+			sb.WriteString(fmt.Sprintf("- **Saúde Arquitetural**: %s `%d/100`\n", healthBadge, res.HealthScore))
 			sb.WriteString(fmt.Sprintf("- **Justificativa**: %s\n", res.RelevanceReason))
 			sb.WriteString(fmt.Sprintf("- **Commit Rastreável**: `%s`\n", res.Ref.Key()))
 			sb.WriteString(fmt.Sprintf("- **Estrelas**: %s\n", formatStars(res.Candidate.Stars)))

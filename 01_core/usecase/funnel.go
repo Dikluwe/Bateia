@@ -326,6 +326,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 		extracted.Symbols = allRepoSymbols
 		extracted.ArchViolations = parser.EvaluateArchViolations(extracted.Manifest, tRepo.Tree)
+		extracted.HealthScore = parser.CalculateHealthScore(extracted.ArchViolations)
 		extracted.SecurityAdvisories = parser.EvaluateSecurityAdvisories(extracted.Manifest)
 
 		report.Results = append(report.Results, *extracted)

@@ -15,12 +15,24 @@ import (
 	"bateia/01_core/domain"
 )
 
+func TestGenerateMarkdownReportIncludesOperationalDiagnostics(t *testing.T) {
+	report := &domain.SearchReport{
+		Query:    domain.QueryFilter{Query: "test", Language: "go"},
+		Failures: []domain.ExecutionFailure{{Scope: "rust", Stage: "sweep", Message: "provider unavailable"}},
+		Warnings: []domain.OperationalWarning{{Stage: "cache", Operation: "get", Target: "query", Message: "disk unavailable"}},
+	}
+	output := GenerateMarkdownReport(report)
+	if !strings.Contains(output, "Falha parcial") || !strings.Contains(output, "Aviso recuperável") {
+		t.Fatalf("diagnósticos ausentes no relatório: %s", output)
+	}
+}
+
 func TestGenerateMarkdownReport(t *testing.T) {
 	report := &domain.SearchReport{
-		Query:         domain.QueryFilter{Query: "hexagonal", Language: "go"},
-		GeneratedAt:   time.Now().UTC(),
-		TopCandidates: 5,
-		TriagedCount:  3,
+		Query:          domain.QueryFilter{Query: "hexagonal", Language: "go"},
+		GeneratedAt:    time.Now().UTC(),
+		TopCandidates:  5,
+		TriagedCount:   3,
 		ExtractedCount: 2,
 		Results: []domain.ExtractedRepository{
 			{

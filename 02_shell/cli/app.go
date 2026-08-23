@@ -40,6 +40,8 @@ func (a *CLIApp) Run(args []string) error {
 			return a.RunSimilarityCmd(args[1:])
 		case "search", "funnel":
 			return a.runSearchFlags(args[1:])
+		case "analyze", "local":
+			return a.runSearchFlags(append([]string{"-path", "."}, args[1:]...))
 		case "mcp":
 			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
 			return mcpServer.Serve(context.Background())
@@ -58,11 +60,13 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("\nSubcomandos Disponíveis:")
 	fmt.Println("  similarity    Busca projetos parecidos, calcula Score de Similaridade e sugere melhorias")
 	fmt.Println("  search        Executa o funil tradicional de busca por código, manifestos e necessidades ocultas")
+	fmt.Println("  analyze       Analisa uma worktree local, incluindo alterações ainda não enviadas ao GitHub")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")
 	fmt.Println("  bateia similarity -target \"gofiber/fiber\" -query \"web framework\" -lang go")
 	fmt.Println("  bateia search -query \"quicksort\" -lang go -max 20")
+	fmt.Println("  bateia analyze -path . -query \"arquitetura do projeto\"")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {
@@ -80,6 +84,7 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 	formatFlag := fs.String("format", "markdown", "Formato do relatório de saída: markdown, html, json, sqlite ou lab")
 	outputFlag := fs.String("output", "00_nucleo/relatorios/relatorio_bateia.md", "Caminho do arquivo de relatório de saída")
 	mustHaveFlag := fs.String("must-have", "", "Pastas/estruturas requeridas separadas por vírgula (ex: cmd,internal)")
+	localPathFlag := fs.String("path", "", "Caminho de uma worktree local para análise sem GitHub")
 
 	if err := fs.Parse(args); err != nil {
 		return err
@@ -95,6 +100,24 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 		return mcpServer.Serve(context.Background())
 	}
 
+	if *localPathFlag != "" {
+		absolutePath, err := filepath.Abs(*localPathFlag)
+		if err != nil {
+			return fmt.Errorf("caminho local inválido: %w", err)
+		}
+		info, err := os.Stat(absolutePath)
+		if err != nil {
+			return fmt.Errorf("não foi possível acessar a worktree local: %w", err)
+		}
+		if !info.IsDir() {
+			return fmt.Errorf("o caminho local deve ser um diretório: %s", absolutePath)
+		}
+		*localPathFlag = absolutePath
+		if strings.TrimSpace(*queryFlag) == "" {
+			*queryFlag = "Análise arquitetural local de " + filepath.Base(absolutePath)
+		}
+	}
+
 	if *tuiFlag || (*queryFlag == "" && !*mcpFlag && len(args) == 0) {
 		return RunTUI(a.funnel, *queryFlag, *langFlag)
 	}
@@ -103,7 +126,6 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 		a.PrintUsage()
 		return fmt.Errorf("parâmetro -query é obrigatório quando não estiver nos modos -tui ou -mcp")
 	}
-
 
 	var mustHave []string
 	if *mustHaveFlag != "" {
@@ -134,6 +156,10 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 		MustHave:    mustHave,
 		Depth:       *depthFlag,
 		DirectRepos: directRepos,
+		LocalPath:   *localPathFlag,
+	}
+	if err := usecase.ValidateQueryFilter(filter); err != nil {
+		return fmt.Errorf("parâmetros inválidos: %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
@@ -187,6 +213,15 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 	fmt.Printf("\nBusca concluída! Relatório gerado com sucesso em: %s\n", absPath)
 	fmt.Printf("Funil: %d descobertos -> %d triados -> %d extraídos (%d descartados: %s)\n",
 		searchReport.TopCandidates, searchReport.TriagedCount, searchReport.ExtractedCount, searchReport.DiscardedCount, searchReport.DiscardReason)
+	if len(searchReport.Failures) > 0 || len(searchReport.Warnings) > 0 {
+		fmt.Printf("Diagnóstico: %d falhas parciais, %d avisos recuperáveis (detalhes no relatório)\n", len(searchReport.Failures), len(searchReport.Warnings))
+	}
 
 	return nil
+}
+
+type LogProgressReporter struct{}
+
+func (LogProgressReporter) ReportProgress(event domain.ProgressEvent) {
+	log.Printf("[%s] %s", strings.ToUpper(event.Stage), event.Message)
 }

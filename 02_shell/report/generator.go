@@ -47,6 +47,21 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 		sb.WriteString(fmt.Sprintf("- **Métricas de Cache**: `%d Hits` / `%d Misses`  \n\n", report.Telemetry.CacheHits, report.Telemetry.CacheMisses))
 	}
 
+	if len(report.Failures) > 0 || len(report.Warnings) > 0 {
+		sb.WriteString("### Diagnóstico Operacional\n\n")
+		for _, failure := range report.Failures {
+			sb.WriteString(fmt.Sprintf("- **Falha parcial** em `%s` (%s): %s\n", failure.Scope, failure.Stage, failure.Message))
+		}
+		for _, warning := range report.Warnings {
+			target := warning.Target
+			if target == "" {
+				target = "execução"
+			}
+			sb.WriteString(fmt.Sprintf("- **Aviso recuperável** em `%s` (%s/%s): %s\n", target, warning.Stage, warning.Operation, warning.Message))
+		}
+		sb.WriteString("\n")
+	}
+
 	mermaidGraph := GenerateMermaidGraph(report)
 	if mermaidGraph != "" {
 		sb.WriteString("### 📊 Grafo de Dependências (Mermaid.js)\n\n")
@@ -112,7 +127,7 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				}
 
 				sb.WriteString(fmt.Sprintf("#### Módulo & Dependências (`%s`)\n", manifestName))
-				
+
 				versionStr := ""
 				if res.Manifest.GoVersion != "" {
 					versionStr = " " + res.Manifest.GoVersion
@@ -169,9 +184,9 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 			}
 
 			if len(res.SecurityAdvisories) > 0 {
-				sb.WriteString("#### 🛡️ Alertas de Segurança & CVEs (Security Scanner)\n")
+				sb.WriteString("#### 🛡️ Possíveis Correspondências de Segurança (Base Local Heurística)\n")
 				for _, adv := range res.SecurityAdvisories {
-					sb.WriteString(fmt.Sprintf("- **[%s] %s** (%s): %s em `%s` (%s)\n", adv.Severity, adv.AdvisoryID, adv.Package, adv.Message, adv.Package, adv.VulnerableVersion))
+					sb.WriteString(fmt.Sprintf("- **[%s] %s** (%s): %s em `%s` (%s). Confiança: %s. [Fonte](%s), base atualizada em %s.\n", adv.Severity, adv.AdvisoryID, adv.Package, adv.Message, adv.Package, adv.VulnerableVersion, adv.Confidence, adv.Source, adv.DatabaseUpdatedAt))
 				}
 				sb.WriteString("\n")
 			}
@@ -179,11 +194,11 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 			if len(res.Files) > 0 {
 				sb.WriteString("#### Arquivos Extraídos\n\n")
 				for _, f := range res.Files {
-					githubURL := parser.GenerateGitHubFileURL(res.Candidate.Owner, res.Candidate.Repo, res.Ref.Commit, f.Path)
+					githubURL := sourceFileURL(res, f.Path)
 					content, isTruncated := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
 
 					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes) — <a href=\"%s\" target=\"_blank\">Ver no GitHub ↗</a></summary>\n\n", f.Path, f.Size, githubURL))
-					
+
 					ext := strings.TrimPrefix(filepath.Ext(f.Path), ".")
 					if ext == "" {
 						ext = "text"
@@ -379,6 +394,12 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	return sb.String()
 }
 
+func sourceFileURL(repository domain.ExtractedRepository, path string) string {
+	if strings.HasPrefix(repository.Candidate.URL, "file://") {
+		return strings.TrimSuffix(repository.Candidate.URL, "/") + "/" + strings.ReplaceAll(filepath.ToSlash(path), " ", "%20")
+	}
+	return parser.GenerateGitHubFileURL(repository.Candidate.Owner, repository.Candidate.Repo, repository.Ref.Commit, path)
+}
 
 func formatStars(stars int) string {
 	switch {

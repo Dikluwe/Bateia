@@ -208,6 +208,10 @@ func (s *MCPServer) handleToolCall(ctx context.Context, id interface{}, toolName
 		s.sendError(id, -32601, fmt.Sprintf("Unknown tool: %s", toolName))
 		return
 	}
+	if err := usecase.ValidateQueryFilter(filter); err != nil {
+		s.sendError(id, -32602, fmt.Sprintf("Invalid params: %v", err))
+		return
+	}
 
 	searchReport, err := s.funnel.Execute(ctx, filter)
 	if err != nil {

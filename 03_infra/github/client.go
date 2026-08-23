@@ -17,6 +17,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -89,6 +90,12 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 	}
 
 	manifestFiles := []string{"go.mod", "package.json", "pyproject.toml", "requirements.txt", "Cargo.toml", "pom.xml", "build.gradle", "composer.json", "CMakeLists.txt", "vcpkg.json", "conanfile.txt", "Project.toml", "DESCRIPTION", "dune-project", "mix.exs", "Gemfile", "Package.swift", "pubspec.yaml", "build.sbt", "project.clj", "build.zig.zon", "fpm.toml", "cpanfile", "Makefile.PL", "shard.yml", "v.mod", "rebar.config", "dub.json", "gleam.toml", "box.json", "flex-config.xml", "alire.toml", "mojoproject.toml", "Podfile", "haxelib.json", "META6.json", "info.rkt", "mason.toml", "corral.json", "ols.json"}
+	if rootItems, err := c.fetchRootItems(ctx, candidate); err == nil {
+		manifestFiles = selectManifestFiles(rootItems, manifestFiles)
+		if len(manifestFiles) == 0 {
+			return nil, domain.ErrManifestNotFound
+		}
+	}
 	var lastErr error
 
 	for _, targetFile := range manifestFiles {
@@ -112,10 +119,15 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			lastErr = err
 			continue
 		}
-		defer resp.Body.Close()
+		body, readErr := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		if readErr != nil {
+			lastErr = readErr
+			continue
+		}
 
 		if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusGone {
-			lastErr = fmt.Errorf("MANIFEST_NOT_FOUND (%s)", targetFile)
+			lastErr = fmt.Errorf("%w (%s)", domain.ErrManifestNotFound, targetFile)
 			continue
 		}
 
@@ -134,7 +146,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			continue
 		} else {
 			var item githubContentItem
-			if err := json.NewDecoder(resp.Body).Decode(&item); err != nil {
+			if err := json.Unmarshal(body, &item); err != nil {
 				lastErr = err
 				continue
 			}
@@ -183,7 +195,61 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 	if lastErr != nil {
 		return nil, lastErr
 	}
-	return nil, fmt.Errorf("MANIFEST_NOT_FOUND")
+	return nil, domain.ErrManifestNotFound
+}
+
+func selectManifestFiles(items []githubContentItem, priority []string) []string {
+	available := make(map[string]string)
+	var additional []string
+	for _, item := range items {
+		if item.Type != "file" || parser.DetectManifestType(item.Path) == "" {
+			continue
+		}
+		available[strings.ToLower(item.Name)] = item.Path
+	}
+	selected := make([]string, 0, len(available))
+	selectedSet := make(map[string]bool)
+	for _, name := range priority {
+		if path, ok := available[strings.ToLower(name)]; ok {
+			selected = append(selected, path)
+			selectedSet[path] = true
+		}
+	}
+	for _, path := range available {
+		if !selectedSet[path] {
+			additional = append(additional, path)
+		}
+	}
+	sort.Strings(additional)
+	return append(selected, additional...)
+}
+
+func (c *Client) fetchRootItems(ctx context.Context, candidate domain.RepositoryCandidate) ([]githubContentItem, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/contents", c.baseURL, candidate.Owner, candidate.Repo)
+	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
+		url += "?ref=" + candidate.CommitID
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	if c.token != "" {
+		req.Header.Set("Authorization", "token "+c.token)
+	}
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status %d ao listar raiz", resp.StatusCode)
+	}
+	var items []githubContentItem
+	if err := json.NewDecoder(resp.Body).Decode(&items); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 // parseGoSumDependencies extrai dependências do go.sum quando o go.mod não as lista.
@@ -246,36 +312,11 @@ func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, p
 
 // FetchTree recupera a lista de nós do diretório raiz.
 func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/contents", c.baseURL, candidate.Owner, candidate.Repo)
-	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
-		url += "?ref=" + candidate.CommitID
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	items, err := c.fetchRootItems(ctx, candidate)
 	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	if c.token != "" {
-		req.Header.Set("Authorization", "token "+c.token)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
 		return []domain.DirectoryNode{
 			{Path: "go.mod", Type: "file"},
 		}, nil
-	}
-
-	var items []githubContentItem
-	if err := json.NewDecoder(resp.Body).Decode(&items); err != nil {
-		return nil, err
 	}
 
 	nodes := make([]domain.DirectoryNode, 0, len(items))

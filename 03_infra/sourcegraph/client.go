@@ -84,54 +84,54 @@ type sgSearchResponse struct {
 // SearchCandidates executa a consulta de descoberta no Sourcegraph satisfazendo domain.SearchProvider.
 // sgLangName converte o nome da linguagem do Bateia para o nome exato aceito pelo Sourcegraph.
 var sgLangName = map[string]string{
-	"go":           "Go",
-	"typescript":   "TypeScript",
-	"ts":           "TypeScript",
-	"javascript":   "JavaScript",
-	"js":           "JavaScript",
-	"node":         "JavaScript",
-	"python":       "Python",
-	"py":           "Python",
-	"rust":         "Rust",
-	"rs":           "Rust",
-	"java":         "Java",
-	"kotlin":       "Kotlin",
-	"kt":           "Kotlin",
-	"php":          "PHP",
-	"c":            "C",
-	"cpp":          "C++",
-	"c++":          "C++",
-	"csharp":       "C#",
-	"cs":           "C#",
-	"dotnet":       "C#",
-	"ruby":         "Ruby",
-	"swift":        "Swift",
-	"scala":        "Scala",
-	"haskell":      "Haskell",
-	"dart":         "Dart",
-	"flutter":      "Dart",
-	"elixir":       "Elixir",
-	"clojure":      "Clojure",
-	"clj":          "Clojure",
-	"erlang":       "Erlang",
-	"ocaml":        "OCaml",
-	"zig":          "Zig",
-	"lua":          "Lua",
-	"perl":         "Perl",
-	"r":            "R",
-	"julia":        "Julia",
-	"groovy":       "Groovy",
-	"nim":          "Nim",
-	"crystal":      "Crystal",
-	"fsharp":       "F#",
-	"fs":           "F#",
-	"fortran":      "Fortran",
-	"cobol":        "COBOL",
-	"pascal":       "Pascal",
-	"delphi":       "Delphi",
-	"ada":          "Ada",
-	"haxe":         "Haxe",
-	"racket":       "Racket",
+	"go":         "Go",
+	"typescript": "TypeScript",
+	"ts":         "TypeScript",
+	"javascript": "JavaScript",
+	"js":         "JavaScript",
+	"node":       "JavaScript",
+	"python":     "Python",
+	"py":         "Python",
+	"rust":       "Rust",
+	"rs":         "Rust",
+	"java":       "Java",
+	"kotlin":     "Kotlin",
+	"kt":         "Kotlin",
+	"php":        "PHP",
+	"c":          "C",
+	"cpp":        "C++",
+	"c++":        "C++",
+	"csharp":     "C#",
+	"cs":         "C#",
+	"dotnet":     "C#",
+	"ruby":       "Ruby",
+	"swift":      "Swift",
+	"scala":      "Scala",
+	"haskell":    "Haskell",
+	"dart":       "Dart",
+	"flutter":    "Dart",
+	"elixir":     "Elixir",
+	"clojure":    "Clojure",
+	"clj":        "Clojure",
+	"erlang":     "Erlang",
+	"ocaml":      "OCaml",
+	"zig":        "Zig",
+	"lua":        "Lua",
+	"perl":       "Perl",
+	"r":          "R",
+	"julia":      "Julia",
+	"groovy":     "Groovy",
+	"nim":        "Nim",
+	"crystal":    "Crystal",
+	"fsharp":     "F#",
+	"fs":         "F#",
+	"fortran":    "Fortran",
+	"cobol":      "COBOL",
+	"pascal":     "Pascal",
+	"delphi":     "Delphi",
+	"ada":        "Ada",
+	"haxe":       "Haxe",
+	"racket":     "Racket",
 }
 
 // shortQuery extrai o(s) primeiro(s) termo(s) relevantes de uma query longa para o fallback sem lang.
@@ -178,13 +178,23 @@ func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter
 		short,
 	}
 
+	var lastErr error
+	requestSucceeded := false
 	for _, qStr := range queriesToTry {
 		candidates, err := c.executeSGQuery(ctx, qStr, filter.MaxResults)
-		if err == nil && len(candidates) > 0 {
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		requestSucceeded = true
+		if len(candidates) > 0 {
 			return candidates, nil
 		}
 	}
 
+	if !requestSucceeded && lastErr != nil {
+		return nil, fmt.Errorf("todas as consultas ao Sourcegraph falharam: %w", lastErr)
+	}
 	return []domain.RepositoryCandidate{}, nil
 }
 

@@ -69,7 +69,11 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 		Query:       searchQuery,
 		Language:    selectedLang,
 		MaxResults:  *maxFlag,
+		Depth:       1,
 		DirectRepos: directRepos,
+	}
+	if err := usecase.ValidateQueryFilter(filter); err != nil {
+		return fmt.Errorf("parâmetros inválidos: %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)

@@ -9,11 +9,12 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"log"
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"bateia/01_core/domain"
@@ -25,6 +26,62 @@ type SearchFunnel struct {
 	searcher domain.SearchProvider
 	fetcher  domain.ContentProvider
 	store    domain.CacheStore
+	reporter domain.ProgressReporter
+	mu       sync.Mutex
+}
+
+// WithProgressReporter configura um observador de progresso e mantém o núcleo sem I/O direto.
+func (f *SearchFunnel) WithProgressReporter(reporter domain.ProgressReporter) *SearchFunnel {
+	f.reporter = reporter
+	return f
+}
+
+func (f *SearchFunnel) progress(stage, format string, args ...any) {
+	if f.reporter != nil {
+		f.mu.Lock()
+		defer f.mu.Unlock()
+		f.reporter.ReportProgress(domain.ProgressEvent{Stage: stage, Message: fmt.Sprintf(format, args...)})
+	}
+}
+
+func (f *SearchFunnel) cacheWarning(report *domain.SearchReport, stage, operation, target string, err error) {
+	if err == nil {
+		return
+	}
+	f.mu.Lock()
+	report.Warnings = append(report.Warnings, domain.OperationalWarning{
+		Stage: stage, Operation: operation, Target: target, Message: err.Error(),
+	})
+	f.mu.Unlock()
+	f.progress(stage, "cache degradado em %s (%s): %v", operation, target, err)
+}
+
+func (f *SearchFunnel) recordCache(telemetry *domain.FunnelTelemetry, hit bool) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if hit {
+		telemetry.CacheHits++
+	} else {
+		telemetry.CacheMisses++
+	}
+}
+
+func parallelFor(ctx context.Context, count, limit int, fn func(int)) {
+	sem := make(chan struct{}, limit)
+	var wg sync.WaitGroup
+	for i := 0; i < count; i++ {
+		if ctx.Err() != nil {
+			break
+		}
+		wg.Add(1)
+		sem <- struct{}{}
+		go func(index int) {
+			defer wg.Done()
+			defer func() { <-sem }()
+			fn(index)
+		}(i)
+	}
+	wg.Wait()
 }
 
 func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvider, store domain.CacheStore) *SearchFunnel {
@@ -37,29 +94,55 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 
 // Execute executa a busca através dos 3 estágios do funil com cache e invariante de redução.
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
+	if err := ValidateQueryFilter(filter); err != nil {
+		return nil, fmt.Errorf("filtro inválido: %w", err)
+	}
 	startTotal := time.Now()
 
 	langs := ParseLanguageList(filter.Language)
-	if len(langs) > 1 && (strings.Contains(filter.Language, ",") || filter.Language == "sweep" || filter.Language == "all") {
-		log.Printf("[POLYGLOT SWEEP] Iniciando varredura em %d ecossistemas (%s)...", len(langs), strings.Join(langs, ", "))
+	normalizedLanguage := strings.ToLower(strings.TrimSpace(filter.Language))
+	if len(langs) > 1 && (strings.Contains(normalizedLanguage, ",") || normalizedLanguage == "sweep" || normalizedLanguage == "all" || normalizedLanguage == "polyglot") {
+		f.progress("polyglot", "iniciando varredura em %d ecossistemas (%s)", len(langs), strings.Join(langs, ", "))
 		var mergedResults []domain.ExtractedRepository
 		var topCandidates, triagedCount, discardedCount int
+		var failures []domain.ExecutionFailure
+		var warnings []domain.OperationalWarning
+		var discoveryMs, triageMs, extractionMs int64
+		var cacheHits, cacheMisses int
 		visited := make(map[string]bool)
 
 		for _, l := range langs {
 			subFilter := filter
 			subFilter.Language = l
 			subReport, err := f.executeRecursive(ctx, subFilter, visited)
-			if err == nil && subReport != nil {
+			if err != nil {
+				failures = append(failures, domain.ExecutionFailure{Scope: l, Stage: "sweep", Message: err.Error()})
+				continue
+			}
+			if subReport != nil {
 				mergedResults = append(mergedResults, subReport.Results...)
 				topCandidates += subReport.TopCandidates
 				triagedCount += subReport.TriagedCount
 				discardedCount += subReport.DiscardedCount
+				failures = append(failures, subReport.Failures...)
+				warnings = append(warnings, subReport.Warnings...)
+				if subReport.Telemetry != nil {
+					discoveryMs += subReport.Telemetry.DiscoveryDurationMs
+					triageMs += subReport.Telemetry.TriageDurationMs
+					extractionMs += subReport.Telemetry.ExtractionDurationMs
+					cacheHits += subReport.Telemetry.CacheHits
+					cacheMisses += subReport.Telemetry.CacheMisses
+				}
 			}
 		}
 
 		telemetry := &domain.FunnelTelemetry{
-			TotalDurationMs: time.Since(startTotal).Milliseconds(),
+			DiscoveryDurationMs:  discoveryMs,
+			TriageDurationMs:     triageMs,
+			ExtractionDurationMs: extractionMs,
+			TotalDurationMs:      time.Since(startTotal).Milliseconds(),
+			CacheHits:            cacheHits,
+			CacheMisses:          cacheMisses,
 		}
 
 		finalReport := &domain.SearchReport{
@@ -71,6 +154,8 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 			DiscardedCount: discardedCount,
 			Results:        mergedResults,
 			Telemetry:      telemetry,
+			Failures:       failures,
+			Warnings:       warnings,
 		}
 
 		insights := parser.ExtractArchitecturalInsights(finalReport.Results)
@@ -128,8 +213,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	var hit bool
 	var err error
 
-	if len(filter.DirectRepos) > 0 {
-		log.Printf("[ESTÁGIO 1] Modo Benchmark: Injetando %d repositórios diretamente...", len(filter.DirectRepos))
+	if filter.LocalPath != "" {
+		f.progress("discovery", "analisando worktree local %s", filter.LocalPath)
+		candidates = append(candidates, domain.RepositoryCandidate{
+			Owner: "local", Repo: filepath.Base(filter.LocalPath), URL: "file://" + filter.LocalPath,
+			Description: "Worktree local", CommitID: "WORKTREE", ConsultadoEm: time.Now().UTC(),
+		})
+	} else if len(filter.DirectRepos) > 0 {
+		f.progress("discovery", "modo benchmark: injetando %d repositórios", len(filter.DirectRepos))
 		for _, repoStr := range filter.DirectRepos {
 			parts := strings.Split(repoStr, "/")
 			if len(parts) == 2 {
@@ -144,25 +235,26 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			}
 		}
 	} else {
-		log.Printf("[ESTÁGIO 1] Buscando candidatos no topo do funil...")
+		f.progress("discovery", "buscando candidatos")
 		candidates, hit, err = f.store.GetDiscovery(queryKey, 2*time.Hour)
 		if err != nil {
-			log.Printf("[WARNING] Erro ao ler cache de descoberta: %v", err)
+			f.cacheWarning(report, "discovery", "get", queryKey, err)
+			hit = false
 		}
 
 		if !hit || len(candidates) == 0 {
 			telemetry.CacheMisses++
-			log.Printf("[ESTÁGIO 1] Cache miss/vazio. Consultando provedor de busca...")
+			f.progress("discovery", "cache vazio; consultando provedor")
 			candidates, err = f.searcher.SearchCandidates(ctx, filter)
 			if err != nil {
 				return nil, fmt.Errorf("falha no estágio 1 (Descoberta): %w", err)
 			}
 			if len(candidates) > 0 {
-				_ = f.store.SaveDiscovery(queryKey, candidates)
+				f.cacheWarning(report, "discovery", "save", queryKey, f.store.SaveDiscovery(queryKey, candidates))
 			}
 		} else {
 			telemetry.CacheHits++
-			log.Printf("[ESTÁGIO 1] Cache HIT para a busca '%s' (%d candidatos).", filter.Query, len(candidates))
+			f.progress("discovery", "cache hit para %q (%d candidatos)", filter.Query, len(candidates))
 		}
 	}
 
@@ -177,47 +269,71 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// Estágio 2: Triagem (Meio do Funil)
 	// ==========================================
 	startStage2 := time.Now()
-	log.Printf("[ESTÁGIO 2] Triando manifestos e estrutura (%d candidatos)...", len(candidates))
+	f.progress("triage", "triando manifestos e estrutura de %d candidatos", len(candidates))
 	triaged := make([]domain.TriagedRepository, 0)
 	discardedCount := 0
 
-	for _, cand := range candidates {
+	parallelFor(ctx, len(candidates), 4, func(candidateIndex int) {
+		cand := candidates[candidateIndex]
 		ref := domain.CommitRef{
 			Owner:  cand.Owner,
 			Repo:   cand.Repo,
 			Commit: cand.CommitID,
 		}
-		
+
 		refKey := cand.Owner + "/" + cand.Repo
-		if visited[refKey] {
-			discardedCount++
-			continue
+		f.mu.Lock()
+		alreadyVisited := visited[refKey]
+		if !alreadyVisited {
+			visited[refKey] = true
 		}
-		visited[refKey] = true
+		f.mu.Unlock()
+		if alreadyVisited {
+			f.mu.Lock()
+			discardedCount++
+			f.mu.Unlock()
+			return
+		}
 
 		// 1. Tentar manifesto via Cache
-		manifest, hitM, _ := f.store.GetManifest(ref)
+		var manifest *domain.Manifest
+		var hitM bool
+		if filter.LocalPath == "" {
+			var cacheErr error
+			manifest, hitM, cacheErr = f.store.GetManifest(ref)
+			if cacheErr != nil {
+				f.cacheWarning(report, "triage", "get_manifest", ref.Key(), cacheErr)
+				hitM = false
+			}
+		}
 		if hitM {
-			telemetry.CacheHits++
+			f.recordCache(telemetry, true)
 		} else {
-			telemetry.CacheMisses++
-			manifest, err = f.fetcher.FetchManifest(ctx, cand)
-			if err != nil {
-				if err.Error() == "MANIFEST_NOT_FOUND (404/410)" {
+			if filter.LocalPath == "" {
+				f.recordCache(telemetry, false)
+			}
+			fetchedManifest, fetchErr := f.fetcher.FetchManifest(ctx, cand)
+			if fetchErr != nil {
+				if errors.Is(fetchErr, domain.ErrManifestNotFound) {
 					cand.Stale = true
+					f.mu.Lock()
 					discardedCount++
-					continue
+					f.mu.Unlock()
+					return
 				}
-				log.Printf("[WARNING] Falha ao buscar manifesto para %s: %v", ref.Key(), err)
+				f.progress("triage", "falha ao buscar manifesto para %s: %v", ref.Key(), fetchErr)
 			} else {
-				_ = f.store.SaveManifest(ref, manifest)
+				manifest = fetchedManifest
+				if filter.LocalPath == "" {
+					f.cacheWarning(report, "triage", "save_manifest", ref.Key(), f.store.SaveManifest(ref, manifest))
+				}
 			}
 		}
 
 		// 2. Tentar estrutura de diretórios se filtros foram especificados
-		tree, err := f.fetcher.FetchTree(ctx, cand)
+		tree, treeErr := f.fetcher.FetchTree(ctx, cand)
 		score := parser.StructuralScore{Approved: true, Reason: "Sem filtro estrutural"}
-		if err == nil && len(filter.MustHave) > 0 {
+		if treeErr == nil && len(filter.MustHave) > 0 {
 			score = parser.EvaluateStructure(tree, filter.MustHave)
 		}
 
@@ -225,6 +341,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		rel := parser.EvaluateRelevance(filter.Query, manifest, cand, tree)
 
 		if score.Approved {
+			f.mu.Lock()
 			triaged = append(triaged, domain.TriagedRepository{
 				Candidate:       cand,
 				Manifest:        manifest,
@@ -235,10 +352,13 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				RelevanceLabel:  rel.Label,
 				RelevanceReason: rel.Reason,
 			})
+			f.mu.Unlock()
 		} else {
+			f.mu.Lock()
 			discardedCount++
+			f.mu.Unlock()
 		}
-	}
+	})
 
 	telemetry.TriageDurationMs = time.Since(startStage2).Milliseconds()
 
@@ -251,7 +371,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		return triaged[i].RelevanceScore > triaged[j].RelevanceScore
 	})
 
-	log.Printf("[ESTÁGIO 2] Triagem concluída: %d aprovados de %d candidatos (ordenados por relevância).", len(triaged), len(candidates))
+	f.progress("triage", "%d aprovados de %d candidatos", len(triaged), len(candidates))
 
 	// ==========================================
 	// Estágio 3: Extração (Fundo do Funil)
@@ -263,9 +383,9 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		maxExtract = len(triaged)
 	}
 
-	log.Printf("[ESTÁGIO 3] Extraindo até %d repositórios mais relevantes...", maxExtract)
+	f.progress("extraction", "extraindo até %d repositórios", maxExtract)
 
-	for i := 0; i < maxExtract; i++ {
+	parallelFor(ctx, maxExtract, 4, func(i int) {
 		tRepo := triaged[i]
 
 		// Enriquecer metadados (estrelas e descrição) via GitHub API
@@ -281,9 +401,18 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 
 		// Tentar extração via cache imutável (repo@commit)
-		extracted, hitE, _ := f.store.GetExtracted(ref)
+		var extracted *domain.ExtractedRepository
+		var hitE bool
+		if filter.LocalPath == "" {
+			var cacheErr error
+			extracted, hitE, cacheErr = f.store.GetExtracted(ref)
+			if cacheErr != nil {
+				f.cacheWarning(report, "extraction", "get_extracted", ref.Key(), cacheErr)
+				hitE = false
+			}
+		}
 		if hitE {
-			telemetry.CacheHits++
+			f.recordCache(telemetry, true)
 			extracted.Candidate = tRepo.Candidate
 			if extracted.Manifest != nil && extracted.Manifest.Content != nil {
 				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
@@ -295,12 +424,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				extracted.RelevanceLabel = tRepo.RelevanceLabel
 				extracted.RelevanceReason = tRepo.RelevanceReason
 			}
-			log.Printf("[ESTÁGIO 3] Cache HIT na extração para %s (Score: %d).", ref.Key(), extracted.RelevanceScore)
+			f.progress("extraction", "cache hit para %s (score %d)", ref.Key(), extracted.RelevanceScore)
 		} else {
-			telemetry.CacheMisses++
-			log.Printf("[ESTÁGIO 3] Baixando conteúdo para %s (Score: %d)...", ref.Key(), tRepo.RelevanceScore)
+			if filter.LocalPath == "" {
+				f.recordCache(telemetry, false)
+			}
+			f.progress("extraction", "baixando conteúdo de %s (score %d)", ref.Key(), tRepo.RelevanceScore)
 			targetPaths := []string{"go.mod", "README.md", "package.json", "Cargo.toml"}
-			
+
 			// Selecionar dinamicamente os 3 primeiros arquivos de código fonte da árvore
 			codeCount := 0
 			for _, node := range tRepo.Tree {
@@ -320,11 +451,15 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				targetPaths = append(targetPaths, "gin.go", "main.go", "app.go", "lib.rs", "index.ts", "cmd/main.go", "types.go", "domain.go", "server.go", "client.go", "01_core/domain/types.go", "01_core/parser/ast.go")
 			}
 
-			extracted, err = f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, targetPaths)
-			if err != nil {
-				log.Printf("[WARNING] Falha na extração de %s: %v", ref.Key(), err)
-				continue
+			downloaded, extractErr := f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, targetPaths)
+			if extractErr != nil {
+				f.progress("extraction", "falha na extração de %s: %v", ref.Key(), extractErr)
+				f.mu.Lock()
+				report.Failures = append(report.Failures, domain.ExecutionFailure{Scope: ref.Key(), Stage: "extraction", Message: extractErr.Error()})
+				f.mu.Unlock()
+				return
 			}
+			extracted = downloaded
 			extracted.Candidate = tRepo.Candidate
 			if tRepo.Manifest != nil {
 				extracted.Manifest = tRepo.Manifest
@@ -359,7 +494,9 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				extracted.RelevanceReason = tRepo.RelevanceReason
 			}
 
-			_ = f.store.SaveExtracted(ref, extracted)
+			if filter.LocalPath == "" {
+				f.cacheWarning(report, "extraction", "save_extracted", ref.Key(), f.store.SaveExtracted(ref, extracted))
+			}
 		}
 
 		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)
@@ -376,8 +513,13 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		extracted.HealthScore = parser.CalculateHealthScore(extracted.ArchViolations)
 		extracted.SecurityAdvisories = parser.EvaluateSecurityAdvisories(extracted.Manifest)
 
+		f.mu.Lock()
 		report.Results = append(report.Results, *extracted)
-	}
+		f.mu.Unlock()
+	})
+	sort.SliceStable(report.Results, func(i, j int) bool {
+		return report.Results[i].RelevanceScore > report.Results[j].RelevanceScore
+	})
 
 	telemetry.ExtractionDurationMs = time.Since(startStage3).Milliseconds()
 
@@ -389,8 +531,8 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// Estágio 4: Recursividade (Malha de Dependências)
 	// ==========================================
 	if filter.Depth > 1 {
-		log.Printf("[ESTÁGIO 4] Aprofundando busca recursiva (Restam %d rodadas) para query '%s'...", filter.Depth-1, filter.Query)
-		
+		f.progress("recursion", "aprofundando busca; restam %d rodadas para %q", filter.Depth-1, filter.Query)
+
 		depsToSearch := make([]string, 0)
 		for _, res := range report.Results {
 			if res.Manifest != nil {
@@ -412,13 +554,19 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			childFilter := filter
 			childFilter.Depth = filter.Depth - 1
 			childFilter.Query = depName
-			
+
 			childReport, err := f.executeRecursive(ctx, childFilter, visited)
-			if err == nil && childReport != nil {
+			if err != nil {
+				report.Failures = append(report.Failures, domain.ExecutionFailure{Scope: depName, Stage: "recursion", Message: err.Error()})
+				continue
+			}
+			if childReport != nil {
 				report.Results = append(report.Results, childReport.Results...)
 				report.TriagedCount += childReport.TriagedCount
 				report.DiscardedCount += childReport.DiscardedCount
 				report.TopCandidates += childReport.TopCandidates
+				report.Failures = append(report.Failures, childReport.Failures...)
+				report.Warnings = append(report.Warnings, childReport.Warnings...)
 			}
 		}
 		report.ExtractedCount = len(report.Results)
@@ -455,8 +603,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		report.LanguageDistribution = CalculateLanguageDistribution(report.Results, simResults)
 	}
 
-	log.Printf("[CONCLUÍDO] Funil executado com sucesso! %d repositórios entregues no relatório com insights computados.", report.ExtractedCount)
+	f.progress("completed", "%d repositórios entregues com insights computados", report.ExtractedCount)
 
 	return report, nil
 }
-

@@ -36,3 +36,8 @@ type CacheStore interface {
 	GetExtracted(ref CommitRef) (*ExtractedRepository, bool, error)
 	SaveExtracted(ref CommitRef, extracted *ExtractedRepository) error
 }
+
+// ProgressReporter recebe eventos operacionais sem acoplar o núcleo a log, terminal ou arquivo.
+type ProgressReporter interface {
+	ReportProgress(event ProgressEvent)
+}

@@ -11,6 +11,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -28,7 +29,7 @@ func TestClient_FetchRepoMetadata(t *testing.T) {
 		}
 		resp := map[string]interface{}{
 			"stargazers_count": 1234,
-			"description":     "A great project",
+			"description":      "A great project",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)
@@ -151,6 +152,28 @@ func TestClient_FetchManifest_NotFound(t *testing.T) {
 	if err == nil {
 		t.Fatal("Esperava erro MANIFEST_NOT_FOUND, mas não recebeu")
 	}
+	if !errors.Is(err, domain.ErrManifestNotFound) {
+		t.Fatalf("Esperava ErrManifestNotFound, recebeu: %v", err)
+	}
+}
+
+func TestClient_FetchManifest_UsesRootListingToAvoidManifestProbeStorm(t *testing.T) {
+	requests := 0
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode([]map[string]interface{}{{"name": "README.md", "path": "README.md", "type": "file"}})
+	}))
+	defer server.Close()
+
+	client := github.NewClientWithBaseURL("", server.URL)
+	_, err := client.FetchManifest(context.Background(), domain.RepositoryCandidate{Owner: "empty", Repo: "repo"})
+	if !errors.Is(err, domain.ErrManifestNotFound) {
+		t.Fatalf("esperava ErrManifestNotFound, recebeu %v", err)
+	}
+	if requests != 1 {
+		t.Fatalf("esperava apenas a listagem da raiz, recebeu %d chamadas", requests)
+	}
 }
 
 func TestClient_AuthorizationHeader(t *testing.T) {
@@ -159,7 +182,7 @@ func TestClient_AuthorizationHeader(t *testing.T) {
 		gotAuth = r.Header.Get("Authorization")
 		resp := map[string]interface{}{
 			"stargazers_count": 0,
-			"description":     "",
+			"description":      "",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)

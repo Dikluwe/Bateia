@@ -86,7 +86,7 @@ Em todos os relatórios gerados, o Bateia analisa o ecossistema dos repositório
 ## 🚀 **Como Compilar e Usar**
 
 ### **Pré-requisitos**
-- Go 1.22+
+- Go 1.25+
 
 ### **Compilação**
 ```bash
@@ -94,6 +94,13 @@ go build -o bateia ./04_wiring/main.go
 ```
 
 ### **Exemplos de Uso**
+
+#### Analisar uma worktree local (incluindo alterações não commitadas)
+```bash
+./bateia analyze -path . -query "arquitetura do projeto" -format markdown -output relatorios/analise_local.md
+```
+
+O modo local não depende do GitHub e ignora diretórios gerados ou volumosos como `.git`, `node_modules`, `vendor`, `target`, `dist` e `build`.
 
 #### 1. Buscar Projetos Go usando Fiber
 ```bash

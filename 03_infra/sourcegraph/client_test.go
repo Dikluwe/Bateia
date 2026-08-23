@@ -164,12 +164,14 @@ func TestClient_SearchCandidates_ServerError(t *testing.T) {
 	defer server.Close()
 
 	client := sourcegraph.NewClientWithEndpoint("", server.URL)
-	candidates, _ := client.SearchCandidates(context.Background(), domain.QueryFilter{
+	candidates, err := client.SearchCandidates(context.Background(), domain.QueryFilter{
 		Query:      "test",
 		Language:   "go",
 		MaxResults: 5,
 	})
-	// Sem panic — deve retornar resultado vazio pelo fallback
+	if err == nil {
+		t.Fatal("esperava erro após todas as tentativas ao Sourcegraph falharem")
+	}
 	if len(candidates) != 0 {
 		t.Errorf("Esperado 0 candidatos em erro de servidor, recebeu: %d", len(candidates))
 	}

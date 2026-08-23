@@ -69,9 +69,10 @@ type QueryFilter struct {
 	Query       string   `json:"query"`
 	Language    string   `json:"language"`
 	MaxResults  int      `json:"max_results"`
-	MustHave    []string `json:"must_have"` // ex: ["cmd", "internal"]
-	Depth       int      `json:"depth"`     // Profundidade da busca recursiva em grafo
-	DirectRepos []string `json:"direct_repos"` // Repositórios injetados diretamente no modo Benchmark
+	MustHave    []string `json:"must_have"`            // ex: ["cmd", "internal"]
+	Depth       int      `json:"depth"`                // Profundidade da busca recursiva em grafo
+	DirectRepos []string `json:"direct_repos"`         // Repositórios injetados diretamente no modo Benchmark
+	LocalPath   string   `json:"local_path,omitempty"` // Worktree local analisada sem depender de provedor remoto
 }
 
 // TriagedRepository é o resultado da etapa 2 (Meio do funil - Triagem).
@@ -114,13 +115,17 @@ type ArchViolation struct {
 	Suggestion  string `json:"suggestion,omitempty"`
 }
 
-// SecurityAdvisory representa um alerta de segurança ou CVE conhecido em dependência.
+// SecurityAdvisory representa uma correspondência heurística com uma entrada da base local.
 type SecurityAdvisory struct {
 	Package           string `json:"package"`
 	VulnerableVersion string `json:"vulnerable_version"`
 	Severity          string `json:"severity"` // "CRITICAL", "HIGH", "MEDIUM"
 	AdvisoryID        string `json:"advisory_id"`
 	Message           string `json:"message"`
+	Confidence        string `json:"confidence"`
+	MatchType         string `json:"match_type"`
+	Source            string `json:"source"`
+	DatabaseUpdatedAt string `json:"database_updated_at"`
 }
 
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
@@ -192,23 +197,46 @@ type FunnelTelemetry struct {
 	CacheMisses          int   `json:"cache_misses"`
 }
 
+// ProgressEvent descreve progresso operacional emitido pelo caso de uso.
+type ProgressEvent struct {
+	Stage   string `json:"stage"`
+	Message string `json:"message"`
+}
+
+// ExecutionFailure registra uma parte da execução que falhou sem invalidar resultados parciais.
+type ExecutionFailure struct {
+	Scope   string `json:"scope"`
+	Stage   string `json:"stage"`
+	Message string `json:"message"`
+}
+
+// OperationalWarning registra uma degradação recuperável, como uma falha de cache.
+type OperationalWarning struct {
+	Stage     string `json:"stage"`
+	Operation string `json:"operation"`
+	Target    string `json:"target,omitempty"`
+	Message   string `json:"message"`
+}
+
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
 	Query                QueryFilter                 `json:"query"`
 	GeneratedAt          time.Time                   `json:"generated_at"`
-	TopCandidates       int                         `json:"top_candidates"`
-	TriagedCount        int                         `json:"triaged_count"`
-	ExtractedCount      int                         `json:"extracted_count"`
-	DiscardedCount      int                         `json:"discarded_count"`
-	DiscardReason       string                      `json:"discard_reason"`
-	Results             []ExtractedRepository       `json:"results"`
-	Insights            *ArchitecturalInsights      `json:"insights,omitempty"`
-	PolyglotMatrix      []PolyglotContract          `json:"polyglot_matrix,omitempty"`
-	Telemetry           *FunnelTelemetry            `json:"telemetry,omitempty"`
-	TargetOntology      *ProjectOntology            `json:"target_ontology,omitempty"`
-	SimilarityResults   []IdeaSimilarityResult      `json:"similarity_results,omitempty"`
-	Recommendations     []ImprovementRecommendation `json:"recommendations,omitempty"`
-	LanguageDistribution []LanguageDistribution     `json:"language_distribution,omitempty"`
+	TopCandidates        int                         `json:"top_candidates"`
+	TriagedCount         int                         `json:"triaged_count"`
+	ExtractedCount       int                         `json:"extracted_count"`
+	DiscardedCount       int                         `json:"discarded_count"`
+	DiscardReason        string                      `json:"discard_reason"`
+	Results              []ExtractedRepository       `json:"results"`
+	Insights             *ArchitecturalInsights      `json:"insights,omitempty"`
+	PolyglotMatrix       []PolyglotContract          `json:"polyglot_matrix,omitempty"`
+	Telemetry            *FunnelTelemetry            `json:"telemetry,omitempty"`
+	Failures             []ExecutionFailure          `json:"failures,omitempty"`
+	Warnings             []OperationalWarning        `json:"warnings,omitempty"`
+	TargetOntology       *ProjectOntology            `json:"target_ontology,omitempty"`
+	SimilarityResults    []IdeaSimilarityResult      `json:"similarity_results,omitempty"`
+	Recommendations      []ImprovementRecommendation `json:"recommendations,omitempty"`
+	LanguageDistribution []LanguageDistribution      `json:"language_distribution,omitempty"`
 }
 
 // LanguageDistribution estatísticas compiladas para uma linguagem na varredura poliglota.
@@ -221,19 +249,18 @@ type LanguageDistribution struct {
 	DominantTech  []string `json:"dominant_tech,omitempty"`
 }
 
-
 // AlgorithmChallenge representa um algoritmo extraído com seus testes e benchmarks associados.
 type AlgorithmChallenge struct {
-	ID           string   `json:"id"`
-	Name         string   `json:"name"`
-	Category     string   `json:"category"` // "Sorting", "Graph", "Tree", "DynamicProgramming", "Crypto", "Math", "General"
-	Language     string   `json:"language"`
-	Repository   string   `json:"repository"`
-	FilePath     string   `json:"file_path"`
-	CodeSnippet  string   `json:"code_snippet"`
-	TestCases    []string `json:"test_cases,omitempty"`
-	Benchmarks   []string `json:"benchmarks,omitempty"`
-	Complexity   string   `json:"complexity,omitempty"`
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Category    string   `json:"category"` // "Sorting", "Graph", "Tree", "DynamicProgramming", "Crypto", "Math", "General"
+	Language    string   `json:"language"`
+	Repository  string   `json:"repository"`
+	FilePath    string   `json:"file_path"`
+	CodeSnippet string   `json:"code_snippet"`
+	TestCases   []string `json:"test_cases,omitempty"`
+	Benchmarks  []string `json:"benchmarks,omitempty"`
+	Complexity  string   `json:"complexity,omitempty"`
 }
 
 // LabDataset representa o conjunto de desafios e benchmarks extraídos para o Lab de Projetos.
@@ -246,13 +273,13 @@ type LabDataset struct {
 
 // ProjectOntology representa o perfil ontológico extraído de um repositório ou descrição de ideia.
 type ProjectOntology struct {
-	Ref                CommitRef          `json:"ref"`
-	ProblemDomain      string             `json:"problem_domain"`      // Categoria do problema (ex: "Code Intelligence", "Vector Search")
-	IntentKeywords     []string           `json:"intent_keywords"`     // Palavras-chave de intenção/problema
-	Capabilities       []string           `json:"capabilities"`        // Capacidades/Features detectadas
-	EcosystemPackages  []string           `json:"ecosystem_packages"`  // Pacotes/dependências chave do manifesto
-	ArchitecturalStyle string             `json:"architectural_style"` // Estilo arquitetural (ex: "Layered", "Clean", "Monolith")
-	FileStructure      []string           `json:"file_structure"`      // Diretórios chave (ex: "cmd", "internal", "pkg")
+	Ref                CommitRef `json:"ref"`
+	ProblemDomain      string    `json:"problem_domain"`      // Categoria do problema (ex: "Code Intelligence", "Vector Search")
+	IntentKeywords     []string  `json:"intent_keywords"`     // Palavras-chave de intenção/problema
+	Capabilities       []string  `json:"capabilities"`        // Capacidades/Features detectadas
+	EcosystemPackages  []string  `json:"ecosystem_packages"`  // Pacotes/dependências chave do manifesto
+	ArchitecturalStyle string    `json:"architectural_style"` // Estilo arquitetural (ex: "Layered", "Clean", "Monolith")
+	FileStructure      []string  `json:"file_structure"`      // Diretórios chave (ex: "cmd", "internal", "pkg")
 }
 
 // SimilarityVector detalha a pontuação decomposta nos 4 vetores ontológicos.
@@ -265,15 +292,15 @@ type SimilarityVector struct {
 
 // IdeaSimilarityResult representa o resultado da comparação entre a ontologia alvo e um repositório candidato.
 type IdeaSimilarityResult struct {
-	TargetRef       CommitRef        `json:"target_ref"`
-	CandidateRef    CommitRef        `json:"candidate_ref"`
-	CandidateRepo   string           `json:"candidate_repo"`
-	OverallScore    int              `json:"overall_score"`    // Score total ponderado (0-100%)
-	SimilarityLabel string           `json:"similarity_label"` // "Identical Idea", "High Similarity", "Moderate", "Divergent"
-	Vectors         SimilarityVector `json:"vectors"`
-	CommonKeywords  []string         `json:"common_keywords,omitempty"`
-	CommonStack     []string         `json:"common_stack,omitempty"`
-	MissingCapabilities []string     `json:"missing_capabilities,omitempty"`
+	TargetRef           CommitRef        `json:"target_ref"`
+	CandidateRef        CommitRef        `json:"candidate_ref"`
+	CandidateRepo       string           `json:"candidate_repo"`
+	OverallScore        int              `json:"overall_score"`    // Score total ponderado (0-100%)
+	SimilarityLabel     string           `json:"similarity_label"` // "Identical Idea", "High Similarity", "Moderate", "Divergent"
+	Vectors             SimilarityVector `json:"vectors"`
+	CommonKeywords      []string         `json:"common_keywords,omitempty"`
+	CommonStack         []string         `json:"common_stack,omitempty"`
+	MissingCapabilities []string         `json:"missing_capabilities,omitempty"`
 }
 
 // ImprovementRecommendation sugestão de melhoria para o projeto alvo derivada de repositórios parecidos.
@@ -284,4 +311,3 @@ type ImprovementRecommendation struct {
 	SuggestedBy  []string `json:"suggested_by"`  // Repositórios de referência que já adotam
 	Reasoning    string   `json:"reasoning"`     // Motivação baseada na ontologia
 }
-

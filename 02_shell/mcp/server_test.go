@@ -65,3 +65,37 @@ func TestMCPServer_ToolsList(t *testing.T) {
 		t.Fatalf("Esperava 2 ferramentas expostas no MCP, obteve %d", len(tools))
 	}
 }
+
+func TestMCPServer_RejectsEmptySearchQuery(t *testing.T) {
+	input := `{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"bateia_search","arguments":{"query":""}}}` + "\n"
+	writer := &bytes.Buffer{}
+	server := NewMCPServer(nil, strings.NewReader(input), writer)
+	if err := server.Serve(context.Background()); err != nil {
+		t.Fatalf("Serve falhou: %v", err)
+	}
+
+	var resp JSONRPCResponse
+	if err := json.Unmarshal(writer.Bytes(), &resp); err != nil {
+		t.Fatalf("resposta inválida: %v", err)
+	}
+	if resp.Error == nil || resp.Error.Code != -32602 {
+		t.Fatalf("esperava Invalid params, recebeu: %+v", resp.Error)
+	}
+}
+
+func TestMCPServer_RejectsMalformedBenchmarkRepository(t *testing.T) {
+	input := `{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"bateia_benchmark","arguments":{"repos":"invalid"}}}` + "\n"
+	writer := &bytes.Buffer{}
+	server := NewMCPServer(nil, strings.NewReader(input), writer)
+	if err := server.Serve(context.Background()); err != nil {
+		t.Fatalf("Serve falhou: %v", err)
+	}
+
+	var resp JSONRPCResponse
+	if err := json.Unmarshal(writer.Bytes(), &resp); err != nil {
+		t.Fatalf("resposta inválida: %v", err)
+	}
+	if resp.Error == nil || resp.Error.Code != -32602 {
+		t.Fatalf("esperava Invalid params, recebeu: %+v", resp.Error)
+	}
+}

@@ -63,6 +63,16 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString(fmt.Sprintf("        <tr><td><strong>2. Triagem</strong></td><td>%d aprovados</td><td>Leitura de manifestos (%d descartados)</td></tr>\n", report.TriagedCount, report.DiscardedCount))
 	sb.WriteString(fmt.Sprintf("        <tr><td><strong>3. Extração</strong></td><td>%d entregues</td><td>Extração idempotente por commit</td></tr>\n", report.ExtractedCount))
 	sb.WriteString("      </tbody>\n    </table>\n")
+	if len(report.Failures) > 0 || len(report.Warnings) > 0 {
+		sb.WriteString("    <h3>Diagnóstico Operacional</h3>\n    <ul>\n")
+		for _, failure := range report.Failures {
+			sb.WriteString(fmt.Sprintf("      <li><strong>Falha parcial em %s (%s):</strong> %s</li>\n", html.EscapeString(failure.Scope), html.EscapeString(failure.Stage), html.EscapeString(failure.Message)))
+		}
+		for _, warning := range report.Warnings {
+			sb.WriteString(fmt.Sprintf("      <li><strong>Aviso recuperável em %s (%s/%s):</strong> %s</li>\n", html.EscapeString(warning.Target), html.EscapeString(warning.Stage), html.EscapeString(warning.Operation), html.EscapeString(warning.Message)))
+		}
+		sb.WriteString("    </ul>\n")
+	}
 
 	mermaidGraph := GenerateMermaidGraph(report)
 	if mermaidGraph != "" {
@@ -115,9 +125,9 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 		}
 
 		if len(res.SecurityAdvisories) > 0 {
-			sb.WriteString("    <h4>🛡️ Alertas de Segurança & CVEs (Security Scanner)</h4>\n    <ul>\n")
+			sb.WriteString("    <h4>🛡️ Possíveis Correspondências de Segurança (Base Local Heurística)</h4>\n    <ul>\n")
 			for _, adv := range res.SecurityAdvisories {
-				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#da3633;\">[%s] %s</strong>: %s em <code>%s</code> (%s)</li>\n", html.EscapeString(adv.Severity), html.EscapeString(adv.AdvisoryID), html.EscapeString(adv.Message), html.EscapeString(adv.Package), html.EscapeString(adv.VulnerableVersion)))
+				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#da3633;\">[%s] %s</strong>: %s em <code>%s</code> (%s). Confiança: %s. <a href=\"%s\">Fonte</a>; base %s.</li>\n", html.EscapeString(adv.Severity), html.EscapeString(adv.AdvisoryID), html.EscapeString(adv.Message), html.EscapeString(adv.Package), html.EscapeString(adv.VulnerableVersion), html.EscapeString(adv.Confidence), html.EscapeString(adv.Source), html.EscapeString(adv.DatabaseUpdatedAt)))
 			}
 			sb.WriteString("    </ul>\n")
 		}
@@ -125,7 +135,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 		if len(res.Files) > 0 {
 			sb.WriteString("    <h4>Arquivos Extraídos</h4>\n")
 			for _, f := range res.Files {
-				githubURL := parser.GenerateGitHubFileURL(res.Candidate.Owner, res.Candidate.Repo, res.Ref.Commit, f.Path)
+				githubURL := sourceFileURL(res, f.Path)
 				content, _ := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
 
 				sb.WriteString(fmt.Sprintf("    <details><summary>%s (%d bytes)</summary>\n", html.EscapeString(f.Path), f.Size))

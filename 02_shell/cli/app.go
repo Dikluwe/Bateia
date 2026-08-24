@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-07-25
+ * @updated 2026-08-24
  */
 
 package cli
@@ -70,6 +70,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
 	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
+	fmt.Println("  idea evidence plan|collect|assess Comprova capacidades por evidências, sem LLM")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")

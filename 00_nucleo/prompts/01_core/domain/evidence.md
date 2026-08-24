@@ -1,0 +1,6 @@
+# Evidence domain
+
+Contratos imutáveis para planejar, congelar e avaliar evidências de capacidades em
+`repo@commit`. Os estados funcionais, licença, manutenção e operação permanecem
+separados. Ausência só pode ser declarada após busca completa; falhas produzem
+inconclusão. Nenhum contrato admite saída de LLM, embedding ou inferência remota.

@@ -36,8 +36,10 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 		return runIdeaScreen(args[1:], stdout)
 	case "screening":
 		return runIdeaScreening(args[1:], stdout)
+	case "evidence":
+		return runIdeaEvidence(args[1:], stdout)
 	default:
-		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand ou evaluate", args[0])
+		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, discovery, screen, screening ou evidence", args[0])
 	}
 }
 

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-08-04
+ * @updated 2026-08-24
  */
 
 package main
@@ -56,6 +56,14 @@ func main() {
 		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "discover") {
 			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
 			if err := cli.RunIdeaDiscoverCommand(os.Args[3:], os.Stdout, os.Stderr, lexicalExpander, sgClient); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
+		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "evidence") && strings.EqualFold(os.Args[3], "collect") {
+			loadEnvFile(".env")
+			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
+			if err := cli.RunIdeaEvidenceCollectCommand(os.Args[4:], os.Stdout, provider); err != nil {
 				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 			}
 			return

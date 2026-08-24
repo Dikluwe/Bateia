@@ -422,7 +422,10 @@ func dedupeSources(in []domain.EvidenceSource) []domain.EvidenceSource {
 		return in[i].Path < in[j].Path
 	})
 	for _, s := range in {
-		key := s.Path + "|" + s.ContentHash
+		key := s.ContentHash
+		if key == "" {
+			key = s.Path + "|" + s.Snippet
+		}
 		if !seen[key] {
 			seen[key] = true
 			out = append(out, s)

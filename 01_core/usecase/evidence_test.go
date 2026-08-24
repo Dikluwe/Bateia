@@ -83,7 +83,7 @@ func TestAssessmentIsDeterministicAndDoesNotMutateBundle(t *testing.T) {
 	}
 }
 
-func TestPlanRequiresImmutableCommitAndSelectsDeterministically(t *testing.T) {
+func TestPlanAcceptsResolutionPendingAndSelectsDeterministically(t *testing.T) {
 	report := domain.ScreeningReport{Decisions: []domain.ScreeningDecision{
 		{Repository: "z/drop@1", Decision: "DROP", RankingScore: .1}, {Repository: "a/drop@1", Decision: "DROP", RankingScore: .2},
 		{Repository: "org/a@abc", Decision: "ADVANCE", RankingScore: .9},
@@ -95,9 +95,13 @@ func TestPlanRequiresImmutableCommitAndSelectsDeterministically(t *testing.T) {
 	if len(plans) != 3 || plans[1].Repository.Owner != "a" {
 		t.Fatalf("seleção inesperada: %+v", plans)
 	}
-	report.Decisions[0].Repository = "org/mutable"
-	if _, err := PlanEvidence(report); err == nil {
-		t.Fatal("commit mutável foi aceito")
+	report.Decisions = []domain.ScreeningDecision{{Repository: "org/mutable", Decision: "ADVANCE"}}
+	pending, err := PlanEvidence(report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pending[0].Repository.Commit != "HEAD" {
+		t.Fatalf("esperado HEAD pendente, recebido %s", pending[0].Repository.Commit)
 	}
 }
 
@@ -118,8 +122,9 @@ func (p evidenceProvider) FetchTree(context.Context, domain.RepositoryCandidate)
 func (p evidenceProvider) ExtractRepoFiles(_ context.Context, _ domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
 	return &domain.ExtractedRepository{Files: p.files}, nil
 }
-func (p evidenceProvider) FetchRepoMetadata(context.Context, domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
-	return domain.RepositoryCandidate{}, nil
+func (p evidenceProvider) FetchRepoMetadata(_ context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
+	candidate.CommitID = "resolved123"
+	return candidate, nil
 }
 
 func TestCollectDeduplicatesByHashAndPreservesPartialFailure(t *testing.T) {

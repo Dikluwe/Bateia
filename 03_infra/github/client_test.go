@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client.md
  * @layer L3
- * @updated 2026-08-08
+ * @updated 2026-08-24
  */
 
 package github_test
@@ -27,9 +27,14 @@ func TestClient_FetchRepoMetadata(t *testing.T) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
+		if strings.Contains(r.URL.Path, "/commits/") {
+			json.NewEncoder(w).Encode(map[string]interface{}{"sha": "abc123immutable"})
+			return
+		}
 		resp := map[string]interface{}{
 			"stargazers_count": 1234,
 			"description":      "A great project",
+			"default_branch":   "main",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)
@@ -52,6 +57,9 @@ func TestClient_FetchRepoMetadata(t *testing.T) {
 	}
 	if result.Description != "A great project" {
 		t.Errorf("Description inesperada: %s", result.Description)
+	}
+	if result.CommitID != "abc123immutable" {
+		t.Errorf("CommitID não foi resolvido: %s", result.CommitID)
 	}
 }
 

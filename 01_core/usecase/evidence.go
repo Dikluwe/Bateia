@@ -90,7 +90,7 @@ func PlanEvidence(report domain.ScreeningReport) ([]domain.EvidenceExtractionPla
 	selected := selectEvidenceCandidates(report.Decisions, 10, 2, 16)
 	plans := make([]domain.EvidenceExtractionPlan, 0, len(selected))
 	for _, decision := range selected {
-		ref, err := parseImmutableRepository(decision.Repository)
+		ref, err := parseRepositoryReference(decision.Repository)
 		if err != nil {
 			return nil, err
 		}
@@ -143,16 +143,20 @@ func selectEvidenceCandidates(decisions []domain.ScreeningDecision, auditMax, dr
 	return selected
 }
 
-func parseImmutableRepository(value string) (domain.CommitRef, error) {
+func parseRepositoryReference(value string) (domain.CommitRef, error) {
 	parts := strings.Split(value, "@")
-	if len(parts) != 2 || strings.TrimSpace(parts[1]) == "" || strings.EqualFold(parts[1], "HEAD") {
-		return domain.CommitRef{}, fmt.Errorf("candidato %q deve usar referência imutável owner/repo@commit", value)
+	if len(parts) > 2 {
+		return domain.CommitRef{}, fmt.Errorf("referência de candidato inválida %q", value)
 	}
 	repo := strings.Split(strings.Trim(parts[0], "/"), "/")
 	if len(repo) != 2 || repo[0] == "" || repo[1] == "" {
 		return domain.CommitRef{}, fmt.Errorf("repositório inválido %q; use owner/repo@commit", value)
 	}
-	return domain.CommitRef{Owner: repo[0], Repo: repo[1], Commit: parts[1]}, nil
+	commit := "HEAD"
+	if len(parts) == 2 && strings.TrimSpace(parts[1]) != "" {
+		commit = strings.TrimSpace(parts[1])
+	}
+	return domain.CommitRef{Owner: repo[0], Repo: repo[1], Commit: commit}, nil
 }
 
 func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, provider domain.ContentProvider) (domain.EvidenceBundle, error) {
@@ -160,7 +164,13 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		return domain.EvidenceBundle{}, fmt.Errorf("provedor de conteúdo não configurado")
 	}
 	if plan.Repository.Commit == "" || strings.EqualFold(plan.Repository.Commit, "HEAD") {
-		return domain.EvidenceBundle{}, fmt.Errorf("coleta exige commit imutável")
+		resolved, err := provider.FetchRepoMetadata(ctx, plan.Candidate)
+		if err != nil || resolved.CommitID == "" || strings.EqualFold(resolved.CommitID, "HEAD") {
+			return domain.EvidenceBundle{}, fmt.Errorf("não foi possível resolver %s para commit imutável", plan.Repository.Key())
+		}
+		plan.Candidate = resolved
+		plan.Repository.Commit = resolved.CommitID
+		plan.Decision.Repository = plan.Repository.Key()
 	}
 	bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: true}
 	paths := make([]string, 0)
@@ -179,7 +189,7 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 				continue
 			}
 			kind := classifyEvidencePath(node.Path)
-			if kind == domain.EvidenceFile {
+			if kind == domain.EvidenceFile && !isCodePath(node.Path) {
 				continue
 			}
 			if withinKindBudget(paths, kinds, kind, plan.Budget) {
@@ -248,6 +258,16 @@ func classifyEvidencePath(path string) domain.EvidenceKind {
 		return domain.EvidenceExample
 	}
 	return domain.EvidenceFile
+}
+
+func isCodePath(path string) bool {
+	extension := strings.ToLower(filepath.Ext(path))
+	switch extension {
+	case ".go", ".rs", ".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".kt", ".rb", ".cs", ".c", ".cc", ".cpp", ".h", ".hpp", ".ex", ".exs":
+		return true
+	default:
+		return false
+	}
 }
 func withinKindBudget(paths []string, kinds map[string]domain.EvidenceKind, kind domain.EvidenceKind, b domain.ExtractionBudget) bool {
 	count := 0

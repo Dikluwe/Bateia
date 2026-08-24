@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/cache/cache_store.md
  * @layer L3
- * @updated 2026-08-23
+ * @updated 2026-08-24
  */
 
 package local
@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -179,6 +180,15 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 		return candidate, err
 	}
 	candidate.Description = "Worktree local em " + root
+	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") {
+		cmd := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
+		cmd.Dir = root
+		output, resolveErr := cmd.Output()
+		if resolveErr != nil {
+			return candidate, fmt.Errorf("não foi possível resolver commit da worktree local: %w", resolveErr)
+		}
+		candidate.CommitID = strings.TrimSpace(string(output))
+	}
 	candidate.ConsultadoEm = time.Now().UTC()
 	return candidate, nil
 }

@@ -19,4 +19,4 @@ Cada passo deve declarar:
 | [0002](0002-expandir-vocabulario-com-baseline-mensuravel.md) | Expandir vocabulário com baseline lexical offline e avaliação comparável | `IMPLEMENTADO` |
 | [0003](0003-executar-expansoes-e-medir-precisao-da-descoberta.md) | Executar expansões e medir precisão real da descoberta | `IMPLEMENTADO` |
 | [0004](0004-construir-peneira-probabilistica-explicavel.md) | Rastrear o ruído e construir uma peneira probabilística explicável | `IMPLEMENTADO` |
-| [0005](0005-triar-candidatos-e-comprovar-capacidades.md) | Triar candidatos e comprovar capacidades sem LLM | `PRONTO` |
+| [0005](0005-triar-candidatos-e-comprovar-capacidades.md) | Triar candidatos e comprovar capacidades sem LLM | `IMPLEMENTADO` |

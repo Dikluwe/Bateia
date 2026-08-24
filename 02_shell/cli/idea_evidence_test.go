@@ -63,10 +63,18 @@ func TestEvidencePlanAndAssessOffline(t *testing.T) {
 	}
 }
 
-func TestEvidencePlanRejectsMutableRepository(t *testing.T) {
+func TestEvidencePlanMarksMutableRepositoryForResolution(t *testing.T) {
 	screening := domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: "org/repo", Decision: "ADVANCE"}}}
 	path := writeEvidenceFixture(t, "screening.json", screening)
-	if err := RunIdeaCommand([]string{"evidence", "plan", "--screening", path}, &bytes.Buffer{}); err == nil {
-		t.Fatal("referência mutável foi aceita")
+	var out bytes.Buffer
+	if err := RunIdeaCommand([]string{"evidence", "plan", "--screening", path}, &out); err != nil {
+		t.Fatal(err)
+	}
+	var plans []domain.EvidenceExtractionPlan
+	if err := json.Unmarshal(out.Bytes(), &plans); err != nil {
+		t.Fatal(err)
+	}
+	if plans[0].Repository.Commit != "HEAD" {
+		t.Fatalf("commit pendente não declarado: %+v", plans[0])
 	}
 }

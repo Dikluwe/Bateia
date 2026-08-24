@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client.md
  * @layer L3
- * @updated 2026-08-04
+ * @updated 2026-08-24
  */
 
 package github
@@ -461,6 +461,11 @@ func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.Repositor
 type githubRepoResponse struct {
 	StargazersCount int    `json:"stargazers_count"`
 	Description     string `json:"description"`
+	DefaultBranch   string `json:"default_branch"`
+}
+
+type githubCommitResponse struct {
+	SHA string `json:"sha"`
 }
 
 // FetchRepoMetadata realiza o sanity check de metadados na API REST do GitHub obtendo número de estrelas reais e descrição.
@@ -495,6 +500,29 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 	candidate.Stars = repoResp.StargazersCount
 	if repoResp.Description != "" {
 		candidate.Description = repoResp.Description
+	}
+	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") {
+		branch := repoResp.DefaultBranch
+		if branch == "" {
+			branch = "HEAD"
+		}
+		commitURL := fmt.Sprintf("%s/repos/%s/%s/commits/%s", c.baseURL, candidate.Owner, candidate.Repo, branch)
+		commitReq, requestErr := http.NewRequestWithContext(ctx, "GET", commitURL, nil)
+		if requestErr == nil {
+			commitReq.Header.Set("Accept", "application/vnd.github.v3+json")
+			if c.token != "" {
+				commitReq.Header.Set("Authorization", "token "+c.token)
+			}
+			if commitResp, requestErr := c.httpClient.Do(commitReq); requestErr == nil {
+				defer commitResp.Body.Close()
+				if commitResp.StatusCode == http.StatusOK {
+					var commit githubCommitResponse
+					if json.NewDecoder(commitResp.Body).Decode(&commit) == nil && commit.SHA != "" {
+						candidate.CommitID = commit.SHA
+					}
+				}
+			}
+		}
 	}
 
 	return candidate, nil

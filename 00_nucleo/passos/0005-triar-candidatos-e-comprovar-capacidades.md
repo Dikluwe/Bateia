@@ -1,6 +1,6 @@
 # Passo 0005 — Triar candidatos e comprovar capacidades
 
-**Estado**: `PRONTO`  
+**Estado**: `IMPLEMENTADO`
 **Desejo de origem**: [`D-001 — Da ideia à decisão de reuso`](../desejos/D-001-da-ideia-a-decisao-de-reuso.md)  
 **Depende de**: [`Passo 0004 — Construir peneira probabilística explicável`](0004-construir-peneira-probabilistica-explicavel.md)  
 **Onde roda**: Bateia  

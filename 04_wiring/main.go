@@ -18,11 +18,10 @@ import (
 	"bateia/03_infra/cache"
 	"bateia/03_infra/content"
 	"bateia/03_infra/github"
+	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
 	"bateia/03_infra/sourcegraph"
 )
-
-
 
 func loadEnvFile(filepath string) {
 	data, err := os.ReadFile(filepath)
@@ -48,6 +47,18 @@ func loadEnvFile(filepath string) {
 }
 
 func main() {
+	// Comandos offline são despachados antes de .env, cache e clientes remotos.
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
+		lexicalExpander, err := lexical.NewDefault(2)
+		if err != nil {
+			log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
+		}
+		if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout, lexicalExpander); err != nil {
+			log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+		}
+		return
+	}
+
 	// L4: Ler tokens do arquivo .env se disponíveis
 	loadEnvFile(".env")
 

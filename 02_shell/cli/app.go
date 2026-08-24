@@ -42,6 +42,8 @@ func (a *CLIApp) Run(args []string) error {
 			return a.runSearchFlags(args[1:])
 		case "analyze", "local":
 			return a.runSearchFlags(append([]string{"-path", "."}, args[1:]...))
+		case "idea":
+			return RunIdeaCommand(args[1:], os.Stdout)
 		case "mcp":
 			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
 			return mcpServer.Serve(context.Background())
@@ -61,12 +63,18 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  similarity    Busca projetos parecidos, calcula Score de Similaridade e sugere melhorias")
 	fmt.Println("  search        Executa o funil tradicional de busca por código, manifestos e necessidades ocultas")
 	fmt.Println("  analyze       Analisa uma worktree local, incluindo alterações ainda não enviadas ao GitHub")
+	fmt.Println("  idea plan     Materializa offline um plano rastreável de expansão da ideia")
+	fmt.Println("  idea expand   Enriquece offline o plano com vocabulário alternativo")
+	fmt.Println("  idea evaluate Compara estratégias de expansão num corpus versionado")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")
 	fmt.Println("  bateia similarity -target \"gofiber/fiber\" -query \"web framework\" -lang go")
 	fmt.Println("  bateia search -query \"quicksort\" -lang go -max 20")
 	fmt.Println("  bateia analyze -path . -query \"arquitetura do projeto\"")
+	fmt.Println("  bateia idea plan --input ideia.json --output plano.json")
+	fmt.Println("  bateia idea expand --input ideia.json --strategy lexical")
+	fmt.Println("  bateia idea evaluate --corpus corpus.json --strategy lexical")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {

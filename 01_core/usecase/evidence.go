@@ -335,7 +335,7 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 			}
 		}
 		for _, group := range rule.StrongEvidence {
-			if matchesAny(norm, group.Patterns) {
+			if strongKindMatches(item, group, norm) {
 				kind := group.Kind
 				if item.Kind == domain.EvidenceTest {
 					kind = domain.EvidenceTest
@@ -366,6 +366,26 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		return capabilityResult(capability, domain.EvidencePartial, sources, combined, "há evidência concreta, mas insuficiente para comprovação")
 	}
 	return capabilityResult(capability, domain.EvidenceAbsent, sources, combined, "busca concluída no orçamento declarado sem evidência suficiente")
+}
+
+func strongKindMatches(item domain.CollectedEvidence, group domain.CapabilityPattern, normalized string) bool {
+	if !matchesAny(normalized, group.Patterns) {
+		return false
+	}
+	switch group.Kind {
+	case domain.EvidenceTest:
+		return item.Kind == domain.EvidenceTest
+	case domain.EvidenceSymbol:
+		if item.Kind != domain.EvidenceFile && item.Kind != domain.EvidenceExample {
+			return false
+		}
+		content := strings.ToLower(item.Content)
+		return strings.Contains(content, "func ") || strings.Contains(content, "type ") ||
+			strings.Contains(content, "class ") || strings.Contains(content, "def ") ||
+			strings.Contains(content, "fn ")
+	default:
+		return item.Kind == group.Kind
+	}
 }
 
 func sourceFromItem(item domain.CollectedEvidence, kind domain.EvidenceKind, rule string, strength float64, snippet string) domain.EvidenceSource {

@@ -542,17 +542,11 @@ mas considerada amostra insuficiente.
 
 ## Próximo passo condicionado
 
-Se a precisão de evidência atingir o critério, construir a matriz comparativa e o
-motor determinístico de decisão de partida:
+O [Passo 0006](0006-endurecer-e-calibrar-evidencias.md) corrigirá as lacunas de
+completude, árvore remota, identidade, símbolos, componentes e vetores operacionais
+encontradas na auditoria. Depois executará o corpus real e medirá precisão,
+ausências falsas, rastreabilidade e componentes.
 
-```text
-FORK · EXTEND · COMPOSE · INTEGRATE · REFERENCE · BUILD
-```
-
-O motor deve operar somente sobre `CandidateAssessment`, nunca sobre descrições ou
-scores de descoberta. Depois disso, consolidar o fluxo num comando de produto que
-aceite uma `IdeaSpec` e devolva decisão, evidências, componentes e lacunas.
-
-Se a precisão não atingir o critério, melhorar regras, parsers e cobertura de
-conteúdo. A resposta não será adicionar um LLM para preencher os casos difíceis;
-esses casos permanecem `INCONCLUSIVE` até haver evidência determinística.
+Somente após essa calibração, o **Passo 0007** construirá a matriz comparativa e o
+motor determinístico `FORK · EXTEND · COMPOSE · INTEGRATE · REFERENCE · BUILD`.
+Casos difíceis continuarão `INCONCLUSIVE`; a resposta não será adicionar LLM.

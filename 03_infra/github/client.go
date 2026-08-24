@@ -82,6 +82,15 @@ type githubContentItem struct {
 	DownloadURL string `json:"download_url"`
 }
 
+type githubTreeResponse struct {
+	Truncated bool `json:"truncated"`
+	Tree      []struct {
+		Path string `json:"path"`
+		Type string `json:"type"`
+		Size int64  `json:"size"`
+	} `json:"tree"`
+}
+
 // FetchManifest lê o manifesto (ex: go.mod ou package.json) via Contents API ou fallback raw (ADR-0001).
 func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryCandidate) (*domain.Manifest, error) {
 	refCommit := candidate.CommitID
@@ -312,11 +321,47 @@ func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, p
 
 // FetchTree recupera a lista de nós do diretório raiz.
 func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
+	if candidate.CommitID != "" && !strings.EqualFold(candidate.CommitID, "HEAD") {
+		url := fmt.Sprintf("%s/repos/%s/%s/git/trees/%s?recursive=1", c.baseURL, candidate.Owner, candidate.Repo, candidate.CommitID)
+		req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("Accept", "application/vnd.github.v3+json")
+		if c.token != "" {
+			req.Header.Set("Authorization", "token "+c.token)
+		}
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("status %d ao listar árvore no commit", resp.StatusCode)
+		}
+		var tree githubTreeResponse
+		if err := json.NewDecoder(resp.Body).Decode(&tree); err != nil {
+			return nil, err
+		}
+		if tree.Truncated {
+			return nil, fmt.Errorf("árvore GitHub truncada; coleta não conclusiva")
+		}
+		nodes := make([]domain.DirectoryNode, 0, len(tree.Tree))
+		for _, item := range tree.Tree {
+			if len(nodes) >= 20_000 {
+				return nil, fmt.Errorf("árvore excede limite seguro de 20000 nós")
+			}
+			typeName := "file"
+			if item.Type == "tree" {
+				typeName = "dir"
+			}
+			nodes = append(nodes, domain.DirectoryNode{Path: item.Path, Type: typeName, Size: item.Size})
+		}
+		return nodes, nil
+	}
 	items, err := c.fetchRootItems(ctx, candidate)
 	if err != nil {
-		return []domain.DirectoryNode{
-			{Path: "go.mod", Type: "file"},
-		}, nil
+		return nil, err
 	}
 
 	nodes := make([]domain.DirectoryNode, 0, len(items))
@@ -459,9 +504,11 @@ func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.Repositor
 }
 
 type githubRepoResponse struct {
-	StargazersCount int    `json:"stargazers_count"`
-	Description     string `json:"description"`
-	DefaultBranch   string `json:"default_branch"`
+	StargazersCount int       `json:"stargazers_count"`
+	Description     string    `json:"description"`
+	DefaultBranch   string    `json:"default_branch"`
+	Archived        bool      `json:"archived"`
+	PushedAt        time.Time `json:"pushed_at"`
 }
 
 type githubCommitResponse struct {
@@ -498,6 +545,10 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 	}
 
 	candidate.Stars = repoResp.StargazersCount
+	candidate.Archived = repoResp.Archived
+	candidate.DefaultBranch = repoResp.DefaultBranch
+	candidate.UpdatedAt = repoResp.PushedAt
+	candidate.ConsultadoEm = time.Now().UTC()
 	if repoResp.Description != "" {
 		candidate.Description = repoResp.Description
 	}

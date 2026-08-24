@@ -9,6 +9,8 @@ package cli
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -33,8 +35,10 @@ func writeEvidenceFixture(t *testing.T, name string, value any) string {
 func TestEvidencePlanAndAssessOffline(t *testing.T) {
 	screening := domain.ScreeningReport{SchemaVersion: "1", Decisions: []domain.ScreeningDecision{{Repository: "org/repo@abc123", Decision: "ADVANCE", RankingScore: .9}}}
 	screeningPath := writeEvidenceFixture(t, "screening.json", screening)
+	idea := domain.IdeaSpec{Problem: "análise de dependências", Capabilities: []string{"dependency graph"}, Constraints: []string{"execução local"}}
+	ideaPath := writeEvidenceFixture(t, "idea.json", idea)
 	var planOut bytes.Buffer
-	if err := RunIdeaCommand([]string{"evidence", "plan", "--screening", screeningPath}, &planOut); err != nil {
+	if err := RunIdeaCommand([]string{"evidence", "plan", "--idea", ideaPath, "--screening", screeningPath}, &planOut); err != nil {
 		t.Fatal(err)
 	}
 	var plans []domain.EvidenceExtractionPlan
@@ -45,10 +49,10 @@ func TestEvidencePlanAndAssessOffline(t *testing.T) {
 		t.Fatalf("plano inesperado: %+v", plans)
 	}
 
-	idea := domain.IdeaSpec{Problem: "análise de dependências", Capabilities: []string{"dependency graph"}, Constraints: []string{"execução local"}}
-	ideaPath := writeEvidenceFixture(t, "idea.json", idea)
 	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc123"}
-	bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: true, Items: []domain.CollectedEvidence{{Kind: domain.EvidenceTest, Ref: ref, Path: "graph_test.go", Content: "func TestDependencyGraph(t *testing.T) {}", ContentHash: "fixed"}}}
+	testContent := "func TestDependencyGraph(t *testing.T) {}"
+	sum := sha256.Sum256([]byte(testContent))
+	bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: true, TreeComplete: true, Items: []domain.CollectedEvidence{{Kind: domain.EvidenceTest, Ref: ref, Path: "graph_test.go", Content: testContent, ContentHash: hex.EncodeToString(sum[:])}}}
 	bundlePath := writeEvidenceFixture(t, "bundle.json", []domain.EvidenceBundle{bundle})
 	var assessOut bytes.Buffer
 	if err := RunIdeaCommand([]string{"evidence", "assess", "--idea", ideaPath, "--screening", screeningPath, "--evidence", bundlePath}, &assessOut); err != nil {
@@ -61,13 +65,27 @@ func TestEvidencePlanAndAssessOffline(t *testing.T) {
 	if len(report.Assessments) != 1 || report.Assessments[0].Capabilities[0].Status != domain.EvidenceProven {
 		t.Fatalf("assessment inesperado: %+v", report)
 	}
+	assessmentPath := writeEvidenceFixture(t, "assessment.json", report)
+	judgmentsPath := writeEvidenceFixture(t, "judgments.json", []domain.EvidenceJudgment{{Repository: "org/repo", Capability: "dependency graph", Expected: domain.EvidenceProven}})
+	var metricsOut bytes.Buffer
+	if err := RunIdeaCommand([]string{"evidence", "evaluate", "--assessment", assessmentPath, "--evidence", bundlePath, "--judgments", judgmentsPath}, &metricsOut); err != nil {
+		t.Fatal(err)
+	}
+	var metrics domain.EvidenceMetrics
+	if err := json.Unmarshal(metricsOut.Bytes(), &metrics); err != nil {
+		t.Fatal(err)
+	}
+	if metrics.EvidencePrecision == nil || *metrics.EvidencePrecision != 1 {
+		t.Fatalf("métricas inesperadas: %+v", metrics)
+	}
 }
 
 func TestEvidencePlanMarksMutableRepositoryForResolution(t *testing.T) {
 	screening := domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: "org/repo", Decision: "ADVANCE"}}}
 	path := writeEvidenceFixture(t, "screening.json", screening)
+	ideaPath := writeEvidenceFixture(t, "idea.json", domain.IdeaSpec{Capabilities: []string{"static analysis"}})
 	var out bytes.Buffer
-	if err := RunIdeaCommand([]string{"evidence", "plan", "--screening", path}, &out); err != nil {
+	if err := RunIdeaCommand([]string{"evidence", "plan", "--idea", ideaPath, "--screening", path}, &out); err != nil {
 		t.Fatal(err)
 	}
 	var plans []domain.EvidenceExtractionPlan

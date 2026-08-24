@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/types.md
  * @layer L1
- * @updated 2026-07-25
+ * @updated 2026-08-24
  */
 
 package domain
@@ -28,14 +28,17 @@ func (c CommitRef) Key() string {
 
 // RepositoryCandidate é um candidato retornado no topo do funil (Descoberta).
 type RepositoryCandidate struct {
-	Owner        string    `json:"owner"`
-	Repo         string    `json:"repo"`
-	URL          string    `json:"url"`
-	Description  string    `json:"description"`
-	Stars        int       `json:"stars"`
-	CommitID     string    `json:"commit_id"`
-	ConsultadoEm time.Time `json:"consultado_em"`
-	Stale        bool      `json:"stale"`
+	Owner         string    `json:"owner"`
+	Repo          string    `json:"repo"`
+	URL           string    `json:"url"`
+	Description   string    `json:"description"`
+	Stars         int       `json:"stars"`
+	CommitID      string    `json:"commit_id"`
+	ConsultadoEm  time.Time `json:"consultado_em"`
+	Stale         bool      `json:"stale"`
+	Archived      bool      `json:"archived,omitempty"`
+	DefaultBranch string    `json:"default_branch,omitempty"`
+	UpdatedAt     time.Time `json:"updated_at,omitempty"`
 }
 
 // Dependency representa uma dependência declarada em manifesto.

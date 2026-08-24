@@ -4,3 +4,8 @@ Selecionar candidatos da peneira, criar planos limitados, coletar bundles por um
 interface de conteúdo e avaliar regras versionadas por correspondência lexical.
 Deduplicar fontes, reduzir força para vendor/fixture/tradução, produzir explicações
 por templates e nunca converter falha ou orçamento incompleto em ausência.
+
+O plano recebe `IdeaSpec`; a coleta registra resultado por alvo e árvore completa;
+símbolos exigem declaração relacionada; evidência auxiliar não herda força
+estrutural. Calcular métricas somente de bundles e julgamentos congelados. Uma
+falha de candidato não aborta os demais.

@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"bateia/01_core/domain"
@@ -22,7 +23,7 @@ import (
 
 func runIdeaEvidence(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea evidence <plan|assess>")
+		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate>")
 	}
 	switch args[0] {
 	case "plan":
@@ -31,6 +32,8 @@ func runIdeaEvidence(args []string, stdout io.Writer) error {
 		return runIdeaEvidenceAssess(args[1:], stdout)
 	case "collect":
 		return fmt.Errorf("evidence collect requer o provedor de conteúdo configurado pelo executável")
+	case "evaluate":
+		return runIdeaEvidenceEvaluate(args[1:], stdout)
 	default:
 		return fmt.Errorf("subcomando evidence desconhecido %q", args[0])
 	}
@@ -40,18 +43,37 @@ func runIdeaEvidencePlan(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet("idea evidence plan", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	screeningPath := fs.String("screening", "", "Relatório de peneira")
+	ideaPath := fs.String("idea", "", "IdeaSpec usada para orientar os alvos")
+	rulesPath := fs.String("rules", "", "Catálogo de regras; omita para catálogo embutido")
+	includeRepositories := fs.String("include", "", "Controles owner/repo separados por vírgula")
 	outputPath := fs.String("output", "", "Arquivo de saída; omita para stdout")
 	if err := fs.Parse(args); err != nil {
 		return fmt.Errorf("parâmetros de evidence plan inválidos: %w", err)
 	}
-	if *screeningPath == "" {
-		return fmt.Errorf("evidence plan exige --screening")
+	if *screeningPath == "" || *ideaPath == "" {
+		return fmt.Errorf("evidence plan exige --idea e --screening")
+	}
+	idea, err := readIdeaSpec(*ideaPath)
+	if err != nil {
+		return err
 	}
 	var report domain.ScreeningReport
 	if err := readJSONFile(*screeningPath, &report); err != nil {
 		return err
 	}
-	plans, err := usecase.PlanEvidence(report)
+	catalog := usecase.DefaultEvidenceRules()
+	if *rulesPath != "" {
+		if err := readJSONFile(*rulesPath, &catalog); err != nil {
+			return err
+		}
+	}
+	var includes []string
+	for _, value := range strings.Split(*includeRepositories, ",") {
+		if value = strings.TrimSpace(value); value != "" {
+			includes = append(includes, value)
+		}
+	}
+	plans, err := usecase.PlanEvidenceForIdeaAndRepositories(idea, report, catalog, includes)
 	if err != nil {
 		return fmt.Errorf("não foi possível planejar evidências: %w", err)
 	}
@@ -88,11 +110,39 @@ func RunIdeaEvidenceCollectCommand(args []string, stdout io.Writer, provider dom
 	for _, plan := range plans {
 		bundle, collectErr := usecase.CollectEvidence(ctx, plan, provider)
 		if collectErr != nil {
-			return fmt.Errorf("coleta de %s falhou: %w", plan.Repository.Key(), collectErr)
+			bundle = domain.EvidenceBundle{SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: false, TreeComplete: false, Failures: []domain.ExecutionFailure{{Scope: plan.Repository.Key(), Stage: "resolution", Message: collectErr.Error()}}}
 		}
 		bundles = append(bundles, bundle)
 	}
 	return writeIdeaJSON(bundles, *outputPath, stdout)
+}
+
+func runIdeaEvidenceEvaluate(args []string, stdout io.Writer) error {
+	fs := flag.NewFlagSet("idea evidence evaluate", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	assessmentPath := fs.String("assessment", "", "Relatório de assessments")
+	evidencePath := fs.String("evidence", "", "Bundles congelados")
+	judgmentsPath := fs.String("judgments", "", "Julgamentos manuais versionados")
+	outputPath := fs.String("output", "", "Arquivo de saída; omita para stdout")
+	if err := fs.Parse(args); err != nil {
+		return fmt.Errorf("parâmetros de evidence evaluate inválidos: %w", err)
+	}
+	if *assessmentPath == "" || *evidencePath == "" || *judgmentsPath == "" {
+		return fmt.Errorf("evidence evaluate exige --assessment, --evidence e --judgments")
+	}
+	var report domain.AssessmentReport
+	if err := readJSONFile(*assessmentPath, &report); err != nil {
+		return err
+	}
+	var bundles []domain.EvidenceBundle
+	if err := readJSONFile(*evidencePath, &bundles); err != nil {
+		return err
+	}
+	var judgments []domain.EvidenceJudgment
+	if err := readJSONFile(*judgmentsPath, &judgments); err != nil {
+		return err
+	}
+	return writeIdeaJSON(usecase.EvaluateEvidenceMetrics(report, bundles, judgments), *outputPath, stdout)
 }
 
 func runIdeaEvidenceAssess(args []string, stdout io.Writer) error {

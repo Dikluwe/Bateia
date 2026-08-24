@@ -24,7 +24,7 @@ func testBundle(complete bool, items ...domain.CollectedEvidence) domain.Evidenc
 			items[i].ContentHash = contentHash(items[i].Content)
 		}
 	}
-	return domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: complete, Items: items}
+	return domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: complete, TreeComplete: complete, Items: items}
 }
 
 func TestDocumentationAloneDoesNotProveCapability(t *testing.T) {
@@ -32,6 +32,14 @@ func TestDocumentationAloneDoesNotProveCapability(t *testing.T) {
 	got := assessCapability("grafo de dependências", b, findRule("grafo de dependências", DefaultEvidenceRules()))
 	if got.Status == domain.EvidenceProven {
 		t.Fatalf("documentação isolada produziu PROVEN: %+v", got)
+	}
+}
+
+func TestWeakSignalNeverBecomesAbsence(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceRepository, Path: "@repository-metadata", Content: "static analysis"})
+	got := assessCapability("static analysis", b, findRule("static analysis", DefaultEvidenceRules()))
+	if got.Status != domain.EvidenceInconclusive {
+		t.Fatalf("status = %s", got.Status)
 	}
 }
 
@@ -105,6 +113,21 @@ func TestPlanAcceptsResolutionPendingAndSelectsDeterministically(t *testing.T) {
 	}
 }
 
+func TestPlanIncludesExplicitCalibrationControls(t *testing.T) {
+	report := domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: "org/main", Decision: "ADVANCE"}, {Repository: "org/control", Decision: "DROP"}}}
+	plans, err := PlanEvidenceForIdeaAndRepositories(domain.IdeaSpec{Capabilities: []string{"static analysis"}}, report, DefaultEvidenceRules(), []string{"org/control", "extra/noise"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, plan := range plans {
+		seen[plan.Repository.Owner+"/"+plan.Repository.Repo] = true
+	}
+	if !seen["org/control"] || !seen["extra/noise"] {
+		t.Fatalf("controles ausentes: %+v", plans)
+	}
+}
+
 type evidenceProvider struct {
 	files   []domain.ExtractedFile
 	treeErr error
@@ -134,7 +157,129 @@ func TestCollectDeduplicatesByHashAndPreservesPartialFailure(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if b.Complete || len(b.Failures) != 1 || len(b.Items) != 1 {
+	if b.Complete || len(b.Failures) != 1 || len(b.Items) != 2 {
 		t.Fatalf("bundle parcial inesperado: %+v", b)
+	}
+}
+
+func TestMissingRelevantTargetMakesAbsenceInconclusive(t *testing.T) {
+	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc123"}
+	plan := domain.EvidenceExtractionPlan{Repository: ref, Candidate: domain.RepositoryCandidate{Owner: "org", Repo: "repo", CommitID: "abc"}, Budget: defaultEvidenceBudget, Targets: []domain.ExtractionTarget{{Path: "README.md", Kind: domain.EvidenceDocumentation, Capabilities: []string{"dependency graph"}}}}
+	b, err := CollectEvidence(context.Background(), plan, evidenceProvider{files: []domain.ExtractedFile{{Path: "go.mod", Content: "module x"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.Complete {
+		t.Fatal("alvo relevante ausente manteve bundle completo")
+	}
+	got := assessCapability("dependency graph", b, findRule("dependency graph", DefaultEvidenceRules()))
+	if got.Status != domain.EvidenceInconclusive {
+		t.Fatalf("status = %s", got.Status)
+	}
+}
+
+func TestCommentDistantFromDeclarationDoesNotProduceSymbol(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "graph.go", Content: "// dependency graph is planned\nfunc unrelated() {}"})
+	got := assessCapability("dependency graph", b, findRule("dependency graph", DefaultEvidenceRules()))
+	for _, source := range got.Sources {
+		if source.Kind == domain.EvidenceSymbol {
+			t.Fatalf("comentário virou símbolo: %+v", source)
+		}
+	}
+}
+
+func TestNegativeEvidenceMustBeContextual(t *testing.T) {
+	rule := findRule("static analysis", DefaultEvidenceRules())
+	distant := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Static analysis is available.\nA separate deployment feature is not implemented."})
+	if got := assessCapability("static analysis", distant, rule); got.Status == domain.EvidenceConflict {
+		t.Fatal("negativa distante criou conflito")
+	}
+	explicit := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Static analysis is not implemented."})
+	if got := assessCapability("static analysis", explicit, rule); got.Status != domain.EvidenceConflict {
+		t.Fatalf("status = %s", got.Status)
+	}
+}
+
+func TestSymbolPreservesNameLineAndDrivesReusableComponent(t *testing.T) {
+	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc123"}
+	b := testBundle(true,
+		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "dependency graph"},
+		domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "src/graph.go", Content: "package graph\n\ntype DependencyGraph struct{}"},
+	)
+	report, err := AssessEvidence(domain.IdeaSpec{Capabilities: []string{"dependency graph"}}, domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: "org/repo", Decision: "ADVANCE"}}}, []domain.EvidenceBundle{b}, DefaultEvidenceRules())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := report.Assessments[0]
+	if a.ScreeningDecision.Decision != "ADVANCE" {
+		t.Fatal("decisão da peneira perdida após SHA")
+	}
+	if len(a.ReusableParts) != 1 || a.ReusableParts[0].Path != "src/graph.go" || a.ReusableParts[0].Symbols[0] != "DependencyGraph" {
+		t.Fatalf("componente inesperado: %+v", a.ReusableParts)
+	}
+	s := a.ReusableParts[0].Evidence[0]
+	if s.Line != 3 || s.Symbol != "DependencyGraph" {
+		t.Fatalf("localização inesperada: %+v", s)
+	}
+	if a.Repository != ref {
+		t.Fatalf("ref inesperada: %+v", a.Repository)
+	}
+}
+
+func TestLicenseDetectionAvoidsMITSubstring(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceLicense, Path: "LICENSE", Content: "Limitations and submissions are described here."})
+	if got := assessLicense(b); got.Status == domain.EvidenceProven {
+		t.Fatalf("substring acidental identificou licença: %+v", got)
+	}
+}
+
+func TestExplicitLocalOperationCanBeProven(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "The CLI can run locally and works offline."})
+	if got := assessOperation(b); got.LocalStatus != domain.EvidenceProven {
+		t.Fatalf("status = %s", got.LocalStatus)
+	}
+}
+
+func TestUnrelatedSendAndAPIDoNotCreateOperationConflict(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Send an email from your application.\nThe API can also run locally."})
+	if got := assessOperation(b); got.LocalStatus == domain.EvidenceConflict {
+		t.Fatalf("conflito operacional falso: %+v", got)
+	}
+}
+
+func TestExplicitRepositoryUploadCreatesOperationConflict(t *testing.T) {
+	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "The CLI uploads your repository to the cloud API."})
+	if got := assessOperation(b); got.LocalStatus != domain.EvidenceConflict {
+		t.Fatalf("status = %s", got.LocalStatus)
+	}
+}
+
+func TestExplicitMaintenanceEndOverridesRecentMetadata(t *testing.T) {
+	b := testBundle(true,
+		domain.CollectedEvidence{Kind: domain.EvidenceRepository, Path: "@repository-metadata", Content: `{"owner":"org","repo":"repo","updated_at":"2026-08-01T00:00:00Z"}`},
+		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Attention: this tool is no longer maintained."},
+	)
+	if got := assessMaintenance(b); got.Status != domain.EvidenceConflict {
+		t.Fatalf("status = %s; warnings=%v", got.Status, got.Warnings)
+	}
+}
+
+func TestStaticAnalysisRuleCoversBenchmarkProblemWording(t *testing.T) {
+	if got := findRule("analisar código sem executar o programa", DefaultEvidenceRules()); got == nil || got.ID != "static-analysis" {
+		t.Fatalf("regra = %+v", got)
+	}
+}
+
+func TestEvidenceMetricsAreReproducible(t *testing.T) {
+	valid := true
+	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc"}
+	source := domain.EvidenceSource{Kind: domain.EvidenceSymbol, Ref: ref, Path: "graph.go", Symbol: "DependencyGraph", Line: 1, ContentHash: "hash", RuleID: "dependency-graph", Strength: .9}
+	report := domain.AssessmentReport{Assessments: []domain.CandidateAssessment{{Repository: ref, Capabilities: []domain.CapabilityEvidence{{Capability: "dependency graph", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{source}}}}}}
+	bundles := []domain.EvidenceBundle{{Targets: []domain.CollectionTargetResult{{Status: domain.TargetCollected}}}}
+	judgments := []domain.EvidenceJudgment{{Repository: "org/repo", Capability: "dependency graph", Expected: domain.EvidenceProven, ComponentValid: &valid}}
+	a := EvaluateEvidenceMetrics(report, bundles, judgments)
+	b := EvaluateEvidenceMetrics(report, bundles, judgments)
+	if !reflect.DeepEqual(a, b) || a.EvidencePrecision == nil || *a.EvidencePrecision != 1 || a.SourceTraceRate != 1 {
+		t.Fatalf("métricas inesperadas: %+v", a)
 	}
 }

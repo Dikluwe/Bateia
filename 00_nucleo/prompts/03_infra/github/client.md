@@ -2,7 +2,7 @@
 
 **Camada**: L₃ — Infraestrutura  
 **Criado em**: 2026-07-25  
-**Atualizado em**: 2026-07-31  
+**Atualizado em**: 2026-08-24
 **Arquivos gerados**: `03_infra/github/client.go`, `03_infra/github/client_test.go`  
 
 ---
@@ -37,12 +37,15 @@ Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utiliz
    - Retornar erro `MANIFEST_NOT_FOUND (404/410)` se o manifesto não existir no repositório.
    - Invocar o parser puro `parser.ParseGoMod`.
 4. Implementar `FetchTree(ctx context.Context, candidate domain.RepositoryCandidate) ([]domain.DirectoryNode, error)`:
-   - Ler os nós de diretório raiz.
+   - Com SHA resolvido, usar Git Trees recursiva e rejeitar respostas truncadas.
+   - Sem SHA, preservar a leitura da raiz para o funil legado.
+   - Propagar falhas; nunca fabricar uma árvore substituta.
 5. Implementar `ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error)`:
    - Tentar via HTTP (Contents API / Raw fallback). Se falhar ou for leitura ampla, executar clone shallow local `git clone --depth 1` em diretório temporário isolado.
 6. Implementar `FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error)`:
    - Consultar `GET https://api.github.com/repos/{owner}/{repo}`.
-   - Atualizar `Stars` (`stargazers_count`) e `Description`.
+   - Atualizar `Stars`, `Description`, estado arquivado, branch e atividade.
+   - Resolver o commit da branch padrão quando a entrada ainda usar `HEAD`.
    - Tratar rate limit (403/429) e erro 404 com fallback gracioso mantendo os metadados existentes.
 
 ---
@@ -53,3 +56,4 @@ Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utiliz
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | client.go, client_test.go |
 | 2026-07-31 | Adição de FetchRepoMetadata | client.go, interfaces.go |
+| 2026-08-24 | Árvore recursiva imutável e metadados de manutenção | client.go, client_test.go |

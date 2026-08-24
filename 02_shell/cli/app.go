@@ -70,7 +70,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
 	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
-	fmt.Println("  idea evidence plan|collect|assess Comprova capacidades por evidências, sem LLM")
+	fmt.Println("  idea evidence plan|collect|assess|evaluate Comprova e calibra evidências, sem LLM")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")

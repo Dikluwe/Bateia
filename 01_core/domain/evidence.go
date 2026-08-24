@@ -17,17 +17,30 @@ const (
 	EvidenceConflict     EvidenceStatus = "CONFLICT"
 )
 
+type RepositoryIdentity struct {
+	Owner string `json:"owner"`
+	Repo  string `json:"repo"`
+}
+
+func (r RepositoryIdentity) Key() string { return r.Owner + "/" + r.Repo }
+
+type ResolvedRepository struct {
+	Identity RepositoryIdentity `json:"identity"`
+	Commit   string             `json:"commit"`
+}
+
 type EvidenceKind string
 
 const (
-	EvidenceDocumentation EvidenceKind = "documentation"
-	EvidenceManifest      EvidenceKind = "manifest"
-	EvidenceFile          EvidenceKind = "file"
-	EvidenceSymbol        EvidenceKind = "symbol"
-	EvidenceTest          EvidenceKind = "test"
-	EvidenceExample       EvidenceKind = "example"
-	EvidenceLicense       EvidenceKind = "license"
-	EvidenceRepository    EvidenceKind = "repository_metadata"
+	EvidenceDocumentation      EvidenceKind = "documentation"
+	EvidenceManifest           EvidenceKind = "manifest"
+	EvidenceFile               EvidenceKind = "file"
+	EvidenceSymbol             EvidenceKind = "symbol"
+	EvidenceTest               EvidenceKind = "test"
+	EvidenceTestImplementation EvidenceKind = "test_implementation"
+	EvidenceExample            EvidenceKind = "example"
+	EvidenceLicense            EvidenceKind = "license"
+	EvidenceRepository         EvidenceKind = "repository_metadata"
 )
 
 type EvidenceSource struct {
@@ -115,6 +128,24 @@ type ExtractionTarget struct {
 	Reason       string       `json:"reason"`
 }
 
+type CollectionTargetStatus string
+
+const (
+	TargetPlanned       CollectionTargetStatus = "PLANNED"
+	TargetCollected     CollectionTargetStatus = "COLLECTED"
+	TargetNotFound      CollectionTargetStatus = "NOT_FOUND"
+	TargetFailed        CollectionTargetStatus = "FAILED"
+	TargetSkippedBudget CollectionTargetStatus = "SKIPPED_BUDGET"
+	TargetUnsupported   CollectionTargetStatus = "UNSUPPORTED"
+)
+
+type CollectionTargetResult struct {
+	Target  ExtractionTarget       `json:"target"`
+	Status  CollectionTargetStatus `json:"status"`
+	Bytes   int64                  `json:"bytes,omitempty"`
+	Message string                 `json:"message,omitempty"`
+}
+
 type EvidenceExtractionPlan struct {
 	SchemaVersion string              `json:"schema_version"`
 	Repository    CommitRef           `json:"repository"`
@@ -133,13 +164,16 @@ type CollectedEvidence struct {
 }
 
 type EvidenceBundle struct {
-	SchemaVersion string                 `json:"schema_version"`
-	Repository    CommitRef              `json:"repository"`
-	Plan          EvidenceExtractionPlan `json:"plan"`
-	Items         []CollectedEvidence    `json:"items"`
-	Failures      []ExecutionFailure     `json:"failures,omitempty"`
-	Complete      bool                   `json:"complete"`
-	BytesRead     int64                  `json:"bytes_read"`
+	SchemaVersion string                   `json:"schema_version"`
+	Repository    CommitRef                `json:"repository"`
+	Plan          EvidenceExtractionPlan   `json:"plan"`
+	Items         []CollectedEvidence      `json:"items"`
+	Failures      []ExecutionFailure       `json:"failures,omitempty"`
+	Complete      bool                     `json:"complete"`
+	BytesRead     int64                    `json:"bytes_read"`
+	Targets       []CollectionTargetResult `json:"target_results"`
+	TreeComplete  bool                     `json:"tree_complete"`
+	DepthReached  int                      `json:"depth_reached"`
 }
 
 type CapabilityPattern struct {
@@ -167,4 +201,22 @@ type AssessmentReport struct {
 	RulesVersion  string                `json:"rules_version"`
 	RulesHash     string                `json:"rules_hash"`
 	Assessments   []CandidateAssessment `json:"assessments"`
+}
+
+type EvidenceJudgment struct {
+	Repository     string         `json:"repository"`
+	Capability     string         `json:"capability"`
+	Expected       EvidenceStatus `json:"expected"`
+	ComponentValid *bool          `json:"component_valid,omitempty"`
+}
+
+type EvidenceMetrics struct {
+	EvidencePrecision  *float64 `json:"evidence_precision"`
+	FalseAbsenceRate   *float64 `json:"false_absence_rate"`
+	InconclusiveRate   float64  `json:"inconclusive_rate"`
+	SourceTraceRate    float64  `json:"source_trace_rate"`
+	BudgetCompletion   float64  `json:"budget_completion"`
+	ComponentPrecision *float64 `json:"component_precision"`
+	ProvenCount        int      `json:"proven_count"`
+	SampleSufficient   bool     `json:"sample_sufficient"`
 }

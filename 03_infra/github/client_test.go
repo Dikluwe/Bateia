@@ -110,6 +110,31 @@ func TestClient_FetchTree(t *testing.T) {
 	}
 }
 
+func TestClientFetchTreeRecursiveAtImmutableCommit(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.Contains(r.URL.Path, "/git/trees/abc123") || r.URL.Query().Get("recursive") != "1" {
+			t.Fatalf("requisição inesperada: %s", r.URL.String())
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{"truncated": false, "tree": []map[string]interface{}{{"path": "internal/graph/graph.go", "type": "blob", "size": 42}, {"path": "internal/graph", "type": "tree"}}})
+	}))
+	defer server.Close()
+	nodes, err := github.NewClientWithBaseURL("", server.URL).FetchTree(context.Background(), domain.RepositoryCandidate{Owner: "org", Repo: "repo", CommitID: "abc123"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(nodes) != 2 || nodes[0].Path != "internal/graph/graph.go" || nodes[0].Type != "file" {
+		t.Fatalf("árvore inesperada: %+v", nodes)
+	}
+}
+
+func TestClientFetchTreeDoesNotInventFallbackOnFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { http.Error(w, "boom", http.StatusBadGateway) }))
+	defer server.Close()
+	if _, err := github.NewClientWithBaseURL("", server.URL).FetchTree(context.Background(), domain.RepositoryCandidate{Owner: "org", Repo: "repo"}); err == nil {
+		t.Fatal("falha de árvore foi ocultada")
+	}
+}
+
 func TestClient_FetchManifest_GoMod(t *testing.T) {
 	goModContent := "module github.com/test/repo\n\ngo 1.21\n\nrequire github.com/stretchr/testify v1.8.4"
 	encoded := base64.StdEncoding.EncodeToString([]byte(goModContent))

@@ -1,0 +1,536 @@
+{
+  "schema_version": "2",
+  "idea": {
+    "problem": "mostrar o impacto estrutural de alterar código",
+    "capabilities": [],
+    "non_goals": [
+      "runtime monitoring",
+      "application observability"
+    ]
+  },
+  "strategy": "lexical",
+  "language": "go",
+  "per_expansion": [
+    {
+      "expansion": {
+        "id": "exp-problem-d1582e4b7dec",
+        "facet": "problem",
+        "query": "mostrar o impacto estrutural de alterar código",
+        "rationale": "descobrir soluções para o problema central",
+        "covers": [
+          "problem"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:Go mostrar o impacto estrutural de alterar código",
+            "result_count": 0,
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)"
+          },
+          {
+            "query": "lang:Go mostrar impacto",
+            "result_count": 0,
+            "error": "erro na API do Sourcegraph: rpc error: code = Unavailable desc = error reading from server: connection reset by peer\nrpc error: code = Unavailable desc = error reading from server: connection reset by peer\nrpc error: code = Unavailable desc = error reading from server: connection reset by peer"
+          },
+          {
+            "query": "mostrar impacto",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "nirholas",
+            "repo": "crypto-vision",
+            "url": "https://github.com/nirholas/crypto-vision",
+            "description": "The most comprehensive cryptocurrency API. Real-time prices, OHLCV, order books \u0026 market cap for 10,000+ tokens across 500+ exchanges. DeFi TVL, yields \u0026 protocol metrics. On-chain analytics \u0026 whale alerts. Crypto news \u0026 AI sentiment. Historical data. REST, WebSocket \u0026 GraphQL endpoints. Python, TypeScript, Go, React, PHP SDKs. ",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:22:46.037815006Z",
+            "stale": false
+          },
+          {
+            "owner": "danibusvlc",
+            "repo": "aventuras-en-megadrive",
+            "url": "https://github.com/danibusvlc/aventuras-en-megadrive",
+            "description": "Aventuras en Megadrive: Aprende a programar y crear juegos",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:22:46.037903651Z",
+            "stale": false
+          },
+          {
+            "owner": "SynkraAI",
+            "repo": "aiox-core",
+            "url": "https://github.com/SynkraAI/aiox-core",
+            "description": "Synkra AIOS: AI-Orchestrated System for Full Stack Development - Core Framework v4.0",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:22:46.037906597Z",
+            "stale": false
+          }
+        ],
+        "matches": [
+          {
+            "repository": "nirholas/crypto-vision",
+            "attempt_index": 2,
+            "effective_query": "mostrar impacto",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "agents/locales/mev-protection-advisor/index.pt-BR.json",
+                "snippet": "\"systemRole\": \"Você é um especialista em proteção MEV ajudando os usuários a evitar ataques de valor extraível.\\n\\nCAPACIDADES:\\n\\n* Explicar tipos de ataques MEV (sandwich, front-run, back-run)\\n* Calcular potencial de extração de MEV em n"
+              },
+              {
+                "match_type": "file",
+                "path": "agents/locales/mev-protection-advisor/index.es-ES.json",
+                "snippet": "\"systemRole\": \"Eres un especialista en protección MEV que ayuda a los usuarios a evitar ataques de valor extraíble.\\n\\nCAPACIDADES:\\n\\n* Explicar tipos de ataques MEV (sandwich, front-run, back-run)\\n* Calcular la posible extracción de MEV "
+              },
+              {
+                "match_type": "file",
+                "path": "agents/locales/yield-sustainability-analyst/index.pt-BR.json",
+                "snippet": "\"systemRole\": \"Você é um especialista em sustentabilidade de retornos analisando se os rendimentos em DeFi podem durar.\\n\\nCAPACIDADES:\\n\\n* Decompor fontes de rendimento (taxas vs incentivos)\\n* Modelar cronogramas de emissão de tokens\\n* "
+              },
+              {
+                "match_type": "file",
+                "path": "agents/locales/yield-sustainability-analyst/index.es-ES.json",
+                "snippet": "\"systemRole\": \"Eres un especialista en sostenibilidad de rendimientos analizando si los rendimientos en DeFi pueden durar.\\n\\nCAPACIDADES:\\n\\n* Descomponer las fuentes de rendimiento (tarifas vs incentivos)\\n* Modelar los cronogramas de emi"
+              }
+            ]
+          },
+          {
+            "repository": "danibusvlc/aventuras-en-megadrive",
+            "attempt_index": 2,
+            "effective_query": "mostrar impacto",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "leccion 11-escenarios interactivos/src/main.c",
+                "snippet": "s16 activa_impacto; //para mostrar impactos"
+              }
+            ]
+          },
+          {
+            "repository": "SynkraAI/aiox-core",
+            "attempt_index": 2,
+            "effective_query": "mostrar impacto",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/pt/meta-agent-commands.md",
+                "snippet": "--impact-analysis Mostrar impacto das mudanças"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-problem-5bd7a74ed9c0",
+        "facet": "problem",
+        "query": "code impact analysis",
+        "rationale": "ampliar vocabulário por regra lexical structural-impact",
+        "covers": [
+          "problem"
+        ],
+        "derivation": {
+          "strategy": "lexical",
+          "rule_ids": [
+            "structural-impact"
+          ],
+          "source_ids": [
+            "exp-problem-d1582e4b7dec"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:Go code impact analysis",
+            "result_count": 0
+          },
+          {
+            "query": "lang:Go code impact",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "bpfman",
+            "repo": "bpfman-operator",
+            "url": "https://github.com/bpfman/bpfman-operator",
+            "description": "Kubernetes operator for bpfman",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:21:41.385433922Z",
+            "stale": false
+          },
+          {
+            "owner": "kdoctor-io",
+            "repo": "kdoctor",
+            "url": "https://github.com/kdoctor-io/kdoctor",
+            "description": "data plane testing utility of cloud native",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:21:41.385436807Z",
+            "stale": false
+          },
+          {
+            "owner": "checkpoint-restore",
+            "repo": "checkpoint-restore-operator",
+            "url": "https://github.com/checkpoint-restore/checkpoint-restore-operator",
+            "description": "",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:21:41.385440514Z",
+            "stale": false
+          }
+        ],
+        "matches": [
+          {
+            "repository": "bpfman/bpfman-operator",
+            "attempt_index": 1,
+            "effective_query": "lang:Go code impact",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+                "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+              }
+            ]
+          },
+          {
+            "repository": "kdoctor-io/kdoctor",
+            "attempt_index": 1,
+            "effective_query": "lang:Go code impact",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+                "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+              }
+            ]
+          },
+          {
+            "repository": "checkpoint-restore/checkpoint-restore-operator",
+            "attempt_index": 1,
+            "effective_query": "lang:Go code impact",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+                "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-problem-cb8f9ac8b902",
+        "facet": "problem",
+        "query": "change blast radius",
+        "rationale": "ampliar vocabulário por regra lexical structural-impact",
+        "covers": [
+          "problem"
+        ],
+        "derivation": {
+          "strategy": "lexical",
+          "rule_ids": [
+            "structural-impact"
+          ],
+          "source_ids": [
+            "exp-problem-d1582e4b7dec"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:Go change blast radius",
+            "result_count": 1
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "dejo1307",
+            "repo": "enola",
+            "url": "https://github.com/dejo1307/enola",
+            "description": "enola - MCP Architectural Snapshot Server and Knowledge Graph",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-24T13:22:13.723213287Z",
+            "stale": false
+          }
+        ],
+        "matches": [
+          {
+            "repository": "dejo1307/enola",
+            "attempt_index": 0,
+            "effective_query": "lang:Go change blast radius",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "pkg/explain/explain.go",
+                "snippet": "// Hotspot is a module ranked by coupling, with its estimated change blast radius."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "nirholas",
+        "repo": "crypto-vision",
+        "url": "https://github.com/nirholas/crypto-vision",
+        "description": "The most comprehensive cryptocurrency API. Real-time prices, OHLCV, order books \u0026 market cap for 10,000+ tokens across 500+ exchanges. DeFi TVL, yields \u0026 protocol metrics. On-chain analytics \u0026 whale alerts. Crypto news \u0026 AI sentiment. Historical data. REST, WebSocket \u0026 GraphQL endpoints. Python, TypeScript, Go, React, PHP SDKs. ",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:22:46.037815006Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-d1582e4b7dec"
+      ],
+      "queries": [
+        "mostrar o impacto estrutural de alterar código"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-d1582e4b7dec",
+          "planned_query": "mostrar o impacto estrutural de alterar código",
+          "attempt_index": 2,
+          "effective_query": "mostrar impacto",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "agents/locales/mev-protection-advisor/index.pt-BR.json",
+              "snippet": "\"systemRole\": \"Você é um especialista em proteção MEV ajudando os usuários a evitar ataques de valor extraível.\\n\\nCAPACIDADES:\\n\\n* Explicar tipos de ataques MEV (sandwich, front-run, back-run)\\n* Calcular potencial de extração de MEV em n"
+            },
+            {
+              "match_type": "file",
+              "path": "agents/locales/mev-protection-advisor/index.es-ES.json",
+              "snippet": "\"systemRole\": \"Eres un especialista en protección MEV que ayuda a los usuarios a evitar ataques de valor extraíble.\\n\\nCAPACIDADES:\\n\\n* Explicar tipos de ataques MEV (sandwich, front-run, back-run)\\n* Calcular la posible extracción de MEV "
+            },
+            {
+              "match_type": "file",
+              "path": "agents/locales/yield-sustainability-analyst/index.pt-BR.json",
+              "snippet": "\"systemRole\": \"Você é um especialista em sustentabilidade de retornos analisando se os rendimentos em DeFi podem durar.\\n\\nCAPACIDADES:\\n\\n* Decompor fontes de rendimento (taxas vs incentivos)\\n* Modelar cronogramas de emissão de tokens\\n* "
+            },
+            {
+              "match_type": "file",
+              "path": "agents/locales/yield-sustainability-analyst/index.es-ES.json",
+              "snippet": "\"systemRole\": \"Eres un especialista en sostenibilidad de rendimientos analizando si los rendimientos en DeFi pueden durar.\\n\\nCAPACIDADES:\\n\\n* Descomponer las fuentes de rendimiento (tarifas vs incentivos)\\n* Modelar los cronogramas de emi"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "danibusvlc",
+        "repo": "aventuras-en-megadrive",
+        "url": "https://github.com/danibusvlc/aventuras-en-megadrive",
+        "description": "Aventuras en Megadrive: Aprende a programar y crear juegos",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:22:46.037903651Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-d1582e4b7dec"
+      ],
+      "queries": [
+        "mostrar o impacto estrutural de alterar código"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-d1582e4b7dec",
+          "planned_query": "mostrar o impacto estrutural de alterar código",
+          "attempt_index": 2,
+          "effective_query": "mostrar impacto",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "leccion 11-escenarios interactivos/src/main.c",
+              "snippet": "s16 activa_impacto; //para mostrar impactos"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "SynkraAI",
+        "repo": "aiox-core",
+        "url": "https://github.com/SynkraAI/aiox-core",
+        "description": "Synkra AIOS: AI-Orchestrated System for Full Stack Development - Core Framework v4.0",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:22:46.037906597Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-d1582e4b7dec"
+      ],
+      "queries": [
+        "mostrar o impacto estrutural de alterar código"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-d1582e4b7dec",
+          "planned_query": "mostrar o impacto estrutural de alterar código",
+          "attempt_index": 2,
+          "effective_query": "mostrar impacto",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/pt/meta-agent-commands.md",
+              "snippet": "--impact-analysis Mostrar impacto das mudanças"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "bpfman",
+        "repo": "bpfman-operator",
+        "url": "https://github.com/bpfman/bpfman-operator",
+        "description": "Kubernetes operator for bpfman",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:21:41.385433922Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-5bd7a74ed9c0"
+      ],
+      "queries": [
+        "code impact analysis"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-5bd7a74ed9c0",
+          "planned_query": "code impact analysis",
+          "attempt_index": 1,
+          "effective_query": "lang:Go code impact",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+              "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "kdoctor-io",
+        "repo": "kdoctor",
+        "url": "https://github.com/kdoctor-io/kdoctor",
+        "description": "data plane testing utility of cloud native",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:21:41.385436807Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-5bd7a74ed9c0"
+      ],
+      "queries": [
+        "code impact analysis"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-5bd7a74ed9c0",
+          "planned_query": "code impact analysis",
+          "attempt_index": 1,
+          "effective_query": "lang:Go code impact",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+              "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "checkpoint-restore",
+        "repo": "checkpoint-restore-operator",
+        "url": "https://github.com/checkpoint-restore/checkpoint-restore-operator",
+        "description": "",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:21:41.385440514Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-5bd7a74ed9c0"
+      ],
+      "queries": [
+        "code impact analysis"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-5bd7a74ed9c0",
+          "planned_query": "code impact analysis",
+          "attempt_index": 1,
+          "effective_query": "lang:Go code impact",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "vendor/k8s.io/apiserver/pkg/cel/library/cost.go",
+              "snippet": "// WARNING: Any changes to this code impact API compatibility! The estimated cost is used to determine which CEL rules may be written to a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "dejo1307",
+        "repo": "enola",
+        "url": "https://github.com/dejo1307/enola",
+        "description": "enola - MCP Architectural Snapshot Server and Knowledge Graph",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-24T13:22:13.723213287Z",
+        "stale": false
+      },
+      "expansion_ids": [
+        "exp-problem-cb8f9ac8b902"
+      ],
+      "queries": [
+        "change blast radius"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-cb8f9ac8b902",
+          "planned_query": "change blast radius",
+          "attempt_index": 0,
+          "effective_query": "lang:Go change blast radius",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "pkg/explain/explain.go",
+              "snippet": "// Hotspot is a module ranked by coupling, with its estimated change blast radius."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

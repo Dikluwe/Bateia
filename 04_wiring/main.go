@@ -53,6 +53,13 @@ func main() {
 		if err != nil {
 			log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
 		}
+		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "discover") {
+			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
+			if err := cli.RunIdeaDiscoverCommand(os.Args[3:], os.Stdout, os.Stderr, lexicalExpander, sgClient); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
 		if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout, lexicalExpander); err != nil {
 			log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 		}

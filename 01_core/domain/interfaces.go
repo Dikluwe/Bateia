@@ -17,6 +17,11 @@ type SearchProvider interface {
 	SearchCandidates(ctx context.Context, filter QueryFilter) ([]RepositoryCandidate, error)
 }
 
+// ObservableDiscoveryProvider preserva tentativas e fallbacks da descoberta.
+type ObservableDiscoveryProvider interface {
+	Discover(ctx context.Context, request DiscoveryRequest) (ProviderDiscovery, error)
+}
+
 // ContentProvider abstrai a leitura de manifestos, árvores e arquivos nos estágios 2 (Triagem) e 3 (Extração).
 type ContentProvider interface {
 	FetchManifest(ctx context.Context, candidate RepositoryCandidate) (*Manifest, error)

@@ -66,6 +66,10 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea plan     Materializa offline um plano rastreável de expansão da ideia")
 	fmt.Println("  idea expand   Enriquece offline o plano com vocabulário alternativo")
 	fmt.Println("  idea evaluate Compara estratégias de expansão num corpus versionado")
+	fmt.Println("  idea discover Executa expansões num provedor e grava snapshot rastreável")
+	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
+	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
+	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")
@@ -75,6 +79,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea plan --input ideia.json --output plano.json")
 	fmt.Println("  bateia idea expand --input ideia.json --strategy lexical")
 	fmt.Println("  bateia idea evaluate --corpus corpus.json --strategy lexical")
+	fmt.Println("  bateia idea discover --input ideia.json --strategy lexical --output snapshot.json")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {

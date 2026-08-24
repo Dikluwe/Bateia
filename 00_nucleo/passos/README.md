@@ -17,3 +17,5 @@ Cada passo deve declarar:
 | :---- | :------- | :----- |
 | [0001](0001-materializar-ideaspec-e-plano-de-expansao.md) | Materializar `IdeaSpec → ExpansionPlan` como dado puro e auditável | `IMPLEMENTADO` |
 | [0002](0002-expandir-vocabulario-com-baseline-mensuravel.md) | Expandir vocabulário com baseline lexical offline e avaliação comparável | `IMPLEMENTADO` |
+| [0003](0003-executar-expansoes-e-medir-precisao-da-descoberta.md) | Executar expansões e medir precisão real da descoberta | `IMPLEMENTADO` |
+| [0004](0004-construir-peneira-probabilistica-explicavel.md) | Rastrear o ruído e construir uma peneira probabilística explicável | `IMPLEMENTADO` |

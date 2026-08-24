@@ -1,0 +1,20 @@
+# Prompt Spec L0: Descoberta Rastreável de Ideias
+
+## Objetivo
+
+Executar cada expansão por uma porta observável, preservar tentativas e falhas e
+deduplicar candidatos sem perder suas origens.
+
+## Restrições
+
+- L1 puro: sem rede, disco, relógio ou provedor concreto.
+- Concorrência limitada e cancelamento respeitado.
+- Ordem canônica segue o plano, não a conclusão das goroutines.
+- Falhas parciais preservam resultados; falha total retorna erro.
+- Identidade de repositório é `owner/repo`, sem diferença de caixa.
+
+## Verificação
+
+- Uma chamada por expansão.
+- Origens mescladas na deduplicação.
+- JSON idêntico para diferentes ordens de conclusão.

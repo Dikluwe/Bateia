@@ -64,7 +64,13 @@ type sgSearchResultItem struct {
 	Name        string `json:"name"`
 	URL         string `json:"url"`
 	Description string `json:"description"`
-	Repository  sgRepo `json:"repository"`
+	File        struct {
+		Path string `json:"path"`
+	} `json:"file"`
+	LineMatches []struct {
+		Preview string `json:"preview"`
+	} `json:"lineMatches"`
+	Repository sgRepo `json:"repository"`
 }
 
 type sgSearchResponse struct {
@@ -199,6 +205,11 @@ func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter
 }
 
 func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults int) ([]domain.RepositoryCandidate, error) {
+	candidates, _, err := c.executeSGQueryDetailed(ctx, queryStr, maxResults)
+	return candidates, err
+}
+
+func (c *Client) executeSGQueryDetailed(ctx context.Context, queryStr string, maxResults int) ([]domain.RepositoryCandidate, []domain.ProviderCandidateMatch, error) {
 	gqlQuery := `
 	query SearchCandidates($query: String!) {
 		search(query: $query, version: V2) {
@@ -212,6 +223,8 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 						description
 					}
 					... on FileMatch {
+						file { path }
+						lineMatches { preview }
 						repository {
 							name
 							url
@@ -232,12 +245,12 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 
 	bodyBytes, err := json.Marshal(reqBody)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", c.endpoint, bytes.NewBuffer(bodyBytes))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -247,31 +260,33 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("erro de conexão com Sourcegraph: %w", err)
+		return nil, nil, fmt.Errorf("erro de conexão com Sourcegraph: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		respData, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("Sourcegraph retornou status %d: %s", resp.StatusCode, string(respData))
+		return nil, nil, fmt.Errorf("Sourcegraph retornou status %d: %s", resp.StatusCode, string(respData))
 	}
 
 	respData, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var sgResp sgSearchResponse
 	if err := json.Unmarshal(respData, &sgResp); err != nil {
-		return nil, fmt.Errorf("erro ao decodificar JSON do Sourcegraph: %w", err)
+		return nil, nil, fmt.Errorf("erro ao decodificar JSON do Sourcegraph: %w", err)
 	}
 
 	if len(sgResp.Errors) > 0 {
-		return nil, fmt.Errorf("erro na API do Sourcegraph: %s", sgResp.Errors[0].Message)
+		return nil, nil, fmt.Errorf("erro na API do Sourcegraph: %s", sgResp.Errors[0].Message)
 	}
 
 	candidatesMap := make(map[string]domain.RepositoryCandidate)
 	candidates := make([]domain.RepositoryCandidate, 0)
+	matches := make([]domain.ProviderCandidateMatch, 0)
+	matchIndexes := make(map[string]int)
 
 	for _, res := range sgResp.Data.Search.Results.Results {
 		var repo sgRepo
@@ -289,11 +304,25 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 			continue
 		}
 
+		owner, name := parseRepoName(repo.Name)
+		key := strings.ToLower(owner + "/" + name)
+		evidence := domain.MatchEvidence{MatchType: "repository"}
+		if res.TypeName == "FileMatch" {
+			evidence.MatchType = "file"
+			evidence.Path = res.File.Path
+			if len(res.LineMatches) > 0 {
+				evidence.Snippet = truncateMatchSnippet(res.LineMatches[0].Preview)
+			}
+		}
+		if matchIndex, exists := matchIndexes[key]; exists {
+			matches[matchIndex].Evidence = appendUniqueMatchEvidence(matches[matchIndex].Evidence, evidence)
+		} else {
+			matchIndexes[key] = len(matches)
+			matches = append(matches, domain.ProviderCandidateMatch{Repository: owner + "/" + name, Evidence: []domain.MatchEvidence{evidence}})
+		}
 		if _, exists := candidatesMap[repo.Name]; exists {
 			continue
 		}
-
-		owner, name := parseRepoName(repo.Name)
 
 		cand := domain.RepositoryCandidate{
 			Owner:        owner,
@@ -314,7 +343,25 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 		}
 	}
 
-	return candidates, nil
+	return candidates, matches, nil
+}
+
+func truncateMatchSnippet(value string) string {
+	normalized := strings.Join(strings.Fields(value), " ")
+	runes := []rune(normalized)
+	if len(runes) > 240 {
+		return string(runes[:240])
+	}
+	return normalized
+}
+
+func appendUniqueMatchEvidence(values []domain.MatchEvidence, addition domain.MatchEvidence) []domain.MatchEvidence {
+	for _, value := range values {
+		if value.MatchType == addition.MatchType && value.Path == addition.Path && value.Snippet == addition.Snippet {
+			return values
+		}
+	}
+	return append(values, addition)
 }
 
 func parseRepoName(fullName string) (string, string) {

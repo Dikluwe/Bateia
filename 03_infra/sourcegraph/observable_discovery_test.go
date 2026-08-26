@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/03_infra/sourcegraph/observable_discovery.md
+ * @prompt 00_nucleo/prompts/03_infra/sourcegraph/observable_discovery_test.md
  * @layer L3
  * @updated 2026-08-24
  */

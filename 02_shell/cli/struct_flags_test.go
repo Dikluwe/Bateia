@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/cli/struct_flags.md
+ * @prompt 00_nucleo/prompts/02_shell/cli/struct_flags_test.md
  * @layer L2
  * @updated 2026-08-08
  */

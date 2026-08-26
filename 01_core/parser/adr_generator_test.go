@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/adr_generator.md
+ * @prompt 00_nucleo/prompts/01_core/parser/adr_generator_test.md
  * @layer L1
  * @updated 2026-08-04
  */

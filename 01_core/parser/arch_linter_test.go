@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/arch_linter.md
+ * @prompt 00_nucleo/prompts/01_core/parser/arch_linter_test.md
  * @layer L1
  * @updated 2026-08-04
  */

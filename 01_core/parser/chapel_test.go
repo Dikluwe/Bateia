@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/chapel.md
+ * @prompt 00_nucleo/prompts/01_core/parser/chapel_test.md
  * @layer L1
  * @updated 2026-07-31
  */

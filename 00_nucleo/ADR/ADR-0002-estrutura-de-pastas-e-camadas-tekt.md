@@ -75,7 +75,7 @@ Bateia/
 
 A organização em subpastas espelhadas dentro de `00_nucleo/prompts/` traz os seguintes benefícios:
 
-1. **Rastreabilidade Fisiológica Unívoca**: O prompt `00_nucleo/prompts/01_core/parser/gomod.md` é a causa biunívoca e direta de `01_core/parser/gomod.go` e `01_core/parser/gomod_test.go`.
+1. **Rastreabilidade Fisiológica Unívoca**: O prompt `00_nucleo/prompts/01_core/parser/gomod.md` é a causa biunívoca e direta de `01_core/parser/gomod.go`; `01_core/parser/gomod_test.go` possui sua própria causa em `00_nucleo/prompts/01_core/parser/gomod_test.md`. Cada prompt proprietário possui exatamente um consumidor.
 2. **Navegação Intuitiva**: Desenvolvedores e agentes estatísticos encontram a especificação $L_0$ navegando no mesmo caminho de pasta da implementação.
 3. **Escalabilidade**: Impede a poluição da pasta `00_nucleo/prompts/` à medida que o sistema cresce.
 

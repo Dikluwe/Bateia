@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/domain/types.md
+ * @prompt 00_nucleo/prompts/01_core/domain/interfaces.md
  * @layer L1
  * @updated 2026-07-25
  */

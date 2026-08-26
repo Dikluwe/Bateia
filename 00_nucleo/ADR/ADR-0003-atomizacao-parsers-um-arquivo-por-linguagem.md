@@ -43,6 +43,7 @@ A forma canônica é:
 01_core/parser/<lang>.go        ← implementação L1
 01_core/parser/<lang>_test.go   ← testes da unidade
 00_nucleo/prompts/01_core/parser/<lang>.md  ← Prompt L0 perene
+00_nucleo/prompts/01_core/parser/<lang>_test.md ← Prompt L0 exclusivo dos testes
 ```
 
 ### O que esta decisão **é**
@@ -84,9 +85,10 @@ Ao adicionar suporte a uma nova linguagem `X`:
 
 1. Criar `00_nucleo/prompts/01_core/parser/x.md` com o Prompt L0.
 2. Criar `01_core/parser/x.go` com as funções `ParseX*(...)`.
-3. Criar `01_core/parser/x_test.go` com a suíte de testes.
-4. Adicionar a detecção em `DetectManifestType` e o roteamento em `ParseManifest`.
-5. Se o manifesto for buscado remotamente, adicionar à lista `manifestFiles` em `03_infra/github/client.go`.
+3. Criar `00_nucleo/prompts/01_core/parser/x_test.md` como Prompt L0 exclusivo da suíte.
+4. Criar `01_core/parser/x_test.go` com a suíte de testes.
+5. Adicionar a detecção em `DetectManifestType` e o roteamento em `ParseManifest`.
+6. Se o manifesto for buscado remotamente, adicionar à lista `manifestFiles` em `03_infra/github/client.go`.
 
 **Proibido**: criar um arquivo agrupador (ex.: `novos_ecosystems.go`) mesmo que temporariamente.
 

@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/ignore_walker.md
+ * @prompt 00_nucleo/prompts/01_core/parser/ignore_walker_test.md
  * @layer L1
  * @updated 2026-08-08
  */

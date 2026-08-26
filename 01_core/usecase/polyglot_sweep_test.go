@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/usecase/polyglot_sweep.md
+ * @prompt 00_nucleo/prompts/01_core/usecase/polyglot_sweep_test.md
  * @layer L1
  * @updated 2026-08-08
  */

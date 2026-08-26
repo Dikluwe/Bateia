@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/ast_analyzer.md
+ * @prompt 00_nucleo/prompts/01_core/parser/ast_analyzer_test.md
  * @layer L1
  * @updated 2026-08-04
  */

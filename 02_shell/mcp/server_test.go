@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/mcp/server.md
+ * @prompt 00_nucleo/prompts/02_shell/mcp/server_test.md
  * @layer L2
  * @updated 2026-08-03
  */

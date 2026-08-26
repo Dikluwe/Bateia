@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/report/generator.md
+ * @prompt 00_nucleo/prompts/02_shell/report/generator_test.md
  * @layer L2
  * @updated 2026-07-25
  */

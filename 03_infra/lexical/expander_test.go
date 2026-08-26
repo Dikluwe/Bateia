@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/03_infra/lexical/expander.md
+ * @prompt 00_nucleo/prompts/03_infra/lexical/expander_test.md
  * @layer L3
  * @updated 2026-08-24
  */

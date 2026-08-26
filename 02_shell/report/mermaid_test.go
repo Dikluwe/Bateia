@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/report/mermaid.md
+ * @prompt 00_nucleo/prompts/02_shell/report/mermaid_test.md
  * @layer L2
  * @updated 2026-08-03
  */

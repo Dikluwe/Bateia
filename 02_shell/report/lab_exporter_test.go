@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/report/lab_exporter.md
+ * @prompt 00_nucleo/prompts/02_shell/report/lab_exporter_test.md
  * @layer L2
  * @updated 2026-08-04
  */

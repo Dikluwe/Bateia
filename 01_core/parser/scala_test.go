@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/parser/scala.md
+ * @prompt 00_nucleo/prompts/01_core/parser/scala_test.md
  * @layer L1
  * @updated 2026-07-31
  */

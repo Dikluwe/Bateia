@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/03_infra/cache/cache_store.md
+ * @prompt 00_nucleo/prompts/03_infra/content/router.md
  * @layer L3
  * @updated 2026-08-23
  */

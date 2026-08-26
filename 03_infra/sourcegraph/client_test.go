@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client.md
+ * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client_test.md
  * @layer L3
  * @updated 2026-08-08
  */

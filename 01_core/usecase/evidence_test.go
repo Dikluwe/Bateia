@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
+ * @prompt 00_nucleo/prompts/01_core/usecase/evidence_test.md
  * @layer L1
  * @updated 2026-08-24
  */

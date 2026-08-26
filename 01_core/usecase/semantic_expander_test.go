@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/usecase/semantic_expander.md
+ * @prompt 00_nucleo/prompts/01_core/usecase/semantic_expander_test.md
  * @layer L1
  * @updated 2026-08-24
  */

@@ -16,17 +16,22 @@ import (
 
 func runIdeaFunctional(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: idea functional <expand|audit>")
+		return fmt.Errorf("uso: idea functional <expand|audit|realize|grammar-audit>")
 	}
 	switch args[0] {
 	case "expand":
 		return runFunctionalExpand(args[1:], stdout)
 	case "audit":
 		return runFunctionalAudit(args[1:], stdout)
+	case "realize":
+		return runFunctionalRealize(args[1:], stdout)
+	case "grammar-audit":
+		return runFunctionalGrammarAudit(args[1:], stdout)
 	default:
 		return fmt.Errorf("operação funcional desconhecida")
 	}
 }
+
 func runFunctionalExpand(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet("functional expand", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
@@ -58,6 +63,7 @@ func runFunctionalExpand(args []string, stdout io.Writer) error {
 	}
 	return writeIdeaJSON(result, *output, stdout)
 }
+
 func runFunctionalAudit(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet("functional audit", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
@@ -79,4 +85,58 @@ func runFunctionalAudit(args []string, stdout io.Writer) error {
 		return err
 	}
 	return writeIdeaJSON(usecase.AuditFunctionalQueries(e, l), *output, stdout)
+}
+
+func runFunctionalRealize(args []string, stdout io.Writer) error {
+	fs := flag.NewFlagSet("functional realize", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	expansionPath := fs.String("expansion", "", "FunctionalExpansion")
+	grammarPath := fs.String("grammar", "", "FunctionalGrammar")
+	output := fs.String("output", "", "saída")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if *expansionPath == "" || *grammarPath == "" {
+		return fmt.Errorf("realize exige expansion e grammar")
+	}
+	var exp domain.FunctionalExpansion
+	var g domain.FunctionalGrammar
+	if err := readOntologyJSON(*expansionPath, &exp); err != nil {
+		return err
+	}
+	if err := readOntologyJSON(*grammarPath, &g); err != nil {
+		return err
+	}
+	result, err := usecase.RealizeFunctionalGrammar(exp, g)
+	if err != nil {
+		return err
+	}
+	return writeIdeaJSON(result, *output, stdout)
+}
+
+func runFunctionalGrammarAudit(args []string, stdout io.Writer) error {
+	fs := flag.NewFlagSet("functional grammar-audit", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	queriesPath := fs.String("queries", "", "FunctionalExpansion")
+	grammarPath := fs.String("grammar", "", "FunctionalGrammar")
+	output := fs.String("output", "", "saída")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	if *queriesPath == "" || *grammarPath == "" {
+		return fmt.Errorf("grammar-audit exige queries e grammar")
+	}
+	var exp domain.FunctionalExpansion
+	var g domain.FunctionalGrammar
+	if err := readOntologyJSON(*queriesPath, &exp); err != nil {
+		return err
+	}
+	if err := readOntologyJSON(*grammarPath, &g); err != nil {
+		return err
+	}
+	findings, err := usecase.AuditFunctionalGrammar(exp, g)
+	if err != nil {
+		return err
+	}
+	return writeIdeaJSON(findings, *output, stdout)
 }

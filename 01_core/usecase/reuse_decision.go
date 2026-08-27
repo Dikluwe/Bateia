@@ -1,0 +1,346 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
+ * @layer L1
+ * @updated 2026-08-26
+ */
+
+package usecase
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"sort"
+	"strings"
+
+	"bateia/01_core/domain"
+)
+
+type decisionCandidate struct {
+	a         domain.CandidateAssessment
+	key       string
+	coverage  float64
+	covered   map[string]bool
+	evidence  []domain.EvidenceSource
+	blockers  []domain.DecisionReason
+	ambiguous bool
+	useful    bool
+}
+
+func DecideReuse(req domain.ReuseDecisionRequest) (domain.ReuseDecisionReport, error) {
+	if err := validateDecisionRequest(req); err != nil {
+		return domain.ReuseDecisionReport{}, err
+	}
+	policyJSON, _ := json.Marshal(req.Policy)
+	h := sha256.Sum256(policyJSON)
+	report := domain.ReuseDecisionReport{SchemaVersion: "1", Policy: req.Policy, PolicyHash: hex.EncodeToString(h[:]), Alternatives: []domain.DecisionAlternative{}}
+	capabilities := normalizedSorted(req.Idea.Capabilities)
+	if len(req.Assessments) == 0 {
+		report.Decision = domain.DecisionUnknown
+		report.Matrix = buildDecisionMatrix(capabilities, nil)
+		report.Gaps = append([]string(nil), capabilities...)
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-INCONCLUSIVE-002", Effect: "block", Message: "nenhum assessment foi fornecido; o corpus não sustenta decisão"}}
+		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
+		return report, nil
+	}
+	assessments := append([]domain.CandidateAssessment(nil), req.Assessments...)
+	sort.Slice(assessments, func(i, j int) bool { return assessments[i].Repository.Key() < assessments[j].Repository.Key() })
+	candidates := make([]decisionCandidate, 0, len(assessments))
+	for _, a := range assessments {
+		candidates = append(candidates, inspectCandidate(a, capabilities, req.Policy))
+	}
+	report.Matrix = buildDecisionMatrix(capabilities, candidates)
+	for _, c := range candidates {
+		report.Alternatives = append(report.Alternatives, domain.DecisionAlternative{Decision: domain.DecisionReference, Candidate: c.key, Coverage: c.coverage, Message: fmt.Sprintf("%d%% das capacidades obrigatórias comprovadas", int(c.coverage*100))})
+	}
+	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
+		return c.coverage == 1 && len(c.blockers) == 0 && !c.ambiguous && c.a.Operation.LocalStatus == domain.EvidenceProven
+	}); c != nil {
+		return finishDecision(report, req.Idea, *c, domain.DecisionFork, "DEC-FORK-001", "candidato executável cobre todas as capacidades e passa pelos gates"), nil
+	}
+	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
+		return c.coverage >= req.Policy.ExtendMinCoverage && c.coverage < 1 && c.a.ProblemAlignment.Status == domain.EvidenceProven && len(validParts(c.a.ReusableParts)) > 0 && len(c.blockers) == 0 && !c.ambiguous
+	}); c != nil {
+		return finishDecision(report, req.Idea, *c, domain.DecisionExtend, "DEC-EXTEND-001", "núcleo reutilizável cobre a capacidade central e o limiar da política"), nil
+	}
+	if composed, ok := composeCandidates(candidates, capabilities, req.Policy.MaxComponents); ok {
+		report.Decision = domain.DecisionCompose
+		report.Components = composed
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-COMPOSE-001", Effect: "select", Evidence: componentEvidence(composed), Message: "componentes complementares cobrem mais que qualquer candidato isolado"}}
+		report.Gaps = uncoveredGaps(capabilities, componentsCoverage(composed))
+		report.Effort = assessEffort(report.Decision, len(composed), len(report.Gaps), false)
+		return report, nil
+	}
+	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
+		return c.coverage >= req.Policy.IntegrationMinValue && len(validParts(c.a.ReusableParts)) > 0 && len(c.blockers) == 0 && !c.ambiguous
+	}); c != nil {
+		return finishDecision(report, req.Idea, *c, domain.DecisionIntegrate, "DEC-INTEGRATE-001", "componente verificável resolve uma capacidade delimitada importante"), nil
+	}
+	anyAmbiguous := false
+	for _, c := range candidates {
+		anyAmbiguous = anyAmbiguous || c.ambiguous
+		report.Blockers = append(report.Blockers, c.blockers...)
+	}
+	if anyAmbiguous {
+		report.Decision = domain.DecisionUnknown
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-INCONCLUSIVE-001", Effect: "block", Message: "evidência obrigatória ou gate eliminatório permanece inconclusivo"}}
+		report.Gaps = append([]string(nil), capabilities...)
+		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
+		return report, nil
+	}
+	if c := firstCandidate(candidates, func(c decisionCandidate) bool { return c.useful }); c != nil {
+		r := finishDecision(report, req.Idea, *c, domain.DecisionReference, "DEC-REFERENCE-001", "há evidência útil, mas gates ou ausência de componente impedem reúso direto")
+		r.Blockers = report.Blockers
+		return r, nil
+	}
+	report.Decision = domain.DecisionBuild
+	report.Reasons = []domain.DecisionReason{{RuleID: "DEC-BUILD-001", Effect: "select", Message: "avaliação conclusiva não encontrou base reutilizável para a capacidade central"}}
+	report.Gaps = append([]string(nil), capabilities...)
+	report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), false)
+	return report, nil
+}
+
+func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
+	if len(req.Idea.Capabilities) == 0 {
+		return fmt.Errorf("a ideia exige ao menos uma capacidade obrigatória")
+	}
+	if req.Policy.SchemaVersion == "" {
+		return fmt.Errorf("policy.schema_version é obrigatório")
+	}
+	if req.Policy.MaxComponents < 2 {
+		return fmt.Errorf("policy.max_components deve ser ao menos 2")
+	}
+	if req.Policy.ExtendMinCoverage <= 0 || req.Policy.ExtendMinCoverage > 1 || req.Policy.IntegrationMinValue <= 0 || req.Policy.IntegrationMinValue > 1 {
+		return fmt.Errorf("limiares da política devem estar em (0,1]")
+	}
+	return nil
+}
+
+func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.ReuseDecisionPolicy) decisionCandidate {
+	c := decisionCandidate{a: a, key: a.Repository.Key(), covered: map[string]bool{}}
+	byCap := map[string]domain.CapabilityEvidence{}
+	for _, e := range a.Capabilities {
+		byCap[normalizeDecisionText(e.Capability)] = e
+	}
+	for _, cap := range caps {
+		e, ok := byCap[cap]
+		if !ok {
+			c.ambiguous = true
+			continue
+		}
+		c.evidence = append(c.evidence, e.Sources...)
+		if e.Status == domain.EvidenceProven {
+			c.covered[cap] = true
+			c.useful = true
+		}
+		if e.Status == domain.EvidencePartial {
+			c.useful = true
+		}
+		if e.Status == domain.EvidenceInconclusive {
+			c.ambiguous = true
+		}
+		if e.Status == domain.EvidenceConflict {
+			c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-CAPABILITY-001", Effect: "block", Candidate: c.key, Evidence: e.Sources, Message: "capacidade obrigatória em conflito: " + cap})
+		}
+	}
+	c.coverage = float64(len(c.covered)) / float64(len(caps))
+	if a.ProblemAlignment.Status == domain.EvidenceInconclusive {
+		c.ambiguous = true
+	}
+	if len(a.Failures) > 0 {
+		c.ambiguous = true
+	}
+	if a.Maintenance.Status == domain.EvidenceInconclusive {
+		c.ambiguous = true
+	}
+	if a.License.Status == domain.EvidenceInconclusive {
+		c.ambiguous = true
+	}
+	if a.License.Status != domain.EvidenceInconclusive && (a.License.Status != domain.EvidenceProven || !containsFold(p.AllowedLicenses, a.License.Identifier)) {
+		c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-LICENSE-001", Effect: "block", Candidate: c.key, Evidence: a.License.Sources, Message: "licença não permitida pela política"})
+	}
+	if a.Maintenance.Archived && !p.AllowArchived {
+		c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-MAINTENANCE-001", Effect: "block", Candidate: c.key, Evidence: a.Maintenance.Sources, Message: "repositório arquivado não permitido"})
+	}
+	if p.RequireLocal && a.Operation.LocalStatus != domain.EvidenceProven {
+		if a.Operation.LocalStatus == domain.EvidenceInconclusive {
+			c.ambiguous = true
+		} else {
+			c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-OPERATION-001", Effect: "block", Candidate: c.key, Evidence: a.Operation.Sources, Message: "operação local obrigatória não foi comprovada"})
+		}
+	}
+	for _, x := range a.Constraints {
+		if x.Evidence.Status == domain.EvidenceInconclusive {
+			c.ambiguous = true
+		}
+		if x.Evidence.Status == domain.EvidenceConflict {
+			c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-CONSTRAINT-001", Effect: "block", Candidate: c.key, Evidence: x.Evidence.Sources, Message: "conflito eliminatório: " + x.Constraint})
+		}
+	}
+	return c
+}
+
+func finishDecision(r domain.ReuseDecisionReport, idea domain.IdeaSpec, c decisionCandidate, decision domain.ReuseDecision, rule, msg string) domain.ReuseDecisionReport {
+	r.Decision = decision
+	r.Primary = &domain.ResolvedRepository{Identity: domain.RepositoryIdentity{Owner: c.a.Repository.Owner, Repo: c.a.Repository.Repo}, Commit: c.a.Repository.Commit}
+	r.Components = validParts(c.a.ReusableParts)
+	r.Gaps = uncoveredGaps(normalizedSorted(idea.Capabilities), c.covered)
+	r.Reasons = []domain.DecisionReason{{RuleID: rule, Effect: "select", Candidate: c.key, Evidence: c.evidence, Message: msg}}
+	r.Blockers = append(r.Blockers, c.blockers...)
+	r.Effort = assessEffort(decision, len(r.Components), len(r.Gaps), false)
+	return r
+}
+
+func buildDecisionMatrix(caps []string, cs []decisionCandidate) []domain.CapabilityComparison {
+	out := make([]domain.CapabilityComparison, 0, len(caps))
+	for _, cap := range caps {
+		row := domain.CapabilityComparison{Capability: cap}
+		for _, c := range cs {
+			status := domain.EvidenceInconclusive
+			var sources []domain.EvidenceSource
+			for _, e := range c.a.Capabilities {
+				if normalizeDecisionText(e.Capability) == cap {
+					status = e.Status
+					sources = e.Sources
+					break
+				}
+			}
+			row.Candidates = append(row.Candidates, domain.CandidateCapabilityStatus{Candidate: c.key, Status: status, Evidence: sources})
+		}
+		out = append(out, row)
+	}
+	return out
+}
+
+func composeCandidates(cs []decisionCandidate, caps []string, max int) ([]domain.ReusableComponent, bool) {
+	bestSingle := 0
+	for _, c := range cs {
+		if len(c.blockers) == 0 && !c.ambiguous && len(c.covered) > bestSingle {
+			bestSingle = len(c.covered)
+		}
+	}
+	covered := map[string]bool{}
+	var chosen []domain.ReusableComponent
+	for len(chosen) < max {
+		bestGain := 0
+		var best *domain.ReusableComponent
+		for _, c := range cs {
+			if len(c.blockers) > 0 || c.ambiguous {
+				continue
+			}
+			for _, part := range validParts(c.a.ReusableParts) {
+				gain := 0
+				for _, x := range part.Capabilities {
+					n := normalizeDecisionText(x)
+					if !covered[n] && contains(caps, n) {
+						gain++
+					}
+				}
+				if gain > bestGain || (gain == bestGain && gain > 0 && part.Name < best.Name) {
+					copy := part
+					best = &copy
+					bestGain = gain
+				}
+			}
+		}
+		if best == nil {
+			break
+		}
+		chosen = append(chosen, *best)
+		for _, x := range best.Capabilities {
+			covered[normalizeDecisionText(x)] = true
+		}
+	}
+	return chosen, len(chosen) >= 2 && len(covered) > bestSingle && len(covered) == len(caps)
+}
+
+func assessEffort(d domain.ReuseDecision, n, gaps int, amb bool) domain.EffortAssessment {
+	if amb {
+		return domain.EffortAssessment{Level: domain.EffortUnknown, Factors: []domain.EffortFactor{{Factor: "evidence", Effect: "unknown", Evidence: "coleta ou gate inconclusivo"}}}
+	}
+	level := domain.EffortLow
+	if n > 1 || gaps > 0 {
+		level = domain.EffortMedium
+	}
+	if d == domain.DecisionBuild || gaps > 2 {
+		level = domain.EffortHigh
+	}
+	return domain.EffortAssessment{Level: level, Factors: []domain.EffortFactor{{Factor: "components", Effect: fmt.Sprintf("%d", n), Evidence: "componentes verificáveis selecionados"}, {Factor: "functional_gaps", Effect: fmt.Sprintf("%d", gaps), Evidence: "matriz de capacidades"}}}
+}
+func firstCandidate(cs []decisionCandidate, p func(decisionCandidate) bool) *decisionCandidate {
+	for i := range cs {
+		if p(cs[i]) {
+			return &cs[i]
+		}
+	}
+	return nil
+}
+func componentEvidence(parts []domain.ReusableComponent) []domain.EvidenceSource {
+	var out []domain.EvidenceSource
+	for _, p := range parts {
+		out = append(out, p.Evidence...)
+	}
+	return out
+}
+func componentsCoverage(parts []domain.ReusableComponent) map[string]bool {
+	m := map[string]bool{}
+	for _, p := range parts {
+		for _, c := range p.Capabilities {
+			m[normalizeDecisionText(c)] = true
+		}
+	}
+	return m
+}
+func uncoveredGaps(caps []string, covered map[string]bool) []string {
+	var out []string
+	for _, c := range caps {
+		if !covered[c] {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+func normalizedSorted(xs []string) []string {
+	out := make([]string, 0, len(xs))
+	seen := map[string]bool{}
+	for _, x := range xs {
+		n := normalizeDecisionText(x)
+		if n != "" && !seen[n] {
+			seen[n] = true
+			out = append(out, n)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+func normalizeDecisionText(s string) string {
+	return strings.ToLower(strings.Join(strings.Fields(s), " "))
+}
+func contains(xs []string, x string) bool {
+	for _, v := range xs {
+		if v == x {
+			return true
+		}
+	}
+	return false
+}
+func containsFold(xs []string, x string) bool {
+	for _, v := range xs {
+		if strings.EqualFold(strings.TrimSpace(v), strings.TrimSpace(x)) {
+			return true
+		}
+	}
+	return false
+}
+
+func validParts(parts []domain.ReusableComponent) []domain.ReusableComponent {
+	out := make([]domain.ReusableComponent, 0, len(parts))
+	for _, part := range parts {
+		if part.Name != "" && part.Kind != "" && (part.Path != "" || len(part.Symbols) > 0) && len(part.Capabilities) > 0 && len(part.Evidence) > 0 {
+			out = append(out, part)
+		}
+	}
+	return out
+}

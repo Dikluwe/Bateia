@@ -1,0 +1,32 @@
+{
+  "schema_version": "1",
+  "protocol": "tekt-materializacao-segregada/full",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_DE_ISOLAMENTO",
+  "prompt": {
+    "path": "00_nucleo/passos/0015-separar-catalogo-de-projetos-e-comprovacao-em-codigo.md",
+    "sha256": "f051b1e9fd0d64cacf3a4f70be18153383ce811dc8e4cca1dab33ab6b6e3c872"
+  },
+  "baseline": {
+    "git_commit": "df14ec138261094a9fd33c2e887ef83db228b4a4",
+    "ontology_sha256": "eea4c9a4da912a06ee64ba7509fb15e28b1645efde5a506609f4eeb672bc877f",
+    "idea_sha256": "d2d23609d6301023c0fd3d9cdf75ddb58178fabf87606b02d2dbbfc3c9cbab21",
+    "arm_a": "00_nucleo/benchmark/0012/run/discovery-0013.json",
+    "arm_b": "00_nucleo/benchmark/0012/run/discovery-0014.json"
+  },
+  "contract": "01_core/domain/project_catalog.go",
+  "required_observables": [
+    "provider_role",
+    "search_unit",
+    "matched_catalog_fields",
+    "immutable_revision",
+    "catalog_verdict",
+    "repository_scoped_code_proof"
+  ],
+  "unknown_policy": "Identidade ou revisão ausente, resposta opaca, rate-limit ou budget esgotado produzem REVIEW/UNKNOWN e nunca ADVANCE implícito.",
+  "roles": [
+    {"role":"intent_author","executor":"user+step-0015","read":["domain goals"],"write":["step"]},
+    {"role":"contract_oracle_author","executor":"codex-phase-contract","read":["step","baseline"],"write":["domain contract","tests"]},
+    {"role":"implementer","executor":"codex-phase-implementation","read":["sealed step","contract","tests"],"write":["usecase","infra","cli","wiring"]},
+    {"role":"verifier","executor":"deterministic tools+codex-phase-verdict","read":["sealed inputs","candidate outputs"],"write":["receipts","laudo"],"limitation":"same conversational authority; no isolation attestation"}
+  ]
+}

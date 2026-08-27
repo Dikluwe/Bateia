@@ -1,6 +1,6 @@
 # Passo 0006 — Endurecer e calibrar evidências
 
-**Estado**: `EM CALIBRAÇÃO`
+**Estado**: `IMPLEMENTADO`
 **Desejo de origem**: [`D-001 — Da ideia à decisão de reuso`](../desejos/D-001-da-ideia-a-decisao-de-reuso.md)
 **Depende de**: [`Passo 0005 — Triar candidatos e comprovar capacidades`](0005-triar-candidatos-e-comprovar-capacidades.md)
 **Onde roda**: Bateia
@@ -245,13 +245,10 @@ reexecutam todo o corpus, sem sobrescrever o resultado anterior.
 
 ## Próximo passo condicionado
 
-O **Passo 0007** construirá a matriz comparativa e o motor determinístico de
-decisão de partida:
+O **Passo 0007** diagnosticará por que positivos reais permanecem `PARTIAL` ou
+`INCONCLUSIVE`, ampliará a cobertura de forma controlada e demonstrará o gate antes
+que o motor de decisão seja iniciado.
 
-```text
-FORK · EXTEND · COMPOSE · INTEGRATE · REFERENCE · BUILD
-```
-
-Ele só começa depois que os critérios de precisão, ausência falsa, rastreabilidade
-e componentes forem atingidos. O motor consumirá `CandidateAssessment` calibrado,
+O **Passo 0008** construirá então a decisão `FORK · EXTEND · COMPOSE ·
+INTEGRATE · REFERENCE · BUILD`, consumindo `CandidateAssessment` calibrado,
 nunca descrições ou scores de descoberta como substitutos de evidência.

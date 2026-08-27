@@ -1,0 +1,1178 @@
+{
+  "schema_version": "2",
+  "idea": {
+    "problem": "Evitar iniciar software do zero quando projetos, componentes ou padrões reutilizáveis já resolvem toda ou parte da ideia, produzindo uma decisão de partida baseada em evidências.",
+    "users": [
+      "desenvolvedores iniciando um projeto",
+      "mantenedores avaliando reutilização",
+      "agentes de programação"
+    ],
+    "capabilities": [
+      "decompor uma ideia em capacidades e restrições rastreáveis",
+      "descobrir projetos públicos privados ou locais por intenção funcional",
+      "rejeitar projetos lexicalmente parecidos e funcionalmente irrelevantes",
+      "comprovar capacidades em documentação manifestos código e testes",
+      "comparar cobertura funcional licença manutenção e operação",
+      "decidir entre fork extend compose integrate reference build e inconclusive",
+      "recuperar evidência faltante sem repetir coleta genérica",
+      "reconhecer capacidades já existentes no próprio projeto",
+      "propor a menor composição de projetos para cobrir lacunas reais",
+      "reproduzir julgamento offline com artefatos e commits congelados"
+    ],
+    "constraints": [
+      "sem LLM no pipeline principal",
+      "evidência vinculada a repo commit path e hash",
+      "suporte a repositórios puramente locais",
+      "falha ou opacidade não pode virar ausência ou build",
+      "replay offline"
+    ],
+    "non_goals": [
+      "buscar somente por palavras iguais",
+      "ranquear apenas por estrelas",
+      "gerar código automaticamente",
+      "copiar código de concorrentes",
+      "tratar jogo Katamari ou autofagia biológica como seleção de software"
+    ],
+    "preferred_stack": [
+      "go",
+      "cli",
+      "json"
+    ]
+  },
+  "strategy": "ontology",
+  "per_expansion": [
+    {
+      "expansion": {
+        "id": "exp-capability-249e49a97742",
+        "facet": "capability",
+        "query": "open source integration planning",
+        "rationale": "conceito de descoberta software-composition",
+        "covers": [
+          "capabilities[8]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-composition"
+          ],
+          "source_ids": [
+            "exp-capability-1ca426485640"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source integration planning",
+            "started_at": "2026-08-26T21:33:28.471881989Z",
+            "duration": 20015282909,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "open source",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:33:48.487169307Z",
+            "duration": 20017990063,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-2d614d8b63a7",
+        "facet": "capability",
+        "query": "open source project discovery",
+        "rationale": "conceito de descoberta repository-recommendation",
+        "covers": [
+          "capabilities[1]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "repository-recommendation"
+          ],
+          "source_ids": [
+            "exp-capability-fc31e1d88f5c"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source project discovery",
+            "started_at": "2026-08-26T21:33:28.471874074Z",
+            "duration": 20014340545,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "open source",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:33:48.48622054Z",
+            "duration": 20018951153,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-3a0cfcda5e26",
+        "facet": "capability",
+        "query": "cross repository code discovery",
+        "rationale": "conceito de descoberta internal-reuse",
+        "covers": [
+          "capabilities[7]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "internal-reuse"
+          ],
+          "source_ids": [
+            "exp-capability-7ccac9fff8b3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "cross repository code discovery",
+            "started_at": "2026-08-26T21:34:08.505231996Z",
+            "duration": 20018960874,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "cross repository",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:34:28.524196477Z",
+            "duration": 20018951945,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-5548fa0e1700",
+        "facet": "capability",
+        "query": "software component composition",
+        "rationale": "conceito de descoberta software-composition",
+        "covers": [
+          "capabilities[8]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-composition"
+          ],
+          "source_ids": [
+            "exp-capability-1ca426485640"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "software component composition",
+            "started_at": "2026-08-26T21:34:08.505225283Z",
+            "duration": 20018958871,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "software component",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:34:28.524189163Z",
+            "duration": 20018989425,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-72cf3c4cf7a0",
+        "facet": "capability",
+        "query": "dependency adoption decision",
+        "rationale": "conceito de descoberta adoption-decision",
+        "covers": [
+          "capabilities[5]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "adoption-decision"
+          ],
+          "source_ids": [
+            "exp-capability-60a70efc9eb3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "dependency adoption decision",
+            "started_at": "2026-08-26T21:34:48.543184769Z",
+            "duration": 20016989522,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "dependency adoption",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:35:08.560177276Z",
+            "duration": 20000133767,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-7b25ab48848f",
+        "facet": "capability",
+        "query": "open source component evaluation",
+        "rationale": "conceito de descoberta component-selection",
+        "covers": [
+          "capabilities[4]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "component-selection"
+          ],
+          "source_ids": [
+            "exp-capability-626f01859fc4"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source component evaluation",
+            "started_at": "2026-08-26T21:34:48.543208974Z",
+            "duration": 20016953285,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "open source",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:35:08.560167348Z",
+            "duration": 20000255914,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-8dd6cf471d97",
+        "facet": "capability",
+        "query": "internal code reuse search",
+        "rationale": "conceito de descoberta internal-reuse",
+        "covers": [
+          "capabilities[7]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "internal-reuse"
+          ],
+          "source_ids": [
+            "exp-capability-7ccac9fff8b3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "internal code reuse search",
+            "started_at": "2026-08-26T21:35:28.560482301Z",
+            "duration": 20001223957,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "internal code",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:35:48.561711277Z",
+            "duration": 2316831266,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "aws-actions",
+            "repo": "vulnerability-scan-github-action-for-amazon-inspector",
+            "url": "https://github.com/aws-actions/vulnerability-scan-github-action-for-amazon-inspector",
+            "description": "Scan artifacts with Amazon Inspector from GitHub Actions workflows.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:35:50.878528327Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "devoteamgcloud",
+            "repo": "petra",
+            "url": "https://github.com/devoteamgcloud/petra",
+            "description": "Private Terraform Registry Manager",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:35:50.878531413Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "pageel",
+            "repo": "para-workspace",
+            "url": "https://github.com/pageel/para-workspace",
+            "description": "🌌 PARA Workspace is an open-source workspace framework that defines how humans and AI agents organize knowledge and collaborate on projects. It ships as a repo containing a kernel (constitution), CLI tools, and templates — which generates workspaces where you actually work.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:35:50.87853521Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "aws-actions/vulnerability-scan-github-action-for-amazon-inspector",
+            "attempt_index": 1,
+            "effective_query": "internal code",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "AGENTS.md",
+                "snippet": "### Internal code"
+              }
+            ]
+          },
+          {
+            "repository": "devoteamgcloud/petra",
+            "attempt_index": 1,
+            "effective_query": "internal code",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "vendor/google.golang.org/grpc/codes/codes.go",
+                "snippet": "Internal Code = 13"
+              }
+            ]
+          },
+          {
+            "repository": "pageel/para-workspace",
+            "attempt_index": 1,
+            "effective_query": "internal code",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "templates/common/agents/skills/scan-sec/references/data-flow-classification.md",
+                "snippet": "## L3 — Internal code"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-a0eeabf6d587",
+        "facet": "capability",
+        "query": "evidence backed tool evaluation",
+        "rationale": "conceito de descoberta adoption-decision",
+        "covers": [
+          "capabilities[5]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "adoption-decision"
+          ],
+          "source_ids": [
+            "exp-capability-60a70efc9eb3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "evidence backed tool evaluation",
+            "started_at": "2026-08-26T21:35:28.560596543Z",
+            "duration": 20001179715,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "evidence backed",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:35:48.561779995Z",
+            "duration": 20017083852,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-e307e3b9e752",
+        "facet": "capability",
+        "query": "GitHub repository recommendation",
+        "rationale": "conceito de descoberta repository-recommendation",
+        "covers": [
+          "capabilities[1]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "repository-recommendation"
+          ],
+          "source_ids": [
+            "exp-capability-fc31e1d88f5c"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "GitHub repository recommendation",
+            "started_at": "2026-08-26T21:35:50.878577108Z",
+            "duration": 20001830584,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "GitHub repository",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:36:10.880411729Z",
+            "duration": 2329871556,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "iAmCorey",
+            "repo": "favicon-stealer",
+            "url": "https://github.com/iAmCorey/favicon-stealer",
+            "description": "favicon stealer npm package",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:36:13.210272705Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "silverstripe",
+            "repo": "silverstripe-staticpublishqueue",
+            "url": "https://github.com/silverstripe/silverstripe-staticpublishqueue",
+            "description": "This module allows you to build static HTML caches of every page (for increased security and performance)",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:36:13.21027523Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Uniswap",
+            "repo": "docs",
+            "url": "https://github.com/Uniswap/docs",
+            "description": "📓 Uniswap docs website",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:36:13.210277124Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "iAmCorey/favicon-stealer",
+            "attempt_index": 1,
+            "effective_query": "GitHub repository",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "README.md",
+                "snippet": "# GitHub Repository"
+              }
+            ]
+          },
+          {
+            "repository": "silverstripe/silverstripe-staticpublishqueue",
+            "attempt_index": 1,
+            "effective_query": "GitHub repository",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/en/index.md",
+                "snippet": "## GitHub repository"
+              }
+            ]
+          },
+          {
+            "repository": "Uniswap/docs",
+            "attempt_index": 1,
+            "effective_query": "GitHub repository",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "archive/docs/contracts/smart-wallet/02-deployments.md",
+                "snippet": "### Github Repository"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-f08c4c1ddf61",
+        "facet": "capability",
+        "query": "software component selection",
+        "rationale": "conceito de descoberta component-selection",
+        "covers": [
+          "capabilities[4]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "component-selection"
+          ],
+          "source_ids": [
+            "exp-capability-626f01859fc4"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "software component selection",
+            "started_at": "2026-08-26T21:36:08.578893552Z",
+            "duration": 19907497174,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-problem-367f9904fcee",
+        "facet": "problem",
+        "query": "build versus reuse",
+        "rationale": "conceito de descoberta software-reuse-discovery",
+        "covers": [
+          "problem"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-reuse-discovery"
+          ],
+          "source_ids": [
+            "exp-problem-44c2d0bdff93"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "build versus reuse",
+            "started_at": "2026-08-26T21:36:13.210308412Z",
+            "duration": 15276110968,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "aws-actions",
+        "repo": "vulnerability-scan-github-action-for-amazon-inspector",
+        "url": "https://github.com/aws-actions/vulnerability-scan-github-action-for-amazon-inspector",
+        "description": "Scan artifacts with Amazon Inspector from GitHub Actions workflows.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:35:50.878528327Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "internal code",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "AGENTS.md",
+              "snippet": "### Internal code"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "devoteamgcloud",
+        "repo": "petra",
+        "url": "https://github.com/devoteamgcloud/petra",
+        "description": "Private Terraform Registry Manager",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:35:50.878531413Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "internal code",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "vendor/google.golang.org/grpc/codes/codes.go",
+              "snippet": "Internal Code = 13"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "pageel",
+        "repo": "para-workspace",
+        "url": "https://github.com/pageel/para-workspace",
+        "description": "🌌 PARA Workspace is an open-source workspace framework that defines how humans and AI agents organize knowledge and collaborate on projects. It ships as a repo containing a kernel (constitution), CLI tools, and templates — which generates workspaces where you actually work.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:35:50.87853521Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "internal code",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "templates/common/agents/skills/scan-sec/references/data-flow-classification.md",
+              "snippet": "## L3 — Internal code"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "iAmCorey",
+        "repo": "favicon-stealer",
+        "url": "https://github.com/iAmCorey/favicon-stealer",
+        "description": "favicon stealer npm package",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:36:13.210272705Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "GitHub repository",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "README.md",
+              "snippet": "# GitHub Repository"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "silverstripe",
+        "repo": "silverstripe-staticpublishqueue",
+        "url": "https://github.com/silverstripe/silverstripe-staticpublishqueue",
+        "description": "This module allows you to build static HTML caches of every page (for increased security and performance)",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:36:13.21027523Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "GitHub repository",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/en/index.md",
+              "snippet": "## GitHub repository"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Uniswap",
+        "repo": "docs",
+        "url": "https://github.com/Uniswap/docs",
+        "description": "📓 Uniswap docs website",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:36:13.210277124Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "GitHub repository",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "archive/docs/contracts/smart-wallet/02-deployments.md",
+              "snippet": "### Github Repository"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "scope": "exp-capability-249e49a97742",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-2d614d8b63a7",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-3a0cfcda5e26",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-5548fa0e1700",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-72cf3c4cf7a0",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-7b25ab48848f",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-a0eeabf6d587",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-capability-f08c4c1ddf61",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    },
+    {
+      "scope": "exp-problem-367f9904fcee",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "PARTIAL",
+    "completion_cause": "TOTAL_TIMEOUT",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 180000000000,
+      "attempt_timeout": 20000000000,
+      "concurrency": 2,
+      "max_attempts": 3
+    },
+    "planned": 12,
+    "started": 11,
+    "completed": 11,
+    "timed_out": 18,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": [
+      {
+        "expansion_id": "exp-capability-249e49a97742",
+        "attempt_index": 0,
+        "planned_query": "open source integration planning",
+        "effective_query": "open source integration planning",
+        "started_at": "2026-08-26T21:33:28.471881989Z",
+        "duration": 20015282909,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-249e49a97742",
+        "attempt_index": 1,
+        "planned_query": "open source integration planning",
+        "effective_query": "open source",
+        "started_at": "2026-08-26T21:33:48.487169307Z",
+        "duration": 20017990063,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-2d614d8b63a7",
+        "attempt_index": 0,
+        "planned_query": "open source project discovery",
+        "effective_query": "open source project discovery",
+        "started_at": "2026-08-26T21:33:28.471874074Z",
+        "duration": 20014340545,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-2d614d8b63a7",
+        "attempt_index": 1,
+        "planned_query": "open source project discovery",
+        "effective_query": "open source",
+        "started_at": "2026-08-26T21:33:48.48622054Z",
+        "duration": 20018951153,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-3a0cfcda5e26",
+        "attempt_index": 0,
+        "planned_query": "cross repository code discovery",
+        "effective_query": "cross repository code discovery",
+        "started_at": "2026-08-26T21:34:08.505231996Z",
+        "duration": 20018960874,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-3a0cfcda5e26",
+        "attempt_index": 1,
+        "planned_query": "cross repository code discovery",
+        "effective_query": "cross repository",
+        "started_at": "2026-08-26T21:34:28.524196477Z",
+        "duration": 20018951945,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-5548fa0e1700",
+        "attempt_index": 0,
+        "planned_query": "software component composition",
+        "effective_query": "software component composition",
+        "started_at": "2026-08-26T21:34:08.505225283Z",
+        "duration": 20018958871,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-5548fa0e1700",
+        "attempt_index": 1,
+        "planned_query": "software component composition",
+        "effective_query": "software component",
+        "started_at": "2026-08-26T21:34:28.524189163Z",
+        "duration": 20018989425,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-72cf3c4cf7a0",
+        "attempt_index": 0,
+        "planned_query": "dependency adoption decision",
+        "effective_query": "dependency adoption decision",
+        "started_at": "2026-08-26T21:34:48.543184769Z",
+        "duration": 20016989522,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-72cf3c4cf7a0",
+        "attempt_index": 1,
+        "planned_query": "dependency adoption decision",
+        "effective_query": "dependency adoption",
+        "started_at": "2026-08-26T21:35:08.560177276Z",
+        "duration": 20000133767,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-7b25ab48848f",
+        "attempt_index": 0,
+        "planned_query": "open source component evaluation",
+        "effective_query": "open source component evaluation",
+        "started_at": "2026-08-26T21:34:48.543208974Z",
+        "duration": 20016953285,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-7b25ab48848f",
+        "attempt_index": 1,
+        "planned_query": "open source component evaluation",
+        "effective_query": "open source",
+        "started_at": "2026-08-26T21:35:08.560167348Z",
+        "duration": 20000255914,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-8dd6cf471d97",
+        "attempt_index": 0,
+        "planned_query": "internal code reuse search",
+        "effective_query": "internal code reuse search",
+        "started_at": "2026-08-26T21:35:28.560482301Z",
+        "duration": 20001223957,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-8dd6cf471d97",
+        "attempt_index": 1,
+        "planned_query": "internal code reuse search",
+        "effective_query": "internal code",
+        "started_at": "2026-08-26T21:35:48.561711277Z",
+        "duration": 2316831266,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-a0eeabf6d587",
+        "attempt_index": 0,
+        "planned_query": "evidence backed tool evaluation",
+        "effective_query": "evidence backed tool evaluation",
+        "started_at": "2026-08-26T21:35:28.560596543Z",
+        "duration": 20001179715,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-a0eeabf6d587",
+        "attempt_index": 1,
+        "planned_query": "evidence backed tool evaluation",
+        "effective_query": "evidence backed",
+        "started_at": "2026-08-26T21:35:48.561779995Z",
+        "duration": 20017083852,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-e307e3b9e752",
+        "attempt_index": 0,
+        "planned_query": "GitHub repository recommendation",
+        "effective_query": "GitHub repository recommendation",
+        "started_at": "2026-08-26T21:35:50.878577108Z",
+        "duration": 20001830584,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-e307e3b9e752",
+        "attempt_index": 1,
+        "planned_query": "GitHub repository recommendation",
+        "effective_query": "GitHub repository",
+        "started_at": "2026-08-26T21:36:10.880411729Z",
+        "duration": 2329871556,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-f08c4c1ddf61",
+        "attempt_index": 0,
+        "planned_query": "software component selection",
+        "effective_query": "software component selection",
+        "started_at": "2026-08-26T21:36:08.578893552Z",
+        "duration": 19907497174,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-problem-367f9904fcee",
+        "attempt_index": 0,
+        "planned_query": "build versus reuse",
+        "effective_query": "build versus reuse",
+        "started_at": "2026-08-26T21:36:13.210308412Z",
+        "duration": 15276110968,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-problem-c9e3259e04a6",
+        "attempt_index": -1,
+        "planned_query": "software reuse discovery",
+        "effective_query": "",
+        "started_at": "0001-01-01T00:00:00Z",
+        "status": "NOT_STARTED",
+        "result_count": 0
+      }
+    ]
+  }
+}

@@ -9,9 +9,11 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	"bateia/01_core/domain"
 )
@@ -27,6 +29,11 @@ func repositoryKey(candidate domain.RepositoryCandidate) string {
 
 // DiscoverExpansionPlan executa as expansões com concorrência limitada e saída canônica.
 func DiscoverExpansionPlan(ctx context.Context, plan domain.ExpansionPlan, strategy, language string, maxResults, concurrency int, provider domain.ObservableDiscoveryProvider) (domain.DiscoverySnapshot, error) {
+	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", Concurrency: concurrency, MaxAttempts: 3}
+	return DiscoverExpansionPlanWithPolicy(ctx, plan, strategy, language, maxResults, policy, provider, nil)
+}
+
+func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionPlan, strategy, language string, maxResults int, policy domain.DiscoveryExecutionPolicy, provider domain.ObservableDiscoveryProvider, reporter domain.DiscoveryProgressReporter) (domain.DiscoverySnapshot, error) {
 	if provider == nil {
 		return domain.DiscoverySnapshot{}, fmt.Errorf("provedor de descoberta é obrigatório")
 	}
@@ -36,14 +43,26 @@ func DiscoverExpansionPlan(ctx context.Context, plan domain.ExpansionPlan, strat
 	if maxResults < 1 || maxResults > 25 {
 		return domain.DiscoverySnapshot{}, fmt.Errorf("maxResults deve estar entre 1 e 25")
 	}
-	if concurrency < 1 || concurrency > 4 {
+	if policy.SchemaVersion != "1" || policy.Concurrency < 1 || policy.Concurrency > 4 {
 		return domain.DiscoverySnapshot{}, fmt.Errorf("concorrência deve estar entre 1 e 4")
+	}
+	if policy.TotalTimeout < 0 || policy.AttemptTimeout < 0 || (policy.TotalTimeout > 0 && policy.AttemptTimeout > policy.TotalTimeout) {
+		return domain.DiscoverySnapshot{}, fmt.Errorf("timeouts de descoberta inválidos")
+	}
+	if policy.MaxAttempts < 1 || policy.MaxAttempts > 3 {
+		return domain.DiscoverySnapshot{}, fmt.Errorf("maxAttempts deve estar entre 1 e 3")
+	}
+	if policy.TotalTimeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, policy.TotalTimeout)
+		defer cancel()
 	}
 
 	outcomes := make([]discoveryOutcome, len(plan.Expansions))
-	sem := make(chan struct{}, concurrency)
+	sem := make(chan struct{}, policy.Concurrency)
 	var wg sync.WaitGroup
 	started := 0
+	var completed atomic.Int64
 discoveryLoop:
 	for index, expansion := range plan.Expansions {
 		if strings.TrimSpace(expansion.ID) == "" || strings.TrimSpace(expansion.Query) == "" {
@@ -62,11 +81,19 @@ discoveryLoop:
 			go func(index int, expansion domain.SearchExpansion) {
 				defer wg.Done()
 				defer func() { <-sem }()
-				request := domain.DiscoveryRequest{ExpansionID: expansion.ID, Query: expansion.Query, Language: language, MaxResults: maxResults}
+				request := domain.DiscoveryRequest{ExpansionID: expansion.ID, Query: expansion.Query, Discriminators: append([]string(nil), expansion.Discriminators...), RepositoryScope: expansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
 				result, err := provider.Discover(ctx, request)
 				outcomes[index].discovery = domain.ExpansionDiscovery{Expansion: expansion, Provider: result}
 				if err != nil {
 					outcomes[index].failure = &domain.ExecutionFailure{Scope: expansion.ID, Stage: "discovery", Message: err.Error()}
+				}
+				done := int(completed.Add(1))
+				if reporter != nil {
+					status := "SUCCEEDED"
+					if err != nil {
+						status = "FAILED"
+					}
+					reporter.ReportDiscoveryProgress(domain.DiscoveryProgressEvent{ExpansionID: expansion.ID, AttemptIndex: -1, Status: status, Completed: done, Planned: len(plan.Expansions)})
 				}
 			}(index, expansion)
 		}
@@ -94,6 +121,9 @@ discoveryLoop:
 		}
 		for _, candidate := range outcome.discovery.Provider.Candidates {
 			key := repositoryKey(candidate)
+			if scope := strings.ToLower(strings.TrimSpace(outcome.discovery.Expansion.RepositoryScope)); scope != "" && key != scope {
+				continue
+			}
 			if key == "/" {
 				continue
 			}
@@ -111,14 +141,62 @@ discoveryLoop:
 			})
 		}
 	}
+	receipt := buildDiscoveryReceipt(policy, plan, outcomes, started, int(completed.Load()), failures, ctx.Err())
+	snapshot.Receipt = &receipt
+	if ctx.Err() != nil {
+		return snapshot, fmt.Errorf("descoberta %s: %w", receipt.CompletionCause, ctx.Err())
+	}
 	if failures == started {
 		message := "erro não informado"
 		if len(snapshot.Failures) > 0 {
 			message = snapshot.Failures[0].Message
 		}
-		return domain.DiscoverySnapshot{}, fmt.Errorf("todas as %d expansões falharam: %s", failures, message)
+		return snapshot, fmt.Errorf("todas as %d expansões falharam: %s", failures, message)
 	}
 	return snapshot, nil
+}
+
+func buildDiscoveryReceipt(policy domain.DiscoveryExecutionPolicy, plan domain.ExpansionPlan, outcomes []discoveryOutcome, started, completed, expansionFailures int, runErr error) domain.DiscoveryRunReceipt {
+	r := domain.DiscoveryRunReceipt{SchemaVersion: "1", Status: domain.DiscoveryRunComplete, CompletionCause: domain.CompletionFinished, Policy: policy, Planned: len(plan.Expansions), Started: started, Completed: completed, Attempts: []domain.ProviderAttemptReceipt{}}
+	for i, outcome := range outcomes {
+		if i >= started || outcome.discovery.Expansion.ID == "" {
+			r.Attempts = append(r.Attempts, domain.ProviderAttemptReceipt{ExpansionID: plan.Expansions[i].ID, AttemptIndex: -1, PlannedQuery: plan.Expansions[i].Query, Status: "NOT_STARTED"})
+			continue
+		}
+		for index, attempt := range outcome.discovery.Provider.Attempts {
+			status := attempt.Status
+			if status == "" {
+				if attempt.Error != "" {
+					status = "FAILED"
+				} else if attempt.ResultCount == 0 {
+					status = "EMPTY"
+				} else {
+					status = "SUCCEEDED"
+				}
+			}
+			receipt := domain.ProviderAttemptReceipt{ExpansionID: outcome.discovery.Expansion.ID, AttemptIndex: index, PlannedQuery: outcome.discovery.Expansion.Query, EffectiveQuery: attempt.Query, StartedAt: attempt.StartedAt, Duration: attempt.Duration, Status: status, ResultCount: attempt.ResultCount, ErrorClass: attempt.ErrorClass, SafeMessage: attempt.Error}
+			r.Attempts = append(r.Attempts, receipt)
+			switch status {
+			case "TIMED_OUT":
+				r.TimedOut++
+			case "CANCELLED":
+				r.Cancelled++
+			case "FAILED":
+				r.Failed++
+			}
+		}
+	}
+	if runErr != nil {
+		r.Status = domain.DiscoveryRunPartial
+		if errors.Is(runErr, context.DeadlineExceeded) {
+			r.CompletionCause = domain.CompletionTotalTimeout
+		} else {
+			r.CompletionCause = domain.CompletionCancelled
+		}
+	} else if started > 0 && expansionFailures == started {
+		r.Status, r.CompletionCause = domain.DiscoveryRunFailed, domain.CompletionProviderFailed
+	}
+	return r
 }
 
 func candidateOrigin(discovery domain.ExpansionDiscovery, candidate domain.RepositoryCandidate) domain.CandidateOrigin {

@@ -30,6 +30,10 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 		return runIdeaExpand(args[1:], stdout, firstSemanticExpander(semantic))
 	case "evaluate":
 		return runIdeaEvaluate(args[1:], stdout, firstSemanticExpander(semantic))
+	case "ontology":
+		return runIdeaOntology(args[1:], stdout)
+	case "functional":
+		return runIdeaFunctional(args[1:], stdout)
 	case "discovery":
 		return runIdeaDiscoveryEvaluate(args[1:], stdout)
 	case "screen":
@@ -38,8 +42,18 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 		return runIdeaScreening(args[1:], stdout)
 	case "evidence":
 		return runIdeaEvidence(args[1:], stdout)
+	case "decide":
+		return runIdeaDecide(args[1:], stdout)
+	case "recommend":
+		return RunIdeaRecommendCommand(args[1:], stdout, firstSemanticExpander(semantic), nil, nil)
+	case "recover":
+		return RunIdeaRecoverCommand(args[1:], stdout, nil)
+	case "autofagia":
+		return runIdeaAutophagy(args[1:], stdout)
+	case "katamari":
+		return runIdeaKatamari(args[1:], stdout)
 	default:
-		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, discovery, screen, screening ou evidence", args[0])
+		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia ou katamari", args[0])
 	}
 }
 

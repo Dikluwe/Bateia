@@ -1,0 +1,33 @@
+{
+  "schema_version": "1",
+  "verdict": "INCONCLUSIVE",
+  "functional": {
+    "queries_completed": 12,
+    "query_completion_rate": 1.0,
+    "observed_relevant_product_yield": 4,
+    "observed_expected_product_hits": ["GitMVP"],
+    "observed_product_competitive_recall": 0.25,
+    "repo_backed_competitive_recall": 0.0
+  },
+  "nominal": {
+    "queries_completed": 12,
+    "query_completion_rate": 1.0,
+    "observed_relevant_product_yield": 3,
+    "observed_expected_product_hits": [],
+    "observed_product_competitive_recall": 0.0,
+    "repo_backed_competitive_recall": 0.0
+  },
+  "comparison": {
+    "observed_product_recall_gain_points": 25,
+    "repo_backed_recall_gain_points": 0,
+    "judged_precision_at_10": null,
+    "proof_conversion_rate": null
+  },
+  "gate_failures": [
+    "functional arm found fewer than three of four repo-backed seeds",
+    "functional repo-backed recall is below 70 percent",
+    "functional recall gain is below 30 percentage points",
+    "provider output cannot reproduce per-query ranks and snippets offline"
+  ],
+  "interpretation": "Functional phrasing produced a small directional gain and found GitMVP, but the frozen templates were too literal and the provider snapshot was not sufficiently observable for a causal product claim. The result does not authorize adapting queries to expected outcomes."
+}

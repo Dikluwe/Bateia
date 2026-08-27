@@ -12,6 +12,7 @@ import (
 	"errors"
 	"sync"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 )
@@ -21,6 +22,16 @@ type fakeObservableProvider struct {
 	active, peak, calls int
 	results             map[string][]domain.RepositoryCandidate
 	failures            map[string]bool
+}
+
+type deadlineProvider struct{}
+
+func (deadlineProvider) Discover(ctx context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
+	if request.ExpansionID == "exp-a" {
+		return domain.ProviderDiscovery{Provider: "deadline", Attempts: []domain.ProviderAttempt{{Query: request.Query, Status: "SUCCEEDED", ResultCount: 1}}, Candidates: []domain.RepositoryCandidate{candidate("org", "kept")}}, nil
+	}
+	<-ctx.Done()
+	return domain.ProviderDiscovery{Provider: "deadline", Attempts: []domain.ProviderAttempt{{Query: request.Query, Status: "TIMED_OUT", ErrorClass: "TIMEOUT", Error: ctx.Err().Error()}}}, ctx.Err()
 }
 
 func (provider *fakeObservableProvider) Discover(_ context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
@@ -92,5 +103,39 @@ func TestDiscoverExpansionPlanDoesNotMutateInput(t *testing.T) {
 	}
 	if plan.Expansions[0].Query != original.Expansions[0].Query || plan.Idea.Problem != original.Idea.Problem {
 		t.Fatal("plano foi modificado")
+	}
+}
+
+func TestBoundedDiscoveryPreservesCandidateAndMarksNotStarted(t *testing.T) {
+	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: 40 * time.Millisecond, AttemptTimeout: 20 * time.Millisecond, Concurrency: 1, MaxAttempts: 3}
+	snapshot, err := DiscoverExpansionPlanWithPolicy(context.Background(), discoveryPlan(), "literal", "", 3, policy, deadlineProvider{}, nil)
+	if err == nil {
+		t.Fatal("deadline must be observable")
+	}
+	if len(snapshot.Candidates) != 1 || snapshot.Candidates[0].Repository.Repo != "kept" {
+		t.Fatalf("completed candidate was lost: %#v", snapshot.Candidates)
+	}
+	if snapshot.Receipt == nil || snapshot.Receipt.Status != domain.DiscoveryRunPartial || snapshot.Receipt.CompletionCause != domain.CompletionTotalTimeout {
+		t.Fatalf("unexpected receipt: %#v", snapshot.Receipt)
+	}
+	notStarted := 0
+	for _, a := range snapshot.Receipt.Attempts {
+		if a.Status == "NOT_STARTED" {
+			notStarted++
+		}
+	}
+	if notStarted != 1 || snapshot.Receipt.TimedOut != 1 {
+		t.Fatalf("timeout/not-started misclassified: %#v", snapshot.Receipt)
+	}
+}
+
+func TestDiscoveryPolicyRejectsInvalidTimeoutsBeforeProvider(t *testing.T) {
+	provider := &fakeObservableProvider{}
+	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: time.Second, AttemptTimeout: 2 * time.Second, Concurrency: 1, MaxAttempts: 3}
+	if _, err := DiscoverExpansionPlanWithPolicy(context.Background(), discoveryPlan(), "literal", "", 3, policy, provider, nil); err == nil {
+		t.Fatal("attempt timeout greater than total survived")
+	}
+	if provider.calls != 0 {
+		t.Fatal("provider was touched before policy validation")
 	}
 }

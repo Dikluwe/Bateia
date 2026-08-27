@@ -1,0 +1,79 @@
+{
+  "schema_version": "1",
+  "version": "2026-08-26.1",
+  "concepts": [
+    {
+      "id": "software-reuse-discovery",
+      "triggers": ["iniciar software do zero", "não começar do zero", "software existente", "reutilização de software"],
+      "queries": [
+        {"text": "software reuse discovery", "discriminators": ["software reuse"]},
+        {"text": "build versus reuse", "discriminators": ["build", "reuse"]}
+      ],
+      "related": ["repository-recommendation"],
+      "forbidden": ["katamari", "biological autophagy"],
+      "rationale": "descobrir software existente antes de construir"
+    },
+    {
+      "id": "repository-recommendation",
+      "triggers": ["descobrir projetos", "buscar repositórios", "projetos por intenção", "recomendar repositórios"],
+      "queries": [
+        {"text": "GitHub repository recommendation", "discriminators": ["repository recommendation"]},
+        {"text": "open source project discovery", "discriminators": ["project discovery"]}
+      ],
+      "related": ["software-reuse-discovery"],
+      "forbidden": ["katamari game"],
+      "rationale": "converter necessidade funcional em projetos candidatos"
+    },
+    {
+      "id": "component-selection",
+      "triggers": ["comparar cobertura funcional", "selecionar componente", "escolher biblioteca", "avaliar componentes"],
+      "queries": [
+        {"text": "software component selection", "discriminators": ["component selection"]},
+        {"text": "open source component evaluation", "discriminators": ["component evaluation"]}
+      ],
+      "related": ["adoption-decision"],
+      "rationale": "comparar componentes para adoção"
+    },
+    {
+      "id": "adoption-decision",
+      "triggers": ["decidir entre fork", "decisão de adoção", "adotar dependência", "decidir um ponto de partida"],
+      "queries": [
+        {"text": "dependency adoption decision", "discriminators": ["adoption decision"]},
+        {"text": "evidence backed tool evaluation", "discriminators": ["tool evaluation"]}
+      ],
+      "related": ["component-selection"],
+      "rationale": "decidir se e como adotar uma ferramenta"
+    },
+    {
+      "id": "software-composition",
+      "triggers": ["compor capacidades", "composição de projetos", "menor composição de projetos", "partes de vários projetos"],
+      "queries": [
+        {"text": "software component composition", "discriminators": ["component composition"]},
+        {"text": "open source integration planning", "discriminators": ["integration planning"]}
+      ],
+      "related": ["component-selection"],
+      "forbidden": ["katamari"],
+      "rationale": "cobrir uma necessidade com partes complementares"
+    },
+    {
+      "id": "internal-reuse",
+      "triggers": ["próprio projeto", "portfólio local", "implementação anterior", "reúso interno"],
+      "queries": [
+        {"text": "internal code reuse search", "discriminators": ["code reuse"]},
+        {"text": "cross repository code discovery", "discriminators": ["repository code discovery"]}
+      ],
+      "forbidden": ["biological autophagy"],
+      "rationale": "descobrir capacidades existentes internamente"
+    },
+    {
+      "id": "technology-scouting",
+      "triggers": ["acompanhar alternativas", "tecnologias emergentes", "mapear ferramentas", "panorama de software"],
+      "queries": [
+        {"text": "open source technology scouting", "discriminators": ["technology scouting"]},
+        {"text": "software landscape analysis", "discriminators": ["landscape analysis"]}
+      ],
+      "rationale": "acompanhar alternativas externas relevantes"
+    }
+  ],
+  "hash": "2ce75ee5d09d117c383d7e022dd98c16556e95fe15021e97698838aa05211140"
+}

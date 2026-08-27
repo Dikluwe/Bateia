@@ -14,12 +14,13 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 )
 
 func TestObservableQueriesPreserveFallbackOrder(t *testing.T) {
-	queries := observableQueries("code impact analysis", "go")
+	queries := observableQueries("code impact analysis", "go", nil, "")
 	want := []string{"lang:Go code impact analysis", "lang:Go code impact", "code impact"}
 	if len(queries) != len(want) {
 		t.Fatalf("tentativas incorretas: %+v", queries)
@@ -28,6 +29,39 @@ func TestObservableQueriesPreserveFallbackOrder(t *testing.T) {
 		if queries[index] != want[index] {
 			t.Fatalf("ordem incorreta: %+v", queries)
 		}
+	}
+}
+
+func TestObservableQueriesPreserveDeclaredDiscriminator(t *testing.T) {
+	queries := observableQueries("GitHub repository recommendation", "", []string{"repository recommendation"}, "")
+	want := []string{"GitHub repository recommendation", "repository recommendation"}
+	if len(queries) != len(want) || queries[1] != want[1] {
+		t.Fatalf("discriminator perdido no fallback: %+v", queries)
+	}
+}
+
+func TestObservableQueriesKeepRepositoryScopeInEveryFallback(t *testing.T) {
+	queries := observableQueries("software reuse discovery", "", []string{"software reuse"}, "org/repo")
+	for _, query := range queries {
+		if !strings.HasPrefix(query, "repo:^org/repo$ ") {
+			t.Fatalf("scope escaped: %q", query)
+		}
+	}
+}
+
+func TestDiscoverClassifiesAttemptTimeout(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
+		time.Sleep(100 * time.Millisecond)
+		_, _ = writer.Write([]byte(`{"data":{"search":{"results":{"matchCount":0,"results":[]}}}}`))
+	}))
+	defer server.Close()
+	client := NewClientWithEndpoint("", server.URL)
+	result, err := client.Discover(t.Context(), domain.DiscoveryRequest{Query: "slow", MaxResults: 1, AttemptTimeout: 20 * time.Millisecond})
+	if err == nil {
+		t.Fatal("timeout must fail the provider expansion")
+	}
+	if len(result.Attempts) != 2 || result.Attempts[0].Status != "TIMED_OUT" || result.Attempts[1].Status != "TIMED_OUT" || result.Attempts[0].ErrorClass != "TIMEOUT" {
+		t.Fatalf("timeout misclassified: %#v", result.Attempts)
 	}
 }
 

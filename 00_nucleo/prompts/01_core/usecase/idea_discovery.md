@@ -18,3 +18,9 @@ deduplicar candidatos sem perder suas origens.
 - Uma chamada por expansão.
 - Origens mescladas na deduplicação.
 - JSON idêntico para diferentes ordens de conclusão.
+## Extensão operacional do Passo 0013
+
+Execute expansões sob uma política limitada, propague attempt timeout ao provedor
+e devolva snapshot parcial junto com erro de deadline/cancelamento. Preserve
+candidatos e attempts concluídos, marque expansões não iniciadas, ordene a saída
+pela ordem do plano e não deixe workers ativos após o retorno.

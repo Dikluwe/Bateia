@@ -26,12 +26,14 @@ const (
 )
 
 type SearchExpansion struct {
-	ID         string               `json:"id"`
-	Facet      ExpansionFacet       `json:"facet"`
-	Query      string               `json:"query"`
-	Rationale  string               `json:"rationale"`
-	Covers     []string             `json:"covers"`
-	Derivation *ExpansionDerivation `json:"derivation,omitempty"`
+	ID              string               `json:"id"`
+	Facet           ExpansionFacet       `json:"facet"`
+	Query           string               `json:"query"`
+	Discriminators  []string             `json:"discriminators,omitempty"`
+	RepositoryScope string               `json:"repository_scope,omitempty"`
+	Rationale       string               `json:"rationale"`
+	Covers          []string             `json:"covers"`
+	Derivation      *ExpansionDerivation `json:"derivation,omitempty"`
 }
 
 type ExpansionDerivation struct {

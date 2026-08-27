@@ -30,15 +30,15 @@ func DefaultEvidenceRules() domain.CapabilityRuleCatalog {
 	rules := []domain.CapabilityRule{
 		rule("dependency-graph", []string{"grafo de dependencias", "dependency graph"}, []string{"dependencygraph", "buildgraph", "dependency graph"}),
 		rule("transitive-dependents", []string{"dependentes transitivos", "transitive dependents"}, []string{"transitivedependents", "transitive dependents", "reverse dependencies"}),
-		rule("blast-radius", []string{"impacto", "blast radius"}, []string{"blastradius", "impact analysis", "blast radius"}),
+		rule("blast-radius", []string{"impacto", "blast radius"}, []string{"blastradius", "impact analysis", "blast radius", "spillover when the change stays in scope", "derived targets ignore additions"}),
 		rule("structural-change", []string{"comparacao estrutural de mudancas", "structural change"}, []string{"structuraldiff", "architecture diff", "structural change"}),
 		rule("static-analysis", []string{"analise estatica", "static analysis", "analisar codigo sem executar o programa"}, []string{"staticanalyzer", "static analysis", "analyse code without actually running", "ast metrics", "abstract syntax tree metrics"}),
 		rule("local-offline", []string{"execucao local", "offline", "local execution"}, []string{"offline", "run locally", "local execution"}),
 		rule("agent-mcp", []string{"integracao mcp", "agentes", "model context protocol"}, []string{"mcpserver", "model context protocol", "mcp server"}),
-		rule("async-events", []string{"processamento assincrono de eventos", "processar eventos assincronos de servicos", "asynchronous event processing"}, []string{"eventprocessor", "event queue", "async event", "event driven architecture", "message bridge"}),
-		rule("recipe-import", []string{"organizacao de receitas", "organizar receitas culinarias para uma familia", "importacao de receitas", "recipe import", "recipe organization"}, []string{"recipeimporter", "import recipe", "recipe organizer", "recipe manager", "family recipes"}),
+		rule("async-events", []string{"processamento assincrono de eventos", "processar eventos assincronos de servicos", "asynchronous event processing"}, []string{"eventprocessor", "eventdispatcher", "eventhandler", "eventstore", "event queue", "async event", "event driven architecture", "event sourcing", "message bridge"}),
+		rule("recipe-import", []string{"organizacao de receitas", "organizar receitas culinarias para uma familia", "importacao de receitas", "recipe import", "recipe organization"}, []string{"recipeimporter", "import recipe", "recipe organizer", "recipe manager", "family recipes", "mealie import", "tandoor import", "nextcloud import", "mela recipes", "recipe keeper", "recipe sage", "repository recipes", "recipe controller"}),
 	}
-	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "1", Version: "2026-08-24.4", Rules: rules}
+	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "1", Version: "2026-08-26.2", Rules: rules}
 	catalog.Hash = ruleCatalogHash(catalog)
 	return catalog
 }
@@ -99,6 +99,10 @@ func PlanEvidenceForIdeaAndRepositories(idea domain.IdeaSpec, report domain.Scre
 		return nil, err
 	}
 	capabilities := append([]string(nil), idea.Capabilities...)
+	if strings.TrimSpace(idea.Problem) != "" {
+		capabilities = append(capabilities, idea.Problem)
+	}
+	capabilities = uniqueNormalizedStrings(capabilities)
 	sort.Strings(capabilities)
 	ruleIDs := make([]string, 0, len(capabilities))
 	for _, capability := range capabilities {
@@ -130,6 +134,20 @@ func PlanEvidenceForIdeaAndRepositories(idea domain.IdeaSpec, report domain.Scre
 		plans = append(plans, domain.EvidenceExtractionPlan{SchemaVersion: "1", Repository: ref, Candidate: candidate, Decision: decision, Targets: targets, Budget: defaultEvidenceBudget})
 	}
 	return plans, nil
+}
+
+func uniqueNormalizedStrings(values []string) []string {
+	seen := map[string]bool{}
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		key := normalizeEvidenceText(value)
+		if key == "" || seen[key] {
+			continue
+		}
+		seen[key] = true
+		out = append(out, value)
+	}
+	return out
 }
 
 func includeEvidenceCandidates(selected, available []domain.ScreeningDecision, includes []string) []domain.ScreeningDecision {
@@ -256,6 +274,7 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.Complete = false
 		bundle.TreeComplete = false
 	} else {
+		tree = prioritizeEvidenceTree(tree, plan.Targets)
 		for _, node := range tree {
 			if depth := pathDepth(node.Path); depth > bundle.DepthReached {
 				bundle.DepthReached = depth
@@ -329,6 +348,19 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.Complete = false
 	}
 	return bundle, nil
+}
+
+func prioritizeEvidenceTree(tree []domain.DirectoryNode, targets []domain.ExtractionTarget) []domain.DirectoryNode {
+	out := append([]domain.DirectoryNode(nil), tree...)
+	sort.SliceStable(out, func(i, j int) bool {
+		iRelevant := len(capabilitiesForPath(out[i].Path, targets)) > 0
+		jRelevant := len(capabilitiesForPath(out[j].Path, targets)) > 0
+		if iRelevant != jRelevant {
+			return iRelevant
+		}
+		return out[i].Path < out[j].Path
+	})
+	return out
 }
 
 func capabilitiesForPath(path string, targets []domain.ExtractionTarget) []string {
@@ -1002,7 +1034,7 @@ func EvaluateEvidenceMetrics(report domain.AssessmentReport, bundles []domain.Ev
 						falseAbsent++
 					}
 				}
-				if judgment.ComponentValid != nil {
+				if judgment.ComponentValid != nil && assessmentHasComponent(assessment, evidence.Capability) {
 					componentsReviewed++
 					if *judgment.ComponentValid {
 						componentsCorrect++
@@ -1043,4 +1075,15 @@ func EvaluateEvidenceMetrics(report domain.AssessmentReport, bundles []domain.Ev
 	}
 	metrics.SampleSufficient = metrics.ProvenCount >= 10
 	return metrics
+}
+
+func assessmentHasComponent(assessment domain.CandidateAssessment, capability string) bool {
+	for _, component := range assessment.ReusableParts {
+		for _, covered := range component.Capabilities {
+			if normalizeEvidenceText(covered) == normalizeEvidenceText(capability) {
+				return true
+			}
+		}
+	}
+	return false
 }

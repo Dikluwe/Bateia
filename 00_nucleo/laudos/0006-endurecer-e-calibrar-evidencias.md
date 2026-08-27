@@ -1,7 +1,7 @@
 # Laudo 0006 — Endurecimento e primeira calibração real
 
 **Data:** 2026-08-24
-**Estado:** implementação concluída; gate estatístico ainda não atingido
+**Estado:** implementação e gate concluídos pelo replay do Passo 0007
 
 ## Correções executadas
 
@@ -96,6 +96,21 @@ Portanto:
 - o corpus e a boca de métricas estão prontos;
 - o Passo 0006 permanece `EM CALIBRAÇÃO`;
 - o Passo 0007 pode ser especificado, mas não implementado antes do gate.
+
+## Encerramento posterior pelo Passo 0007
+
+O diagnóstico de cobertura de 2026-08-26 substituiu a conclusão estatística
+provisória acima. Depois de deduplicar aliases por par repositório–regra, corrigir
+o planejamento do problema, priorizar paths relacionados e ampliar o corpus com
+controles positivos e negativos, o replay atingiu onze unidades independentes
+`PROVEN` revisadas.
+
+As métricas finais observadas foram: precisão 100%, recall 100%, falsa ausência
+0%, rastreabilidade 100%, conclusão de orçamento 100% e precisão de componentes
+100% na primeira amostra emitida. O manifesto e os hashes reproduzíveis estão em
+`02_shell/cli/testdata/evidence_calibration/calibration-run-2026-08-26.manifest.json`.
+
+Com isso, o Passo 0006 passa a `IMPLEMENTADO` e libera o Passo 0008.
 
 ## Verificação automática
 

@@ -12,3 +12,8 @@ vazar credenciais e preservando o contrato de busca existente.
 - Distinguir resposta vazia de erro.
 - Parar no primeiro resultado não vazio.
 - Nunca serializar token, cabeçalhos ou corpo sensível.
+## Extensão operacional do Passo 0013
+
+Cada fallback deve respeitar o timeout recebido, registrar início, duração,
+status e classe segura de erro, limitar tentativas e parar ao cancelar o contexto.
+Nunca serialize token e não converta timeout em tentativa vazia.

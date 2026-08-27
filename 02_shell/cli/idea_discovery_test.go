@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 )
@@ -23,6 +24,17 @@ type cliDiscoveryProvider struct{ calls int }
 func (provider *cliDiscoveryProvider) Discover(_ context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
 	provider.calls++
 	return domain.ProviderDiscovery{Provider: "fake", Attempts: []domain.ProviderAttempt{{Query: request.Query, ResultCount: 1}}, Candidates: []domain.RepositoryCandidate{{Owner: "org", Repo: request.ExpansionID}}}, nil
+}
+
+type partialCLIProvider struct{ calls int }
+
+func (p *partialCLIProvider) Discover(ctx context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
+	p.calls++
+	if p.calls == 1 {
+		return domain.ProviderDiscovery{Provider: "fake", Attempts: []domain.ProviderAttempt{{Query: request.Query, Status: "SUCCEEDED", ResultCount: 1}}, Candidates: []domain.RepositoryCandidate{{Owner: "org", Repo: "kept"}}}, nil
+	}
+	<-ctx.Done()
+	return domain.ProviderDiscovery{Provider: "fake", Attempts: []domain.ProviderAttempt{{Query: request.Query, Status: "TIMED_OUT", Error: ctx.Err().Error()}}}, ctx.Err()
 }
 
 func TestRunIdeaDiscoverRequiresOutputBeforeProviderCall(t *testing.T) {
@@ -57,6 +69,38 @@ func TestRunIdeaDiscoverWritesVersionedSnapshot(t *testing.T) {
 	}
 	if snapshot.SchemaVersion != "2" || provider.calls != len(snapshot.PerExpansion) {
 		t.Fatalf("snapshot inválido: %+v calls=%d", snapshot, provider.calls)
+	}
+}
+
+func TestRunIdeaDiscoverWritesPartialSnapshotBeforeReturningTimeout(t *testing.T) {
+	provider := &partialCLIProvider{}
+	output := filepath.Join(t.TempDir(), "partial.json")
+	err := RunIdeaDiscoverCommand([]string{
+		"--input", filepath.Join("testdata", "idea_spec.json"), "--strategy", "literal",
+		"--provider", "sourcegraph", "--max-per-query", "1", "--concurrency", "1",
+		"--timeout", "40ms", "--attempt-timeout", "20ms", "--output", output,
+	}, &bytes.Buffer{}, &bytes.Buffer{}, nil, provider)
+	if err == nil {
+		t.Fatal("timeout must remain observable")
+	}
+	data, readErr := os.ReadFile(output)
+	if readErr != nil {
+		t.Fatalf("partial snapshot missing: %v", readErr)
+	}
+	var snapshot domain.DiscoverySnapshot
+	if json.Unmarshal(data, &snapshot) != nil || snapshot.Receipt == nil || snapshot.Receipt.Status != domain.DiscoveryRunPartial {
+		t.Fatalf("invalid partial snapshot: %s", data)
+	}
+	if len(snapshot.Candidates) != 1 || snapshot.Candidates[0].Repository.Repo != "kept" {
+		t.Fatal("candidate completed before timeout was lost")
+	}
+}
+
+func TestRunIdeaDiscoverRejectsInvalidTimeoutBeforeProvider(t *testing.T) {
+	provider := &cliDiscoveryProvider{}
+	err := RunIdeaDiscoverCommand([]string{"--input", filepath.Join("testdata", "idea_spec.json"), "--output", filepath.Join(t.TempDir(), "x.json"), "--timeout", time.Second.String(), "--attempt-timeout", (2 * time.Second).String()}, &bytes.Buffer{}, &bytes.Buffer{}, nil, provider)
+	if err == nil || provider.calls != 0 {
+		t.Fatalf("invalid timeout touched provider: %v calls=%d", err, provider.calls)
 	}
 }
 

@@ -7,17 +7,28 @@
 
 package domain
 
+import "time"
+
 type DiscoveryRequest struct {
-	ExpansionID string `json:"expansion_id"`
-	Query       string `json:"query"`
-	Language    string `json:"language,omitempty"`
-	MaxResults  int    `json:"max_results"`
+	ExpansionID     string        `json:"expansion_id"`
+	Query           string        `json:"query"`
+	Discriminators  []string      `json:"discriminators,omitempty"`
+	RepositoryScope string        `json:"repository_scope,omitempty"`
+	Language        string        `json:"language,omitempty"`
+	MaxResults      int           `json:"max_results"`
+	AttemptTimeout  time.Duration `json:"attempt_timeout,omitempty"`
+	MaxAttempts     int           `json:"max_attempts,omitempty"`
 }
 
 type ProviderAttempt struct {
-	Query       string `json:"query"`
-	ResultCount int    `json:"result_count"`
-	Error       string `json:"error,omitempty"`
+	Query        string        `json:"query"`
+	AttemptIndex int           `json:"attempt_index,omitempty"`
+	StartedAt    time.Time     `json:"started_at,omitempty"`
+	Duration     time.Duration `json:"duration,omitempty"`
+	Status       string        `json:"status,omitempty"`
+	ResultCount  int           `json:"result_count"`
+	ErrorClass   string        `json:"error_class,omitempty"`
+	Error        string        `json:"error,omitempty"`
 }
 
 type ProviderDiscovery struct {
@@ -47,7 +58,68 @@ type DiscoverySnapshot struct {
 	PerExpansion  []ExpansionDiscovery  `json:"per_expansion"`
 	Candidates    []DiscoveredCandidate `json:"candidates"`
 	Failures      []ExecutionFailure    `json:"failures,omitempty"`
+	Receipt       *DiscoveryRunReceipt  `json:"receipt,omitempty"`
 }
+
+type DiscoveryRunStatus string
+
+const (
+	DiscoveryRunComplete DiscoveryRunStatus = "COMPLETE"
+	DiscoveryRunPartial  DiscoveryRunStatus = "PARTIAL"
+	DiscoveryRunFailed   DiscoveryRunStatus = "FAILED"
+)
+
+type DiscoveryCompletionCause string
+
+const (
+	CompletionFinished       DiscoveryCompletionCause = "FINISHED"
+	CompletionTotalTimeout   DiscoveryCompletionCause = "TOTAL_TIMEOUT"
+	CompletionCancelled      DiscoveryCompletionCause = "CANCELLED"
+	CompletionProviderFailed DiscoveryCompletionCause = "PROVIDER_FAILED"
+	CompletionInvalidInput   DiscoveryCompletionCause = "INVALID_INPUT"
+)
+
+type DiscoveryExecutionPolicy struct {
+	SchemaVersion  string        `json:"schema_version"`
+	TotalTimeout   time.Duration `json:"total_timeout"`
+	AttemptTimeout time.Duration `json:"attempt_timeout"`
+	Concurrency    int           `json:"concurrency"`
+	MaxAttempts    int           `json:"max_attempts"`
+}
+type ProviderAttemptReceipt struct {
+	ExpansionID    string        `json:"expansion_id"`
+	AttemptIndex   int           `json:"attempt_index"`
+	PlannedQuery   string        `json:"planned_query"`
+	EffectiveQuery string        `json:"effective_query"`
+	StartedAt      time.Time     `json:"started_at,omitempty"`
+	Duration       time.Duration `json:"duration,omitempty"`
+	Status         string        `json:"status"`
+	ResultCount    int           `json:"result_count"`
+	ErrorClass     string        `json:"error_class,omitempty"`
+	SafeMessage    string        `json:"safe_message,omitempty"`
+}
+type DiscoveryRunReceipt struct {
+	SchemaVersion   string                   `json:"schema_version"`
+	Status          DiscoveryRunStatus       `json:"status"`
+	CompletionCause DiscoveryCompletionCause `json:"completion_cause"`
+	Policy          DiscoveryExecutionPolicy `json:"policy"`
+	Planned         int                      `json:"planned"`
+	Started         int                      `json:"started"`
+	Completed       int                      `json:"completed"`
+	TimedOut        int                      `json:"timed_out"`
+	Cancelled       int                      `json:"cancelled"`
+	Failed          int                      `json:"failed"`
+	Attempts        []ProviderAttemptReceipt `json:"attempts"`
+	Warnings        []string                 `json:"warnings,omitempty"`
+}
+type DiscoveryProgressEvent struct {
+	ExpansionID  string `json:"expansion_id"`
+	AttemptIndex int    `json:"attempt_index"`
+	Status       string `json:"status"`
+	Completed    int    `json:"completed"`
+	Planned      int    `json:"planned"`
+}
+type DiscoveryProgressReporter interface{ ReportDiscoveryProgress(DiscoveryProgressEvent) }
 
 type RelevanceLabel string
 

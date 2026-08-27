@@ -48,6 +48,12 @@ func loadEnvFile(filepath string) {
 
 func main() {
 	// Comandos offline são despachados antes de .env, cache e clientes remotos.
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "benchmark") {
+		if err := cli.RunBenchmarkCommand(os.Args[2:], os.Stdout); err != nil {
+			log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
 		lexicalExpander, err := lexical.NewDefault(2)
 		if err != nil {
@@ -60,10 +66,35 @@ func main() {
 			}
 			return
 		}
+		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "catalog") {
+			loadEnvFile(".env")
+			ghClient := github.NewClient(os.Getenv("GITHUB_TOKEN"))
+			if err := cli.RunIdeaCatalogCommand(os.Args[3:], os.Stdout, ghClient, github.NewReadmeSurface(ghClient), github.NewTopicsSurface(ghClient)); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
 		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "evidence") && strings.EqualFold(os.Args[3], "collect") {
 			loadEnvFile(".env")
 			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
 			if err := cli.RunIdeaEvidenceCollectCommand(os.Args[4:], os.Stdout, provider); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
+		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "recommend") {
+			loadEnvFile(".env")
+			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
+			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
+			if err := cli.RunIdeaRecommendCommand(os.Args[3:], os.Stdout, lexicalExpander, sgClient, provider); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
+		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "recover") && strings.EqualFold(os.Args[3], "execute") {
+			loadEnvFile(".env")
+			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
+			if err := cli.RunIdeaRecoverCommand(os.Args[3:], os.Stdout, provider); err != nil {
 				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 			}
 			return

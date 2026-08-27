@@ -44,6 +44,8 @@ func (a *CLIApp) Run(args []string) error {
 			return a.runSearchFlags(append([]string{"-path", "."}, args[1:]...))
 		case "idea":
 			return RunIdeaCommand(args[1:], os.Stdout)
+		case "benchmark":
+			return RunBenchmarkCommand(args[1:], os.Stdout)
 		case "mcp":
 			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
 			return mcpServer.Serve(context.Background())
@@ -67,10 +69,17 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea expand   Enriquece offline o plano com vocabulário alternativo")
 	fmt.Println("  idea evaluate Compara estratégias de expansão num corpus versionado")
 	fmt.Println("  idea discover Executa expansões num provedor e grava snapshot rastreável")
+	fmt.Println("  idea ontology Expande, avalia e audita a ontologia lexical offline")
+	fmt.Println("  idea catalog Descobre projetos no GitHub e executa a peneira offline")
 	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
 	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
-	fmt.Println("  idea evidence plan|collect|assess|evaluate Comprova e calibra evidências, sem LLM")
+	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose Comprova e diagnostica evidências, sem LLM")
+	fmt.Println("  idea decide   Decide offline entre reusar, compor, referenciar ou construir")
+	fmt.Println("  idea recommend Orquestra o funil e entrega um dossiê reproduzível")
+	fmt.Println("  idea recover diagnose|plan|execute Recupera evidências de decisões inconclusivas")
+	fmt.Println("  idea autofagia|katamari Audita capacidades internas e compõe somente lacunas comprovadas")
+	fmt.Println("  benchmark validate|mutate|run Audita offline o benchmark ponta a ponta")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
 	fmt.Println("\nExemplo de Uso:")
@@ -81,6 +90,9 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea expand --input ideia.json --strategy lexical")
 	fmt.Println("  bateia idea evaluate --corpus corpus.json --strategy lexical")
 	fmt.Println("  bateia idea discover --input ideia.json --strategy lexical --output snapshot.json")
+	fmt.Println("  bateia idea ontology expand --input ideia.json --ontology discovery-ontology.json --plan-output plano.json")
+	fmt.Println("  bateia idea catalog discover --plan plano.json --provider github --output catalogo.json")
+	fmt.Println("  bateia idea decide --idea ideia.json --assessment assessment.json --policy reuse-policy.json")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {

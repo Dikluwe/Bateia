@@ -128,6 +128,19 @@ func TestPlanIncludesExplicitCalibrationControls(t *testing.T) {
 	}
 }
 
+func TestPlanDeclaresProblemAsEvidenceTarget(t *testing.T) {
+	report := domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: "org/repo", Decision: "ADVANCE"}}}
+	idea := domain.IdeaSpec{Problem: "analisar código sem executar o programa", Capabilities: []string{"static analysis"}}
+	plans, err := PlanEvidenceForIdea(idea, report, DefaultEvidenceRules())
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := plans[0].Targets[0].Capabilities
+	if !containsNormalized(got, idea.Problem) || !containsNormalized(got, idea.Capabilities[0]) {
+		t.Fatalf("problema e capacidade não declarados no alvo: %v", got)
+	}
+}
+
 type evidenceProvider struct {
 	files   []domain.ExtractedFile
 	treeErr error
@@ -270,6 +283,69 @@ func TestStaticAnalysisRuleCoversBenchmarkProblemWording(t *testing.T) {
 	}
 }
 
+func TestCalibratedStructuralPatternsRequireRelatedDeclaration(t *testing.T) {
+	rule := findRule("blast radius", DefaultEvidenceRules())
+	positive := testBundle(true,
+		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Reports blast radius for a code change."},
+		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "conformance_test.go", Content: "func TestNoSpilloverWhenTheChangeStaysInScope(t *testing.T) {}"},
+	)
+	if got := assessCapability("blast radius", positive, rule); got.Status != domain.EvidenceProven {
+		t.Fatalf("positivo = %s", got.Status)
+	}
+	negative := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "network_test.go", Content: "func TestNetworkSpilloverBucket(t *testing.T) {}"})
+	if got := assessCapability("blast radius", negative, rule); got.Status == domain.EvidenceProven {
+		t.Fatalf("spillover não estrutural produziu PROVEN: %+v", got)
+	}
+}
+
+func TestCalibratedRecipeAndEventPatternsRejectMentions(t *testing.T) {
+	recipeRule := findRule("recipe import", DefaultEvidenceRules())
+	recipe := testBundle(true,
+		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Imports recipes from Tandoor."},
+		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "tandoor_test.go", Content: "func TestTandoorImport(t *testing.T) {}"},
+	)
+	if got := assessCapability("recipe import", recipe, recipeRule); got.Status != domain.EvidenceProven {
+		t.Fatalf("recipe = %s", got.Status)
+	}
+	mention := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "widgets.go", Content: `var label = "Tandoor import"`})
+	if got := assessCapability("recipe import", mention, recipeRule); got.Status == domain.EvidenceProven {
+		t.Fatalf("menção produziu PROVEN: %+v", got)
+	}
+	eventRule := findRule("asynchronous event processing", DefaultEvidenceRules())
+	event := testBundle(true,
+		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Event-driven architecture with asynchronous events."},
+		domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "event_dispatcher.go", Content: "type EventDispatcher struct{}"},
+	)
+	if got := assessCapability("asynchronous event processing", event, eventRule); got.Status != domain.EvidenceProven {
+		t.Fatalf("event = %s", got.Status)
+	}
+}
+
+func TestRecipeOrganizationSymbolsAreSpecific(t *testing.T) {
+	rule := findRule("recipe organization", DefaultEvidenceRules())
+	for _, declaration := range []string{"class MelaRecipes(Integration):", "class RepositoryRecipes(BaseRepository):", "class RecipeController:"} {
+		bundle := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "recipes.py", Content: declaration})
+		if got := assessCapability("recipe organization", bundle, rule); got.Status != domain.EvidenceProven {
+			t.Fatalf("%q = %s", declaration, got.Status)
+		}
+	}
+	for _, declaration := range []string{"class Repository:", "class Controller:", "class Recipe:"} {
+		bundle := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "models.py", Content: declaration})
+		if got := assessCapability("recipe organization", bundle, rule); got.Status == domain.EvidenceProven {
+			t.Fatalf("genérico %q produziu PROVEN", declaration)
+		}
+	}
+}
+
+func TestEvidenceTreePrioritizesCapabilityPaths(t *testing.T) {
+	tree := []domain.DirectoryNode{{Path: "aaa/command.go", Type: "file"}, {Path: "msg/event_dispatcher.go", Type: "file"}, {Path: "zzz.go", Type: "file"}}
+	targets := []domain.ExtractionTarget{{Path: "README.md", Capabilities: []string{"asynchronous event processing"}}}
+	got := prioritizeEvidenceTree(tree, targets)
+	if got[0].Path != "msg/event_dispatcher.go" {
+		t.Fatalf("prioridade inesperada: %+v", got)
+	}
+}
+
 func TestEvidenceMetricsAreReproducible(t *testing.T) {
 	valid := true
 	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc"}
@@ -281,5 +357,21 @@ func TestEvidenceMetricsAreReproducible(t *testing.T) {
 	b := EvaluateEvidenceMetrics(report, bundles, judgments)
 	if !reflect.DeepEqual(a, b) || a.EvidencePrecision == nil || *a.EvidencePrecision != 1 || a.SourceTraceRate != 1 {
 		t.Fatalf("métricas inesperadas: %+v", a)
+	}
+}
+
+func TestComponentPrecisionOnlyReviewsEmittedComponents(t *testing.T) {
+	valid := true
+	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc"}
+	evidence := domain.CapabilityEvidence{Capability: "dependency graph", Status: domain.EvidenceProven}
+	judgments := []domain.EvidenceJudgment{{Repository: "org/repo", Capability: "dependency graph", Expected: domain.EvidenceProven, ComponentValid: &valid}}
+	without := EvaluateEvidenceMetrics(domain.AssessmentReport{Assessments: []domain.CandidateAssessment{{Repository: ref, Capabilities: []domain.CapabilityEvidence{evidence}}}}, nil, judgments)
+	if without.ComponentPrecision != nil {
+		t.Fatalf("componente ausente entrou no denominador: %+v", without)
+	}
+	assessment := domain.CandidateAssessment{Repository: ref, Capabilities: []domain.CapabilityEvidence{evidence}, ReusableParts: []domain.ReusableComponent{{Capabilities: []string{"dependency graph"}}}}
+	with := EvaluateEvidenceMetrics(domain.AssessmentReport{Assessments: []domain.CandidateAssessment{assessment}}, nil, judgments)
+	if with.ComponentPrecision == nil || *with.ComponentPrecision != 1 {
+		t.Fatalf("precisão = %+v", with.ComponentPrecision)
 	}
 }

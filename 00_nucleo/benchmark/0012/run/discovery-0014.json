@@ -1,0 +1,2865 @@
+{
+  "schema_version": "2",
+  "idea": {
+    "problem": "Evitar iniciar software do zero quando projetos, componentes ou padrões reutilizáveis já resolvem toda ou parte da ideia, produzindo uma decisão de partida baseada em evidências.",
+    "users": [
+      "desenvolvedores iniciando um projeto",
+      "mantenedores avaliando reutilização",
+      "agentes de programação"
+    ],
+    "capabilities": [
+      "decompor uma ideia em capacidades e restrições rastreáveis",
+      "descobrir projetos públicos privados ou locais por intenção funcional",
+      "rejeitar projetos lexicalmente parecidos e funcionalmente irrelevantes",
+      "comprovar capacidades em documentação manifestos código e testes",
+      "comparar cobertura funcional licença manutenção e operação",
+      "decidir entre fork extend compose integrate reference build e inconclusive",
+      "recuperar evidência faltante sem repetir coleta genérica",
+      "reconhecer capacidades já existentes no próprio projeto",
+      "propor a menor composição de projetos para cobrir lacunas reais",
+      "reproduzir julgamento offline com artefatos e commits congelados"
+    ],
+    "constraints": [
+      "sem LLM no pipeline principal",
+      "evidência vinculada a repo commit path e hash",
+      "suporte a repositórios puramente locais",
+      "falha ou opacidade não pode virar ausência ou build",
+      "replay offline"
+    ],
+    "non_goals": [
+      "buscar somente por palavras iguais",
+      "ranquear apenas por estrelas",
+      "gerar código automaticamente",
+      "copiar código de concorrentes",
+      "tratar jogo Katamari ou autofagia biológica como seleção de software"
+    ],
+    "preferred_stack": [
+      "go",
+      "cli",
+      "json"
+    ]
+  },
+  "strategy": "ontology",
+  "per_expansion": [
+    {
+      "expansion": {
+        "id": "exp-capability-249e49a97742",
+        "facet": "capability",
+        "query": "open source integration planning",
+        "discriminators": [
+          "integration planning"
+        ],
+        "rationale": "conceito de descoberta software-composition",
+        "covers": [
+          "capabilities[8]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-composition"
+          ],
+          "source_ids": [
+            "exp-capability-1ca426485640"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source integration planning",
+            "started_at": "2026-08-26T21:37:54.662551133Z",
+            "duration": 20014223893,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "integration planning",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:38:14.676779113Z",
+            "duration": 2266068488,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "parcadei",
+            "repo": "Continuous-Claude-v3",
+            "url": "https://github.com/parcadei/Continuous-Claude-v3",
+            "description": "Context management for Claude Code. Hooks maintain state via ledgers and handoffs. MCP execution without context pollution. Agent orchestration with isolated context windows.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.942835469Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "phuc-nt",
+            "repo": "my-translator",
+            "url": "https://github.com/phuc-nt/my-translator",
+            "description": "Real-time speech translation — macOS \u0026 Windows, free TTS, no server, your API keys only",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.942838945Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "jwynia",
+            "repo": "agent-skills",
+            "url": "https://github.com/jwynia/agent-skills",
+            "description": "",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.942843003Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "parcadei/Continuous-Claude-v3",
+            "attempt_index": 1,
+            "effective_query": "integration planning",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".claude/agents/architect.md",
+                "snippet": "## Integration Planning"
+              }
+            ]
+          },
+          {
+            "repository": "phuc-nt/my-translator",
+            "attempt_index": 1,
+            "effective_query": "integration planning",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".opencode/skills/ck-plan/references/codebase-understanding.md",
+                "snippet": "### Integration Planning"
+              }
+            ]
+          },
+          {
+            "repository": "jwynia/agent-skills",
+            "attempt_index": 1,
+            "effective_query": "integration planning",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "skills/tech/development/architecture/system-design/SKILL.md",
+                "snippet": "### Integration Planning"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-2d614d8b63a7",
+        "facet": "capability",
+        "query": "open source project discovery",
+        "discriminators": [
+          "project discovery"
+        ],
+        "rationale": "conceito de descoberta repository-recommendation",
+        "covers": [
+          "capabilities[1]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "repository-recommendation"
+          ],
+          "source_ids": [
+            "exp-capability-fc31e1d88f5c"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source project discovery",
+            "started_at": "2026-08-26T21:37:54.66245276Z",
+            "duration": 20014359565,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "project discovery",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:38:14.676837452Z",
+            "duration": 2260821808,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "ScottRBK",
+            "repo": "forgetful",
+            "url": "https://github.com/ScottRBK/forgetful",
+            "description": "Opensource Memory for Agents",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.937640075Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "flutter",
+            "repo": "genui",
+            "url": "https://github.com/flutter/genui",
+            "description": "",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.93764308Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "iBurnApp",
+            "repo": "iBurn-iOS",
+            "url": "https://github.com/iBurnApp/iBurn-iOS",
+            "description": "iBurn is an offline map and guide for the Burning Man art festival.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:16.937645845Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "ScottRBK/forgetful",
+            "attempt_index": 1,
+            "effective_query": "project discovery",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/copilot-cli/agents/forgetful-memory.agent.md",
+                "snippet": "### Project Discovery"
+              }
+            ]
+          },
+          {
+            "repository": "flutter/genui",
+            "attempt_index": 1,
+            "effective_query": "project discovery",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "tool/test_and_fix/GEMINI.md",
+                "snippet": "### Project Discovery"
+              }
+            ]
+          },
+          {
+            "repository": "iBurnApp/iBurn-iOS",
+            "attempt_index": 1,
+            "effective_query": "project discovery",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "CLAUDE.md",
+                "snippet": "### Project Discovery"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-3a0cfcda5e26",
+        "facet": "capability",
+        "query": "cross repository code discovery",
+        "discriminators": [
+          "repository code discovery"
+        ],
+        "rationale": "conceito de descoberta internal-reuse",
+        "covers": [
+          "capabilities[7]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "internal-reuse"
+          ],
+          "source_ids": [
+            "exp-capability-7ccac9fff8b3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "cross repository code discovery",
+            "started_at": "2026-08-26T21:38:16.937697912Z",
+            "duration": 20001963152,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "repository code discovery",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:38:36.939665603Z",
+            "duration": 20017525950,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-5548fa0e1700",
+        "facet": "capability",
+        "query": "software component composition",
+        "discriminators": [
+          "component composition"
+        ],
+        "rationale": "conceito de descoberta software-composition",
+        "covers": [
+          "capabilities[8]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-composition"
+          ],
+          "source_ids": [
+            "exp-capability-1ca426485640"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "software component composition",
+            "started_at": "2026-08-26T21:38:16.942873068Z",
+            "duration": 20001013260,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "component composition",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:38:36.943889073Z",
+            "duration": 2301145038,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "goncy",
+            "repo": "create-appncy",
+            "url": "https://github.com/goncy/create-appncy",
+            "description": "Create projects as Goncy would.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:39.244992654Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "understanding-astro",
+            "repo": "understanding-astro-book",
+            "url": "https://github.com/understanding-astro/understanding-astro-book",
+            "description": "Learn to build remarkably fast websites with Astro ✨",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:39.244998525Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "clubpay",
+            "repo": "ronykit",
+            "url": "https://github.com/clubpay/ronykit",
+            "description": "API Framework supporting REST and RPC.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:38:39.245010427Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "goncy/create-appncy",
+            "attempt_index": 1,
+            "effective_query": "component composition",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".agents/skills/shadcn/rules/composition.md",
+                "snippet": "# Component Composition"
+              }
+            ]
+          },
+          {
+            "repository": "understanding-astro/understanding-astro-book",
+            "attempt_index": 1,
+            "effective_query": "component composition",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "ch1.md",
+                "snippet": "## Component composition"
+              },
+              {
+                "match_type": "file",
+                "path": "images/ch1/index.md",
+                "snippet": "## Component composition"
+              }
+            ]
+          },
+          {
+            "repository": "clubpay/ronykit",
+            "attempt_index": 1,
+            "effective_query": "component composition",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "ronyup/internal/skeleton/skills/react-performance/rules/server-parallel-fetching.md",
+                "snippet": "## Parallel Data Fetching with Component Composition"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-72cf3c4cf7a0",
+        "facet": "capability",
+        "query": "dependency adoption decision",
+        "discriminators": [
+          "adoption decision"
+        ],
+        "rationale": "conceito de descoberta adoption-decision",
+        "covers": [
+          "capabilities[5]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "adoption-decision"
+          ],
+          "source_ids": [
+            "exp-capability-60a70efc9eb3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "dependency adoption decision",
+            "started_at": "2026-08-26T21:38:39.245145427Z",
+            "duration": 20001444111,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "adoption decision",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:38:59.246594206Z",
+            "duration": 2276790070,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "Kitjesen",
+            "repo": "MapPilot",
+            "url": "https://github.com/Kitjesen/MapPilot",
+            "description": "",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:01.523369699Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "0xAxiom",
+            "repo": "AppFactory",
+            "url": "https://github.com/0xAxiom/AppFactory",
+            "description": "App Factory turns your ideas into real, working products. No coding experience required. Just describe what you want in plain English, and Claude builds it.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:01.523372985Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "SynkraAI",
+            "repo": "aiox-squads",
+            "url": "https://github.com/SynkraAI/aiox-squads",
+            "description": "AIOX Community Squads",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:01.523376282Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "Kitjesen/MapPilot",
+            "attempt_index": 1,
+            "effective_query": "adoption decision",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/research/socc_icp_adoption.md",
+                "snippet": "# SOCC-ICP Adoption Decision"
+              }
+            ]
+          },
+          {
+            "repository": "0xAxiom/AppFactory",
+            "attempt_index": 1,
+            "effective_query": "adoption decision",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/adr/0005-core-library-adoption-decision.md",
+                "snippet": "# ADR-0005: Core Library Adoption Decision"
+              }
+            ]
+          },
+          {
+            "repository": "SynkraAI/aiox-squads",
+            "attempt_index": 1,
+            "effective_query": "adoption decision",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "squads/kaizen/minds/martin_fowler/heuristics/MF_TA_001.md",
+                "snippet": "# MF_TA_001 — Technology Adoption Decision"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-7b25ab48848f",
+        "facet": "capability",
+        "query": "open source component evaluation",
+        "discriminators": [
+          "component evaluation"
+        ],
+        "rationale": "conceito de descoberta component-selection",
+        "covers": [
+          "capabilities[4]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "component-selection"
+          ],
+          "source_ids": [
+            "exp-capability-626f01859fc4"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "open source component evaluation",
+            "started_at": "2026-08-26T21:38:56.957258237Z",
+            "duration": 20013726364,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "component evaluation",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:39:16.970997945Z",
+            "duration": 13657189049,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "JeffBezanson",
+            "repo": "numal",
+            "url": "https://github.com/JeffBezanson/numal",
+            "description": "Numerical Algorithms in C",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:30.628171655Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "NaturalHistoryMuseum",
+            "repo": "scratchpads2",
+            "url": "https://github.com/NaturalHistoryMuseum/scratchpads2",
+            "description": "Scratchpads 2.0",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:30.628175633Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "probelabs",
+            "repo": "probe",
+            "url": "https://github.com/probelabs/probe",
+            "description": "AI-friendly semantic code search engine for large codebases. Combines ripgrep speed with tree-sitter AST parsing. Powers AI coding assistants with precise, context-aware code understanding.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:30.62817975Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "JeffBezanson/numal",
+            "attempt_index": 1,
+            "effective_query": "component evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "EXAMPLES/_quaneb1.c",
+                "snippet": "\"Number of function component evaluations: %6.0f\\n\""
+              }
+            ]
+          },
+          {
+            "repository": "NaturalHistoryMuseum/scratchpads2",
+            "attempt_index": 1,
+            "effective_query": "component evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "sites/all/modules/contrib/rules/rules_scheduler/rules_scheduler.rules.inc",
+                "snippet": "'label' =\u003e t('Schedule component evaluation'),"
+              }
+            ]
+          },
+          {
+            "repository": "probelabs/probe",
+            "attempt_index": 1,
+            "effective_query": "component evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "npm/tests/unit/bash-tool.test.js",
+                "snippet": "// ls and grep are in default allow list, so this will be allowed via component evaluation"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-8dd6cf471d97",
+        "facet": "capability",
+        "query": "internal code reuse search",
+        "discriminators": [
+          "code reuse"
+        ],
+        "rationale": "conceito de descoberta internal-reuse",
+        "covers": [
+          "capabilities[7]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "internal-reuse"
+          ],
+          "source_ids": [
+            "exp-capability-7ccac9fff8b3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "internal code reuse search",
+            "started_at": "2026-08-26T21:39:01.523416306Z",
+            "duration": 20004318403,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "code reuse",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:39:21.527739458Z",
+            "duration": 2257819288,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "shanyan-wcx",
+            "repo": "Harmonic",
+            "url": "https://github.com/shanyan-wcx/Harmonic",
+            "description": "Navidrome的鸿蒙原生客户端",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:23.785536335Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "erans",
+            "repo": "lunaroute",
+            "url": "https://github.com/erans/lunaroute",
+            "description": "LunaRoute is a high-performance local proxy for AI coding assistants like Claude Code, OpenAI Codex CLI, and OpenCode. Get complete visibility into every LLM interaction with zero-overhead passthrough, comprehensive session recording, and powerful debugging capabilities.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:23.7855446Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "langhuihui",
+            "repo": "monibuca",
+            "url": "https://github.com/langhuihui/monibuca",
+            "description": "🧩 Monibuca is a Modularized, Extensible framework for building Streaming Server",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:23.785551132Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "shanyan-wcx/Harmonic",
+            "attempt_index": 1,
+            "effective_query": "code reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".trellis/spec/guides/code-reuse-thinking-guide.md",
+                "snippet": "# Code Reuse Thinking Guide"
+              },
+              {
+                "match_type": "file",
+                "path": ".trellis/spec/guides/index.md",
+                "snippet": "### When to Think About Code Reuse"
+              },
+              {
+                "match_type": "file",
+                "path": ".opencode/skills/trellis-check/SKILL.md",
+                "snippet": "### B. Code Reuse (modifying constants, creating utilities)"
+              }
+            ]
+          },
+          {
+            "repository": "erans/lunaroute",
+            "attempt_index": 1,
+            "effective_query": "code reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/multi-tenancy-architecture.md",
+                "snippet": "### ✅ Code Reuse"
+              }
+            ]
+          },
+          {
+            "repository": "langhuihui/monibuca",
+            "attempt_index": 1,
+            "effective_query": "code reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "doc/convert_frame.md",
+                "snippet": "- **Code reuse**: Conversion logic is completely universal"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-a0eeabf6d587",
+        "facet": "capability",
+        "query": "evidence backed tool evaluation",
+        "discriminators": [
+          "tool evaluation"
+        ],
+        "rationale": "conceito de descoberta adoption-decision",
+        "covers": [
+          "capabilities[5]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "adoption-decision"
+          ],
+          "source_ids": [
+            "exp-capability-60a70efc9eb3"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "evidence backed tool evaluation",
+            "started_at": "2026-08-26T21:39:23.785606375Z",
+            "duration": 20006668445,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "tool evaluation",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:39:43.792281452Z",
+            "duration": 2301283308,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "1mancompany",
+            "repo": "OneManCompany",
+            "url": "https://github.com/1mancompany/OneManCompany",
+            "description": "Build Your Agent Company with OMC",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:46.09354283Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "elophanto",
+            "repo": "EloPhanto",
+            "url": "https://github.com/elophanto/EloPhanto",
+            "description": "Open-source autonomous AI agent with a self-model that actually changes as it runs - ego, affect, and identity grounded in real psychology (Higgins, PAD/OCC). Ships code, runs a team, makes money. Local-first, self-custody.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:46.093554451Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "FlorianBruniaux",
+            "repo": "claude-cowork-guide",
+            "url": "https://github.com/FlorianBruniaux/claude-cowork-guide",
+            "description": "Complete documentation for Claude Cowork - 43 workflows, 70 prompts for knowledge workers and small businesses                                                                     ",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:46.093557377Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "1mancompany/OneManCompany",
+            "attempt_index": 1,
+            "effective_query": "tool evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "company/human_resource/employees/00003/skills/tool_management/SKILL.md",
+                "snippet": "## Tool Evaluation Criteria"
+              }
+            ]
+          },
+          {
+            "repository": "elophanto/EloPhanto",
+            "attempt_index": 1,
+            "effective_query": "tool evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "skills/tool-evaluation/SKILL.md",
+                "snippet": "### Tool Evaluation Report Template"
+              }
+            ]
+          },
+          {
+            "repository": "FlorianBruniaux/claude-cowork-guide",
+            "attempt_index": 1,
+            "effective_query": "tool evaluation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "prompts/research.md",
+                "snippet": "### 5. Technology/Tool Evaluation"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-e307e3b9e752",
+        "facet": "capability",
+        "query": "GitHub repository recommendation",
+        "discriminators": [
+          "repository recommendation"
+        ],
+        "rationale": "conceito de descoberta repository-recommendation",
+        "covers": [
+          "capabilities[1]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "repository-recommendation"
+          ],
+          "source_ids": [
+            "exp-capability-fc31e1d88f5c"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "GitHub repository recommendation",
+            "started_at": "2026-08-26T21:39:30.628225105Z",
+            "duration": 20004401785,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "repository recommendation",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:39:50.63263267Z",
+            "duration": 6576738788,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "xiaowuDev",
+            "repo": "recommendation_system",
+            "url": "https://github.com/xiaowuDev/recommendation_system",
+            "description": "这是一个个性化Ai电商系统，模拟电商平台中的推荐场景。该系统将基于用户的行为数据（如浏览记录、购买历史、评分等），使用推荐算法为用户推荐可能感兴趣的商品，集成Ai，识别用户画像做智能商品推荐，并且根据用户画像做属于用户的个性化回复",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:57.209342404Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "aipoch",
+            "repo": "medical-research-skills",
+            "url": "https://github.com/aipoch/medical-research-skills",
+            "description": "Hundreds of agent skills for medical research, including protocol design, data analysis, evidence insights, and academic writing.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:57.209349668Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "zhihengli-casia",
+            "repo": "AI-Paper-Trends",
+            "url": "https://github.com/zhihengli-casia/AI-Paper-Trends",
+            "description": "Open-source AI paper index and fine-grained topic atlas across major conferences and journals.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:39:57.209353805Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "xiaowuDev/recommendation_system",
+            "attempt_index": 1,
+            "effective_query": "repository recommendation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "recommendation-trainer/src/main/java/xiaowu/trainer/application/service/AlsTrainingService.java",
+                "snippet": "private final RecommendationModelVersionRepository recommendationModelVersionRepository;"
+              }
+            ]
+          },
+          {
+            "repository": "aipoch/medical-research-skills",
+            "attempt_index": 1,
+            "effective_query": "repository recommendation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "scientific-skills/Other/reproducibility-check/references/guide.md",
+                "snippet": "### Data Repository Recommendations by Domain"
+              }
+            ]
+          },
+          {
+            "repository": "zhihengli-casia/AI-Paper-Trends",
+            "attempt_index": 1,
+            "effective_query": "repository recommendation",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/topic-atlas/2020/WWW/topic-008.md",
+                "snippet": "18. [paper2repo: GitHub Repository Recommendation for Academic Papers](https://doi.org/10.1145/3366423.3380145)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-capability-f08c4c1ddf61",
+        "facet": "capability",
+        "query": "software component selection",
+        "discriminators": [
+          "component selection"
+        ],
+        "rationale": "conceito de descoberta component-selection",
+        "covers": [
+          "capabilities[4]"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "component-selection"
+          ],
+          "source_ids": [
+            "exp-capability-626f01859fc4"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "software component selection",
+            "started_at": "2026-08-26T21:39:46.093601328Z",
+            "duration": 20008090362,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "component selection",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:40:06.101697451Z",
+            "duration": 3339204169,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "ARM-software",
+            "repo": "Arm-2D",
+            "url": "https://github.com/ARM-software/Arm-2D",
+            "description": "2D Graphic Library optimized for Cortex-M processors",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:09.440861746Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "PatternRecognition",
+            "repo": "OpenBMI",
+            "url": "https://github.com/PatternRecognition/OpenBMI",
+            "description": "An open software package dedicated for the development of Brain-Computer Interfaces with various advanced pattern recognition algorithms",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:09.440869701Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "supatest-ai",
+            "repo": "awesome-claude-code-sub-agents",
+            "url": "https://github.com/supatest-ai/awesome-claude-code-sub-agents",
+            "description": "Collection of specialised Claude Code agents",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:09.440892944Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "ARM-software/Arm-2D",
+            "attempt_index": 1,
+            "effective_query": "component selection",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "examples/common/platform/platform.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/common/platform/mps3/v2m_mps3/MPS3_PERIPHERALS.h",
+                "snippet": "#include \"RTE_Components.h\" /* Component selection */"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][cmsis-rtos2]/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][bare-metal][mps2]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][bare-metal][an552]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][bare-metal][cortex-m85]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][bare-metal][helium-aci]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "examples/[template][bare-metal][STM32F746G-Discovery]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+                "snippet": "#include \"RTE_Components.h\" // Component selection"
+              }
+            ]
+          },
+          {
+            "repository": "PatternRecognition/OpenBMI",
+            "attempt_index": 1,
+            "effective_query": "component selection",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/sigprocfunc/envtopo.m",
+                "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/std_envtopo.m",
+                "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/std_selcomp.m",
+                "snippet": "% subject - [string] subject name (for component selection)"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/external/fieldtrip_partial/private/comp2timelock.m",
+                "snippet": "% only convert, do not perform channel or component selection"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/sigprocfunc/.svn/text-base/envtopo.m.svn-base",
+                "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/.svn/text-base/std_selcomp.m.svn-base",
+                "snippet": "% subject - [string] subject name (for component selection)"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/.svn/text-base/std_envtopo.m.svn-base",
+                "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+              },
+              {
+                "match_type": "file",
+                "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/external/fieldtrip_partial/private/.svn/text-base/comp2timelock.m.svn-base",
+                "snippet": "% only convert, do not perform channel or component selection"
+              }
+            ]
+          },
+          {
+            "repository": "supatest-ai/awesome-claude-code-sub-agents",
+            "attempt_index": 1,
+            "effective_query": "component selection",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "languages/python-expert.md",
+                "snippet": "- Custom component selection needed"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-problem-367f9904fcee",
+        "facet": "problem",
+        "query": "build versus reuse",
+        "discriminators": [
+          "build",
+          "reuse"
+        ],
+        "rationale": "conceito de descoberta software-reuse-discovery",
+        "covers": [
+          "problem"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-reuse-discovery"
+          ],
+          "source_ids": [
+            "exp-problem-44c2d0bdff93"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "build versus reuse",
+            "started_at": "2026-08-26T21:39:57.209418155Z",
+            "duration": 20006954927,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "build",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:40:17.216381057Z",
+            "duration": 2257399891,
+            "status": "SUCCEEDED",
+            "result_count": 1
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "0xagarg",
+            "repo": "crypto-price-prediction-ai-model",
+            "url": "https://github.com/0xagarg/crypto-price-prediction-ai-model",
+            "description": "Predict BTC, SOL, ETH, GOLD prices",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:19.473766592Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "0xagarg/crypto-price-prediction-ai-model",
+            "attempt_index": 1,
+            "effective_query": "build",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".venv/base/lib/python3.10/site-packages/setuptools/command/build.py",
+                "snippet": "class build(_build):"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "id": "exp-problem-c9e3259e04a6",
+        "facet": "problem",
+        "query": "software reuse discovery",
+        "discriminators": [
+          "software reuse"
+        ],
+        "rationale": "conceito de descoberta software-reuse-discovery",
+        "covers": [
+          "problem"
+        ],
+        "derivation": {
+          "strategy": "ontology:2026-08-26.1",
+          "rule_ids": [
+            "software-reuse-discovery"
+          ],
+          "source_ids": [
+            "exp-problem-44c2d0bdff93"
+          ]
+        }
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "software reuse discovery",
+            "started_at": "2026-08-26T21:40:09.440950611Z",
+            "duration": 20009832443,
+            "status": "TIMED_OUT",
+            "result_count": 0,
+            "error_class": "TIMEOUT",
+            "error": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+          },
+          {
+            "query": "software reuse",
+            "attempt_index": 1,
+            "started_at": "2026-08-26T21:40:29.450790288Z",
+            "duration": 3031576690,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "H3Art-q",
+            "repo": "JNU-IS-CST-Courses",
+            "url": "https://github.com/H3Art-q/JNU-IS-CST-Courses",
+            "description": "A courses related repo for Jinan University (JNU) International School (IS) CST major / 暨南大学国际学院计算机科学与技术专业相关课程仓库",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:32.482333566Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "William-Liwei",
+            "repo": "ccfonline",
+            "url": "https://github.com/William-Liwei/ccfonline",
+            "description": "CCF Online is an online query platform focusing on academic conferences and periodicals in the computer field.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:32.482345869Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Eliseowzy",
+            "repo": "SSDUT-learning-materials",
+            "url": "https://github.com/Eliseowzy/SSDUT-learning-materials",
+            "description": "这些是我本科四年的专业课学习资料，分享给大家，也欢迎大家把里面没有的传进去，一定不要造轮子啊。😀",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-08-26T21:40:32.482358042Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "H3Art-q/JNU-IS-CST-Courses",
+            "attempt_index": 1,
+            "effective_query": "software reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "Software Engineering 软件工程/Notes/ReviewQuestions_SE.md",
+                "snippet": "## Chapter 16: Software reuse软件重用"
+              }
+            ]
+          },
+          {
+            "repository": "William-Liwei/ccfonline",
+            "attempt_index": 1,
+            "effective_query": "software reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "index.md",
+                "snippet": "| 16 | ICSR | International Conference on Software Reuse | Springer | http://dblp.uni-trier.de/db/conf/icsr/ |"
+              }
+            ]
+          },
+          {
+            "repository": "Eliseowzy/SSDUT-learning-materials",
+            "attempt_index": 1,
+            "effective_query": "software reuse",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "SoftwareEngineering/description.txt",
+                "snippet": "Through this course, students will understand and master the basic concepts and knowledge of software engineering, including the scope of software engineering, software processes, software life cycle models, software requirements, object-or"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "parcadei",
+        "repo": "Continuous-Claude-v3",
+        "url": "https://github.com/parcadei/Continuous-Claude-v3",
+        "description": "Context management for Claude Code. Hooks maintain state via ledgers and handoffs. MCP execution without context pollution. Agent orchestration with isolated context windows.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.942835469Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-249e49a97742"
+      ],
+      "queries": [
+        "open source integration planning"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-249e49a97742",
+          "planned_query": "open source integration planning",
+          "attempt_index": 1,
+          "effective_query": "integration planning",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".claude/agents/architect.md",
+              "snippet": "## Integration Planning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "phuc-nt",
+        "repo": "my-translator",
+        "url": "https://github.com/phuc-nt/my-translator",
+        "description": "Real-time speech translation — macOS \u0026 Windows, free TTS, no server, your API keys only",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.942838945Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-249e49a97742"
+      ],
+      "queries": [
+        "open source integration planning"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-249e49a97742",
+          "planned_query": "open source integration planning",
+          "attempt_index": 1,
+          "effective_query": "integration planning",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".opencode/skills/ck-plan/references/codebase-understanding.md",
+              "snippet": "### Integration Planning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "jwynia",
+        "repo": "agent-skills",
+        "url": "https://github.com/jwynia/agent-skills",
+        "description": "",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.942843003Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-249e49a97742"
+      ],
+      "queries": [
+        "open source integration planning"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-249e49a97742",
+          "planned_query": "open source integration planning",
+          "attempt_index": 1,
+          "effective_query": "integration planning",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "skills/tech/development/architecture/system-design/SKILL.md",
+              "snippet": "### Integration Planning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "ScottRBK",
+        "repo": "forgetful",
+        "url": "https://github.com/ScottRBK/forgetful",
+        "description": "Opensource Memory for Agents",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.937640075Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-2d614d8b63a7"
+      ],
+      "queries": [
+        "open source project discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-2d614d8b63a7",
+          "planned_query": "open source project discovery",
+          "attempt_index": 1,
+          "effective_query": "project discovery",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/copilot-cli/agents/forgetful-memory.agent.md",
+              "snippet": "### Project Discovery"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "flutter",
+        "repo": "genui",
+        "url": "https://github.com/flutter/genui",
+        "description": "",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.93764308Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-2d614d8b63a7"
+      ],
+      "queries": [
+        "open source project discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-2d614d8b63a7",
+          "planned_query": "open source project discovery",
+          "attempt_index": 1,
+          "effective_query": "project discovery",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "tool/test_and_fix/GEMINI.md",
+              "snippet": "### Project Discovery"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "iBurnApp",
+        "repo": "iBurn-iOS",
+        "url": "https://github.com/iBurnApp/iBurn-iOS",
+        "description": "iBurn is an offline map and guide for the Burning Man art festival.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:16.937645845Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-2d614d8b63a7"
+      ],
+      "queries": [
+        "open source project discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-2d614d8b63a7",
+          "planned_query": "open source project discovery",
+          "attempt_index": 1,
+          "effective_query": "project discovery",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "CLAUDE.md",
+              "snippet": "### Project Discovery"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "goncy",
+        "repo": "create-appncy",
+        "url": "https://github.com/goncy/create-appncy",
+        "description": "Create projects as Goncy would.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:39.244992654Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-5548fa0e1700"
+      ],
+      "queries": [
+        "software component composition"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-5548fa0e1700",
+          "planned_query": "software component composition",
+          "attempt_index": 1,
+          "effective_query": "component composition",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".agents/skills/shadcn/rules/composition.md",
+              "snippet": "# Component Composition"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "understanding-astro",
+        "repo": "understanding-astro-book",
+        "url": "https://github.com/understanding-astro/understanding-astro-book",
+        "description": "Learn to build remarkably fast websites with Astro ✨",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:39.244998525Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-5548fa0e1700"
+      ],
+      "queries": [
+        "software component composition"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-5548fa0e1700",
+          "planned_query": "software component composition",
+          "attempt_index": 1,
+          "effective_query": "component composition",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "ch1.md",
+              "snippet": "## Component composition"
+            },
+            {
+              "match_type": "file",
+              "path": "images/ch1/index.md",
+              "snippet": "## Component composition"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "clubpay",
+        "repo": "ronykit",
+        "url": "https://github.com/clubpay/ronykit",
+        "description": "API Framework supporting REST and RPC.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:38:39.245010427Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-5548fa0e1700"
+      ],
+      "queries": [
+        "software component composition"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-5548fa0e1700",
+          "planned_query": "software component composition",
+          "attempt_index": 1,
+          "effective_query": "component composition",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "ronyup/internal/skeleton/skills/react-performance/rules/server-parallel-fetching.md",
+              "snippet": "## Parallel Data Fetching with Component Composition"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Kitjesen",
+        "repo": "MapPilot",
+        "url": "https://github.com/Kitjesen/MapPilot",
+        "description": "",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:01.523369699Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-72cf3c4cf7a0"
+      ],
+      "queries": [
+        "dependency adoption decision"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-72cf3c4cf7a0",
+          "planned_query": "dependency adoption decision",
+          "attempt_index": 1,
+          "effective_query": "adoption decision",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/research/socc_icp_adoption.md",
+              "snippet": "# SOCC-ICP Adoption Decision"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "0xAxiom",
+        "repo": "AppFactory",
+        "url": "https://github.com/0xAxiom/AppFactory",
+        "description": "App Factory turns your ideas into real, working products. No coding experience required. Just describe what you want in plain English, and Claude builds it.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:01.523372985Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-72cf3c4cf7a0"
+      ],
+      "queries": [
+        "dependency adoption decision"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-72cf3c4cf7a0",
+          "planned_query": "dependency adoption decision",
+          "attempt_index": 1,
+          "effective_query": "adoption decision",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/adr/0005-core-library-adoption-decision.md",
+              "snippet": "# ADR-0005: Core Library Adoption Decision"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "SynkraAI",
+        "repo": "aiox-squads",
+        "url": "https://github.com/SynkraAI/aiox-squads",
+        "description": "AIOX Community Squads",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:01.523376282Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-72cf3c4cf7a0"
+      ],
+      "queries": [
+        "dependency adoption decision"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-72cf3c4cf7a0",
+          "planned_query": "dependency adoption decision",
+          "attempt_index": 1,
+          "effective_query": "adoption decision",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "squads/kaizen/minds/martin_fowler/heuristics/MF_TA_001.md",
+              "snippet": "# MF_TA_001 — Technology Adoption Decision"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "JeffBezanson",
+        "repo": "numal",
+        "url": "https://github.com/JeffBezanson/numal",
+        "description": "Numerical Algorithms in C",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:30.628171655Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-7b25ab48848f"
+      ],
+      "queries": [
+        "open source component evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-7b25ab48848f",
+          "planned_query": "open source component evaluation",
+          "attempt_index": 1,
+          "effective_query": "component evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "EXAMPLES/_quaneb1.c",
+              "snippet": "\"Number of function component evaluations: %6.0f\\n\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "NaturalHistoryMuseum",
+        "repo": "scratchpads2",
+        "url": "https://github.com/NaturalHistoryMuseum/scratchpads2",
+        "description": "Scratchpads 2.0",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:30.628175633Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-7b25ab48848f"
+      ],
+      "queries": [
+        "open source component evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-7b25ab48848f",
+          "planned_query": "open source component evaluation",
+          "attempt_index": 1,
+          "effective_query": "component evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "sites/all/modules/contrib/rules/rules_scheduler/rules_scheduler.rules.inc",
+              "snippet": "'label' =\u003e t('Schedule component evaluation'),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "probelabs",
+        "repo": "probe",
+        "url": "https://github.com/probelabs/probe",
+        "description": "AI-friendly semantic code search engine for large codebases. Combines ripgrep speed with tree-sitter AST parsing. Powers AI coding assistants with precise, context-aware code understanding.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:30.62817975Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-7b25ab48848f"
+      ],
+      "queries": [
+        "open source component evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-7b25ab48848f",
+          "planned_query": "open source component evaluation",
+          "attempt_index": 1,
+          "effective_query": "component evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "npm/tests/unit/bash-tool.test.js",
+              "snippet": "// ls and grep are in default allow list, so this will be allowed via component evaluation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "shanyan-wcx",
+        "repo": "Harmonic",
+        "url": "https://github.com/shanyan-wcx/Harmonic",
+        "description": "Navidrome的鸿蒙原生客户端",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:23.785536335Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "code reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".trellis/spec/guides/code-reuse-thinking-guide.md",
+              "snippet": "# Code Reuse Thinking Guide"
+            },
+            {
+              "match_type": "file",
+              "path": ".trellis/spec/guides/index.md",
+              "snippet": "### When to Think About Code Reuse"
+            },
+            {
+              "match_type": "file",
+              "path": ".opencode/skills/trellis-check/SKILL.md",
+              "snippet": "### B. Code Reuse (modifying constants, creating utilities)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "erans",
+        "repo": "lunaroute",
+        "url": "https://github.com/erans/lunaroute",
+        "description": "LunaRoute is a high-performance local proxy for AI coding assistants like Claude Code, OpenAI Codex CLI, and OpenCode. Get complete visibility into every LLM interaction with zero-overhead passthrough, comprehensive session recording, and powerful debugging capabilities.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:23.7855446Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "code reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/multi-tenancy-architecture.md",
+              "snippet": "### ✅ Code Reuse"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "langhuihui",
+        "repo": "monibuca",
+        "url": "https://github.com/langhuihui/monibuca",
+        "description": "🧩 Monibuca is a Modularized, Extensible framework for building Streaming Server",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:23.785551132Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-8dd6cf471d97"
+      ],
+      "queries": [
+        "internal code reuse search"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-8dd6cf471d97",
+          "planned_query": "internal code reuse search",
+          "attempt_index": 1,
+          "effective_query": "code reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "doc/convert_frame.md",
+              "snippet": "- **Code reuse**: Conversion logic is completely universal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "1mancompany",
+        "repo": "OneManCompany",
+        "url": "https://github.com/1mancompany/OneManCompany",
+        "description": "Build Your Agent Company with OMC",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:46.09354283Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-a0eeabf6d587"
+      ],
+      "queries": [
+        "evidence backed tool evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-a0eeabf6d587",
+          "planned_query": "evidence backed tool evaluation",
+          "attempt_index": 1,
+          "effective_query": "tool evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "company/human_resource/employees/00003/skills/tool_management/SKILL.md",
+              "snippet": "## Tool Evaluation Criteria"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "elophanto",
+        "repo": "EloPhanto",
+        "url": "https://github.com/elophanto/EloPhanto",
+        "description": "Open-source autonomous AI agent with a self-model that actually changes as it runs - ego, affect, and identity grounded in real psychology (Higgins, PAD/OCC). Ships code, runs a team, makes money. Local-first, self-custody.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:46.093554451Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-a0eeabf6d587"
+      ],
+      "queries": [
+        "evidence backed tool evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-a0eeabf6d587",
+          "planned_query": "evidence backed tool evaluation",
+          "attempt_index": 1,
+          "effective_query": "tool evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "skills/tool-evaluation/SKILL.md",
+              "snippet": "### Tool Evaluation Report Template"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "FlorianBruniaux",
+        "repo": "claude-cowork-guide",
+        "url": "https://github.com/FlorianBruniaux/claude-cowork-guide",
+        "description": "Complete documentation for Claude Cowork - 43 workflows, 70 prompts for knowledge workers and small businesses                                                                     ",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:46.093557377Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-a0eeabf6d587"
+      ],
+      "queries": [
+        "evidence backed tool evaluation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-a0eeabf6d587",
+          "planned_query": "evidence backed tool evaluation",
+          "attempt_index": 1,
+          "effective_query": "tool evaluation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "prompts/research.md",
+              "snippet": "### 5. Technology/Tool Evaluation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "xiaowuDev",
+        "repo": "recommendation_system",
+        "url": "https://github.com/xiaowuDev/recommendation_system",
+        "description": "这是一个个性化Ai电商系统，模拟电商平台中的推荐场景。该系统将基于用户的行为数据（如浏览记录、购买历史、评分等），使用推荐算法为用户推荐可能感兴趣的商品，集成Ai，识别用户画像做智能商品推荐，并且根据用户画像做属于用户的个性化回复",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:57.209342404Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "repository recommendation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "recommendation-trainer/src/main/java/xiaowu/trainer/application/service/AlsTrainingService.java",
+              "snippet": "private final RecommendationModelVersionRepository recommendationModelVersionRepository;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "aipoch",
+        "repo": "medical-research-skills",
+        "url": "https://github.com/aipoch/medical-research-skills",
+        "description": "Hundreds of agent skills for medical research, including protocol design, data analysis, evidence insights, and academic writing.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:57.209349668Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "repository recommendation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "scientific-skills/Other/reproducibility-check/references/guide.md",
+              "snippet": "### Data Repository Recommendations by Domain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "zhihengli-casia",
+        "repo": "AI-Paper-Trends",
+        "url": "https://github.com/zhihengli-casia/AI-Paper-Trends",
+        "description": "Open-source AI paper index and fine-grained topic atlas across major conferences and journals.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:39:57.209353805Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-e307e3b9e752"
+      ],
+      "queries": [
+        "GitHub repository recommendation"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-e307e3b9e752",
+          "planned_query": "GitHub repository recommendation",
+          "attempt_index": 1,
+          "effective_query": "repository recommendation",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/topic-atlas/2020/WWW/topic-008.md",
+              "snippet": "18. [paper2repo: GitHub Repository Recommendation for Academic Papers](https://doi.org/10.1145/3366423.3380145)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "ARM-software",
+        "repo": "Arm-2D",
+        "url": "https://github.com/ARM-software/Arm-2D",
+        "description": "2D Graphic Library optimized for Cortex-M processors",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:09.440861746Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-f08c4c1ddf61"
+      ],
+      "queries": [
+        "software component selection"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-f08c4c1ddf61",
+          "planned_query": "software component selection",
+          "attempt_index": 1,
+          "effective_query": "component selection",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "examples/common/platform/platform.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/common/platform/mps3/v2m_mps3/MPS3_PERIPHERALS.h",
+              "snippet": "#include \"RTE_Components.h\" /* Component selection */"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][cmsis-rtos2]/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][bare-metal][mps2]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][bare-metal][an552]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][bare-metal][cortex-m85]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][bare-metal][helium-aci]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "examples/[template][bare-metal][STM32F746G-Discovery]/project/mdk/RTE/Device/STM32F746NGHx/stm32f7xx_hal_conf.h",
+              "snippet": "#include \"RTE_Components.h\" // Component selection"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "PatternRecognition",
+        "repo": "OpenBMI",
+        "url": "https://github.com/PatternRecognition/OpenBMI",
+        "description": "An open software package dedicated for the development of Brain-Computer Interfaces with various advanced pattern recognition algorithms",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:09.440869701Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-f08c4c1ddf61"
+      ],
+      "queries": [
+        "software component selection"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-f08c4c1ddf61",
+          "planned_query": "software component selection",
+          "attempt_index": 1,
+          "effective_query": "component selection",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/sigprocfunc/envtopo.m",
+              "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/std_envtopo.m",
+              "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/std_selcomp.m",
+              "snippet": "% subject - [string] subject name (for component selection)"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/external/fieldtrip_partial/private/comp2timelock.m",
+              "snippet": "% only convert, do not perform channel or component selection"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/sigprocfunc/.svn/text-base/envtopo.m.svn-base",
+              "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/.svn/text-base/std_selcomp.m.svn-base",
+              "snippet": "% subject - [string] subject name (for component selection)"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/functions/studyfunc/.svn/text-base/std_envtopo.m.svn-base",
+              "snippet": "%%%%%%%%%%%%%%% Find limits of the component selection window %%%%%%%%%"
+            },
+            {
+              "match_type": "file",
+              "path": "PR_BCI_team/Team_EarEEG/ear-EEG connecting/external/eeglab_10_0_1_0x/external/fieldtrip_partial/private/.svn/text-base/comp2timelock.m.svn-base",
+              "snippet": "% only convert, do not perform channel or component selection"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "supatest-ai",
+        "repo": "awesome-claude-code-sub-agents",
+        "url": "https://github.com/supatest-ai/awesome-claude-code-sub-agents",
+        "description": "Collection of specialised Claude Code agents",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:09.440892944Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-f08c4c1ddf61"
+      ],
+      "queries": [
+        "software component selection"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-f08c4c1ddf61",
+          "planned_query": "software component selection",
+          "attempt_index": 1,
+          "effective_query": "component selection",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "languages/python-expert.md",
+              "snippet": "- Custom component selection needed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "0xagarg",
+        "repo": "crypto-price-prediction-ai-model",
+        "url": "https://github.com/0xagarg/crypto-price-prediction-ai-model",
+        "description": "Predict BTC, SOL, ETH, GOLD prices",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:19.473766592Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-367f9904fcee"
+      ],
+      "queries": [
+        "build versus reuse"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-367f9904fcee",
+          "planned_query": "build versus reuse",
+          "attempt_index": 1,
+          "effective_query": "build",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".venv/base/lib/python3.10/site-packages/setuptools/command/build.py",
+              "snippet": "class build(_build):"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "H3Art-q",
+        "repo": "JNU-IS-CST-Courses",
+        "url": "https://github.com/H3Art-q/JNU-IS-CST-Courses",
+        "description": "A courses related repo for Jinan University (JNU) International School (IS) CST major / 暨南大学国际学院计算机科学与技术专业相关课程仓库",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:32.482333566Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-c9e3259e04a6"
+      ],
+      "queries": [
+        "software reuse discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-c9e3259e04a6",
+          "planned_query": "software reuse discovery",
+          "attempt_index": 1,
+          "effective_query": "software reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "Software Engineering 软件工程/Notes/ReviewQuestions_SE.md",
+              "snippet": "## Chapter 16: Software reuse软件重用"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "William-Liwei",
+        "repo": "ccfonline",
+        "url": "https://github.com/William-Liwei/ccfonline",
+        "description": "CCF Online is an online query platform focusing on academic conferences and periodicals in the computer field.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:32.482345869Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-c9e3259e04a6"
+      ],
+      "queries": [
+        "software reuse discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-c9e3259e04a6",
+          "planned_query": "software reuse discovery",
+          "attempt_index": 1,
+          "effective_query": "software reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "index.md",
+              "snippet": "| 16 | ICSR | International Conference on Software Reuse | Springer | http://dblp.uni-trier.de/db/conf/icsr/ |"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Eliseowzy",
+        "repo": "SSDUT-learning-materials",
+        "url": "https://github.com/Eliseowzy/SSDUT-learning-materials",
+        "description": "这些是我本科四年的专业课学习资料，分享给大家，也欢迎大家把里面没有的传进去，一定不要造轮子啊。😀",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-08-26T21:40:32.482358042Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-c9e3259e04a6"
+      ],
+      "queries": [
+        "software reuse discovery"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-c9e3259e04a6",
+          "planned_query": "software reuse discovery",
+          "attempt_index": 1,
+          "effective_query": "software reuse",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "SoftwareEngineering/description.txt",
+              "snippet": "Through this course, students will understand and master the basic concepts and knowledge of software engineering, including the scope of software engineering, software processes, software life cycle models, software requirements, object-or"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "scope": "exp-capability-3a0cfcda5e26",
+      "stage": "discovery",
+      "message": "todas as consultas ao Sourcegraph falharam: erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "COMPLETE",
+    "completion_cause": "FINISHED",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 180000000000,
+      "attempt_timeout": 20000000000,
+      "concurrency": 2,
+      "max_attempts": 3
+    },
+    "planned": 12,
+    "started": 12,
+    "completed": 12,
+    "timed_out": 13,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": [
+      {
+        "expansion_id": "exp-capability-249e49a97742",
+        "attempt_index": 0,
+        "planned_query": "open source integration planning",
+        "effective_query": "open source integration planning",
+        "started_at": "2026-08-26T21:37:54.662551133Z",
+        "duration": 20014223893,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-249e49a97742",
+        "attempt_index": 1,
+        "planned_query": "open source integration planning",
+        "effective_query": "integration planning",
+        "started_at": "2026-08-26T21:38:14.676779113Z",
+        "duration": 2266068488,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-2d614d8b63a7",
+        "attempt_index": 0,
+        "planned_query": "open source project discovery",
+        "effective_query": "open source project discovery",
+        "started_at": "2026-08-26T21:37:54.66245276Z",
+        "duration": 20014359565,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-2d614d8b63a7",
+        "attempt_index": 1,
+        "planned_query": "open source project discovery",
+        "effective_query": "project discovery",
+        "started_at": "2026-08-26T21:38:14.676837452Z",
+        "duration": 2260821808,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-3a0cfcda5e26",
+        "attempt_index": 0,
+        "planned_query": "cross repository code discovery",
+        "effective_query": "cross repository code discovery",
+        "started_at": "2026-08-26T21:38:16.937697912Z",
+        "duration": 20001963152,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-3a0cfcda5e26",
+        "attempt_index": 1,
+        "planned_query": "cross repository code discovery",
+        "effective_query": "repository code discovery",
+        "started_at": "2026-08-26T21:38:36.939665603Z",
+        "duration": 20017525950,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-5548fa0e1700",
+        "attempt_index": 0,
+        "planned_query": "software component composition",
+        "effective_query": "software component composition",
+        "started_at": "2026-08-26T21:38:16.942873068Z",
+        "duration": 20001013260,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-5548fa0e1700",
+        "attempt_index": 1,
+        "planned_query": "software component composition",
+        "effective_query": "component composition",
+        "started_at": "2026-08-26T21:38:36.943889073Z",
+        "duration": 2301145038,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-72cf3c4cf7a0",
+        "attempt_index": 0,
+        "planned_query": "dependency adoption decision",
+        "effective_query": "dependency adoption decision",
+        "started_at": "2026-08-26T21:38:39.245145427Z",
+        "duration": 20001444111,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-72cf3c4cf7a0",
+        "attempt_index": 1,
+        "planned_query": "dependency adoption decision",
+        "effective_query": "adoption decision",
+        "started_at": "2026-08-26T21:38:59.246594206Z",
+        "duration": 2276790070,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-7b25ab48848f",
+        "attempt_index": 0,
+        "planned_query": "open source component evaluation",
+        "effective_query": "open source component evaluation",
+        "started_at": "2026-08-26T21:38:56.957258237Z",
+        "duration": 20013726364,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-7b25ab48848f",
+        "attempt_index": 1,
+        "planned_query": "open source component evaluation",
+        "effective_query": "component evaluation",
+        "started_at": "2026-08-26T21:39:16.970997945Z",
+        "duration": 13657189049,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-8dd6cf471d97",
+        "attempt_index": 0,
+        "planned_query": "internal code reuse search",
+        "effective_query": "internal code reuse search",
+        "started_at": "2026-08-26T21:39:01.523416306Z",
+        "duration": 20004318403,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-8dd6cf471d97",
+        "attempt_index": 1,
+        "planned_query": "internal code reuse search",
+        "effective_query": "code reuse",
+        "started_at": "2026-08-26T21:39:21.527739458Z",
+        "duration": 2257819288,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-a0eeabf6d587",
+        "attempt_index": 0,
+        "planned_query": "evidence backed tool evaluation",
+        "effective_query": "evidence backed tool evaluation",
+        "started_at": "2026-08-26T21:39:23.785606375Z",
+        "duration": 20006668445,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-a0eeabf6d587",
+        "attempt_index": 1,
+        "planned_query": "evidence backed tool evaluation",
+        "effective_query": "tool evaluation",
+        "started_at": "2026-08-26T21:39:43.792281452Z",
+        "duration": 2301283308,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-e307e3b9e752",
+        "attempt_index": 0,
+        "planned_query": "GitHub repository recommendation",
+        "effective_query": "GitHub repository recommendation",
+        "started_at": "2026-08-26T21:39:30.628225105Z",
+        "duration": 20004401785,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-e307e3b9e752",
+        "attempt_index": 1,
+        "planned_query": "GitHub repository recommendation",
+        "effective_query": "repository recommendation",
+        "started_at": "2026-08-26T21:39:50.63263267Z",
+        "duration": 6576738788,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-f08c4c1ddf61",
+        "attempt_index": 0,
+        "planned_query": "software component selection",
+        "effective_query": "software component selection",
+        "started_at": "2026-08-26T21:39:46.093601328Z",
+        "duration": 20008090362,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-capability-f08c4c1ddf61",
+        "attempt_index": 1,
+        "planned_query": "software component selection",
+        "effective_query": "component selection",
+        "started_at": "2026-08-26T21:40:06.101697451Z",
+        "duration": 3339204169,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-problem-367f9904fcee",
+        "attempt_index": 0,
+        "planned_query": "build versus reuse",
+        "effective_query": "build versus reuse",
+        "started_at": "2026-08-26T21:39:57.209418155Z",
+        "duration": 20006954927,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-problem-367f9904fcee",
+        "attempt_index": 1,
+        "planned_query": "build versus reuse",
+        "effective_query": "build",
+        "started_at": "2026-08-26T21:40:17.216381057Z",
+        "duration": 2257399891,
+        "status": "SUCCEEDED",
+        "result_count": 1
+      },
+      {
+        "expansion_id": "exp-problem-c9e3259e04a6",
+        "attempt_index": 0,
+        "planned_query": "software reuse discovery",
+        "effective_query": "software reuse discovery",
+        "started_at": "2026-08-26T21:40:09.440950611Z",
+        "duration": 20009832443,
+        "status": "TIMED_OUT",
+        "result_count": 0,
+        "error_class": "TIMEOUT",
+        "safe_message": "erro de conexão com Sourcegraph: Post \"https://sourcegraph.com/.api/graphql\": context deadline exceeded"
+      },
+      {
+        "expansion_id": "exp-problem-c9e3259e04a6",
+        "attempt_index": 1,
+        "planned_query": "software reuse discovery",
+        "effective_query": "software reuse",
+        "started_at": "2026-08-26T21:40:29.450790288Z",
+        "duration": 3031576690,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      }
+    ]
+  }
+}

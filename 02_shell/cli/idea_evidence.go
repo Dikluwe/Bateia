@@ -23,7 +23,7 @@ import (
 
 func runIdeaEvidence(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate>")
+		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate|diagnose>")
 	}
 	switch args[0] {
 	case "plan":
@@ -34,6 +34,8 @@ func runIdeaEvidence(args []string, stdout io.Writer) error {
 		return fmt.Errorf("evidence collect requer o provedor de conteúdo configurado pelo executável")
 	case "evaluate":
 		return runIdeaEvidenceEvaluate(args[1:], stdout)
+	case "diagnose":
+		return runIdeaEvidenceDiagnose(args[1:], stdout)
 	default:
 		return fmt.Errorf("subcomando evidence desconhecido %q", args[0])
 	}

@@ -1,15 +1,16 @@
-# Passo 0007 — Comparar candidatos e decidir reuso
+# Passo 0008 — Comparar candidatos e decidir reuso
 
-**Estado**: `CONDICIONADO`
+**Estado**: `IMPLEMENTADO`
 **Desejo de origem**: [`D-001 — Da ideia à decisão de reuso`](../desejos/D-001-da-ideia-a-decisao-de-reuso.md)
-**Depende de**: [`Passo 0006 — Endurecer e calibrar evidências`](0006-endurecer-e-calibrar-evidencias.md)
+**Depende de**: [`Passo 0007 — Diagnosticar e ampliar cobertura de evidências`](0007-diagnosticar-e-ampliar-cobertura-de-evidencias.md)
 **Onde roda**: Bateia
 **Camadas previstas**: L0, L1 e L2
 **Natureza**: matriz comparativa e decisão determinística de ponto de partida
 
 ## Condição de início
 
-Este passo só pode ser implementado depois que o Passo 0006 atingir:
+Este passo só pode ser implementado depois que o Passo 0007 demonstrar que o
+Passo 0006 atingiu:
 
 - `evidence_precision` ≥ 90% com ao menos dez `PROVEN` revisados;
 - `false_absence_rate` = 0;
@@ -236,3 +237,13 @@ silencioso por candidato.
 - executar código de terceiros;
 - UI/TUI;
 - LLM ou embeddings.
+
+## Evidência de implementação
+
+Implementado em 2026-08-26 com contratos L1, motor determinístico, boca de
+inspeção L2 e prompts L0 próprios. O replay versionado cobre cinco ideias
+distintas e obteve `5/5` decisões alinhadas aos julgamentos congelados. Os testes
+adversariais exercitam as 14 obrigações deste passo; o laudo reproduz comandos,
+resultados e limitações.
+
+Ver: [`Laudo 0008`](../laudos/0008-comparar-candidatos-e-decidir-reuso.md).

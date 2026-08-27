@@ -12,3 +12,9 @@ Materializar somente a responsabilidade desta unidade, preservando os contratos 
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/01_core/usecase/idea_discovery.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.
+## Extensão operacional do Passo 0013
+
+Modele política de deadline total e por tentativa, estados `COMPLETE`, `PARTIAL`
+e `FAILED`, causas de término, receipts seguros e eventos de progresso. Campos
+novos do snapshot devem ser opcionais para preservar replays legados. Timeout,
+cancelamento, falha, vazio e `NOT_STARTED` nunca podem ser equivalentes.

@@ -20,5 +20,16 @@ Cada passo deve declarar:
 | [0003](0003-executar-expansoes-e-medir-precisao-da-descoberta.md) | Executar expansões e medir precisão real da descoberta | `IMPLEMENTADO` |
 | [0004](0004-construir-peneira-probabilistica-explicavel.md) | Rastrear o ruído e construir uma peneira probabilística explicável | `IMPLEMENTADO` |
 | [0005](0005-triar-candidatos-e-comprovar-capacidades.md) | Triar candidatos e comprovar capacidades sem LLM | `IMPLEMENTADO` |
-| [0006](0006-endurecer-e-calibrar-evidencias.md) | Endurecer a coleta e calibrar evidências reais antes da decisão | `EM CALIBRAÇÃO` |
-| [0007](0007-comparar-candidatos-e-decidir-reuso.md) | Comparar candidatos e decidir o ponto de partida sem LLM | `CONDICIONADO` |
+| [0006](0006-endurecer-e-calibrar-evidencias.md) | Endurecer a coleta e calibrar evidências reais antes da decisão | `IMPLEMENTADO` |
+| [0007](0007-diagnosticar-e-ampliar-cobertura-de-evidencias.md) | Diagnosticar perdas de cobertura e atingir o gate sem afrouxar evidências | `IMPLEMENTADO` |
+| [0008](0008-comparar-candidatos-e-decidir-reuso.md) | Comparar candidatos e decidir o ponto de partida sem LLM | `IMPLEMENTADO` |
+| [0009](0009-orquestrar-funil-e-entregar-dossie-de-reuso.md) | Orquestrar o funil e entregar um dossiê reproduzível de reúso | `EM VALIDAÇÃO` |
+| [0010](0010-diagnosticar-inconclusoes-e-coletar-adaptativamente.md) | Diagnosticar inconclusões e coletar somente a evidência faltante | `EM VALIDAÇÃO` |
+| [0011](0011-congelar-benchmark-ponta-a-ponta-e-auditar-utilidade.md) | Congelar corpus correspondente e auditar evidência, decisão, recuperação e utilidade | `EM VALIDAÇÃO` |
+| [0012](0012-executar-autofagia-competitiva-e-formar-katamari-minimo.md) | Auditar concorrentes e propor a menor composição de capacidades que cubra lacunas reais | `EM VALIDAÇÃO` |
+| [0013](0013-limitar-descoberta-e-preservar-resultados-parciais.md) | Impor deadlines, registrar progresso e preservar snapshots parciais da descoberta | `EM VALIDAÇÃO` |
+| [0014](0014-construir-ontologia-lexical-para-descoberta-de-software.md) | Traduzir intenção de reúso em queries conceituais discriminatórias e medir recall | `IMPLEMENTADO` |
+| [0015](0015-separar-catalogo-de-projetos-e-comprovacao-em-codigo.md) | Restaurar GitHub como catálogo e restringir Sourcegraph à comprovação em código | `EM VALIDAÇÃO` |
+| [0016](0016-comparar-superficies-publicas-de-catalogo-e-recuperar-recall.md) | Comparar README, tópicos, pacotes e outro catálogo por ganho marginal de recall | `EM VALIDAÇÃO` |
+| [0017](0017-gerar-consultas-por-frames-funcionais-e-descobrir-produtos-na-web.md) | Descrever o trabalho do produto com frames funcionais e comparar busca nominal versus comportamental | `EM VALIDAÇÃO` |
+| [0018](0018-versionar-gramatica-funcional-e-congelar-busca-web-reexecutavel.md) | Corrigir a gramática funcional e tornar a busca web congelável, reexecutável e causalmente comparável | `PRONTO PARA IMPLEMENTAÇÃO` |

@@ -20,6 +20,14 @@ import (
 
 // RunIdeaCommand executa comandos offline relacionados à materialização de ideias.
 func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.SemanticExpander) error {
+	return runIdeaCommand(args, stdout, firstSemanticExpander(semantic), nil)
+}
+
+func RunIdeaCommandWithWeb(args []string, stdout io.Writer, semantic usecase.SemanticExpander, webProvider domain.ObservableWebSearch) error {
+	return runIdeaCommand(args, stdout, semantic, webProvider)
+}
+
+func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, webProvider domain.ObservableWebSearch) error {
 	if len(args) == 0 {
 		return fmt.Errorf("uso: bateia idea <plan|expand|evaluate> [opções]")
 	}
@@ -27,9 +35,9 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 	case "plan":
 		return runIdeaPlan(args[1:], stdout)
 	case "expand":
-		return runIdeaExpand(args[1:], stdout, firstSemanticExpander(semantic))
+		return runIdeaExpand(args[1:], stdout, semantic)
 	case "evaluate":
-		return runIdeaEvaluate(args[1:], stdout, firstSemanticExpander(semantic))
+		return runIdeaEvaluate(args[1:], stdout, semantic)
 	case "ontology":
 		return runIdeaOntology(args[1:], stdout)
 	case "functional":
@@ -45,7 +53,7 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 	case "decide":
 		return runIdeaDecide(args[1:], stdout)
 	case "recommend":
-		return RunIdeaRecommendCommand(args[1:], stdout, firstSemanticExpander(semantic), nil, nil)
+		return RunIdeaRecommendCommand(args[1:], stdout, semantic, nil, nil)
 	case "recover":
 		return RunIdeaRecoverCommand(args[1:], stdout, nil)
 	case "autofagia":
@@ -53,7 +61,7 @@ func RunIdeaCommand(args []string, stdout io.Writer, semantic ...usecase.Semanti
 	case "katamari":
 		return runIdeaKatamari(args[1:], stdout)
 	case "web":
-		return runIdeaWeb(args[1:], stdout)
+		return runIdeaWeb(args[1:], stdout, webProvider)
 	default:
 		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia ou katamari", args[0])
 	}

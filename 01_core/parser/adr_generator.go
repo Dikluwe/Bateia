@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/adr_generator.md
  * @layer L1
- * @updated 2026-08-04
+ * @updated 2026-08-26
  */
 
 package parser
@@ -19,7 +19,7 @@ func GenerateADRDocument(report *domain.SearchReport) string {
 	var sb strings.Builder
 
 	sb.WriteString("# ADR-001: Decisão de Arquitetura de Software\n\n")
-	sb.WriteString(fmt.Sprintf("**Status**: Aceito (Proposto via Bateia Engine)  \n"))
+	sb.WriteString("**Status**: Aceito (Proposto via Bateia Engine)  \n")
 	sb.WriteString(fmt.Sprintf("**Data**: %s  \n", report.GeneratedAt.Format("2006-01-02")))
 	sb.WriteString(fmt.Sprintf("**Contexto de Pesquisa**: `%s` (Linguagem: %s)  \n\n", report.Query.Query, report.Query.Language))
 

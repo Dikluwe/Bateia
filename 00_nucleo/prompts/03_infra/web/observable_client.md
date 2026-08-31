@@ -1,2 +1,4 @@
 # Prompt L0 — Observable Web Client Infrastructure
-Mock/Observable Web Search adapter implementing ObservableWebSearch.
+Implementar busca pública via API GitHub, uma query por requisição, preservando
+rank, URL, título, snippet, status, instante e receipt sanitizado. Nunca fabricar
+resultados.

@@ -126,7 +126,7 @@ func runFunctionalGrammarAudit(args []string, stdout io.Writer) error {
 	if *queriesPath == "" || *grammarPath == "" {
 		return fmt.Errorf("grammar-audit exige queries e grammar")
 	}
-	var exp domain.FunctionalExpansion
+	var exp domain.FunctionalGrammarExpansion
 	var g domain.FunctionalGrammar
 	if err := readOntologyJSON(*queriesPath, &exp); err != nil {
 		return err
@@ -134,9 +134,6 @@ func runFunctionalGrammarAudit(args []string, stdout io.Writer) error {
 	if err := readOntologyJSON(*grammarPath, &g); err != nil {
 		return err
 	}
-	findings, err := usecase.AuditFunctionalGrammar(exp, g)
-	if err != nil {
-		return err
-	}
+	findings := usecase.AuditFunctionalGrammar(exp, g, nil)
 	return writeIdeaJSON(findings, *output, stdout)
 }

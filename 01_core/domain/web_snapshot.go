@@ -38,14 +38,16 @@ type RawWebResult struct {
 }
 
 type RawWebResponse struct {
-	RequestID   string         `json:"request_id"`
-	QueryID     string         `json:"query_id"`
-	Provider    string         `json:"provider"`
-	RetrievedAt string         `json:"retrieved_at"`
-	Status      string         `json:"status"`
-	HTTPStatus  int            `json:"http_status,omitempty"`
-	Results     []RawWebResult `json:"results"`
-	Receipt     WebReceipt     `json:"receipt"`
+	RequestID    string         `json:"request_id"`
+	QueryID      string         `json:"query_id"`
+	Provider     string         `json:"provider"`
+	RetrievedAt  string         `json:"retrieved_at"`
+	Status       string         `json:"status"`
+	HTTPStatus   int            `json:"http_status,omitempty"`
+	Results      []RawWebResult `json:"results"`
+	Receipt      WebReceipt     `json:"receipt"`
+	RequestHash  string         `json:"request_hash"`
+	ResponseHash string         `json:"response_hash"`
 }
 
 type WebSearchSnapshot struct {
@@ -67,6 +69,8 @@ type WebReplayResult struct {
 	Deduplicated  []RawWebResult `json:"deduplicated"`
 	MissingFields []string       `json:"missing_fields"`
 	Replayable    bool           `json:"replayable"`
+	Organic       []RawWebResult `json:"organic"`
+	Sponsored     []RawWebResult `json:"sponsored"`
 }
 
 type BlindedJudgment struct {
@@ -74,6 +78,7 @@ type BlindedJudgment struct {
 	Judgment     string `json:"judgment"`
 	IsSoftware   bool   `json:"is_software"`
 	IsRepoBacked bool   `json:"is_repo_backed"`
+	ExpectedID   string `json:"expected_id,omitempty"`
 }
 
 type BlindedJudgmentsFile struct {
@@ -81,15 +86,15 @@ type BlindedJudgmentsFile struct {
 }
 
 type GrammarExperimentReport struct {
-	SchemaVersion             string  `json:"schema_version"`
-	JudgedPrecisionAt10Nominal float64 `json:"judged_precision_at_10_nominal"`
-	JudgedPrecisionAt10F1      float64 `json:"judged_precision_at_10_f1"`
-	JudgedPrecisionAt10F2      float64 `json:"judged_precision_at_10_f2"`
-	RepoBackedRecallNominal   float64 `json:"repo_backed_recall_nominal"`
-	RepoBackedRecallF1        float64 `json:"repo_backed_recall_f1"`
-	RepoBackedRecallF2        float64 `json:"repo_backed_recall_f2"`
-	RecallGainOverNominal     float64 `json:"recall_gain_over_nominal"`
-	Verdict                   string  `json:"verdict"`
+	SchemaVersion              string   `json:"schema_version"`
+	JudgedPrecisionAt10Nominal float64  `json:"judged_precision_at_10_nominal"`
+	JudgedPrecisionAt10F1      float64  `json:"judged_precision_at_10_f1"`
+	JudgedPrecisionAt10F2      float64  `json:"judged_precision_at_10_f2"`
+	RepoBackedRecallNominal    *float64 `json:"repo_backed_recall_nominal"`
+	RepoBackedRecallF1         *float64 `json:"repo_backed_recall_f1"`
+	RepoBackedRecallF2         *float64 `json:"repo_backed_recall_f2"`
+	RecallGainOverNominal      float64  `json:"recall_gain_over_nominal"`
+	Verdict                    string   `json:"verdict"`
 }
 
 type ObservableWebSearch interface {

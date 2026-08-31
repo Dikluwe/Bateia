@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/python.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-08-26
  */
 
 package parser
@@ -17,7 +17,6 @@ import (
 
 var (
 	poetryNameRegex    = regexp.MustCompile(`(?m)^\s*name\s*=\s*["']([^"']+)["']`)
-	projectNameRegex   = regexp.MustCompile(`(?m)^\s*name\s*=\s*["']([^"']+)["']`)
 	depLineRegex       = regexp.MustCompile(`^([a-zA-Z0-9_\-\.]+)\s*([<>=!~^].*)?$`)
 	tomlPoetryDepRegex = regexp.MustCompile(`(?m)^\s*([a-zA-Z0-9_\-\.]+)\s*=\s*(.+)$`)
 )
@@ -126,7 +125,7 @@ func parseTomlDepLine(line, depType string) *domain.Dependency {
 	}
 
 	name := strings.ToLower(strings.TrimSpace(matches[1]))
-	rawVersion := strings.Trim(strings.TrimSpace(matches[2]), `"'"`)
+	rawVersion := strings.Trim(strings.TrimSpace(matches[2]), `"'`)
 
 	return &domain.Dependency{
 		Name:     name,

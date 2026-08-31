@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/report/lab_exporter.md
  * @layer L2
- * @updated 2026-08-04
+ * @updated 2026-08-26
  */
 
 package report
@@ -24,7 +24,7 @@ func ExportLabJSON(dataset *domain.LabDataset) ([]byte, error) {
 func GenerateLabMarkdown(dataset *domain.LabDataset) string {
 	var sb strings.Builder
 
-	sb.WriteString(fmt.Sprintf("# 🧪 Caderno de Exercícios & Benchmarks — Lab de Projetos Bateia\n\n"))
+	sb.WriteString("# 🧪 Caderno de Exercícios & Benchmarks — Lab de Projetos Bateia\n\n")
 	sb.WriteString(fmt.Sprintf("**Query Alvo**: `%s`  \n", dataset.Query))
 	sb.WriteString(fmt.Sprintf("**Desafios Minerados**: `%d`  \n", dataset.TotalChallenges))
 	sb.WriteString(fmt.Sprintf("**Gerado Em**: %s  \n\n", dataset.GeneratedAt.Format("2006-01-02 15:04:05 MST")))

@@ -21,6 +21,7 @@ import (
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
 	"bateia/03_infra/sourcegraph"
+	webinfra "bateia/03_infra/web"
 )
 
 func loadEnvFile(filepath string) {
@@ -99,7 +100,21 @@ func main() {
 			}
 			return
 		}
-		if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout, lexicalExpander); err != nil {
+		noToken := false
+		for _, arg := range os.Args[2:] {
+			if arg == "--no-token" {
+				noToken = true
+			}
+		}
+		if !noToken {
+			loadEnvFile(".env")
+		}
+		token := ""
+		if !noToken {
+			token = os.Getenv("GITHUB_TOKEN")
+		}
+		webProvider := webinfra.NewObservableWebClient(nil, token)
+		if err := cli.RunIdeaCommandWithWeb(os.Args[2:], os.Stdout, lexicalExpander, webProvider); err != nil {
 			log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 		}
 		return

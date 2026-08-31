@@ -1,28 +1,26 @@
 {
   "schema_version": "2",
-  "version": "v2",
+  "version": "v2.1.0",
   "rules": [
-    {
-      "id": "r1",
-      "intent": "descoberta",
-      "pattern": "tool that {action} {object}",
-      "required_slots": ["action", "object"],
-      "priority": 1,
-      "max_variants": 3
-    }
+    {"id":"ADOPT-IMP","intent":"adoption-decision","pattern":"{action} {object} from {input} and produce {output}","required_slots":["action","object","input","output"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"ADOPT-3S","intent":"adoption-decision","pattern":"tool that {action} {object} from {input} and returns {output}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"},
+    {"id":"SELECT-IMP","intent":"component-selection","pattern":"{action} {object} for {input} and return {output}","required_slots":["action","object","input","output"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"SELECT-3S","intent":"component-selection","pattern":"tool that {action} {object} for {input} and returns {output}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"},
+    {"id":"INTERNAL-IMP","intent":"internal-reuse","pattern":"{action} {object} for {input} and return {output}","required_slots":["action","object","input","output"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"INTERNAL-3S","intent":"internal-reuse","pattern":"tool that {action} {object} for {input} and returns {output}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"},
+    {"id":"RECOMMEND-IMP","intent":"repository-recommendation","pattern":"{action} {object} for {input} and return {output}","required_slots":["action","object","input","output"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"RECOMMEND-3S","intent":"repository-recommendation","pattern":"tool that {action} {object} for {input} and returns {output}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"},
+    {"id":"COMPOSE-IMP","intent":"software-composition","pattern":"{action} {object} to produce {output} for {input}","required_slots":["action","object","input","output"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"COMPOSE-3S","intent":"software-composition","pattern":"tool that {action} {object} to produce {output} for {input}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"},
+    {"id":"REUSE-IMP","intent":"software-reuse-discovery","pattern":"{action} {object} for {input} {timing}","required_slots":["action","object","input","timing"],"priority":1,"max_variants":1,"subject_kind":"imperative"},
+    {"id":"REUSE-3S","intent":"software-reuse-discovery","pattern":"tool that {action} {object} for {input} and returns {output}","required_slots":["action","object","input","output"],"priority":2,"max_variants":1,"subject_kind":"singular_3rd"}
   ],
   "morphology": [
-    {
-      "id": "m1",
-      "subject_kind": "singular_3rd",
-      "source": "evaluate",
-      "realized": "evaluates"
-    },
-    {
-      "id": "m2",
-      "subject_kind": "singular_3rd",
-      "source": "find",
-      "realized": "finds"
-    }
-  ]
+    {"id":"M-EVALUATE-3S","subject_kind":"singular_3rd","source":"evaluate","realized":"evaluates"},
+    {"id":"M-COMPARE-SELECT-3S","subject_kind":"singular_3rd","source":"compare and select","realized":"compares and selects"},
+    {"id":"M-FIND-3S","subject_kind":"singular_3rd","source":"find","realized":"finds"},
+    {"id":"M-FIND-RANK-3S","subject_kind":"singular_3rd","source":"find and rank","realized":"finds and ranks"},
+    {"id":"M-COMBINE-3S","subject_kind":"singular_3rd","source":"combine","realized":"combines"}
+  ],
+  "hash": ""
 }

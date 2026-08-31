@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client.md
  * @layer L3
- * @updated 2026-07-25
+ * @updated 2026-08-26
  */
 
 package sourcegraph
@@ -266,7 +266,7 @@ func (c *Client) executeSGQueryDetailed(ctx context.Context, queryStr string, ma
 
 	if resp.StatusCode != http.StatusOK {
 		respData, _ := io.ReadAll(resp.Body)
-		return nil, nil, fmt.Errorf("Sourcegraph retornou status %d: %s", resp.StatusCode, string(respData))
+		return nil, nil, fmt.Errorf("status inesperado do Sourcegraph: %d: %s", resp.StatusCode, string(respData))
 	}
 
 	respData, err := io.ReadAll(resp.Body)

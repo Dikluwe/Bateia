@@ -1,53 +1,414 @@
 {
   "schema_version": "1",
+  "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664",
+  "frames": [
+    {
+      "id": "frame-adopt",
+      "concept_id": "adoption-decision",
+      "source_ids": [
+        "exp-capability-60a70efc9eb3"
+      ],
+      "inputs": [
+        "GitHub repository"
+      ],
+      "actions": [
+        "evaluate"
+      ],
+      "objects": [
+        "open-source software tool"
+      ],
+      "outputs": [
+        "adoption decision verdict"
+      ],
+      "rule_id": "JOB-ADOPT-001"
+    },
+    {
+      "id": "frame-select",
+      "concept_id": "component-selection",
+      "source_ids": [
+        "exp-capability-626f01859fc4"
+      ],
+      "inputs": [
+        "software requirement"
+      ],
+      "actions": [
+        "compare and select"
+      ],
+      "objects": [
+        "open-source software components"
+      ],
+      "outputs": [
+        "best-fit component"
+      ],
+      "rule_id": "JOB-SELECT-001"
+    },
+    {
+      "id": "frame-internal",
+      "concept_id": "internal-reuse",
+      "source_ids": [
+        "exp-capability-7ccac9fff8b3"
+      ],
+      "inputs": [
+        "implementation need"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing implementation across repositories"
+      ],
+      "outputs": [
+        "reusable internal component"
+      ],
+      "rule_id": "JOB-INTERNAL-001"
+    },
+    {
+      "id": "frame-recommend",
+      "concept_id": "repository-recommendation",
+      "source_ids": [
+        "exp-capability-fc31e1d88f5c"
+      ],
+      "inputs": [
+        "natural language project idea"
+      ],
+      "actions": [
+        "find and rank"
+      ],
+      "objects": [
+        "GitHub repositories"
+      ],
+      "outputs": [
+        "repository shortlist"
+      ],
+      "rule_id": "JOB-RECOMMEND-001"
+    },
+    {
+      "id": "frame-compose",
+      "concept_id": "software-composition",
+      "source_ids": [
+        "exp-capability-1ca426485640"
+      ],
+      "inputs": [
+        "capabilities not covered by one project"
+      ],
+      "actions": [
+        "combine"
+      ],
+      "objects": [
+        "multiple open-source projects"
+      ],
+      "outputs": [
+        "minimal capability coverage"
+      ],
+      "rule_id": "JOB-COMPOSE-001"
+    },
+    {
+      "id": "frame-reuse",
+      "concept_id": "software-reuse-discovery",
+      "source_ids": [
+        "exp-problem-44c2d0bdff93"
+      ],
+      "inputs": [
+        "software idea"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing open-source projects"
+      ],
+      "outputs": [
+        "reusable starting point"
+      ],
+      "timing": [
+        "before building from scratch"
+      ],
+      "rule_id": "JOB-REUSE-001"
+    }
+  ],
   "queries": [
     {
-      "id": "q-f1-1",
-      "text": "functional v1 query 1"
+      "id": "fq-bf1a572f8e39",
+      "frame_id": "frame-adopt",
+      "concept_id": "adoption-decision",
+      "template_id": "T1",
+      "text": "evaluate open-source software tool from GitHub repository",
+      "inputs": [
+        "GitHub repository"
+      ],
+      "actions": [
+        "evaluate"
+      ],
+      "objects": [
+        "open-source software tool"
+      ],
+      "outputs": [
+        "adoption decision verdict"
+      ],
+      "source_ids": [
+        "exp-capability-60a70efc9eb3"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-2",
-      "text": "functional v1 query 2"
+      "id": "fq-c7397fc2a0bb",
+      "frame_id": "frame-adopt",
+      "concept_id": "adoption-decision",
+      "template_id": "T2",
+      "text": "tool that evaluate open-source software tool and returns adoption decision verdict",
+      "inputs": [
+        "GitHub repository"
+      ],
+      "actions": [
+        "evaluate"
+      ],
+      "objects": [
+        "open-source software tool"
+      ],
+      "outputs": [
+        "adoption decision verdict"
+      ],
+      "source_ids": [
+        "exp-capability-60a70efc9eb3"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-3",
-      "text": "functional v1 query 3"
+      "id": "fq-7884eced39b9",
+      "frame_id": "frame-select",
+      "concept_id": "component-selection",
+      "template_id": "T1",
+      "text": "compare and select open-source software components from software requirement",
+      "inputs": [
+        "software requirement"
+      ],
+      "actions": [
+        "compare and select"
+      ],
+      "objects": [
+        "open-source software components"
+      ],
+      "outputs": [
+        "best-fit component"
+      ],
+      "source_ids": [
+        "exp-capability-626f01859fc4"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-4",
-      "text": "functional v1 query 4"
+      "id": "fq-7edeedf0665a",
+      "frame_id": "frame-select",
+      "concept_id": "component-selection",
+      "template_id": "T2",
+      "text": "tool that compare and select open-source software components and returns best-fit component",
+      "inputs": [
+        "software requirement"
+      ],
+      "actions": [
+        "compare and select"
+      ],
+      "objects": [
+        "open-source software components"
+      ],
+      "outputs": [
+        "best-fit component"
+      ],
+      "source_ids": [
+        "exp-capability-626f01859fc4"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-5",
-      "text": "functional v1 query 5"
+      "id": "fq-d7c00407cc2a",
+      "frame_id": "frame-internal",
+      "concept_id": "internal-reuse",
+      "template_id": "T1",
+      "text": "find existing implementation across repositories from implementation need",
+      "inputs": [
+        "implementation need"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing implementation across repositories"
+      ],
+      "outputs": [
+        "reusable internal component"
+      ],
+      "source_ids": [
+        "exp-capability-7ccac9fff8b3"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-6",
-      "text": "functional v1 query 6"
+      "id": "fq-134b0aeec052",
+      "frame_id": "frame-internal",
+      "concept_id": "internal-reuse",
+      "template_id": "T2",
+      "text": "tool that find existing implementation across repositories and returns reusable internal component",
+      "inputs": [
+        "implementation need"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing implementation across repositories"
+      ],
+      "outputs": [
+        "reusable internal component"
+      ],
+      "source_ids": [
+        "exp-capability-7ccac9fff8b3"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-7",
-      "text": "functional v1 query 7"
+      "id": "fq-8b554d676920",
+      "frame_id": "frame-recommend",
+      "concept_id": "repository-recommendation",
+      "template_id": "T1",
+      "text": "find and rank GitHub repositories from natural language project idea",
+      "inputs": [
+        "natural language project idea"
+      ],
+      "actions": [
+        "find and rank"
+      ],
+      "objects": [
+        "GitHub repositories"
+      ],
+      "outputs": [
+        "repository shortlist"
+      ],
+      "source_ids": [
+        "exp-capability-fc31e1d88f5c"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-8",
-      "text": "functional v1 query 8"
+      "id": "fq-81e93e4e8dea",
+      "frame_id": "frame-recommend",
+      "concept_id": "repository-recommendation",
+      "template_id": "T2",
+      "text": "tool that find and rank GitHub repositories and returns repository shortlist",
+      "inputs": [
+        "natural language project idea"
+      ],
+      "actions": [
+        "find and rank"
+      ],
+      "objects": [
+        "GitHub repositories"
+      ],
+      "outputs": [
+        "repository shortlist"
+      ],
+      "source_ids": [
+        "exp-capability-fc31e1d88f5c"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-9",
-      "text": "functional v1 query 9"
+      "id": "fq-b3f2599905f2",
+      "frame_id": "frame-compose",
+      "concept_id": "software-composition",
+      "template_id": "T1",
+      "text": "combine multiple open-source projects from capabilities not covered by one project",
+      "inputs": [
+        "capabilities not covered by one project"
+      ],
+      "actions": [
+        "combine"
+      ],
+      "objects": [
+        "multiple open-source projects"
+      ],
+      "outputs": [
+        "minimal capability coverage"
+      ],
+      "source_ids": [
+        "exp-capability-1ca426485640"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-10",
-      "text": "functional v1 query 10"
+      "id": "fq-c34eb0bfaaa4",
+      "frame_id": "frame-compose",
+      "concept_id": "software-composition",
+      "template_id": "T2",
+      "text": "tool that combine multiple open-source projects and returns minimal capability coverage",
+      "inputs": [
+        "capabilities not covered by one project"
+      ],
+      "actions": [
+        "combine"
+      ],
+      "objects": [
+        "multiple open-source projects"
+      ],
+      "outputs": [
+        "minimal capability coverage"
+      ],
+      "source_ids": [
+        "exp-capability-1ca426485640"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-11",
-      "text": "functional v1 query 11"
+      "id": "fq-b411497b98c8",
+      "frame_id": "frame-reuse",
+      "concept_id": "software-reuse-discovery",
+      "template_id": "T1",
+      "text": "find existing open-source projects from software idea",
+      "inputs": [
+        "software idea"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing open-source projects"
+      ],
+      "outputs": [
+        "reusable starting point"
+      ],
+      "timing": [
+        "before building from scratch"
+      ],
+      "source_ids": [
+        "exp-problem-44c2d0bdff93"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     },
     {
-      "id": "q-f1-12",
-      "text": "functional v1 query 12"
+      "id": "fq-85ebcaafbec2",
+      "frame_id": "frame-reuse",
+      "concept_id": "software-reuse-discovery",
+      "template_id": "T2",
+      "text": "tool that find existing open-source projects and returns reusable starting point",
+      "inputs": [
+        "software idea"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing open-source projects"
+      ],
+      "outputs": [
+        "reusable starting point"
+      ],
+      "timing": [
+        "before building from scratch"
+      ],
+      "source_ids": [
+        "exp-problem-44c2d0bdff93"
+      ],
+      "lexicon_hash": "dea321b8538c57d5e34a54bce7307ee445879a2aa14810b9c15caf3cdfb04664"
     }
-  ]
+  ],
+  "unknown": []
 }

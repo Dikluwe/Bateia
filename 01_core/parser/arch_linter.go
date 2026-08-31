@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/arch_linter.md
  * @layer L1
- * @updated 2026-08-08
+ * @updated 2026-08-26
  */
 
 package parser
@@ -165,9 +165,4 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 	}
 
 	return violations
-}
-
-func filepathBase(path string) string {
-	parts := strings.Split(path, "/")
-	return parts[len(parts)-1]
 }

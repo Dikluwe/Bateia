@@ -1,6 +1,6 @@
 # Passo 0018 — Versionar gramática funcional e congelar busca web reexecutável
 
-**Estado**: `PRONTO PARA IMPLEMENTAÇÃO`  
+**Estado**: `EM VALIDAÇÃO`
 **Desejo de origem**: [`D-001 — Da ideia à decisão de reuso`](../desejos/D-001-da-ideia-a-decisao-de-reuso.md)  
 **Depende de**: [`Passo 0017 — Gerar consultas por frames funcionais e descobrir produtos na web`](0017-gerar-consultas-por-frames-funcionais-e-descobrir-produtos-na-web.md)  
 **Onde roda**: Bateia  
@@ -427,4 +427,3 @@ O Bateia terá avançado quando conseguir transformar o mesmo frame em consultas
 gramaticalmente válidas, demonstrar que elas aumentam recall com julgamento
 cego e reproduzir toda normalização e métrica a partir de snapshots, sem rede e
 sem LLM.
-

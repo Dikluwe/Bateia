@@ -22,6 +22,7 @@ type FunctionalGrammarRule struct {
 	OptionalSlots []string `json:"optional_slots,omitempty"`
 	Priority      int      `json:"priority"`
 	MaxVariants   int      `json:"max_variants"`
+	SubjectKind   string   `json:"subject_kind"`
 }
 
 type MorphologyRule struct {
@@ -40,4 +41,19 @@ type GrammarFinding struct {
 	MissingSlots    []string `json:"missing_slots,omitempty"`
 	ForbiddenHits   []string `json:"forbidden_hits,omitempty"`
 	Reasons         []string `json:"reasons"`
+}
+
+type RealizedFunctionalQuery struct {
+	FunctionalQuery
+	GrammarVersion string   `json:"grammar_version"`
+	GrammarHash    string   `json:"grammar_hash"`
+	GrammarRuleID  string   `json:"grammar_rule_id"`
+	MorphologyIDs  []string `json:"morphology_ids,omitempty"`
+}
+
+type FunctionalGrammarExpansion struct {
+	SchemaVersion string                    `json:"schema_version"`
+	GrammarHash   string                    `json:"grammar_hash"`
+	Queries       []RealizedFunctionalQuery `json:"queries"`
+	Unknown       []GrammarFinding          `json:"unknown,omitempty"`
 }

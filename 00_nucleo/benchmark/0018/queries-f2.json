@@ -1,53 +1,342 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
+  "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
   "queries": [
     {
-      "id": "q-f2-1",
-      "text": "tool that evaluates feature 1"
+      "id": "fg-1ba72268bba7",
+      "frame_id": "frame-reuse",
+      "concept_id": "software-reuse-discovery",
+      "template_id": "REUSE-IMP",
+      "text": "find existing open-source projects for software idea before building from scratch",
+      "inputs": [
+        "software idea"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing open-source projects"
+      ],
+      "outputs": [
+        "reusable starting point"
+      ],
+      "timing": [
+        "before building from scratch"
+      ],
+      "source_ids": [
+        "exp-problem-44c2d0bdff93"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "REUSE-IMP"
     },
     {
-      "id": "q-f2-2",
-      "text": "tool that evaluates feature 2"
+      "id": "fg-1c557e306596",
+      "frame_id": "frame-internal",
+      "concept_id": "internal-reuse",
+      "template_id": "INTERNAL-3S",
+      "text": "tool that finds existing implementation across repositories for implementation need and returns reusable internal component",
+      "inputs": [
+        "implementation need"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing implementation across repositories"
+      ],
+      "outputs": [
+        "reusable internal component"
+      ],
+      "source_ids": [
+        "exp-capability-7ccac9fff8b3"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "INTERNAL-3S",
+      "morphology_ids": [
+        "M-FIND-3S"
+      ]
     },
     {
-      "id": "q-f2-3",
-      "text": "tool that evaluates feature 3"
+      "id": "fg-3430ec206853",
+      "frame_id": "frame-compose",
+      "concept_id": "software-composition",
+      "template_id": "COMPOSE-3S",
+      "text": "tool that combines multiple open-source projects to produce minimal capability coverage for capabilities not covered by one project",
+      "inputs": [
+        "capabilities not covered by one project"
+      ],
+      "actions": [
+        "combine"
+      ],
+      "objects": [
+        "multiple open-source projects"
+      ],
+      "outputs": [
+        "minimal capability coverage"
+      ],
+      "source_ids": [
+        "exp-capability-1ca426485640"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "COMPOSE-3S",
+      "morphology_ids": [
+        "M-COMBINE-3S"
+      ]
     },
     {
-      "id": "q-f2-4",
-      "text": "tool that evaluates feature 4"
+      "id": "fg-40d2ce8ef575",
+      "frame_id": "frame-select",
+      "concept_id": "component-selection",
+      "template_id": "SELECT-IMP",
+      "text": "compare and select open-source software components for software requirement and return best-fit component",
+      "inputs": [
+        "software requirement"
+      ],
+      "actions": [
+        "compare and select"
+      ],
+      "objects": [
+        "open-source software components"
+      ],
+      "outputs": [
+        "best-fit component"
+      ],
+      "source_ids": [
+        "exp-capability-626f01859fc4"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "SELECT-IMP"
     },
     {
-      "id": "q-f2-5",
-      "text": "tool that evaluates feature 5"
+      "id": "fg-47f919e5b0b5",
+      "frame_id": "frame-adopt",
+      "concept_id": "adoption-decision",
+      "template_id": "ADOPT-IMP",
+      "text": "evaluate open-source software tool from GitHub repository and produce adoption decision verdict",
+      "inputs": [
+        "GitHub repository"
+      ],
+      "actions": [
+        "evaluate"
+      ],
+      "objects": [
+        "open-source software tool"
+      ],
+      "outputs": [
+        "adoption decision verdict"
+      ],
+      "source_ids": [
+        "exp-capability-60a70efc9eb3"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "ADOPT-IMP"
     },
     {
-      "id": "q-f2-6",
-      "text": "tool that evaluates feature 6"
+      "id": "fg-9c32d58e222a",
+      "frame_id": "frame-select",
+      "concept_id": "component-selection",
+      "template_id": "SELECT-3S",
+      "text": "tool that compares and selects open-source software components for software requirement and returns best-fit component",
+      "inputs": [
+        "software requirement"
+      ],
+      "actions": [
+        "compare and select"
+      ],
+      "objects": [
+        "open-source software components"
+      ],
+      "outputs": [
+        "best-fit component"
+      ],
+      "source_ids": [
+        "exp-capability-626f01859fc4"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "SELECT-3S",
+      "morphology_ids": [
+        "M-COMPARE-SELECT-3S"
+      ]
     },
     {
-      "id": "q-f2-7",
-      "text": "tool that evaluates feature 7"
+      "id": "fg-9c3f6dae161a",
+      "frame_id": "frame-adopt",
+      "concept_id": "adoption-decision",
+      "template_id": "ADOPT-3S",
+      "text": "tool that evaluates open-source software tool from GitHub repository and returns adoption decision verdict",
+      "inputs": [
+        "GitHub repository"
+      ],
+      "actions": [
+        "evaluate"
+      ],
+      "objects": [
+        "open-source software tool"
+      ],
+      "outputs": [
+        "adoption decision verdict"
+      ],
+      "source_ids": [
+        "exp-capability-60a70efc9eb3"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "ADOPT-3S",
+      "morphology_ids": [
+        "M-EVALUATE-3S"
+      ]
     },
     {
-      "id": "q-f2-8",
-      "text": "tool that evaluates feature 8"
+      "id": "fg-a247ff461146",
+      "frame_id": "frame-compose",
+      "concept_id": "software-composition",
+      "template_id": "COMPOSE-IMP",
+      "text": "combine multiple open-source projects to produce minimal capability coverage for capabilities not covered by one project",
+      "inputs": [
+        "capabilities not covered by one project"
+      ],
+      "actions": [
+        "combine"
+      ],
+      "objects": [
+        "multiple open-source projects"
+      ],
+      "outputs": [
+        "minimal capability coverage"
+      ],
+      "source_ids": [
+        "exp-capability-1ca426485640"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "COMPOSE-IMP"
     },
     {
-      "id": "q-f2-9",
-      "text": "tool that evaluates feature 9"
+      "id": "fg-ab9fac422c9c",
+      "frame_id": "frame-recommend",
+      "concept_id": "repository-recommendation",
+      "template_id": "RECOMMEND-3S",
+      "text": "tool that finds and ranks GitHub repositories for natural language project idea and returns repository shortlist",
+      "inputs": [
+        "natural language project idea"
+      ],
+      "actions": [
+        "find and rank"
+      ],
+      "objects": [
+        "GitHub repositories"
+      ],
+      "outputs": [
+        "repository shortlist"
+      ],
+      "source_ids": [
+        "exp-capability-fc31e1d88f5c"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "RECOMMEND-3S",
+      "morphology_ids": [
+        "M-FIND-RANK-3S"
+      ]
     },
     {
-      "id": "q-f2-10",
-      "text": "tool that evaluates feature 10"
+      "id": "fg-b0d659801ca4",
+      "frame_id": "frame-internal",
+      "concept_id": "internal-reuse",
+      "template_id": "INTERNAL-IMP",
+      "text": "find existing implementation across repositories for implementation need and return reusable internal component",
+      "inputs": [
+        "implementation need"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing implementation across repositories"
+      ],
+      "outputs": [
+        "reusable internal component"
+      ],
+      "source_ids": [
+        "exp-capability-7ccac9fff8b3"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "INTERNAL-IMP"
     },
     {
-      "id": "q-f2-11",
-      "text": "tool that evaluates feature 11"
+      "id": "fg-b8d4327bbfdb",
+      "frame_id": "frame-reuse",
+      "concept_id": "software-reuse-discovery",
+      "template_id": "REUSE-3S",
+      "text": "tool that finds existing open-source projects for software idea and returns reusable starting point",
+      "inputs": [
+        "software idea"
+      ],
+      "actions": [
+        "find"
+      ],
+      "objects": [
+        "existing open-source projects"
+      ],
+      "outputs": [
+        "reusable starting point"
+      ],
+      "timing": [
+        "before building from scratch"
+      ],
+      "source_ids": [
+        "exp-problem-44c2d0bdff93"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "REUSE-3S",
+      "morphology_ids": [
+        "M-FIND-3S"
+      ]
     },
     {
-      "id": "q-f2-12",
-      "text": "tool that evaluates feature 12"
+      "id": "fg-dc2ae33fa6e8",
+      "frame_id": "frame-recommend",
+      "concept_id": "repository-recommendation",
+      "template_id": "RECOMMEND-IMP",
+      "text": "find and rank GitHub repositories for natural language project idea and return repository shortlist",
+      "inputs": [
+        "natural language project idea"
+      ],
+      "actions": [
+        "find and rank"
+      ],
+      "objects": [
+        "GitHub repositories"
+      ],
+      "outputs": [
+        "repository shortlist"
+      ],
+      "source_ids": [
+        "exp-capability-fc31e1d88f5c"
+      ],
+      "lexicon_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_version": "v2.1.0",
+      "grammar_hash": "bb29cd4e8d21096e1de56dd8db8076042e438f58c0f574cf050479cc7499394e",
+      "grammar_rule_id": "RECOMMEND-IMP"
     }
   ]
 }

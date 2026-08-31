@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/report/html_generator.md
  * @layer L2
- * @updated 2026-08-03
+ * @updated 2026-08-26
  */
 
 package report
@@ -50,7 +50,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString("  </script>\n</head>\n<body>\n<div class=\"container\">\n")
 
 	sb.WriteString("  <header>\n")
-	sb.WriteString(fmt.Sprintf("    <h1>🔍 Bateia v1.0 — Relatório Arquitetural</h1>\n"))
+	sb.WriteString("    <h1>🔍 Bateia v1.0 — Relatório Arquitetural</h1>\n")
 	sb.WriteString(fmt.Sprintf("    <div class=\"meta\">Query: <strong>%s</strong> | Linguagem: <strong>%s</strong> | Gerado em: %s</div>\n", html.EscapeString(report.Query.Query), html.EscapeString(report.Query.Language), report.GeneratedAt.Format("2006-01-02 15:04:05 MST")))
 	sb.WriteString("  </header>\n")
 

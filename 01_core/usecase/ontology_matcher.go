@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/ontology_matcher.md
  * @layer L1
- * @updated 2026-08-08
+ * @updated 2026-08-26
  */
 
 package usecase
@@ -12,6 +12,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"unicode"
 
 	"bateia/01_core/domain"
 )
@@ -311,5 +312,14 @@ func deriveProblemDomain(keywords []string) string {
 	if strings.Contains(kwStr, "web") || strings.Contains(kwStr, "http") || strings.Contains(kwStr, "api") {
 		return "Web Service & API"
 	}
-	return strings.Title(keywords[0]) + " System"
+	return capitalizeFirst(keywords[0]) + " System"
+}
+
+func capitalizeFirst(s string) string {
+	if s == "" {
+		return s
+	}
+	r := []rune(s)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
 }

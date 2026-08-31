@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/report/generator.md
  * @layer L2
- * @updated 2026-07-25
+ * @updated 2026-08-26
  */
 
 package report
@@ -20,14 +20,14 @@ import (
 func GenerateMarkdownReport(report *domain.SearchReport) string {
 	var sb strings.Builder
 
-	sb.WriteString(fmt.Sprintf("# Relatório de Análise Arquitetural — Bateia\n\n"))
+	sb.WriteString("# Relatório de Análise Arquitetural — Bateia\n\n")
 	sb.WriteString(fmt.Sprintf("**Query de Busca**: `%s`  \n", report.Query.Query))
 	sb.WriteString(fmt.Sprintf("**Linguagem**: `%s`  \n", report.Query.Language))
 	sb.WriteString(fmt.Sprintf("**Gerado em**: %s  \n\n", report.GeneratedAt.Format("2006-01-02 15:04:05 MST")))
 
 	sb.WriteString("## Resumo do Funil de Redução\n\n")
-	sb.WriteString(fmt.Sprintf("| Estágio | Quantidade | Observação |\n"))
-	sb.WriteString(fmt.Sprintf("| :--- | :--- | :--- |\n"))
+	sb.WriteString("| Estágio | Quantidade | Observação |\n")
+	sb.WriteString("| :--- | :--- | :--- |\n")
 	sb.WriteString(fmt.Sprintf("| **1. Descoberta (Topo)** | %d candidatos | Fonte: Sourcegraph (sem consumo de Search API) |\n", report.TopCandidates))
 	sb.WriteString(fmt.Sprintf("| **2. Triagem (Meio)** | %d aprovados | Leitura de manifestos e estrutura (%d descartados) |\n", report.TriagedCount, report.DiscardedCount))
 	sb.WriteString(fmt.Sprintf("| **3. Extração (Fundo)** | %d entregues | Extração idempotente e cacheados por `repo@commit` |\n\n", report.ExtractedCount))

@@ -42,6 +42,7 @@ type IdeaRunRequest struct {
 	Strategy        string              `json:"strategy"`
 	Provider        string              `json:"provider,omitempty"`
 	Language        string              `json:"language,omitempty"`
+	SearchLocales   []string            `json:"search_locales,omitempty"`
 	LocalPaths      []string            `json:"local_paths,omitempty"`
 	ReplayDirectory string              `json:"replay_directory,omitempty"`
 	OutputDirectory string              `json:"output_directory"`

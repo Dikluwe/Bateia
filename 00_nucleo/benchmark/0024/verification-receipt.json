@@ -1,0 +1,104 @@
+{
+  "schema_version": "tekt.verification-receipt.v1",
+  "step": "0024",
+  "contract_revision": 4,
+  "baseline_commit": "d62a30c2460a1760e5cfc6e14afa1c3d289005a6",
+  "verdict": "CERTIFIED",
+  "scope": "Implementacao e consumers do contrato observavel selado para ranking offline de alternativas funcionais, integracao no dossie idea recommend e suplementos adversariais M15, M16 e M17.",
+  "attestation": "EXECUTED_WITHOUT_STRONG_ISOLATION_ATTESTATION",
+  "sealed_hashes": {
+    "seal": "742e2567568f95d76eb1e9e416b52aa3c1c2d8329b44c56eb24851092a9f98ec",
+    "manifest": "7773fc1c6df1ee275e74a3aa80a9437d703e25c745782937c0011fb673d7be79",
+    "intention": "fb06916e5f8056fbd58b9e8f12c482fb65f6aa349c483ace470cd32b05317bbb",
+    "contract": "7c3faf325923a86cf55f94bb9e9aecd69c44ae77f937c5136a3850c1369c765d",
+    "adversarial_cases": "ef0c5f939c4e08de1f2aa71ff42bf6bbe28687f39100b1eca9fd98bb2c6fee61",
+    "prompt_domain": "1ec33f7d938d83784017ddde70b80d5dbd7131a157a93ad4fd60063ed17234d0",
+    "prompt_domain_test": "91c1f5766025973f499232f87023b5d7c30e264c76499f78e0d21604291c4866",
+    "prompt_usecase": "366ee416441a35b7c3fc7f490ba8ccd9145ec7c031d4600a0e3d5931bcb7137c",
+    "prompt_usecase_test": "40ac139c2b16b644b376d8572253c23d61a8944c9985e9192cf0329d94c5df6b"
+  },
+  "implementation_hashes": {
+    "01_core/domain/software_alternative.go": "f776799b2c17189b9153474ab4724966e2b42315b8cf7d8d0bcf821cf72c3a63",
+    "01_core/usecase/idea_run.go": "ca6cbe8828c1cad6e3f4ccbb289517a3b106b7bb1381b405941ac2cfaf1d8b62",
+    "01_core/usecase/software_alternative.go": "cafa563b0647983059d0bdb01611f0c66f1f8e1d99a84404d90998ad2948c0e4",
+    "02_shell/cli/app.go": "f25c2150661baa3f4abe7768907524aa6d91965d340955c20e563e38c2744fd8",
+    "02_shell/cli/idea_recommend.go": "9bd08cf77feeb349ee83f45edb2086ac8466b501f01a58299a98e25f644f8016"
+  },
+  "test_hashes": {
+    "01_core/domain/software_alternative_test.go": "237a4e4a5b2a0203ba28fd4a75efa0b57095f79fa4b5d044dd62698f56a65ef1",
+    "01_core/usecase/idea_run_test.go": "7ddf2b0fb1f3c63133a07f5628904df4327802d7747652d66c81cce53239f019",
+    "01_core/usecase/software_alternative_test.go": "e35a777a9831dbc468f96c44f45dc177cd1249153c672830033a2b4b63622a61",
+    "02_shell/cli/idea_recommend_test.go": "f535487f182962fcb4f2b571fb0787d587e6ac13ce79485a65b6516485a8cdd2"
+  },
+  "documentation_hashes": {
+    "00_nucleo/passos/README.md": "ae2872eb5003df93f4e278def5205c4594e2f592f5aea75d1b8c1a04409a980b",
+    "README.md": "14fe1df507e1352ef848fecbab0e9b40d0c079bea0c3cc7949cbcb73870e0645"
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "killed": 35,
+    "total": 35,
+    "survivors": 0,
+    "breakdown": {
+      "sealed_core_M01_M14": "29/29",
+      "sealed_cli_M06b_M06d": "3/3",
+      "post_seal_M15_M16": "2/2",
+      "post_seal_M17": "1/1"
+    }
+  },
+  "e2e_observable": {
+    "gate": "TestRankSoftwareAlternativesM17PreservesCanonicalCapabilityMatrix",
+    "surface": "SoftwareAlternativeReport JSON",
+    "observations": [
+      "dependency graph is serialized as PROVEN with graph.go evidence",
+      "impact analysis is serialized as PARTIAL with impact.go evidence",
+      "extra capabilities are absent from the required matrix",
+      "omitted or duplicated required capabilities remain named and INCONCLUSIVE",
+      "input reordering produces byte-identical canonical JSON"
+    ]
+  },
+  "gates": [
+    {
+      "name": "sealed-hash-integrity",
+      "command": "sha256sum seal, manifest, intention, contract, adversarial cases and prompts",
+      "result": "PASS"
+    },
+    {
+      "name": "mutation-core-and-M17",
+      "command": "GOCACHE=/tmp/bateia-go-cache go test ./01_core/usecase -run '^(TestRankSoftwareAlternativesRejectsSealedMutations|TestRankSoftwareAlternativesM17PreservesCanonicalCapabilityMatrix)$' -count=1 -v",
+      "result": "PASS"
+    },
+    {
+      "name": "mutation-cli-and-local-supplements",
+      "command": "GOCACHE=/tmp/bateia-go-cache go test ./02_shell/cli -run '^(TestIdeaRecommendTargetArtifactsRejectSealedRepositorySyntaxMutations|TestIdeaRecommendLocalExcludesMatchingGitRemoteWithoutRemappingOtherWorktrees)$' -count=1 -v",
+      "result": "PASS"
+    },
+    {
+      "name": "affected-packages",
+      "command": "GOCACHE=/tmp/bateia-go-cache go test ./01_core/domain ./01_core/usecase ./02_shell/cli -count=1",
+      "result": "PASS"
+    },
+    {
+      "name": "full-go-suite",
+      "command": "GOCACHE=/tmp/bateia-go-cache go test ./... -count=1",
+      "result": "PASS",
+      "execution_note": "executed with permission for local httptest listeners"
+    },
+    {
+      "name": "crystalline-architecture",
+      "command": "crystalline-lint .",
+      "result": "PASS"
+    },
+    {
+      "name": "diff-integrity",
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Verification ran in a shared worktree and does not attest strong process isolation.",
+    "M15, M16 and M17 were frozen after the revision 4 seal; they are bound by the final test hashes and this receipt, not by adversarial_cases_sha256.",
+    "The certificate covers only the observable fragment and file versions recorded here; it does not claim general functional equivalence."
+  ]
+}

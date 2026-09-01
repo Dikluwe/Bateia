@@ -9,9 +9,11 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"reflect"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 )
@@ -173,6 +175,200 @@ func TestCollectDeduplicatesByHashAndPreservesPartialFailure(t *testing.T) {
 	if b.Complete || len(b.Failures) != 1 || len(b.Items) != 2 {
 		t.Fatalf("bundle parcial inesperado: %+v", b)
 	}
+}
+
+func TestAssessEvidenceM19FrozenMaintenanceWindow(t *testing.T) {
+	const (
+		recipeSageCommit = "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+		norishCommit     = "e3691fe08addabd42feb68e8cc942fcd6468634b"
+	)
+	consulted := time.Date(2026, 9, 1, 12, 13, 12, 0, time.UTC)
+
+	metadataItemWithCommit := func(ref domain.CommitRef, metadataCommit string, observedAt, updatedAt time.Time, archived bool) domain.CollectedEvidence {
+		candidate := domain.RepositoryCandidate{
+			Owner:        ref.Owner,
+			Repo:         ref.Repo,
+			CommitID:     metadataCommit,
+			ConsultadoEm: observedAt,
+			UpdatedAt:    updatedAt,
+			Archived:     archived,
+		}
+		data, err := json.Marshal(candidate)
+		if err != nil {
+			t.Fatal(err)
+		}
+		content := string(data)
+		return domain.CollectedEvidence{Kind: domain.EvidenceRepository, Ref: ref, Path: "@repository-metadata", Content: content, ContentHash: contentHash(content)}
+	}
+	metadataItem := func(ref domain.CommitRef, observedAt, updatedAt time.Time, archived bool) domain.CollectedEvidence {
+		return metadataItemWithCommit(ref, ref.Commit, observedAt, updatedAt, archived)
+	}
+	assessment := func(ref domain.CommitRef, items []domain.CollectedEvidence, failures []domain.ExecutionFailure) (domain.AssessmentReport, error) {
+		bundle := domain.EvidenceBundle{
+			SchemaVersion: "1",
+			Repository:    ref,
+			Complete:      len(failures) == 0,
+			TreeComplete:  len(failures) == 0,
+			Items:         items,
+			Failures:      failures,
+		}
+		report, err := AssessEvidence(
+			domain.IdeaSpec{Capabilities: []string{"recipe organization"}},
+			domain.ScreeningReport{Decisions: []domain.ScreeningDecision{{Repository: ref.Owner + "/" + ref.Repo, Decision: "ADVANCE"}}},
+			[]domain.EvidenceBundle{bundle},
+			DefaultEvidenceRules(),
+		)
+		return report, err
+	}
+	status := func(t *testing.T, ref domain.CommitRef, items []domain.CollectedEvidence, failures []domain.ExecutionFailure) domain.EvidenceStatus {
+		t.Helper()
+		report, err := assessment(ref, items, failures)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(report.Assessments) != 1 {
+			t.Fatalf("assessments = %d, want 1", len(report.Assessments))
+		}
+		return report.Assessments[0].Maintenance.Status
+	}
+
+	t.Run("M19a-fresh-and-boundary-are-proven", func(t *testing.T) {
+		cases := []struct {
+			name    string
+			ref     domain.CommitRef
+			updated time.Time
+		}{
+			{"Norish-updated-at-consulted-at", domain.CommitRef{Owner: "norish-recipes", Repo: "norish", Commit: norishCommit}, consulted},
+			{"Norish-fresh-witness", domain.CommitRef{Owner: "norish-recipes", Repo: "norish", Commit: norishCommit}, consulted.Add(-time.Hour)},
+			{"RecipeSage-exact-365-day-boundary", domain.CommitRef{Owner: "julianpoy", Repo: "RecipeSage", Commit: recipeSageCommit}, consulted.Add(-365 * 24 * time.Hour)},
+		}
+		for _, tc := range cases {
+			t.Run(tc.name, func(t *testing.T) {
+				got := status(t, tc.ref, []domain.CollectedEvidence{metadataItem(tc.ref, consulted, tc.updated, false)}, nil)
+				if got != domain.EvidenceProven {
+					t.Fatalf("maintenance = %s, want %s", got, domain.EvidenceProven)
+				}
+			})
+		}
+	})
+
+	t.Run("M19b-older-than-boundary-is-partial", func(t *testing.T) {
+		ref := domain.CommitRef{Owner: "julianpoy", Repo: "RecipeSage", Commit: recipeSageCommit}
+		got := status(t, ref, []domain.CollectedEvidence{metadataItem(ref, consulted, consulted.Add(-365*24*time.Hour-time.Nanosecond), false)}, nil)
+		if got != domain.EvidencePartial {
+			t.Fatalf("maintenance = %s, want %s", got, domain.EvidencePartial)
+		}
+	})
+
+	t.Run("M19c-archived-is-conflict-regardless-of-recency", func(t *testing.T) {
+		ref := domain.CommitRef{Owner: "norish-recipes", Repo: "norish", Commit: norishCommit}
+		for _, tc := range []struct {
+			name    string
+			updated time.Time
+		}{
+			{"recent-archived", consulted.Add(-time.Hour)},
+			{"stale-archived", consulted.Add(-366 * 24 * time.Hour)},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				got := status(t, ref, []domain.CollectedEvidence{metadataItem(ref, consulted, tc.updated, true)}, nil)
+				if got != domain.EvidenceConflict {
+					t.Fatalf("maintenance = %s, want %s", got, domain.EvidenceConflict)
+				}
+			})
+		}
+	})
+
+	t.Run("M19d-opaque-metadata-never-proves-maintenance", func(t *testing.T) {
+		immutable := domain.CommitRef{Owner: "norish-recipes", Repo: "norish", Commit: norishCommit}
+		fresh := metadataItem(immutable, consulted, consulted.Add(-time.Hour), false)
+		conflicting := metadataItem(immutable, consulted, consulted.Add(-time.Hour), true)
+		cases := []struct {
+			name     string
+			items    []domain.CollectedEvidence
+			failures []domain.ExecutionFailure
+		}{
+			{"missing-timestamps", []domain.CollectedEvidence{metadataItem(immutable, time.Time{}, time.Time{}, false)}, nil},
+			{"future-updated-at", []domain.CollectedEvidence{metadataItem(immutable, consulted, consulted.Add(time.Nanosecond), false)}, nil},
+			{"mutable-commit", []domain.CollectedEvidence{metadataItemWithCommit(immutable, "HEAD", consulted, consulted.Add(-time.Hour), false)}, nil},
+			{"collection-failure", []domain.CollectedEvidence{fresh}, []domain.ExecutionFailure{{Scope: immutable.Owner + "/" + immutable.Repo, Stage: "metadata", Message: "timeout"}}},
+		}
+		for _, tc := range cases {
+			t.Run(tc.name, func(t *testing.T) {
+				if got := status(t, immutable, tc.items, tc.failures); got != domain.EvidenceInconclusive {
+					t.Fatalf("maintenance = %s, want %s", got, domain.EvidenceInconclusive)
+				}
+			})
+		}
+
+		var canonical []byte
+		for _, tc := range []struct {
+			name  string
+			items []domain.CollectedEvidence
+		}{
+			{"fresh-then-archived", []domain.CollectedEvidence{fresh, conflicting}},
+			{"archived-then-fresh", []domain.CollectedEvidence{conflicting, fresh}},
+		} {
+			t.Run("conflicting-metadata/"+tc.name, func(t *testing.T) {
+				report, err := assessment(immutable, tc.items, nil)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if len(report.Assessments) != 1 {
+					t.Fatalf("assessments = %d, want 1", len(report.Assessments))
+				}
+				got := report.Assessments[0].Maintenance.Status
+				if got != domain.EvidenceInconclusive && got != domain.EvidenceConflict {
+					t.Fatalf("conflicting metadata = %s, want %s or %s", got, domain.EvidenceInconclusive, domain.EvidenceConflict)
+				}
+				encoded, err := json.Marshal(report)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if canonical == nil {
+					canonical = encoded
+				} else if string(canonical) != string(encoded) {
+					t.Fatalf("conflicting metadata selected first/last item\nfirst:  %s\nsecond: %s", canonical, encoded)
+				}
+			})
+		}
+	})
+
+	t.Run("M19e-only-frozen-timestamps-drive-recency", func(t *testing.T) {
+		ref := domain.CommitRef{Owner: "julianpoy", Repo: "RecipeSage", Commit: recipeSageCommit}
+		frozenConsulted := time.Date(2001, 2, 3, 4, 5, 6, 0, time.UTC)
+		got := status(t, ref, []domain.CollectedEvidence{metadataItem(ref, frozenConsulted, frozenConsulted.Add(-364*24*time.Hour), false)}, nil)
+		if got != domain.EvidenceProven {
+			t.Fatalf("historical frozen metadata = %s, want %s", got, domain.EvidenceProven)
+		}
+	})
+
+	t.Run("M19f-item-reorder-is-byte-identical", func(t *testing.T) {
+		ref := domain.CommitRef{Owner: "norish-recipes", Repo: "norish", Commit: norishCommit}
+		fresh := metadataItem(ref, consulted, consulted.Add(-time.Hour), false)
+		archived := metadataItem(ref, consulted, consulted.Add(-366*24*time.Hour), true)
+		readme := domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Ref: ref, Path: "README.md", Content: "Norish recipe organization", ContentHash: contentHash("Norish recipe organization")}
+		orders := [][]domain.CollectedEvidence{
+			{fresh, archived, readme},
+			{archived, readme, fresh},
+			{readme, fresh, archived},
+		}
+		var canonical []byte
+		for i, items := range orders {
+			report, err := assessment(ref, items, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			encoded, err := json.Marshal(report)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if canonical == nil {
+				canonical = encoded
+			} else if string(canonical) != string(encoded) {
+				t.Fatalf("assessment changed after conflicting metadata reorder %d\nfirst: %s\ngot:   %s", i, canonical, encoded)
+			}
+		}
+	})
 }
 
 func TestMissingRelevantTargetMakesAbsenceInconclusive(t *testing.T) {

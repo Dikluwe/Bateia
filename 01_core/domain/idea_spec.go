@@ -26,14 +26,15 @@ const (
 )
 
 type SearchExpansion struct {
-	ID              string               `json:"id"`
-	Facet           ExpansionFacet       `json:"facet"`
-	Query           string               `json:"query"`
-	Discriminators  []string             `json:"discriminators,omitempty"`
-	RepositoryScope string               `json:"repository_scope,omitempty"`
-	Rationale       string               `json:"rationale"`
-	Covers          []string             `json:"covers"`
-	Derivation      *ExpansionDerivation `json:"derivation,omitempty"`
+	ID              string                   `json:"id"`
+	Facet           ExpansionFacet           `json:"facet"`
+	Query           string                   `json:"query"`
+	Discriminators  []string                 `json:"discriminators,omitempty"`
+	RepositoryScope string                   `json:"repository_scope,omitempty"`
+	Rationale       string                   `json:"rationale"`
+	Covers          []string                 `json:"covers"`
+	Derivation      *ExpansionDerivation     `json:"derivation,omitempty"`
+	Regional        *RegionalQueryProvenance `json:"regional,omitempty"`
 }
 
 type ExpansionDerivation struct {
@@ -43,8 +44,9 @@ type ExpansionDerivation struct {
 }
 
 type ExpansionPlan struct {
-	Idea       IdeaSpec          `json:"idea"`
-	Expansions []SearchExpansion `json:"expansions"`
+	Idea       IdeaSpec               `json:"idea"`
+	Expansions []SearchExpansion      `json:"expansions"`
+	Regional   *RegionalDiscoveryPlan `json:"regional,omitempty"`
 }
 
 type EvaluationCase struct {

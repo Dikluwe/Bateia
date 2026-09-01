@@ -2,6 +2,27 @@
 
 **Bateia** é uma ferramenta CLI e plataforma de inteligência arquitetural projetada para buscar, triar e analisar repositórios de código open-source. Através de um funil de três estágios (**Descoberta → Triagem → Extração**), o Bateia extrai dependências, identifica padrões e gera relatórios com o **Descobrimento de Necessidades Ocultas** (insights de testes, banco de dados, observabilidade, devops e configuração).
 
+O fluxo principal orientado a produto vai além da busca lexical: recebe uma `IdeaSpec`, reúne evidências rastreáveis e produz uma decisão entre `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`. O resultado é um dossiê reproduzível, não apenas uma lista de repositórios.
+
+## Da ideia à decisão de reúso
+
+Para avaliar a própria worktree, incluindo alterações não commitadas:
+
+```bash
+./bateia idea recommend \
+  --idea 00_nucleo/benchmark/0012/experimento/bateia-idea.json \
+  --policy 00_nucleo/benchmark/0012/experimento/reuse-policy.json \
+  --target-name "Bateia" \
+  --target-repo Dikluwe/Bateia \
+  --mode local \
+  --local . \
+  --output relatorios/dossie-local
+```
+
+O diretório de saída contém a expansão da ideia, snapshot de descoberta, triagem, planos e bundles de evidência, assessment, decisão canônica, `alternatives.json`, `alternatives.md` e uma projeção legível em `decision.md`. `--target-name` é opcional e usa `IdeaSpec.problem` como fallback; `--target-repo` aceita `owner/repo` ou URL GitHub e exclui o próprio alvo do ranking independentemente do commit. Uma execução interrompida ou uma mudança apenas de política ou alvo pode usar `--resume`; o Bateia só reaproveita evidência quando os inputs causais e os hashes dos checkpoints continuam válidos.
+
+Para pesquisa remota, use `--mode live`; para reproduzir uma decisão sem rede, use `--mode replay --replay <dossiê-fonte>`. Quando identidade, coleta ou evidência são opacas, o resultado permanece `INCONCLUSIVE` em vez de virar `BUILD` por ausência presumida.
+
 ---
 
 ## 🏛️ **Arquitetura Tekt (Five-Layer Lattice v1.4)**

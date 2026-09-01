@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-01
  */
 
 package usecase
@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 	"unicode"
 
 	"bateia/01_core/domain"
@@ -957,33 +958,109 @@ func allMarkers(content string, markers []string) bool {
 	return true
 }
 func assessMaintenance(b domain.EvidenceBundle) domain.MaintenanceAssessment {
-	var metadataSource *domain.EvidenceSource
-	var metadataCandidate domain.RepositoryCandidate
+	type maintenanceMetadata struct {
+		candidate domain.RepositoryCandidate
+		source    domain.EvidenceSource
+	}
+	recordsByKey := map[string]maintenanceMetadata{}
+	var sources []domain.EvidenceSource
+	var endedSources []domain.EvidenceSource
+	malformed := false
 	for _, i := range b.Items {
-		n := normalizeEvidenceText(i.Content)
-		if strings.Contains(n, "no longer maintained") || strings.Contains(n, "unmaintained") || strings.Contains(n, "maintenance ended") {
-			s := sourceFromItem(i, i.Kind, "maintenance-ended", .7, firstLine(i.Content, []string{"maintained", "unmaintained"}))
-			return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Sources: []domain.EvidenceSource{s}, Warnings: []string{"manutenção declarada como encerrada"}}
+		normalized := normalizeEvidenceText(i.Content)
+		if strings.Contains(normalized, "no longer maintained") || strings.Contains(normalized, "unmaintained") || strings.Contains(normalized, "maintenance ended") {
+			endedSources = append(endedSources, sourceFromItem(i, i.Kind, "maintenance-ended", .7, firstLine(i.Content, []string{"maintained", "unmaintained"})))
 		}
-		if i.Kind == domain.EvidenceRepository {
-			if json.Unmarshal([]byte(i.Content), &metadataCandidate) == nil {
-				s := sourceFromItem(i, domain.EvidenceRepository, "repository-maintenance", .7, "metadados imutáveis da coleta")
-				metadataSource = &s
-			}
+		if i.Kind != domain.EvidenceRepository {
+			continue
 		}
+		source := sourceFromItem(i, domain.EvidenceRepository, "repository-maintenance", .7, "metadados imutáveis da coleta")
+		sources = append(sources, source)
+		var candidate domain.RepositoryCandidate
+		if json.Unmarshal([]byte(i.Content), &candidate) != nil {
+			malformed = true
+			continue
+		}
+		key := maintenanceMetadataKey(candidate, i.Ref)
+		recordsByKey[key] = maintenanceMetadata{candidate: candidate, source: source}
 	}
-	if metadataSource != nil {
-		if metadataCandidate.Archived {
-			return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Archived: true, Sources: []domain.EvidenceSource{*metadataSource}, Warnings: []string{"repositório arquivado"}}
-		}
-		if !metadataCandidate.UpdatedAt.IsZero() {
-			return domain.MaintenanceAssessment{Status: domain.EvidencePartial, Sources: []domain.EvidenceSource{*metadataSource}, Warnings: []string{"atividade observada em " + metadataCandidate.UpdatedAt.UTC().Format("2006-01-02")}}
-		}
+	if len(endedSources) > 0 {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Sources: canonicalMaintenanceSources(endedSources), Warnings: []string{"manutenção declarada como encerrada"}}
 	}
-	if !b.Complete {
-		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive}
+	sources = canonicalMaintenanceSources(sources)
+	if malformed {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"metadados de repositório inválidos"}}
 	}
-	return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Warnings: []string{"metadados temporais não disponíveis no bundle"}}
+	keys := make([]string, 0, len(recordsByKey))
+	for key := range recordsByKey {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	if len(keys) == 0 {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"metadados temporais não disponíveis no bundle"}}
+	}
+	if len(keys) > 1 {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Sources: sources, Warnings: []string{"metadados de manutenção conflitantes"}}
+	}
+	metadata := recordsByKey[keys[0]]
+	candidate := metadata.candidate
+	if mutableIdeaRunCommit(b.Repository.Commit) || mutableIdeaRunCommit(metadata.source.Ref.Commit) || mutableIdeaRunCommit(candidate.CommitID) {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"identidade de manutenção não está em commit imutável"}}
+	}
+	if candidate.CommitID != b.Repository.Commit || metadata.source.Ref != b.Repository {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Sources: sources, Warnings: []string{"metadados pertencem a commit divergente"}}
+	}
+	if ideaRunRepositoryKey(candidate.Owner, candidate.Repo) != ideaRunRepositoryKey(b.Repository.Owner, b.Repository.Repo) {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Sources: sources, Warnings: []string{"metadados pertencem a repositório divergente"}}
+	}
+	if candidate.Archived {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceConflict, Archived: true, Sources: sources, Warnings: []string{"repositório arquivado"}}
+	}
+	if !b.Complete || len(b.Failures) > 0 {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"coleta incompleta"}}
+	}
+	if candidate.UpdatedAt.IsZero() || candidate.ConsultadoEm.IsZero() {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"metadados temporais incompletos"}}
+	}
+	if candidate.UpdatedAt.After(candidate.ConsultadoEm) {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive, Sources: sources, Warnings: []string{"updated_at posterior ao instante de consulta"}}
+	}
+	age := candidate.ConsultadoEm.Sub(candidate.UpdatedAt)
+	warning := "atividade observada em " + candidate.UpdatedAt.UTC().Format("2006-01-02")
+	if age <= 365*24*time.Hour {
+		return domain.MaintenanceAssessment{Status: domain.EvidenceProven, Sources: sources, Warnings: []string{warning}}
+	}
+	return domain.MaintenanceAssessment{Status: domain.EvidencePartial, Sources: sources, Warnings: []string{warning, "atividade anterior à janela de 365 dias"}}
+}
+
+func maintenanceMetadataKey(candidate domain.RepositoryCandidate, ref domain.CommitRef) string {
+	return strings.Join([]string{
+		ideaRunRepositoryKey(ref.Owner, ref.Repo),
+		ref.Commit,
+		ideaRunRepositoryKey(candidate.Owner, candidate.Repo),
+		candidate.CommitID,
+		fmt.Sprintf("%t", candidate.Archived),
+		candidate.UpdatedAt.UTC().Format(time.RFC3339Nano),
+		candidate.ConsultadoEm.UTC().Format(time.RFC3339Nano),
+	}, "\x00")
+}
+
+func canonicalMaintenanceSources(sources []domain.EvidenceSource) []domain.EvidenceSource {
+	byKey := map[string]domain.EvidenceSource{}
+	for _, source := range sources {
+		encoded, _ := json.Marshal(source)
+		byKey[string(encoded)] = source
+	}
+	keys := make([]string, 0, len(byKey))
+	for key := range byKey {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	out := make([]domain.EvidenceSource, 0, len(keys))
+	for _, key := range keys {
+		out = append(out, byKey[key])
+	}
+	return out
 }
 func assessOperation(b domain.EvidenceBundle) domain.OperationAssessment {
 	var sources []domain.EvidenceSource

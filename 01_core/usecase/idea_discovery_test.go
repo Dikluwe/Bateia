@@ -9,7 +9,10 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"reflect"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -137,5 +140,212 @@ func TestDiscoveryPolicyRejectsInvalidTimeoutsBeforeProvider(t *testing.T) {
 	}
 	if provider.calls != 0 {
 		t.Fatal("provider was touched before policy validation")
+	}
+}
+
+func TestM21RegionalCatalogAllIsExactAuditableAndCanonical(t *testing.T) {
+	wantLocales := []string{"pt-BR", "en-US", "es-ES", "fr-FR", "de-DE", "ja-JP", "ko-KR", "ru-RU", "ar-SA", "hi-IN"}
+	wantQueries := []string{"gerenciador de receitas", "recipe manager", "gestor de recetas", "gestionnaire de recettes", "Rezeptmanager", "レシピ管理", "레시피 관리자", "менеджер рецептов", "مدير الوصفات", "रेसिपी प्रबंधक"}
+	plan, err := PlanRegionalDiscovery(DefaultRegionalQueryCatalog(), "recipe-manager", []string{"ja-JP", "all", "pt-BR", "all"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(plan.Requested, wantLocales) || !reflect.DeepEqual(plan.Realized, wantLocales) || len(plan.Gaps) != 0 || len(plan.Proposals) != len(wantLocales) {
+		t.Fatalf("canonical all plan = %+v", plan)
+	}
+	ids := map[string]bool{}
+	for index, proposal := range plan.Proposals {
+		if proposal.Query != wantQueries[index] || proposal.Regional == nil {
+			t.Fatalf("proposal[%d] = %+v, want query %q", index, proposal, wantQueries[index])
+		}
+		regional := proposal.Regional
+		if regional.Locale != wantLocales[index] || regional.CatalogVersion != "regional-recipes-v1" || regional.Concept != "recipe-manager" || regional.RuleID != "recipe-manager" || regional.SourceQuery != "gerenciador de receitas" || regional.DerivationStrategy != "controlled-catalog-exact-v1" {
+			t.Fatalf("proposal[%d] lost audit provenance: %+v", index, regional)
+		}
+		if !strings.Contains(proposal.ID, wantLocales[index]) || proposal.ID != regional.ProposalID || ids[proposal.ID] {
+			t.Fatalf("localized proposal id collided or hid locale: %+v", proposal)
+		}
+		ids[proposal.ID] = true
+	}
+	for _, asciiForbidden := range []struct {
+		locale string
+		query  string
+	}{
+		{"ja-JP", "recipe kanri"}, {"ko-KR", "resipi"}, {"ru-RU", "menedzher"}, {"ar-SA", "mudir"}, {"hi-IN", "recipe prabandhak"},
+	} {
+		for _, proposal := range plan.Proposals {
+			if proposal.Regional != nil && proposal.Regional.Locale == asciiForbidden.locale && strings.EqualFold(proposal.Query, asciiForbidden.query) {
+				t.Fatalf("%s was transliterated: %+v", asciiForbidden.locale, proposal)
+			}
+		}
+	}
+}
+
+func TestM21RegionalInputRejectsInvalidAndPreservesExplicitUnknown(t *testing.T) {
+	catalog := DefaultRegionalQueryCatalog()
+	for _, locales := range [][]string{{"pt-br"}, {"en"}, {"zz-ZZ"}, {""}} {
+		if _, err := PlanRegionalDiscovery(catalog, "recipe-manager", locales); err == nil {
+			t.Fatalf("invalid locale accepted: %q", locales)
+		}
+	}
+
+	missing := catalog
+	missing.Concepts = append([]domain.RegionalCatalogConcept(nil), catalog.Concepts...)
+	missing.Concepts[0].Queries = append([]domain.RegionalCatalogQuery(nil), catalog.Concepts[0].Queries[:len(catalog.Concepts[0].Queries)-1]...)
+	plan, err := PlanRegionalDiscovery(missing, "recipe-manager", []string{"hi-IN"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(plan.Realized) != 0 || len(plan.Proposals) != 0 || len(plan.Gaps) != 1 || plan.Gaps[0].Locale != "hi-IN" || plan.Gaps[0].Concept != "recipe-manager" || plan.Gaps[0].Status != "Unknown" || strings.TrimSpace(plan.Gaps[0].Reason) == "" {
+		t.Fatalf("missing controlled translation was not explicit Unknown: %+v", plan)
+	}
+
+	invalidCatalog := catalog
+	invalidCatalog.Concepts = append([]domain.RegionalCatalogConcept(nil), catalog.Concepts...)
+	invalidCatalog.Concepts[0].SourceQuery = ""
+	if _, err := PlanRegionalDiscovery(invalidCatalog, "recipe-manager", []string{"pt-BR"}); err == nil {
+		t.Fatal("catalog without source query was accepted")
+	}
+}
+
+func TestM21RegionalPlanIsInvariantToReorderRepeatAndEmptyIsLegacyNeutral(t *testing.T) {
+	catalog := DefaultRegionalQueryCatalog()
+	first, err := PlanRegionalDiscovery(catalog, "recipe-manager", []string{"ja-JP", "pt-BR", "ja-JP", "en-US"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := PlanRegionalDiscovery(catalog, "recipe-manager", []string{"en-US", "pt-BR", "ja-JP"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, _ := json.Marshal(first)
+	b, _ := json.Marshal(second)
+	if string(a) != string(b) {
+		t.Fatalf("locale reorder/repeat changed plan:\n%s\n%s", a, b)
+	}
+	empty, err := PlanRegionalDiscovery(catalog, "recipe-manager", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(empty.Requested) != 0 || len(empty.Realized) != 0 || len(empty.Gaps) != 0 || len(empty.Proposals) != 0 {
+		t.Fatalf("empty locale set added regional work: %+v", empty)
+	}
+}
+
+type m21RegionalProvider struct {
+	requests   []domain.DiscoveryRequest
+	reverse    bool
+	failLocale string
+}
+
+func (provider *m21RegionalProvider) Discover(_ context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
+	provider.requests = append(provider.requests, request)
+	if request.SearchLocale == provider.failLocale {
+		return domain.ProviderDiscovery{Provider: "regional", Attempts: []domain.ProviderAttempt{{Query: request.Query, Status: "FAILED", Error: "regional failure"}}}, errors.New("regional failure")
+	}
+	candidates := []domain.RepositoryCandidate{candidate("regional", "shared"), candidate("regional", "other")}
+	if provider.reverse {
+		candidates[0], candidates[1] = candidates[1], candidates[0]
+	}
+	return domain.ProviderDiscovery{Provider: "regional", Attempts: []domain.ProviderAttempt{{Query: request.Query, ResultCount: len(candidates)}}, Candidates: candidates}, nil
+}
+
+func TestM21RegionalLocalePropagatesAndConsumesOrdinaryBudget(t *testing.T) {
+	regional, err := PlanRegionalDiscovery(DefaultRegionalQueryCatalog(), "recipe-manager", []string{"ja-JP", "pt-BR"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &m21RegionalProvider{}
+	plan := domain.ExpansionPlan{Idea: domain.IdeaSpec{Problem: "organizar receitas culinárias"}, Expansions: regional.Proposals}
+	snapshot, err := DiscoverExpansionPlan(context.Background(), plan, "literal", "go", 7, 1, provider)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(provider.requests) != 2 || !reflect.DeepEqual(snapshot.SearchLocales, []string{"pt-BR", "ja-JP"}) {
+		t.Fatalf("regional calls/locales = %d/%v", len(provider.requests), snapshot.SearchLocales)
+	}
+	for index, request := range provider.requests {
+		if request.Language != "go" || request.SearchLocale == "" || request.RegionalProposalID == "" || request.SearchLocale == request.Language || request.MaxResults != 7 {
+			t.Fatalf("request[%d] mixed language and locale: %+v", index, request)
+		}
+	}
+	if len(snapshot.Candidates) != 2 {
+		t.Fatalf("regional duplicate repository was not deduplicated: %+v", snapshot.Candidates)
+	}
+	for _, discovered := range snapshot.Candidates {
+		if len(discovered.Origins) != 2 {
+			t.Fatalf("regional origins lost: %+v", discovered)
+		}
+		for index, origin := range discovered.Origins {
+			if origin.SearchLocale != []string{"pt-BR", "ja-JP"}[index] || origin.RegionalProposalID == "" || origin.PlannedQuery == "" || origin.EffectiveQuery == "" {
+				t.Fatalf("origin[%d] lost provenance: %+v", index, origin)
+			}
+		}
+	}
+
+	reversed := &m21RegionalProvider{reverse: true}
+	second, err := DiscoverExpansionPlan(context.Background(), plan, "literal", "go", 7, 1, reversed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	left, _ := json.Marshal(snapshot)
+	right, _ := json.Marshal(second)
+	if string(left) != string(right) {
+		t.Fatalf("provider response reorder changed snapshot:\n%s\n%s", left, right)
+	}
+}
+
+func TestM21RegionalFailedAttemptPreservesLocaleProvenance(t *testing.T) {
+	regional, err := PlanRegionalDiscovery(DefaultRegionalQueryCatalog(), "recipe-manager", []string{"pt-BR", "ja-JP"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &m21RegionalProvider{failLocale: "ja-JP"}
+	plan := domain.ExpansionPlan{Idea: domain.IdeaSpec{Problem: "organizar receitas culinárias"}, Expansions: regional.Proposals}
+	snapshot, err := DiscoverExpansionPlan(context.Background(), plan, "literal", "go", 7, 1, provider)
+	if err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, expansion := range snapshot.PerExpansion {
+		for _, attempt := range expansion.Provider.Attempts {
+			if attempt.SearchLocale == "ja-JP" {
+				found = attempt.RegionalProposalID != "" && attempt.Query == "レシピ管理" && attempt.Error != ""
+			}
+		}
+	}
+	if !found || len(snapshot.Failures) != 1 {
+		t.Fatalf("failed regional attempt lost locale provenance: %+v", snapshot)
+	}
+}
+
+func TestM21RegionalPolicyReceiptAndOrdinaryLimitsAreEndToEnd(t *testing.T) {
+	regional, err := PlanRegionalDiscovery(DefaultRegionalQueryCatalog(), "recipe-manager", []string{"pt-BR", "ja-JP"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := &m21RegionalProvider{}
+	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: 5 * time.Second, AttemptTimeout: time.Second, Concurrency: 1, MaxAttempts: 3}
+	plan := domain.ExpansionPlan{Idea: domain.IdeaSpec{Problem: "organizar receitas culinárias"}, Expansions: regional.Proposals}
+	snapshot, err := DiscoverExpansionPlanWithPolicy(context.Background(), plan, "literal", "go", 7, policy, provider, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if snapshot.Receipt == nil || len(snapshot.Receipt.Attempts) != 2 || snapshot.Receipt.Planned != 2 || snapshot.Receipt.Started != 2 {
+		t.Fatalf("regional receipt counts = %+v", snapshot.Receipt)
+	}
+	wantLocales := []string{"pt-BR", "ja-JP"}
+	for index, attempt := range snapshot.Receipt.Attempts {
+		if attempt.SearchLocale != wantLocales[index] || attempt.RegionalProposalID == "" || attempt.PlannedQuery == "" || attempt.EffectiveQuery == "" {
+			t.Fatalf("receipt attempt[%d] lost regional provenance: %+v", index, attempt)
+		}
+	}
+	if len(provider.requests) != 2 {
+		t.Fatalf("provider request count = %d, want 2", len(provider.requests))
+	}
+	for index, request := range provider.requests {
+		if request.MaxResults != 7 || request.MaxAttempts != policy.MaxAttempts || request.AttemptTimeout != policy.AttemptTimeout || request.Language != "go" || request.SearchLocale == "" {
+			t.Fatalf("regional request[%d] bypassed ordinary limits: %+v", index, request)
+		}
 	}
 }

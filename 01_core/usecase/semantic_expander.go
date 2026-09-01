@@ -36,12 +36,34 @@ func cloneDerivation(value *domain.ExpansionDerivation) *domain.ExpansionDerivat
 	}
 }
 
+func cloneRegionalProvenance(value *domain.RegionalQueryProvenance) *domain.RegionalQueryProvenance {
+	if value == nil {
+		return nil
+	}
+	cloned := *value
+	return &cloned
+}
+
 func clonePlan(plan domain.ExpansionPlan) domain.ExpansionPlan {
 	cloned := domain.ExpansionPlan{Idea: normalizeIdea(plan.Idea), Expansions: make([]domain.SearchExpansion, len(plan.Expansions))}
 	for index, expansion := range plan.Expansions {
 		cloned.Expansions[index] = expansion
 		cloned.Expansions[index].Covers = cloneStrings(expansion.Covers)
 		cloned.Expansions[index].Derivation = cloneDerivation(expansion.Derivation)
+		cloned.Expansions[index].Regional = cloneRegionalProvenance(expansion.Regional)
+	}
+	if plan.Regional != nil {
+		regional := *plan.Regional
+		regional.Requested = cloneStrings(plan.Regional.Requested)
+		regional.Realized = cloneStrings(plan.Regional.Realized)
+		regional.Gaps = append([]domain.RegionalDiscoveryGap(nil), plan.Regional.Gaps...)
+		regional.Proposals = append([]domain.SearchExpansion(nil), plan.Regional.Proposals...)
+		for index := range regional.Proposals {
+			regional.Proposals[index].Covers = cloneStrings(regional.Proposals[index].Covers)
+			regional.Proposals[index].Derivation = cloneDerivation(regional.Proposals[index].Derivation)
+			regional.Proposals[index].Regional = cloneRegionalProvenance(regional.Proposals[index].Regional)
+		}
+		cloned.Regional = &regional
 	}
 	return cloned
 }

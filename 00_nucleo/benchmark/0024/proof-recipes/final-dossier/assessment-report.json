@@ -1,0 +1,1901 @@
+{
+  "schema_version": "1",
+  "rules_version": "2026-08-31.1",
+  "rules_hash": "a1ab87ac8ba0d634b942d30126eb2fe16381abdef5cfc883a41ffa3b306f5591",
+  "assessments": [
+    {
+      "repository": {
+        "owner": "julianpoy",
+        "repo": "RecipeSage",
+        "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+      },
+      "screening_decision": {
+        "repository": "julianpoy/RecipeSage",
+        "ranking_score": 0.5083333333333333,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0.75,
+          "description_alignment": 0,
+          "origin_convergence": 1,
+          "capability_coverage": 0.6666666666666666,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 1
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0.75,
+            "weight": 0.1,
+            "effect": 0.07500000000000001,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 0.3333333333333333,
+            "weight": 0.1,
+            "effect": 0.03333333333333333,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0.6666666666666666,
+            "weight": 0.15,
+            "effect": 0.09999999999999999,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "próximo aos limiares"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-capability-a9c3436815a6",
+            "planned_query": "importação de receitas",
+            "attempt_index": 0,
+            "effective_query": "importação de receitas",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "packages/frontend/src/assets/i18n/pt-pt.json",
+                "snippet": "\"pages.assistant.welcome.3\": \"Cada mensagem que envia consome um crédito de culinária da sua quota diária, que é partilhada com funcionalidades como o recorte e a importação de receitas. Os colaboradores recebem mensagens ilimitadas.\","
+              }
+            ]
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "organizar receitas culinárias para uma família",
+        "status": "PARTIAL",
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "{\"owner\":\"julianpoy\",\"repo\":\"RecipeSage\",\"url\":\"https://github.com/julianpoy/RecipeSage\",\"description\":\"A Collaborative Recipe Keeper, Meal Planner, and Shopping List Organizer in PWA form.\",\"stars\":948,\"commit_id\":\"120aa5c8816f9a17e043d48c",
+            "rule_id": "recipe-import",
+            "content_hash": "c97870525bea10d8b61ecd5773c6fe4a0f4b8d3e8488814af43b2326372c5ead",
+            "strength": 0.1
+          },
+          {
+            "kind": "documentation",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "README.md",
+            "line": 1,
+            "snippet": "\u003ca href=\"https://recipesage.com\"\u003e\u003cimg align=\"left\" width=\"100\" height=\"100\" src=\"packages/frontend/src/assets/imgs/logo_green.png\"\u003e\u003c/img\u003e\u003c/a\u003e",
+            "rule_id": "recipe-import",
+            "content_hash": "1c2eb1412d762b8b4b86207084cd2b58202690f59b6879d6274220cc37bd4e76",
+            "strength": 0.4
+          },
+          {
+            "kind": "manifest",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "package.json",
+            "line": 1,
+            "snippet": "\"name\": \"recipesage\",",
+            "rule_id": "recipe-import",
+            "content_hash": "7b1eff2817808f0a34d2497154a6823611c686323c5a894f589617e33d4e479e",
+            "strength": 0.4
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/backend/esbuild.config.js",
+            "line": 1,
+            "snippet": "org: \"recipesage\",",
+            "rule_id": "recipe-import",
+            "content_hash": "19d4f57ea95b09d7857edbd9778d798c2568c1fc021c97b36163d120a4ac1421",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/backend/src/app.ts",
+            "line": 1,
+            "snippet": "} from \"@recipesage/express\";",
+            "rule_id": "recipe-import",
+            "content_hash": "3b5029a111011d814fa55c7b914caf8408f417217ac92dbe7e729fdb4f0098f9",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/backend/src/main.ts",
+            "line": 1,
+            "snippet": "import { getJobQueueWorker } from \"@recipesage/util/server/general\";",
+            "rule_id": "recipe-import",
+            "content_hash": "be20b59bb093efbf99ffe72ab67ca254b3cb2e8407b49aec205f8c40091e6ee3",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/esbuild.config.js",
+            "line": 1,
+            "snippet": "org: \"recipesage\",",
+            "rule_id": "recipe-import",
+            "content_hash": "a21f211309e96d57a226b5282156651a612cc1dd29047979ddd9f182480335c8",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/activateBonusFeatures.ts",
+            "line": 1,
+            "snippet": "import { prisma } from \"@recipesage/prisma\";",
+            "rule_id": "recipe-import",
+            "content_hash": "4a00531e8c508143c9dc0ba6e86537bc206da65d1de09305f9ede6d116fba9a1",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/categorizeShoppingListItems.ts",
+            "line": 1,
+            "snippet": "import { prisma } from \"@recipesage/prisma\";",
+            "rule_id": "recipe-import",
+            "content_hash": "23842df63d4802583672b789cd13c3924fd3d47f4c76297ce970d58924c0aa96",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/decryptDebugStore.ts",
+            "line": 1,
+            "snippet": "import { decryptWithRSAKey } from \"@recipesage/util/server/general\";",
+            "rule_id": "recipe-import",
+            "content_hash": "7bfb41032d534cc1b9082f672297f4c4d1da56821ab80462d33686791f6a84ee",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/indexRecipes.ts",
+            "line": 1,
+            "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+            "rule_id": "recipe-import",
+            "content_hash": "db24482fe2e7d2d436b97bfb9b97a70ac905ac4d7dd059b23332243af728c46e",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/main.ts",
+            "line": 1,
+            "snippet": "program.name(\"recipesage\").description(\"RecipeSage CLI\");",
+            "rule_id": "recipe-import",
+            "content_hash": "9e049cbfca9271a5f5b3545833282cc17625c7dd8e86fac7b11eca8ff4b90fcb",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/cli/src/recomputeDiscoverRankScores.ts",
+            "line": 1,
+            "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+            "rule_id": "recipe-import",
+            "content_hash": "3bfbcc39847def0ece72f2bc383e67ffdc65dec3763b00e53b36bb2d0dec8ff7",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/desktop/forge.config.ts",
+            "line": 1,
+            "snippet": "\"Manage your recipes, meal plans, and shopping lists with RecipeSage\";",
+            "rule_id": "recipe-import",
+            "content_hash": "5b7fa494fa2f9148ab943f018e91f69a3564f218a917318c3624301242009186",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/express/src/defineHandler.spec.ts",
+            "line": 1,
+            "snippet": "vi.mock(\"@recipesage/util/server/general\", () =\u003e ({",
+            "rule_id": "recipe-import",
+            "content_hash": "136b568b9d25f5d30ae7000366d6b96705cc1ecb0133f9489299be6c9a29d949",
+            "strength": 0.2
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "packages/express/src/defineHandler.ts",
+            "line": 1,
+            "snippet": "} from \"@recipesage/util/server/general\";",
+            "rule_id": "recipe-import",
+            "content_hash": "e1b440c25ea4ce3607d3f1c80b4188466c7d4b12172ff4752082b458a01585d7",
+            "strength": 0.2
+          }
+        ],
+        "confidence": 0.9821879116300287,
+        "explanation": "há evidência concreta, mas insuficiente para comprovação"
+      },
+      "capabilities": [
+        {
+          "capability": "organização de receitas",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "repository_metadata",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "@repository-metadata",
+              "line": 1,
+              "snippet": "{\"owner\":\"julianpoy\",\"repo\":\"RecipeSage\",\"url\":\"https://github.com/julianpoy/RecipeSage\",\"description\":\"A Collaborative Recipe Keeper, Meal Planner, and Shopping List Organizer in PWA form.\",\"stars\":948,\"commit_id\":\"120aa5c8816f9a17e043d48c",
+              "rule_id": "recipe-import",
+              "content_hash": "c97870525bea10d8b61ecd5773c6fe4a0f4b8d3e8488814af43b2326372c5ead",
+              "strength": 0.1
+            },
+            {
+              "kind": "documentation",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "README.md",
+              "line": 1,
+              "snippet": "\u003ca href=\"https://recipesage.com\"\u003e\u003cimg align=\"left\" width=\"100\" height=\"100\" src=\"packages/frontend/src/assets/imgs/logo_green.png\"\u003e\u003c/img\u003e\u003c/a\u003e",
+              "rule_id": "recipe-import",
+              "content_hash": "1c2eb1412d762b8b4b86207084cd2b58202690f59b6879d6274220cc37bd4e76",
+              "strength": 0.4
+            },
+            {
+              "kind": "manifest",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "package.json",
+              "line": 1,
+              "snippet": "\"name\": \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "7b1eff2817808f0a34d2497154a6823611c686323c5a894f589617e33d4e479e",
+              "strength": 0.4
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/esbuild.config.js",
+              "line": 1,
+              "snippet": "org: \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "19d4f57ea95b09d7857edbd9778d798c2568c1fc021c97b36163d120a4ac1421",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/src/app.ts",
+              "line": 1,
+              "snippet": "} from \"@recipesage/express\";",
+              "rule_id": "recipe-import",
+              "content_hash": "3b5029a111011d814fa55c7b914caf8408f417217ac92dbe7e729fdb4f0098f9",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/src/main.ts",
+              "line": 1,
+              "snippet": "import { getJobQueueWorker } from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "be20b59bb093efbf99ffe72ab67ca254b3cb2e8407b49aec205f8c40091e6ee3",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/esbuild.config.js",
+              "line": 1,
+              "snippet": "org: \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "a21f211309e96d57a226b5282156651a612cc1dd29047979ddd9f182480335c8",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/activateBonusFeatures.ts",
+              "line": 1,
+              "snippet": "import { prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "4a00531e8c508143c9dc0ba6e86537bc206da65d1de09305f9ede6d116fba9a1",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/categorizeShoppingListItems.ts",
+              "line": 1,
+              "snippet": "import { prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "23842df63d4802583672b789cd13c3924fd3d47f4c76297ce970d58924c0aa96",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/decryptDebugStore.ts",
+              "line": 1,
+              "snippet": "import { decryptWithRSAKey } from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "7bfb41032d534cc1b9082f672297f4c4d1da56821ab80462d33686791f6a84ee",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/indexRecipes.ts",
+              "line": 1,
+              "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "db24482fe2e7d2d436b97bfb9b97a70ac905ac4d7dd059b23332243af728c46e",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/main.ts",
+              "line": 1,
+              "snippet": "program.name(\"recipesage\").description(\"RecipeSage CLI\");",
+              "rule_id": "recipe-import",
+              "content_hash": "9e049cbfca9271a5f5b3545833282cc17625c7dd8e86fac7b11eca8ff4b90fcb",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/recomputeDiscoverRankScores.ts",
+              "line": 1,
+              "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "3bfbcc39847def0ece72f2bc383e67ffdc65dec3763b00e53b36bb2d0dec8ff7",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/desktop/forge.config.ts",
+              "line": 1,
+              "snippet": "\"Manage your recipes, meal plans, and shopping lists with RecipeSage\";",
+              "rule_id": "recipe-import",
+              "content_hash": "5b7fa494fa2f9148ab943f018e91f69a3564f218a917318c3624301242009186",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/express/src/defineHandler.spec.ts",
+              "line": 1,
+              "snippet": "vi.mock(\"@recipesage/util/server/general\", () =\u003e ({",
+              "rule_id": "recipe-import",
+              "content_hash": "136b568b9d25f5d30ae7000366d6b96705cc1ecb0133f9489299be6c9a29d949",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/express/src/defineHandler.ts",
+              "line": 1,
+              "snippet": "} from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "e1b440c25ea4ce3607d3f1c80b4188466c7d4b12172ff4752082b458a01585d7",
+              "strength": 0.2
+            }
+          ],
+          "confidence": 0.9821879116300287,
+          "explanation": "há evidência concreta, mas insuficiente para comprovação"
+        },
+        {
+          "capability": "importação de receitas",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "repository_metadata",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "@repository-metadata",
+              "line": 1,
+              "snippet": "{\"owner\":\"julianpoy\",\"repo\":\"RecipeSage\",\"url\":\"https://github.com/julianpoy/RecipeSage\",\"description\":\"A Collaborative Recipe Keeper, Meal Planner, and Shopping List Organizer in PWA form.\",\"stars\":948,\"commit_id\":\"120aa5c8816f9a17e043d48c",
+              "rule_id": "recipe-import",
+              "content_hash": "c97870525bea10d8b61ecd5773c6fe4a0f4b8d3e8488814af43b2326372c5ead",
+              "strength": 0.1
+            },
+            {
+              "kind": "documentation",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "README.md",
+              "line": 1,
+              "snippet": "\u003ca href=\"https://recipesage.com\"\u003e\u003cimg align=\"left\" width=\"100\" height=\"100\" src=\"packages/frontend/src/assets/imgs/logo_green.png\"\u003e\u003c/img\u003e\u003c/a\u003e",
+              "rule_id": "recipe-import",
+              "content_hash": "1c2eb1412d762b8b4b86207084cd2b58202690f59b6879d6274220cc37bd4e76",
+              "strength": 0.4
+            },
+            {
+              "kind": "manifest",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "package.json",
+              "line": 1,
+              "snippet": "\"name\": \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "7b1eff2817808f0a34d2497154a6823611c686323c5a894f589617e33d4e479e",
+              "strength": 0.4
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/esbuild.config.js",
+              "line": 1,
+              "snippet": "org: \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "19d4f57ea95b09d7857edbd9778d798c2568c1fc021c97b36163d120a4ac1421",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/src/app.ts",
+              "line": 1,
+              "snippet": "} from \"@recipesage/express\";",
+              "rule_id": "recipe-import",
+              "content_hash": "3b5029a111011d814fa55c7b914caf8408f417217ac92dbe7e729fdb4f0098f9",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/backend/src/main.ts",
+              "line": 1,
+              "snippet": "import { getJobQueueWorker } from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "be20b59bb093efbf99ffe72ab67ca254b3cb2e8407b49aec205f8c40091e6ee3",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/esbuild.config.js",
+              "line": 1,
+              "snippet": "org: \"recipesage\",",
+              "rule_id": "recipe-import",
+              "content_hash": "a21f211309e96d57a226b5282156651a612cc1dd29047979ddd9f182480335c8",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/activateBonusFeatures.ts",
+              "line": 1,
+              "snippet": "import { prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "4a00531e8c508143c9dc0ba6e86537bc206da65d1de09305f9ede6d116fba9a1",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/categorizeShoppingListItems.ts",
+              "line": 1,
+              "snippet": "import { prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "23842df63d4802583672b789cd13c3924fd3d47f4c76297ce970d58924c0aa96",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/decryptDebugStore.ts",
+              "line": 1,
+              "snippet": "import { decryptWithRSAKey } from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "7bfb41032d534cc1b9082f672297f4c4d1da56821ab80462d33686791f6a84ee",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/indexRecipes.ts",
+              "line": 1,
+              "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "db24482fe2e7d2d436b97bfb9b97a70ac905ac4d7dd059b23332243af728c46e",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/main.ts",
+              "line": 1,
+              "snippet": "program.name(\"recipesage\").description(\"RecipeSage CLI\");",
+              "rule_id": "recipe-import",
+              "content_hash": "9e049cbfca9271a5f5b3545833282cc17625c7dd8e86fac7b11eca8ff4b90fcb",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/cli/src/recomputeDiscoverRankScores.ts",
+              "line": 1,
+              "snippet": "import { Prisma, prisma } from \"@recipesage/prisma\";",
+              "rule_id": "recipe-import",
+              "content_hash": "3bfbcc39847def0ece72f2bc383e67ffdc65dec3763b00e53b36bb2d0dec8ff7",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/desktop/forge.config.ts",
+              "line": 1,
+              "snippet": "\"Manage your recipes, meal plans, and shopping lists with RecipeSage\";",
+              "rule_id": "recipe-import",
+              "content_hash": "5b7fa494fa2f9148ab943f018e91f69a3564f218a917318c3624301242009186",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/express/src/defineHandler.spec.ts",
+              "line": 1,
+              "snippet": "vi.mock(\"@recipesage/util/server/general\", () =\u003e ({",
+              "rule_id": "recipe-import",
+              "content_hash": "136b568b9d25f5d30ae7000366d6b96705cc1ecb0133f9489299be6c9a29d949",
+              "strength": 0.2
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "julianpoy",
+                "repo": "RecipeSage",
+                "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+              },
+              "path": "packages/express/src/defineHandler.ts",
+              "line": 1,
+              "snippet": "} from \"@recipesage/util/server/general\";",
+              "rule_id": "recipe-import",
+              "content_hash": "e1b440c25ea4ce3607d3f1c80b4188466c7d4b12172ff4752082b458a01585d7",
+              "strength": 0.2
+            }
+          ],
+          "confidence": 0.9821879116300287,
+          "explanation": "há evidência concreta, mas insuficiente para comprovação"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "código aberto",
+          "evidence": {
+            "capability": "código aberto",
+            "status": "INCONCLUSIVE",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: repositório de código sem produto utilizável",
+          "evidence": {
+            "capability": "repositório de código sem produto utilizável",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        },
+        {
+          "constraint": "non_goal: lista estática de receitas",
+          "evidence": {
+            "capability": "lista estática de receitas",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        }
+      ],
+      "license": {
+        "status": "INCONCLUSIVE",
+        "caveat": "licença ausente ou ambígua"
+      },
+      "maintenance": {
+        "status": "PROVEN",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "c97870525bea10d8b61ecd5773c6fe4a0f4b8d3e8488814af43b2326372c5ead",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "atividade observada em 2026-08-31"
+        ]
+      },
+      "operation": {
+        "local_status": "PROVEN",
+        "sources": [
+          {
+            "kind": "documentation",
+            "ref": {
+              "owner": "julianpoy",
+              "repo": "RecipeSage",
+              "commit": "120aa5c8816f9a17e043d48c653a6ce200937ea9"
+            },
+            "path": "README.md",
+            "line": 1,
+            "snippet": "- **Works offline**: Your recipe collection stays searchable even without internet, and syncs automatically across all of your devices",
+            "rule_id": "local-operation",
+            "content_hash": "1c2eb1412d762b8b4b86207084cd2b58202690f59b6879d6274220cc37bd4e76",
+            "strength": 0.4
+          }
+        ],
+        "requirements": [
+          "banco de dados",
+          "runtime declarado em manifesto",
+          "token ou chave de API"
+        ]
+      },
+      "reusable_parts": null,
+      "gaps": [
+        "organização de receitas",
+        "importação de receitas"
+      ]
+    },
+    {
+      "repository": {
+        "owner": "norish-recipes",
+        "repo": "norish",
+        "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+      },
+      "screening_decision": {
+        "repository": "norish-recipes/norish",
+        "ranking_score": 0.5083333333333333,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0.75,
+          "description_alignment": 0,
+          "origin_convergence": 1,
+          "capability_coverage": 0.6666666666666666,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 1
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0.75,
+            "weight": 0.1,
+            "effect": 0.07500000000000001,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 0.3333333333333333,
+            "weight": 0.1,
+            "effect": 0.03333333333333333,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0.6666666666666666,
+            "weight": 0.15,
+            "effect": 0.09999999999999999,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "próximo aos limiares"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-capability-a9c3436815a6",
+            "planned_query": "importação de receitas",
+            "attempt_index": 0,
+            "effective_query": "importação de receitas",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "packages/i18n/src/messages/pt-BR/navbar.json",
+                "snippet": "\"startTitle\": \"Importação de receitas iniciada\","
+              }
+            ]
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "organizar receitas culinárias para uma família",
+        "status": "PARTIAL",
+        "sources": [
+          {
+            "kind": "documentation",
+            "ref": {
+              "owner": "norish-recipes",
+              "repo": "norish",
+              "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+            },
+            "path": "apps/docs/docs/intro.mdx",
+            "line": 1,
+            "snippet": "Norish is a recipe manager, with the abillity to do some basic meal planning and make grocery lists.",
+            "rule_id": "recipe-import",
+            "content_hash": "912a2ecda7d8ce14c0bea87f36104c5348f64a8a2a9075312e859ccc0a2c074e",
+            "strength": 0.4
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "norish-recipes",
+              "repo": "norish",
+              "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+            },
+            "path": "apps/landing/app/layout.tsx",
+            "line": 1,
+            "snippet": "\"The open-source recipe app for families \u0026 friends. Import recipes from any link, plan your meals together, and keep your grocery lists in sync when shopping together. Free, open source and self-hostable.\";",
+            "rule_id": "recipe-import",
+            "content_hash": "890e56a83f96bda749b87d8645f6302b10b7badf0989ac4fef60f7eb39b2b51e",
+            "strength": 0.2
+          }
+        ],
+        "confidence": 0.52,
+        "explanation": "há evidência concreta, mas insuficiente para comprovação"
+      },
+      "capabilities": [
+        {
+          "capability": "organização de receitas",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "documentation",
+              "ref": {
+                "owner": "norish-recipes",
+                "repo": "norish",
+                "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+              },
+              "path": "apps/docs/docs/intro.mdx",
+              "line": 1,
+              "snippet": "Norish is a recipe manager, with the abillity to do some basic meal planning and make grocery lists.",
+              "rule_id": "recipe-import",
+              "content_hash": "912a2ecda7d8ce14c0bea87f36104c5348f64a8a2a9075312e859ccc0a2c074e",
+              "strength": 0.4
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "norish-recipes",
+                "repo": "norish",
+                "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+              },
+              "path": "apps/landing/app/layout.tsx",
+              "line": 1,
+              "snippet": "\"The open-source recipe app for families \u0026 friends. Import recipes from any link, plan your meals together, and keep your grocery lists in sync when shopping together. Free, open source and self-hostable.\";",
+              "rule_id": "recipe-import",
+              "content_hash": "890e56a83f96bda749b87d8645f6302b10b7badf0989ac4fef60f7eb39b2b51e",
+              "strength": 0.2
+            }
+          ],
+          "confidence": 0.52,
+          "explanation": "há evidência concreta, mas insuficiente para comprovação"
+        },
+        {
+          "capability": "importação de receitas",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "documentation",
+              "ref": {
+                "owner": "norish-recipes",
+                "repo": "norish",
+                "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+              },
+              "path": "apps/docs/docs/intro.mdx",
+              "line": 1,
+              "snippet": "Norish is a recipe manager, with the abillity to do some basic meal planning and make grocery lists.",
+              "rule_id": "recipe-import",
+              "content_hash": "912a2ecda7d8ce14c0bea87f36104c5348f64a8a2a9075312e859ccc0a2c074e",
+              "strength": 0.4
+            },
+            {
+              "kind": "file",
+              "ref": {
+                "owner": "norish-recipes",
+                "repo": "norish",
+                "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+              },
+              "path": "apps/landing/app/layout.tsx",
+              "line": 1,
+              "snippet": "\"The open-source recipe app for families \u0026 friends. Import recipes from any link, plan your meals together, and keep your grocery lists in sync when shopping together. Free, open source and self-hostable.\";",
+              "rule_id": "recipe-import",
+              "content_hash": "890e56a83f96bda749b87d8645f6302b10b7badf0989ac4fef60f7eb39b2b51e",
+              "strength": 0.2
+            }
+          ],
+          "confidence": 0.52,
+          "explanation": "há evidência concreta, mas insuficiente para comprovação"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "código aberto",
+          "evidence": {
+            "capability": "código aberto",
+            "status": "INCONCLUSIVE",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: repositório de código sem produto utilizável",
+          "evidence": {
+            "capability": "repositório de código sem produto utilizável",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        },
+        {
+          "constraint": "non_goal: lista estática de receitas",
+          "evidence": {
+            "capability": "lista estática de receitas",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        }
+      ],
+      "license": {
+        "status": "PROVEN",
+        "identifier": "GPL-3.0",
+        "sources": [
+          {
+            "kind": "license",
+            "ref": {
+              "owner": "norish-recipes",
+              "repo": "norish",
+              "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+            },
+            "path": "LICENSE",
+            "line": 1,
+            "snippet": "GNU AFFERO GENERAL PUBLIC LICENSE",
+            "rule_id": "license-detect",
+            "content_hash": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+            "strength": 0.7
+          }
+        ],
+        "caveat": "identificação automática; não é aconselhamento jurídico"
+      },
+      "maintenance": {
+        "status": "PROVEN",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "norish-recipes",
+              "repo": "norish",
+              "commit": "e3691fe08addabd42feb68e8cc942fcd6468634b"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "7071adc23d313055eb37f60d618b008227533ab332e3dff5c2520d1cf4ef265c",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "atividade observada em 2026-08-31"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE",
+        "requirements": [
+          "banco de dados",
+          "runtime declarado em manifesto"
+        ]
+      },
+      "reusable_parts": null,
+      "gaps": [
+        "organização de receitas",
+        "importação de receitas"
+      ]
+    },
+    {
+      "repository": {
+        "owner": "BRUTEUdesc",
+        "repo": "AlmanaqueBrute",
+        "commit": "cde2abcdc8544d3f51138eb14e55939898066b7b"
+      },
+      "screening_decision": {
+        "repository": "BRUTEUdesc/AlmanaqueBrute",
+        "ranking_score": 0.45833333333333337,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0.75,
+          "description_alignment": 0,
+          "origin_convergence": 1,
+          "capability_coverage": 0.3333333333333333,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 1
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0.75,
+            "weight": 0.1,
+            "effect": 0.07500000000000001,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 0.3333333333333333,
+            "weight": 0.1,
+            "effect": 0.03333333333333333,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0.3333333333333333,
+            "weight": 0.15,
+            "effect": 0.049999999999999996,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "próximo aos limiares"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-capability-be06f9924bf5",
+            "planned_query": "execução local",
+            "attempt_index": 0,
+            "effective_query": "execução local",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "README.md",
+                "snippet": "### Execução local sem container"
+              },
+              {
+                "match_type": "file",
+                "path": "docs/readme_intro.md",
+                "snippet": "### Execução local sem container"
+              }
+            ]
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "organizar receitas culinárias para uma família",
+        "status": "ABSENT",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+      },
+      "capabilities": [
+        {
+          "capability": "organização de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        },
+        {
+          "capability": "importação de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "código aberto",
+          "evidence": {
+            "capability": "código aberto",
+            "status": "INCONCLUSIVE",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: repositório de código sem produto utilizável",
+          "evidence": {
+            "capability": "repositório de código sem produto utilizável",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        },
+        {
+          "constraint": "non_goal: lista estática de receitas",
+          "evidence": {
+            "capability": "lista estática de receitas",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        }
+      ],
+      "license": {
+        "status": "INCONCLUSIVE",
+        "caveat": "licença ausente ou ambígua"
+      },
+      "maintenance": {
+        "status": "PROVEN",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "BRUTEUdesc",
+              "repo": "AlmanaqueBrute",
+              "commit": "cde2abcdc8544d3f51138eb14e55939898066b7b"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "a3a2c837b4ba72b976415b9a7c4e206a66c2e483ed86b4c2561a8fb4592f2ed0",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "atividade observada em 2026-03-02"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE"
+      },
+      "reusable_parts": null,
+      "gaps": [
+        "organização de receitas",
+        "importação de receitas"
+      ]
+    },
+    {
+      "repository": {
+        "owner": "firecrawl",
+        "repo": "firecrawl-docs",
+        "commit": "98c711baa4958acab4c5febb52b2ef7f98e3626b"
+      },
+      "screening_decision": {
+        "repository": "firecrawl/firecrawl-docs",
+        "ranking_score": 0.45833333333333337,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0.75,
+          "description_alignment": 0,
+          "origin_convergence": 1,
+          "capability_coverage": 0.3333333333333333,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 1
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0.75,
+            "weight": 0.1,
+            "effect": 0.07500000000000001,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 0.3333333333333333,
+            "weight": 0.1,
+            "effect": 0.03333333333333333,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0.3333333333333333,
+            "weight": 0.15,
+            "effect": 0.049999999999999996,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "próximo aos limiares"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-capability-be06f9924bf5",
+            "planned_query": "execução local",
+            "attempt_index": 0,
+            "effective_query": "execução local",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "pt-BR/contributing/guide.mdx",
+                "snippet": "sidebarTitle: \"Execução local\""
+              },
+              {
+                "match_type": "file",
+                "path": "pt-BR/contributing/self-host.mdx",
+                "snippet": "* **Autenticação da API: desativada para esta execução local.** Adicione-a apenas com uma arquitetura completa e compatível de identidade e banco de dados; uma variável de ambiente não é suficiente."
+              }
+            ]
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "organizar receitas culinárias para uma família",
+        "status": "ABSENT",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+      },
+      "capabilities": [
+        {
+          "capability": "organização de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        },
+        {
+          "capability": "importação de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "código aberto",
+          "evidence": {
+            "capability": "código aberto",
+            "status": "INCONCLUSIVE",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: repositório de código sem produto utilizável",
+          "evidence": {
+            "capability": "repositório de código sem produto utilizável",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        },
+        {
+          "constraint": "non_goal: lista estática de receitas",
+          "evidence": {
+            "capability": "lista estática de receitas",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        }
+      ],
+      "license": {
+        "status": "INCONCLUSIVE",
+        "caveat": "licença ausente ou ambígua"
+      },
+      "maintenance": {
+        "status": "PROVEN",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "firecrawl",
+              "repo": "firecrawl-docs",
+              "commit": "98c711baa4958acab4c5febb52b2ef7f98e3626b"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "4a17b38147787036787d3a5b8d149ca812fedf9b2c9bf89c05cfd16b2854c982",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "atividade observada em 2026-08-31"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE",
+        "requirements": [
+          "token ou chave de API"
+        ]
+      },
+      "reusable_parts": null,
+      "gaps": [
+        "organização de receitas",
+        "importação de receitas"
+      ]
+    },
+    {
+      "repository": {
+        "owner": "microsoft",
+        "repo": "aspire",
+        "commit": "cb3288645b7360d87451f217283f92bbc098bb61"
+      },
+      "screening_decision": {
+        "repository": "microsoft/aspire",
+        "ranking_score": 0.45833333333333337,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0.75,
+          "description_alignment": 0,
+          "origin_convergence": 1,
+          "capability_coverage": 0.3333333333333333,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 1
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0.75,
+            "weight": 0.1,
+            "effect": 0.07500000000000001,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 0.3333333333333333,
+            "weight": 0.1,
+            "effect": 0.03333333333333333,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0.3333333333333333,
+            "weight": 0.15,
+            "effect": 0.049999999999999996,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "próximo aos limiares"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-capability-be06f9924bf5",
+            "planned_query": "execução local",
+            "attempt_index": 0,
+            "effective_query": "execução local",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "src/Aspire.ProjectTemplates/templates/aspire-starter/.template.config/localize/templatestrings.pt-BR.json",
+                "snippet": "\"symbols/UseRedisCache/description\": \"Configura se o aplicativo deve usar Redis para cache. Requer um runtime de contêiner com suporte para execução local; confira https://aka.ms/aspire/containers para obter mais detalhes.\","
+              },
+              {
+                "match_type": "file",
+                "path": "src/Aspire.ProjectTemplates/templates/aspire-ts-cs-starter/.template.config/localize/templatestrings.pt-BR.json",
+                "snippet": "\"symbols/UseRedisCache/description\": \"Configura se o aplicativo deve usar Redis para cache. Requer um runtime de contêiner com suporte para execução local; confira https://aka.ms/aspire/containers para obter mais detalhes.\","
+              }
+            ]
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "organizar receitas culinárias para uma família",
+        "status": "ABSENT",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+      },
+      "capabilities": [
+        {
+          "capability": "organização de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        },
+        {
+          "capability": "importação de receitas",
+          "status": "ABSENT",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "busca concluída no orçamento declarado sem evidência suficiente"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "código aberto",
+          "evidence": {
+            "capability": "código aberto",
+            "status": "INCONCLUSIVE",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: repositório de código sem produto utilizável",
+          "evidence": {
+            "capability": "repositório de código sem produto utilizável",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        },
+        {
+          "constraint": "non_goal: lista estática de receitas",
+          "evidence": {
+            "capability": "lista estática de receitas",
+            "status": "ABSENT",
+            "sources": null,
+            "confidence": 0,
+            "explanation": "non-goal não observado no escopo coletado"
+          }
+        }
+      ],
+      "license": {
+        "status": "PROVEN",
+        "identifier": "MIT",
+        "sources": [
+          {
+            "kind": "license",
+            "ref": {
+              "owner": "microsoft",
+              "repo": "aspire",
+              "commit": "cb3288645b7360d87451f217283f92bbc098bb61"
+            },
+            "path": "LICENSE.TXT",
+            "line": 1,
+            "snippet": "The MIT License (MIT)",
+            "rule_id": "license-detect",
+            "content_hash": "ae48df11a335dc1a615f4f938b69cba73bcf4485c4f97af49b38efb0f216353b",
+            "strength": 0.7
+          }
+        ],
+        "caveat": "identificação automática; não é aconselhamento jurídico"
+      },
+      "maintenance": {
+        "status": "PROVEN",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "microsoft",
+              "repo": "aspire",
+              "commit": "cb3288645b7360d87451f217283f92bbc098bb61"
+            },
+            "path": "@repository-metadata",
+            "line": 1,
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "64e57b3f192ab79295de77be3815a252ee1f79287831d2414d0704055c78bbf5",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "atividade observada em 2026-09-01"
+        ]
+      },
+      "operation": {
+        "local_status": "PROVEN",
+        "sources": [
+          {
+            "kind": "documentation",
+            "ref": {
+              "owner": "microsoft",
+              "repo": "aspire",
+              "commit": "cb3288645b7360d87451f217283f92bbc098bb61"
+            },
+            "path": "eng/nix/README.md",
+            "line": 1,
+            "snippet": "Run manually like this, the script downloads each official `.sha512` checksum asset from the published release and rewrites `versions.json` with Nix SRI hashes. When the release pipeline runs it instead, it passes `--sha512 \u003crid\u003e=\u003chex\u003e` for",
+            "rule_id": "local-operation",
+            "content_hash": "b4cf3695d0cae5f8d6bfa1d9b2d66e5363985c237e591cc24d99ff407c83bb17",
+            "strength": 0.4
+          },
+          {
+            "kind": "file",
+            "ref": {
+              "owner": "microsoft",
+              "repo": "aspire",
+              "commit": "cb3288645b7360d87451f217283f92bbc098bb61"
+            },
+            "path": "src/Aspire.Hosting.Foundry/FoundryModel.Local.Generated.cs",
+            "line": 1,
+            "snippet": "/// \u003cpara\u003eThis model is optimized for local execution on devices with GPU (NVIDIA CUDA) hardware acceleration using Foundry Local.\u003c/para\u003e",
+            "rule_id": "local-operation",
+            "content_hash": "72ded0a52ae71c69f8fae7a219a59d76a3c94ee2c76d958bda3af99fb1a64ef8",
+            "strength": 0.2
+          }
+        ]
+      },
+      "reusable_parts": null,
+      "gaps": [
+        "organização de receitas",
+        "importação de receitas"
+      ]
+    }
+  ]
+}

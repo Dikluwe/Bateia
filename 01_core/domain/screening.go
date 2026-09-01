@@ -14,11 +14,13 @@ type MatchEvidence struct {
 }
 
 type CandidateOrigin struct {
-	ExpansionID    string          `json:"expansion_id"`
-	PlannedQuery   string          `json:"planned_query"`
-	AttemptIndex   int             `json:"attempt_index"`
-	EffectiveQuery string          `json:"effective_query"`
-	Evidence       []MatchEvidence `json:"evidence,omitempty"`
+	ExpansionID        string          `json:"expansion_id"`
+	PlannedQuery       string          `json:"planned_query"`
+	AttemptIndex       int             `json:"attempt_index"`
+	EffectiveQuery     string          `json:"effective_query"`
+	Evidence           []MatchEvidence `json:"evidence,omitempty"`
+	SearchLocale       string          `json:"search_locale,omitempty"`
+	RegionalProposalID string          `json:"regional_proposal_id,omitempty"`
 }
 
 type ProviderCandidateMatch struct {

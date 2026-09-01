@@ -9,8 +9,10 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -82,7 +84,19 @@ discoveryLoop:
 				defer wg.Done()
 				defer func() { <-sem }()
 				request := domain.DiscoveryRequest{ExpansionID: expansion.ID, Query: expansion.Query, Discriminators: append([]string(nil), expansion.Discriminators...), RepositoryScope: expansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
+				if expansion.Regional != nil {
+					request.SearchLocale = expansion.Regional.Locale
+					request.RegionalProposalID = expansion.Regional.ProposalID
+				}
 				result, err := provider.Discover(ctx, request)
+				for attemptIndex := range result.Attempts {
+					if result.Attempts[attemptIndex].SearchLocale == "" {
+						result.Attempts[attemptIndex].SearchLocale = request.SearchLocale
+					}
+					if result.Attempts[attemptIndex].RegionalProposalID == "" {
+						result.Attempts[attemptIndex].RegionalProposalID = request.RegionalProposalID
+					}
+				}
 				outcomes[index].discovery = domain.ExpansionDiscovery{Expansion: expansion, Provider: result}
 				if err != nil {
 					outcomes[index].failure = &domain.ExecutionFailure{Scope: expansion.ID, Stage: "discovery", Message: err.Error()}
@@ -107,6 +121,9 @@ discoveryLoop:
 		SchemaVersion: "2", Idea: normalizeIdea(plan.Idea), Strategy: strings.ToLower(strings.TrimSpace(strategy)), Language: language,
 		PerExpansion: make([]domain.ExpansionDiscovery, 0, started), Candidates: make([]domain.DiscoveredCandidate, 0),
 	}
+	if locales := searchLocalesForExpansionPlan(plan); len(locales) > 0 {
+		snapshot.SearchLocales = locales
+	}
 	candidateIndexes := make(map[string]int)
 	failures := 0
 	for index := 0; index < len(outcomes); index++ {
@@ -128,6 +145,9 @@ discoveryLoop:
 				continue
 			}
 			origin := candidateOrigin(outcome.discovery, candidate)
+			if err := domain.ValidateRegionalCandidateOrigin(origin); err != nil {
+				return domain.DiscoverySnapshot{}, err
+			}
 			if existingIndex, exists := candidateIndexes[key]; exists {
 				existing := &snapshot.Candidates[existingIndex]
 				existing.ExpansionIDs = appendUnique(existing.ExpansionIDs, outcome.discovery.Expansion.ID)
@@ -141,6 +161,10 @@ discoveryLoop:
 			})
 		}
 	}
+	for index := range snapshot.Candidates {
+		snapshot.Candidates[index].Origins = canonicalRegionalOrigins(snapshot.Candidates[index].Origins)
+	}
+	canonicalizeDirectDiscoverySnapshot(&snapshot)
 	receipt := buildDiscoveryReceipt(policy, plan, outcomes, started, int(completed.Load()), failures, ctx.Err())
 	snapshot.Receipt = &receipt
 	if ctx.Err() != nil {
@@ -154,6 +178,40 @@ discoveryLoop:
 		return snapshot, fmt.Errorf("todas as %d expansões falharam: %s", failures, message)
 	}
 	return snapshot, nil
+}
+
+func canonicalizeDirectDiscoverySnapshot(snapshot *domain.DiscoverySnapshot) {
+	for index := range snapshot.PerExpansion {
+		provider := &snapshot.PerExpansion[index].Provider
+		sort.Slice(provider.Candidates, func(left, right int) bool {
+			return candidateMetadataLess(provider.Candidates[left], provider.Candidates[right])
+		})
+		sort.Slice(provider.Matches, func(left, right int) bool {
+			leftJSON, _ := json.Marshal(provider.Matches[left])
+			rightJSON, _ := json.Marshal(provider.Matches[right])
+			return string(leftJSON) < string(rightJSON)
+		})
+	}
+	sort.Slice(snapshot.Candidates, func(left, right int) bool {
+		return discoveredCandidateLess(snapshot.Candidates[left], snapshot.Candidates[right])
+	})
+}
+
+func searchLocalesForExpansionPlan(plan domain.ExpansionPlan) []string {
+	values := []string{}
+	if plan.Regional != nil {
+		values = append(values, plan.Regional.Requested...)
+	}
+	for _, expansion := range plan.Expansions {
+		if expansion.Regional != nil {
+			values = append(values, expansion.Regional.Locale)
+		}
+	}
+	locales, err := canonicalizeSearchLocales(values)
+	if err != nil {
+		return nil
+	}
+	return locales
 }
 
 func buildDiscoveryReceipt(policy domain.DiscoveryExecutionPolicy, plan domain.ExpansionPlan, outcomes []discoveryOutcome, started, completed, expansionFailures int, runErr error) domain.DiscoveryRunReceipt {
@@ -174,7 +232,15 @@ func buildDiscoveryReceipt(policy domain.DiscoveryExecutionPolicy, plan domain.E
 					status = "SUCCEEDED"
 				}
 			}
-			receipt := domain.ProviderAttemptReceipt{ExpansionID: outcome.discovery.Expansion.ID, AttemptIndex: index, PlannedQuery: outcome.discovery.Expansion.Query, EffectiveQuery: attempt.Query, StartedAt: attempt.StartedAt, Duration: attempt.Duration, Status: status, ResultCount: attempt.ResultCount, ErrorClass: attempt.ErrorClass, SafeMessage: attempt.Error}
+			receipt := domain.ProviderAttemptReceipt{ExpansionID: outcome.discovery.Expansion.ID, AttemptIndex: index, PlannedQuery: outcome.discovery.Expansion.Query, EffectiveQuery: attempt.Query, StartedAt: attempt.StartedAt, Duration: attempt.Duration, Status: status, ResultCount: attempt.ResultCount, ErrorClass: attempt.ErrorClass, SafeMessage: attempt.Error, SearchLocale: attempt.SearchLocale, RegionalProposalID: attempt.RegionalProposalID}
+			if outcome.discovery.Expansion.Regional != nil {
+				if receipt.SearchLocale == "" {
+					receipt.SearchLocale = outcome.discovery.Expansion.Regional.Locale
+				}
+				if receipt.RegionalProposalID == "" {
+					receipt.RegionalProposalID = outcome.discovery.Expansion.Regional.ProposalID
+				}
+			}
 			r.Attempts = append(r.Attempts, receipt)
 			switch status {
 			case "TIMED_OUT":
@@ -201,6 +267,10 @@ func buildDiscoveryReceipt(policy domain.DiscoveryExecutionPolicy, plan domain.E
 
 func candidateOrigin(discovery domain.ExpansionDiscovery, candidate domain.RepositoryCandidate) domain.CandidateOrigin {
 	origin := domain.CandidateOrigin{ExpansionID: discovery.Expansion.ID, PlannedQuery: discovery.Expansion.Query, AttemptIndex: -1}
+	if discovery.Expansion.Regional != nil {
+		origin.SearchLocale = discovery.Expansion.Regional.Locale
+		origin.RegionalProposalID = discovery.Expansion.Regional.ProposalID
+	}
 	key := repositoryKey(candidate)
 	for _, match := range discovery.Provider.Matches {
 		if strings.ToLower(strings.TrimSpace(match.Repository)) == key {

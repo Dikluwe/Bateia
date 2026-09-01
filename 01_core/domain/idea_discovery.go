@@ -10,25 +10,29 @@ package domain
 import "time"
 
 type DiscoveryRequest struct {
-	ExpansionID     string        `json:"expansion_id"`
-	Query           string        `json:"query"`
-	Discriminators  []string      `json:"discriminators,omitempty"`
-	RepositoryScope string        `json:"repository_scope,omitempty"`
-	Language        string        `json:"language,omitempty"`
-	MaxResults      int           `json:"max_results"`
-	AttemptTimeout  time.Duration `json:"attempt_timeout,omitempty"`
-	MaxAttempts     int           `json:"max_attempts,omitempty"`
+	ExpansionID        string        `json:"expansion_id"`
+	Query              string        `json:"query"`
+	Discriminators     []string      `json:"discriminators,omitempty"`
+	RepositoryScope    string        `json:"repository_scope,omitempty"`
+	Language           string        `json:"language,omitempty"`
+	SearchLocale       string        `json:"search_locale,omitempty"`
+	RegionalProposalID string        `json:"regional_proposal_id,omitempty"`
+	MaxResults         int           `json:"max_results"`
+	AttemptTimeout     time.Duration `json:"attempt_timeout,omitempty"`
+	MaxAttempts        int           `json:"max_attempts,omitempty"`
 }
 
 type ProviderAttempt struct {
-	Query        string        `json:"query"`
-	AttemptIndex int           `json:"attempt_index,omitempty"`
-	StartedAt    time.Time     `json:"started_at,omitempty"`
-	Duration     time.Duration `json:"duration,omitempty"`
-	Status       string        `json:"status,omitempty"`
-	ResultCount  int           `json:"result_count"`
-	ErrorClass   string        `json:"error_class,omitempty"`
-	Error        string        `json:"error,omitempty"`
+	Query              string        `json:"query"`
+	AttemptIndex       int           `json:"attempt_index,omitempty"`
+	StartedAt          time.Time     `json:"started_at,omitempty"`
+	Duration           time.Duration `json:"duration,omitempty"`
+	Status             string        `json:"status,omitempty"`
+	ResultCount        int           `json:"result_count"`
+	ErrorClass         string        `json:"error_class,omitempty"`
+	Error              string        `json:"error,omitempty"`
+	SearchLocale       string        `json:"search_locale,omitempty"`
+	RegionalProposalID string        `json:"regional_proposal_id,omitempty"`
 }
 
 type ProviderDiscovery struct {
@@ -55,6 +59,7 @@ type DiscoverySnapshot struct {
 	Idea          IdeaSpec              `json:"idea"`
 	Strategy      string                `json:"strategy"`
 	Language      string                `json:"language,omitempty"`
+	SearchLocales []string              `json:"search_locales,omitempty"`
 	PerExpansion  []ExpansionDiscovery  `json:"per_expansion"`
 	Candidates    []DiscoveredCandidate `json:"candidates"`
 	Failures      []ExecutionFailure    `json:"failures,omitempty"`
@@ -87,16 +92,18 @@ type DiscoveryExecutionPolicy struct {
 	MaxAttempts    int           `json:"max_attempts"`
 }
 type ProviderAttemptReceipt struct {
-	ExpansionID    string        `json:"expansion_id"`
-	AttemptIndex   int           `json:"attempt_index"`
-	PlannedQuery   string        `json:"planned_query"`
-	EffectiveQuery string        `json:"effective_query"`
-	StartedAt      time.Time     `json:"started_at,omitempty"`
-	Duration       time.Duration `json:"duration,omitempty"`
-	Status         string        `json:"status"`
-	ResultCount    int           `json:"result_count"`
-	ErrorClass     string        `json:"error_class,omitempty"`
-	SafeMessage    string        `json:"safe_message,omitempty"`
+	ExpansionID        string        `json:"expansion_id"`
+	AttemptIndex       int           `json:"attempt_index"`
+	PlannedQuery       string        `json:"planned_query"`
+	EffectiveQuery     string        `json:"effective_query"`
+	StartedAt          time.Time     `json:"started_at,omitempty"`
+	Duration           time.Duration `json:"duration,omitempty"`
+	Status             string        `json:"status"`
+	ResultCount        int           `json:"result_count"`
+	ErrorClass         string        `json:"error_class,omitempty"`
+	SafeMessage        string        `json:"safe_message,omitempty"`
+	SearchLocale       string        `json:"search_locale,omitempty"`
+	RegionalProposalID string        `json:"regional_proposal_id,omitempty"`
 }
 type DiscoveryRunReceipt struct {
 	SchemaVersion   string                   `json:"schema_version"`

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-08-31
  */
 
 package cli
@@ -76,7 +76,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
 	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose Comprova e diagnostica evidências, sem LLM")
 	fmt.Println("  idea decide   Decide offline entre reusar, compor, referenciar ou construir")
-	fmt.Println("  idea recommend Orquestra o funil e entrega um dossiê reproduzível")
+	fmt.Println("  idea recommend Orquestra o funil e ranqueia alternativas com evidência")
 	fmt.Println("  idea recover diagnose|plan|execute Recupera evidências de decisões inconclusivas")
 	fmt.Println("  idea autofagia|katamari Audita capacidades internas e compõe somente lacunas comprovadas")
 	fmt.Println("  benchmark validate|mutate|run Audita offline o benchmark ponta a ponta")
@@ -93,6 +93,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea ontology expand --input ideia.json --ontology discovery-ontology.json --plan-output plano.json")
 	fmt.Println("  bateia idea catalog discover --plan plano.json --provider github --output catalogo.json")
 	fmt.Println("  bateia idea decide --idea ideia.json --assessment assessment.json --policy reuse-policy.json")
+	fmt.Println("  bateia idea recommend --idea ideia.json --policy reuse-policy.json --target-name Software --target-repo owner/repo --output dossie")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {

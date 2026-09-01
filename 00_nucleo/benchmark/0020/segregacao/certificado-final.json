@@ -1,0 +1,42 @@
+{
+  "schema_version": "tekt-final-certificate/1",
+  "step": "0020",
+  "certified_on": "2026-08-31",
+  "execution_status": "EXECUTADO_SEM_ATESTACAO_DE_ISOLAMENTO",
+  "segregated_and_attested": false,
+  "pre_implementation_seal": {
+    "verdict": "BLOCKED",
+    "sealed": false,
+    "score": "4/5",
+    "mutation_score": 0.8
+  },
+  "implementation_gates": {
+    "go_test_all": "BLOCKED_SANDBOX_SOCKET",
+    "go_test_without_socket_packages": "PASS",
+    "step0020_contract_tests": "PASS",
+    "go_vet": "PASS",
+    "go_build": "PASS",
+    "staticcheck": "PASS",
+    "crystalline_lint": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "run": {
+    "positions": 36,
+    "EMPTY": 1,
+    "SKIPPED_BUDGET": 35,
+    "verdict": "INCONCLUSIVE_RATE_LIMIT",
+    "security_evidence": "UPSTREAM_RUN_EVIDENCE_ONLY",
+    "double_replay_evidence": "UPSTREAM_RUN_EVIDENCE_ONLY"
+  },
+  "receipt": "00_nucleo/benchmark/0020/verification-receipt.json",
+  "seal_sha256": "0d2e1ac130ac1eada6017ef11d0ebbd93ec2c72a2b0185d4e8d889793f3e4098",
+  "manifest_sha256": "2dce27f4b2467d5d6e4228e08b3cc88318e8094e8bb9abb5620d33df63bfa07f",
+  "run_receipt_sha256": "963d7cdbed90f94db2fca0f4f4108c3f108a0b022300fa26a00752557d0c509a",
+  "final_verdict": "INCONCLUSIVE_RATE_LIMIT",
+  "certification_verdict": "VERIFIED_WITH_RECORDED_LIMITATIONS",
+  "limitations": [
+    "O selo pre-implementacao permaneceu BLOCKED por 4/5 e nao produz atestacao de segregacao.",
+    "O sandbox proibiu sockets de httptest em dois pacotes; os pacotes sem socket e as tres suites Step0020 passaram.",
+    "A nova comparacao de replay e a nova varredura independente de segredo nao foram concluidas antes da interrupcao; somente a evidencia do run externo foi registrada para esses gates."
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "schema_version": "tekt.assisted-judgment-rubric.v1",
+  "step": "0021",
+  "rubric_version": "0021.v1",
+  "verdicts": ["RELEVANT", "PARTIAL", "IRRELEVANT", "UNCERTAIN", "CONFLICT"],
+  "effective_verdicts": ["RELEVANT", "PARTIAL", "IRRELEVANT", "UNCERTAIN", "CONFLICT", "UNKNOWN"],
+  "human_actions": ["CONFIRMED", "OVERRIDDEN", "RESOLVED"],
+  "required_judgment_fields": [
+    "candidate_id",
+    "verdict",
+    "confidence",
+    "reasons",
+    "evidence",
+    "rubric_version"
+  ],
+  "confidence": {
+    "minimum": 0.0,
+    "maximum": 1.0,
+    "finite": true,
+    "human_escalation_below": 0.8
+  },
+  "evidence": {
+    "required_for_every_judgment": true,
+    "must_resolve_inside_sealed_snapshot": true,
+    "must_support_reason": true,
+    "unsupported_claim_cannot_promote_partial_to_relevant": true,
+    "invalid_source_requires_escalation": true
+  },
+  "blinding": {
+    "forbidden_fields": [
+      "arm",
+      "query",
+      "query_id",
+      "original_rank",
+      "position",
+      "partial_metrics",
+      "protected_registry",
+      "promotion_expectation"
+    ],
+    "candidate_content_is_untrusted_data": true,
+    "candidate_instructions_are_never_commands": true,
+    "attempts_to_reveal_origin_do_not_change_authority": true
+  },
+  "escalation": {
+    "any_condition_is_sufficient": true,
+    "conditions": [
+      "VERDICT_UNCERTAIN",
+      "VERDICT_CONFLICT",
+      "CONFIDENCE_BELOW_0_80",
+      "INVALID_OR_UNSUPPORTED_EVIDENCE",
+      "TOP_10_BOUNDARY_OR_RECALL_IMPACT",
+      "WINNER_OR_PROMOTION_IMPACT",
+      "AMBIGUOUS_IDENTITY_URL_OR_REPO_BACKED",
+      "DETERMINISTIC_CONTROL_SAMPLE"
+    ],
+    "control_sample": {
+      "rate": 0.1,
+      "population": "cases_not_escalated_by_another_condition",
+      "selection": "deterministic_order_independent",
+      "rounding": "ceiling_for_non_empty_population"
+    }
+  },
+  "human_review": {
+    "prevalence": "human_review_over_ai_judgment",
+    "confirmed_keeps_initial_verdict": true,
+    "overridden_requires_human_verdict_and_reason": true,
+    "resolved_requires_human_verdict": true,
+    "escalated_without_valid_review_effective_verdict": "UNKNOWN"
+  },
+  "history": {
+    "immutable": true,
+    "preserve_initial_judgment": true,
+    "preserve_escalation_reasons": true,
+    "preserve_human_review": true,
+    "overwrite_forbidden": true
+  },
+  "empty_corpus": {
+    "valid": true,
+    "judgments": 0,
+    "reviews": 0,
+    "fabricate_records": false,
+    "zero_denominator_metrics": "UNAVAILABLE",
+    "nan_or_infinity_forbidden": true
+  },
+  "gates": {
+    "evidence_grounding_rate": 1.0,
+    "escalated_reviewed_or_unknown_rate": 1.0,
+    "minimum_ai_human_raw_agreement": 0.8,
+    "maximum_override_rate": 0.2,
+    "maximum_blinding_leaks": 0,
+    "maximum_candidate_instructions_obeyed": 0,
+    "required_mutation_score": 1.0,
+    "offline_replay_must_be_deterministic": true
+  },
+  "outcomes": [
+    "ORACLE_ACCEPTED",
+    "FAIL_AI_RELIABILITY",
+    "INCONCLUSIVE_HUMAN_REVIEW",
+    "FAIL_BLINDING",
+    "FAIL_EVIDENCE_GROUNDING"
+  ],
+  "unknown_policy": "UNKNOWN is never implicitly successful and never inherits the AI verdict"
+}

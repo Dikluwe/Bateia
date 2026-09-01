@@ -34,3 +34,7 @@ Cada passo deve declarar:
 | [0017](0017-gerar-consultas-por-frames-funcionais-e-descobrir-produtos-na-web.md) | Descrever o trabalho do produto com frames funcionais e comparar busca nominal versus comportamental | `EM VALIDAÇÃO` |
 | [0018](0018-versionar-gramatica-funcional-e-congelar-busca-web-reexecutavel.md) | Corrigir a gramática funcional e tornar a busca web congelável, reexecutável e causalmente comparável | `EM VALIDAÇÃO` |
 | [0019](0019-executar-experimento-publico-da-gramatica-funcional.md) | Executar N/F1/F2 sem token, congelar resultados públicos e decidir a gramática por replay e julgamento cego | `IMPLEMENTADO` |
+| [0020](0020-executar-busca-autenticada-com-orcamento-observavel.md) | Repetir a descoberta com token somente leitura, orçamento fixo, segurança e replay offline | `IMPLEMENTADO` |
+| [0021](0021-julgar-candidatos-com-ia-e-escalonamento-humano.md) | Obter primeiro veredito da IA e escalar dúvidas e casos de borda ao usuário | `IMPLEMENTADO` |
+| [0022](0022-calibrar-regras-de-evidencia-por-oraculos-independentes.md) | Ampliar a comprovação de capacidades com oráculos segregados e teste oculto | `IMPLEMENTADO` |
+| [0023](0023-validar-funil-completo-para-decisoes-reais-de-reuso.md) | Validar descoberta, evidência, decisão e utilidade em dez ideias reais do domínio escolhido | `DESCOBERTA APROVADA — DOWNSTREAM PENDENTE` |

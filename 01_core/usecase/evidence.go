@@ -37,15 +37,20 @@ func DefaultEvidenceRules() domain.CapabilityRuleCatalog {
 		rule("agent-mcp", []string{"integracao mcp", "agentes", "model context protocol"}, []string{"mcpserver", "model context protocol", "mcp server"}),
 		rule("async-events", []string{"processamento assincrono de eventos", "processar eventos assincronos de servicos", "asynchronous event processing"}, []string{"eventprocessor", "eventdispatcher", "eventhandler", "eventstore", "event queue", "async event", "event driven architecture", "event sourcing", "message bridge"}),
 		rule("recipe-import", []string{"organizacao de receitas", "organizar receitas culinarias para uma familia", "importacao de receitas", "recipe import", "recipe organization"}, []string{"recipeimporter", "import recipe", "recipe organizer", "recipe manager", "family recipes", "mealie import", "tandoor import", "nextcloud import", "mela recipes", "recipe keeper", "recipe sage", "repository recipes", "recipe controller"}),
+		independentRule("repository-discovery", []string{"descobrir repositorios candidatos", "repository discovery", "software discovery"}, []string{"repositorydiscovery", "candidatefinder", "discover repositories", "search candidates"}),
+		independentRule("adoption-decision", []string{"emitir decisao de adocao de componente", "component adoption decision", "dependency adoption gate"}, []string{"adoptiondecision", "adoptiongate", "validate or drop", "go validate drop"}),
+		independentRule("grounded-verdict", []string{"julgar candidato com evidencia rastreavel", "evidence grounded verdict", "traceable candidate judgment"}, []string{"groundedverdict", "evidencepointer", "traceable verdict", "evidence grounded judgment"}),
+		independentRule("candidate-comparison", []string{"comparar candidatos por criterios", "criteria based candidate comparison", "compare software candidates"}, []string{"candidatecomparison", "comparisonmatrix", "compare candidates", "criteria matrix"}),
+		independentRule("human-review-escalation", []string{"escalonar duvida para revisao humana", "human review escalation", "escalate uncertain judgment"}, []string{"humanreviewescalation", "reviewqueue", "escalate uncertainty", "mandatory review"}),
 	}
-	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "1", Version: "2026-08-26.2", Rules: rules}
+	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "2", Version: "2026-08-31.1", Rules: rules}
 	catalog.Hash = ruleCatalogHash(catalog)
 	return catalog
 }
 
 func rule(id string, terms, patterns []string) domain.CapabilityRule {
 	return domain.CapabilityRule{
-		ID: id, CapabilityTerms: terms,
+		ID: id, Family: "software-capability", Provenance: "step-0022-contract", TargetHints: []string{"source symbol", "related test or example"}, CapabilityTerms: terms,
 		StrongEvidence: []domain.CapabilityPattern{
 			{Kind: domain.EvidenceSymbol, Patterns: patterns},
 			{Kind: domain.EvidenceTest, Patterns: patterns},
@@ -56,6 +61,12 @@ func rule(id string, terms, patterns []string) domain.CapabilityRule {
 		},
 		NegativeEvidence: []string{"not implemented", "nao implementado", "planned", "roadmap only"},
 	}
+}
+
+func independentRule(id string, terms, patterns []string) domain.CapabilityRule {
+	r := rule(id, terms, patterns)
+	r.RequiresIndependent = true
+	return r
 }
 
 func ruleCatalogHash(c domain.CapabilityRuleCatalog) string {
@@ -70,20 +81,56 @@ func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
 		return fmt.Errorf("catálogo de regras exige version e rules")
 	}
 	ids := map[string]bool{}
+	terms := map[string]string{}
+	patterns := map[string]string{}
 	for _, r := range c.Rules {
 		if strings.TrimSpace(r.ID) == "" || ids[r.ID] {
 			return fmt.Errorf("ID de regra vazio ou duplicado: %q", r.ID)
 		}
 		ids[r.ID] = true
+		if c.SchemaVersion == "2" && (strings.TrimSpace(r.Family) == "" || strings.TrimSpace(r.Provenance) == "" || len(r.TargetHints) == 0) {
+			return fmt.Errorf("regra %s exige família, proveniência e target_hints", r.ID)
+		}
+		for _, term := range r.CapabilityTerms {
+			n := normalizeEvidenceText(term)
+			if n == "" || identityDependentRuleText(term) || overlyGenericRuleText(n) {
+				return fmt.Errorf("regra %s contém termo inválido ou dependente de identidade: %q", r.ID, term)
+			}
+			if owner := terms[n]; owner != "" && owner != r.ID {
+				return fmt.Errorf("termo duplicado entre %s e %s: %q", owner, r.ID, term)
+			}
+			terms[n] = r.ID
+		}
 		for _, group := range append(append([]domain.CapabilityPattern{}, r.StrongEvidence...), r.SupportingEvidence...) {
 			for _, pattern := range group.Patterns {
-				if len(pattern) == 0 || len(pattern) > 120 {
+				n := normalizeEvidenceText(pattern)
+				if len(pattern) == 0 || len(pattern) > 120 || identityDependentRuleText(pattern) || overlyGenericRuleText(n) {
 					return fmt.Errorf("regra %s contém padrão vazio ou longo demais", r.ID)
 				}
+				if owner := patterns[n]; owner != "" && owner != r.ID {
+					return fmt.Errorf("padrão duplicado entre %s e %s: %q", owner, r.ID, pattern)
+				}
+				patterns[n] = r.ID
 			}
 		}
 	}
+	if c.Hash != "" && c.Hash != ruleCatalogHash(c) {
+		return fmt.Errorf("hash do catálogo não corresponde ao conteúdo")
+	}
 	return nil
+}
+
+func identityDependentRuleText(value string) bool {
+	lower := strings.ToLower(strings.TrimSpace(value))
+	return strings.Contains(lower, "github.com/") || strings.Contains(lower, "gitlab.com/") || strings.Contains(lower, "http://") || strings.Contains(lower, "https://") || strings.Contains(lower, "@") || strings.Contains(lower, "owner/")
+}
+
+func overlyGenericRuleText(value string) bool {
+	switch value {
+	case "tool", "software", "repository", "repo", "manager", "controller", "service", "search", "evaluation", "avaliacao", "component", "componente":
+		return true
+	}
+	return false
 }
 
 func PlanEvidence(report domain.ScreeningReport) ([]domain.EvidenceExtractionPlan, error) {
@@ -582,7 +629,11 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		return capabilityResult(capability, domain.EvidenceInconclusive, sources, maxStrength(sources), "coleta incompleta ou com falha; ausência não pode ser concluída")
 	}
 	max, combined, independent := evidenceScores(sources)
-	if max >= 0.85 || (max >= 0.65 && independent >= 2 && combined >= 0.90) {
+	proven := max >= 0.85 || (max >= 0.65 && independent >= 2 && combined >= 0.90)
+	if rule.RequiresIndependent {
+		proven = max >= 0.65 && independent >= 2 && combined >= 0.90
+	}
+	if proven {
 		return capabilityResult(capability, domain.EvidenceProven, sources, combined, "capacidade comprovada por evidência concreta e rastreável")
 	}
 	if combined >= 0.50 {

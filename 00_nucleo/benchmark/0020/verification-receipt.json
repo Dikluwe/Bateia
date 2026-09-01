@@ -1,0 +1,107 @@
+{
+  "schema_version": "tekt-final-verification-receipt/1",
+  "step": "0020",
+  "verified_on": "2026-08-31",
+  "role": "final_verifier",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_DE_ISOLAMENTO",
+  "segregated_and_attested": false,
+  "pre_implementation_seal": {
+    "verdict": "BLOCKED",
+    "sealed": false,
+    "valid_mutations_rejected": 4,
+    "valid_mutations_denominator": 5,
+    "mutation_score": 0.8,
+    "required_mutation_score": 1.0,
+    "reason": "negative-extra-arm-request sobreviveu ao gate pre-implementacao"
+  },
+  "gates": [
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go test ./...",
+      "status": "BLOCKED_SANDBOX_SOCKET",
+      "exit_code": 1,
+      "evidence": "Todos os pacotes anteriores passaram; 03_infra/github e 03_infra/web falharam ao abrir socket httptest com operation not permitted."
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go list ./... | rg -v '^bateia/03_infra/(github|web)$' | xargs env GOCACHE=/tmp/bateia-go-cache-step0020 go test",
+      "status": "PASS",
+      "exit_code": 0,
+      "scope": "todos os pacotes sem dependencia de socket"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go test ./03_infra/web -run '^TestObservableWebClientStep0020Contract$' -count=1",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go test ./01_core/usecase -run '^TestStep0020Contract' -count=1",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go test ./02_shell/cli -run '^TestStep0020Contract' -count=1",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go vet ./...",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-go-cache-step0020 go build ./...",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "XDG_CACHE_HOME=/tmp/bateia-staticcheck-cache /home/dikluwe/go/bin/staticcheck ./...",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "/repos/Antigravity/tekt-linter/target/debug/crystalline-lint .",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "No violations found"
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS",
+      "exit_code": 0
+    }
+  ],
+  "run_evidence": {
+    "source": "00_nucleo/benchmark/0020/run/receipt.json and three snapshots",
+    "positions": 36,
+    "EMPTY": 1,
+    "SKIPPED_BUDGET": 35,
+    "started": 1,
+    "retried": 0,
+    "completed": 1,
+    "stop_reason": "SAFE_RATE_LIMIT_MARGIN",
+    "verdict": "INCONCLUSIVE_RATE_LIMIT",
+    "secret_scan": {
+      "status": "UPSTREAM_RUN_EVIDENCE_ONLY",
+      "credentials_found": 0,
+      "content_printed": false,
+      "limitation": "A varredura independente final nao foi concluida antes da interrupcao solicitada pelo usuario."
+    },
+    "double_replay": {
+      "status": "UPSTREAM_RUN_EVIDENCE_ONLY",
+      "reported_byte_identical": true,
+      "final_verifier_attempt": "INTERRUPTED_BY_USER",
+      "limitation": "A tentativa via CLI rejeitou --no-token; o replay puro temporario subsequente foi interrompido antes da comparacao."
+    }
+  },
+  "hashes": {
+    "step_sha256": "7e4007b043d3edbf1d0ec78e149574b25db1c336dca38d0c947e86afea9f2648",
+    "contract_sha256": "238fcefaa971d8f00383cc97990a110b895bfaf113e19c139af8299f5149a4c3",
+    "adversarial_cases_sha256": "52b5655f126249d2de93188908af0f581ebd25b40b000a1010588ece6474de08",
+    "manifest_sha256": "2dce27f4b2467d5d6e4228e08b3cc88318e8094e8bb9abb5620d33df63bfa07f",
+    "seal_sha256": "0d2e1ac130ac1eada6017ef11d0ebbd93ec2c72a2b0185d4e8d889793f3e4098",
+    "run_receipt_sha256": "963d7cdbed90f94db2fca0f4f4108c3f108a0b022300fa26a00752557d0c509a",
+    "snapshot_n_sha256": "01ccdaea686a2b1fd695fed593a66f3080e69f1970defada0d319e6ec70ea321",
+    "snapshot_f1_sha256": "3daf6d14d8b75ebf1778ae8dad7a14bf9cdfd45059d9e1c0c995238c60c51338",
+    "snapshot_f2_sha256": "2837c4277464e3c6b9a383abff0e563134220af637694a18bf83c925966f0f59"
+  },
+  "verdict": "VERIFIED_WITH_RECORDED_LIMITATIONS"
+}

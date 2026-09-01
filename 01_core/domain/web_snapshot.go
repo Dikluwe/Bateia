@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/web_snapshot.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-08-31
  */
 package domain
 
@@ -21,11 +21,21 @@ type WebSearchCapabilities struct {
 	SupportsLocale  bool   `json:"supports_locale"`
 	PreservesRank   bool   `json:"preserves_rank"`
 	MaxResultsLimit int    `json:"max_results_limit"`
+	Authenticated   bool   `json:"authenticated"`
+	PublicOnly      bool   `json:"public_only"`
+}
+
+type WebRateLimit struct {
+	Limit     *int64 `json:"limit,omitempty"`
+	Remaining *int64 `json:"remaining,omitempty"`
+	Used      *int64 `json:"used,omitempty"`
+	Reset     *int64 `json:"reset,omitempty"`
 }
 
 type WebReceipt struct {
-	SanitizedURL string `json:"sanitized_url"`
-	ResponseTime int64  `json:"response_time_ms"`
+	SanitizedURL string       `json:"sanitized_url"`
+	ResponseTime int64        `json:"response_time_ms"`
+	RateLimit    WebRateLimit `json:"rate_limit,omitempty"`
 }
 
 type RawWebResult struct {
@@ -35,42 +45,50 @@ type RawWebResult struct {
 	Title        string `json:"title"`
 	Snippet      string `json:"snippet"`
 	IsAd         bool   `json:"is_ad"`
+	Visibility   string `json:"visibility,omitempty"`
 }
 
 type RawWebResponse struct {
-	RequestID    string         `json:"request_id"`
-	QueryID      string         `json:"query_id"`
-	Provider     string         `json:"provider"`
-	RetrievedAt  string         `json:"retrieved_at"`
-	Status       string         `json:"status"`
-	HTTPStatus   int            `json:"http_status,omitempty"`
-	Results      []RawWebResult `json:"results"`
-	Receipt      WebReceipt     `json:"receipt"`
-	RequestHash  string         `json:"request_hash"`
-	ResponseHash string         `json:"response_hash"`
+	RequestID     string               `json:"request_id"`
+	QueryID       string               `json:"query_id"`
+	Provider      string               `json:"provider"`
+	RetrievedAt   string               `json:"retrieved_at"`
+	Status        string               `json:"status"`
+	HTTPStatus    int                  `json:"http_status,omitempty"`
+	Results       []RawWebResult       `json:"results"`
+	Receipt       WebReceipt           `json:"receipt"`
+	RequestHash   string               `json:"request_hash"`
+	ResponseHash  string               `json:"response_hash"`
+	Arm           string               `json:"arm,omitempty"`
+	Position      int                  `json:"position,omitempty"`
+	AttemptNumber int                  `json:"attempt_number,omitempty"`
+	Request       ObservableWebRequest `json:"request,omitempty"`
 }
 
 type WebSearchSnapshot struct {
-	SchemaVersion string           `json:"schema_version"`
-	RunID         string           `json:"run_id"`
-	Arm           string           `json:"arm"`
-	GrammarHash   string           `json:"grammar_hash"`
-	QuerySetHash  string           `json:"query_set_hash"`
-	Provider      string           `json:"provider"`
-	Responses     []RawWebResponse `json:"responses"`
-	SnapshotHash  string           `json:"snapshot_hash"`
+	SchemaVersion string                      `json:"schema_version"`
+	RunID         string                      `json:"run_id"`
+	Arm           string                      `json:"arm"`
+	GrammarHash   string                      `json:"grammar_hash"`
+	QuerySetHash  string                      `json:"query_set_hash"`
+	Provider      string                      `json:"provider"`
+	Responses     []RawWebResponse            `json:"responses"`
+	SnapshotHash  string                      `json:"snapshot_hash"`
+	Authorization *WebExperimentAuthorization `json:"authorization,omitempty"`
+	Budget        *WebExperimentBudget        `json:"budget,omitempty"`
 }
 
 type WebReplayResult struct {
-	SchemaVersion string         `json:"schema_version"`
-	SnapshotHash  string         `json:"snapshot_hash"`
-	TotalQueries  int            `json:"total_queries"`
-	UniqueHits    int            `json:"unique_hits"`
-	Deduplicated  []RawWebResult `json:"deduplicated"`
-	MissingFields []string       `json:"missing_fields"`
-	Replayable    bool           `json:"replayable"`
-	Organic       []RawWebResult `json:"organic"`
-	Sponsored     []RawWebResult `json:"sponsored"`
+	SchemaVersion  string         `json:"schema_version"`
+	SnapshotHash   string         `json:"snapshot_hash"`
+	TotalQueries   int            `json:"total_queries"`
+	UniqueHits     int            `json:"unique_hits"`
+	Deduplicated   []RawWebResult `json:"deduplicated"`
+	MissingFields  []string       `json:"missing_fields"`
+	Replayable     bool           `json:"replayable"`
+	Organic        []RawWebResult `json:"organic"`
+	Sponsored      []RawWebResult `json:"sponsored"`
+	ObservedStates []string       `json:"observed_states"`
 }
 
 type BlindedJudgment struct {

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "family": "software-search-and-evaluation",
+  "frozen_at": "2026-08-31",
+  "splits": {
+    "CONTRACT": [
+      {"id":"contract-discovery","capability":"descobrir repositórios candidatos","expected":"PROVEN","source_class":"code_symbol_plus_test"},
+      {"id":"contract-adoption-gate","capability":"emitir decisão de adoção de componente","expected":"PROVEN","source_class":"code_symbol_plus_test"},
+      {"id":"contract-readme-only","capability":"avaliar evidência sustentada","expected":"PARTIAL","source_class":"documentation_only"},
+      {"id":"contract-opaque-head","capability":"reproduzir julgamento offline","expected":"INCONCLUSIVE","source_class":"mutable_commit"}
+    ],
+    "VALIDATION": [
+      {"id":"validation-ranking","capability":"comparar candidatos por critérios","expected":"PROVEN","source_class":"code_symbol_plus_test"},
+      {"id":"validation-negative","capability":"descobrir repositórios candidatos","expected":"CONFLICT","source_class":"explicit_negative"},
+      {"id":"validation-absent","capability":"escalonar dúvida para revisão humana","expected":"ABSENT","source_class":"complete_tree_without_match"}
+    ],
+    "TEST": [
+      {"id":"test-grounded-verdict","capability":"julgar candidato com evidência rastreável","expected":"PROVEN","source_class":"code_symbol_plus_test"},
+      {"id":"test-duplicate-doc","capability":"comparar candidatos por critérios","expected":"PARTIAL","source_class":"duplicated_documentation"},
+      {"id":"test-incomplete-budget","capability":"emitir decisão de adoção de componente","expected":"INCONCLUSIVE","source_class":"budget_exhausted"}
+    ]
+  },
+  "attestation": "FROZEN_WITHOUT_STRONG_TEST_SPLIT_ISOLATION"
+}

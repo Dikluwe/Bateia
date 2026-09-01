@@ -1,0 +1,94 @@
+{
+  "schema_version": "tekt.contract.v1",
+  "contract_id": "bateia.step-0021.assisted-judgment",
+  "step": "0021",
+  "role": "contract_and_rubric_author",
+  "regime": "full_protocol_contract_phase",
+  "execution_attestation": {
+    "status": "EXECUTED_WITHOUT_STRONG_ISOLATION_ATTESTATION",
+    "claim_of_attested_segregation": false,
+    "candidate_implementation_read": false,
+    "candidate_diff_read": false,
+    "note": "Authorship constraints were followed, but this record does not prove capability or conversational isolation."
+  },
+  "frozen_inputs": [
+    "00_nucleo/passos/0021-julgar-candidatos-com-ia-e-escalonamento-humano.md",
+    "01_core/domain/web_snapshot.go"
+  ],
+  "writable_outputs": [
+    "00_nucleo/prompts/01_core/domain/assisted_judgment.md",
+    "00_nucleo/prompts/01_core/usecase/assisted_judgment.md",
+    "00_nucleo/prompts/02_shell/cli/assisted_judgment.md",
+    "00_nucleo/benchmark/0021/rubric.json",
+    "00_nucleo/benchmark/0021/contract.json"
+  ],
+  "forbidden_inputs": ["candidate_implementation", "candidate_diffs"],
+  "observable_scope": {
+    "inputs": [
+      "sealed_web_snapshot",
+      "blinded_candidates",
+      "versioned_ai_judgments",
+      "human_reviews"
+    ],
+    "outputs": [
+      "blinded_review_queue",
+      "immutable_final_oracle",
+      "offline_quality_metrics",
+      "gate_outcome"
+    ],
+    "forbidden_runtime_effects": ["network_search", "llm_execution", "rubric_mutation"]
+  },
+  "required_properties": [
+    "CLOSED_VERSIONED_VERDICTS",
+    "FINITE_BOUNDED_CONFIDENCE",
+    "SNAPSHOT_GROUNDED_EVIDENCE",
+    "STRICT_BLINDING",
+    "PROMPT_INJECTION_TREATED_AS_UNTRUSTED_DATA",
+    "DETERMINISTIC_ESCALATION_BELOW_0_80",
+    "DETERMINISTIC_ESCALATION_FOR_UNCERTAIN_OR_CONFLICT",
+    "DETERMINISTIC_ESCALATION_FOR_INVALID_EVIDENCE",
+    "DETERMINISTIC_TEN_PERCENT_CONTROL_SAMPLE",
+    "HUMAN_REVIEW_PREVAILS",
+    "UNKNOWN_WITHOUT_REQUIRED_REVIEW",
+    "IMMUTABLE_HISTORY",
+    "EMPTY_CORPUS_IS_DEFINED",
+    "ORDER_INDEPENDENT_OFFLINE_REPLAY"
+  ],
+  "unknown_policy": {
+    "required_for_escalated_without_valid_review": true,
+    "effective_verdict": "UNKNOWN",
+    "counts_as_success": false,
+    "may_inherit_ai_verdict": false
+  },
+  "oracle_expectations": {
+    "positive": "valid grounded judgments and valid completed reviews preserve the rubric semantics",
+    "negative": "each semantic violation is rejected with a reproducible witness",
+    "opaque": "ambiguous identity, unsupported construction or incomplete required review remains UNKNOWN",
+    "repeat_and_reorder": "same effective oracle and metrics",
+    "required_mutation_score": 1.0
+  },
+  "adversarial_classes": [
+    "NONEXISTENT_EVIDENCE",
+    "UNSUPPORTED_EVIDENCE",
+    "EXTREME_OR_NONFINITE_CONFIDENCE",
+    "AMBIGUOUS_IDENTITY",
+    "README_PROMPT_INJECTION",
+    "ARM_QUERY_OR_RANK_DISCLOSURE",
+    "SILENT_AI_FALLBACK_WITHOUT_HUMAN_REVIEW",
+    "HISTORY_OVERWRITE",
+    "EMPTY_CORPUS_DIVISION_BY_ZERO",
+    "ORDER_DEPENDENT_SAMPLING"
+  ],
+  "gate_outcomes": {
+    "accepted": "ORACLE_ACCEPTED",
+    "ai_reliability_failure": "FAIL_AI_RELIABILITY",
+    "incomplete_human_review": "INCONCLUSIVE_HUMAN_REVIEW",
+    "blinding_failure": "FAIL_BLINDING",
+    "evidence_failure": "FAIL_EVIDENCE_GROUNDING"
+  },
+  "seal": {
+    "status": "LOCALLY_VERIFIED",
+    "reason": "Contract and adversarial suites passed and the final oracle replays offline; strong capability isolation was not attested.",
+    "strong_attestation": false
+  }
+}

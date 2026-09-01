@@ -1,0 +1,86 @@
+{
+  "schema_version": "tekt-verifier-manifest/1",
+  "step": "0020",
+  "phase": "PRE_IMPLEMENTATION_DISCRIMINATORY_REVERIFICATION",
+  "protocol": "tekt-materializacao-segregada/full",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_DE_ISOLAMENTO",
+  "verdict": "BLOCKED",
+  "verdict_reason": "negative-extra-arm-request nao rejeitou o baseline: TestStep0020ContractRejectsExtraArmRequestBeforeNetwork passou nas duas execucoes porque o baseline rejeitou N13 antes da rede com zero requests.",
+  "executed_at": "2026-08-31T14:55:22-03:00",
+  "baseline": {
+    "git_head": "09e7c352929f71eaaeab33ecdad08aa16d5970e2",
+    "worktree_dirty_preexisting": true,
+    "status_summary": "Passo 0020, benchmark, prompts e tres suites estavam untracked; 00_nucleo/passos/README.md estava modificado; havia outros passos untracked."
+  },
+  "capabilities": {
+    "role": "pre_implementation_verifier",
+    "executor": "Codex",
+    "environment": "shared_workspace_workspace-write_sandbox",
+    "read_allowlist": [
+      "00_nucleo/passos/0020*",
+      "00_nucleo/prompts/**/authenticated*",
+      "00_nucleo/benchmark/0020/contract.json",
+      "00_nucleo/benchmark/0020/adversarial-cases.json",
+      "03_infra/web/observable_client_step0020_contract_test.go",
+      "01_core/usecase/web_replay_step0020_contract_test.go",
+      "02_shell/cli/idea_web_step0020_contract_test.go",
+      "baseline Git",
+      "skill tekt-materializacao-segregada"
+    ],
+    "write_allowlist": [
+      "00_nucleo/benchmark/0020/manifest.json",
+      "00_nucleo/benchmark/0020/segregacao/selo.json"
+    ],
+    "forbidden": ["edit_contract", "edit_tests", "edit_prompts", "edit_implementation"],
+    "network_used": false,
+    "strong_isolation_attested": false
+  },
+  "unknown_policy": {
+    "policy": "Unknown nunca equivale a EMPTY ou SUCCESS",
+    "unsupported_or_opaque": "UNKNOWN_PROVIDER_RESPONSE",
+    "unknown_defaults_to_preserved": false
+  },
+  "inputs": {
+    "step_sha256": "7e4007b043d3edbf1d0ec78e149574b25db1c336dca38d0c947e86afea9f2648",
+    "prompt_infra_sha256": "6e3755276ce124f96f51df8eeb658cf1418df9d0f056124c6133ec470cbc4ed1",
+    "prompt_cli_sha256": "d7f6dd328437c7057394d3e5e234f8e761bbea1a41916677fc5b0c68c0686426",
+    "prompt_domain_sha256": "ac5f598383f987c2e0638acb1c4207badaf7a74b41e241292f2ba867ad170a5a",
+    "prompt_usecase_sha256": "4c16be2e2df5197177cc0d7d9dee70b5c29408323127ec4851215d8927e49852",
+    "contract_sha256": "238fcefaa971d8f00383cc97990a110b895bfaf113e19c139af8299f5149a4c3",
+    "adversarial_cases_sha256": "52b5655f126249d2de93188908af0f581ebd25b40b000a1010588ece6474de08",
+    "infra_test_sha256": "ee8a12f644beac8b63bfbf24bc1e3752a0fdf61bfe7b143a5282a7562dd79705",
+    "usecase_test_sha256": "a37a195ede7556b2481592d929c14dfdd10724b0fce11873c0ff13ca044f91b3",
+    "cli_test_sha256": "82066dcb5ea6ffba96fd81d5d7537c47a9ffcf23b7006206c2781bdbef6dde93"
+  },
+  "validation": {
+    "contract_json": "VALID",
+    "adversarial_cases_json": "VALID",
+    "tests_compiled": true,
+    "missing_api_exception_used": false,
+    "gocache": "/tmp/bateia-go-cache-step0020"
+  },
+  "commands": [
+    {"command":"GOCACHE=/tmp/bateia-go-cache-step0020 go test ./03_infra/web -run '^TestObservableWebClientStep0020Contract$' -count=1","runs":2,"exit_codes":[1,1]},
+    {"command":"GOCACHE=/tmp/bateia-go-cache-step0020 go test ./01_core/usecase -run '^TestStep0020Contract' -count=1","runs":2,"exit_codes":[1,1]},
+    {"command":"GOCACHE=/tmp/bateia-go-cache-step0020 go test ./02_shell/cli -run '^TestStep0020Contract' -count=1","runs":2,"exit_codes":[1,1]}
+  ],
+  "mutation_score": {
+    "definition": "mutacoes negativas validas canonicas que rejeitam o baseline pela testemunha correspondente / mutacoes negativas validas canonicas",
+    "numerator": 4,
+    "denominator": 5,
+    "score": 0.8,
+    "required": 1.0,
+    "cases": [
+      {"id":"negative-canary-persistence","result":"REJECTED_BASELINE","witness":"baseline persistiu canario/Authorization"},
+      {"id":"negative-private-repository","result":"REJECTED_BASELINE","witness":"baseline aceitou hit privado como SUCCESS"},
+      {"id":"negative-empty-as-unknown","result":"REJECTED_BASELINE","witness":"baseline apagou a distincao EMPTY/UNKNOWN_PROVIDER_RESPONSE"},
+      {"id":"negative-extra-arm-request","result":"SURVIVED_BASELINE","witness":"teste passou; N13 foi rejeitado antes da rede e requests permaneceu zero"},
+      {"id":"negative-request-hash-tamper","result":"REJECTED_BASELINE","witness":"baseline aceitou request_hash adulterado"}
+    ],
+    "additional_attack": {"id":"max-results-above-ten","result":"REJECTED_BASELINE","included_in_denominator":false}
+  },
+  "limitations": [
+    "Hashes nao provam isolamento de autoridade.",
+    "RejectsMaxResultsAboveTen espera err nil para opcao divergente, embora o prompt de CLI determine rejeicao; nao substitui a mutacao canonica extra-arm."
+  ]
+}

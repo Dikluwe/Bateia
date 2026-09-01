@@ -7,3 +7,7 @@ inconclusão. Nenhum contrato admite saída de LLM, embedding ou inferência rem
 
 Cada alvo registra `COLLECTED`, `NOT_FOUND`, `FAILED`, `SKIPPED_BUDGET` ou
 `UNSUPPORTED`. Identidade `owner/repo` e revisão SHA são dimensões separadas.
+
+Na versão 2, cada regra declara família, proveniência, alvos justificáveis e se
+`PROVEN` exige fontes independentes. Versões antigas permanecem legíveis para
+replay, enquanto catálogos v2 são validados estritamente.

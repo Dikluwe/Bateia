@@ -19,7 +19,7 @@ import (
 // caches, providers or any other network-capable dependency.
 func RunBenchmarkCommand(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("benchmark exige validate, mutate ou run")
+		return fmt.Errorf("benchmark exige validate, mutate, run ou product-gate")
 	}
 	switch args[0] {
 	case "validate":
@@ -28,6 +28,8 @@ func RunBenchmarkCommand(args []string, stdout io.Writer) error {
 		return runBenchmarkMutate(args[1:], stdout)
 	case "run":
 		return runBenchmark(args[1:], stdout)
+	case "product-gate":
+		return runBenchmarkProductGate(args[1:], stdout)
 	default:
 		return fmt.Errorf("subcomando benchmark desconhecido: %s", args[0])
 	}

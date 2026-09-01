@@ -1,0 +1,139 @@
+{
+  "schema_version": "tekt-contract-manifest/1",
+  "step": "0020",
+  "protocol": "full",
+  "phase": "L0_CONTRACT_AUTHORING",
+  "status": "candidate_unsealed",
+  "attestation": {
+    "claim": "executado sem atestacao de isolamento",
+    "authority_isolation": "logical_allowlist",
+    "strong_sandbox_claimed": false,
+    "limitations": [
+      "A autoridade foi restringida por instrucao e allowlist logica de leitura e escrita.",
+      "O ambiente compartilhado nao demonstra sandbox forte nem ausencia absoluta de contexto herdado.",
+      "Hashes identificam entradas e saidas, mas nao provam isolamento de capacidades."
+    ]
+  },
+  "role": {
+    "name": "contract_author",
+    "executor": "Codex",
+    "environment": "shared_workspace",
+    "inherited_context": "pedido do usuario, instrucoes da skill Tekt e contexto operacional da sessao",
+    "forbidden_capabilities": [
+      "read_candidate_diff",
+      "edit_go_implementation",
+      "edit_tests",
+      "verify_own_contract",
+      "seal_contract"
+    ]
+  },
+  "frozen_inputs": [
+    {"path": "00_nucleo/passos/0020-executar-busca-autenticada-com-orcamento-observavel.md", "sha256": "7e4007b043d3edbf1d0ec78e149574b25db1c336dca38d0c947e86afea9f2648"},
+    {"path": "00_nucleo/passos/0019-executar-experimento-publico-da-gramatica-funcional.md", "sha256": "b8b98ea64399e65e45fd829d3a41951cd9b0413c289b0077b6a6fdb5bb0f7813"},
+    {"path": "01_core/domain/web_snapshot.go", "sha256": "f0e48180e679c098056ed97be6d15a194df2738a4876cfc5f384b5f753674a51"},
+    {"path": "01_core/usecase/web_replay.go", "sha256": "b1020dd6e72b355aa74dd62f073b7de76f8eeb4d720ff5c8df97eb1be4adf963"},
+    {"path": "02_shell/cli/idea_web.go", "sha256": "c13a353910c97865f51b1290e65b51b4a687f83e898865f85fb4ad151afb8fea"},
+    {"path": "03_infra/web/observable_client.go", "sha256": "cdf191ede94491ae79100b2c8b7ea7af154653a27d2dd4ea24e7eb42916f8f69"}
+  ],
+  "read_allowlist": [
+    "00_nucleo/passos/0020-executar-busca-autenticada-com-orcamento-observavel.md",
+    "00_nucleo/passos/0019-executar-experimento-publico-da-gramatica-funcional.md",
+    "01_core/domain/web_snapshot.go",
+    "01_core/usecase/web_replay.go",
+    "02_shell/cli/idea_web.go",
+    "03_infra/web/observable_client.go"
+  ],
+  "write_allowlist": [
+    "00_nucleo/prompts/01_core/domain/authenticated_web_experiment.md",
+    "00_nucleo/prompts/01_core/usecase/authenticated_web_experiment.md",
+    "00_nucleo/prompts/02_shell/cli/authenticated_web_experiment.md",
+    "00_nucleo/prompts/03_infra/web/authenticated_client.md",
+    "00_nucleo/benchmark/0020/contract.json"
+  ],
+  "authorization": {
+    "provider": "github",
+    "purpose": "public_repository_search",
+    "authentication": "read_only_token",
+    "private_repositories_allowed": false,
+    "planned_queries": 36,
+    "authorized": true,
+    "token_source": "environment_only",
+    "token_forbidden_locations": ["configuration", "cli_arguments", "hashes", "logs", "errors", "snapshots", "receipts"]
+  },
+  "budget": {
+    "arms": ["N", "F1", "F2"],
+    "queries_per_arm": 12,
+    "logical_queries": 36,
+    "primary_requests": 36,
+    "max_results_per_query": 10,
+    "request_timeout_seconds": 20,
+    "total_timeout_seconds": 600,
+    "max_concurrency": 2,
+    "max_transient_retries_per_query": 1,
+    "max_network_attempts": 72,
+    "successful_response_retries": 0,
+    "order": "N1,F1-1,F2-1,...,N12,F1-12,F2-12",
+    "safe_margin_must_be_declared": true
+  },
+  "mandatory_states": [
+    "SUCCESS",
+    "EMPTY",
+    "UNKNOWN_RATE_LIMIT",
+    "UNKNOWN_TIMEOUT",
+    "UNKNOWN_PROVIDER_RESPONSE",
+    "REJECTED_PRIVATE",
+    "SKIPPED_BUDGET"
+  ],
+  "unknown_policy": {
+    "unknown_is_not_empty": true,
+    "unknown_is_not_success": true,
+    "unsupported_or_opaque": "UNKNOWN_PROVIDER_RESPONSE",
+    "budget_exhausted": "SKIPPED_BUDGET",
+    "default_preserved": false
+  },
+  "mandatory_observables": [
+    "arm", "query_id", "request_id", "attempt_number", "retrieved_at", "http_status", "normalized_state",
+    "rank", "original_url", "canonical_url", "title", "description", "visibility", "request_hash", "response_hash",
+    "redacted_rate_limit_counters", "budget_counters", "snapshot_hash", "run_verdict"
+  ],
+  "invariants": [
+    "exactly_12_logical_queries_per_arm",
+    "exactly_36_primary_requests_in_interleaved_order",
+    "at_most_one_counted_retry_after_transient_failure",
+    "no_successful_response_retry",
+    "no_strategy_receives_an_extra_logical_query",
+    "every_planned_query_has_an_observable_terminal_record",
+    "zero_persisted_credentials_or_reconstructible_derivatives",
+    "zero_persisted_private_or_opaque_visibility_results",
+    "unknown_never_collapses_to_empty_or_success",
+    "budget_checked_before_network_attempt",
+    "offline_replay_uses_neither_token_nor_network",
+    "double_replay_is_byte_identical"
+  ],
+  "verdict_precedence": [
+    "FAIL_SECURITY",
+    "FAIL_BUDGET",
+    "FAIL_REPRODUCIBILITY",
+    "INCONCLUSIVE_RATE_LIMIT",
+    "UNKNOWN_PROVIDER_EXPOSURE",
+    "READY_FOR_BLINDED_JUDGMENT"
+  ],
+  "gates_required_before_seal": {
+    "positive_cases": "Preserved",
+    "negative_mutations": "Violated_with_witness",
+    "opaque_cases": "Unknown",
+    "repeat_and_reorder": "same_result",
+    "required_mutation_score": 1.0,
+    "mutation_families": ["secret", "privacy", "budget", "hash", "unknown"],
+    "executed_by_contract_author": false
+  },
+  "outputs": [
+    "00_nucleo/prompts/01_core/domain/authenticated_web_experiment.md",
+    "00_nucleo/prompts/01_core/usecase/authenticated_web_experiment.md",
+    "00_nucleo/prompts/02_shell/cli/authenticated_web_experiment.md",
+    "00_nucleo/prompts/03_infra/web/authenticated_client.md",
+    "00_nucleo/benchmark/0020/contract.json"
+  ],
+  "causal_predecessor": "Passo 0020 prompt plus Passo 0019 baseline and four allowlisted implementation surfaces",
+  "notes": "Contrato candidato L0. Nao contem selo, mutation score observado, veredito independente ou alegacao de equivalencia funcional geral."
+}

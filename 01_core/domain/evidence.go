@@ -182,11 +182,15 @@ type CapabilityPattern struct {
 }
 
 type CapabilityRule struct {
-	ID                 string              `json:"id"`
-	CapabilityTerms    []string            `json:"capability_terms"`
-	StrongEvidence     []CapabilityPattern `json:"strong_evidence"`
-	SupportingEvidence []CapabilityPattern `json:"supporting_evidence"`
-	NegativeEvidence   []string            `json:"negative_evidence"`
+	ID                  string              `json:"id"`
+	Family              string              `json:"family,omitempty"`
+	Provenance          string              `json:"provenance,omitempty"`
+	TargetHints         []string            `json:"target_hints,omitempty"`
+	RequiresIndependent bool                `json:"requires_independent,omitempty"`
+	CapabilityTerms     []string            `json:"capability_terms"`
+	StrongEvidence      []CapabilityPattern `json:"strong_evidence"`
+	SupportingEvidence  []CapabilityPattern `json:"supporting_evidence"`
+	NegativeEvidence    []string            `json:"negative_evidence"`
 }
 
 type CapabilityRuleCatalog struct {

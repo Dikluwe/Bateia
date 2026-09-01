@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/web_replay.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-08-31
  */
 package usecase
 
@@ -43,6 +43,7 @@ func CanonicalizeURL(raw string) string {
 }
 
 func SealWebResponse(req domain.ObservableWebRequest, resp domain.RawWebResponse) domain.RawWebResponse {
+	resp.Request = req
 	resp.RequestHash = WebRequestHash(req)
 	resp.ResponseHash = WebResponseHash(resp)
 	return resp
@@ -70,11 +71,27 @@ func ReplayWebSnapshot(snapshot domain.WebSearchSnapshot) (domain.WebReplayResul
 			continue
 		}
 		seenReq[resp.RequestID] = true
+		if !validWebStates[resp.Status] {
+			result.Replayable = false
+			result.MissingFields = append(result.MissingFields, "normalized_state")
+		}
+		result.ObservedStates = append(result.ObservedStates, resp.Status)
+		if resp.Request.RequestID != "" {
+			if resp.Request.RequestID != resp.RequestID || resp.Request.QueryID != resp.QueryID || WebRequestHash(resp.Request) != resp.RequestHash {
+				result.Replayable = false
+				result.MissingFields = append(result.MissingFields, "request_hash")
+			}
+		}
 		if resp.RequestHash == "" || resp.ResponseHash == "" || WebResponseHash(resp) != resp.ResponseHash {
 			result.Replayable = false
 			result.MissingFields = append(result.MissingFields, "response_hash")
 		}
 		for _, hit := range resp.Results {
+			if hit.Visibility != "" && !strings.EqualFold(hit.Visibility, "public") {
+				result.Replayable = false
+				result.MissingFields = append(result.MissingFields, "private_result")
+				continue
+			}
 			canon := CanonicalizeURL(hit.CanonicalURL)
 			if canon == "" {
 				canon = CanonicalizeURL(hit.URL)
@@ -96,7 +113,22 @@ func ReplayWebSnapshot(snapshot domain.WebSearchSnapshot) (domain.WebReplayResul
 	}
 	result.Deduplicated = append([]domain.RawWebResult(nil), result.Organic...)
 	result.UniqueHits = len(result.Organic)
+	sort.Strings(result.ObservedStates)
+	result.MissingFields = uniqueSortedWebFields(result.MissingFields)
 	return result, nil
+}
+
+func uniqueSortedWebFields(values []string) []string {
+	seen := map[string]bool{}
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if !seen[value] {
+			seen[value] = true
+			out = append(out, value)
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 func CompareGrammarExperiments(nominal, f1, f2 domain.WebSearchSnapshot, judgments domain.BlindedJudgmentsFile) (domain.GrammarExperimentReport, error) {
@@ -171,5 +203,24 @@ func CompareGrammarExperiments(nominal, f1, f2 domain.WebSearchSnapshot, judgmen
 }
 
 func StableSnapshotResponses(responses []domain.RawWebResponse) {
-	sort.Slice(responses, func(i, j int) bool { return responses[i].QueryID < responses[j].QueryID })
+	sort.SliceStable(responses, func(i, j int) bool {
+		if responses[i].Position != responses[j].Position && responses[i].Position > 0 && responses[j].Position > 0 {
+			return responses[i].Position < responses[j].Position
+		}
+		if responses[i].QueryID != responses[j].QueryID {
+			return naturalWebID(responses[i].QueryID) < naturalWebID(responses[j].QueryID)
+		}
+		return responses[i].AttemptNumber < responses[j].AttemptNumber
+	})
+}
+
+func naturalWebID(id string) string {
+	i := len(id)
+	for i > 0 && id[i-1] >= '0' && id[i-1] <= '9' {
+		i--
+	}
+	if i == len(id) {
+		return id
+	}
+	return fmt.Sprintf("%s%012s", id[:i], id[i:])
 }

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1",
+  "step": "0020",
+  "role": ["oracle_author", "adversary"],
+  "unknown_policy": "Unknown is never equivalent to EMPTY or SUCCESS",
+  "cases": [
+    {"id":"positive-auth-redacted","class":"positive","observable":"Authorization is present only on the outbound request; token, header name, cookies and reconstructible derivatives are absent from responses, errors, snapshots and receipts","expected":"SUCCESS"},
+    {"id":"negative-canary-persistence","class":"negative","observable":"a provider result containing the token canary aborts persistence","expected":"FAIL_SECURITY"},
+    {"id":"negative-private-repository","class":"negative","observable":"an item marked private is rejected and never persisted","expected":"REJECTED_PRIVATE"},
+    {"id":"opaque-http-403","class":"opaque","observable":"HTTP 403 with rate-limit evidence produces no hits","expected":"UNKNOWN_RATE_LIMIT"},
+    {"id":"opaque-http-429","class":"opaque","observable":"HTTP 429 produces no hits","expected":"UNKNOWN_RATE_LIMIT"},
+    {"id":"opaque-timeout","class":"opaque","observable":"request deadline produces a sealed attempt, not an empty set","expected":"UNKNOWN_TIMEOUT"},
+    {"id":"opaque-invalid-provider-json","class":"opaque","observable":"invalid provider JSON produces a sealed attempt, not SUCCESS or EMPTY","expected":"UNKNOWN_PROVIDER_RESPONSE"},
+    {"id":"positive-empty","class":"positive","observable":"valid HTTP 200 with zero public items","expected":"EMPTY"},
+    {"id":"negative-empty-as-unknown","class":"negative","observable":"EMPTY and UNKNOWN_PROVIDER_RESPONSE remain distinguishable in offline replay","expected":"FAIL_REPRODUCIBILITY"},
+    {"id":"positive-interleaving-budget","class":"positive","observable":"exactly 36 planned requests follow N1,F1-1,F2-1 through N12,F1-12,F2-12, with at most 10 results per request","expected":"READY_FOR_BLINDED_JUDGMENT"},
+    {"id":"negative-extra-arm-request","class":"negative","observable":"a 13th query injected into one arm is rejected before network access; observed request count remains zero","expected":"FAIL_BUDGET"},
+    {"id":"negative-request-hash-tamper","class":"negative","observable":"altered request_hash is rejected even when response_hash and snapshot_hash are recomputed","expected":"FAIL_REPRODUCIBILITY"},
+    {"id":"positive-offline-replay","class":"positive","observable":"replay accepts no provider or token and performs no network access","expected":"replayable"},
+    {"id":"positive-deterministic-snapshot","class":"positive","observable":"equivalent attempts produce byte-identical normalized replay and snapshot hashes independent of arrival order","expected":"deterministic"}
+  ]
+}

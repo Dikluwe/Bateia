@@ -62,6 +62,8 @@ func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticEx
 		return runIdeaKatamari(args[1:], stdout)
 	case "web":
 		return runIdeaWeb(args[1:], stdout, webProvider)
+	case "judge":
+		return RunAssistedJudgmentCommand(args[1:], stdout)
 	default:
 		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia ou katamari", args[0])
 	}

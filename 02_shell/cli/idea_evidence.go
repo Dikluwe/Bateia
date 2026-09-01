@@ -23,7 +23,7 @@ import (
 
 func runIdeaEvidence(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate|diagnose>")
+		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate|diagnose|calibrate>")
 	}
 	switch args[0] {
 	case "plan":
@@ -36,6 +36,8 @@ func runIdeaEvidence(args []string, stdout io.Writer) error {
 		return runIdeaEvidenceEvaluate(args[1:], stdout)
 	case "diagnose":
 		return runIdeaEvidenceDiagnose(args[1:], stdout)
+	case "calibrate":
+		return runIdeaEvidenceCalibrate(args[1:], stdout)
 	default:
 		return fmt.Errorf("subcomando evidence desconhecido %q", args[0])
 	}

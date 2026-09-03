@@ -1,0 +1,233 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 6,
+  "gate": "pre-candidate permanent compiled-variant revalidation",
+  "status": "GATE_PASSED_SEALED",
+  "verdict": "SEAL",
+  "created_at": "2026-09-01T21:14:44Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "superseded_driver": 5,
+  "predecessors": [
+    {"path":"00_nucleo/benchmark/0026/discriminatory-receipt.json","sha256":"672d8841310c483feaa22a6ccb2dda91dbf6655fb972b2399c3eac4ed15b0f90","mutation_score":0.15},
+    {"path":"00_nucleo/benchmark/0026/discriminatory-receipt-r2.json","sha256":"101b272eb4bb9b105ebc30c79e602c81c6b2b9d6d052fae820f006643bf3e97a","mutation_score":0.4},
+    {"path":"00_nucleo/benchmark/0026/discriminatory-receipt-r3.json","sha256":"eec3666fb67d222657d47d5021d0fdd36381a5f303a72099ba92bd8d1e42060d","mutation_score":0.5},
+    {"path":"00_nucleo/benchmark/0026/discriminatory-receipt-r4.json","sha256":"5d85779ea89fcd13dc59cd2263f488b170712e87f9a401d0f243a4ed0586dcc4","mutation_score":0.5},
+    {"path":"00_nucleo/benchmark/0026/discriminatory-receipt-r5.json","sha256":"d82622ebbe7c050c58db51fd4ce6fba90e45d27b794c361292f59a753ec9c04e","mutation_score":0.5}
+  ],
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace",
+    "candidate_implementation_read": false,
+    "candidate_implementation_executed": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r6 go test ./04_wiring/r6_gate -run TestStep0026R6CompiledVariantsUseOneBlindConformanceSuiteThreeByThree -count=1",
+        "result": "PASS",
+        "duration": "59.868s",
+        "subprocesses": {"reference_passed":9,"compiled_variants_failed":270},
+        "matrix": {"orders":3,"repetitions_per_order":3,"variants_per_repetition":30}
+      },
+      {
+        "command": "independent concurrent execution of each compiled variant with go test -json and normalization of failing common-suite subtests",
+        "result": "PASS",
+        "duration": "4.4s",
+        "variants_failed": 30,
+        "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1"
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r6 go test 02_shell/mcp/server.go 02_shell/mcp/server_test.go 02_shell/mcp/recommendation_step0025_contract_test.go 02_shell/mcp/durable_runs_step0026_r3_test.go -run 'TestStep0026R3LegacyBenchmarkAndRecommendationUseIndependentByteGoldens|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes' -count=3",
+        "result": "PASS",
+        "duration": "0.005s",
+        "scope": "explicit certified predecessor-only file list; no Step 0026 candidate file compiled"
+      },
+      {
+        "command": "strict duplicate-key JSON parsing of manifest, oracle contract, adversarial cases and R1-R5 receipts",
+        "result": "PASS"
+      },
+      {
+        "command": "SHA-256 verification of 29 oracle-contract suite entries and prompt bindings, 30 permanent sources and 30 canonical diffs",
+        "result": "PASS",
+        "suite_and_prompt_hash_checks": 58,
+        "variant_source_hash_checks": 30,
+        "canonical_diff_hash_checks": 30
+      },
+      {
+        "command": "gofmt -d over every R6 Go file and git diff --check over frozen R6 paths",
+        "result": "PASS"
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "Tekt protocol and project AGENTS instructions",
+      "frozen Step 0026 intent, manifest, contract and adversarial cases",
+      "R6 oracle contract, reference, common conformance suite, driver and thirty permanent variants",
+      "R1/R2/R3/R4/R5 receipts",
+      "immutable Step 0025 files selected by the predecessor-only command"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+      "00_nucleo/benchmark/0026/seal.json"
+    ],
+    "forbidden_actions_respected": [
+      "no Step 0026 candidate production file was read, executed or modified",
+      "no contract, oracle, prompt, adversarial case or manifest was modified",
+      "R1-R5 receipts were not modified"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "4560f45773fb346e6fdbca928e97dae0167273476633773c678388ac18fb1579",
+    "oracle_contract_sha256": "9ebe53a8f428f475240e1e1c1009ea18f866fbe68bf0eed3039869234d875441",
+    "reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "driver_sha256": "8f4c2232560a36a7e1e5c28e7ec5394e0a9022a35f0edb5dbcfc52432f924fa1",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "step_0025_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "strict_json_without_duplicate_keys": true,
+    "attack_cardinality": 70,
+    "unique_attack_ids": 70
+  },
+  "positive_controls": [
+    {"id":"P01","result":"Preserved","witness":"Nine reference subprocesses passed the common concurrent canonical Start control with sixteen callers and one generated identity."},
+    {"id":"P02","result":"Preserved","witness":"Nine reference subprocesses completed a terminal run and reopened the same on-disk root with SUCCEEDED/INCONCLUSIVE intact."},
+    {"id":"P03","result":"Preserved","witness":"Nine reference subprocesses signed a cursor, reopened the root and continued with a changed limit and the same secret."},
+    {"id":"P04","result":"Preserved","witness":"Nine reference subprocesses observed idempotent cancellation with unchanged version on retry."},
+    {"id":"P05","result":"Preserved","witness":"The common reference legacy surface passed, and the explicit certified predecessor-only search, benchmark, recommendation and source-hash tests passed three times."}
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 60,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "previously_credited_cases": [
+      "M02", "M03", "M05", "M06", "M07", "M08", "M10", "M12",
+      "M13", "M14", "M17", "M19", "M20", "M21", "M22", "M23",
+      "M24", "M26", "M33", "M34", "M37", "M39", "M40", "M41",
+      "M42", "M43", "M49", "M50", "M57", "M58"
+    ],
+    "r6_newly_credited_cases": [
+      "M01", "M04", "M09", "M11", "M15", "M16", "M18", "M25",
+      "M27", "M28", "M29", "M30", "M31", "M32", "M35", "M36",
+      "M38", "M44", "M45", "M46", "M47", "M48", "M51", "M52",
+      "M53", "M54", "M55", "M56", "M59", "M60"
+    ],
+    "violated_cases": [
+      "M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10",
+      "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20",
+      "M21", "M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30",
+      "M31", "M32", "M33", "M34", "M35", "M36", "M37", "M38", "M39", "M40",
+      "M41", "M42", "M43", "M44", "M45", "M46", "M47", "M48", "M49", "M50",
+      "M51", "M52", "M53", "M54", "M55", "M56", "M57", "M58", "M59", "M60"
+    ],
+    "survivor_cases": []
+  },
+  "opaque_cases": [
+    {"id":"O01","result":"Unknown"},
+    {"id":"O02","result":"Unknown"},
+    {"id":"O03","result":"Unknown"},
+    {"id":"O04","result":"Unknown"},
+    {"id":"O05","result":"Unknown"}
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Any missing or ambiguous negative witness would survive.",
+    "opaque_cases_in_denominator": false
+  },
+  "compiled_variant_audit": {
+    "permanent_variant_sources": 30,
+    "unique_variant_source_hashes": 30,
+    "unique_canonical_diff_hashes": 30,
+    "source_hashes_match_contract": true,
+    "canonical_diff_hashes_match_contract": true,
+    "canonical_diff_command": "diff -u --label reference --label variant reference/subject.go mutant/subject.go",
+    "runtime_mxx_literal_in_reference_conformance_or_variants": false,
+    "runtime_defect_selector_in_reference_conformance_or_variants": false,
+    "common_test_copy_count": 31,
+    "common_test_copy_sha256": "97a56fe22bf3604bd1455e673a8a4975cb038f1d50bf36eaedf1f3b8cb67579d",
+    "common_test_copies_identical": true,
+    "common_suite_receives_attack_metadata": false,
+    "reference_and_variants_compile_in_distinct_packages": true,
+    "reference_processes_passed": 9,
+    "variant_processes_failed": 270,
+    "stable_failing_subtest_sets": true,
+    "independent_witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "intended_causal_witnesses": {
+      "M01":"identity-is-opaque",
+      "M04":"retry-returns-current-receipt",
+      "M09":"invalid-input-has-zero-effects",
+      "M11":"quota-full-is-nondestructive",
+      "M15":"artifact-is-immutable",
+      "M16":"cas-has-one-winner",
+      "M18":"progress-matrix-is-strict",
+      "M25":"terminal-race-has-one-event",
+      "M27":"recovery-interrupts-nonterminal",
+      "M28":"start-waits-for-recovery",
+      "M29":"shutdown-does-not-guess-cancelled",
+      "M30":"unpublished-is-not-ready",
+      "M31":"pending-is-not-readable",
+      "M32":"orphan-blob-is-not-readable",
+      "M35":"positive-terminal-reopens",
+      "M36":"terminal-requires-complete-artifacts",
+      "M38":"cursor-hmac-rejects-tamper",
+      "M44":"filesystem-rejects-symlink",
+      "M45":"filesystem-rejects-hardlink",
+      "M46":"create-crash-prefixes-are-atomic",
+      "M47":"transition-crash-prefixes-are-atomic",
+      "M48":"publish-crash-prefixes-are-atomic",
+      "M51":"disk-and-log-privacy",
+      "M52":"projection-is-minimal",
+      "M53":"errors-are-sanitized",
+      "M54":"json-closure-is-exact",
+      "M55":"l1-imports-remain-pure",
+      "M56":"l2-does-not-import-concrete-store",
+      "M59":"filesystem-rejects-public-and-nonregular",
+      "M60":"not-found-and-integrity-are-distinct"
+    }
+  },
+  "disk_crash_audit": {
+    "passed": true,
+    "cases": ["M46","M47","M48"],
+    "boundaries": ["open","write","file-sync","rename","dir-sync"],
+    "operations": ["os.OpenFile with O_CREATE|O_EXCL|O_WRONLY","Write","file Sync","Rename","directory Sync","close and reopen observation"],
+    "all_boundaries_materialized_before_assertion": true,
+    "reference_removes_unconfirmed temp/final bytes": true,
+    "each_unsafe_variant_exposes_unconfirmed_final_bytes": true
+  },
+  "stability_audit": {
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "reference_subprocesses": 9,
+    "mutant_subprocesses": 270,
+    "all_variant_witnesses_stable": true,
+    "required_outcomes_satisfied": true,
+    "normalized_classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55"
+  },
+  "predecessor_benchmark_audit": {
+    "honest": true,
+    "explicit_predecessor_file_list": true,
+    "three_verifier_repetitions_passed": true,
+    "observed_benchmark_bytes": "{\"jsonrpc\":\"2.0\",\"id\":41,\"error\":{\"code\":-32602,\"message\":\"Invalid params: depth deve estar entre 1 e 5\"}}",
+    "finding": "Certified search and recommendation goldens and server hashes pass; the immutable benchmark route retains the honestly recorded depth error for the frozen repos-only input."
+  },
+  "architecture_and_private_detail_audit": {
+    "contract_freezes_private_filename_or_unexported_symbol": false,
+    "legacy_self_reference_detected": false,
+    "architecture_variants_compiled": true,
+    "architecture_variants_killed_by_blind_suite": true,
+    "finding": "M55 and M56 are permanent compiled packages. The common suite discovers their forbidden imports from the package AST without receiving mutation IDs or expected outcomes."
+  },
+  "seal": {
+    "emitted": true,
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "reason": "All five positive controls are preserved, all sixty valid negative mutations are causally violated, all opaque cases remain Unknown, and the nine-run matrix is stable."
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": "tekt.step0028.discriminatory-failure-public.v17",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "mutants_revision": "O14",
+  "oracle_revision": "O17",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "candidate_read_compiled_or_executed": false,
+  "frozen_inputs": {
+    "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "mechanism_rules_v3_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "protocol_o8_sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb",
+    "mutants_manifest_o14_sha256": "02640f383d37b392c74d4ae1fc12e9bf5ef1ada041f85a4191e63683e4518ac8",
+    "records_root_sha256": "689f78d9a958ccbbd7a6b776c951762c2f163ea28fd5d377bc3781f3f5278734",
+    "subjects_root_sha256": "cfa2adac274e676adce50cc1231306544cd3f93191df463670f6ea9593436ee6",
+    "attack_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c",
+    "oracle_contract_o17_sha256": "735eac83e3cc9e8d918d6c4c8ed81fc15fe14a9115430650e779b9c57f7b05a9",
+    "coverage_matrix_o17_sha256": "e1dcd6d75990cb6c17982bd5ce0548e3105818a51a14cd839fe4038ed9df11c6",
+    "oracle_invalidation_o16_to_o17_sha256": "9567dd3fb8351bd35b386cb75484ded56473586171123822012236df879d9ca9",
+    "oracle_authorship_o17_sha256": "9fcfa5120845957f16fbeb10be071ddea3a1252ae3265706dc797dd687c2a3a1",
+    "oracle_protected_manifest_o17_sha256": "736019da8a8b087bedfbae7d92b8c13fd83ac2aa69a6e50489abdcdca4686090",
+    "predecessor_failure_o16_sha256": "fe5460b69349fca097aa9cf5b0705efe891dde7a214b8403fd1968e1438d9b50",
+    "predecessor_gap_o16_sha256": "93f18dfda98a96337394861a95625b6c5d59c2404c2da9b8fabc4cfdbfcf463b"
+  },
+  "audit": {
+    "schema_records_valid": 182,
+    "manifest_bindings_valid": 182,
+    "hash_inventory_files_matched": 768,
+    "semantic_pairs_unique": 182,
+    "negative_semantic_pairs_unique": 160,
+    "binding_free": true,
+    "anti_marker": true,
+    "authorship_independence": true,
+    "oracle_tests": "PASS",
+    "shuffle_count2_runs": 3,
+    "race": "PASS",
+    "vet": "PASS"
+  },
+  "execution": {
+    "orders": ["canonical", "reverse", "rotate-61"],
+    "fresh_process_repetitions_per_order": 2,
+    "total_exchanges": 1092,
+    "runner_outputs_byte_matched": 1092,
+    "stable": true,
+    "classification_digest_sha256": "a8bd9b1fa7564e24888dbbfa54f19e630310fa95f8b43434c9db2f0b53fe979e"
+  },
+  "classification": {
+    "negative": {"total": 160, "Violated": 160, "Preserved": 0, "Unknown": 0},
+    "positive": {"total": 12, "Violated": 0, "Preserved": 12, "Unknown": 0},
+    "opaque": {"total": 10, "Violated": 0, "Preserved": 7, "Unknown": 3},
+    "mutation_score": 1.0
+  },
+  "public_divergent_case_ids": ["O04", "O05", "O06", "O07", "O08", "O09", "O10"],
+  "observable_cause": "Seven frozen opaque ARTIFACT_READ exchanges deterministically fall through to Preserved instead of activating the binding-free Unknown predicate.",
+  "gate_result": "FAIL",
+  "gate_failure_reason": "OPAQUE_CALIBRATION_NOT_COMPLETE",
+  "receipt_emitted": false,
+  "seal_emitted": false,
+  "protected_fixture_or_test_detail_disclosed": false
+}

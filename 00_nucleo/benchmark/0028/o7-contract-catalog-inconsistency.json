@@ -1,0 +1,61 @@
+{
+  "schema_version": "tekt.step0028.o7-contract-catalog-inconsistency.v1",
+  "visibility": "PUBLIC_SANITIZED",
+  "step": "0028",
+  "revision": "O7",
+  "status": "BLOCKED_INVALID_NOT_FROZEN",
+  "authority": "ADVERSARY",
+  "frozen_public_inputs": {
+    "contract_revision": "R3",
+    "contract_path": "00_nucleo/benchmark/0028/contract.md",
+    "contract_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_path": "00_nucleo/benchmark/0028/mechanism-rules.json",
+    "mechanism_rules_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_path": "00_nucleo/benchmark/0028/adversarial-cases.json",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4"
+  },
+  "blocked_control": {
+    "id": "P02",
+    "public_requirement": "A documentation-only catalog-relevant source must remain a public PARTIAL mechanism with explicit provenance.",
+    "contract_references": [
+      "R3 section 5, extraction rules 5-7: RuleID must match a literal accepted_evidence_rules entry; role and witness_kind come only from that catalog entry; DOCUMENTATION requires the homonymous source kind.",
+      "R3 section 5, status rules: PARTIAL needs at least one positive bundle-bound source; isolated documentation is capped at PARTIAL.",
+      "R3 section 15, mandatory control 4: isolated documentation is at most PARTIAL."
+    ],
+    "catalog_observation": {
+      "catalog_rule_count": 4,
+      "documentation_witness_rule_count": 0,
+      "observed_witness_kinds": [
+        "CONFIGURATION",
+        "COUNTEREVIDENCE",
+        "IMPLEMENTATION",
+        "MANIFEST",
+        "SCHEMA",
+        "TEST"
+      ]
+    },
+    "derivation": [
+      "A documentation EvidenceSource can participate only through a literal catalog rule whose witness_kind is DOCUMENTATION.",
+      "The frozen v2 catalog contains no such accepted evidence rule.",
+      "Using an unknown RuleID yields a gap rather than a mechanism; borrowing a differently typed catalog rule fails structural compatibility.",
+      "Therefore no input under the frozen R3 plus rules-v2 pair can make P02 both documentation-only and a genuine public PARTIAL mechanism."
+    ]
+  },
+  "o7_disposition": {
+    "bundle_status": "INVALID_DRAFT",
+    "manifest_frozen": false,
+    "roots_frozen": false,
+    "hashes_manifest_frozen": false,
+    "receipt_emitted": false,
+    "seal_emitted": false,
+    "safe_refinements_may_remain_drafts": true,
+    "required_resolution": "Publish a new, internally consistent contract/catalog revision and rebind the adversarial controls before freezing O7."
+  },
+  "segregation_statement": {
+    "candidate_read": false,
+    "oracle_private_material_read": false,
+    "oracle_code_read": false,
+    "receipt_or_seal_read": false,
+    "verdict_claimed": false
+  }
+}

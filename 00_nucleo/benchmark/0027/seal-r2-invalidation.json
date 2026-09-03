@@ -1,0 +1,57 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0027",
+  "invalidated_revision": "R2",
+  "invalidated_seal_path": "00_nucleo/benchmark/0027/seal-r2.json",
+  "invalidated_seal_sha256": "e3cd893167b7c98bcb025545a135769aab912470610b92d9e1a22a1630faed09",
+  "predecessor_discriminatory_receipt_path": "00_nucleo/benchmark/0027/discriminatory-receipt-r2.json",
+  "predecessor_discriminatory_receipt_sha256": "e3ff40462fa9c2d9e62f9f19ee1774c79e9f22fc3ac5b1c8c54404b32a276c17",
+  "invalidated_at": "2026-09-02T01:22:14Z",
+  "status": "R2_SEAL_INVALIDATED",
+  "reason": "The protected MCP witness, its oracle contract and mirrored L2 prompt changed after R2 to implement the artifact.enum additive exception already frozen in contract section 3. Any protected-byte change invalidates the active seal even when it resolves an internal witness/contract mismatch.",
+  "changed_inputs": [
+    {
+      "path": "02_shell/mcp/market_discovery_step0027_oracle_test.go",
+      "r2_sha256": "124cd58d8f9174b32e5773e5f96a4336427c95a2ef0b26fe9fc37032287baf21",
+      "r3_sha256": "0c4b53b1ceabb969da879491d1a0d9e0f57a3aae88673131d085cfc43fe32b6c",
+      "r2_reconstructed_in_memory": true,
+      "reconstructed_r2_sha256": "124cd58d8f9174b32e5773e5f96a4336427c95a2ef0b26fe9fc37032287baf21",
+      "delta": "Replace blanket deep equality of tools 1-7 with exact 7-to-9 count, deep equality for tools 1-5 and 7, and full tool-6 equality after removing exactly the five ordered artifact.enum suffixes contracted by section 3."
+    },
+    {
+      "path": "00_nucleo/benchmark/0027/oracle/oracle-contract.md",
+      "r2_sha256": "77198612576094e82e4dd43b74a54ffd52ac3efafcf47f3091396aa8f4e5f066",
+      "r3_sha256": "d989ce3c6b7e2c236187aac5cf6f327b5f0c24b72e323c9096b4d3a5bd7a94cb",
+      "r2_reconstructed_in_memory": true,
+      "reconstructed_r2_sha256": "77198612576094e82e4dd43b74a54ffd52ac3efafcf47f3091396aa8f4e5f066",
+      "delta": "Positive control 7 now states the same tool-6 artifact.enum exception and preserves exact tools 8-9."
+    },
+    {
+      "path": "00_nucleo/prompts/02_shell/mcp/market_discovery_step0027_oracle_test.md",
+      "r2_sha256": "d017603f3dc533f13b8dc527023fb890d65fbf081583d9a6eac2b269600baa89",
+      "r3_sha256": "5eb4a893ae11e56478478faf00af8846f32af7569e3cf16c0e6c022dafe5f054",
+      "delta": "Mirrors only the revised tool-6 additive-enum witness; closed decoding, canary, layer and tools 8-9 obligations remain unchanged."
+    }
+  ],
+  "contract_coherence": {
+    "contract_sha256": "ac69fcaf3668097432d36137477f791ec0e95c193689fbbe32b1442960e6c037",
+    "contract_changed": false,
+    "specific_binding": "Section 3 states that bateia_get_artifact preserves its schema except for exactly five ordered additive enum values.",
+    "witness_behavior": "All fields of tool 6 remain deep-equal after normalizing only those five suffixes; tools 1-5 and 7 remain fully deep-equal; tools 8-9 remain exact.",
+    "m84_weakened": false,
+    "m32_preserved": true,
+    "unknown_policy_changed": false
+  },
+  "authority": {
+    "oracle_author_report": "The oracle author aligned only the protected MCP witness to the already-frozen contract exception and did not read or execute the candidate.",
+    "verifier": "/root/verifier_0027",
+    "candidate_read": false,
+    "candidate_compiled": false,
+    "candidate_executed": false,
+    "candidate_evaluated": false,
+    "candidate_modified": false
+  },
+  "effect": "seal-r2.json remains immutable historical evidence and is no longer active. A complete R3 discriminatory revalidation is required before a new active seal may be emitted.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "invalidation_rule": "This invalidation is permanent historical evidence and must remain in every later causal chain."
+}

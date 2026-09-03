@@ -1,0 +1,159 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 2,
+  "gate": "pre-candidate discriminatory revalidation",
+  "status": "GATE_FAILED_UNSEALED",
+  "verdict": "DO_NOT_SEAL",
+  "created_at": "2026-09-01T19:23:49Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessor": {
+    "path": "00_nucleo/benchmark/0026/discriminatory-receipt.json",
+    "sha256": "672d8841310c483feaa22a6ccb2dda91dbf6655fb972b2399c3eac4ed15b0f90",
+    "status": "GATE_FAILED_UNSEALED",
+    "mutation_score": 0.15
+  },
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace",
+    "candidate_implementation_read": false,
+    "candidate_implementation_executed": false,
+    "candidate_files_written": false,
+    "mutant_implementations_executed": false,
+    "method": "independent source-level witness audit followed by a verifier-owned three-order by three-repetition normalization gate",
+    "gate_orders": ["lexical", "reverse", "interleaved"],
+    "repetitions_per_order": 3,
+    "normalized_result_sha256_all_nine_runs": "dc903316d1902bd059ff2d36ef73c31c054abde3a86e4887142536ce2530c412"
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "Tekt skill and project AGENTS instructions",
+      "frozen Step 0026 intent, manifest, contract and adversarial cases",
+      "R1 and R2 oracle contracts and the R1 public receipt",
+      "the eleven manifest-bound R2 Go oracle suites and their mirrored prompts",
+      "immutable Step 0025 certificate and test identities"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r2.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate production file was read, executed or modified",
+      "no contract, oracle, prompt, adversarial case or manifest was modified",
+      "no seal was emitted because the required discriminatory conditions failed"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "af4164a16ebd3c102e086d5ac10f724464972f27e8fc70ce5ca8770c0a415c10",
+    "oracle_contract_sha256": "84035e207a9d0abb0a212dfc1a6c0fdb08c523219e65cde193a1d904cb8d76be",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "predecessor_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "r1_receipt_sha256": "672d8841310c483feaa22a6ccb2dda91dbf6655fb972b2399c3eac4ed15b0f90",
+    "all_eleven_suite_and_prompt_hashes_match_manifest": true
+  },
+  "positive_controls": [
+    {
+      "id": "P01",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "All seven set-like fields are now checked sequentially, and an unchanged request is checked concurrently, but the required reordered pair is not itself started concurrently."
+    },
+    {
+      "id": "P02",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "Retry and terminal no-op coverage improved, but the suites still do not persist/read after every confirmed transition; one unit fixture also expects GetRun success for terminal records with an incomplete required artifact matrix, conflicting with the frozen integrity rule."
+    },
+    {
+      "id": "P03",
+      "result": "Preserved",
+      "reason": "The combined suites exercise repeatability, changed page size, ordered continuation and use of the same cursor after reopen with the same secret."
+    },
+    {
+      "id": "P04",
+      "result": "Preserved",
+      "reason": "The integrated queue/L4 suites distinguish queued cancellation, RUNNING to CANCELLING, worker acknowledgement, duplicate cancel stability and absence of target execution after queued cancellation."
+    },
+    {
+      "id": "P05",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "All three legacy routes are invoked and the first-three schemas/search golden are immutable, but successful benchmark bytes have no frozen golden and recommendation expectation still calls the same candidate serialization helper used by the response."
+    }
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 24,
+    "survived": 36,
+    "unknown": 0,
+    "mutation_score": 0.4,
+    "required_score": 1.0,
+    "violated_cases": [
+      "M02", "M03", "M05", "M06", "M07", "M08", "M10", "M12",
+      "M13", "M14", "M17", "M19", "M20", "M21", "M22", "M23",
+      "M26", "M33", "M34", "M37", "M39", "M41", "M42", "M43"
+    ],
+    "survivor_groups": [
+      {
+        "cases": ["M01", "M04", "M09", "M11"],
+        "reason": "The ID sample does not reject derivation from every user-controlled field; interrupted retry is absent; invalid-value/type coverage is not exhaustive for nested fields and every operation; quota rejection is not integrated with Start while counting every identity/executor/durable effect."
+      },
+      {
+        "cases": ["M15", "M16", "M18", "M24", "M25", "M27", "M28", "M29", "M30", "M31", "M32"],
+        "reason": "No witness covers republish restricted to terminal records, artifact-publication CAS losers, every stage/progress mismatch, real provider-stage cancellation boundaries, result-artifact publication in the terminal race, real-store recovery of every lifecycle/progress, blocked recovery before request acceptance, shutdown plus lifecycle reopen, actual PENDING readability, orphans at authoritative locations, or confirmed-index versus orphan-blob authority. The worker cancellation test's alleged later call is guarded by ctx.Err()==nil after <-ctx.Done(), so that branch is unreachable."
+      },
+      {
+        "cases": ["M35", "M36", "M38", "M40", "M44", "M45", "M46", "M47", "M48", "M49", "M50"],
+        "reason": "There is no failure injection before each terminal artifact, exhaustive required-artifact matrix, constant-time comparison witness, valid-MAC out-of-range/version/hash cursor mutation, per-component symlink/hardlink coverage, atomic create/transition/blob crash-prefix harness, total-quota overshoot proof with reopen, or create-time eviction scenario. Top-level files named as crash prefixes do not exercise the store's real pending/temp/rename locations or persistence boundaries."
+      },
+      {
+        "cases": ["M51", "M52", "M53", "M54", "M55", "M56", "M57", "M58", "M59", "M60"],
+        "reason": "Privacy scans omit several forbidden sources/logs and complete artifact traversal; executor-error terminal sanitization is absent; closed JSON checks contain nested-text assertions that inspect re-escaped response.Result rather than decoding its text; AST audits cover only fixed filenames and shallow call names; legacy benchmark/recommendation comparisons remain incomplete/self-referential; the shared fake proves wiring object identity but not delegation inside the real RecommendationService; non-regular/permission variants are partial; missing get/cancel is tested only through a spy and does not prove no durable materialization."
+      }
+    ]
+  },
+  "opaque_cases": [
+    {"id": "O01", "result": "Unknown"},
+    {"id": "O02", "result": "Unknown"},
+    {"id": "O03", "result": "Unknown"},
+    {"id": "O04", "result": "Unknown"},
+    {"id": "O05", "result": "Unknown"}
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Any absent or ambiguous negative witness is SURVIVED, never Violated.",
+    "opaque_cases_in_denominator": false
+  },
+  "stability_audit": {
+    "verifier_matrix_stable": true,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_nine_normalized_hashes_equal": true,
+    "normalized_result_sha256": "dc903316d1902bd059ff2d36ef73c31c054abde3a86e4887142536ce2530c412",
+    "required_outcomes_satisfied": false,
+    "frozen_oracle_driver_valid": false,
+    "reason": "TestStep0026R2OfflineDiscriminatoryGateStableThreeByThree maps a negative to Violated solely when its ID has a nonempty binding. It executes neither the named test nor the attack/mutant, so it proves map cardinality and deterministic lookup, not discriminatory stability."
+  },
+  "private_detail_and_legacy_audit": {
+    "passed": false,
+    "findings": [
+      "The private L4 helper was replaced by an exported factory, resolving the exact R1 unexported-helper finding.",
+      "TestStep0026R2ExternalIdentifiersNeverBecomePathComponents explicitly recognizes cursor-secret and idempotency-index filenames, thereby freezing private physical store names despite those names not being observable contract API.",
+      "The legacy test has immutable hashes and literal tool schemas/search bytes, but successful benchmark output has no byte golden and recommendation expected bytes are produced by usecase.MarshalRecommendationResult from the same candidate build."
+    ]
+  },
+  "blocking_findings": [
+    "mutation_score is 0.4, below the required 1.0",
+    "36 valid negative mutations retain concrete surviving variants",
+    "P01, P02 and P05 are not completely demonstrated",
+    "the frozen 3x3 gate is a binding-presence tautology and does not execute witnesses or mutations",
+    "private store filenames remain frozen and legacy compatibility remains partially self-referential",
+    "some R2 assertions are incompatible with the terminal artifact integrity contract or inspect re-escaped MCP text"
+  ],
+  "seal": {
+    "emitted": false,
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "reason": "A seal is forbidden until P01-P05 are Preserved, M01-M60 are independently Violated, the executable 3x3 gate is non-tautological, private details are not frozen and mutation_score equals 1.0."
+  }
+}

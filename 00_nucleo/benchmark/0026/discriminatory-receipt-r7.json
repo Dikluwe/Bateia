@@ -1,0 +1,152 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 7,
+  "gate": "post-invalidation oracle-syntax continuity revalidation",
+  "status": "GATE_PASSED_RESEALED_WITH_TEMPORAL_LIMITATION",
+  "verdict": "RESEAL",
+  "created_at": "2026-09-01T21:37:32Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "historical_chain": {
+    "r6_receipt_path": "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_seal_path": "00_nucleo/benchmark/0026/seal.json",
+    "r6_seal_sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "r6_invalidation_path": "00_nucleo/benchmark/0026/seal-r6-invalidation.json",
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r6_seal_remains_historical_only": true
+  },
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace after partial candidate existence",
+    "candidate_source_read": false,
+    "candidate_behavior_executed": false,
+    "candidate_evaluated": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "verifier-owned isolated R6 reference/variant subprocess matrix, excluding live predecessor and every candidate package",
+        "result": "PASS",
+        "reference_subprocesses_passed": 9,
+        "mutant_subprocesses_failed": 270,
+        "orders": 3,
+        "repetitions_per_order": 3,
+        "stable_witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1"
+      },
+      {
+        "command": "in-memory reconstruction of the prior protected oracle by reinserting the removed source line",
+        "result": "PASS",
+        "reconstructed_r6_sha256": "fa1e664d9fdd61ad67769c818b8609ec277369437f87271d4490256cac1e2dda",
+        "corrected_r7_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97"
+      },
+      {
+        "command": "strict duplicate-key JSON, suite/prompt/source/diff hash verification, gofmt -d and git diff --check over corrected protected inputs",
+        "result": "PASS",
+        "suite_entries": 29,
+        "variant_entries": 30
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "frozen R7 manifest and oracle contract",
+      "single corrected protected oracle and its unchanged prompt",
+      "R6 receipt, historical seal and explicit invalidation",
+      "R6 isolated reference, blind conformance suite and permanent variants",
+      "frozen predecessor hashes recorded in the manifest and R6 receipt"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r7.json",
+      "00_nucleo/benchmark/0026/seal-r7.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate source was read, executed, evaluated or modified",
+      "no oracle, prompt, adversarial case, contract or manifest was modified",
+      "no historical receipt, seal or invalidation artifact was modified"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "bcc61d7ded7b9684798aed1d9be7d312a67e597ea9f0dff1a1e5081e2d90c7d6",
+    "oracle_contract_sha256": "170310ab8c216578fb223c16c525dac254c4144b0f89231f110d073e21b0f659",
+    "corrected_oracle_path": "03_infra/runstore/file_store_step0026_r2_test.go",
+    "corrected_oracle_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97",
+    "corrected_oracle_prompt_sha256": "87fd87d0048e1dd473d86ca70f0161baf4c67d59182ec3b410018a67205d8e7f",
+    "r6_reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "r6_common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "r6_driver_sha256": "8f4c2232560a36a7e1e5c28e7ec5394e0a9022a35f0edb5dbcfc52432f924fa1",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5"
+  },
+  "oracle_correction_audit": {
+    "passed": true,
+    "previous_sha256": "fa1e664d9fdd61ad67769c818b8609ec277369437f87271d4490256cac1e2dda",
+    "corrected_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97",
+    "removed_exact_bytes": "\t\tname := entry.Name()\n",
+    "removed_byte_count": 23,
+    "old_source_reconstruction_matches_frozen_r6_hash": true,
+    "prompt_changed": false,
+    "assertion_changed": false,
+    "stimulus_changed": false,
+    "expected_outcome_changed": false,
+    "semantic_finding": "The deleted local was never read. The WalkDir stimulus, external-identifier checks, error paths and expectations are byte-identical around the deletion.",
+    "syntax_evidence": "The oracle-author's frozen R7 contract records PASS for `go test ./03_infra/runstore -run ^$`; the verifier independently proved the exact one-line deletion and clean gofmt without compiling the live candidate package."
+  },
+  "positive_controls": [
+    {"id":"P01","result":"Preserved","basis":"Nine isolated R7 continuity reference subprocesses passed concurrent canonical Start."},
+    {"id":"P02","result":"Preserved","basis":"Nine isolated R7 continuity reference subprocesses passed terminal reopen."},
+    {"id":"P03","result":"Preserved","basis":"Nine isolated R7 continuity reference subprocesses passed cursor reopen with changed limit."},
+    {"id":"P04","result":"Preserved","basis":"Nine isolated R7 continuity reference subprocesses passed idempotent cancellation."},
+    {"id":"P05","result":"Preserved","basis":"Bound to the frozen predecessor snapshot/certificate and the immutable R6 receipt, not to the post-candidate live source."}
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 60,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "historical_r6_causal_kills": 60,
+    "r7_isolated_revalidation_of_permanent_variants": 30,
+    "stable_r7_mutant_process_failures": 270,
+    "survivor_cases": []
+  },
+  "opaque_cases": [
+    {"id":"O01","result":"Unknown"},
+    {"id":"O02","result":"Unknown"},
+    {"id":"O03","result":"Unknown"},
+    {"id":"O04","result":"Unknown"},
+    {"id":"O05","result":"Unknown"}
+  ],
+  "predecessor_continuity": {
+    "live_source_hash_required": false,
+    "live_source_read_or_evaluated": false,
+    "frozen_baseline_usecase_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "frozen_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_receipt_predecessor_passed": true,
+    "finding": "The R7 oracle contract records a mismatch only against the post-candidate live predecessor file. Using that live file would evaluate candidate state, so continuity is instead bound to the pre-candidate snapshot, certificate and R6 receipt as required."
+  },
+  "stability_audit": {
+    "isolated_reference_subprocesses": 9,
+    "isolated_mutant_subprocesses": 270,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_variant_witnesses_stable": true,
+    "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "normalized_classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55",
+    "required_outcomes_satisfied": true
+  },
+  "temporal_limitation": {
+    "candidate_existed_before_r7_correction": true,
+    "strong_pre_candidate_independence_claimed": false,
+    "mitigation": "Only the exact unused-line deletion was audited; candidate source and behavior remained unread and unevaluated, R6 mutation artifacts stayed frozen, and predecessor evidence came from the pre-candidate snapshot and receipt.",
+    "future_candidate_verdict_requires_binding": true
+  },
+  "seal": {
+    "emitted": true,
+    "path": "00_nucleo/benchmark/0026/seal-r7.json",
+    "reason": "The sole oracle correction is semantically null, the isolated 3x3 mutation matrix remains 60/60 with no survivors, positive and opaque outcomes are unchanged, and predecessor continuity is bound to pre-candidate evidence."
+  }
+}

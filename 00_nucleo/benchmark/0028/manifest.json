@@ -1,0 +1,96 @@
+{
+  "schema_version": "tekt.materialization.v1",
+  "protocol": "full",
+  "step": "0028",
+  "created_at": "2026-09-02",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "baseline_tracked_diff_sha256": "5259d8d816822128cd51a0def64fcbe64af257d8348f741c09a31a82fa2f0a87",
+  "baseline_status_sha256": "7d31765a048becbcef9347757afab8337ccd40ae37ca85aca8ccdc8d28d52a19",
+  "runtime": {
+    "go": "go1.26.5 linux/amd64",
+    "environment": "shared workspace"
+  },
+  "intent": {
+    "step_path": "00_nucleo/passos/0028-extrair-mecanismos-e-formular-hipoteses-de-melhoria.md",
+    "step_sha256": "9105b27e0e8e9165b0b133a647669e858b977ea2ab8c7d951ed0f217a26ac1a5",
+    "predecessors": [
+      {
+        "step": "0025",
+        "certificate_path": "00_nucleo/benchmark/0025/certificate.json",
+        "certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+        "verification_receipt_path": "00_nucleo/benchmark/0025/verification-receipt.json",
+        "verification_receipt_sha256": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a",
+        "verdict": "MCP_RECOMMENDATION_GATEWAY_READY"
+      },
+      {
+        "step": "0026",
+        "certificate_path": "00_nucleo/benchmark/0026/certificate.json",
+        "certificate_sha256": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+        "verification_receipt_path": "00_nucleo/benchmark/0026/verification-receipt.json",
+        "verification_receipt_sha256": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2",
+        "verdict": "MCP_DURABLE_RUNS_READY"
+      },
+      {
+        "step": "0027",
+        "certificate_path": "00_nucleo/benchmark/0027/certificate.json",
+        "certificate_sha256": "acf05df728b05ccdc5bc15f78a18e49f19e743b2016ab1141e553ca2417c7e43",
+        "verification_receipt_path": "00_nucleo/benchmark/0027/verification-receipt.json",
+        "verification_receipt_sha256": "cbd88c68cdabb5b1683dc73e7d546c561939b0f3557c525d4ca72697c89930c8",
+        "verdict": "MULTISOURCE_MARKET_DISCOVERY_READY"
+      }
+    ]
+  },
+  "contract_path": "00_nucleo/benchmark/0028/contract.md",
+  "rule_catalog_path": "00_nucleo/benchmark/0028/mechanism-rules.json",
+  "corpus_public_path": "00_nucleo/benchmark/0028/oracle/corpus-public.json",
+  "conventional_baselines_path": "00_nucleo/benchmark/0028/oracle/conventional-baselines.json",
+  "observables": [
+    "tools/list preserves the nine certified tools and appends exactly bateia_start_improvement_synthesis",
+    "new recommendation runs extract a safe deterministic mechanism_catalog only from their frozen EvidenceBundle",
+    "historical recommendation runs without mechanism_catalog remain SOURCE_BASIS_UNAVAILABLE and never reread mutable sources",
+    "PROVEN mechanisms require implementation and an independent witness in the same immutable owner/repo@commit",
+    "product-only observations never become architectural mechanisms and external proposals never create evidence",
+    "target UNKNOWN never becomes ABSENT and lifecycle SUCCEEDED never becomes hypothesis SUPPORTED",
+    "source artifact run kind, terminal lifecycle, artifact allowlist and client hash are verified before queueing",
+    "improvement synthesis reuses the Step 0026 store, queue, idempotency, cancellation, quota and cursor semantics",
+    "unknown license blocks automatic component reuse without dropping the mechanism or hypothesis",
+    "popularity, AdoptionRate and novelty never increase evidence or support status",
+    "counterevidence, integration unknowns, assumptions, risks and falsifiable validation plans remain explicit",
+    "offline replay is network-free and byte-identical and public artifacts contain no raw third-party content or canaries",
+    "L1 remains pure, L2 has no L3 dependency, L3 has no upward dependency and L4 only composes",
+    "certificates 0025, 0026 and 0027 receive explicit observable-refinement receipts"
+  ],
+  "unknown_policy": "Missing historical catalogs remain SOURCE_BASIS_UNAVAILABLE; unsupported taxonomy, incomplete witnesses, unknown target state, absent property baselines, unknown cross-mechanism compatibility, unknown license and budget-limited counterevidence remain explicit. Unknown never becomes absence, proof, compatibility, safety or reuse permission. Opaque cases are excluded from mutation-score success and may only yield Unknown when designated before the candidate.",
+  "roles": {
+    "intent_author": {
+      "executor": "user plus frozen Passo 0028",
+      "write": ["none during materialization"]
+    },
+    "coordinator_implementer": {
+      "executor": "/root",
+      "write": ["manifest before seal", "candidate implementation after discriminatory seal", "integration metadata"],
+      "restriction": "does not author protected contract, independent oracle suite, adversarial cases, receipts, seal, certificate or verdict"
+    },
+    "contract_author": {
+      "executor": "/root/contract_0028",
+      "write": ["contract", "mechanism rule catalog", "L0 production prompts"],
+      "restriction": "does not read candidate implementation, oracle private split, attacks, receipts or verdict"
+    },
+    "oracle_author": {
+      "executor": "/root/oracle_0028",
+      "write": ["independent oracle tests", "mirrored prompts", "frozen corpus", "conventional baselines", "offline fixtures", "oracle contract"],
+      "restriction": "does not read candidate implementation or author attacks, fixes, receipts or verdict"
+    },
+    "adversary": {
+      "executor": "/root/adversary_0028",
+      "write": ["adversarial cases"],
+      "restriction": "does not read candidate implementation or author tests, fixes, receipts or verdict"
+    },
+    "verifier": {
+      "executor": "/root/verifier_0028",
+      "write": ["discriminatory receipts and seal", "candidate and verification receipts", "refinement receipts", "certificate", "laudo"],
+      "restriction": "cannot edit contract, rule catalog, oracle suite, adversarial cases or candidate"
+    }
+  },
+  "attestation_target": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

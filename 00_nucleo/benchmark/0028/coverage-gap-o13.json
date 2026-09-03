@@ -1,0 +1,58 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v13",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_mutants_revision": "O12",
+  "source_oracle_revision": "O13",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "privacy_contract": {
+    "allowed": ["case_id", "public_contract_port", "required_classification", "observed_classification", "predicate_id", "reason_code", "preimage_component", "permitted_contract_state", "frequency"],
+    "excluded": ["mutation_payload", "mutation_description", "private_target", "candidate_content", "concrete_value", "code", "patch", "implementation_solution"]
+  },
+  "negative_domain_frozen": {
+    "id_domain": "M001-M160",
+    "count": 160,
+    "records_byte_identical_to_o11": 160,
+    "required_classification": "Violated",
+    "observed_classification": "Violated",
+    "mutation_score": 1.0,
+    "stable_across_six_runs": true,
+    "attack_entry_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c",
+    "records_root_sha256": "bc785b43e8e0bc9443b2e71f25a16ffd231f90aa11fa34f2fcb4686d1dd03af4"
+  },
+  "positive_control_failures": [
+    {
+      "case_id": "P02",
+      "public_contract_port": "MECHANISM_EXTRACT",
+      "required_classification": "Preserved",
+      "observed_classification": "Violated",
+      "predicate_failures": [
+        {"predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","reason_code":"CANONICAL_PREIMAGE_COMPONENT_DIVERGED","preimage_component":"rule_id"}
+      ]
+    }
+  ],
+  "opaque_control_failures": [
+    {"case_id":"O02","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"minimum witness semantically insufficient"}]},
+    {"case_id":"O03","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"target_state UNKNOWN with baseline absent"}]},
+    {"case_id":"O04","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"composition compatibility unmeasured"}]},
+    {"case_id":"O05","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"license UNRECOGNIZED"}]},
+    {"case_id":"O06","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"counterevidence budget exhausted"}]},
+    {"case_id":"O07","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"immutable identity missing or ambiguous"}]},
+    {"case_id":"O08","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"provider availability not evidenced by frozen capture"}]},
+    {"case_id":"O09","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"utility cost or security effect without baseline"}]},
+    {"case_id":"O10","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","permitted_contract_state":"utility cost or security effect without baseline"}]}
+  ],
+  "failure_frequencies": [
+    {"predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","reason_code":"CANONICAL_PREIMAGE_COMPONENT_DIVERGED","frequency":1},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","frequency":1},
+    {"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"PERMITTED_CONTRACT_STATE_NOT_RECOGNIZED_AS_UNKNOWN","frequency":8}
+  ],
+  "qualification_rule": "All 160 negative records remain byte-identical and classify Violated; every positive must be Preserved and every opaque construction must be Unknown before a seal can exist.",
+  "o12_o13_score": 1.0,
+  "positive_controls_preserved": 11,
+  "opaque_controls_unknown": 1,
+  "seal_existed_or_emitted": false,
+  "receipt_existed_or_emitted": false
+}

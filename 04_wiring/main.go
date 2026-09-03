@@ -8,15 +8,20 @@
 package main
 
 import (
+	"context"
+	"io"
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/cli"
+	"bateia/02_shell/mcp"
 	"bateia/03_infra/cache"
 	"bateia/03_infra/content"
+	"bateia/03_infra/envfile"
 	"bateia/03_infra/github"
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
@@ -24,27 +29,13 @@ import (
 	webinfra "bateia/03_infra/web"
 )
 
+func newMCPServer(funnel *usecase.SearchFunnel, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, reader io.Reader, writer io.Writer) *mcp.MCPServer {
+	recommendationService := usecase.NewRecommendationService(semantic, discovery, content)
+	return mcp.NewMCPServer(funnel, reader, writer, recommendationService)
+}
+
 func loadEnvFile(filepath string) {
-	data, err := os.ReadFile(filepath)
-	if err != nil {
-		return
-	}
-	lines := strings.Split(string(data), "\n")
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" || strings.HasPrefix(line, "#") {
-			continue
-		}
-		line = strings.TrimPrefix(line, "export ")
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) == 2 {
-			key := strings.TrimSpace(parts[0])
-			val := strings.Trim(strings.TrimSpace(parts[1]), "\"'")
-			if os.Getenv(key) == "" && val != "" {
-				_ = os.Setenv(key, val)
-			}
-		}
-	}
+	envfile.Load(filepath)
 }
 
 func main() {
@@ -87,7 +78,8 @@ func main() {
 			loadEnvFile(".env")
 			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
 			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
-			if err := cli.RunIdeaRecommendCommand(os.Args[3:], os.Stdout, lexicalExpander, sgClient, provider); err != nil {
+			recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, provider)
+			if err := cli.RunIdeaRecommendCommand(os.Args[3:], os.Stdout, lexicalExpander, sgClient, provider, recommendationService); err != nil {
 				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 			}
 			return
@@ -144,15 +136,82 @@ func main() {
 	sgClient := sourcegraph.NewClient(sourcegraphToken)
 	ghClient := github.NewClient(githubToken)
 	contentProvider := content.NewRouter(ghClient, localrepo.NewClient())
+	lexicalExpander, err := lexical.NewDefault(2)
+	if err != nil {
+		log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
+	}
 
 	// L4: Injetar adaptadores L3 nas abstrações/interfaces de L1 (Núcleo)
 	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithProgressReporter(cli.LogProgressReporter{})
+	recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, contentProvider)
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "mcp") {
+		config, configErr := loadDurableLocalConfig()
+		if configErr != nil {
+			log.Fatalf("Erro ao inicializar configuração MCP durável: %v", configErr)
+		}
+		connectors, connectorErr := defaultMarketDiscoveryConnectors()
+		if connectorErr != nil {
+			log.Fatalf("Erro ao inicializar conectores públicos: %v", connectorErr)
+		}
+		server, shutdown, serverErr := NewImprovementSynthesisMCPServer(funnelUsecase, recommendationService, connectors, embeddedMechanismCatalog, nil, config.root, config.secret, config.limits, config.workers, config.capacity, os.Stdin, os.Stdout)
+		if serverErr != nil {
+			log.Fatalf("Erro ao inicializar descoberta de mercado MCP: %v", serverErr)
+		}
+		serveErr := server.Serve(context.Background())
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		shutdownErr := shutdown(ctx)
+		cancel()
+		if serveErr != nil {
+			log.Fatalf("Erro na execução MCP: %v", serveErr)
+		}
+		if shutdownErr != nil {
+			log.Fatalf("Erro ao encerrar execuções MCP duráveis: %v", shutdownErr)
+		}
+		return
+	}
 
-	// L4: Instanciar a Casca L2 (CLI) passando a fiação pronta
-	app := cli.NewCLIApp(funnelUsecase)
+	// L4: Instanciar a Casca L2 (CLI) passando a fiação pronta.
+	app := cli.NewCLIApp(funnelUsecase, recommendationService)
+	var shutdownDurable func(context.Context) error
+	if durableMCPRequested(os.Args[1:]) {
+		config, configErr := loadDurableLocalConfig()
+		if configErr != nil {
+			log.Fatalf("Erro ao inicializar configuração MCP durável: %v", configErr)
+		}
+		durableRuns, shutdown, durableErr := newDurableRecommendationRuns(
+			recommendationService, config.root, config.secret, config.limits, config.workers, config.capacity,
+		)
+		if durableErr != nil {
+			log.Fatalf("Erro ao inicializar execuções MCP duráveis: %v", durableErr)
+		}
+		app.WithDurableRuns(durableRuns)
+		shutdownDurable = shutdown
+	}
 
 	// Executar a aplicação com os argumentos passados pelo sistema operacional
-	if err := app.Run(os.Args[1:]); err != nil {
-		log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+	runErr := app.Run(os.Args[1:])
+	var shutdownErr error
+	if shutdownDurable != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		shutdownErr = shutdownDurable(ctx)
+		cancel()
 	}
+	if runErr != nil {
+		log.Fatalf("Erro na execução da CLI Bateia: %v", runErr)
+	}
+	if shutdownErr != nil {
+		log.Fatalf("Erro ao encerrar execuções MCP duráveis: %v", shutdownErr)
+	}
+}
+
+func durableMCPRequested(args []string) bool {
+	if len(args) > 0 && strings.EqualFold(args[0], "mcp") {
+		return true
+	}
+	for _, arg := range args {
+		if strings.EqualFold(arg, "-mcp") || strings.EqualFold(arg, "--mcp") {
+			return true
+		}
+	}
+	return false
 }

@@ -1,0 +1,213 @@
+{
+  "schema_version": "tekt.mechanism-rules.v3",
+  "catalog_id": "bateia-step0028-initial",
+  "catalog_version": 3,
+  "closed_world": true,
+  "unknown_classification": "MECHANISM_CLASS_UNKNOWN",
+  "canonicalization": {
+    "text": "Unicode NFC, reject C0/C1 and DEL, trim and collapse Unicode whitespace",
+    "sets": "deduplicate by exact normalized UTF-8 bytes and sort ascending by those bytes",
+    "witness_identity": "assessment repository and status, EvidenceSource kind/ref/path/symbol/line/rule_id/content_hash, plus the bound CollectedEvidence kind/ref/path/content_hash",
+    "hash": "sha256 over compact JSON with fixed struct field order and no trailing newline"
+  },
+  "source_contract": {
+    "evaluated_container": "CandidateAssessment",
+    "evaluated_source": "EvidenceSource nested under CapabilityEvidence",
+    "rule_identity_field": "EvidenceSource.RuleID",
+    "bundle_item": "CollectedEvidence",
+    "exact_join_fields": [
+      "kind",
+      "ref",
+      "path",
+      "content_hash"
+    ],
+    "content_use": "hash verification only",
+    "infer_rule_from_content": false
+  },
+  "rules": [
+    {
+      "id": "MR-APPEND-ONLY-LOG-V1",
+      "version": 1,
+      "mechanism_class": "APPEND_ONLY_LOG_RECOVERY",
+      "name": "append-only log with explicit recovery",
+      "purpose": "preserve an ordered history that can reconstruct confirmed state after interruption",
+      "strategy": "append immutable records and rebuild state by deterministic replay with explicit integrity handling",
+      "accepted_evidence_rules": [
+        {"rule_id":"append-only-write","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"deterministic-log-replay","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"append-only-recovery-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"append-only-record-schema","role":"INDEPENDENT","witness_kind":"SCHEMA"},
+        {"rule_id":"append-only-integrity-config","role":"INDEPENDENT","witness_kind":"CONFIGURATION"},
+        {"rule_id":"append-only-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},
+        {"rule_id":"mutable-in-place-primary-store","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},
+        {"rule_id":"replay-order-unstable","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}
+      ],
+      "minimum_witnesses": {
+        "partial": 1,
+        "proven_implementation": 1,
+        "proven_independent": 1,
+        "distinct_content_hashes": 2
+      },
+      "fillable_fields": [
+        "purpose",
+        "trigger",
+        "strategy",
+        "data_flow",
+        "state_model",
+        "failure_model",
+        "boundaries",
+        "preconditions",
+        "tradeoffs"
+      ],
+      "language_limits": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "ecosystem_limits": [
+        "repository-backed source bundle"
+      ],
+      "status_max": "PROVEN"
+    },
+    {
+      "id": "MR-BOUNDED-QUEUE-V1",
+      "version": 1,
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "name": "bounded queue with backpressure",
+      "purpose": "bound admitted work and make overload behavior explicit",
+      "strategy": "reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable",
+      "accepted_evidence_rules": [
+        {"rule_id":"bounded-queue-capacity","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"queue-reserve-before-commit","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"queue-capacity-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"queue-backpressure-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"queue-limit-config","role":"INDEPENDENT","witness_kind":"CONFIGURATION"},
+        {"rule_id":"bounded-queue-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},
+        {"rule_id":"unbounded-queue","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},
+        {"rule_id":"admit-before-capacity-check","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}
+      ],
+      "minimum_witnesses": {
+        "partial": 1,
+        "proven_implementation": 1,
+        "proven_independent": 1,
+        "distinct_content_hashes": 2
+      },
+      "fillable_fields": [
+        "purpose",
+        "trigger",
+        "strategy",
+        "data_flow",
+        "state_model",
+        "failure_model",
+        "boundaries",
+        "preconditions",
+        "tradeoffs"
+      ],
+      "language_limits": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "ecosystem_limits": [
+        "repository-backed source bundle"
+      ],
+      "status_max": "PROVEN"
+    },
+    {
+      "id": "MR-CONTENT-ADDRESS-V1",
+      "version": 1,
+      "mechanism_class": "CONTENT_ADDRESSED_STORAGE",
+      "name": "content-addressed storage",
+      "purpose": "bind stored or cached values to immutable content identity",
+      "strategy": "derive identity from canonical content bytes and verify that identity when reading or publishing",
+      "accepted_evidence_rules": [
+        {"rule_id":"content-hash-key","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"content-hash-verify","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"content-address-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"integrity-mismatch-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"content-address-schema","role":"INDEPENDENT","witness_kind":"SCHEMA"},
+        {"rule_id":"content-address-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},
+        {"rule_id":"mutable-location-only-key","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},
+        {"rule_id":"unverified-content-read","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}
+      ],
+      "minimum_witnesses": {
+        "partial": 1,
+        "proven_implementation": 1,
+        "proven_independent": 1,
+        "distinct_content_hashes": 2
+      },
+      "fillable_fields": [
+        "purpose",
+        "trigger",
+        "strategy",
+        "data_flow",
+        "state_model",
+        "failure_model",
+        "boundaries",
+        "preconditions",
+        "tradeoffs"
+      ],
+      "language_limits": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "ecosystem_limits": [
+        "repository-backed source bundle"
+      ],
+      "status_max": "PROVEN"
+    },
+    {
+      "id": "MR-ADAPTER-BOUNDARY-V1",
+      "version": 1,
+      "mechanism_class": "PORT_ADAPTER_ISOLATION",
+      "name": "port and adapter isolation",
+      "purpose": "keep policy independent from external providers and transports",
+      "strategy": "express the required capability as an inward-facing port and inject provider-specific adapters at composition",
+      "accepted_evidence_rules": [
+        {"rule_id":"inward-port-interface","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"adapter-implements-port","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},
+        {"rule_id":"adapter-substitution-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"dependency-boundary-test","role":"INDEPENDENT","witness_kind":"TEST"},
+        {"rule_id":"adapter-registry-manifest","role":"INDEPENDENT","witness_kind":"MANIFEST"},
+        {"rule_id":"adapter-boundary-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},
+        {"rule_id":"domain-imports-adapter","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},
+        {"rule_id":"policy-selects-concrete-provider","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}
+      ],
+      "minimum_witnesses": {
+        "partial": 1,
+        "proven_implementation": 1,
+        "proven_independent": 1,
+        "distinct_content_hashes": 2
+      },
+      "fillable_fields": [
+        "purpose",
+        "trigger",
+        "strategy",
+        "data_flow",
+        "state_model",
+        "failure_model",
+        "boundaries",
+        "preconditions",
+        "tradeoffs"
+      ],
+      "language_limits": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "ecosystem_limits": [
+        "repository-backed source bundle"
+      ],
+      "status_max": "PROVEN"
+    }
+  ]
+}

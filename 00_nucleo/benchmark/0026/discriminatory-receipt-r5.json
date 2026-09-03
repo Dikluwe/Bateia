@@ -1,0 +1,237 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 5,
+  "gate": "pre-candidate real-substitute black-box revalidation",
+  "status": "GATE_FAILED_UNSEALED",
+  "verdict": "DO_NOT_SEAL",
+  "created_at": "2026-09-01T20:36:26Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "superseded_drivers": [3, 4],
+  "predecessors": [
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt.json",
+      "sha256": "672d8841310c483feaa22a6ccb2dda91dbf6655fb972b2399c3eac4ed15b0f90",
+      "mutation_score": 0.15
+    },
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r2.json",
+      "sha256": "101b272eb4bb9b105ebc30c79e602c81c6b2b9d6d052fae820f006643bf3e97a",
+      "mutation_score": 0.4
+    },
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r3.json",
+      "sha256": "eec3666fb67d222657d47d5021d0fdd36381a5f303a72099ba92bd8d1e42060d",
+      "mutation_score": 0.5
+    },
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r4.json",
+      "sha256": "5d85779ea89fcd13dc59cd2263f488b170712e87f9a401d0f243a4ed0586dcc4",
+      "mutation_score": 0.5
+    }
+  ],
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace",
+    "candidate_implementation_read": false,
+    "candidate_implementation_executed": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r5 go test ./04_wiring/r5_gate/... -run TestStep0026R5RealSubstituteMutationGateThreeByThree -count=3",
+        "result": "PASS",
+        "duration": "49.882s",
+        "interpretation": "The R5 switchable substitute and all five fixture packages compile, and the driver is repeatable; causal independence failed source audit."
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r5 go test 02_shell/mcp/server.go 02_shell/mcp/server_test.go 02_shell/mcp/recommendation_step0025_contract_test.go 02_shell/mcp/durable_runs_step0026_r3_test.go -run 'TestStep0026R3LegacyBenchmarkAndRecommendationUseIndependentByteGoldens|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes' -count=3",
+        "result": "PASS",
+        "duration": "0.006s",
+        "scope": "explicit certified predecessor-only file list; no Step 0026 candidate file compiled"
+      },
+      {
+        "command": "strict duplicate-key JSON parsing of manifest, oracle contract, adversarial cases and R1-R4 receipts",
+        "result": "PASS"
+      },
+      {
+        "command": "SHA-256 verification of all 23 oracle-contract suite entries and mirrored prompt bindings",
+        "result": "PASS",
+        "hash_checks": 46
+      },
+      {
+        "command": "gofmt -d over R5 substitute, driver and compiled fixtures; git diff --check over frozen R5 paths",
+        "result": "PASS"
+      },
+      {
+        "command": "verifier-owned ascending, descending and interleaved classification matrix, three repetitions each",
+        "result": "STABLE_WITH_REQUIRED_OUTCOMES_FAILED",
+        "normalized_sha256": "5d3db52d17669fb2fc0feea072e02e88f6ac1d6512dea7caff18c07506d49a75"
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "Tekt protocol and project AGENTS instructions",
+      "frozen Step 0026 intent, manifest, contract and adversarial cases",
+      "R5 oracle contract, substitute, driver, compiled fixtures and manifest-bound suites",
+      "R1/R2/R3/R4 receipts",
+      "immutable Step 0025 files selected by the predecessor-only command"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r5.json"
+    ],
+    "forbidden_actions_respected": [
+      "no Step 0026 candidate production file was read, executed or modified",
+      "no contract, oracle, prompt, adversarial case or manifest was modified",
+      "R1-R4 receipts were not modified",
+      "no seal was emitted"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "b69ad722d975fce8d48f188cd5ef53ed6d7e08113cbdad40b24ffef5f363f909",
+    "oracle_contract_sha256": "bfd89694435a09e6aafd761a6c2500c9d91eae6e4d07a70e7f2f740d03aa46e7",
+    "subject_sha256": "1146a8b919a07bce00ac84bfdbdc6fd03f7a67ee2cac7373b3c4b4ef477c5e35",
+    "authoritative_r5_gate_sha256": "a3c2565aa3d9a240849241168bc53f78f8cca952a889819163d016991a3365d1",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "step_0025_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "all_twenty_three_suite_entries_and_prompt_bindings_match_oracle_contract": true,
+    "strict_json_without_duplicate_keys": true,
+    "attack_cardinality": 70,
+    "unique_attack_ids": 70
+  },
+  "positive_controls": [
+    {
+      "id": "P01",
+      "result": "Preserved",
+      "independent_basis": "Previously frozen candidate-facing suite covers reordered/deduplicated concurrent Start; R5's local control is only sequential and is not the sole basis."
+    },
+    {
+      "id": "P02",
+      "result": "Preserved",
+      "independent_basis": "Previously frozen real-store suites cover confirmed transitions, publication and reopen; R5 only performs Start/Execute/Get in one subject instance."
+    },
+    {
+      "id": "P03",
+      "result": "Preserved",
+      "independent_basis": "Previously frozen cursor suites cover changed limit and reopen with the same secret; R5 changes limit but never reopens its subject."
+    },
+    {
+      "id": "P04",
+      "result": "Preserved",
+      "independent_basis": "Previously frozen queue and L4 suites cover queued/running cancellation, acknowledgement and duplicate stability; R5 exercises a reduced local model."
+    },
+    {
+      "id": "P05",
+      "result": "Preserved",
+      "independent_basis": "The verifier executed the explicit certified predecessor-only command three times, and existing suites cover the shared real RecommendationService pipeline."
+    }
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 30,
+    "survived": 30,
+    "unknown": 0,
+    "mutation_score": 0.5,
+    "required_score": 1.0,
+    "r5_driver_reported_unequal_observations": 60,
+    "r5_driver_reported_score": 1.0,
+    "r5_additional_kills_credited": 0,
+    "r5_credit_rejection": "All R5 negative executions obtain both the stimulus selector and the defect selector from c.ID; this violates the frozen decisive requirement that results not derive from ID/category/text/digest.",
+    "violated_cases": [
+      "M02", "M03", "M05", "M06", "M07", "M08", "M10", "M12",
+      "M13", "M14", "M17", "M19", "M20", "M21", "M22", "M23",
+      "M24", "M26", "M33", "M34", "M37", "M39", "M40", "M41",
+      "M42", "M43", "M49", "M50", "M57", "M58"
+    ],
+    "survivor_groups": [
+      {
+        "cases": ["M01", "M04", "M09", "M11"],
+        "reason": "R5 provides ID-selected switch branches, not an ID-independent executable binding from each declared mutation to a compiled variant; previous finite identity, retry, validation and quota witnesses remain incomplete."
+      },
+      {
+        "cases": ["M15", "M16", "M18", "M25", "M27", "M28", "M29", "M30", "M31", "M32"],
+        "reason": "The R5 local subject differs under named switches, but the selection is c.ID and the scenarios remain narrower than the complete declared publication, CAS, progress, race, recovery, shutdown and orphan stimuli."
+      },
+      {
+        "cases": ["M35", "M36", "M38", "M44", "M45", "M46", "M47", "M48"],
+        "reason": "Real tempdirs and filesystem syscalls are present, but M46 tests only after-rename, M47 only during-write and M48 only after-rename despite declarations requiring every write/fsync/rename/publication boundary; all defects are selected from c.ID."
+      },
+      {
+        "cases": ["M51", "M52", "M53", "M54", "M55", "M56", "M59", "M60"],
+        "reason": "Privacy, projection, JSON, layering, permission and lookup differences are hard-wired to the case ID. M55/M56 parse distinct fixture packages selected by defect non-emptiness rather than compiling one substitute with a semantically bound mutation."
+      }
+    ]
+  },
+  "opaque_cases": [
+    {"id": "O01", "result": "Unknown"},
+    {"id": "O02", "result": "Unknown"},
+    {"id": "O03", "result": "Unknown"},
+    {"id": "O04", "result": "Unknown"},
+    {"id": "O05", "result": "Unknown"}
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Any missing, metadata-selected or causally ambiguous negative witness is SURVIVED.",
+    "opaque_cases_in_denominator": false,
+    "r5_driver_derives_opaque_verdict_from_id_prefix": true
+  },
+  "stability_audit": {
+    "verifier_matrix_stable": true,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_nine_normalized_hashes_equal": true,
+    "normalized_result_sha256": "5d3db52d17669fb2fc0feea072e02e88f6ac1d6512dea7caff18c07506d49a75",
+    "required_outcomes_satisfied": false,
+    "frozen_r5_gate_count_three_passed": true,
+    "frozen_r5_gate_causally_valid": false
+  },
+  "r5_black_box_audit": {
+    "same_concrete_runtime_type_for_reference_and_switchable_mutants": true,
+    "same_nominal_surface_for_reference_and_switchable_mutants": true,
+    "defect_enabled_by_compilation_variant": false,
+    "defect_enabled_by_runtime_string": true,
+    "executes_declared_mutation_without_case_metadata": false,
+    "result_independent_of_id": false,
+    "result_independent_of_category": true,
+    "result_independent_of_attack_text": false,
+    "digest_can_change_verdict": false,
+    "disk_uses_real_tempdirs_and_syscalls": true,
+    "fixtures_parse_and_compile": true,
+    "finding": "executeCase calls observeMutation(t, c.ID, empty) for the reference and observeMutation(t, c.ID, c.ID) for the mutant. observeMutation switches directly on id, while runtimeSubject contains 70 comparisons against defect strings Mxx; M55/M56 select mutant fixtures whenever the defect string is nonempty.",
+    "text_binding_finding": "Mutation, stimulus and witness are hashed only into stableWitness after observations. Swapping their text between cases would alter the evidence digest but would leave the selected stimulus, defect and Violated verdict unchanged.",
+    "positive_finding": "positiveControl is also selected by the Pxx ID. Several controls exercise reduced scenarios rather than their declared concurrent/reopen/full-surface stimuli, so preservation is credited from the independent frozen suites and explicit predecessor run, not from R5 alone.",
+    "disk_finding": "The substitute calls OpenFile(O_EXCL), Write, file Sync, Rename, directory Sync and real symlink/hardlink/FIFO syscalls. Its crash stimuli nevertheless cover one chosen point per M46-M48 instead of every declared prefix and select each faulty path from the case ID.",
+    "conclusion": "R5 is an executable mutation switchboard, but not an ID-independent binding of adversarial obligations to compiled reference/mutant variants. Its passing result cannot establish integral causal discrimination."
+  },
+  "predecessor_benchmark_audit": {
+    "honest": true,
+    "explicit_predecessor_file_list": true,
+    "three_repetitions_passed": true,
+    "observed_benchmark_bytes": "{\"jsonrpc\":\"2.0\",\"id\":41,\"error\":{\"code\":-32602,\"message\":\"Invalid params: depth deve estar entre 1 e 5\"}}",
+    "finding": "Certified search and recommendation goldens and server hashes pass. The immutable benchmark route still returns the recorded depth error for the frozen repos-only input; no success was invented."
+  },
+  "architecture_and_private_detail_audit": {
+    "contract_freezes_private_filename_or_unexported_symbol": false,
+    "legacy_self_reference_detected": false,
+    "r5_fixture_architecture_observation_valid_as_compilation": true,
+    "r5_fixture_architecture_observation_valid_as_same_implementation_mutation": false,
+    "finding": "The fixtures compile and expose forbidden imports, but M55/M56 compare separate tiny packages chosen by an ID-derived nonempty defect flag. This does not execute an independently bound mutation of the same substitute implementation."
+  },
+  "blocking_findings": [
+    "mutation_score remains 0.5, below the required 1.0",
+    "30 valid negative mutations retain concrete surviving variants",
+    "R5 chooses both stimulus and runtime defect directly from c.ID",
+    "attack text and its digest cannot affect the verdict, only the post-hoc witness hash",
+    "M46-M48 use real syscalls but do not cover every declared crash boundary"
+  ],
+  "seal": {
+    "emitted": false,
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "reason": "A seal is forbidden until every declared mutation is killed by an ID-independent causal binding and mutation_score equals 1.0."
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 3,
+  "gate": "pre-candidate causal discriminatory revalidation",
+  "status": "GATE_FAILED_UNSEALED",
+  "verdict": "DO_NOT_SEAL",
+  "created_at": "2026-09-01T19:51:50Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessors": [
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt.json",
+      "sha256": "672d8841310c483feaa22a6ccb2dda91dbf6655fb972b2399c3eac4ed15b0f90",
+      "mutation_score": 0.15
+    },
+    {
+      "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r2.json",
+      "sha256": "101b272eb4bb9b105ebc30c79e602c81c6b2b9d6d052fae820f006643bf3e97a",
+      "mutation_score": 0.4
+    }
+  ],
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace",
+    "candidate_implementation_read": false,
+    "candidate_implementation_executed": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r3 go test ./04_wiring/r3_gate -count=3",
+        "result": "PASS",
+        "duration": "0.037s"
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r3 go test 02_shell/mcp/server.go 02_shell/mcp/recommendation_step0025_contract_test.go 02_shell/mcp/durable_runs_step0026_r3_test.go -run 'TestStep0026R3(Legacy|Predecessor)' -count=3",
+        "result": "PASS",
+        "duration": "0.004s",
+        "scope": "immutable predecessor files selected by path and verified by certified hashes; no Step 0026 candidate file compiled"
+      },
+      {
+        "command": "strict duplicate-key JSON parsing of manifest, oracle contract, adversarial cases and R1/R2 receipts",
+        "result": "PASS"
+      },
+      {
+        "command": "gofmt -d and git diff --check over all fifteen frozen oracle suites",
+        "result": "PASS"
+      },
+      {
+        "command": "verifier-owned lexical, reverse and interleaved matrix, three repetitions each",
+        "result": "STABLE_WITH_REQUIRED_OUTCOMES_FAILED",
+        "normalized_sha256": "3061f104ae21240c9b5e1426714504c9673e5670217427b8582aeb6477710d4e"
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "Tekt protocol and project AGENTS instructions",
+      "frozen Step 0026 intent, manifest, contract and adversarial cases",
+      "R3 oracle contract, causal gate and all manifest-bound oracle suites",
+      "R1/R2 receipts",
+      "immutable Step 0025 files selected by the predecessor-only command"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r3.json"
+    ],
+    "forbidden_actions_respected": [
+      "no Step 0026 candidate production file was read, executed or modified",
+      "no contract, oracle, prompt, adversarial case or manifest was modified",
+      "no seal was emitted"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "0462042c42e2e3b015fff51a87f02fae42d088d594712cead7d3863f56d5d87d",
+    "oracle_contract_sha256": "a1193e65a7cf3b666365807e7c2600bd411b0b9c1dee6815c300b4578ac026c3",
+    "causal_gate_sha256": "f55f6ca0941599f70cdb01c1a11ae9a14935a104b7fccbdb07fcc9e6892cc47e",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "step_0025_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "all_fifteen_suite_hashes_match_manifest": true,
+    "strict_json_without_duplicate_keys": true
+  },
+  "positive_controls": [
+    {
+      "id": "P01",
+      "result": "Preserved",
+      "witness": "The frozen use-case suite starts the base and fully reordered/deduplicated request concurrently and requires one run and one queue commit."
+    },
+    {
+      "id": "P02",
+      "result": "Preserved",
+      "witness": "The R3 real-store suite reads every confirmed publication/transition immediately and verifies the final terminal after reopen; terminal fixtures now satisfy their artifact matrices."
+    },
+    {
+      "id": "P03",
+      "result": "Preserved",
+      "witness": "Pagination is repeated with a changed limit and the same cursor continues after reopen with the same secret."
+    },
+    {
+      "id": "P04",
+      "result": "Preserved",
+      "witness": "Integrated queue/L4 tests distinguish queued removal, CANCELLING and worker-confirmed CANCELLED, with duplicate cancel stability."
+    },
+    {
+      "id": "P05",
+      "result": "Preserved",
+      "witness": "Predecessor hashes and independent literal response goldens pass, while the real RecommendationService produces equal sync/observed results through the same provider ports."
+    }
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 30,
+    "survived": 30,
+    "unknown": 0,
+    "mutation_score": 0.5,
+    "required_score": 1.0,
+    "violated_cases": [
+      "M02", "M03", "M05", "M06", "M07", "M08", "M10", "M12",
+      "M13", "M14", "M17", "M19", "M20", "M21", "M22", "M23",
+      "M24", "M26", "M33", "M34", "M37", "M39", "M40", "M41",
+      "M42", "M43", "M49", "M50", "M57", "M58"
+    ],
+    "survivor_groups": [
+      {
+        "cases": ["M01", "M04", "M09", "M11"],
+        "reason": "Finite ID samples do not reject every derivation from user-controlled fields; Start retry after INTERRUPTED remains unexercised; nested runtime validation is not exhaustive; quota-full Start is not observed with all identity/store/queue/executor effects counted."
+      },
+      {
+        "cases": ["M15", "M16", "M18", "M25", "M27", "M28", "M29", "M30", "M31", "M32"],
+        "reason": "No candidate-facing witness covers republish restricted to terminal records, artifact-publication CAS losers, every stage/progress mismatch, result artifact publication after a lost terminal race, real-store recovery for every nonterminal/progress, request acceptance blocked behind recovery, shutdown plus lifecycle reopen, actual PENDING visibility, or authoritative orphan/index combinations."
+      },
+      {
+        "cases": ["M35", "M36", "M38", "M44", "M45", "M46", "M47", "M48"],
+        "reason": "The required-artifact failure matrix is not exhaustively injected, constant-time MAC comparison is not witnessed, physical-kind checks cover only one discovered regular component, and create/transition/blob crash prefixes are exercised only by the gate's in-memory gateDisk reference model rather than the run store or concrete faultable port."
+      },
+      {
+        "cases": ["M51", "M52", "M53", "M54", "M55", "M56", "M59", "M60"],
+        "reason": "Privacy/canary traversal omits several forbidden sources and logs; raw executor errors are not driven into terminal failure persistence; closed JSON validation remains partial; L1 AST audit does not forbid sync/time despite the contract and L4 business-policy detection is shallow; filesystem kind/umask coverage is partial; real missing get/cancel is not checked for zero durable materialization."
+      }
+    ]
+  },
+  "opaque_cases": [
+    {"id": "O01", "result": "Unknown"},
+    {"id": "O02", "result": "Unknown"},
+    {"id": "O03", "result": "Unknown"},
+    {"id": "O04", "result": "Unknown"},
+    {"id": "O05", "result": "Unknown"}
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Any missing or ambiguous negative witness is SURVIVED.",
+    "opaque_cases_in_denominator": false
+  },
+  "stability_audit": {
+    "verifier_matrix_stable": true,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_nine_normalized_hashes_equal": true,
+    "normalized_result_sha256": "3061f104ae21240c9b5e1426714504c9673e5670217427b8582aeb6477710d4e",
+    "required_outcomes_satisfied": false,
+    "frozen_r3_gate_process_repetitions_passed": true,
+    "frozen_r3_gate_causally_valid": false
+  },
+  "causal_gate_audit": {
+    "not_derived_from_oracle_bindings": true,
+    "executes_adversarial_mutations": false,
+    "consumes_mutation_stimulus_or_witness_fields": false,
+    "finding": "The driver unmarshals only id, kind and expected, then dispatches on id to locally correct reference snippets. It never instantiates a declared mutant or executes the named frozen oracle witness against one.",
+    "examples": [
+      "M03 checks whether a local queued closure has executed, not same-key different-request conflict.",
+      "M07 and M08 both sort a local string slice, unrelated to TOCTOU and queue reservation commit.",
+      "M19 through M23 share one local cancellation state rewrite despite representing distinct async/worker mutations.",
+      "M46 through M48 run an in-memory gateDisk model, not fault injection at the concrete store's create, transition and artifact boundaries.",
+      "M56 compares invented SEARCH/BENCHMARK literals and M57 calls one local closure twice; neither is the corresponding declared mutation."
+    ],
+    "conclusion": "Its successful 3x3 execution proves deterministic behavior of the reference model, not discriminatory power over M01-M60."
+  },
+  "predecessor_benchmark_audit": {
+    "honest": true,
+    "server_source_matches_certificate": true,
+    "three_repetitions_passed": true,
+    "observed_benchmark_bytes": "{\"jsonrpc\":\"2.0\",\"id\":41,\"error\":{\"code\":-32602,\"message\":\"Invalid params: depth deve estar entre 1 e 5\"}}",
+    "finding": "The certified Step 0025 predecessor does not reach benchmark success for the frozen schema-valid repos-only request because it requires an omitted depth at runtime. R3 records this actual immutable error instead of inventing a successful golden."
+  },
+  "private_detail_audit": {
+    "passed": true,
+    "finding": "The R2 private filename allowlist was removed, and the L4 seam is now an exported contract factory rather than an unexported helper."
+  },
+  "blocking_findings": [
+    "mutation_score is 0.5, below the required 1.0",
+    "30 valid negative mutations retain concrete surviving variants",
+    "the R3 gate is deterministic but does not execute the adversarial mutations or their candidate-facing witnesses",
+    "crash-prefix evidence remains an in-memory reference simulation rather than concrete fault injection"
+  ],
+  "seal": {
+    "emitted": false,
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "reason": "A seal is forbidden until every declared mutation is killed by a causal candidate-facing witness and mutation_score equals 1.0."
+  }
+}

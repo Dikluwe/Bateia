@@ -1,0 +1,38 @@
+{
+  "schema_version": "tekt.step0028.replay-receipt.v1",
+  "step": "0028",
+  "created_at": "2026-09-03T00:01:43Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+  "seal_o23_sha256": "54a0ec1554db5688213eeb940d6057c6756f7efd6b4862099195d71404c6ad3d",
+  "candidate_root_sha256": "cc81bdec3eea946fba3939b36b495c6ca745684c6049badd74aa757b6b4064af",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "execution": {
+    "command": "env GOCACHE=/tmp/bateia-go-cache go run /tmp/bateia_step0028_candidate_replay.go",
+    "harness_sha256": "57af34fcb7cdfd2cd744c536ca2d56252d3db43d0cccdce4edf51e9fd72a874b",
+    "runs": 2,
+    "first_projection_sha256": "b1b57868ddeaa1404edf00da543fe1c5f463b4a6b0cbbd0c608c8a50f86001b4",
+    "second_projection_sha256": "b1b57868ddeaa1404edf00da543fe1c5f463b4a6b0cbbd0c608c8a50f86001b4",
+    "byte_identical": true,
+    "network_calls": 0,
+    "transport_injected": false
+  },
+  "artifact_sha256": {
+    "mechanism_catalog": "bf9be54a01e79b94f7d1a006ed576e993bc0caac34034682767de562a7fdc54f",
+    "mechanism_gaps": "cc2dc90eed690a7c386dcb1d3537d76831962611ae17e794514b09ddb11b5810",
+    "architecture_comparison": "8c53375487af3f46ed97e786aa8da55d7c687c085073a1b4825f39d26c8348ad",
+    "improvement_hypotheses": "b9e6558ab0970672ac93880e05f9b47271c9ce00c1281ef743b8dd944ea2aecd",
+    "hypothesis_gaps": "7182af1885f5cd869791fa1b6e0025c0b78f21d5bd490bdac822aa89f0d2576b",
+    "validation_plans": "11ef236340805ff7c4db16d6992fa954ddf29d1c755012bb7e28442bd9ba578a",
+    "synthesis_provenance": "0f0a7cb572b4c4e4911be698cc60753a2efea0f3f0c5fd41aa6b8634eed2507e"
+  },
+  "safety": {
+    "raw_third_party_content_retained": false,
+    "canary_or_secret_observed": false,
+    "idempotency_key_published": false,
+    "fixture_payload_recorded": false
+  },
+  "result": "PASS",
+  "invalidation_rule": "Any change to the candidate root, active catalog, replay harness, frozen input projection or produced artifact bytes requires a new replay receipt."
+}

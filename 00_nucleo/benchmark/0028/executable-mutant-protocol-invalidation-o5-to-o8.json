@@ -1,0 +1,86 @@
+{
+  "schema_version": "tekt.step0028.executable-mutant-protocol-invalidation.v1",
+  "visibility": "PUBLIC",
+  "step": "0028",
+  "authority": "SEGREGATED_VERIFIER",
+  "phase": "PRE_EXECUTABLE_MUTANTS_PRE_ORACLE_PRE_CANDIDATE_PRE_SEAL",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "cause": {
+    "kind": "CONTRACT_CATALOG_AND_ATTACK_SET_REFINEMENT",
+    "contract_catalog_invalidation_sha256": "77e00c1eed39b972c6e415a45c208303e7af548740c8f7b68d78bb6c3ad33289",
+    "adversarial_cases_invalidation_sha256": "7588e1bd856eb73ed9bd883924d4891e9cc780122ce314ed16adcdf5f885ad44"
+  },
+  "predecessor": {
+    "protocol_revision": "O5",
+    "path": "00_nucleo/benchmark/0028/executable-mutant-protocol-o5.json",
+    "sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+    "contract_revision": "R3",
+    "catalog_revision": "tekt.mechanism-rules.v2",
+    "status": "INVALID_FOR_R4_V3_O8_DERIVATIONS"
+  },
+  "successor": {
+    "protocol_revision": "O8",
+    "path": "00_nucleo/benchmark/0028/executable-mutant-protocol-o8.json",
+    "sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb",
+    "contract_revision": "R4",
+    "contract_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "catalog_revision": "tekt.mechanism-rules.v3",
+    "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "adversarial_revision": "O8",
+    "adversarial_cases_sha256": "689da72a627f5f3941bc532321ea935ae06f757f15c3c4462afd4767898156e0",
+    "entry_commitment_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c"
+  },
+  "schema_delta": {
+    "base": "O5 Draft 2020-12 record and runner schema",
+    "public_api_changed": false,
+    "evidence_kind_values_changed": false,
+    "catalog_revision_changed": true,
+    "documentary_role_added": true,
+    "documentary_witness_kind": "DOCUMENTATION",
+    "documentary_source_kind": "documentation",
+    "documentary_status_max": "PARTIAL",
+    "runner_binding_free_preserved": true,
+    "semantic_hash_scheme_preserved": true,
+    "case_domains_preserved": {
+      "negative": 160,
+      "positive": 12,
+      "opaque": 10
+    }
+  },
+  "invalidation_scope": [
+    "Every executable record, subject, configuration, manifest and hash package derived from protocol O5 is invalid for R4/v3/O8.",
+    "Every oracle or discriminatory result bound to protocol O5 is invalid for R4/v3/O8.",
+    "No O5-derived receipt or seal can authorize an R4/v3 candidate.",
+    "O8 executable mutants and independent oracle artifacts must be regenerated from the successor protocol before the full discriminatory gate."
+  ],
+  "validation": {
+    "strict_json": true,
+    "draft_2020_12_schema": true,
+    "catalog_v3_import": true,
+    "record_sample": true,
+    "documentary_sample": true,
+    "record_expected_meta_rejected": true,
+    "runner_input_marker_rejected": true,
+    "runner_output_classification_rejected": true,
+    "documentary_marker_rejected": true,
+    "documentary_expected_rejected": true,
+    "documentary_wrong_status_max_rejected": true,
+    "attack_entries_recomputed": 182,
+    "attack_entry_commitments_matched": 182,
+    "attack_entry_root_matched": true,
+    "o5_to_o8_diff_reviewed": true
+  },
+  "capabilities": {
+    "candidate_implementation_read": false,
+    "oracle_internal_material_read": false,
+    "gate_executed": false
+  },
+  "emissions": {
+    "executable_mutants": false,
+    "oracle": false,
+    "receipt": false,
+    "seal": false,
+    "certificate": false,
+    "final_verdict": false
+  }
+}

@@ -11,7 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"path/filepath"
+	pathpkg "path"
 	"sort"
 	"strings"
 	"sync"
@@ -73,13 +73,12 @@ func parallelFor(ctx context.Context, count, limit int, fn func(int)) {
 		if ctx.Err() != nil {
 			break
 		}
-		wg.Add(1)
 		sem <- struct{}{}
-		go func(index int) {
-			defer wg.Done()
+		index := i
+		wg.Go(func() {
 			defer func() { <-sem }()
 			fn(index)
-		}(i)
+		})
 	}
 	wg.Wait()
 }
@@ -216,7 +215,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	if filter.LocalPath != "" {
 		f.progress("discovery", "analisando worktree local %s", filter.LocalPath)
 		candidates = append(candidates, domain.RepositoryCandidate{
-			Owner: "local", Repo: filepath.Base(filter.LocalPath), URL: "file://" + filter.LocalPath,
+			Owner: "local", Repo: pathpkg.Base(strings.ReplaceAll(filter.LocalPath, "\\", "/")), URL: "file://" + filter.LocalPath,
 			Description: "Worktree local", CommitID: "WORKTREE", ConsultadoEm: time.Now().UTC(),
 		})
 	} else if len(filter.DirectRepos) > 0 {
@@ -436,7 +435,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			codeCount := 0
 			for _, node := range tRepo.Tree {
 				if node.Type == "file" || node.Type == "blob" {
-					ext := strings.ToLower(filepath.Ext(node.Path))
+					ext := strings.ToLower(pathpkg.Ext(strings.ReplaceAll(node.Path, "\\", "/")))
 					if (ext == ".go" || ext == ".rs" || ext == ".ts" || ext == ".py" || ext == ".java") && !strings.Contains(node.Path, "_test.go") {
 						targetPaths = append(targetPaths, node.Path)
 						codeCount++

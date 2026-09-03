@@ -13,7 +13,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"path/filepath"
+	pathpkg "path"
 	"sort"
 	"strings"
 	"time"
@@ -288,6 +288,9 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	if provider == nil {
 		return domain.EvidenceBundle{}, fmt.Errorf("provedor de conteúdo não configurado")
 	}
+	if err := ctx.Err(); err != nil {
+		return domain.EvidenceBundle{}, err
+	}
 	if plan.Repository.Commit == "" || strings.EqualFold(plan.Repository.Commit, "HEAD") {
 		resolved, err := provider.FetchRepoMetadata(ctx, plan.Candidate)
 		if err != nil || resolved.CommitID == "" || strings.EqualFold(resolved.CommitID, "HEAD") {
@@ -298,6 +301,9 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		plan.Decision.Repository = plan.Repository.Key()
 	} else if metadata, err := provider.FetchRepoMetadata(ctx, plan.Candidate); err == nil {
 		plan.Candidate = metadata
+	}
+	if err := ctx.Err(); err != nil {
+		return domain.EvidenceBundle{}, err
 	}
 	bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: true, TreeComplete: true}
 	if metadata, err := json.Marshal(plan.Candidate); err == nil {
@@ -344,6 +350,10 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 				targetByPath[node.Path] = target
 			}
 		}
+	}
+	if err := ctx.Err(); err != nil {
+		bundle.Complete = false
+		return bundle, err
 	}
 	sort.Strings(paths)
 	extracted, err := provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
@@ -433,15 +443,15 @@ func capabilitiesForPath(path string, targets []domain.ExtractionTarget) []strin
 }
 
 func pathDepth(path string) int {
-	return len(strings.Split(filepath.ToSlash(strings.Trim(path, "/")), "/"))
+	return len(strings.Split(slashPath(strings.Trim(path, "/")), "/"))
 }
 func ignoredEvidencePath(path string) bool {
-	p := "/" + strings.ToLower(filepath.ToSlash(path)) + "/"
+	p := "/" + strings.ToLower(slashPath(path)) + "/"
 	return strings.Contains(p, "/vendor/") || strings.Contains(p, "/fixtures/") || strings.Contains(p, "/translations/") || strings.Contains(p, "/node_modules/")
 }
 func classifyEvidencePath(path string) domain.EvidenceKind {
-	p := strings.ToLower(filepath.ToSlash(path))
-	base := filepath.Base(p)
+	p := strings.ToLower(slashPath(path))
+	base := pathpkg.Base(p)
 	if strings.HasPrefix(base, "readme") || strings.Contains(p, "/docs/") {
 		return domain.EvidenceDocumentation
 	}
@@ -461,13 +471,17 @@ func classifyEvidencePath(path string) domain.EvidenceKind {
 }
 
 func isCodePath(path string) bool {
-	extension := strings.ToLower(filepath.Ext(path))
+	extension := strings.ToLower(pathpkg.Ext(slashPath(path)))
 	switch extension {
 	case ".go", ".rs", ".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".kt", ".rb", ".cs", ".c", ".cc", ".cpp", ".h", ".hpp", ".ex", ".exs":
 		return true
 	default:
 		return false
 	}
+}
+
+func slashPath(value string) string {
+	return strings.ReplaceAll(value, "\\", "/")
 }
 func withinKindBudget(paths []string, kinds map[string]domain.EvidenceKind, kind domain.EvidenceKind, b domain.ExtractionBudget) bool {
 	count := 0

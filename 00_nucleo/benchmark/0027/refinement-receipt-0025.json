@@ -1,0 +1,24 @@
+{
+  "schema_version": "tekt.refinement-receipt.v1",
+  "step": "0027",
+  "predecessor_step": "0025",
+  "predecessor_verdict": "MCP_RECOMMENDATION_GATEWAY_READY",
+  "created_at": "2026-09-02T01:56:21Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessor_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+  "predecessor_verification_receipt_sha256": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a",
+  "preserved_surface": {
+    "mcp_server_sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "legacy_tools_1_through_3": "deep-equal under the frozen R3/R4 MCP witness",
+    "recommendation_behavior": "covered by both complete test executions and race gate",
+    "public_error_and_safe_projection_contract": "PASS"
+  },
+  "evidence": [
+    "TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact PASS",
+    "go test -count=1 ./... PASS twice after R4",
+    "go test -race -count=1 ./01_core/... ./02_shell/mcp ./03_infra/... ./04_wiring PASS after R4"
+  ],
+  "result": "PRESERVED",
+  "invalidation_rule": "Any change to the predecessor hashes, MCP basal surfaces or recorded candidate hashes requires this refinement to be repeated."
+}

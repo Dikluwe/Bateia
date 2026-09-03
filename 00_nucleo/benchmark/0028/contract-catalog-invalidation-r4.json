@@ -1,0 +1,98 @@
+{
+  "schema_version": "tekt.step0028.contract-catalog-invalidation.v1",
+  "visibility": "PUBLIC",
+  "step": "0028",
+  "authority": "SEGREGATED_CONTRACT_AUTHOR",
+  "created_at": "2026-09-02",
+  "phase": "PRE_CANDIDATE_PRE_SEAL_NORMATIVE_REFINEMENT",
+  "attestation_target": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "cause": {
+    "finding_path": "00_nucleo/benchmark/0028/contract-inconsistency-o7.json",
+    "finding_sha256": "04e8a93a43cd447d82f9a1761d986ca1c7d3217e6588e4204f1f5e2343bc7a79",
+    "kind": "UNSATISFIABLE_POSITIVE_CONTROL_UNDER_FROZEN_CONTRACT_CATALOG_PAIR",
+    "affected_public_control": "P02"
+  },
+  "predecessors": {
+    "contract_revision": "R3",
+    "contract_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "catalog_revision": "tekt.mechanism-rules.v2",
+    "catalog_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "extraction_prompt_sha256": "d3f3d58d9dbb5609b3d946442326ccb5474c1dda3910f98d84de90e40b6d62e2"
+  },
+  "successors": {
+    "contract_revision": "R4",
+    "contract_path": "00_nucleo/benchmark/0028/contract.md",
+    "contract_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "catalog_revision": "tekt.mechanism-rules.v3",
+    "catalog_path": "00_nucleo/benchmark/0028/mechanism-rules.json",
+    "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "extraction_prompt_path": "00_nucleo/prompts/01_core/usecase/mechanism_extraction.md",
+    "extraction_prompt_sha256": "18423bbbf5b6240f821a252b514887373f6bfb82659f8c89d9bdb0fa7f3376bb"
+  },
+  "normative_resolution": {
+    "public_api_changed": false,
+    "mechanism_classes_changed": false,
+    "closed_world_preserved": true,
+    "lexical_fallback_allowed": false,
+    "new_role": "DOCUMENTARY",
+    "witness_kind": "DOCUMENTATION",
+    "status_max": "PARTIAL",
+    "counts_for_partial_positive_evidence": true,
+    "counts_for_proven_implementation": false,
+    "counts_for_proven_independent": false,
+    "rule_ids": [
+      "adapter-boundary-architecture-documentation",
+      "append-only-architecture-documentation",
+      "bounded-queue-architecture-documentation",
+      "content-address-architecture-documentation"
+    ]
+  },
+  "invalidation_scope": {
+    "protocol": [
+      "every executable protocol bound to R3 or catalog v2",
+      "every protocol schema that omits DOCUMENTARY or its required PARTIAL status_max",
+      "every protocol fixture that embeds the v2 catalog hash"
+    ],
+    "executable_attacks": [
+      "all records, subjects, configs, manifests and hashes derived from an invalidated protocol",
+      "P02 documentation-only control and every subject derived from its previous unsatisfiable binding",
+      "any mutation whose expected semantics depend on the R3 role set or v2 accepted evidence rules"
+    ],
+    "oracles": [
+      "all calibrations, corpora, fixtures, evaluators, suites and protected manifests that read or encode R3 or v2",
+      "all oracle prompts, coverage matrices and authorship records causally bound to those inputs",
+      "every P02 expectation must be regenerated independently from R4 without reading attacks or candidate"
+    ],
+    "derived_results": [
+      "all discriminatory results, replays, diagnostics, receipts and seals derived from invalidated inputs",
+      "any future candidate started before a complete R4 v3 discriminatory seal"
+    ]
+  },
+  "restart_requirements": [
+    "regenerate protocol under segregated verifier authority from the final R4 and v3 hashes",
+    "regenerate affected executable attacks under segregated adversary authority",
+    "regenerate oracle artifacts under segregated oracle authority without candidate or attack access",
+    "rerun the complete positive, negative and opaque gate",
+    "require mutation score 1.0 before seal"
+  ],
+  "capabilities": {
+    "candidate_implementation_read": false,
+    "oracle_protected_material_read": false,
+    "executable_mutant_records_read": false,
+    "receipts_seals_certificates_or_verdicts_read": false,
+    "writes": [
+      "contract append-only R4 supplement",
+      "mechanism rule catalog v3",
+      "owned L0 extraction prompt",
+      "this invalidation record"
+    ]
+  },
+  "emissions": {
+    "attack": false,
+    "oracle": false,
+    "receipt": false,
+    "seal": false,
+    "certificate": false,
+    "final_verdict": false
+  }
+}

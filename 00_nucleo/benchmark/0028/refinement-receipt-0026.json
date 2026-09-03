@@ -1,0 +1,19 @@
+{
+  "schema_version": "tekt.refinement-receipt.v1",
+  "step": "0028",
+  "predecessor_step": "0026",
+  "predecessor_verdict": "MCP_DURABLE_RUNS_READY",
+  "created_at": "2026-09-03T00:01:43Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessor_certificate_sha256": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+  "predecessor_verification_receipt_sha256": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2",
+  "evidence": [
+    "Two complete test executions and the race gate passed",
+    "The protected Step 0026 suites remained visible to the root module and passed",
+    "Static and protected runtime audits found exactly one FileStore and one LocalQueue construction",
+    "Synthesis reused the same root, cursor secret, queue, worker, cancellation, quota and idempotency runtime"
+  ],
+  "result": "PRESERVED",
+  "invalidation_rule": "Any change to predecessor hashes, durable runtime identity, store/queue construction or candidate root requires this refinement to be repeated."
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "tekt.step0028.coverage-matrix-public.v5",
+  "step": "0028",
+  "oracle_revision": "O5",
+  "contract_revision": "R3",
+  "executable_mutant_protocol_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+  "binding_free_input": ["contract_input", "mutant_contract_output"],
+  "forbidden_oracle_inputs": [
+    "record_id",
+    "attack_entry_sha256",
+    "semantic_binding_hash",
+    "mutation_description",
+    "private_target",
+    "expected",
+    "marker",
+    "candidate"
+  ],
+  "global_predicates": [
+    "STRICT_PROTOCOL_JSON",
+    "RETURN_ERROR_EXCLUSIVE",
+    "CONTROLLED_ERROR_PAIR",
+    "NO_NETWORK_FILESYSTEM_PROCESS_OR_EXTERNAL_MUTATION",
+    "NO_UNSAFE_PUBLICATION_FIELDS",
+    "SINGLE_RUNTIME_IDENTITY",
+    "CANONICAL_REPEAT_DETERMINISM"
+  ],
+  "ports": [
+    {"port":"MECHANISM_EXTRACT","predicate_groups":["CATALOG_HASH","EXACT_BUNDLE_JOIN","CONTENT_HASH","RULE_ROLE_KIND","IMMUTABLE_SOURCE","STATUS","NOVELTY","GAPS","PROVENANCE","ORDERING"]},
+    {"port":"SYNTHESIS_START","predicate_groups":["STRICT_REQUEST","SOURCE_ALLOWLIST","LIMITS","PREQUEUE_VALIDATION","IDEMPOTENCY","RESERVATION","START_RECEIPT"]},
+    {"port":"SYNTHESIS_EXECUTE","predicate_groups":["NO_INLINE_RESULT","LIFECYCLE","CANCEL_BOUNDARY","SAFE_ATOMIC_PUBLICATION"]},
+    {"port":"RUN_READ","predicate_groups":["RUN_KIND","LIFECYCLE","NULLABLE_STATUS_EXCLUSIVITY","PROGRESS","STATUS_SEPARATION"]},
+    {"port":"ARTIFACT_READ","predicate_groups":["ARTIFACT_ALLOWLIST","RUN_BINDING","CANONICAL_BYTES","SHA256","SIZE","CURSOR"]},
+    {"port":"RUN_CANCEL","predicate_groups":["CAS_VERSION","NO_NEW_WORK","NO_PUBLICATION"]},
+    {"port":"TOOLS_LIST","predicate_groups":["EXACT_COUNT","EXACT_ORDER","BASAL_NINE_NAMES","TOOL10_LAST_AND_EXACT"]},
+    {"port":"REPLAY","predicate_groups":["FROZEN_HASHES","NO_NETWORK","ARTIFACT_AND_INDEX_HASHES","DETERMINISM"]},
+    {"port":"REFINEMENT_AUDIT","predicate_groups":["RECEIPTS_0025_0027","RUNTIME_UNIQUE","LAYER_BOUNDARIES"]}
+  ],
+  "classification_policy": {
+    "Preserved": "all applicable decidable contract predicates hold",
+    "Violated": "one or more applicable decidable contract predicates fail",
+    "Unknown": "no predicate fails and a concrete R3 opacity remains",
+    "unknown_mutation_score_eligible": false
+  }
+}

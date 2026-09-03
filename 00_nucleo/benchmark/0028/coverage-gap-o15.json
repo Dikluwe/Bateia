@@ -1,0 +1,69 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v15",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_mutants_revision": "O14",
+  "source_oracle_revision": "O15",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "privacy_contract": {
+    "allowed": ["case_id", "public_contract_port", "required_classification", "observed_classification", "predicate_id", "reason_code", "frequency", "aggregate_count", "causal_hash"],
+    "excluded": ["mutation_payload", "mutation_description", "private_target", "protected_fixture", "protected_test", "candidate_content", "concrete_value", "code", "patch", "implementation_solution"]
+  },
+  "causal_hashes": {
+    "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "mechanism_rules_v3_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "executable_mutant_protocol_o8_sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb",
+    "executable_mutants_manifest_o14_sha256": "02640f383d37b392c74d4ae1fc12e9bf5ef1ada041f85a4191e63683e4518ac8",
+    "records_root_sha256": "689f78d9a958ccbbd7a6b776c951762c2f163ea28fd5d377bc3781f3f5278734",
+    "subjects_root_sha256": "cfa2adac274e676adce50cc1231306544cd3f93191df463670f6ea9593436ee6",
+    "attack_entry_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c",
+    "oracle_contract_o15_sha256": "32913d6fd2f657b18a365f71ca26f1ab4a051dca486e44ae05db35924979d69e",
+    "coverage_matrix_o15_sha256": "fb14753a951caad844b1a62f2a625fda9db5f5d957125dff374ffef35ad030c4",
+    "oracle_invalidation_o14_to_o15_sha256": "fc56685367884278417808e352b6eb714e8e30dcd4868ceaf6bc36f976f61070",
+    "oracle_authorship_o15_sha256": "9d053fc93549df8c391345963fd8a787f3d95261602d281e7b870f2e8f8ac0c6",
+    "oracle_protected_manifest_o15_sha256": "ba502012af763a47420ca1d7b80b493d13620aea5cace203eac6ec4602b8f25b",
+    "discriminatory_failure_o15_sha256": "3b8ca43ff64bcb85ca1382cc1ce86a7fcc4c3d3334d61b2d0a19189b85d2d9fc"
+  },
+  "execution_summary": {
+    "orders": ["canonical", "reverse", "rotate-61"],
+    "fresh_process_repetitions_per_order": 2,
+    "total_runner_oracle_exchanges": 1092,
+    "stable_across_all_six_runs": true,
+    "classification_digest_sha256": "0411b964f28d140ae18968915a737d3a241eed5ea773b36bd8cfc65ba119640f"
+  },
+  "satisfied_negative_gate": {
+    "id_domain": "M001-M160",
+    "required_classification": "Violated",
+    "observed_count": 160,
+    "total": 160,
+    "mutation_score": 1.0,
+    "stable_across_six_runs": true
+  },
+  "positive_control_failures": [
+    {"case_id": "P03", "required_classification": "Preserved", "observed_classification": "Unknown", "reason_code": "VALID_CONTROL_OVERCLASSIFIED_AS_OPAQUE"},
+    {"case_id": "P04", "required_classification": "Preserved", "observed_classification": "Unknown", "reason_code": "VALID_CONTROL_OVERCLASSIFIED_AS_OPAQUE"},
+    {"case_id": "P06", "required_classification": "Preserved", "observed_classification": "Unknown", "reason_code": "VALID_CONTROL_OVERCLASSIFIED_AS_OPAQUE"}
+  ],
+  "opaque_control_failures": [
+    {"case_id": "O05", "required_classification": "Unknown", "observed_classification": "Preserved", "reason_code": "OPAQUE_CONTROL_NOT_RECOGNIZED_AS_UNKNOWN"}
+  ],
+  "classification_aggregates": {
+    "negative": {"total": 160, "Violated": 160, "Preserved": 0, "Unknown": 0},
+    "positive": {"total": 12, "Violated": 0, "Preserved": 9, "Unknown": 3},
+    "opaque": {"total": 10, "Violated": 0, "Preserved": 1, "Unknown": 9}
+  },
+  "observable_cause": "The O15 decision boundary is not calibrated to the frozen O14 executable controls: it deterministically maps three valid positive exchanges to Unknown while mapping one explicitly opaque exchange to Preserved.",
+  "failure_frequencies": [
+    {"reason_code": "VALID_CONTROL_OVERCLASSIFIED_AS_OPAQUE", "frequency": 3},
+    {"reason_code": "OPAQUE_CONTROL_NOT_RECOGNIZED_AS_UNKNOWN", "frequency": 1}
+  ],
+  "qualification_rule": "All 160 negatives must be Violated, all 12 positives must be Preserved, and all 10 opaque constructions must be Unknown in every repetition and order before a discriminatory receipt or seal can exist.",
+  "gate_result": "FAIL",
+  "seal_emitted": false,
+  "receipt_emitted": false,
+  "candidate_read_compiled_or_executed": false,
+  "protected_fixture_or_test_detail_disclosed": false
+}

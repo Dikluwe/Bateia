@@ -1,0 +1,45 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v12",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_mutants_revision": "O12",
+  "source_oracle_revision": "O11",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "privacy_contract": {
+    "allowed": ["case_id", "public_contract_port", "required_classification", "observed_classification", "predicate_id", "reason_code", "frequency"],
+    "excluded": ["mutation_payload", "mutation_description", "private_target", "candidate_content", "code", "patch", "implementation_solution"]
+  },
+  "negative_domain_frozen": {
+    "id_domain": "M001-M160",
+    "count": 160,
+    "records_byte_identical_to_o11": 160,
+    "required_classification": "Violated",
+    "observed_classification": "Violated",
+    "mutation_score": 1.0,
+    "stable_across_six_runs": true,
+    "attack_entry_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c",
+    "records_root_sha256": "bc785b43e8e0bc9443b2e71f25a16ffd231f90aa11fa34f2fcb4686d1dd03af4"
+  },
+  "positive_control_failures": [
+    {"case_id":"P02","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE"},{"predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","reason_code":"MECHANISM_ID_DIVERGES_FROM_CANONICAL_CAUSAL_PREIMAGE"}]},
+    {"case_id":"P05","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Unknown","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"POSITIVE_CONTROL_MATCHED_UNKNOWN_BEARING_SHAPE"}]},
+    {"case_id":"P06","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Unknown","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"POSITIVE_CONTROL_MATCHED_UNKNOWN_BEARING_SHAPE"}]}
+  ],
+  "opaque_control_failures": [
+    {"case_id":"O02","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","reason_code":"NO_REAL_UNKNOWN_PREDICATE_EMITTED"}]}
+  ],
+  "failure_frequencies": [
+    {"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE","frequency":1},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","reason_code":"MECHANISM_ID_DIVERGES_FROM_CANONICAL_CAUSAL_PREIMAGE","frequency":1},
+    {"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"POSITIVE_CONTROL_MATCHED_UNKNOWN_BEARING_SHAPE","frequency":2},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","reason_code":"NO_REAL_UNKNOWN_PREDICATE_EMITTED","frequency":1}
+  ],
+  "qualification_rule": "All 160 negative records remain byte-identical and classify Violated; every positive must still be Preserved and every opaque construction must still be Unknown before a seal can exist.",
+  "o12_o11_score": 1.0,
+  "positive_controls_preserved": 9,
+  "opaque_controls_unknown": 9,
+  "seal_existed_or_emitted": false,
+  "receipt_existed_or_emitted": false
+}

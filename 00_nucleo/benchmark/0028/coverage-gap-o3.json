@@ -1,0 +1,94 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v3",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_oracle_revision": "O3",
+  "target_oracle_revision": "O4",
+  "contract_revision": "R3",
+  "phase": "POST_DISCRIMINATORY_FAILURE_PRE_SEAL",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "source_hashes": {
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "oracle_contract_o3_sha256": "5517334d04a1678f6c770e5b0f500238cd07f16c43d44e2d1908af04344486c2",
+    "coverage_matrix_o3_sha256": "ef3ff51ca1ca80812eae792ad6b7724bea8af73779ed666096830b2f211a3c00",
+    "oracle_invalidation_o2_to_o3_sha256": "2bd913c2bee306392549880b5318005ca786487a21914cbe2399d458e74212f7",
+    "oracle_authorship_o3_sha256": "06d2f67f98320b7d9a132918a66ab7a2377a63458546462e650fee96249ed6dc",
+    "oracle_protected_manifest_o3_sha256": "5f048eb2c30f0520cc18a59f30544abf6bf4d46c5aaf368a3c03837256cf1600",
+    "protected_variants_o3_sha256": "92d9cbde529d122cffa8176d94cba071b3bf769479a3e6d23fcbc794d07f1399",
+    "mutation_commitments_o4_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5"
+  },
+  "qualified_gate_result": {
+    "negative_domain": "M001-M160",
+    "violated": 0,
+    "survived_or_not_semantically_executed": 160,
+    "mutation_score": 0.0,
+    "required_mutation_score": 1.0,
+    "positive_domain": "P01-P12",
+    "positive_preserved": 12,
+    "opaque_domain": "O01-O10",
+    "opaque_unknown_executed": 0,
+    "opaque_not_demonstrated": 10,
+    "opaque_in_denominator": false,
+    "result": "FAIL"
+  },
+  "o3_gaps": [
+    {
+      "code": "POST_OBSERVATION_OVERWRITE_IS_TAUTOLOGICAL",
+      "public_evidence": "variant observes the preserved reference and then overwrites one Observation field before deep-equal comparison",
+      "affected_ids": "M001-M160"
+    },
+    {
+      "code": "SEMANTIC_VARIANTS_COLLAPSE_TO_SHARED_GENERIC_DELTAS",
+      "public_evidence": "160 IDs collapse to 63 distinct control/observable pairs and 97 IDs reuse a generic pair",
+      "affected_ids": "M001-M160"
+    },
+    {
+      "code": "PER_ID_ATTACK_COMMITMENT_NOT_EXECUTED",
+      "public_evidence": "O3 validates ID and observable membership but does not consume a per-ID canonical attack-entry commitment",
+      "affected_ids": "M001-M160"
+    },
+    {
+      "code": "UNKNOWN_HAS_NO_EXECUTABLE_CLASSIFIER",
+      "public_evidence": "the O3 evaluator emits only Preserved or Violated; the opaque fixture declares expected labels without executing O01-O10",
+      "affected_ids": "O01-O10"
+    }
+  ],
+  "required_o4_capabilities": {
+    "commitment_manifest_path": "00_nucleo/benchmark/0028/mutation-commitments-o4.json",
+    "commitment_manifest_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5",
+    "negative_requirements": [
+      "one independently executable subject variant per M ID",
+      "variant behavior is input-driven and obligation-specific",
+      "reference and baseline preserve before mutation",
+      "exactly one contract-significant public observable changes",
+      "the same obligation suite rejects the semantic variant",
+      "post-observation field overwrite is forbidden as mutation execution"
+    ],
+    "positive_requirements": [
+      "one complete executable reference control per P ID",
+      "all required public observables are represented in Input and Observation",
+      "every P ID classifies Preserved"
+    ],
+    "opaque_requirements": [
+      "one executable opaque case per O ID",
+      "the classifier has an explicit Unknown outcome",
+      "Unknown is never coerced to Preserved or Violated",
+      "opaque cases remain outside the mutation-score denominator"
+    ]
+  },
+  "privacy_boundary": {
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "code_or_patch_disclosed": false,
+    "implementation_solution_disclosed": false
+  },
+  "seal": {
+    "path": "00_nucleo/benchmark/0028/seal-o3.json",
+    "exists": false,
+    "emitted": false
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0026",
+  "revision": "R8-INVALIDATION-1",
+  "verdict": "R8_SEAL_INVALIDATED",
+  "created_at": "2026-09-01T22:17:33Z",
+  "invalidated_seal": {
+    "path": "00_nucleo/benchmark/0026/seal-r8.json",
+    "sha256": "de42b528b7738d37494658d5c33155cf95495b83a3046c82ada321a2adfae7ac",
+    "revision": "R8",
+    "retained_as_historical": true,
+    "usable_for_final_candidate_verdict": false
+  },
+  "invalidated_receipt": {
+    "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r8.json",
+    "sha256": "be01ae770b68ca30a39e617228033e731ee3bd690a59b2c356a7e18cb861a107",
+    "retained_as_historical": true,
+    "finding": "The R8 receipt remains valid evidence for hidden-mutant discovery and the isolated 60/60 matrix, but the protected L4 oracle can falsely reject a correct run under the mandatory full-gate load."
+  },
+  "prior_invalidation_chain": {
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r7_invalidation_sha256": "412dede6c3e64c42385303aa8a0bd4f00521efc5c9ff866a16c0793b7f54ef50",
+    "preserved": true
+  },
+  "trigger": {
+    "kind": "LOAD_DEPENDENT_FIXED_DEADLINE_FALSE_REJECTION",
+    "reported_full_gate_command": "env GOCACHE=/tmp/bateia-go-cache-0026 go test -count=1 ./...",
+    "reported_full_gate_context": "R5/R6 mutation-related gates and the normal repository tests ran concurrently.",
+    "reported_failure_test": "TestStep0026RealL4DurableCompositionStartGetPaginateCancelAndReopenOffline",
+    "reported_failure_observation": "RUNNING/expand/v3 at the fixed polling deadline",
+    "reported_l4_package_duration": "4.34s",
+    "reported_isolated_command": "go test -count=10 ./04_wiring -run TestStep0026RealL4DurableCompositionStartGetPaginateCancelAndReopenOffline",
+    "reported_isolated_result": "PASS 10/10",
+    "reported_isolated_duration": "0.843s",
+    "verifier_full_or_isolated_candidate_test_executed": false,
+    "verifier_reason": "Both commands compile or execute the live candidate; this audit is limited to protected artifacts and the reported reproducible timing evidence."
+  },
+  "protected_oracle_evidence": {
+    "path": "04_wiring/durable_runs_step0026_contract_test.go",
+    "sha256": "8db52176f2aa3cfbd18f676a17a37fb09ca660aa4000c9daf1c798427c35602b",
+    "prompt_path": "00_nucleo/prompts/04_wiring/durable_runs_step0026_contract_test.md",
+    "prompt_sha256": "1d807d0ec97ab876c80e143d0b46e5ea90b3c7dae8533671772d89e66e219439",
+    "test_line": 64,
+    "deadline_line": 95,
+    "deadline_expression": "time.Now().Add(3 * time.Second)",
+    "poll_interval": "5ms",
+    "post_deadline_assertion": "requires SUCCEEDED and INCONCLUSIVE regardless of whether the last observation is a progressing RUNNING state",
+    "verified_by_source_inspection": true
+  },
+  "causal_audit": {
+    "finding": "The protected test uses elapsed wall-clock time as a proxy for semantic completion. CPU and I/O contention from the full gate can delay the single worker past three seconds without violating lifecycle, durability or eventual terminality.",
+    "progress_observed_at_failure": true,
+    "progress_state": "RUNNING/expand/v3",
+    "isolated_success_rate": "10/10",
+    "load_sensitivity_demonstrated": true,
+    "semantic_candidate_failure_established": false,
+    "false_rejection_risk": true,
+    "conclusion": "A gate that passes rapidly in isolation and fails only when a progressing run exceeds a rigid three-second wall clock is not a stable discriminatory witness for the mandatory concurrent full gate."
+  },
+  "unrelated_candidate_local_test": {
+    "part_of_this_invalidation": false,
+    "reported_status": "already corrected",
+    "finding": "The other full-gate failure came from a candidate-owned local test, not a protected oracle or sealed artifact, and therefore neither causes nor broadens this seal invalidation."
+  },
+  "frozen_state_at_invalidation": {
+    "manifest_sha256": "63c219ed39bb9599f5a5813f021044077e4738acf89b5b401aa191ad4ed4959a",
+    "oracle_contract_sha256": "5ab20b4fdbf7b4747b18e2669471d48ec86de5e0306f51bb3c59530e8273bae1",
+    "r8_driver_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90"
+  },
+  "candidate_scope": {
+    "source_read_by_verifier": false,
+    "modified_by_verifier": false,
+    "behavior_executed_by_verifier": false,
+    "evaluated_by_verifier": false,
+    "reported_full_gate_result_used_only_to_audit_oracle_stability": true
+  },
+  "affected_phases": {
+    "first_affected": "ORACLE_STABILITY_FREEZE",
+    "must_repeat": [
+      "oracle-author timeout-only correction and freeze",
+      "manifest and oracle-contract hash binding",
+      "targeted isolated repetition",
+      "full-gate load repetition",
+      "hidden mutation discovery and 3x3 matrix",
+      "seal"
+    ],
+    "r8_usable_for_final_verdict": false
+  },
+  "required_oracle_revision_9": {
+    "owner": "oracle-author",
+    "allowed_semantic_change": "Increase only the terminal polling deadline, for example from 3s to 30s, so scheduler/load variance does not create a false rejection.",
+    "must_preserve": [
+      "the same seven-tool composition setup",
+      "immediate QUEUED/v1 assertion",
+      "polling of the same get_run surface",
+      "terminal SUCCEEDED and recommendation_status INCONCLUSIVE assertions",
+      "artifact hash, pagination, cancellation immutability and reopen assertions",
+      "poll interval unless independently justified",
+      "all mutation sources, canonical semantic diffs and common-suite bytes",
+      "the hidden testdata layout and zero-mutant go list result",
+      "the predecessor snapshot/certificate binding"
+    ],
+    "must_not_do": [
+      "weaken terminal or artifact assertions",
+      "accept RUNNING as success",
+      "adapt expectations to candidate output",
+      "change candidate-owned tests or production code as part of oracle refinement"
+    ]
+  },
+  "acceptance_checks_for_replacement_seal": [
+    "The timeout-only source diff and new source hash are frozen, and the mirrored prompt remains semantically unchanged.",
+    "The targeted L4 test passes repeated isolated execution and representative concurrent full-gate load without false timeout.",
+    "The mandatory normal go test -count=1 ./... gate passes without executing hidden mutants.",
+    "go list ./... still reports zero R6 mutant packages.",
+    "The isolated mutation driver still records nine reference passes, 270 mutant failures, score 60/60 and zero survivors.",
+    "Strict JSON, all source/prompt/diff hashes, invalidation chain, predecessor continuity, P01-P05 and O01-O05 are revalidated."
+  ],
+  "historical_artifacts_preserved": [
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+    "00_nucleo/benchmark/0026/seal.json",
+    "00_nucleo/benchmark/0026/seal-r6-invalidation.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r7.json",
+    "00_nucleo/benchmark/0026/seal-r7.json",
+    "00_nucleo/benchmark/0026/seal-r7-invalidation.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r8.json",
+    "00_nucleo/benchmark/0026/seal-r8.json"
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "The load-sensitive oracle defect was discovered during candidate verification. Revision 9 and any replacement seal occur after candidate existence and cannot claim strong pre-candidate temporal independence; the correction must remain timeout-only and candidate behavior must not influence assertions."
+}

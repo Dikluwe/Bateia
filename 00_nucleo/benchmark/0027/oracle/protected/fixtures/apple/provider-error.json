@@ -1,0 +1,39 @@
+{
+  "schema_version": "bateia.apple-offline-fixture.v1",
+  "fixture_id": "apple-provider-error",
+  "visibility": "PROTECTED_ORACLE_ONLY",
+  "synthetic": true,
+  "connector_id": "apple-itunes-search-software",
+  "connector_version": "itunes-search-doc-1.0.3-response-v2",
+  "case": "PROVIDER_ERROR",
+  "expected_outcome": "UNKNOWN_PROVIDER",
+  "request": {
+    "method": "GET",
+    "scheme": "https",
+    "host": "itunes.apple.com",
+    "port": 443,
+    "path": "/search",
+    "follow_redirects": false,
+    "parameters": {
+      "term_sha256": "638c7b385d8707fc9711542991690180317bd3e0ff1ccb9fc2b4c63a792c9bf1",
+      "country": "US",
+      "media": "software",
+      "entity": "software",
+      "limit": 10,
+      "lang": "en_us",
+      "version": "2",
+      "explicit": "No"
+    }
+  },
+  "request_sha256": "2b899be574279512bcd52e6f231d22022c508d5f089dac9c1550104513f17c52",
+  "capture": {
+    "http_status_class": "5xx",
+    "provider_content_type": null,
+    "captured_at": "2026-09-01T12:02:00Z",
+    "provider_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "provider_body_retained": false,
+    "projection_allowlisted": true,
+    "error_class": "UNKNOWN_PROVIDER"
+  },
+  "projection": null
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "tekt.step0028.coverage-matrix-public.v11",
+  "step": "0028",
+  "oracle_revision": "O11",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "source_coverage_gap_o10_sha256": "9f40154c07727341ca5cca983630b8e1a8e62d6fcadf8839f45d17a33cc5b05f",
+  "source_discriminatory_failure_o10_sha256": "46df2393574b4895e327b5358375721466210fae752f8c52883fdb23ca8ec682",
+  "binding_free_input": ["contract_input", "contract_output"],
+  "classification_precedence": ["Violated", "Unknown", "Preserved"],
+  "refined_predicates": [
+    {"port":"SYNTHESIS_START","predicate_id":"R4.SYNTHESIS_START.NO_INVENTED_EVIDENCE","observable":"absence of artifact/hash/index/layer findings at start"},
+    {"port":"SYNTHESIS_START","predicate_id":"R4.SYNTHESIS_START.SOURCE_ARTIFACT_INTERNAL_REFERENCE_INTEGRITY","observable":"source tuple consistency and non-collision between historical source run IDs and new receipt run ID"},
+    {"port":"MECHANISM_EXTRACT","predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","observable":"documentary-only effective RuleID versus parent RuleID for technical or mixed evidence"},
+    {"port":"MECHANISM_EXTRACT","predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","observable":"request-derived gap or inconclusive mechanism even alongside resolved mechanisms"},
+    {"port":"ARTIFACT_READ","predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","observable":"concrete epistemic uncertainty in any entry after all decidable artifact checks"},
+    {"port":"RUN_CANCEL","predicate_id":"R4.RUN_CANCEL.IDEMPOTENT_TERMINAL_TRANSITION","observable":"terminal returned version is expected_version or expected_version plus one"}
+  ],
+  "preserved_predicate_groups": [
+    "MECHANISM_EXTRACT strict catalog, exact join, source role/kind/status, provenance, novelty and safety",
+    "ARTIFACT_READ fixed-order bytes, duplicate-free JSON, hash, size, identity, ordering, cursor, pagination and safety",
+    "SYNTHESIS_START strict request, source resolution and admission order",
+    "RUN_READ and RUN_CANCEL lifecycle/progress/status invariants",
+    "REPLAY frozen inputs, determinism and live-publication immutability",
+    "REFINEMENT_AUDIT receipts, layers and singleton runtime identities",
+    "TOOLS_LIST exact ten-tool surface and tool 10 terminal position"
+  ],
+  "ports": 9,
+  "negative_regression_floor": 158,
+  "positive_control_target": 12,
+  "opaque_control_target": 10,
+  "forbidden_evaluator_dependencies": ["case_id","attack_hash","record_binding","expected","marker","candidate"]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "tekt.step0028.coverage-matrix-public.v8",
+  "step": "0028",
+  "oracle_revision": "O8",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+  "catalog_v3_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "protocol_o8_sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb",
+  "binding_free_input": ["contract_input", "mutant_contract_output"],
+  "classification_order": ["Violated", "Unknown", "Preserved"],
+  "ports": [
+    {"port":"MECHANISM_EXTRACT","o8_predicates":["literal v3 catalog and hash","four exact DOCUMENTARY rules","documentation source kind","DOCUMENTATION witness","PARTIAL ceiling","excluded from PROVEN implementation and independent minima"],"o6_predicates_reused":true},
+    {"port":"SYNTHESIS_START","o6_predicates_reused":true},
+    {"port":"SYNTHESIS_EXECUTE","o6_predicates_reused":true},
+    {"port":"RUN_READ","o6_predicates_reused":true},
+    {"port":"ARTIFACT_READ","o6_predicates_reused":true},
+    {"port":"RUN_CANCEL","o6_predicates_reused":true},
+    {"port":"TOOLS_LIST","o6_predicates_reused":true},
+    {"port":"REPLAY","o8_predicates":["v3 catalog causal hash"],"o6_predicates_reused":true},
+    {"port":"REFINEMENT_AUDIT","o6_predicates_reused":true}
+  ],
+  "positive_calibration": "documentary-only bound evidence materializes PARTIAL",
+  "opaque_calibration": "O6 real-opacity policy preserved",
+  "forbidden_evaluator_dependencies": ["case_id","attack_hash","record_binding","expected","marker","candidate"]
+}

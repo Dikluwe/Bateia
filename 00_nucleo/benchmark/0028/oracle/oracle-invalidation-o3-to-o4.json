@@ -1,0 +1,19 @@
+{
+  "schema_version": "tekt.step0028.oracle-invalidation.v3",
+  "step": "0028",
+  "invalidated_oracle_revision": "O3",
+  "replacement_oracle_revision": "O4",
+  "phase": "POST_DISCRIMINATORY_FAILURE_PRE_SEAL",
+  "invalidated_oracle_contract_sha256": "5517334d04a1678f6c770e5b0f500238cd07f16c43d44e2d1908af04344486c2",
+  "invalidated_protected_manifest_sha256": "5f048eb2c30f0520cc18a59f30544abf6bf4d46c5aaf368a3c03837256cf1600",
+  "invalidated_coverage_matrix_sha256": "ef3ff51ca1ca80812eae792ad6b7724bea8af73779ed666096830b2f211a3c00",
+  "public_coverage_gap_sha256": "f97c12b13b36d0aa741cbe2db3910d3b6b671f03bb7cbad5a14e644b1e912876",
+  "public_discriminatory_failure_sha256": "2a65e760238afb1f0d01ada36555007a986a1ecc8673f48bd959e791fb948646",
+  "mutation_commitments_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5",
+  "entry_commitment_root_sha256": "a486a67b330946daea5d9bfb41f7764ce35a1e300f94bb77210341d3893a4a3a",
+  "cause": "O3 executed ReferenceSubject and then overwrote one observation field, so none of M001-M160 qualified as an input-driven semantic mutation",
+  "candidate_read_by_oracle_author": false,
+  "adversarial_cases_read_by_oracle_author": false,
+  "seal_existed": false,
+  "required_action": "replace post-observation overwrite variants with per-entry commitment-bound input mutations executed before independent observations, execute P01-P12 and explicit Unknown branches O01-O10, then rerun the complete gate"
+}

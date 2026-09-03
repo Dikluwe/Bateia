@@ -13,7 +13,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -353,7 +352,7 @@ func recoveryPathMatches(path string, t domain.RecoveryTarget) bool {
 	if t.Kind == domain.EvidenceFile && !isCodePath(path) {
 		return false
 	}
-	low := strings.ToLower(filepath.ToSlash(path))
+	low := strings.ToLower(slashPath(path))
 	if len(t.Patterns) == 0 {
 		return true
 	}

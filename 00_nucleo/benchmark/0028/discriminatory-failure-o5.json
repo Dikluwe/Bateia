@@ -1,0 +1,65 @@
+{
+  "schema_version": "tekt.step0028.discriminatory-failure-public.v5",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "oracle_revision": "O5",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "candidate_read_compiled_or_executed": false,
+  "frozen_inputs": {
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "executable_mutant_protocol_o5_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+    "executable_mutants_manifest_o5_sha256": "a05f80a3a27a43364687cbb084c33e9f7fa0f7f406464b1a03c146302ad794b8",
+    "runner_o5_sha256": "65104b8629ade60dd6257559bd68b45ceaed9001bd4fb0039b4572dc361fe105",
+    "records_root_sha256": "3fbab6f784a8d4ae8b485bee6632f886ebf17067f8c6989e7a181905944a41aa",
+    "subjects_root_sha256": "c4f3b95ac4f0524580e3cbc43f0039f25f592fce11f898ce6a2ff678f8408127",
+    "hashes_o5_sha256": "215845c15c432e6b19d8ef2ecf7ea5191ccfc75e788a8f57d1d65317d9fdf805",
+    "oracle_contract_o5_sha256": "0736394ea5af99d52c3d894be52e334042de5f6287edcf8760087e23e1fc8ad0",
+    "coverage_matrix_o5_sha256": "a2d53960a9804b22db2d7aede17a90c9be2a01fc87913bec90d0f065dc26b622",
+    "oracle_invalidation_o4_to_o5_sha256": "a1e57e626dc1494a75cea743266490c288e6329dd939abfa50a1e5b0f6a8dd28",
+    "oracle_authorship_o5_sha256": "2eea2c711a7bd7afcf1c3bc27b3a83de5cf8ebadde6b53684b5e93ec344197ad",
+    "oracle_protected_manifest_o5_sha256": "07337d19aa36a4e85bd4a5933e167896769e0fbea56824cfc42d10a3b6e2956b"
+  },
+  "structural_audit": {
+    "strict_json_documents": 553,
+    "manifest_bindings": 182,
+    "canonical_attack_entry_bindings_matched": 182,
+    "record_hashes_matched": 182,
+    "subject_file_hashes_matched": 546,
+    "semantic_input_hashes_matched": 182,
+    "semantic_output_hashes_matched": 182,
+    "negative_semantic_pairs_unique": 160,
+    "forbidden_behavior_meta_field_hits": 0,
+    "oracle_binding_inputs": ["contract_input", "mutant_contract_output"]
+  },
+  "execution": {
+    "orders": ["canonical", "reverse", "rotate-61"],
+    "fresh_process_repetitions_per_order": 2,
+    "total_runner_oracle_exchanges": 1092,
+    "stable_across_all_six_runs": true,
+    "runner_outputs_semantically_matched_bound_records": 1092,
+    "go_test_shuffle_count2_runs": 3,
+    "go_test_race_count2": "PASS",
+    "go_vet": "PASS"
+  },
+  "classification": {
+    "negative": {"total": 160, "Violated": 150, "Preserved": 10, "Unknown": 0},
+    "positive": {"total": 12, "Violated": 12, "Preserved": 0, "Unknown": 0},
+    "opaque": {"total": 10, "Violated": 10, "Preserved": 0, "Unknown": 0},
+    "mutation_score": 0.9375,
+    "required_mutation_score": 1.0
+  },
+  "gate_result": "FAIL",
+  "seal_status": "WITHHELD",
+  "receipt_status": "NOT_EMITTED",
+  "certificate_or_final_verdict_emitted": false,
+  "privacy": {
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "implementation_solution_disclosed": false
+  }
+}

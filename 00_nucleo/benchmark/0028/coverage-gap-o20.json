@@ -1,0 +1,37 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v20",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_mutants_revision": "O14",
+  "source_oracle_revision": "O20",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "classification_digest_sha256": "a8bd9b1fa7564e24888dbbfa54f19e630310fa95f8b43434c9db2f0b53fe979e",
+  "public_divergent_case_ids": ["O04", "O05", "O06", "O07", "O08", "O09", "O10"],
+  "observable_cause": "O20 classifies the seven minimal public projections as Unknown only when validation_plan is absent or empty. Their frozen end-to-end counterparts carry a non-empty validation_plan in the canonical artifact document and deterministically fall through to Preserved.",
+  "evaluate_boundary": {
+    "first_argument": "ContractInput",
+    "second_argument": "ContractOutput",
+    "canonical_document_envelope": "ContractOutput.return_value.canonical_json"
+  },
+  "public_structural_evidence": {
+    "delta_sha256": "803a2c0e392743e7075105b1dbdeaef80d3969bb02937936e35985b8624aaeeb",
+    "o20b_corpus_sha256": "363a78b28a021950cdc90a3ba45daafa00c0fc85cd3c083a16fb3b22b4c92f00",
+    "o20b_replay_sha256": "00c38ef7501974633a2664620dd1a69bdab1123909bbf5b6408ec41b16b037bd",
+    "o20b_classification": {"Preserved":7,"Unknown":0,"Violated":0}
+  },
+  "required_public_relations": [
+    "composition compatibility unmeasured",
+    "license unrecognized",
+    "counterevidence budget exhausted",
+    "immutable identity ambiguous",
+    "provider without capture",
+    "target cost without baseline",
+    "target security without baseline"
+  ],
+  "classification": {"negative_violated":160,"positive_preserved":12,"opaque_unknown":3,"opaque_preserved":7},
+  "gate_result": "FAIL",
+  "receipt_emitted": false,
+  "seal_emitted": false,
+  "candidate_read_compiled_or_executed": false,
+  "protected_fixture_or_test_detail_disclosed": false
+}

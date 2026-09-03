@@ -1,0 +1,94 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v8",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_oracle_revision": "O8",
+  "target_oracle_revision": "O9",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "privacy_contract": {
+    "allowed": ["case_id", "public_contract_port", "required_classification", "observed_classification", "predicate_id", "reason_code", "frequency"],
+    "excluded": ["mutation_payload", "mutation_description", "private_target", "candidate_content", "code", "patch", "implementation_solution"]
+  },
+  "negative_survivors": [
+    {
+      "case_id": "M004",
+      "public_contract_port": "SYNTHESIS_START",
+      "required_classification": "Violated",
+      "observed_classification": "Preserved",
+      "required_obligations": [
+        {"predicate_id":"R4.SYNTHESIS_START.NO_INVENTED_EVIDENCE","reason_code":"NO_APPLICABLE_PUBLIC_PREDICATE_REJECTED_MUTANT"}
+      ]
+    },
+    {
+      "case_id": "M107",
+      "public_contract_port": "SYNTHESIS_START",
+      "required_classification": "Violated",
+      "observed_classification": "Preserved",
+      "required_obligations": [
+        {"predicate_id":"R4.SYNTHESIS_START.SOURCE_ARTIFACT_INTERNAL_REFERENCE_INTEGRITY","reason_code":"NO_APPLICABLE_PUBLIC_PREDICATE_REJECTED_MUTANT"}
+      ]
+    },
+    {
+      "case_id": "M124",
+      "public_contract_port": "RUN_CANCEL",
+      "required_classification": "Violated",
+      "observed_classification": "Preserved",
+      "required_obligations": [
+        {"predicate_id":"R4.RUN_CANCEL.IDEMPOTENT_TERMINAL_TRANSITION","reason_code":"NO_APPLICABLE_PUBLIC_PREDICATE_REJECTED_MUTANT"}
+      ]
+    }
+  ],
+  "positive_control_failures": [
+    {"case_id":"P01","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE"}]},
+    {"case_id":"P02","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE"},{"predicate_id":"R4.MECHANISM_EXTRACT.NOVELTY_FROM_BASELINE_AND_STATUS","reason_code":"NOVELTY_DIVERGES_FROM_BASELINE_OR_STATUS"}]},
+    {"case_id":"P03","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P04","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P05","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P06","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P07","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P08","public_contract_port":"ARTIFACT_READ","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"P09","public_contract_port":"SYNTHESIS_START","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.SYNTHESIS_START.SOURCE_REFERENCE_RESOLUTION","reason_code":"SUCCESS_DID_NOT_RESOLVE_ALL_SOURCES"}]},
+    {"case_id":"P10","public_contract_port":"RUN_CANCEL","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.RUN_CANCEL.ARTIFACT_SET_STABILITY","reason_code":"CANCEL_PUBLISHED_NEW_ARTIFACT_SET"}]},
+    {"case_id":"P11","public_contract_port":"REPLAY","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.REPLAY.FROZEN_INPUT_VALIDATION","reason_code":"REPLAY_REJECTED_FROZEN_INPUT"},{"predicate_id":"R4.REPLAY.FAILURE_OUTPUT_HASH_EMISSION","reason_code":"FAILED_REPLAY_RETURNED_PRODUCED_HASHES"},{"predicate_id":"R4.REPLAY.FAILURE_EFFECT_FREEDOM","reason_code":"FAILED_REPLAY_CAUSED_RUNTIME_EFFECTS"}]},
+    {"case_id":"P12","public_contract_port":"TOOLS_LIST","required_classification":"Preserved","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.TOOLS_LIST.TOOL_10_DESCRIPTION","reason_code":"TOOL_10_DESCRIPTION_DIVERGED"},{"predicate_id":"R4.TOOLS_LIST.TOOL_10_SCHEMA_CONSTRAINTS","reason_code":"TOOL_10_SCHEMA_CONSTRAINT_WEAKENED_OR_OMITTED"},{"predicate_id":"R4.TOOLS_LIST.ARTIFACT_GETTER_ENUM","reason_code":"ARTIFACT_GETTER_ENUM_DIVERGED"}]}
+  ],
+  "positive_failure_frequencies": [
+    {"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL","frequency":6},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE","frequency":2},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.NOVELTY_FROM_BASELINE_AND_STATUS","reason_code":"NOVELTY_DIVERGES_FROM_BASELINE_OR_STATUS","frequency":1},
+    {"predicate_id":"R4.SYNTHESIS_START.SOURCE_REFERENCE_RESOLUTION","reason_code":"SUCCESS_DID_NOT_RESOLVE_ALL_SOURCES","frequency":1},
+    {"predicate_id":"R4.RUN_CANCEL.ARTIFACT_SET_STABILITY","reason_code":"CANCEL_PUBLISHED_NEW_ARTIFACT_SET","frequency":1},
+    {"predicate_id":"R4.REPLAY.FROZEN_INPUT_VALIDATION","reason_code":"REPLAY_REJECTED_FROZEN_INPUT","frequency":1},
+    {"predicate_id":"R4.REPLAY.FAILURE_OUTPUT_HASH_EMISSION","reason_code":"FAILED_REPLAY_RETURNED_PRODUCED_HASHES","frequency":1},
+    {"predicate_id":"R4.REPLAY.FAILURE_EFFECT_FREEDOM","reason_code":"FAILED_REPLAY_CAUSED_RUNTIME_EFFECTS","frequency":1},
+    {"predicate_id":"R4.TOOLS_LIST.TOOL_10_DESCRIPTION","reason_code":"TOOL_10_DESCRIPTION_DIVERGED","frequency":1},
+    {"predicate_id":"R4.TOOLS_LIST.TOOL_10_SCHEMA_CONSTRAINTS","reason_code":"TOOL_10_SCHEMA_CONSTRAINT_WEAKENED_OR_OMITTED","frequency":1},
+    {"predicate_id":"R4.TOOLS_LIST.ARTIFACT_GETTER_ENUM","reason_code":"ARTIFACT_GETTER_ENUM_DIVERGED","frequency":1}
+  ],
+  "opaque_control_failures": [
+    {"case_id":"O01","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.GAP_REQUEST_PROVENANCE","reason_code":"GAP_LACKS_REQUEST_DERIVED_PROVENANCE"},{"predicate_id":"R4.MECHANISM_EXTRACT.REAL_AMBIGUITY_GAP_COMPLETENESS","reason_code":"REAL_AMBIGUITY_NOT_PRESERVED_AS_GAP"}]},
+    {"case_id":"O02","public_contract_port":"MECHANISM_EXTRACT","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE"},{"predicate_id":"R4.MECHANISM_EXTRACT.NOVELTY_FROM_BASELINE_AND_STATUS","reason_code":"NOVELTY_DIVERGES_FROM_BASELINE_OR_STATUS"}]},
+    {"case_id":"O03","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"O04","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"O05","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"O06","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"O07","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"NO_REAL_UNKNOWN_PREDICATE_EMITTED"}]},
+    {"case_id":"O08","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Preserved","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"NO_REAL_UNKNOWN_PREDICATE_EMITTED"}]},
+    {"case_id":"O09","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]},
+    {"case_id":"O10","public_contract_port":"ARTIFACT_READ","required_classification":"Unknown","observed_classification":"Violated","predicate_failures":[{"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL"}]}
+  ],
+  "opaque_failure_frequencies": [
+    {"predicate_id":"R4.ARTIFACT_READ.FIXED_FIELD_ORDER_CANONICAL_JSON","reason_code":"ARTIFACT_BYTES_NONCANONICAL","frequency":6},
+    {"predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","reason_code":"NO_REAL_UNKNOWN_PREDICATE_EMITTED","frequency":2},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.GAP_REQUEST_PROVENANCE","reason_code":"GAP_LACKS_REQUEST_DERIVED_PROVENANCE","frequency":1},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.REAL_AMBIGUITY_GAP_COMPLETENESS","reason_code":"REAL_AMBIGUITY_NOT_PRESERVED_AS_GAP","frequency":1},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.EXTRACTION_RULE_PROVENANCE","reason_code":"NONCANONICAL_EXTRACTION_RULE_PROVENANCE","frequency":1},
+    {"predicate_id":"R4.MECHANISM_EXTRACT.NOVELTY_FROM_BASELINE_AND_STATUS","reason_code":"NOVELTY_DIVERGES_FROM_BASELINE_OR_STATUS","frequency":1}
+  ],
+  "qualification_rule": "Every negative must independently fail a public R4 predicate; every positive must satisfy all applicable public R4 predicates; every opaque construction must expose real contractual uncertainty without a simultaneous violation.",
+  "o8_score": 0.98125,
+  "seal_existed_or_emitted": false,
+  "receipt_existed_or_emitted": false
+}

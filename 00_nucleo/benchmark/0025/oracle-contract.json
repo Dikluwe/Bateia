@@ -1,0 +1,200 @@
+{
+  "schema_version": "1",
+  "step": "0025",
+  "role": "oracle-author-and-a-b-tester",
+  "protocol": "tekt-materializacao-segregada/full",
+  "status": "REVISED_POST_SEAL_PENDING_REVALIDATION",
+  "revision": 6,
+  "predecessor_post_seal_audit": {
+    "path": "00_nucleo/benchmark/0025/seal-r5.json",
+    "sha256": "4284ff2e68fa2633c8e2fa62cf8e2b17f637c7a0c414d40ab78a474e8d96c15e",
+    "sealed_revision": "R5",
+    "verdict": "INVALIDATION_REQUIRED",
+    "closed_oracle_contradictions": 4
+  },
+  "execution": {
+    "executor": "/root/oracle_0025",
+    "environment": "shared workspace; baseline read through git object database",
+    "candidate_implementation_read": false,
+    "attestation_language": "segregado por entradas e escrita; atestação forte de ambiente cabe ao verificador"
+  },
+  "frozen_inputs": {
+    "spec_path": "00_nucleo/passos/0025-expor-recomendacao-completa-como-ferramenta-mcp.md",
+    "spec_sha256": "8ddd8785f874ed36df41fbcedfa3fc580c72740dee1adeb1449ba7037f232a6f",
+    "contract_path": "00_nucleo/benchmark/0025/contract.md",
+    "contract_sha256": "b0ca1ed27b52caa52918c7f1bf60f48605cff4b3f04f5bea7c65d820036f0d48",
+    "adversarial_cases_path": "00_nucleo/benchmark/0025/adversarial-cases.json",
+    "adversarial_cases_sha256": "60fe6f3be7fdd68b6a277090051a67e2b00f2d018233fa9c1f4f4713cf1a9a3a",
+    "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e"
+  },
+  "capabilities": {
+    "read_allowlist": [
+      ".agents/AGENTS.md",
+      "frozen step, contract and adversarial cases",
+      "baseline commit public contracts, tests and wiring"
+    ],
+    "write_allowlist": [
+      "01_core/domain/recommendation_test.go",
+      "01_core/usecase/recommendation_test.go",
+      "01_core/**/*_step0025_contract_test.go",
+      "02_shell/mcp/server_test.go",
+      "02_shell/**/*_step0025_contract_test.go",
+      "04_wiring/*_step0025_contract_test.go",
+      "00_nucleo/prompts/01_core/domain/recommendation_test.md",
+      "00_nucleo/prompts/01_core/usecase/recommendation_test.md",
+      "00_nucleo/prompts/02_shell/mcp/server_test.md",
+      "00_nucleo/prompts/**/*step0025_contract_test.md",
+      "00_nucleo/benchmark/0025/oracle-contract.json"
+    ],
+    "forbidden": [
+      "candidate implementation",
+      "production code",
+      "contract",
+      "manifest",
+      "adversarial cases",
+      "seal",
+      "receipts",
+      "report"
+    ]
+  },
+  "public_api_required_by_oracles": [
+    "domain.RecommendationSearch",
+    "domain.RecommendationRequest",
+    "domain.RecommendationSummary",
+    "domain.RecommendationResult",
+    "usecase.NewRecommendationService",
+    "(*usecase.RecommendationService).Recommend",
+    "usecase.ProjectRecommendationResult",
+    "usecase.MarshalRecommendationResult",
+    "mcp.RecommendationRecommender",
+    "mcp.NewMCPServer with a source-compatible optional recommender argument",
+    "L4 newMCPServer composition helper accepting injected ports and in-memory streams"
+  ],
+  "suites": [
+    {
+      "path": "01_core/domain/recommendation_test.go",
+      "sha256": "6b058d3de246000f94829491fb8e7e321fac1a569c9b8d8782a9dafbdb7d6e32",
+      "prompt": "00_nucleo/prompts/01_core/domain/recommendation_test.md",
+      "prompt_sha256": "026a45d32086cfbbe94718a34375b683882623e85fd104c39d0ddc1dddd9535c",
+      "layer": "L1 companion",
+      "io": "none",
+      "witnesses": [
+        "crystalline companion for the public recommendation domain module"
+      ]
+    },
+    {
+      "path": "01_core/usecase/recommendation_test.go",
+      "sha256": "a2ee23cc85bd837cdb5c36c969a7fa7e543f53a8c3a7bdc43bf7f77f5a216d72",
+      "prompt": "00_nucleo/prompts/01_core/usecase/recommendation_test.md",
+      "prompt_sha256": "817e347ee9861a78199594ec83507bee84cc858be2bb4a70cb34c7a70e39fc75",
+      "layer": "L1 companion",
+      "io": "none",
+      "witnesses": [
+        "crystalline companion for the public recommendation service module"
+      ]
+    },
+    {
+      "path": "01_core/usecase/recommendation_step0025_contract_test.go",
+      "sha256": "ce6189db067fcd7dc50fbf3995d371b2674c44fb355167424aa859d3d09205eb",
+      "prompt": "00_nucleo/prompts/01_core/usecase/recommendation_step0025_contract_test.md",
+      "prompt_sha256": "03128422e22632787acb1509f1b4ef5dfbeef1652f9fae66f2fb8b3d22e79c9e",
+      "layer": "L1",
+      "io": "none in production path; deterministic in-memory fakes only",
+      "witnesses": [
+        "public data shape and canonical JSON",
+        "validation before semantic/discovery/content ports",
+        "offline live execution and exact locale provenance",
+        "unknown-license warning without fit/exclusion change",
+        "target normalization, provider failure preservation and cancellation",
+        "canonical reordering, Unknown status, snippet/URL/canary sanitization"
+      ]
+    },
+    {
+      "path": "02_shell/mcp/server_test.go",
+      "sha256": "f7d15d6e29b66c6591e91d832e5c0e1c155641ca345a150610470133a3dd098d",
+      "prompt": "00_nucleo/prompts/02_shell/mcp/server_test.md",
+      "prompt_sha256": "3c196a3d8676381d9b8ed56eccf8549582d68f5afdb6f9df0797a68fdb8656ff",
+      "layer": "L2 legacy companion",
+      "io": "MCP entirely in memory",
+      "witnesses": [
+        "legacy tools/list agrees with the exact three-tool contract even with a nil recommender"
+      ]
+    },
+    {
+      "path": "02_shell/mcp/recommendation_step0025_contract_test.go",
+      "sha256": "cc88dfe582c5e61688468c89b94a173e0f23aea4d0e4105ba2ea6749c595dea6",
+      "prompt": "00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md",
+      "prompt_sha256": "04bfd375118c94df889ebed6aaf01bc105e2df806b0e30b93c6b506682335767",
+      "layer": "L2 testing L2 and observable L4 wiring",
+      "io": "MCP entirely in memory; L4 source parsed read-only",
+      "witnesses": [
+        "exact ordered tool list and exact new schema",
+        "single injected-service call and no L2 reranking",
+        "strict runtime arguments and prohibited-field rejection",
+        "sanitized total errors and repeated-call determinism",
+        "frozen legacy search success with only GeneratedAt canonicalized and frozen benchmark error",
+        "L4 constructs and injects the recommendation service"
+      ]
+    },
+    {
+      "path": "04_wiring/main_step0025_contract_test.go",
+      "sha256": "dea08090da1262f2881ffc0ee26e0b86ced4b68ecaa561635a012d7d560149a5",
+      "prompt": "00_nucleo/prompts/04_wiring/main_step0025_contract_test.md",
+      "prompt_sha256": "42896e37ce1d37fcbf4ae60182cc9200570769df8c359516d2e50a653278ed4a",
+      "layer": "L4",
+      "io": "real composition helper with in-memory MCP streams and offline fake providers",
+      "witnesses": [
+        "composition constructs the recommendation service from injected ports",
+        "the composed server lists all three tools",
+        "a valid recommendation call reaches the configured offline discovery provider"
+      ]
+    }
+  ],
+  "negative_case_bindings": {
+    "M01-tool-not-announced-once": ["TestMCPServer_ToolsList", "TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen"],
+    "M02-required-schema-weakened": ["TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M03-cli-wrapper-or-temporary-files": ["TestStep0025RecommendUsesInjectedServiceOnceAndPreservesItsProjection", "TestStep0025MCPHasNoCLIInfraOrFilesystemExecutionPath"],
+    "M04-second-ranking-in-l2": ["TestStep0025RecommendUsesInjectedServiceOnceAndPreservesItsProjection"],
+    "M05-unknown-license-becomes-blocked": ["TestStep0025UnknownLicenseWarnsWithoutBlockingOrChangingFit"],
+    "M06-inconclusive-promoted-to-complete": ["TestStep0025ProjectionIsCanonicalSecureAndDoesNotPromoteInconclusive"],
+    "M07a-max-per-query-boundary-bypass": ["TestStep0025ValidationHappensBeforeEveryPort", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M07b-max-candidates-boundary-bypass": ["TestStep0025ValidationHappensBeforeEveryPort"],
+    "M07c-missing-limit-reaches-provider": ["TestStep0025ValidationHappensBeforeEveryPort", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M08-locales-dropped-or-english-fallback": ["TestStep0025OfflineServicePropagatesLocalesAndNeutralizesRepositoryInstructions", "TestStep0025RecommendUsesInjectedServiceOnceAndPreservesItsProjection"],
+    "M09-unsupported-locale-fallback": ["TestStep0025ValidationHappensBeforeEveryPort", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M10-raw-repository-content-returned": ["TestStep0025OfflineServicePropagatesLocalesAndNeutralizesRepositoryInstructions", "TestStep0025ProjectionIsCanonicalSecureAndDoesNotPromoteInconclusive"],
+    "M11-unsanitized-secret-in-response": ["TestStep0025ProjectionIsCanonicalSecureAndDoesNotPromoteInconclusive", "TestStep0025FailureIsSanitizedAndRepeatedCallsAreDeterministic"],
+    "M12-path-or-command-accepted": ["TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M13-provider-allowlist-bypass": ["TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M14-unregistered-strategy-bypass": ["TestStep0025ValidationHappensBeforeEveryPort", "TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior"],
+    "M15-empty-target-no-normalized-fallback": ["TestStep0025NormalizesEmptyTargetAndPreservesProviderFailure"],
+    "M16-repository-prompt-injection-controls-server": ["TestStep0025OfflineServicePropagatesLocalesAndNeutralizesRepositoryInstructions", "TestStep0025HostileRepositoryCannotPromoteEvidenceThroughService"],
+    "M17-provider-failure-erased-as-empty": ["TestStep0025NormalizesEmptyTargetAndPreservesProviderFailure"],
+    "M18-context-cancellation-ignored": ["TestStep0025CancellationStartsNoNewProviderCall"],
+    "M19-l4-service-not-injected": ["TestStep0025RealL4CompositionListsAndCallsRecommendationOffline"],
+    "M20-legacy-search-regression": ["TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen", "TestStep0025LegacyValidationErrorsAreByteCompatible", "TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes"],
+    "M21-legacy-benchmark-regression": ["TestStep0025ToolsListIsExactAndLegacySchemasRemainFrozen", "TestStep0025LegacyValidationErrorsAreByteCompatible"],
+    "M22-response-projection-truncated": ["TestStep0025PublicTypesAndJSONTagsAreFrozen", "TestStep0025RecommendUsesInjectedServiceOnceAndPreservesItsProjection"],
+    "M23-equivalent-reordering-changes-canonical-response": ["TestStep0025ProjectionIsCanonicalSecureAndDoesNotPromoteInconclusive", "TestStep0025EquivalentSetPermutationsProduceSameBytes"],
+    "M24-repeat-leaks-state-or-changes-result": ["TestStep0025FailureIsSanitizedAndRepeatedCallsAreDeterministic", "TestStep0025SuccessfulRepeatAndFreshServerAreByteIdentical"]
+  },
+  "opaque_cases": {
+    "O01-provider-error-without-causal-detail": "Unknown",
+    "O02-exhausted-budget-before-assessment": "Unknown",
+    "O03-mutable-or-divergent-identity": "Unknown",
+    "O04-unsupported-evidence-parser": "Unknown",
+    "O05-cancellation-race-for-already-started-call": "Unknown"
+  },
+  "scoring": {
+    "required_mutation_score": 1.0,
+    "negative_denominator": 26,
+    "unknown_for_negative": "surviving mutation",
+    "opaque_in_denominator": false
+  },
+  "post_seal_oracle_gates": [
+    "gofmt on Go oracle files",
+    "JSON parse of oracle-contract.json",
+    "contract and adversarial input hash recheck",
+    "candidate compilation, tests and crystalline-lint intentionally not run by the oracle author"
+  ]
+}

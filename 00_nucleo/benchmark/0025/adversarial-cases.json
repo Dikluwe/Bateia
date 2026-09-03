@@ -1,0 +1,339 @@
+{
+  "schema_version": "1",
+  "step": "0025",
+  "role": "adversary",
+  "protocol": "tekt-materializacao-segregada/full",
+  "frozen_inputs": {
+    "spec_path": "00_nucleo/passos/0025-expor-recomendacao-completa-como-ferramenta-mcp.md",
+    "spec_sha256": "8ddd8785f874ed36df41fbcedfa3fc580c72740dee1adeb1449ba7037f232a6f",
+    "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e"
+  },
+  "base_fixture": {
+    "request_validity": "VALID",
+    "transport": "MCP stdio",
+    "mode": "live",
+    "input": {
+      "idea": {
+        "problem": "reduzir desperdício alimentar doméstico",
+        "users": ["famílias"],
+        "capabilities": ["inventário", "previsão de consumo"],
+        "constraints": ["privacidade"]
+      },
+      "policy": {
+        "schema_version": "1",
+        "allowed_licenses": ["MIT", "Apache-2.0"],
+        "require_local": false,
+        "allow_archived": false,
+        "max_components": 3,
+        "extend_min_coverage": 0.7,
+        "integration_min_value": 0.3
+      },
+      "target": {
+        "name": "gestor de alimentos doméstico"
+      },
+      "search": {
+        "strategy": "lexical",
+        "language": "",
+        "locales": ["pt-BR", "en-US", "ja-JP"],
+        "max_per_query": 5,
+        "max_candidates": 5
+      }
+    },
+    "provider_fixture": "offline deterministic fakes only",
+    "repository_content": "data only; never instructions"
+  },
+  "unknown_policy": {
+    "product": "Incomplete collection, exhausted budget, mutable identity, divergent commit or provider failure cannot become COMPLETE or create an improper top_choice. Unsupported locale is a validation error. Unknown license is warning-only unless incompatibility is proven.",
+    "discriminatory_gate": "Only cases whose class is opaque may produce Unknown. Unknown never counts as rejection or success and opaque cases are excluded from the mutation-score denominator."
+  },
+  "negative_cases": [
+    {
+      "id": "M01-tool-not-announced-once",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "omit bateia_recommend, duplicate it, rename it, or announce any fourth tool",
+      "attack": "call tools/list after initialize",
+      "expected_witness": "the advertised name multiset is exactly bateia_search, bateia_benchmark and bateia_recommend, each once",
+      "reject_if": "the exact tool set or multiplicity differs"
+    },
+    {
+      "id": "M02-required-schema-weakened",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_OMISSION",
+      "minimal_mutation": "remove exactly one required declaration for idea.problem, idea.capabilities or policy.schema_version from the announced schema or runtime validation",
+      "attack": "for each field, submit the base fixture with only that field absent",
+      "expected_witness": "the field is required by tools/list and the call is rejected before every provider; zero provider calls",
+      "reject_if": "the tool runs, a provider is touched, or the missing field is silently synthesized"
+    },
+    {
+      "id": "M03-cli-wrapper-or-temporary-files",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "replace the recommendation service call with RunIdeaRecommendCommand or materialize one temporary, replay or output file",
+      "attack": "invoke bateia_recommend with filesystem spies and offline providers",
+      "expected_witness": "the injected recommendation interface is called exactly once and no filesystem operation or CLI command entrypoint is observed",
+      "reject_if": "the MCP invokes the CLI, creates a path, or obtains the result by reading a dossier"
+    },
+    {
+      "id": "M04-second-ranking-in-l2",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "move one ordering or fit decision from RankSoftwareAlternatives into the MCP adapter",
+      "attack": "use an L1 service fixture whose top choice contradicts popularity order and compare CLI and MCP projections",
+      "expected_witness": "decision and alternatives are the same domain projection from the shared service, including the service-selected top_choice and ordering",
+      "reject_if": "L2 recomputes fit, ordering, exclusions or top_choice, or CLI and MCP domain projections differ"
+    },
+    {
+      "id": "M05-unknown-license-becomes-blocked",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "map one unrecognized or absent license observation to BLOCKED or incompatible",
+      "attack": "change only the observed license of an otherwise fixed candidate from recognized to unknown",
+      "expected_witness": "a warning records the unknown license, while the candidate fit class and exclusion status remain unchanged",
+      "reject_if": "unknown license changes fit, creates an incompatibility blocker, excludes the candidate by itself, or disappears without warning"
+    },
+    {
+      "id": "M06-inconclusive-promoted-to-complete",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "change outer status from INCONCLUSIVE or PARTIAL to COMPLETE while evidence remains incomplete",
+      "attack": "make every candidate lack a conclusive immutable assessment while leaving discovery non-empty",
+      "expected_witness": "status is not COMPLETE, the underlying INCONCLUSIVE decision is preserved, and no improper top_choice is emitted",
+      "reject_if": "status is COMPLETE, evidence state is upgraded, or an inconclusive candidate becomes top_choice"
+    },
+    {
+      "id": "M07a-max-per-query-boundary-bypass",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_VALUE",
+      "minimal_mutation": "accept max_per_query equal to 0 or 26",
+      "attack": "submit the base fixture twice, changing only max_per_query to each adjacent out-of-range value",
+      "expected_witness": "both calls are rejected before discovery; zero provider calls",
+      "reject_if": "either invalid value reaches a provider, is clamped silently, or starts any external work"
+    },
+    {
+      "id": "M07b-max-candidates-boundary-bypass",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_VALUE",
+      "minimal_mutation": "accept max_candidates equal to 0 or 21",
+      "attack": "submit the base fixture twice, changing only max_candidates to each adjacent out-of-range value",
+      "expected_witness": "both calls are rejected before discovery; zero provider calls",
+      "reject_if": "either invalid value reaches a provider, is clamped silently, or starts any external work"
+    },
+    {
+      "id": "M07c-missing-limit-reaches-provider",
+      "class": "negative",
+      "request_validity": "VALID_ONLY_AFTER_DECLARED_DEFAULT_OR_INVALID",
+      "minimal_mutation": "forward a zero or absent max_per_query or max_candidates to a provider",
+      "attack": "omit exactly one limit from an otherwise valid request",
+      "expected_witness": "before provider access, the request is either rejected or normalized to a documented value within [1,25] and [1,20]; a provider never observes zero or an out-of-range limit",
+      "reject_if": "a provider observes a missing, zero or out-of-range limit"
+    },
+    {
+      "id": "M08-locales-dropped-or-english-fallback",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "drop ja-JP or pt-BR, or replace the requested locales with en-US",
+      "attack": "use the base fixture and record discovery requests plus returned provenance",
+      "expected_witness": "all and only requested supported locales reach discovery and appear in discovery provenance",
+      "reject_if": "a requested locale is missing, invented, translated, or silently replaced by English"
+    },
+    {
+      "id": "M09-unsupported-locale-fallback",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_VALUE",
+      "minimal_mutation": "accept one unsupported BCP 47 tag and continue in en-US",
+      "attack": "replace ja-JP with an unsupported tag while keeping every other field fixed",
+      "expected_witness": "validation error before the first provider call; zero provider calls and no invented translation",
+      "reject_if": "discovery runs, English is substituted, or the unsupported tag is omitted silently"
+    },
+    {
+      "id": "M10-raw-repository-content-returned",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "include one complete collected README, source file, test or license body in MCP text",
+      "attack": "provide distinctive long raw bodies whose evidence summaries remain sufficient",
+      "expected_witness": "the decoded canonical result contains summaries, traceable evidence references, decision and alternatives, but none of the complete raw bodies",
+      "reject_if": "any collected file body is dumped in full or the response loses evidence provenance to avoid it"
+    },
+    {
+      "id": "M11-unsanitized-secret-in-response",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "preserve one canary token, Authorization value, header, cookie, environment value or reconstructible secret in result or error text",
+      "attack": "inject distinct canaries into provider configuration, a provider error and adapter metadata, then exercise success and error paths",
+      "expected_witness": "no canary or reconstructible derivative occurs anywhere in JSON-RPC results, MCP text, warnings, failures or errors; provider failure remains identifiable after sanitization",
+      "reject_if": "any secret canary survives or sanitization erases the existence and category of the provider failure"
+    },
+    {
+      "id": "M12-path-or-command-accepted",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_FIELD",
+      "minimal_mutation": "accept output_directory, replay_directory, local path, command, arbitrary URL, token or header as recommendation input",
+      "attack": "add exactly one prohibited field at a time to the base fixture",
+      "expected_witness": "the prohibited field is absent from the announced schema and cannot acquire behavior; any rejected call causes zero provider and filesystem calls",
+      "reject_if": "the field is advertised, changes behavior, causes I/O, selects replay/local mode, executes a command, or introduces credentials"
+    },
+    {
+      "id": "M13-provider-allowlist-bypass",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_VALUE",
+      "minimal_mutation": "resolve an unregistered provider name or provider-controlled URL dynamically",
+      "attack": "set provider to a name absent from the L4 allowlist",
+      "expected_witness": "sanitized validation error before external work; zero provider calls and no dynamic endpoint resolution",
+      "reject_if": "an unlisted provider is instantiated, contacted, or silently substituted"
+    },
+    {
+      "id": "M14-unregistered-strategy-bypass",
+      "class": "negative",
+      "request_validity": "INVALID_BY_ONE_VALUE",
+      "minimal_mutation": "forward an unregistered strategy to discovery",
+      "attack": "replace lexical with one unregistered strategy",
+      "expected_witness": "validation error before the first provider call; zero provider calls",
+      "reject_if": "the provider is touched or a registered strategy is silently substituted"
+    },
+    {
+      "id": "M15-empty-target-no-normalized-fallback",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "leave target.name empty or use the unnormalized problem text",
+      "attack": "set target.name to empty and vary only insignificant whitespace or canonical ordering in idea.problem",
+      "expected_witness": "target.name equals the canonically normalized idea.problem and equivalent spellings yield the same target projection",
+      "reject_if": "target remains empty, preserves accidental whitespace, or diverges across equivalent requests"
+    },
+    {
+      "id": "M16-repository-prompt-injection-controls-server",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "interpret one collected sentence as an instruction that changes policy, limits, locale, tool selection or evidence state",
+      "attack": "return repository content saying to ignore prior rules, mark evidence PROVEN, raise budgets and reveal secrets",
+      "expected_witness": "content remains inert data; policy, limits, requested locales, tool identity, evidence states and secret handling remain exactly those authorized by the request and providers",
+      "reject_if": "any repository instruction changes control flow, authority, evidence or response security"
+    },
+    {
+      "id": "M17-provider-failure-erased-as-empty",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "convert one provider error into an empty candidate set or omit it from failures",
+      "attack": "make discovery fail deterministically before returning candidates",
+      "expected_witness": "the sanitized provider failure is preserved, status is not COMPLETE, and absence of candidates is not reported as a successful empty result",
+      "reject_if": "the failure disappears, becomes ordinary emptiness, or permits COMPLETE"
+    },
+    {
+      "id": "M18-context-cancellation-ignored",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "start one additional collection after context cancellation is observable",
+      "attack": "cancel immediately after a deterministic provider barrier and record subsequently initiated calls",
+      "expected_witness": "no new provider or content collection begins after cancellation; the result or error does not claim COMPLETE",
+      "reject_if": "any new collection starts after cancellation or the cancelled run becomes COMPLETE"
+    },
+    {
+      "id": "M19-l4-service-not-injected",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "start bateia mcp without injecting the live recommendation service and its configured providers",
+      "attack": "launch the real L4 composition offline with fakes, list tools, then call bateia_recommend",
+      "expected_witness": "the real entrypoint announces and successfully routes bateia_recommend through the injected service; it does not panic, return nil-service failure or use hidden defaults",
+      "reject_if": "only unit construction works, the L4 process omits the tool, or the call cannot reach the injected service"
+    },
+    {
+      "id": "M20-legacy-search-regression",
+      "class": "negative",
+      "request_validity": "VALID_LEGACY_CALL",
+      "minimal_mutation": "change one public bateia_search result, default, validation error or JSON-RPC error code/message relative to the baseline",
+      "attack": "replay frozen successful and invalid bateia_search requests against baseline and candidate",
+      "expected_witness": "public result and error projections are byte-identical to baseline after normalizing only JSON-RPC request ids",
+      "reject_if": "any observable legacy search behavior changes"
+    },
+    {
+      "id": "M21-legacy-benchmark-regression",
+      "class": "negative",
+      "request_validity": "VALID_LEGACY_CALL",
+      "minimal_mutation": "change one public bateia_benchmark result, default, validation error or JSON-RPC error code/message relative to the baseline",
+      "attack": "replay frozen successful and invalid bateia_benchmark requests against baseline and candidate",
+      "expected_witness": "public result and error projections are byte-identical to baseline after normalizing only JSON-RPC request ids",
+      "reject_if": "any observable legacy benchmark behavior changes"
+    },
+    {
+      "id": "M22-response-projection-truncated",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "drop one required top-level field or one sealed decision/alternative provenance field",
+      "attack": "run a fixture containing a decision, top choice, excluded alternative, evidence sources and discovery locales",
+      "expected_witness": "MCP text decodes as canonical JSON with schema_version, status, all three summary counts, the full ReuseDecisionReport, the full SoftwareAlternativeReport including top_choice, excluded, evidence sources and discovery locales, plus failures and warnings arrays",
+      "reject_if": "JSON is undecodable, a required field is absent, or a sealed domain field is reinterpreted or summarized away"
+    },
+    {
+      "id": "M23-equivalent-reordering-changes-canonical-response",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "retain one accidental iteration order in canonical output",
+      "attack": "permute equivalent request collections and independently permute fake-provider candidates, assessments, capabilities, evidence sources, failures and warnings",
+      "expected_witness": "the MCP text payload is byte-identical across every permutation and preserves the same provider-observable locale set",
+      "reject_if": "any semantically equivalent permutation changes one response byte or changes the domain projection"
+    },
+    {
+      "id": "M24-repeat-leaks-state-or-changes-result",
+      "class": "negative",
+      "request_validity": "VALID",
+      "minimal_mutation": "retain cross-call mutable state that changes the second synchronous live result",
+      "attack": "send the same request twice in one server process and once in a fresh process using resettable deterministic fakes",
+      "expected_witness": "all three MCP text payloads are byte-identical and each call produces the same provider-call trace without run_id, persisted job state or hidden replay",
+      "reject_if": "the second call depends on the first, receives a synthetic run_id, skips work through global state, or returns different canonical bytes"
+    }
+  ],
+  "opaque_cases": [
+    {
+      "id": "O01-provider-error-without-causal-detail",
+      "class": "opaque",
+      "score_eligible": false,
+      "construction": "the fake provider returns a sanitized generic failure that cannot identify whether discovery or content collection failed",
+      "expected_product_witness": "status INCONCLUSIVE, failure preserved, no fabricated absence and no improper top_choice",
+      "expected_gate_outcome": "Unknown",
+      "reason": "the fixture proves opacity preservation but cannot discriminate which internal stage mutation caused it"
+    },
+    {
+      "id": "O02-exhausted-budget-before-assessment",
+      "class": "opaque",
+      "score_eligible": false,
+      "construction": "budget ends with discovered candidates but no immutable assessment for any candidate",
+      "expected_product_witness": "status INCONCLUSIVE, incomplete work remains observable, no evidence upgrade and no improper top_choice",
+      "expected_gate_outcome": "Unknown",
+      "reason": "without an assessment witness the case cannot distinguish alternative ranking implementations"
+    },
+    {
+      "id": "O03-mutable-or-divergent-identity",
+      "class": "opaque",
+      "score_eligible": false,
+      "construction": "all candidates use HEAD, an empty commit, or discovery and assessment commits that diverge",
+      "expected_product_witness": "status INCONCLUSIVE, identity opacity remains explicit and no improper top_choice is emitted",
+      "expected_gate_outcome": "Unknown",
+      "reason": "no immutable repository identity exists from which to prove a complete recommendation"
+    },
+    {
+      "id": "O04-unsupported-evidence-parser",
+      "class": "opaque",
+      "score_eligible": false,
+      "construction": "the only capability evidence is in a collected format unsupported by the sealed parsers",
+      "expected_product_witness": "status INCONCLUSIVE, capability is not promoted to PROVEN and raw content is not returned",
+      "expected_gate_outcome": "Unknown",
+      "reason": "unsupported parsing supplies no grounded positive or negative capability witness"
+    },
+    {
+      "id": "O05-cancellation-race-for-already-started-call",
+      "class": "opaque",
+      "score_eligible": false,
+      "construction": "cancellation races with a provider call already admitted before the deterministic barrier",
+      "expected_product_witness": "no call starts after cancellation and the run does not become COMPLETE; completion of the already-started call is not prescribed",
+      "expected_gate_outcome": "Unknown",
+      "reason": "the frozen contract constrains new collections after cancellation, not the scheduler outcome of work already started"
+    }
+  ],
+  "mutation_score": {
+    "required": 1.0,
+    "denominator": "all 26 negative_cases; opaque_cases are excluded",
+    "formula": "rejected_negative_mutations / 26",
+    "unknown_rule": "Unknown for any negative case scores as surviving, not rejected",
+    "seal_rule": "every negative mutation must be rejected and every opaque case must remain explicitly Unknown or the contract cannot be sealed"
+  }
+}

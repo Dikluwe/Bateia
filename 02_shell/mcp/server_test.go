@@ -61,8 +61,14 @@ func TestMCPServer_ToolsList(t *testing.T) {
 	}
 
 	tools, ok := resultMap["tools"].([]interface{})
-	if !ok || len(tools) != 2 {
-		t.Fatalf("Esperava 2 ferramentas expostas no MCP, obteve %d", len(tools))
+	if !ok || len(tools) != 3 {
+		t.Fatalf("Esperava 3 ferramentas expostas no MCP, obteve %d", len(tools))
+	}
+	for index, name := range []string{"bateia_search", "bateia_benchmark", "bateia_recommend"} {
+		tool, ok := tools[index].(map[string]interface{})
+		if !ok || tool["name"] != name {
+			t.Fatalf("ferramenta MCP[%d] inválida: %#v", index, tools[index])
+		}
 	}
 }
 

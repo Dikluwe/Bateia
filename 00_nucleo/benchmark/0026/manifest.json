@@ -1,0 +1,171 @@
+{
+  "schema_version": "tekt.materialization.v1",
+  "protocol": "full",
+  "step": "0026",
+  "created_at": "2026-09-01",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "baseline_tracked_diff_sha256": "88642d55b7b6d7c603648ea6353c64e4502b90f18dc2e237f328a302c96062c9",
+  "baseline_status_sha256": "a5f2e1ee2505d26b145c83590e0d193c0249e4da37934cc8f64aba7f1534a6b1",
+  "runtime": {
+    "go": "go1.26.5 linux/amd64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace"
+  },
+  "intent": {
+    "step_path": "00_nucleo/passos/0026-persistir-execucoes-mcp-e-consultar-por-run-id.md",
+    "step_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "predecessor_certificate_path": "00_nucleo/benchmark/0025/certificate.json",
+    "predecessor_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "predecessor_receipt_sha256": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a",
+    "predecessor_verdict": "MCP_RECOMMENDATION_GATEWAY_READY"
+  },
+  "baseline_inputs": {
+    "01_core/domain/recommendation.go": "2fa9bf8e8beba55f22279b33cff20084834e510dc6175ad2ee70b6791f149af6",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "02_shell/mcp/server_test.go": "f7d15d6e29b66c6591e91d832e5c0e1c155641ca345a150610470133a3dd098d",
+    "02_shell/cli/app.go": "b1bc79110459023ac3fa1c2ad0bd0f6133a5b27c06402d562cedabd2c97aa79b",
+    "04_wiring/main.go": "8157b96f7b0f6a5aa9a1f423c2986fc2da0f59aa9743d926236e2167d1df7e1a",
+    "00_nucleo/prompts/02_shell/mcp/server.md": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e"
+  },
+  "contract_path": "00_nucleo/benchmark/0026/contract.md",
+  "frozen_contract_artifacts": {
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "domain_prompt_sha256": "4b38241173be2ad8fac884463d05b328bb8d1a0f327b64340cb1c41cfebe6c12",
+    "usecase_prompt_sha256": "c216d025c134d660c75de6af56faa9d62e30ae7e51709d7ec9a3f66e1fed722f",
+    "store_prompt_sha256": "20527537a9a4a58c4fda10abd539bd978a7358cf738682fa8ba42e0cd5ead2c3",
+    "worker_prompt_sha256": "c596346b247b26c4807d93a2ec0193c6913364ecbf3429fb556c98c6deef1d66",
+    "mcp_prompt_sha256": "a5f3980ca333fa4839f9938a9a88bd6c64876c6882e618a375a8e112aa675126",
+    "cli_prompt_sha256": "661a282ab8dc8a93f74f812bc2be744d08290e6b1cc68601d4aaa367017f8251",
+    "wiring_prompt_sha256": "b91c4419b3be0d448e3cda3e6dd1daf65ec7a503c7f4d609eaf239d238c182d5"
+  },
+  "frozen_verification_artifacts": {
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "oracle_revision": 9,
+    "oracle_contract_sha256": "48b70f43ee69ab83f26393f8ae18cc848f6c3b730e52074ca87737ea5c644d74",
+    "domain_oracle_test_sha256": "64d8bedfec84a3add697ba922fd716d439f593970f98d7c338006b7e2f2ea99e",
+    "domain_oracle_prompt_sha256": "1adae024fa46314eddaf3f3b511b17cb878051b7d9e19713a29d0b2469cf33d4",
+    "usecase_oracle_test_sha256": "574d36f5f29e8f185927f1b74f38c415e11baa7da45f14300b054c31243b8ad0",
+    "usecase_oracle_prompt_sha256": "bae7e73a15f59787780fee81b5799d306835cc0482bbafd80aa55446d8ecd0c0",
+    "usecase_r2_oracle_test_sha256": "f4939ae2d693b7abed97a7b28459e0e36d3015ae881a643ae2950640021bae5d",
+    "usecase_r2_oracle_prompt_sha256": "ca5dbd06171f2b3e97c34ec4a9277546f2d1c309448a15c3c87d58b859617638",
+    "usecase_r3_oracle_test_sha256": "fd583684bcc6ecc4d27140c11861ab8724980d734e3ee1e75f14a7dbf5bbda78",
+    "usecase_r3_oracle_prompt_sha256": "4bebd14b5880392b06dcfce493efaf7351e713cf2afd1c8b1d257c34415e8221",
+    "mcp_oracle_test_sha256": "db62ad11b22d0a3c2aa0117f7df7e4e86eef0eab45be46aaf6130b2dc1702680",
+    "mcp_oracle_prompt_sha256": "53982b164f2f5f92ade2d2c47266f91a08a7a39ed016754bbb6817ed8ddd8fa7",
+    "mcp_r2_oracle_test_sha256": "9c057942b15ea0f8ffa57f121a4a088cdc75ed3fdf465fe3afcadc1200222b18",
+    "mcp_r2_oracle_prompt_sha256": "9d4a7842ab3adb3b149354791fc827644ebebdca1f27efb28ef66764eb76fa21",
+    "mcp_r3_oracle_test_sha256": "c5218b94e715ae8d74993d2aadbe91726e2f6b89afbca633d9f96719a21d14de",
+    "mcp_r3_oracle_prompt_sha256": "f4509726090508858ddb35c3193a72bb998d102114c2ca66a29463b490216694",
+    "store_oracle_test_sha256": "97cf06b69585a6d6d7da335cd577ab4f525204306f9931dfb0309d59cec5e456",
+    "store_oracle_prompt_sha256": "e1323d26f1499bd9ee760ee41785c4a784d5a30d98e7cfdc2896303778820e74",
+    "store_r2_oracle_test_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97",
+    "store_r2_oracle_prompt_sha256": "87fd87d0048e1dd473d86ca70f0161baf4c67d59182ec3b410018a67205d8e7f",
+    "store_r3_oracle_test_sha256": "db7b092179d92568a450b990d816a0a549ef8026bb4e41773de89f362982d862",
+    "store_r3_oracle_prompt_sha256": "dd8e17a93f8810257991d320c84e77e60acff991bcf46e9db0e6f559181c3de9",
+    "worker_oracle_test_sha256": "ecfcdd738d895ca89063d402f719e662431e1022fbce43b0147f387168a73214",
+    "worker_oracle_prompt_sha256": "66c57aa285b6a9ef9b2460b70bc0ae1461acf75bc4f80ac4b4ebec080835a89a",
+    "worker_r2_oracle_test_sha256": "77128cd3c9d89a34591c2b171d7761b01482bbd641a24d988f2d7f9fba27a151",
+    "worker_r2_oracle_prompt_sha256": "2a633bde14941f0859f4c1d510decad9471086e01466a012c0bd991200e6ba17",
+    "wiring_oracle_test_sha256": "502d28b0677ca1e5e0000b0df0b9161fc80183de9af9cd7ec8f80f0caebb2624",
+    "wiring_oracle_prompt_sha256": "815cf5553e7cd47c9000b1b5db70d007dc3181e4b66fff2b22a70c449069e709",
+    "wiring_r2_oracle_test_sha256": "ea96019dc7c9479f1788c822a3eea0f2f884387733abd8bf9256d23985b2a7c3",
+    "wiring_r2_oracle_prompt_sha256": "40fd3cac872b118c2c45f6963ef94fb35f63efd75225399a3ec44d2adffe8f78",
+    "wiring_r3_gate_test_sha256": "f55f6ca0941599f70cdb01c1a11ae9a14935a104b7fccbdb07fcc9e6892cc47e",
+    "wiring_r3_gate_prompt_sha256": "f088de97500bef104d487504a70e3b15b27d234ad6997881d81f5d22c2f0b271",
+    "wiring_r4_gate_test_sha256": "de7483519cb2209055b81d3267b50e4bbb2a76e98caa00d1fd1626e7739a3113",
+    "wiring_r4_gate_prompt_sha256": "f3920fba14d8f02d89c90ae6d2a9bbbbe14e377cf2514037681a8c77203f7e77",
+    "wiring_r5_subject_sha256": "1146a8b919a07bce00ac84bfdbdc6fd03f7a67ee2cac7373b3c4b4ef477c5e35",
+    "wiring_r5_gate_test_sha256": "a3c2565aa3d9a240849241168bc53f78f8cca952a889819163d016991a3365d1",
+    "wiring_r5_gate_prompt_sha256": "0ba1edadd2e80659e9580b289cbbb92e74dc3d4a7aff93dcb10bdefbb596ce9f",
+    "wiring_r6_reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "wiring_r6_conformance_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "wiring_r6_gate_test_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90",
+    "wiring_r6_gate_prompt_sha256": "028a7830082d204530dc84c6e0f11da40c14c38bbee0c11f209c5767403faee2"
+  },
+  "candidate_artifacts": {
+    "crystalline.toml": "d83f168e616693c853ff96d08021b9ad40a5d044518204ab6bc694b53e035101",
+    "00_nucleo/passos/README.md": "be33552e97197aa4251d302afb97f47ce1a1990b6db689259137bad04bb71ff3",
+    "01_core/domain/recommendation_run.go": "b17fbc504485b4620f884f4d84c01fac1120fc835664ff0a9821d3ee515a639d",
+    "01_core/domain/recommendation_run_test.go": "3c9a98e94a1adc354e16c1c0458c72a2c7860452b81ec507787b2592e2c8716f",
+    "01_core/usecase/recommendation_observed.go": "7c7dc682d2a73198504a8240594331ac5c1e903c16fcb52b11ef0e10b584a252",
+    "01_core/usecase/recommendation_observed_test.go": "9164e60f697e9581507bcda8fe687ff077d9ba24c4e01543f49b370fe318aae9",
+    "01_core/usecase/recommendation_run.go": "fcbf5145ced2b39e3ff884e43b2fd1bf85bdd13d4a3d62aed6df3aa9c604f57f",
+    "01_core/usecase/recommendation_run_test.go": "60839b6ba7c7abc2da5b829e28f5f416f194e6a735b716dbac865a43adf315dd",
+    "01_core/usecase/idea_discovery.go": "f521cc3cc4db5a2d7c89843dba54043ff5aab5e4d9a4df899e689ead60085636",
+    "02_shell/cli/app.go": "d979bfdd50a46e7dd9e9bfde8f4f278bdc2a0c41ff020f141f5580be11a6ef4e",
+    "02_shell/cli/durable_mcp.go": "a18646cdcfe4fa6fe18ca1e77bf80b5ed79a9fce6627a8a51e51f973c50ab4dd",
+    "02_shell/mcp/durable_runs.go": "a4f461bcb7a37fe4f35527e0e90b3f69b1bfc57bfe1816918e3285c958808e83",
+    "03_infra/runstore/file_store.go": "6bd373b4884cc59f88cff1a1d631c519dff894835c8da285bff0e6e666112593",
+    "03_infra/runworker/local_queue.go": "8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+    "04_wiring/durable_config.go": "86b1132125c58c583538faecf2cc7c3a1346f884e14f8f0f87838645b2d46519",
+    "04_wiring/durable_config_test.go": "bdd62ee56d5a2a576c6d6c97fa21914a8c00edd3408685554791959fb887e523",
+    "00_nucleo/prompts/04_wiring/durable_config_test.md": "04b2f137092e3c1153f76c35f5996446bc5125bad064e518ff540726295ffe9d",
+    "04_wiring/durable_runs.go": "52b68a19ca0d1a6827e20657c2089d6a036481b0f7417cd8a8037135316fd1e8",
+    "04_wiring/main.go": "ef25d02c4f548bbfaf5db47ca1096caf726c071e32f5a06edf3c2d8dc182b206",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"
+  },
+  "candidate_gate_results": {
+    "go_test_full_passes": 2,
+    "go_test_race": "PASS: domain,usecase,mcp,runstore,runworker,wiring",
+    "go_vet": "PASS",
+    "go_build": "PASS: /tmp/bateia-step0026",
+    "crystalline_lint": "EXIT_0_WITH_EXPECTED_L4_AND_PROTECTED_GATE_WARNINGS",
+    "git_diff_check": "PASS",
+    "live_stdio_tools": 7,
+    "persistent_cursor_secret": "32 bytes, mode 0600",
+    "discriminatory_score": "60/60",
+    "compiled_mutant_runs": "270/270 rejected"
+  },
+  "observables": [
+    "exact ordered seven-tool MCP surface with Step 0025 compatibility",
+    "non-blocking durable start with stable opaque run_id and idempotency",
+    "monotonic lifecycle distinct from recommendation status",
+    "safe cancellation with one immutable terminal winner",
+    "crash-safe reopen and orphan interruption",
+    "published artifact integrity, canonical pagination and bound cursors",
+    "strict validation, finite workers, queue and storage quotas",
+    "no raw repository content, secrets, paths or adapter errors",
+    "L1 without I/O, L2 without L3 and L4 composition only"
+  ],
+  "unknown_policy": "orphaned nonterminal work becomes INTERRUPTED; active missing artifacts are ARTIFACT_NOT_READY; missing terminal artifacts and divergent hashes are integrity errors; unconfirmed cancellation is never promoted to CANCELLED; SUCCEEDED preserves COMPLETE, PARTIAL or INCONCLUSIVE separately",
+  "roles": {
+    "intent_author": {
+      "executor": "user plus frozen Passo 0026",
+      "read": ["origin desires", "Passo 0026", "Step 0025 certificate"],
+      "write": ["none during materialization"]
+    },
+    "coordinator_implementer": {
+      "executor": "/root",
+      "read": ["repository", "canonical artifacts after seal"],
+      "write": ["manifest", "candidate implementation after seal", "integration metadata"],
+      "restriction": "does not author protected contract, independent oracle suite, adversarial cases or final verdict"
+    },
+    "contract_author": {
+      "executor": "/root/contract_0026",
+      "read": ["frozen Step 0026", "Step 0025 certificate", "baseline public surfaces"],
+      "write": ["contract", "L0 production prompts"],
+      "restriction": "no candidate implementation, tests, receipts or verdict"
+    },
+    "oracle_author": {
+      "executor": "/root/oracle_0026",
+      "read": ["frozen step", "contract", "baseline public surfaces"],
+      "write": ["independent Go tests", "mirrored test prompts", "oracle contract"],
+      "restriction": "no candidate implementation, adversarial cases or verdict"
+    },
+    "adversary": {
+      "executor": "/root/adversary_0026",
+      "read": ["frozen step", "contract", "baseline public surfaces"],
+      "write": ["adversarial cases"],
+      "restriction": "no candidate implementation, tests, fixes or verdict"
+    },
+    "verifier": {
+      "executor": "/root/verifier_0026",
+      "read": ["sealed artifacts", "candidate after seal", "gate outputs"],
+      "write": ["receipts", "seal", "certificate", "laudo"],
+      "restriction": "cannot edit contract, oracle suite, adversarial cases or candidate"
+    }
+  },
+  "attestation_target": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

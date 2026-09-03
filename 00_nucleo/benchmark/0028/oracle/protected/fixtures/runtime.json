@@ -1,0 +1,28 @@
+{
+  "schema_version": "tekt.step0028.runtime-fixtures.v1",
+  "cases": {
+    "source_hash_prequeue": {
+      "source": {"run_id":"run_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","run_kind":"RECOMMENDATION","artifact":"mechanism_catalog","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+      "published_index_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "lifecycle": "SUCCEEDED",
+      "expected_error": "INTEGRITY_ERROR",
+      "expected_call_counters": {"resolve_idempotency":0,"reserve_queue":0,"generate_run_id":0,"create_run":0},
+      "canary": "ORACLE_TEST_CANARY_SOURCE_HASH_DO_NOT_PUBLISH"
+    },
+    "offline_replay": {
+      "catalog_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+      "capture_ids": ["capture-ledger","capture-market","capture-target"],
+      "permutations": [["capture-ledger","capture-market","capture-target"],["capture-target","capture-ledger","capture-market"]],
+      "expected_artifacts": ["mechanism_catalog","mechanism_gaps","architecture_comparison","improvement_hypotheses","hypothesis_gaps","validation_plans","synthesis_provenance"],
+      "network_calls": 0,
+      "comparison": "BYTE_IDENTICAL"
+    },
+    "tool_registry": {
+      "expected_names": ["bateia_search","bateia_benchmark","bateia_recommend","bateia_start_recommendation","bateia_get_run","bateia_get_artifact","bateia_cancel_run","bateia_list_connectors","bateia_start_market_discovery","bateia_start_improvement_synthesis"],
+      "preserved_prefix_count": 9,
+      "new_tool_index_one_based": 10,
+      "new_tool_description": "Inicia síntese durável de hipóteses de melhoria a partir de mecanismos e observações imutáveis",
+      "required_top_level_fields": ["idempotency_key","idea","source_artifacts","proposals","policy"]
+    }
+  }
+}

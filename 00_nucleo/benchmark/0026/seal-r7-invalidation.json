@@ -1,0 +1,114 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0026",
+  "revision": "R7-INVALIDATION-1",
+  "verdict": "R7_SEAL_INVALIDATED",
+  "created_at": "2026-09-01T21:50:47Z",
+  "invalidated_seal": {
+    "path": "00_nucleo/benchmark/0026/seal-r7.json",
+    "sha256": "be931f3a7731d7ab63e3081654b7073c7ae05bda126f1189ab3ca1bffca6876c",
+    "revision": "R7",
+    "retained_as_historical": true,
+    "usable_to_authorize_final_verification": false
+  },
+  "invalidated_receipt": {
+    "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r7.json",
+    "sha256": "e9812fc3ea290620fbdca89237a2a69955b124d0500cfe0a68ede077bbd8e99a",
+    "retained_as_historical": true,
+    "finding": "The R7 receipt remains valid evidence for the isolated mutation matrix and syntax correction, but it omitted the mandatory normal-package discovery gate."
+  },
+  "prior_invalidation": {
+    "path": "00_nucleo/benchmark/0026/seal-r6-invalidation.json",
+    "sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "preserved": true
+  },
+  "trigger": {
+    "kind": "GLOBAL_GATE_CONTRADICTION_DISCOVERABLE_MUTANT_PACKAGES",
+    "reported_command": "GOCACHE=/tmp/bateia-go-cache-0026 go test -count=1 ./...",
+    "reported_effect": "The Go wildcard discovers all thirty deliberately failing R6 mutant packages as normal repository packages.",
+    "verifier_full_global_command_executed": false,
+    "verifier_reason_for_not_executing_full_global_command": "The live repository contains a partial candidate outside this audit; candidate behavior was kept out of scope.",
+    "verifier_discovery_command": "GOCACHE=/tmp/bateia-go-cache-0026-r7-invalidation go list ./...",
+    "discoverable_mutant_packages": 30,
+    "verifier_isolated_confirmation_command": "GOCACHE=/tmp/bateia-go-cache-0026-r7-invalidation go test -count=1 ./04_wiring/r6_gate/mutants/...",
+    "isolated_confirmation_exit_code": 1,
+    "isolated_confirmation_failed_packages": 30,
+    "isolated_confirmation_output_sha256": "817d0441070f43b3aa81826f63e692c8e058b0043c904d8b37da67595eaae8d6",
+    "reproduced_without_candidate_evaluation": true
+  },
+  "affected_packages": [
+    "M01", "M04", "M09", "M11", "M15", "M16", "M18", "M25",
+    "M27", "M28", "M29", "M30", "M31", "M32", "M35", "M36",
+    "M38", "M44", "M45", "M46", "M47", "M48", "M51", "M52",
+    "M53", "M54", "M55", "M56", "M59", "M60"
+  ],
+  "frozen_state_at_invalidation": {
+    "manifest_sha256": "bcc61d7ded7b9684798aed1d9be7d312a67e597ea9f0dff1a1e5081e2d90c7d6",
+    "oracle_contract_sha256": "170310ab8c216578fb223c16c525dac254c4144b0f89231f110d073e21b0f659",
+    "r6_driver_sha256": "8f4c2232560a36a7e1e5c28e7ec5394e0a9022a35f0edb5dbcfc52432f924fa1",
+    "r6_common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97"
+  },
+  "root_cause": {
+    "finding": "Each permanent mutation fixture is a regular package below 04_wiring/r6_gate/mutants and contains conformance_test.go whose intended result is failure. The ./... wildcard therefore runs mutation-test failures as ordinary project tests.",
+    "go_tool_rule": "Directory and file names beginning with dot or underscore are ignored by the go tool, as are directories named testdata.",
+    "driver_mutation_gate_passes": true,
+    "normal_global_gate_can_pass_with_current_layout": false,
+    "contradiction": "A mutation driver must require every mutant process to fail, while the mandatory normal go test ./... gate must not execute those mutant packages."
+  },
+  "why_r7_revalidation_did_not_detect_it": {
+    "finding": "R7 repeated the isolated reference/variant matrix and preserved the 60/60 evidence, but neither R6 nor R7 asserted that normal go list ./... excludes mutation fixtures.",
+    "isolated_gate_is_not_global_gate": true,
+    "hash_and_diff_checks_are_not_package_discovery_checks": true,
+    "consequence": "The mutation score remains historical evidence, but R7 cannot serve as the active seal for final candidate verification."
+  },
+  "candidate_scope": {
+    "source_read_by_verifier": false,
+    "modified": false,
+    "behavior_executed": false,
+    "evaluated_for_verdict": false,
+    "full_go_test_all_invoked_by_verifier": false
+  },
+  "affected_phases": {
+    "first_affected": "ORACLE_LAYOUT_FREEZE",
+    "must_repeat": [
+      "oracle-author fixture relocation or temporary materialization design",
+      "manifest and oracle-contract path/hash binding",
+      "normal go list package-discovery exclusion check",
+      "isolated discriminatory mutation matrix",
+      "mandatory normal go test ./... gate",
+      "seal"
+    ],
+    "r7_usable_for_final_verdict": false
+  },
+  "required_recovery_procedure": [
+    "The oracle-author moves permanent mutant packages beneath a directory ignored by go list, such as testdata, or changes the driver to materialize the frozen variants only in temporary directories.",
+    "The correction preserves all thirty mutant source contents, their thirty canonical diff hashes and the exact common conformance suite; any intentional hash/path change is recorded explicitly in the new oracle contract and manifest.",
+    "The mutation driver is updated to locate or materialize the hidden variants explicitly and must still observe nine reference passes and 270 causal mutant failures with the same normalized witness map.",
+    "A package-discovery assertion proves `go list ./...` returns zero mutation-fixture packages and the normal `go test ./...` path cannot execute deliberate mutant failures.",
+    "The independent verifier rechecks strict JSON, hashes, canonical diffs, common-suite identity, disk boundaries, predecessor continuity, positive/opaque outcomes, isolated 3x3 stability and the normal global gate before issuing a replacement receipt and seal."
+  ],
+  "acceptance_checks_for_replacement_seal": {
+    "discoverable_mutant_packages_under_go_list_all": 0,
+    "normal_global_gate_executes_mutants": false,
+    "permanent_or_materialized_mutant_variants": 30,
+    "canonical_diff_witnesses_preserved": 30,
+    "reference_subprocesses_required": 9,
+    "mutant_subprocesses_required": 270,
+    "required_mutation_score": 1.0,
+    "required_survivors": 0
+  },
+  "historical_artifacts_preserved": [
+    "00_nucleo/benchmark/0026/discriminatory-receipt.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r2.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r3.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r4.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r5.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r7.json",
+    "00_nucleo/benchmark/0026/seal.json",
+    "00_nucleo/benchmark/0026/seal-r6-invalidation.json",
+    "00_nucleo/benchmark/0026/seal-r7.json"
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "The layout contradiction was discovered after partial candidate existence. Oracle repair and any replacement seal cannot claim strong pre-candidate temporal independence; candidate source and behavior must remain out of oracle-design scope, and later candidate verification must be separately bound."
+}

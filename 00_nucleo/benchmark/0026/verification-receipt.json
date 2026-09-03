@@ -1,0 +1,199 @@
+{
+  "schema_version": "tekt.verification-receipt.v1",
+  "step": "0026",
+  "contract_revision": 9,
+  "candidate_revision": "post-M44-M45-M55-fix-2",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "verdict": "MCP_DURABLE_RUNS_READY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "executor": "/root/verifier_0026",
+  "created_at": "2026-09-01T23:23:52Z",
+  "scope": "Independent post-seal evaluation of the exact Step 0026 durable asynchronous MCP candidate against the R9 observable contract, protected oracle suites, hidden compiled variants, adversarial cases and certified Step 0025 predecessor.",
+  "candidate_authority": {
+    "read": true,
+    "compiled": true,
+    "executed": true,
+    "evaluated": true,
+    "edited": false,
+    "contract_or_oracle_or_adversarial_edited": false
+  },
+  "sealed_chain": {
+    "active_seal_path": "00_nucleo/benchmark/0026/seal-r9.json",
+    "active_seal_sha256": "f332530888df9f5c1b8cf02de49dbea3c269ac33d38b4bcae26e7326784924a9",
+    "discriminatory_receipt_path": "00_nucleo/benchmark/0026/discriminatory-receipt-r9.json",
+    "discriminatory_receipt_sha256": "9b0e5fc0008041532d79de2ac68a4f772e22a0c3268f7ea7e3250bbf9bb5c3b3",
+    "final_manifest_sha256": "8d3c21973c0f3ed89d7eca5ecf7f5455454c4e54a0dc9de490575e80972439df",
+    "candidate_receipt_sha256": "6802260a7b997b6d047083268d2f64bcbcdf0a0112380741c6f5b27e20fa8237",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "oracle_contract_sha256": "48b70f43ee69ab83f26393f8ae18cc848f6c3b730e52074ca87737ea5c644d74",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "predecessor_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "protected_inputs_unchanged_during_final_verification": true
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "negative_mutations_rejected": 60,
+    "total_negative_mutations": 60,
+    "survivors": 0,
+    "reference_subprocesses_passed": 9,
+    "compiled_mutant_subprocesses_rejected": 270,
+    "positive_controls": {
+      "P01": "Preserved",
+      "P02": "Preserved",
+      "P03": "Preserved",
+      "P04": "Preserved",
+      "P05": "Preserved"
+    },
+    "opaque_outcomes": {
+      "O01": "Unknown",
+      "O02": "Unknown",
+      "O03": "Unknown",
+      "O04": "Unknown",
+      "O05": "Unknown"
+    },
+    "unknown_negative_counted_as_rejected": false,
+    "result": "PASS"
+  },
+  "resolved_candidate_findings": [
+    {
+      "id": "B01-M45-HARDLINKED-CURSOR-SECRET",
+      "status": "RESOLVED",
+      "same_witness_result": "PASS_10_REPETITIONS",
+      "candidate_regression_result": "PASS_50_REPETITIONS_AND_RACE_5"
+    },
+    {
+      "id": "B02-M55-L1-MUTEX",
+      "status": "RESOLVED",
+      "static_result": "NO_IO_MUTEX_TIMER_GOROUTINE_IN_STEP0026_L1",
+      "cancel_result": "PASS_25_REPETITIONS_AND_RACE_5"
+    },
+    {
+      "id": "B03-M44-SYMLINKED-DURABLE-ROOT",
+      "status": "RESOLVED",
+      "same_real_binary_result": "REJECTED_BEFORE_EXTERNAL_MUTATION",
+      "external_target_after_attempt": "mode 0755, empty",
+      "candidate_regression_result": "PASS_50_REPETITIONS_AND_RACE_5"
+    }
+  ],
+  "observable_results": {
+    "exact_ordered_seven_tool_surface": "PASS",
+    "legacy_first_three_schemas_and_behavior": "PASS",
+    "nonblocking_start_and_idempotent_identity": "PASS",
+    "monotonic_lifecycle_and_separate_recommendation_status": "PASS",
+    "queued_and_running_cancellation_boundaries": "PASS",
+    "crash_safe_reopen_and_orphan_interruption": "PASS",
+    "artifact_integrity_and_canonical_pagination": "PASS",
+    "hmac_cursor_binding_and_persistent_secret": "PASS",
+    "strict_validation_before_ports": "PASS",
+    "finite_workers_queue_and_storage_quotas": "PASS",
+    "public_error_and_canary_sanitization": "PASS",
+    "shared_sync_async_recommendation_orchestration": "PASS",
+    "predecessor_frozen_hashes": "PASS"
+  },
+  "architecture_and_configuration": {
+    "step0026_l1_has_io_mutex_timer_or_goroutine": false,
+    "l2_imports_l3_or_l4": false,
+    "l3_imports_l2_or_l4": false,
+    "l4_business_policy_detected": false,
+    "root_components_lstat_before_mutation": true,
+    "existing_tree_rejects_symlink_nonregular_and_nlink_not_one": true,
+    "cursor_secret_opened_nofollow_and_fstat_validated": true,
+    "normal_go_list_package_count": 29,
+    "normal_go_list_hidden_mutant_count": 0,
+    "crystalline_exclusions_are_exact_protected_gate_directories": true,
+    "production_canary_literal_scan": "PASS"
+  },
+  "gates": [
+    {
+      "name": "candidate-and-protected-hash-integrity",
+      "result": "PASS",
+      "detail": "21 candidate hashes, 29 protected suite/prompt pairs, contract, adversarial, oracle, R9 receipt/seal, intent and predecessor certificate matched."
+    },
+    {
+      "name": "independent-M45-original-overlay",
+      "command": "GOCACHE=/tmp/bateia-go-cache-0026-verifier-r3-overlay go test -overlay=/tmp/step0026-verifier-overlay.json -count=10 ./04_wiring -run '^TestVerifierRejectsHardlinkedCursorSecret$'",
+      "result": "PASS"
+    },
+    {
+      "name": "candidate-M44-M45-regressions",
+      "command": "go test -count=50 ./04_wiring -run 'TestDurable(CursorSecretRejectsHardlinkBeforeChmod|ConfigRejectsSymlinkRootWithoutExternalMutation)'",
+      "result": "PASS"
+    },
+    {
+      "name": "candidate-M44-M45-regressions-race",
+      "command": "go test -race -count=5 ./04_wiring -run 'TestDurable(CursorSecretRejectsHardlinkBeforeChmod|ConfigRejectsSymlinkRootWithoutExternalMutation)'",
+      "result": "PASS"
+    },
+    {
+      "name": "independent-M44-real-binary",
+      "command": "BATEIA_RUN_ROOT=<symlink-root> /tmp/bateia-step0026-verifier-final-r3 mcp",
+      "result": "PASS",
+      "detail": "Exited with durable run root is invalid; the external directory remained mode 0755 and empty."
+    },
+    {
+      "name": "independent-full-go-suite",
+      "command": "GOCACHE=/tmp/bateia-go-cache-0026-verifier-r3-full go test -count=1 ./...",
+      "result": "PASS",
+      "detail": "Loopback permitted for legacy httptest packages; authoritative R6 matrix completed in 57.991s."
+    },
+    {
+      "name": "coordinator-full-go-suite",
+      "command": "go test -count=1 ./...",
+      "result": "PASS_REPORTED_TWICE",
+      "detail": "R6 durations 49.139s and 84.237s."
+    },
+    {
+      "name": "race-six-official-packages",
+      "command": "go test -race -count=1 ./01_core/domain ./01_core/usecase ./02_shell/mcp ./03_infra/runstore ./03_infra/runworker ./04_wiring",
+      "result": "PASS"
+    },
+    {
+      "name": "vet",
+      "command": "go vet ./...",
+      "result": "PASS"
+    },
+    {
+      "name": "build",
+      "command": "go build -o /tmp/bateia-step0026-verifier-final-r3 ./04_wiring",
+      "result": "PASS"
+    },
+    {
+      "name": "live-stdio-tools-and-secret",
+      "result": "PASS",
+      "detail": "Exactly seven ordered tools; cursor.key size 32, mode 0600 and nlink 1."
+    },
+    {
+      "name": "crystalline-architecture",
+      "command": "crystalline-lint .",
+      "result": "PASS_WITH_EXPECTED_WARNINGS",
+      "detail": "Exit 0; V12 is confined to L4 composition/tests and V7 to prompts of the four protected excluded gates."
+    },
+    {
+      "name": "diff-and-json-integrity",
+      "command": "git diff --check plus strict duplicate-key JSON parse",
+      "result": "PASS"
+    }
+  ],
+  "runtime": {
+    "go": "go1.26.5 linux/amd64",
+    "kernel": "Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace with controlled localhost capability for full-suite httptest"
+  },
+  "certificate": {
+    "authorized": true,
+    "path": "00_nucleo/benchmark/0026/certificate.json"
+  },
+  "laudo": {
+    "authorized": true,
+    "path": "00_nucleo/laudos/0026-persistir-execucoes-mcp-e-consultar-por-run-id.md"
+  },
+  "limitations": [
+    "Verification ran in a shared worktree and does not attest strong process, filesystem or temporal isolation.",
+    "Oracle revisions R7-R9 and candidate corrections M44/M45/M55 occurred after candidate existence; exact hashes, invalidation artifacts and unchanged independent witnesses provide traceability rather than strong pre-candidate temporal independence.",
+    "O01-O05 remain Unknown: process tests do not prove device/controller power-loss durability, universal filesystem semantics, hidden cancellation ordering, entropy magnitude from finite samples or forcibly killed shutdown-hook ordering.",
+    "The certificate covers only the exact recorded local single-process stdio fragment and hashes; it does not authorize resume, replay, deletion, expiration, multiuser or remote transport behavior."
+  ]
+}

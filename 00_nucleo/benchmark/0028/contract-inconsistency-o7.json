@@ -1,0 +1,120 @@
+{
+  "schema_version": "tekt.step0028.contract-inconsistency-public.v1",
+  "visibility": "PUBLIC",
+  "step": "0028",
+  "finding": "CONFIRMED",
+  "phase": "PRE_CANDIDATE_PRE_SEAL_CONTRACT_AUDIT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "authority": "SEGREGATED_VERIFIER",
+  "read_scope": [
+    "00_nucleo/benchmark/0028/contract.md",
+    "00_nucleo/benchmark/0028/mechanism-rules.json",
+    "00_nucleo/benchmark/0028/adversarial-cases.json"
+  ],
+  "prohibited_inputs_read": {
+    "candidate": false,
+    "oracle_internals": false
+  },
+  "causal_inputs": {
+    "contract_revision": "R3",
+    "contract_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_revision": "tekt.mechanism-rules.v2",
+    "mechanism_rules_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "p02_canonical_entry_sha256": "9eecb9e939299970b253ba43676e7c229c6bd4b36793d44e1ecebf1533335fe4"
+  },
+  "public_claims": {
+    "positive_control": {
+      "id": "P02",
+      "required_input_family": "DOCUMENTATION_ONLY",
+      "required_mechanism_status": "PARTIAL",
+      "required_gate_classification": "Preserved"
+    },
+    "contract_r3": [
+      "EvidenceSource.RuleID must have a literal matching entry in accepted_evidence_rules",
+      "role and witness_kind are obtained only from the matching catalog entry",
+      "witness_kind DOCUMENTATION requires EvidenceSource.Kind documentation",
+      "witness_kind IMPLEMENTATION accepts only EvidenceSource.Kind file or symbol",
+      "PARTIAL requires at least one positive catalog-bound source with parent status PROVEN or PARTIAL and central fields"
+    ],
+    "mechanism_rules_v2": {
+      "rule_count": 4,
+      "accepted_evidence_rule_count": 28,
+      "witness_kind_counts": {
+        "IMPLEMENTATION": 8,
+        "TEST": 7,
+        "SCHEMA": 2,
+        "CONFIGURATION": 2,
+        "MANIFEST": 1,
+        "COUNTEREVIDENCE": 8,
+        "DOCUMENTATION": 0
+      }
+    }
+  },
+  "structural_proof": [
+    {
+      "step": 1,
+      "predicate": "A documentation-only source can participate positively only through a literal accepted_evidence_rules entry whose catalog-derived witness_kind is structurally compatible with EvidenceSource.Kind documentation.",
+      "result": "REQUIRED_BY_R3"
+    },
+    {
+      "step": 2,
+      "predicate": "The frozen catalog contains any accepted_evidence_rules entry with witness_kind DOCUMENTATION.",
+      "result": "FALSE",
+      "observed_count": 0
+    },
+    {
+      "step": 3,
+      "predicate": "A documentation source can substitute for an IMPLEMENTATION catalog entry.",
+      "result": "FALSE",
+      "contractual_compatibility": "IMPLEMENTATION accepts file or symbol only"
+    },
+    {
+      "step": 4,
+      "predicate": "A documentation-only input can supply the positive catalog-bound source required for a public PARTIAL mechanism under the frozen R3 plus rules v2 pair.",
+      "result": "FALSE"
+    },
+    {
+      "step": 5,
+      "predicate": "P02 can simultaneously remain documentation-only, materialize PARTIAL and be classified Preserved under the frozen causal inputs.",
+      "result": "FALSE"
+    }
+  ],
+  "inconsistency": {
+    "kind": "UNSATISFIABLE_POSITIVE_CONTROL_UNDER_FROZEN_CONTRACT_CATALOG_PAIR",
+    "affected_case_ids": ["P02"],
+    "contract_clause_scope": [
+      "R3 section 5 literal RuleID catalog binding",
+      "R3 section 5 catalog-derived role and witness_kind",
+      "R3 section 5 source-kind compatibility",
+      "R3 section 5 PARTIAL minimum positive source",
+      "R3 section 13 documentation without implementation ceiling",
+      "R3 section 15 positive documentation-only observable"
+    ],
+    "catalog_scope": [
+      "all accepted_evidence_rules entries in tekt.mechanism-rules.v2"
+    ]
+  },
+  "invalidation_scope": {
+    "immediate": [
+      "P02 is not a valid Preserved positive control for the frozen R3 plus rules v2 pair",
+      "a discriminatory gate requiring P02 Preserved cannot establish a valid 12 of 12 positive result"
+    ],
+    "downstream_after_normative_resolution": [
+      "regenerate any P02-derived executable fixture or subject",
+      "regenerate any oracle calibration that encodes P02 as Preserved",
+      "rerun the full pre-candidate discriminatory gate from the first changed protected input"
+    ],
+    "seal_policy": "NO_RECEIPT_OR_SEAL_MAY_BE_EMITTED_FROM_THIS_INCONSISTENT_INPUT_SET"
+  },
+  "normative_resolution": {
+    "status": "RESERVED_TO_CONTRACT_AUTHORITY",
+    "solution_selected": false,
+    "contract_modified": false,
+    "mechanism_rules_modified": false,
+    "adversarial_cases_modified": false
+  },
+  "receipt_emitted": false,
+  "seal_emitted": false,
+  "certificate_or_final_verdict_emitted": false
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": "tekt.certificate.v1",
+  "step": "0026",
+  "contract_revision": 9,
+  "candidate_revision": "post-M44-M45-M55-fix-2",
+  "verdict": "MCP_DURABLE_RUNS_READY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "created_at": "2026-09-01T23:23:52Z",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "scope": "The exact local single-process stdio MCP durable-run implementation: additive seven-tool surface, asynchronous idempotent start, lifecycle/status separation, cancellation, crash-safe reopen, safe artifact pagination, bounded queue/store, shared recommendation orchestration and Step 0025 compatibility.",
+  "causal_chain": {
+    "final_manifest_sha256": "8d3c21973c0f3ed89d7eca5ecf7f5455454c4e54a0dc9de490575e80972439df",
+    "r9_seal_sha256": "f332530888df9f5c1b8cf02de49dbea3c269ac33d38b4bcae26e7326784924a9",
+    "r9_discriminatory_receipt_sha256": "9b0e5fc0008041532d79de2ac68a4f772e22a0c3268f7ea7e3250bbf9bb5c3b3",
+    "candidate_receipt_sha256": "6802260a7b997b6d047083268d2f64bcbcdf0a0112380741c6f5b27e20fa8237",
+    "final_verification_receipt_sha256": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2",
+    "step_0025_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d"
+  },
+  "sealed_inputs": {
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "oracle_contract_sha256": "48b70f43ee69ab83f26393f8ae18cc848f6c3b730e52074ca87737ea5c644d74",
+    "r9_l4_oracle_test_sha256": "502d28b0677ca1e5e0000b0df0b9161fc80183de9af9cd7ec8f80f0caebb2624",
+    "r9_l4_oracle_prompt_sha256": "815cf5553e7cd47c9000b1b5db70d007dc3181e4b66fff2b22a70c449069e709",
+    "r6_driver_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90",
+    "r6_reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "r6_common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97"
+  },
+  "critical_implementation_hashes": {
+    "01_core/domain/recommendation_run.go": "b17fbc504485b4620f884f4d84c01fac1120fc835664ff0a9821d3ee515a639d",
+    "01_core/usecase/recommendation_run.go": "fcbf5145ced2b39e3ff884e43b2fd1bf85bdd13d4a3d62aed6df3aa9c604f57f",
+    "01_core/usecase/recommendation_observed.go": "7c7dc682d2a73198504a8240594331ac5c1e903c16fcb52b11ef0e10b584a252",
+    "02_shell/mcp/durable_runs.go": "a4f461bcb7a37fe4f35527e0e90b3f69b1bfc57bfe1816918e3285c958808e83",
+    "03_infra/runstore/file_store.go": "6bd373b4884cc59f88cff1a1d631c519dff894835c8da285bff0e6e666112593",
+    "03_infra/runworker/local_queue.go": "8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+    "04_wiring/durable_config.go": "86b1132125c58c583538faecf2cc7c3a1346f884e14f8f0f87838645b2d46519",
+    "04_wiring/durable_runs.go": "52b68a19ca0d1a6827e20657c2089d6a036481b0f7417cd8a8037135316fd1e8",
+    "04_wiring/main.go": "ef25d02c4f548bbfaf5db47ca1096caf726c071e32f5a06edf3c2d8dc182b206",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "rejected_negative_mutations": 60,
+    "total_negative_mutations": 60,
+    "survivors": 0,
+    "positive_controls_P01_P05": "Preserved",
+    "opaque_O01_O05": "Unknown"
+  },
+  "resolved_final_findings": {
+    "M44_symlinked_root_external_mutation": "PASS_WITH_SAME_REAL_BINARY_WITNESS",
+    "M45_hardlinked_cursor_secret": "PASS_WITH_SAME_INDEPENDENT_OVERLAY",
+    "M55_mutex_in_L1": "PASS_WITH_STATIC_SCAN_AND_REPEATED_RACE_CANCEL_TESTS"
+  },
+  "final_gates": {
+    "go_test_all_independent": "PASS",
+    "go_test_all_coordinator_twice": "PASS_REPORTED",
+    "r6_reference_subprocesses": 9,
+    "r6_mutant_subprocesses_rejected": 270,
+    "go_test_race_six_packages": "PASS",
+    "go_vet_all": "PASS",
+    "go_build_main": "PASS",
+    "crystalline_lint": "PASS_WITH_EXPECTED_L4_AND_PROTECTED_GATE_WARNINGS",
+    "git_diff_check": "PASS",
+    "strict_json_and_hashes": "PASS",
+    "live_stdio_tools": 7,
+    "persistent_cursor_secret": "32 bytes, mode 0600, nlink 1",
+    "normal_go_list_hidden_mutants": 0
+  },
+  "architecture": {
+    "step0026_l1_io_mutex_timer_goroutine": false,
+    "l2_depends_on_l3_or_l4": false,
+    "l3_depends_on_l2_or_l4": false,
+    "l4_business_policy": false,
+    "same_recommendation_service_for_sync_and_async": true,
+    "durable_root_rejects_symlink_before_external_mutation": true,
+    "existing_cursor_secret_rejects_symlink_hardlink_and_nonregular": true
+  },
+  "limitations": [
+    "Execution used a shared worktree and does not provide strong process, filesystem or temporal isolation attestation.",
+    "R7-R9 oracle refinements and final candidate corrections occurred after candidate existence; this certificate relies on immutable hashes, invalidation traceability and repeated unchanged witnesses.",
+    "O01-O05 remain Unknown and no process-level test is generalized to device power-loss durability, every filesystem implementation, hidden cancellation ordering, entropy magnitude or forcibly killed shutdown ordering.",
+    "The verdict covers only the exact local single-writer stdio implementation and versions recorded here; resume, replay, deletion, expiration, multiuser and remote transport remain outside scope."
+  ],
+  "invalidation_rule": "Any change to a recorded sealed input, candidate artifact, receipt hash, tool surface, protected exclusion, root/secret safety rule or certified observable requires a new verification receipt and certificate."
+}

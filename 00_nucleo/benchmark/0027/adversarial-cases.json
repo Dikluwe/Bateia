@@ -1,0 +1,954 @@
+{
+  "schema_version": "tekt.adversarial-cases.v1",
+  "step": "0027",
+  "contract_revision": 1,
+  "authority": {
+    "role": "ADVERSARY",
+    "executor": "/root/adversary_0027",
+    "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+    "write_scope": [
+      "00_nucleo/benchmark/0027/adversarial-cases.json"
+    ],
+    "candidate_implementation_read": false,
+    "protected_step_0027_oracles_corpus_registry_fixtures_receipts_seals_certificate_or_verdict_read": false
+  },
+  "frozen_inputs": {
+    "intent_sha256": "83f80a9603bc566690ddfb98a94ca18f4bd57b528a177c56d4ba5873b74f4c15",
+    "contract_sha256": "ac69fcaf3668097432d36137477f791ec0e95c193689fbbe32b1442960e6c037",
+    "source_selection_sha256": "cd833b03cd84a933b587da9a034fdb6d10c023fee423049a27e41de9d0539460",
+    "manifest_sha256": "7661f40f1b1b01cf0c99196bec9f81f7c462c9a9c529888c54dea8485844c2a3",
+    "adr_0002_sha256": "b457fadd55d6328c2afce969b92a527b461edab9094b1bef66fcfebe71b79a68",
+    "certificate_0025_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "certificate_0026_sha256": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed"
+  },
+  "score_policy": {
+    "formula": "valid_negative_mutations_classified_Violated / valid_negative_mutations",
+    "eligible_class": "negative",
+    "eligible_expected_classification": "Violated",
+    "valid_negative_mutations": 90,
+    "denominator": 90,
+    "required_score": 1.0,
+    "positive_controls_excluded": 5,
+    "opaque_cases_excluded": 5,
+    "unknown_never_counts_as_rejection": true
+  },
+  "coverage_index": {
+    "minimum_22_mutations": ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20", "M21", "M22"],
+    "tools_schema_compatibility": ["M21", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30", "M31", "M32", "M84", "M85", "M86"],
+    "locale_market_listing_publisher": ["M01", "M02", "M03", "M04", "M43", "M44", "M45", "M61"],
+    "proposal_injection": ["M05", "M06", "M23", "M71", "M72", "M74"],
+    "registry_ssrf": ["M07", "M34", "M35", "M36", "M37", "M38", "M39", "M48"],
+    "fairness_budget_cancel": ["M09", "M42", "M51", "M52", "M53", "M54"],
+    "provider_failures_empty": ["M10", "M41", "M49", "M50", "M61", "M69"],
+    "partial_preservation": ["M11", "M53", "M69", "M70"],
+    "identity_merge_repo_evidence_popularity": ["M12", "M13", "M14", "M15", "M16", "M17", "M46", "M47", "M55", "M56", "M57", "M58", "M59", "M60"],
+    "unique_store_queue_idempotency_recovery": ["M18", "M64", "M65", "M66", "M67", "M68", "M87", "M88"],
+    "artifacts_safe_content_canary": ["M20", "M71", "M72", "M73", "M74", "M81", "M86"],
+    "replay_integrity": ["M19", "M75", "M76", "M82"],
+    "apple_allowlist": ["M35", "M36", "M37", "M38", "M39", "M40", "M41", "M42", "M43", "M44", "M46", "M47", "M48", "M49", "M50", "M77", "M78"],
+    "lineage_layers": ["M79", "M80", "M81", "M89", "M90"],
+    "refinement_receipts": ["M22", "M83", "M84", "M85", "M86"]
+  },
+  "cases": [
+    {
+      "id": "M01",
+      "class": "negative",
+      "target": "dimension.query_locale",
+      "mutation": "Copy query_locale into publisher_country and label a ja-JP query result as published in JP.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Execute ja-JP against market US with an Apple item lacking publisher country.", "assert": "query_locale is ja-JP while publisher_countries remains an empty array."},
+      "rationale": "Query language is provenance of the search, never geographic origin."
+    },
+    {
+      "id": "M02",
+      "class": "negative",
+      "target": "planner.market",
+      "mutation": "Derive country JP from the BCP 47 suffix of ja-JP instead of honoring the explicit market US.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Plan the mandatory cross-control ja-JP/US.", "assert": "The canonical attempt sends country=US and records market US."},
+      "rationale": "Locale and market are independent inputs."
+    },
+    {
+      "id": "M03",
+      "class": "negative",
+      "target": "projection.listing_locales",
+      "mutation": "Populate listing_locales from query_locale when the provider declares no listing locale.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay an Apple item for an ar-SA proposal.", "assert": "listing_locales is [] regardless of proposal locale."},
+      "rationale": "The Apple surface has no contracted listing-locale witness."
+    },
+    {
+      "id": "M04",
+      "class": "negative",
+      "target": "projection.publisher_countries",
+      "mutation": "Infer publisher country from TLD, currency, alphabet, name, rank or storefront.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use .jp seller text, Japanese script and JP storefront without an explicit country field.", "assert": "publisher_countries remains []."},
+      "rationale": "None of those fields is an explicit publisher-country declaration."
+    },
+    {
+      "id": "M05",
+      "class": "negative",
+      "target": "query.derivation",
+      "mutation": "Promote EXTERNAL_AGENT_PROPOSAL to CONTROLLED or claim the translation is verified.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Start with a valid external Japanese proposal.", "assert": "Derivation remains EXTERNAL_AGENT_PROPOSAL and status remains UNVERIFIED_PROPOSAL."},
+      "rationale": "Shape validation cannot prove semantic translation fidelity."
+    },
+    {
+      "id": "M06",
+      "class": "negative",
+      "target": "apple.request.term",
+      "mutation": "Concatenate semantic query text as raw provider filter, header, path or URL syntax.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use query `food&country=RU#x` with explicit market BR.", "assert": "The full query is one percent-encoded term value and country remains BR."},
+      "rationale": "Untrusted proposals may not alter provider request structure."
+    },
+    {
+      "id": "M07",
+      "class": "negative",
+      "target": "connector.registry",
+      "mutation": "Instantiate an unregistered connector or user-supplied URL from connector_ids.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Request connector id `https://127.0.0.1/admin`.", "assert": "Start returns -32602 before store, queue or network activity."},
+      "rationale": "Only IDs mounted in the pure registry are resolvable."
+    },
+    {
+      "id": "M08",
+      "class": "negative",
+      "target": "mcp.bateia_list_connectors",
+      "mutation": "Perform a health-check network call or expose endpoint, token, local path or sensitive configuration while listing.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "List connectors with a transport spy and sentinel configuration.", "assert": "Zero network calls occur and no sentinel appears in the one compact text result."},
+      "rationale": "Capabilities are static and listing is side-effect free."
+    },
+    {
+      "id": "M09",
+      "class": "negative",
+      "target": "planner.budget",
+      "mutation": "Allocate all query budget to the first registered connector.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Plan three eligible connectors with max_queries=3 under multiple attempts.", "assert": "Each eligible connector receives one unit before any receives a second."},
+      "rationale": "Budget fairness must not depend on incidental registration order."
+    },
+    {
+      "id": "M10",
+      "class": "negative",
+      "target": "provider.failure_classification",
+      "mutation": "Map timeout, HTTP 429, non-2xx, oversized body or invalid JSON to EMPTY_OBSERVED.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Run one fixture for each listed provider failure.", "assert": "Every attempt is UNKNOWN_PROVIDER and none is EMPTY_OBSERVED."},
+      "rationale": "Failure to observe is not a successful zero-result observation."
+    },
+    {
+      "id": "M11",
+      "class": "negative",
+      "target": "consolidation.partial_results",
+      "mutation": "Discard successful candidates and gaps from one connector when another connector fails.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Make Apple succeed and Sourcegraph return UNKNOWN_PROVIDER.", "assert": "Apple candidates and the Sourcegraph gap are both preserved and status is PARTIAL."},
+      "rationale": "Connector-local failure must not erase independent observations."
+    },
+    {
+      "id": "M12",
+      "class": "negative",
+      "target": "identity.merge",
+      "mutation": "Merge normalized homonymous product names from different publishers.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Provide two `Planner` products with distinct connector identities and publishers and no strong witness.", "assert": "They remain separate with POSSIBLE or UNKNOWN resolution."},
+      "rationale": "Name similarity is not identity."
+    },
+    {
+      "id": "M13",
+      "class": "negative",
+      "target": "identity.cross_source",
+      "mutation": "Resolve SAME from a URL present on only one source.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Give source A an official-looking URL and source B no reciprocal declaration.", "assert": "No automatic merge occurs."},
+      "rationale": "Cross-source identity requires a strong bilateral witness."
+    },
+    {
+      "id": "M14",
+      "class": "negative",
+      "target": "product.preservation",
+      "mutation": "Drop a product because repository_links is empty.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay a valid Apple item with no repository metadata.", "assert": "The item appears in market_candidates with repository_links=[]."},
+      "rationale": "Non-repo-backed products are a core output of this step."
+    },
+    {
+      "id": "M15",
+      "class": "negative",
+      "target": "repository_link.forwarding",
+      "mutation": "Promote an UNVERIFIED repository link to owner/repo@commit or feed it into code evidence.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Attach an UNVERIFIED owner/repo string to a product.", "assert": "It remains on the product and is absent from the evidence funnel input."},
+      "rationale": "Only verified immutable repository links are evidence-eligible."
+    },
+    {
+      "id": "M16",
+      "class": "negative",
+      "target": "evidence.ceiling",
+      "mutation": "Turn store description or catalog metadata into PROVEN capability, fit or top_choice.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use a description that claims every requested capability.", "assert": "Evidence ceiling remains DISCOVERED and no automatic top_choice is created."},
+      "rationale": "Untrusted catalog claims do not prove implementation."
+    },
+    {
+      "id": "M17",
+      "class": "negative",
+      "target": "popularity.policy",
+      "mutation": "Use ratings, downloads, review count or ranking to alter identity, evidence state or gap class.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay projections differing only in excluded popularity fields.", "assert": "Identity, evidence and gaps are byte-identical."},
+      "rationale": "Popularity is excluded from all three decisions."
+    },
+    {
+      "id": "M18",
+      "class": "negative",
+      "target": "runtime.uniqueness",
+      "mutation": "Create a market-specific queue, store, root or idempotency table.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Inspect L4 composition identities for recommendation and market services.", "assert": "Both run kinds share the exact store, queue, root, ID generator, cursor secret, quota, workers and shutdown instances."},
+      "rationale": "Step 0027 refines the single durable runtime rather than duplicating it."
+    },
+    {
+      "id": "M19",
+      "class": "negative",
+      "target": "replay.network",
+      "mutation": "Allow replay to instantiate or call a network transport.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay a frozen projection with a transport that fails on any call.", "assert": "Replay succeeds with zero transport calls."},
+      "rationale": "Offline replay must be structurally incapable of network access."
+    },
+    {
+      "id": "M20",
+      "class": "negative",
+      "target": "artifact.safe_content",
+      "mutation": "Expose review, HTML, full provider body, user profile, email, artwork, screenshot or canary in an MCP artifact.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Place distinct canaries in every forbidden field class.", "assert": "A scan of all MCP artifacts and public errors finds none of them."},
+      "rationale": "Only the bounded safe projection may cross the MCP boundary."
+    },
+    {
+      "id": "M21",
+      "class": "negative",
+      "target": "mcp.tools_order",
+      "mutation": "Insert a new tool before any of the seven frozen tools or reorder their names.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Call tools/list on the extended server.", "assert": "Positions 1-7 are deep-equal to the certified surface and positions 8-9 are the two new tools."},
+      "rationale": "The additive surface must preserve established clients."
+    },
+    {
+      "id": "M22",
+      "class": "negative",
+      "target": "refinement.receipts",
+      "mutation": "Claim 0025 and 0026 preservation solely because new tests pass, without explicit refinement receipts.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Change public run types, artifact allowlist and L4 wiring for 0027.", "assert": "Two separate compatible refinement receipts are required before preservation can be accepted."},
+      "rationale": "Compatibility is a traced refinement obligation, not an inference from unrelated green tests."
+    },
+    {
+      "id": "M23",
+      "class": "negative",
+      "target": "mcp.start_schema",
+      "mutation": "Accept unknown fields at the top level or inside idea, proposal or budget.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Add `endpoint`, `system_prompt`, `idea.extra` and `budget.burst` in separate calls.", "assert": "Each call returns -32602 before store, queue or network."},
+      "rationale": "Runtime decoding must enforce additionalProperties=false recursively."
+    },
+    {
+      "id": "M24",
+      "class": "negative",
+      "target": "mcp.json_boundary",
+      "mutation": "Accept multiple concatenated JSON values or trailing non-whitespace data.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Send a valid argument object followed by `{}`.", "assert": "The call returns -32602 and has no side effects."},
+      "rationale": "The boundary accepts exactly one strict JSON object."
+    },
+    {
+      "id": "M25",
+      "class": "negative",
+      "target": "mcp.normalized_duplicates",
+      "mutation": "Accept duplicate markets, connectors or proposals after normalization.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Submit repeated BR, repeated Apple id and semantically duplicate normalized proposals.", "assert": "Validation returns -32602 before any durable or network action."},
+      "rationale": "Duplicate rejection is part of the frozen runtime boundary."
+    },
+    {
+      "id": "M26",
+      "class": "negative",
+      "target": "mcp.value_limits",
+      "mutation": "Accept an unlisted locale/market, empty required text, control character, oversized array/string or out-of-range budget.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Exercise each schema boundary at one value beyond its allowed range.", "assert": "Every invalid call returns -32602 before store, queue or network."},
+      "rationale": "Published schema and runtime behavior must agree exactly."
+    },
+    {
+      "id": "M27",
+      "class": "negative",
+      "target": "planner.compatibility",
+      "mutation": "Queue a request whose selected connectors are wholly incompatible with all proposals/markets.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Construct an integrally incompatible selection through the L1 validation boundary.", "assert": "The MCP call fails -32602 before store, queue and connector invocation."},
+      "rationale": "Integral incompatibility is an input error, not an asynchronous run."
+    },
+    {
+      "id": "M28",
+      "class": "negative",
+      "target": "mcp.list_connectors_schema",
+      "mutation": "Give bateia_list_connectors any argument property or omit additionalProperties=false.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Deep-compare tool 8 inputSchema.", "assert": "It is exactly {type:object,additionalProperties:false,properties:{}}."},
+      "rationale": "Tool 8 has a frozen zero-argument schema."
+    },
+    {
+      "id": "M29",
+      "class": "negative",
+      "target": "mcp.tool_count",
+      "mutation": "Publish fewer or more than exactly nine tools, or append the new tools in the wrong order.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Call tools/list and enumerate names.", "assert": "There are exactly nine and tools 8/9 are list_connectors/start_market_discovery."},
+      "rationale": "The extension is exactly two tools."
+    },
+    {
+      "id": "M30",
+      "class": "negative",
+      "target": "mcp.start_response",
+      "mutation": "Return a synchronous result, omit run_kind, use a non-QUEUED lifecycle or emit multiple content items.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Start a valid new market run.", "assert": "One text item contains schema_version=1, a valid run_id, run_kind=MARKET_DISCOVERY, lifecycle=QUEUED and version=1."},
+      "rationale": "Start is an asynchronous durable receipt with an exact projection."
+    },
+    {
+      "id": "M31",
+      "class": "negative",
+      "target": "runtime.run_id",
+      "mutation": "Generate a market run ID outside ^run_[0-9a-f]{32}$ or use a separate generator.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Start market and recommendation runs with an instrumented shared generator.", "assert": "Both consume the same generator and every returned ID matches the pattern."},
+      "rationale": "Run identity belongs to the common durable runtime."
+    },
+    {
+      "id": "M32",
+      "class": "negative",
+      "target": "mcp.artifact_schema",
+      "mutation": "Replace, reorder or broadly relax the bateia_get_artifact enum instead of adding the five market names after the six legacy names.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Deep-compare the artifact enum.", "assert": "It contains the eleven exact names in the contracted order."},
+      "rationale": "The artifact schema is an additive refinement of a certified surface."
+    },
+    {
+      "id": "M33",
+      "class": "negative",
+      "target": "connector.capabilities_registry",
+      "mutation": "Accept empty/duplicate IDs, empty versions, unknown kind, invalid/duplicate locales or markets, empty identity levels, public_only=false or replayable=false.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Construct one registry entry for each invalid capability mutation.", "assert": "Pure registry construction rejects each before any network call."},
+      "rationale": "Capabilities must be valid and frozen before execution."
+    },
+    {
+      "id": "M34",
+      "class": "negative",
+      "target": "connector.capabilities_projection",
+      "mutation": "Return connectors unsorted, omit required static fields or leak auth/endpoint/path details in capabilities.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Mount the three contracted connectors in reverse order with sentinel config.", "assert": "Output is sorted by id, exact to the contracted safe capability objects and sentinel-free."},
+      "rationale": "Capability listing is canonical and contains no operational configuration."
+    },
+    {
+      "id": "M35",
+      "class": "negative",
+      "target": "apple.endpoint_host",
+      "mutation": "Honor a user/provider-supplied host, DNS/IP override or loopback/private address.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Inject host 127.0.0.1 and a DNS override into untrusted fields.", "assert": "The adapter either rejects input or still targets only itunes.apple.com:443 without override."},
+      "rationale": "The frozen allowlist blocks SSRF and alternate routing."
+    },
+    {
+      "id": "M36",
+      "class": "negative",
+      "target": "apple.endpoint_scheme_method",
+      "mutation": "Use HTTP, a non-443 port or a method other than GET.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Observe the constructed provider request.", "assert": "It is GET https://itunes.apple.com:443/search."},
+      "rationale": "Scheme, port and method are frozen source-selection constraints."
+    },
+    {
+      "id": "M37",
+      "class": "negative",
+      "target": "apple.redirects",
+      "mutation": "Follow a provider redirect to another URL.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Return 302 with Location pointing to a canary server.", "assert": "No second request occurs and the attempt becomes UNKNOWN_PROVIDER."},
+      "rationale": "Redirect following is explicitly forbidden."
+    },
+    {
+      "id": "M38",
+      "class": "negative",
+      "target": "apple.endpoint_path",
+      "mutation": "Let query, description, URL or error text alter /search, headers or subsequent calls.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Embed `/admin`, CRLF header syntax and a callback URL in each untrusted field.", "assert": "Only the fixed /search request is attempted with no injected header or follow-up."},
+      "rationale": "External content is data and cannot control transport."
+    },
+    {
+      "id": "M39",
+      "class": "negative",
+      "target": "apple.request_parameters",
+      "mutation": "Send callback or any unspecified query parameter.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Attempt to add callback=x and debug=true.", "assert": "Construction rejects them; emitted requests contain only the eight allowed parameters."},
+      "rationale": "The provider query allowlist is closed."
+    },
+    {
+      "id": "M40",
+      "class": "negative",
+      "target": "apple.fixed_parameters",
+      "mutation": "Change media/entity from software, version from 2, explicit from No, or lang outside en_us|ja_jp.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Inspect requests across all ten locales and markets.", "assert": "media=software, entity=software, version=2, explicit=No and an allowed lang are always present."},
+      "rationale": "These constants define the selected application-catalog surface."
+    },
+    {
+      "id": "M41",
+      "class": "negative",
+      "target": "apple.response_limits",
+      "mutation": "Allow limit outside 1-10 or accept a provider response larger than 2 MiB.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Request 11 results and separately return 2 MiB plus one byte.", "assert": "The request is rejected or capped contractually; the oversized response is UNKNOWN_PROVIDER with no candidates."},
+      "rationale": "Request and response bounds are part of the frozen source policy."
+    },
+    {
+      "id": "M42",
+      "class": "negative",
+      "target": "apple.rate_concurrency",
+      "mutation": "Run two Apple calls concurrently, exceed 15 calls/minute or bypass Retry-After.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Schedule many Apple attempts with a concurrency/rate spy and a 429 Retry-After.", "assert": "Peak concurrency is 1, starts remain <=15/minute and no forbidden retry begins."},
+      "rationale": "The bounded connector must honor provider load constraints."
+    },
+    {
+      "id": "M43",
+      "class": "negative",
+      "target": "apple.lang_semantics",
+      "mutation": "Treat lang=en_us|ja_jp as query locale, product language, market or origin.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use lang=ja_jp for an en-US/BR attempt.", "assert": "query_locale remains en-US, observed market remains BR and listing/publisher country arrays remain empty."},
+      "rationale": "lang localizes provider response only."
+    },
+    {
+      "id": "M44",
+      "class": "negative",
+      "target": "apple.language_codes",
+      "mutation": "Copy languageCodesISO2A into listing_locales or treat it as proof of the description language.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Return languageCodesISO2A=[JA,EN].", "assert": "Codes may remain provider metadata but listing_locales stays [] and no language proof is emitted."},
+      "rationale": "App-language metadata is not listing-locale evidence."
+    },
+    {
+      "id": "M45",
+      "class": "negative",
+      "target": "apple.storefront_semantics",
+      "mutation": "Treat a successful country=JP observation as publisher origin, global availability or installability.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Observe an item in the JP storefront only.", "assert": "Only observed_markets contains JP; no origin or global-availability claim is projected."},
+      "rationale": "Storefront observation has deliberately narrow semantics."
+    },
+    {
+      "id": "M46",
+      "class": "negative",
+      "target": "apple.identity.track_id",
+      "mutation": "Accept an Apple item without trackId or use bundleId/name as the primary identity.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay otherwise valid items with missing trackId and colliding names.", "assert": "Missing-trackId items are rejected and accepted identities are namespaced trackId values."},
+      "rationale": "The selected source freezes trackId as mandatory external identity."
+    },
+    {
+      "id": "M47",
+      "class": "negative",
+      "target": "apple.canonical_url",
+      "mutation": "Accept a non-HTTPS/non-apps.apple.com trackViewUrl, an ID-mismatched path, or preserve query/fragment.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Try evil.example, http, /id999 for trackId 123, and canary query/fragment variants.", "assert": "Only HTTPS apps.apple.com with /id123 survives and is normalized without query/fragment."},
+      "rationale": "Canonical URL is a bounded witness, not an arbitrary navigation target."
+    },
+    {
+      "id": "M48",
+      "class": "negative",
+      "target": "apple.canonical_url_follow",
+      "mutation": "Fetch or follow trackViewUrl or sellerUrl during discovery.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Return allowed-looking and malicious URLs backed by call-counting servers.", "assert": "Neither server receives a request."},
+      "rationale": "Returned URLs are normalized data only."
+    },
+    {
+      "id": "M49",
+      "class": "negative",
+      "target": "apple.strict_parser",
+      "mutation": "Accept invalid UTF-8, multiple JSON values, a non-object root, or an object lacking resultCount/results.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay one response for each malformed form, including text/javascript MIME.", "assert": "Every form is UNKNOWN_PROVIDER and produces no accepted candidates."},
+      "rationale": "MIME does not relax strict UTF-8 JSON structure."
+    },
+    {
+      "id": "M50",
+      "class": "negative",
+      "target": "apple.empty_rule",
+      "mutation": "Emit EMPTY_OBSERVED unless a successful strict response has resultCount=0 and results=[].",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Try mismatched counts, null results, nonempty results, 204 and parse error.", "assert": "None is EMPTY_OBSERVED; only the exact valid zero form is."},
+      "rationale": "Empty is positive evidence of a completed zero-result observation."
+    },
+    {
+      "id": "M51",
+      "class": "negative",
+      "target": "runtime.cancellation_retry",
+      "mutation": "Start a provider call or retry after cancellation is observed.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Cancel between attempts and during a 429 backoff.", "assert": "No additional connector invocation starts and remaining attempts become CANCELLED."},
+      "rationale": "Cancellation applies across all connectors and retries."
+    },
+    {
+      "id": "M52",
+      "class": "negative",
+      "target": "planner.round_robin",
+      "mutation": "Give a connector a second budget unit before every eligible connector gets a first.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use unequal attempt counts and permute registry order under a tight budget.", "assert": "Allocation follows canonical round-robin and is permutation-invariant."},
+      "rationale": "Fairness is defined at each allocation round."
+    },
+    {
+      "id": "M53",
+      "class": "negative",
+      "target": "planner.budget_gaps",
+      "mutation": "Silently omit attempts not executed because budget was exhausted.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Create more eligible combinations than max_queries.", "assert": "Every unexecuted combination has a BUDGET_EXHAUSTED gap and cannot count as empty or success."},
+      "rationale": "Unobserved work remains explicit Unknown coverage."
+    },
+    {
+      "id": "M54",
+      "class": "negative",
+      "target": "runtime.cancellation_all_connectors",
+      "mutation": "Cancel only the currently active connector while queued calls for other connectors continue.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Cancel a run with pending attempts on all three connectors.", "assert": "Invocation counts stop increasing globally after cancellation observation."},
+      "rationale": "Cancellation is a property of the shared run, not a connector-local hint."
+    },
+    {
+      "id": "M55",
+      "class": "negative",
+      "target": "identity.namespace",
+      "mutation": "Merge equal external_id values belonging to different connectors without a strong bilateral witness.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Return external_id 123 from Apple and a repository catalog with no shared official identifier.", "assert": "The products remain separate."},
+      "rationale": "External IDs are connector-namespaced."
+    },
+    {
+      "id": "M56",
+      "class": "negative",
+      "target": "identity.intra_connector",
+      "mutation": "Fail to consolidate duplicate observations of the same connector_id/external_id.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Observe the same Apple trackId through two proposals and markets.", "assert": "One candidate preserves both canonical origins and observed markets."},
+      "rationale": "Same-source canonical identity must consolidate without losing provenance."
+    },
+    {
+      "id": "M57",
+      "class": "negative",
+      "target": "identity.uncertain_alias",
+      "mutation": "Automatically merge POSSIBLE or UNKNOWN aliases.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Provide matching name, summary and publisher but no strong witness.", "assert": "Both records remain separately addressable with uncertainty recorded."},
+      "rationale": "A preserved duplicate is safer than a false merge."
+    },
+    {
+      "id": "M58",
+      "class": "negative",
+      "target": "identity.strong_alias",
+      "mutation": "Classify a true bilateral package ID or verified immutable repo witness as SAME without recording the witness, or ignore the strong witness entirely.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Give both sources the same explicit package ID and separately the same verified owner/repo@commit.", "assert": "Resolution is SAME with the exact bilateral witness retained."},
+      "rationale": "Automatic merge requires both strength and auditable provenance."
+    },
+    {
+      "id": "M59",
+      "class": "negative",
+      "target": "repository_link.conflict",
+      "mutation": "Forward a CONFLICT repository link as verified code evidence.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Attach conflicting official-repo claims to a product.", "assert": "The link remains CONFLICT on the product and never enters the evidence funnel."},
+      "rationale": "Conflict is an explicit barrier to evidence promotion."
+    },
+    {
+      "id": "M60",
+      "class": "negative",
+      "target": "repository_link.commit",
+      "mutation": "Forward a VERIFIED owner/repo link without an immutable commit.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Mark owner/repo VERIFIED but leave commit empty or branch-like.", "assert": "It is not forwarded as code evidence."},
+      "rationale": "Verified repository identity alone does not freeze evidence."
+    },
+    {
+      "id": "M61",
+      "class": "negative",
+      "target": "projection.observed_market",
+      "mutation": "Attach observed_market to a failed, empty, cancelled or unexecuted Apple attempt.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Exercise UNKNOWN_PROVIDER, EMPTY_OBSERVED, CANCELLED and BUDGET_EXHAUSTED attempts for country DE.", "assert": "No candidate origin claims DE; only successful item-bearing responses may attach it."},
+      "rationale": "A market observation requires an accepted item from a successful attempt."
+    },
+    {
+      "id": "M62",
+      "class": "negative",
+      "target": "canonicalization.permutation",
+      "mutation": "Let connector, proposal, market or provider-result order alter plans, hashes or artifacts.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Run all relevant permutations over identical semantic input and frozen results.", "assert": "Plan IDs, request hashes and artifact bytes are identical."},
+      "rationale": "Canonical semantics cannot depend on map, registration or response order."
+    },
+    {
+      "id": "M63",
+      "class": "negative",
+      "target": "planner.causal_ids",
+      "mutation": "Generate proposal_id or attempt_id from array index, clock or random order.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Reorder proposals and rebuild the plan twice.", "assert": "IDs are stable SHA-256 causal identifiers and remain associated with the same semantic entries."},
+      "rationale": "Causal IDs enable deterministic replay and permutation resistance."
+    },
+    {
+      "id": "M64",
+      "class": "negative",
+      "target": "idempotency.request_hash",
+      "mutation": "Omit idea, proposals, markets, connectors, budget or capability versions from the market idempotency hash.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Change each omitted dimension individually while reusing the same key.", "assert": "Each semantic change produces IDEMPOTENCY_CONFLICT."},
+      "rationale": "Every execution-shaping input is causally relevant."
+    },
+    {
+      "id": "M65",
+      "class": "negative",
+      "target": "idempotency.conflict",
+      "mutation": "Reuse the existing run_id for the same key with a different canonical request hash.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Start once, then change max_queries under the same key.", "assert": "The second call returns public IDEMPOTENCY_CONFLICT and creates no run/job."},
+      "rationale": "A key cannot alias two distinct requests."
+    },
+    {
+      "id": "M66",
+      "class": "negative",
+      "target": "idempotency.canonical_equivalence",
+      "mutation": "Create a second run for a semantically identical request with reordered set-like inputs.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Repeat a key with proposals, markets and connector IDs permuted only.", "assert": "The original run_id and receipt state are reused and no second enqueue occurs."},
+      "rationale": "Canonical reordering preserves request identity."
+    },
+    {
+      "id": "M67",
+      "class": "negative",
+      "target": "runtime.recovery",
+      "mutation": "Resume a nonterminal MARKET_DISCOVERY run after restart or leave it QUEUED/RUNNING.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Persist queued, running and cancelling market runs, then invoke recovery.", "assert": "Every nonterminal run becomes INTERRUPTED; no connector resumes."},
+      "rationale": "Resume is expressly outside scope and common recovery semantics apply."
+    },
+    {
+      "id": "M68",
+      "class": "negative",
+      "target": "runtime.run_kind_status",
+      "mutation": "Populate recommendation_status for MARKET_DISCOVERY or market_discovery_status for RECOMMENDATION.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Project one terminal run of each kind.", "assert": "Exactly the status belonging to its run_kind is non-null."},
+      "rationale": "Shared lifecycle does not collapse domain-specific result status."
+    },
+    {
+      "id": "M69",
+      "class": "negative",
+      "target": "runtime.market_status",
+      "mutation": "Classify only Unknown outcomes, no completed attempts, exposure below 80% or integrity uncertainty as COMPLETE/PARTIAL instead of INCONCLUSIVE.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Execute separate runs for each inconclusive condition.", "assert": "Each may lifecycle-succeed but market_discovery_status is INCONCLUSIVE."},
+      "rationale": "Lifecycle success and epistemic conclusion are separate."
+    },
+    {
+      "id": "M70",
+      "class": "negative",
+      "target": "runtime.partial_status",
+      "mutation": "Classify a run with one completed attempt plus a provider/budget gap as COMPLETE or INCONCLUSIVE.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Produce one successful attempt and one UNKNOWN_PROVIDER or BUDGET_EXHAUSTED gap.", "assert": "market_discovery_status is PARTIAL and both outcomes are published."},
+      "rationale": "Partial has an exact mixed-observation meaning."
+    },
+    {
+      "id": "M71",
+      "class": "negative",
+      "target": "artifact.canonical_shape",
+      "mutation": "Emit null slices, omit schema_version, misorder entries or use a noncanonical document hash.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Publish all five market artifacts with empty and nonempty collections.", "assert": "Arrays are never null, schema_version is 1, contracted ordering holds and hashes match canonical bytes."},
+      "rationale": "Artifact determinism includes shape, order and hashing."
+    },
+    {
+      "id": "M72",
+      "class": "negative",
+      "target": "artifact.market_plan",
+      "mutation": "Expose query, source_text or rationale in market_plan instead of only their contracted hashes.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Use unique canaries in all three proposal text fields.", "assert": "market_plan contains the required hashes but none of the text canaries."},
+      "rationale": "The public plan exposes causal hashes, not untrusted proposal bodies."
+    },
+    {
+      "id": "M73",
+      "class": "negative",
+      "target": "artifact.market_snapshot",
+      "mutation": "Expose Apple description/summary, external error, full body, token, configuration or excluded provider fields in market_snapshot/candidates.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Seed unique canaries in description, error, token, config, ratings and artwork fields.", "assert": "Public artifacts contain controlled enums/hashes only; Apple summary is empty and no canary appears."},
+      "rationale": "The protected capture is broader than the MCP-safe projection."
+    },
+    {
+      "id": "M74",
+      "class": "negative",
+      "target": "logging.safe_content",
+      "mutation": "Echo untrusted query, description, URL, provider body/error or secret canaries into public errors or logs.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Trigger validation, provider and parser failures with field-specific canaries.", "assert": "Artifact, MCP response and captured log scans find no canaries or secrets."},
+      "rationale": "Sanitization must cover logs and errors, not only artifact JSON."
+    },
+    {
+      "id": "M75",
+      "class": "negative",
+      "target": "replay.integrity",
+      "mutation": "Proceed with a missing/mismatched connector version, request hash, response hash or corrupt frozen projection.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Tamper each integrity input independently.", "assert": "Every replay yields INTEGRITY_ERROR, never EMPTY_OBSERVED or candidates."},
+      "rationale": "Replay is valid only for the exact frozen causal unit."
+    },
+    {
+      "id": "M76",
+      "class": "negative",
+      "target": "replay.determinism",
+      "mutation": "Use replay-time clock, random iteration or regenerated IDs so repeated replay bytes differ.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Replay the same frozen unit twice under different wall clocks and map insertion orders.", "assert": "Snapshot, candidates and gaps are byte-for-byte identical."},
+      "rationale": "Frozen observed_at and causal IDs make replay deterministic."
+    },
+    {
+      "id": "M77",
+      "class": "negative",
+      "target": "source_selection.count",
+      "mutation": "Add a second new non-repo-backed connector or replace Apple without invalidating the chain.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Mount another application/product catalog alongside or instead of Apple.", "assert": "The contracted registry rejects the materialization or the entire downstream chain is invalidated before use."},
+      "rationale": "This materialization freezes exactly one new public product source."
+    },
+    {
+      "id": "M78",
+      "class": "negative",
+      "target": "source_selection.terms",
+      "mutation": "Bypass authentication, throttling, storefront restrictions, or continue online after official-source hash/terms materially change.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Simulate a changed terms hash and a request requiring circumvention.", "assert": "Online execution is refused and source selection/downstream seals require invalidation."},
+      "rationale": "The access basis and terms hashes are causal constraints."
+    },
+    {
+      "id": "M79",
+      "class": "negative",
+      "target": "architecture.L1",
+      "mutation": "Place network, filesystem, environment, goroutine or mutex behavior in L1 market discovery code.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Run static import/API scans and crystalline-lint over new L1 files.", "assert": "No forbidden I/O, env, synchronization or outer-layer dependency is present."},
+      "rationale": "L1 owns pure contracts and transformations only."
+    },
+    {
+      "id": "M80",
+      "class": "negative",
+      "target": "architecture.L2_L3_L4",
+      "mutation": "Make L2 import concrete L3/L4, L3 import L2/L4, or put planning/merge/budget policy in L4.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Scan imports and policy-bearing symbols by layer.", "assert": "L2 depends on L1 ports, L3 implements L1 ports, and L4 only composes."},
+      "rationale": "ADR-0002 gravity and the contract allocate responsibilities exactly."
+    },
+    {
+      "id": "M81",
+      "class": "negative",
+      "target": "lineage.prompts",
+      "mutation": "Add production without exactly one mirrored Markdown prompt, or use one prompt for multiple production consumers.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Map every new production .go path to 00_nucleo/prompts/<same path>.md.", "assert": "The mapping is bijective and each production lineage annotation points to its sole prompt."},
+      "rationale": "ADR-0002 requires univocal mirrored L0 causality."
+    },
+    {
+      "id": "M82",
+      "class": "negative",
+      "target": "lineage.invalidation",
+      "mutation": "Change step, source selection, corpus, matrix, merge policy, endpoint, contract or prompt after sealing without invalidating downstream artifacts.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Change one protected input hash after a hypothetical seal.", "assert": "The chain is invalid from the first affected phase and no prior positive verdict remains applicable."},
+      "rationale": "Protected input changes alter the causal materialization."
+    },
+    {
+      "id": "M83",
+      "class": "negative",
+      "target": "refinement.receipt_separation",
+      "mutation": "Use one generic receipt to cover both predecessor verdicts or omit compatibility evidence for one of them.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Review refinement lineage for MCP_RECOMMENDATION_GATEWAY_READY and MCP_DURABLE_RUNS_READY.", "assert": "Each has a separate receipt tied to its own certified surface and obligations."},
+      "rationale": "The two predecessor claims have distinct observables and must refine independently."
+    },
+    {
+      "id": "M84",
+      "class": "negative",
+      "target": "compatibility.tools_1_7",
+      "mutation": "Change any name, description or schema detail of the first seven tools while reporting them preserved.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Deep-compare positions 1-7 against the certified 0025/0026 JSON surface.", "assert": "Every value is equal; any difference rejects preservation."},
+      "rationale": "The predecessor tool surface is frozen byte-semantically."
+    },
+    {
+      "id": "M85",
+      "class": "negative",
+      "target": "compatibility.public_errors",
+      "mutation": "Renumber or rename any durable public error -32020 through -32027, or leak provider errors through them.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Trigger every legacy durable error through the extended MCP server.", "assert": "Codes/messages are exact to 0026 and contain no external text."},
+      "rationale": "Public error stability and safe projection are certified observables."
+    },
+    {
+      "id": "M86",
+      "class": "negative",
+      "target": "compatibility.durable_artifacts",
+      "mutation": "Regress legacy cursor HMAC, quota, pagination, artifact immutability/hash, atomic publication or safe recommendation projections.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Run the predecessor artifact/cursor/quota behaviors through the nine-tool server.", "assert": "All legacy outputs and failure modes remain unchanged apart from the contracted additive enum."},
+      "rationale": "Market artifacts reuse rather than weaken the durable artifact boundary."
+    },
+    {
+      "id": "M87",
+      "class": "negative",
+      "target": "runtime.dispatcher",
+      "mutation": "Dispatch by request shape, tool name or an in-memory side table instead of persisted run_kind.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Restart after persisting queued runs of both kinds and invoke the shared dispatcher.", "assert": "Each executor is selected solely from persisted run_kind."},
+      "rationale": "Durable recovery requires run kind to survive process state."
+    },
+    {
+      "id": "M88",
+      "class": "negative",
+      "target": "runtime.atomic_start",
+      "mutation": "Create a durable market record without reserving/committing the shared queue atomically, or leak a reservation on failure.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Inject ID/store/commit failures and concurrent same-key starts.", "assert": "No orphan run, duplicate job, leaked capacity or divergent idempotency record remains."},
+      "rationale": "Market starts inherit the certified unique queue/store atomicity."
+    },
+    {
+      "id": "M89",
+      "class": "negative",
+      "target": "architecture.connector_ownership",
+      "mutation": "Implement Apple network/parsing in L2 or mount user-selected concrete connectors outside L4.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Trace Apple adapter and registry composition symbols.", "assert": "Network/parsing live in L3 and the fixed allowlisted instances are mounted only in L4."},
+      "rationale": "Concrete outbound adapters and composition have distinct layers."
+    },
+    {
+      "id": "M90",
+      "class": "negative",
+      "target": "architecture.prompt_boundary",
+      "mutation": "Add executable code under 00_nucleo or treat a prompt as an executable test/oracle substitute.",
+      "expected_classification": "Violated",
+      "witness": {"setup": "Scan 00_nucleo for non-Markdown executable production and inspect gate dependencies.", "assert": "L0 remains Markdown-only and executable verification does not rely on executing prompts."},
+      "rationale": "L0 is causal documentation, not runtime or verification code."
+    },
+    {
+      "id": "P01",
+      "class": "positive",
+      "target": "mcp.additive_surface",
+      "mutation": "No mutation: preserve the seven certified tools and append the two exact market tools.",
+      "expected_classification": "Preserved",
+      "witness": {"setup": "List tools from the conforming extended server.", "assert": "The exact nine-tool order and schemas match contract revision 1."},
+      "rationale": "A conforming additive surface must not be rejected by the adversarial gate."
+    },
+    {
+      "id": "P02",
+      "class": "positive",
+      "target": "dimension.cross_control",
+      "mutation": "No mutation: execute en-US/JP while preserving all four dimensions independently.",
+      "expected_classification": "Preserved",
+      "witness": {"setup": "Run the mandatory en-US/JP cross-control with an item-bearing Apple response.", "assert": "query_locale=en-US, observed_market=JP, listing_locales=[] and publisher_countries=[]."},
+      "rationale": "Correct cross-locale planning is valid behavior."
+    },
+    {
+      "id": "P03",
+      "class": "positive",
+      "target": "partial.preservation",
+      "mutation": "No mutation: preserve a successful connector and a controlled gap from a failed connector.",
+      "expected_classification": "Preserved",
+      "witness": {"setup": "Return one successful item-bearing attempt and one UNKNOWN_PROVIDER.", "assert": "Both are published and market_discovery_status=PARTIAL."},
+      "rationale": "Honest partial output is required, not a mutant."
+    },
+    {
+      "id": "P04",
+      "class": "positive",
+      "target": "identity.strong_witness",
+      "mutation": "No mutation: merge two source identities using the same explicit bilateral package ID and retain witnesses.",
+      "expected_classification": "Preserved",
+      "witness": {"setup": "Supply the identical official package ID from both frozen source projections.", "assert": "Resolution is SAME and records the bilateral package-ID witness."},
+      "rationale": "Strong witnessed merging is legitimate and must remain accepted."
+    },
+    {
+      "id": "P05",
+      "class": "positive",
+      "target": "replay.canonical",
+      "mutation": "No mutation: replay an intact matching frozen projection twice without transport.",
+      "expected_classification": "Preserved",
+      "witness": {"setup": "Use matching connector version, request hash and response hash.", "assert": "Both runs emit byte-identical snapshot, candidates and gaps with zero network calls."},
+      "rationale": "A valid offline replay is a positive control for integrity and determinism."
+    },
+    {
+      "id": "O01",
+      "class": "opaque",
+      "target": "network.future_availability",
+      "mutation": "Whether the legacy public Apple endpoint will remain reachable under every future network/provider condition.",
+      "expected_classification": "Unknown",
+      "witness": {"setup": "No bounded offline fixture can establish future provider availability.", "assert": "Keep the case Unknown and exclude it from mutation score."},
+      "rationale": "Future external availability is not determined by the frozen implementation contract."
+    },
+    {
+      "id": "O02",
+      "class": "opaque",
+      "target": "translation.semantic_fidelity",
+      "mutation": "Whether an arbitrary external-agent query translation preserves the user's intended semantics.",
+      "expected_classification": "Unknown",
+      "witness": {"setup": "The system has no contracted translator or semantic oracle for arbitrary proposals.", "assert": "Keep UNVERIFIED_PROPOSAL and exclude the case from mutation score."},
+      "rationale": "Execution eligibility does not prove translation correctness."
+    },
+    {
+      "id": "O03",
+      "class": "opaque",
+      "target": "identity.ambiguous_alias",
+      "mutation": "Whether two cross-source products with only similar names, publishers and descriptions are the same real-world product.",
+      "expected_classification": "Unknown",
+      "witness": {"setup": "No strong bilateral identity witness is present.", "assert": "Keep separate UNKNOWN/POSSIBLE records and exclude the case from mutation score."},
+      "rationale": "The conservative resolver intentionally cannot settle this identity."
+    },
+    {
+      "id": "O04",
+      "class": "opaque",
+      "target": "listing_locale.detector",
+      "mutation": "The listing language when Apple declares no listing locale and no contracted deterministic detector exists.",
+      "expected_classification": "Unknown",
+      "witness": {"setup": "Only query locale, lang and languageCodesISO2A are available.", "assert": "listing_locales remains [] and the case is excluded from mutation score."},
+      "rationale": "None of the available values is a listing-locale witness."
+    },
+    {
+      "id": "O05",
+      "class": "opaque",
+      "target": "durability.physical_failure",
+      "mutation": "Durability under arbitrary device power loss, filesystem/controller behavior or forcibly killed shutdown ordering.",
+      "expected_classification": "Unknown",
+      "witness": {"setup": "The inherited certificate is limited to its exact local single-process filesystem implementation.", "assert": "Do not generalize beyond the certified scope; exclude this case from mutation score."},
+      "rationale": "The predecessor certificate explicitly leaves generalized physical-failure durability opaque."
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": "tekt.candidate-receipt.v1",
+  "step": "0026",
+  "candidate_revision": "post-M44-M45-M55-fix-2",
+  "status": "CANDIDATE_PASSED_FINAL_AUDIT",
+  "verdict": "MCP_DURABLE_RUNS_READY",
+  "created_at": "2026-09-01T23:23:52Z",
+  "executor": "/root/verifier_0026",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "authority": {
+    "candidate_read": true,
+    "candidate_compiled": true,
+    "candidate_executed": true,
+    "candidate_evaluated": true,
+    "candidate_edited": false,
+    "contract_oracle_adversarial_manifest_edited": false
+  },
+  "snapshot": {
+    "manifest_sha256": "8d3c21973c0f3ed89d7eca5ecf7f5455454c4e54a0dc9de490575e80972439df",
+    "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+    "candidate_artifact_count": 21,
+    "all_manifest_candidate_hashes_match": true
+  },
+  "implementation_hashes": {
+    "crystalline.toml": "d83f168e616693c853ff96d08021b9ad40a5d044518204ab6bc694b53e035101",
+    "00_nucleo/passos/README.md": "be33552e97197aa4251d302afb97f47ce1a1990b6db689259137bad04bb71ff3",
+    "01_core/domain/recommendation_run.go": "b17fbc504485b4620f884f4d84c01fac1120fc835664ff0a9821d3ee515a639d",
+    "01_core/domain/recommendation_run_test.go": "3c9a98e94a1adc354e16c1c0458c72a2c7860452b81ec507787b2592e2c8716f",
+    "01_core/usecase/recommendation_observed.go": "7c7dc682d2a73198504a8240594331ac5c1e903c16fcb52b11ef0e10b584a252",
+    "01_core/usecase/recommendation_observed_test.go": "9164e60f697e9581507bcda8fe687ff077d9ba24c4e01543f49b370fe318aae9",
+    "01_core/usecase/recommendation_run.go": "fcbf5145ced2b39e3ff884e43b2fd1bf85bdd13d4a3d62aed6df3aa9c604f57f",
+    "01_core/usecase/recommendation_run_test.go": "60839b6ba7c7abc2da5b829e28f5f416f194e6a735b716dbac865a43adf315dd",
+    "01_core/usecase/idea_discovery.go": "f521cc3cc4db5a2d7c89843dba54043ff5aab5e4d9a4df899e689ead60085636",
+    "02_shell/cli/app.go": "d979bfdd50a46e7dd9e9bfde8f4f278bdc2a0c41ff020f141f5580be11a6ef4e",
+    "02_shell/cli/durable_mcp.go": "a18646cdcfe4fa6fe18ca1e77bf80b5ed79a9fce6627a8a51e51f973c50ab4dd",
+    "02_shell/mcp/durable_runs.go": "a4f461bcb7a37fe4f35527e0e90b3f69b1bfc57bfe1816918e3285c958808e83",
+    "03_infra/runstore/file_store.go": "6bd373b4884cc59f88cff1a1d631c519dff894835c8da285bff0e6e666112593",
+    "03_infra/runworker/local_queue.go": "8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+    "04_wiring/durable_config.go": "86b1132125c58c583538faecf2cc7c3a1346f884e14f8f0f87838645b2d46519",
+    "04_wiring/durable_config_test.go": "bdd62ee56d5a2a576c6d6c97fa21914a8c00edd3408685554791959fb887e523",
+    "00_nucleo/prompts/04_wiring/durable_config_test.md": "04b2f137092e3c1153f76c35f5996446bc5125bad064e518ff540726295ffe9d",
+    "04_wiring/durable_runs.go": "52b68a19ca0d1a6827e20657c2089d6a036481b0f7417cd8a8037135316fd1e8",
+    "04_wiring/main.go": "ef25d02c4f548bbfaf5db47ca1096caf726c071e32f5a06edf3c2d8dc182b206",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"
+  },
+  "resolved_findings": [
+    {
+      "id": "B01-M45-HARDLINKED-CURSOR-SECRET",
+      "previous_result": "FAIL: hardlinked cursor secret was accepted and chmod changed the external inode to 0600",
+      "current_result": "PASS",
+      "independent_witness": "The original verifier overlay passed ten repetitions; the candidate regression passed fifty repetitions and five race repetitions.",
+      "resolution": "Existing secret is opened O_NOFOLLOW/O_CLOEXEC, validated regular with Fstat and nlink==1 before read or chmod."
+    },
+    {
+      "id": "B02-M55-L1-MUTEX",
+      "previous_result": "FAIL: Step 0026 L1 imported sync and stored sync.Mutex",
+      "current_result": "PASS",
+      "independent_witness": "Static scan of the three Step 0026 L1 production files found no filesystem, timer, mutex, goroutine or concrete outer-layer dependency; cancellation tests passed 25 repetitions and five race repetitions.",
+      "resolution": "Cancellation-view synchronization moved behind a narrow optional port implemented by LocalQueue L3."
+    },
+    {
+      "id": "B03-M44-SYMLINKED-DURABLE-ROOT",
+      "previous_result": "FAIL: real binary changed an external symlink target from 0755 to 0700 and created cursor.key before rejecting the store",
+      "current_result": "PASS",
+      "independent_witness": "The unchanged real-binary construction now exits with durable run root is invalid while the external target remains 0755 and empty; regression passed fifty repetitions and five race repetitions.",
+      "resolution": "Every root component and the existing tree are audited with Lstat before any chmod, read or secret creation."
+    }
+  ],
+  "live_observations": {
+    "tools_count": 7,
+    "tools_in_order": [
+      "bateia_search",
+      "bateia_benchmark",
+      "bateia_recommend",
+      "bateia_start_recommendation",
+      "bateia_get_run",
+      "bateia_get_artifact",
+      "bateia_cancel_run"
+    ],
+    "cursor_secret_bytes": 32,
+    "cursor_secret_mode": "0600",
+    "cursor_secret_nlink": 1,
+    "symlink_root_external_mutation": false,
+    "hardlinked_secret_external_mutation": false
+  },
+  "architecture": {
+    "step0026_l1_has_io_mutex_timer_or_goroutine": false,
+    "l2_imports_l3_or_l4": false,
+    "l4_contains_domain_transition_hash_or_pagination_policy": false,
+    "same_recommendation_service_injected_sync_and_async": true,
+    "lint_exclusions": ["r3_gate", "r4_gate", "r5_gate", "r6_gate"],
+    "lint_exclusions_are_protected_gate_directories_only": true
+  },
+  "result": "PASS"
+}

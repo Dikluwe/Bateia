@@ -1,0 +1,90 @@
+{
+  "schema_version": "tekt.verification-receipt.v1",
+  "step": "0027",
+  "candidate_revision": "FINAL-R4-BOUND",
+  "created_at": "2026-09-02T01:56:21Z",
+  "executor": "/root/verifier_0027",
+  "verdict": "MULTISOURCE_MARKET_DISCOVERY_READY",
+  "status": "PASS",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "causal_chain": {
+    "manifest_sha256": "7661f40f1b1b01cf0c99196bec9f81f7c462c9a9c529888c54dea8485844c2a3",
+    "contract_r4_sha256": "44980c809a12d74eafe919b88220f7a47f0987d648e6f4edfa0ea77310619725",
+    "contract_binding_invalidation_r4_sha256": "8268a9a8d6f893f6c62de5b873101652fa848b9c29ea7b4301aeed277ff5cac7",
+    "discriminatory_receipt_r4_sha256": "954d4d1a29cc17e9c0745988eb513a0c02e11a744d22bad1b175e8d52641dee8",
+    "active_seal_r4_sha256": "a8dd85c3aa567f31249e1906195f14b47dec4bbd7bdebbd8e678a97492b22bc4",
+    "candidate_receipt_sha256": "115750f24d17e67e9970ac3945677d402a9011eb03c38e8bb3703228cd917d0a",
+    "replay_receipt_sha256": "af006b3ed1ba039a661c9ce4f65b96995b6ef686b241f0a0f668c39e166fcf05",
+    "public_execution_receipt_sha256": "a4ad2bde0a7eb9000d0263541f92ae46fde5832301111543e205f76ba1c203cd",
+    "refinement_receipt_0025_sha256": "f06d49e4e7220b45c117699b34a57d367a812abfa2e0e4ef1ed9a85d4eb2e501",
+    "refinement_receipt_0026_sha256": "13f3d6701094b046635ea39cee46726b92a95ef5581f180e3d887dcba473d195"
+  },
+  "protected_integrity": {
+    "strict_json": "PASS",
+    "active_seal_hashes": "PASS",
+    "r1_r2_r3_history_preserved": "PASS",
+    "r3_to_r4_delta": "exactly one mechanical build-target line",
+    "oracle_corpus_registry_fixture_attack_prompt_changes": 0,
+    "candidate_changed_between_predecessor_attempt_and_r4": false
+  },
+  "commands": [
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 ./...", "run": 1, "result": "PASS", "execution": "post-R4; loopback-enabled only for httptest"},
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 ./...", "run": 2, "result": "PASS", "execution": "post-R4; independent run; loopback-enabled only for httptest"},
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go test -race -count=1 ./01_core/... ./02_shell/mcp ./03_infra/... ./04_wiring", "result": "PASS", "execution": "post-R4"},
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go vet ./...", "result": "PASS", "execution": "post-R4"},
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go build -o /tmp/bateia-step0027 ./04_wiring", "result": "PASS", "binary_sha256": "62d3c995a280ee7b2d3a68d789a13913c1d28a0580ec57ff55870e88cc967c29", "execution": "post-R4 literal corrected contract command"},
+    {"command": "crystalline-lint .", "result": "PASS_WITH_WARNINGS", "detail": "exit 0; only recorded V12 and historical orphan-prompt warnings"},
+    {"command": "git diff --check", "result": "PASS"},
+    {"command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 -v ./01_core/usecase ./02_shell/mcp ./04_wiring -run TestStep0027Oracle", "result": "PASS", "execution": "post-R4 all protected oracle tests"},
+    {"command": "real compiled MCP process via stdio: tools/list then bateia_list_connectors", "result": "PASS", "detail": "nine tools; basal positions and R3 additive exception exact; canonical three-connector registry"},
+    {"command": "offline replay probe twice", "result": "PASS", "detail": "zero network; identical SHA-256 fc37bcd625e493b312a2b5e2820308f03233562ebf32d8c91984053f371edc4f"},
+    {"command": "one authorized public Apple GET with country=BR, entity=software and limit=1", "result": "PASS", "detail": "HTTP 200; strict JSON; one accepted identity; response SHA-256 5ce95b9d989be1dec5415c4153ca9a9c89022d3f73513cda0e51e8be2c2bb5ed; no raw body retained"}
+  ],
+  "oracle_results": {
+    "l1_registry_plan_budget_identity_artifacts_lifecycle": "PASS",
+    "l2_mcp_surface_and_closed_boundary": "PASS",
+    "l3_apple_allowlist_parsing_unknown_cancellation": "PASS",
+    "l4_replay_and_shared_runtime": "PASS",
+    "tools_list": "PASS",
+    "real_stdio": "PASS",
+    "artifact_and_log_forbidden_content_scan": "PASS"
+  },
+  "metrics": {
+    "capability_validation_provenance_and_gap_classification": 1.0,
+    "connector_exposure": 1.0,
+    "top_10_precision_by_family": {"F01": 1.0, "F02": 1.0, "F03": 1.0},
+    "validation_and_test_recall": 1.0,
+    "apple_marginal_recall_gain_percentage_points": 100,
+    "ideas_with_incremental_relevant_candidate": {"observed": 6, "required": 4, "total": 6},
+    "automatic_merge_precision": 1.0,
+    "improper_dimensional_inference": 0.0,
+    "products_without_repository_preserved": 1.0,
+    "replay_byte_identity": 1.0,
+    "popularity_rating_or_download_influence_cases": 0,
+    "result": "PASS"
+  },
+  "adversarial_reclassification": {
+    "valid_negative_mutations": 90,
+    "violated": 90,
+    "survivors": 0,
+    "negative_unknown": 0,
+    "mutation_score": 1.0,
+    "positive_controls_preserved": 5,
+    "opaque_cases_unknown": 5,
+    "opaque_cases_in_denominator": false,
+    "candidate_reclassification_sha256": "aaf7f8cd58d6755871447005e96b2d3e97bce4453bc5142f13a29520cd828d1f",
+    "result": "PASS"
+  },
+  "refinements": {
+    "0025_MCP_RECOMMENDATION_GATEWAY_READY": "PRESERVED",
+    "0026_MCP_DURABLE_RUNS_READY": "PRESERVED"
+  },
+  "scope": "Certifies only the exact hashes, connector, ten-market matrix, frozen corpus, fixtures, observable MCP fragment and local single-writer stdio runtime recorded by the Step 0027 R4 contract.",
+  "limitations": [
+    "No strong pre-candidate temporal isolation is claimed because R3/R4 occurred after candidate existence in a shared workspace.",
+    "The single public Apple observation proves only bounded endpoint viability at the recorded instant, not future availability, listing language, publisher origin, installability or semantic translation quality.",
+    "Opaque identity, external translation semantics and arbitrary power-loss behavior remain Unknown as contracted."
+  ],
+  "invalidation_rule": "Any change to a causal-chain hash, protected input, candidate byte, public request policy, connector version, matrix, corpus, replay fixture, predecessor surface or final gate invalidates this receipt and certificate.json."
+}

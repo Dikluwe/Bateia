@@ -1,0 +1,3232 @@
+{
+  "schema_version": "tekt.step0028.executable-mutant-protocol.v22",
+  "visibility": "PUBLIC_ALLOWLISTED_ADVERSARY_ORACLE_BRIDGE",
+  "step": "0028",
+  "source_protocol_revision": "O8",
+  "target_protocol_revision": "O22",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "adversarial_revision": "O22",
+  "phase": "PRE_EXECUTABLE_MUTANTS_PRE_ORACLE_PRE_CANDIDATE_PRE_SEAL",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "frozen_hashes": {
+    "predecessor_protocol_o5_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+    "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "mechanism_rules_v3_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "contract_catalog_invalidation_r4_sha256": "77e00c1eed39b972c6e415a45c208303e7af548740c8f7b68d78bb6c3ad33289",
+    "adversarial_cases_o8_sha256": "689da72a627f5f3941bc532321ea935ae06f757f15c3c4462afd4767898156e0",
+    "entry_commitment_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c",
+    "adversarial_cases_invalidation_o8_sha256": "7588e1bd856eb73ed9bd883924d4891e9cc780122ce314ed16adcdf5f885ad44"
+    ,"predecessor_protocol_o8_sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb"
+    ,"public_discriminability_inconsistency_o20_sha256": "ebd2fa45bde1c8e672b54c22fc737b2a20b9664637ec0164ab6e194c8e6b2eec"
+  },
+  "role_boundary": {
+    "adversary_reads": [
+      "adversarial-cases-o8.json",
+      "contract-r4",
+      "mechanism-rules-v3",
+      "this-protocol"
+    ],
+    "adversary_writes": [
+      "160 negative black-box records and runner package",
+      "optional concrete opaque constructions O01-O10"
+    ],
+    "oracle_reads": [
+      "contract-r4",
+      "mechanism-rules-v3",
+      "this-protocol",
+      "records after bindings are stripped from runner stdin"
+    ],
+    "oracle_must_not_read": [
+      "adversarial-cases-o8.json",
+      "mutation descriptions",
+      "private targets",
+      "candidate implementation"
+    ],
+    "verifier_reads": [
+      "all frozen inputs",
+      "records",
+      "runner bytes",
+      "oracle findings"
+    ],
+    "candidate_access": false
+  },
+  "record_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "tekt://step0028/o22/executable-mutant-record.schema.json",
+    "title": "Step 0028 O22 executable black-box mutant record",
+    "$ref": "#/$defs/mutant_record",
+    "$defs": {
+      "accepted_evidence_rule_v3": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rule_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "IMPLEMENTATION",
+                  "INDEPENDENT",
+                  "CONFLICT"
+                ]
+              },
+              "witness_kind": {
+                "type": "string",
+                "enum": [
+                  "IMPLEMENTATION",
+                  "TEST",
+                  "EXAMPLE",
+                  "MANIFEST",
+                  "SCHEMA",
+                  "CONFIGURATION",
+                  "COUNTEREVIDENCE"
+                ]
+              }
+            },
+            "required": [
+              "rule_id",
+              "role",
+              "witness_kind"
+            ],
+            "allOf": [
+              {
+                "if": {"properties":{"role":{"const":"IMPLEMENTATION"}}},
+                "then": {"properties":{"witness_kind":{"const":"IMPLEMENTATION"}}}
+              },
+              {
+                "if": {"properties":{"role":{"const":"INDEPENDENT"}}},
+                "then": {"properties":{"witness_kind":{"enum":["TEST","EXAMPLE","MANIFEST","SCHEMA","CONFIGURATION"]}}}
+              },
+              {
+                "if": {"properties":{"role":{"const":"CONFLICT"}}},
+                "then": {"properties":{"witness_kind":{"const":"COUNTEREVIDENCE"}}}
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "rule_id": {
+                "type": "string",
+                "enum": [
+                  "append-only-architecture-documentation",
+                  "bounded-queue-architecture-documentation",
+                  "content-address-architecture-documentation",
+                  "adapter-boundary-architecture-documentation"
+                ]
+              },
+              "role": {
+                "const": "DOCUMENTARY"
+              },
+              "witness_kind": {
+                "const": "DOCUMENTATION"
+              },
+              "status_max": {
+                "const": "PARTIAL"
+              }
+            },
+            "required": [
+              "rule_id",
+              "role",
+              "witness_kind",
+              "status_max"
+            ]
+          }
+        ]
+      },
+      "mechanism_rule_v3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "MR-APPEND-ONLY-LOG-V1",
+              "MR-BOUNDED-QUEUE-V1",
+              "MR-CONTENT-ADDRESS-V1",
+              "MR-ADAPTER-BOUNDARY-V1"
+            ]
+          },
+          "version": {
+            "const": 1
+          },
+          "mechanism_class": {
+            "type": "string",
+            "enum": [
+              "APPEND_ONLY_LOG_RECOVERY",
+              "BOUNDED_QUEUE_BACKPRESSURE",
+              "CONTENT_ADDRESSED_STORAGE",
+              "PORT_ADAPTER_ISOLATION"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "strategy": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "accepted_evidence_rules": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "$ref": "#/$defs/accepted_evidence_rule_v3"
+            }
+          },
+          "minimum_witnesses": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "partial": {"type":"integer","minimum":1},
+              "proven_implementation": {"type":"integer","minimum":1},
+              "proven_independent": {"type":"integer","minimum":1},
+              "distinct_content_hashes": {"type":"integer","minimum":2}
+            },
+            "required": [
+              "partial",
+              "proven_implementation",
+              "proven_independent",
+              "distinct_content_hashes"
+            ]
+          },
+          "fillable_fields": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {"type":"string","minLength":1,"maxLength":128}
+          },
+          "language_limits": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {"type":"string","minLength":1,"maxLength":128}
+          },
+          "ecosystem_limits": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {"type":"string","minLength":1,"maxLength":512}
+          },
+          "status_max": {
+            "const": "PROVEN"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "mechanism_class",
+          "name",
+          "purpose",
+          "strategy",
+          "accepted_evidence_rules",
+          "minimum_witnesses",
+          "fillable_fields",
+          "language_limits",
+          "ecosystem_limits",
+          "status_max"
+        ]
+      },
+      "mechanism_rule_catalog_v3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {"const":"tekt.mechanism-rules.v3"},
+          "catalog_id": {"type":"string","minLength":1,"maxLength":128},
+          "catalog_version": {"const":3},
+          "closed_world": {"const":true},
+          "unknown_classification": {"const":"MECHANISM_CLASS_UNKNOWN"},
+          "canonicalization": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {"type":"string","minLength":1},
+              "sets": {"type":"string","minLength":1},
+              "witness_identity": {"type":"string","minLength":1},
+              "hash": {"type":"string","minLength":1}
+            },
+            "required": ["text","sets","witness_identity","hash"]
+          },
+          "source_contract": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "evaluated_container": {"const":"CandidateAssessment"},
+              "evaluated_source": {"type":"string","minLength":1},
+              "rule_identity_field": {"const":"EvidenceSource.RuleID"},
+              "bundle_item": {"const":"CollectedEvidence"},
+              "exact_join_fields": {
+                "type":"array",
+                "prefixItems":[
+                  {"const":"kind"},
+                  {"const":"ref"},
+                  {"const":"path"},
+                  {"const":"content_hash"}
+                ],
+                "items":false,
+                "minItems":4,
+                "maxItems":4
+              },
+              "content_use": {"const":"hash verification only"},
+              "infer_rule_from_content": {"const":false}
+            },
+            "required": [
+              "evaluated_container",
+              "evaluated_source",
+              "rule_identity_field",
+              "bundle_item",
+              "exact_join_fields",
+              "content_use",
+              "infer_rule_from_content"
+            ]
+          },
+          "rules": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {"$ref":"#/$defs/mechanism_rule_v3"}
+          }
+        },
+        "required": [
+          "schema_version",
+          "catalog_id",
+          "catalog_version",
+          "closed_world",
+          "unknown_classification",
+          "canonicalization",
+          "source_contract",
+          "rules"
+        ]
+      },
+      "mechanism_witness": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "repository": {
+            "type": "string",
+            "pattern": "^[^/\\s]+/[^/\\s]+$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "symbol": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "documentation",
+              "manifest",
+              "file",
+              "symbol",
+              "test",
+              "test_implementation",
+              "example",
+              "license",
+              "repository_metadata"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "IMPLEMENTATION",
+              "TEST",
+              "EXAMPLE",
+              "MANIFEST",
+              "SCHEMA",
+              "CONFIGURATION",
+              "DOCUMENTATION",
+              "COUNTEREVIDENCE"
+            ]
+          },
+          "assessment_status": {
+            "type": "string",
+            "enum": [
+              "PROVEN",
+              "PARTIAL",
+              "ABSENT",
+              "INCONCLUSIVE",
+              "CONFLICT"
+            ]
+          },
+          "rule_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "repository",
+          "commit",
+          "path",
+          "symbol",
+          "line",
+          "source_kind",
+          "kind",
+          "assessment_status",
+          "rule_id",
+          "content_hash"
+        ]
+      },
+      "mechanism_component": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind"
+        ]
+      },
+      "immutable_candidate_ref": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "repository": {
+            "type": "string",
+            "pattern": "^[^/\\s]+/[^/\\s]+$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          }
+        },
+        "required": [
+          "repository",
+          "commit"
+        ]
+      },
+      "architectural_mechanism": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^mech_[0-9a-f]{64}$"
+          },
+          "mechanism_class": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "trigger": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "strategy": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "components": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "kind"
+              ]
+            }
+          },
+          "data_flow": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "state_model": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "failure_model": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "boundaries": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "preconditions": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "tradeoffs": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "repository": {
+                "type": "string",
+                "pattern": "^[^/\\s]+/[^/\\s]+$"
+              },
+              "commit": {
+                "type": "string",
+                "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+              }
+            },
+            "required": [
+              "repository",
+              "commit"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "pattern": "^[^/\\s]+/[^/\\s]+$"
+                },
+                "commit": {
+                  "type": "string",
+                  "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "symbol": {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "documentation",
+              "manifest",
+              "file",
+              "symbol",
+              "test",
+              "test_implementation",
+              "example",
+              "license",
+              "repository_metadata"
+            ]
+          },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "IMPLEMENTATION",
+                    "TEST",
+                    "EXAMPLE",
+                    "MANIFEST",
+                    "SCHEMA",
+                    "CONFIGURATION",
+                    "DOCUMENTATION",
+                    "COUNTEREVIDENCE"
+                  ]
+                },
+                "assessment_status": {
+                  "type": "string",
+                  "enum": [
+                    "PROVEN",
+                    "PARTIAL",
+                    "ABSENT",
+                    "INCONCLUSIVE",
+                    "CONFLICT"
+                  ]
+                },
+                "rule_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "content_hash": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "repository",
+                "commit",
+                "path",
+                "symbol",
+                "line",
+                "source_kind",
+                "kind",
+                "assessment_status",
+                "rule_id",
+                "content_hash"
+              ]
+            }
+          },
+          "counter_evidence": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "pattern": "^[^/\\s]+/[^/\\s]+$"
+                },
+                "commit": {
+                  "type": "string",
+                  "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "symbol": {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "documentation",
+              "manifest",
+              "file",
+              "symbol",
+              "test",
+              "test_implementation",
+              "example",
+              "license",
+              "repository_metadata"
+            ]
+          },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "IMPLEMENTATION",
+                    "TEST",
+                    "EXAMPLE",
+                    "MANIFEST",
+                    "SCHEMA",
+                    "CONFIGURATION",
+                    "DOCUMENTATION",
+                    "COUNTEREVIDENCE"
+                  ]
+                },
+                "assessment_status": {
+                  "type": "string",
+                  "enum": [
+                    "PROVEN",
+                    "PARTIAL",
+                    "ABSENT",
+                    "INCONCLUSIVE",
+                    "CONFLICT"
+                  ]
+                },
+                "rule_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "content_hash": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "repository",
+                "commit",
+                "path",
+                "symbol",
+                "line",
+                "source_kind",
+                "kind",
+                "assessment_status",
+                "rule_id",
+                "content_hash"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PROVEN",
+              "PARTIAL",
+              "INCONCLUSIVE"
+            ]
+          },
+          "novelty": {
+            "type": "string",
+            "enum": [
+              "CONVENTIONAL",
+              "DIVERGENT",
+              "UNKNOWN"
+            ]
+          },
+          "extraction_rule_ids": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        },
+        "required": [
+          "id",
+          "mechanism_class",
+          "name",
+          "purpose",
+          "trigger",
+          "strategy",
+          "components",
+          "data_flow",
+          "state_model",
+          "failure_model",
+          "boundaries",
+          "preconditions",
+          "tradeoffs",
+          "source",
+          "evidence",
+          "counter_evidence",
+          "status",
+          "novelty",
+          "extraction_rule_ids"
+        ]
+      },
+      "mechanism_gap": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "repository": {
+                "type": "string",
+                "pattern": "^[^/\\s]+/[^/\\s]+$"
+              },
+              "commit": {
+                "type": "string",
+                "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+              }
+            },
+            "required": [
+              "repository",
+              "commit"
+            ]
+          },
+          "rule_id": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "witness_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "status_ceiling": {
+            "type": "string",
+            "enum": [
+              "PROVEN",
+              "PARTIAL",
+              "INCONCLUSIVE"
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "source",
+          "rule_id",
+          "witness_hash",
+          "status_ceiling"
+        ]
+      },
+      "evidence_item": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "documentation",
+              "manifest",
+              "file",
+              "symbol",
+              "test",
+              "test_implementation",
+              "example",
+              "license",
+              "repository_metadata"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "content_utf8": {
+            "type": "string",
+            "maxLength": 1048576
+          }
+        },
+        "required": [
+          "kind",
+          "ref",
+          "path",
+          "content_hash",
+          "content_utf8"
+        ]
+      },
+      "candidate_assessment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "repository": {
+            "type": "string",
+            "pattern": "^[^/\\s]+/[^/\\s]+$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PROVEN",
+              "PARTIAL",
+              "ABSENT",
+              "INCONCLUSIVE",
+              "CONFLICT"
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "maxItems": 128,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "documentation",
+                    "manifest",
+                    "file",
+                    "symbol",
+                    "test",
+                    "test_implementation",
+                    "example",
+                    "license",
+                    "repository_metadata"
+                  ]
+                },
+                "ref": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "content_hash": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                },
+                "rule_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "symbol": {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "kind",
+                "ref",
+                "path",
+                "content_hash",
+                "rule_id",
+                "symbol",
+                "line"
+              ]
+            }
+          }
+        },
+        "required": [
+          "repository",
+          "status",
+          "sources"
+        ]
+      },
+      "conventional_baseline": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "baseline_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "idea_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "mechanism_classes": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          }
+        },
+        "required": [
+          "baseline_id",
+          "idea_hash",
+          "mechanism_classes"
+        ]
+      },
+      "mechanism_extraction_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bundle": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "run_id": {
+                "type": "string",
+                "pattern": "^run_[0-9a-f]{32}$"
+              },
+              "items": {
+                "type": "array",
+                "maxItems": 512,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "documentation",
+                        "manifest",
+                        "file",
+                        "symbol",
+                        "test",
+                        "test_implementation",
+                        "example",
+                        "license",
+                        "repository_metadata"
+                      ]
+                    },
+                    "ref": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    },
+                    "content_hash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "content_utf8": {
+                      "type": "string",
+                      "maxLength": 1048576
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ref",
+                    "path",
+                    "content_hash",
+                    "content_utf8"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "run_id",
+              "items"
+            ]
+          },
+          "assessments": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "pattern": "^[^/\\s]+/[^/\\s]+$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PROVEN",
+                    "PARTIAL",
+                    "ABSENT",
+                    "INCONCLUSIVE",
+                    "CONFLICT"
+                  ]
+                },
+                "sources": {
+                  "type": "array",
+                  "maxItems": 128,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "documentation",
+                          "manifest",
+                          "file",
+                          "symbol",
+                          "test",
+                          "test_implementation",
+                          "example",
+                          "license",
+                          "repository_metadata"
+                        ]
+                      },
+                      "ref": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                      },
+                      "content_hash": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$"
+                      },
+                      "rule_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "maxLength": 512
+                      },
+                      "line": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "ref",
+                      "path",
+                      "content_hash",
+                      "rule_id",
+                      "symbol",
+                      "line"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "repository",
+                "status",
+                "sources"
+              ]
+            }
+          },
+          "conventional_baseline": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "baseline_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "idea_hash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "mechanism_classes": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512,
+                      "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                    }
+                  }
+                },
+                "required": [
+                  "baseline_id",
+                  "idea_hash",
+                  "mechanism_classes"
+                ]
+              }
+            ]
+          },
+          "rule_catalog_json": {
+            "type": "string",
+            "contentEncoding": "base64",
+            "contentMediaType": "application/json",
+            "description": "Base64 JSON. Reference and positive records decode to mechanism_rule_catalog_v3; negative records may intentionally carry a schema, version, hash or closed-world violation for independent oracle evaluation.",
+            "minLength": 4
+          },
+          "rule_catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "bundle",
+          "assessments",
+          "conventional_baseline",
+          "rule_catalog_json",
+          "rule_catalog_sha256"
+        ]
+      },
+      "idea": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "problem": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "users": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "constraints": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "non_goals": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "preferred_stack": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          }
+        },
+        "required": [
+          "problem",
+          "users",
+          "capabilities",
+          "constraints",
+          "non_goals",
+          "preferred_stack"
+        ]
+      },
+      "source_artifact_ref": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          },
+          "run_kind": {
+            "type": "string",
+            "enum": [
+              "RECOMMENDATION",
+              "MARKET_DISCOVERY"
+            ]
+          },
+          "artifact": {
+            "type": "string",
+            "enum": [
+              "mechanism_catalog",
+              "mechanism_gaps",
+              "market_candidates",
+              "market_snapshot"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "run_id",
+          "run_kind",
+          "artifact",
+          "sha256"
+        ]
+      },
+      "improvement_proposal": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "target_property": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "expected_effect": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          },
+          "mechanism_refs": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "pattern": "^mech_[0-9a-f]{64}$"
+            }
+          },
+          "product_observation_refs": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "assumptions": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+            }
+          },
+          "derivation": {
+            "const": "EXTERNAL_AGENT_PROPOSAL"
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+          }
+        },
+        "required": [
+          "proposal_id",
+          "title",
+          "target_property",
+          "expected_effect",
+          "mechanism_refs",
+          "product_observation_refs",
+          "assumptions",
+          "derivation",
+          "rationale"
+        ]
+      },
+      "synthesis_policy": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "max_hypotheses": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "max_mechanisms_per_hypothesis": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "require_counterevidence_search": {
+            "const": true
+          }
+        },
+        "required": [
+          "max_hypotheses",
+          "max_mechanisms_per_hypothesis",
+          "require_counterevidence_search"
+        ]
+      },
+      "synthesis_start_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idempotency_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "idea": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "problem": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              },
+              "users": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "capabilities": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "non_goals": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "preferred_stack": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              }
+            },
+            "required": [
+              "problem",
+              "users",
+              "capabilities",
+              "constraints",
+              "non_goals",
+              "preferred_stack"
+            ]
+          },
+          "source_artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "run_id": {
+                  "type": "string",
+                  "pattern": "^run_[0-9a-f]{32}$"
+                },
+                "run_kind": {
+                  "type": "string",
+                  "enum": [
+                    "RECOMMENDATION",
+                    "MARKET_DISCOVERY"
+                  ]
+                },
+                "artifact": {
+                  "type": "string",
+                  "enum": [
+                    "mechanism_catalog",
+                    "mechanism_gaps",
+                    "market_candidates",
+                    "market_snapshot"
+                  ]
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "run_id",
+                "run_kind",
+                "artifact",
+                "sha256"
+              ]
+            }
+          },
+          "proposals": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "proposal_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "target_property": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "expected_effect": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "mechanism_refs": {
+                  "type": "array",
+                  "maxItems": 4,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^mech_[0-9a-f]{64}$"
+                  }
+                },
+                "product_observation_refs": {
+                  "type": "array",
+                  "maxItems": 20,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "assumptions": {
+                  "type": "array",
+                  "maxItems": 20,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "derivation": {
+                  "const": "EXTERNAL_AGENT_PROPOSAL"
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                }
+              },
+              "required": [
+                "proposal_id",
+                "title",
+                "target_property",
+                "expected_effect",
+                "mechanism_refs",
+                "product_observation_refs",
+                "assumptions",
+                "derivation",
+                "rationale"
+              ]
+            }
+          },
+          "policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "max_hypotheses": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12
+              },
+              "max_mechanisms_per_hypothesis": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "require_counterevidence_search": {
+                "const": true
+              }
+            },
+            "required": [
+              "max_hypotheses",
+              "max_mechanisms_per_hypothesis",
+              "require_counterevidence_search"
+            ]
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "idea",
+          "source_artifacts",
+          "proposals",
+          "policy"
+        ]
+      },
+      "run_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          }
+        },
+        "required": [
+          "run_id"
+        ]
+      },
+      "artifact_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          },
+          "artifact": {
+            "type": "string",
+            "enum": [
+              "request",
+              "recommendation",
+              "decision",
+              "alternatives",
+              "failures",
+              "provenance",
+              "connector_capabilities",
+              "market_plan",
+              "market_snapshot",
+              "market_candidates",
+              "market_gaps",
+              "mechanism_catalog",
+              "mechanism_gaps",
+              "architecture_comparison",
+              "improvement_hypotheses",
+              "hypothesis_gaps",
+              "validation_plans",
+              "synthesis_provenance"
+            ]
+          },
+          "cursor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            ]
+          }
+        },
+        "required": [
+          "run_id",
+          "artifact",
+          "cursor"
+        ]
+      },
+      "cancel_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          },
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "run_id",
+          "expected_version"
+        ]
+      },
+      "empty_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "replay_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "catalog_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "capture_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "artifact_hashes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "minProperties": 1
+          },
+          "canonical_inputs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "contentEncoding": "base64"
+            }
+          }
+        },
+        "required": [
+          "catalog_sha256",
+          "capture_sha256",
+          "artifact_hashes",
+          "canonical_inputs"
+        ]
+      },
+      "refinement_request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "receipt_hashes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "0025": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "0026": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "0027": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "0025",
+              "0026",
+              "0027"
+            ]
+          },
+          "runtime_instance_ids": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "store": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              },
+              "queue": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              },
+              "root": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              },
+              "cursor_secret": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              },
+              "worker": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+              }
+            },
+            "required": [
+              "store",
+              "queue",
+              "root",
+              "cursor_secret",
+              "worker"
+            ]
+          },
+          "layer_findings": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "enum": [
+                "L1_PURE",
+                "L2_NO_L3_OR_L4",
+                "L3_NO_L2_OR_L4",
+                "L4_WIRING_ONLY"
+              ]
+            }
+          }
+        },
+        "required": [
+          "receipt_hashes",
+          "runtime_instance_ids",
+          "layer_findings"
+        ]
+      },
+      "extraction_result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mechanisms": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^mech_[0-9a-f]{64}$"
+                },
+                "mechanism_class": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "trigger": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "strategy": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000,
+                  "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                },
+                "components": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512,
+                        "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512,
+                        "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "kind"
+                    ]
+                  }
+                },
+                "data_flow": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "state_model": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "failure_model": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "boundaries": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "preconditions": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "tradeoffs": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512,
+                    "pattern": "^[^\\u0000-\\u001F\\u007F-\\u009F]+$"
+                  }
+                },
+                "source": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "repository": {
+                      "type": "string",
+                      "pattern": "^[^/\\s]+/[^/\\s]+$"
+                    },
+                    "commit": {
+                      "type": "string",
+                      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                    }
+                  },
+                  "required": [
+                    "repository",
+                    "commit"
+                  ]
+                },
+                "evidence": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "repository": {
+                        "type": "string",
+                        "pattern": "^[^/\\s]+/[^/\\s]+$"
+                      },
+                      "commit": {
+                        "type": "string",
+                        "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "maxLength": 512
+                      },
+                      "line": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "source_kind": {
+                        "type": "string",
+                        "enum": [
+                          "documentation",
+                          "manifest",
+                          "file",
+                          "symbol",
+                          "test",
+                          "test_implementation",
+                          "example",
+                          "license",
+                          "repository_metadata"
+                        ]
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "IMPLEMENTATION",
+                          "TEST",
+                          "EXAMPLE",
+                          "MANIFEST",
+                          "SCHEMA",
+                          "CONFIGURATION",
+                          "DOCUMENTATION",
+                          "COUNTEREVIDENCE"
+                        ]
+                      },
+                      "assessment_status": {
+                        "type": "string",
+                        "enum": [
+                          "PROVEN",
+                          "PARTIAL",
+                          "ABSENT",
+                          "INCONCLUSIVE",
+                          "CONFLICT"
+                        ]
+                      },
+                      "rule_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "content_hash": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "repository",
+                      "commit",
+                      "path",
+                      "symbol",
+                      "line",
+                      "source_kind",
+                      "kind",
+                      "assessment_status",
+                      "rule_id",
+                      "content_hash"
+                    ]
+                  }
+                },
+                "counter_evidence": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "repository": {
+                        "type": "string",
+                        "pattern": "^[^/\\s]+/[^/\\s]+$"
+                      },
+                      "commit": {
+                        "type": "string",
+                        "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "maxLength": 512
+                      },
+                      "line": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "source_kind": {
+                        "type": "string",
+                        "enum": [
+                          "documentation",
+                          "manifest",
+                          "file",
+                          "symbol",
+                          "test",
+                          "test_implementation",
+                          "example",
+                          "license",
+                          "repository_metadata"
+                        ]
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "IMPLEMENTATION",
+                          "TEST",
+                          "EXAMPLE",
+                          "MANIFEST",
+                          "SCHEMA",
+                          "CONFIGURATION",
+                          "DOCUMENTATION",
+                          "COUNTEREVIDENCE"
+                        ]
+                      },
+                      "assessment_status": {
+                        "type": "string",
+                        "enum": [
+                          "PROVEN",
+                          "PARTIAL",
+                          "ABSENT",
+                          "INCONCLUSIVE",
+                          "CONFLICT"
+                        ]
+                      },
+                      "rule_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "content_hash": {
+                        "type": "string",
+                        "pattern": "^sha256:[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "repository",
+                      "commit",
+                      "path",
+                      "symbol",
+                      "line",
+                      "source_kind",
+                      "kind",
+                      "assessment_status",
+                      "rule_id",
+                      "content_hash"
+                    ]
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PROVEN",
+                    "PARTIAL",
+                    "INCONCLUSIVE"
+                  ]
+                },
+                "novelty": {
+                  "type": "string",
+                  "enum": [
+                    "CONVENTIONAL",
+                    "DIVERGENT",
+                    "UNKNOWN"
+                  ]
+                },
+                "extraction_rule_ids": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "mechanism_class",
+                "name",
+                "purpose",
+                "trigger",
+                "strategy",
+                "components",
+                "data_flow",
+                "state_model",
+                "failure_model",
+                "boundaries",
+                "preconditions",
+                "tradeoffs",
+                "source",
+                "evidence",
+                "counter_evidence",
+                "status",
+                "novelty",
+                "extraction_rule_ids"
+              ]
+            }
+          },
+          "gaps": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "source": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "repository": {
+                      "type": "string",
+                      "pattern": "^[^/\\s]+/[^/\\s]+$"
+                    },
+                    "commit": {
+                      "type": "string",
+                      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+                    }
+                  },
+                  "required": [
+                    "repository",
+                    "commit"
+                  ]
+                },
+                "rule_id": {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                "witness_hash": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                },
+                "status_ceiling": {
+                  "type": "string",
+                  "enum": [
+                    "PROVEN",
+                    "PARTIAL",
+                    "INCONCLUSIVE"
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "source",
+                "rule_id",
+                "witness_hash",
+                "status_ceiling"
+              ]
+            }
+          }
+        },
+        "required": [
+          "mechanisms",
+          "gaps"
+        ]
+      },
+      "start_receipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": "1"
+          },
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          },
+          "run_kind": {
+            "const": "IMPROVEMENT_SYNTHESIS"
+          },
+          "lifecycle": {
+            "const": "QUEUED"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "schema_version",
+          "run_id",
+          "run_kind",
+          "lifecycle",
+          "version"
+        ]
+      },
+      "run_view": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^run_[0-9a-f]{32}$"
+          },
+          "run_kind": {
+            "type": "string",
+            "enum": [
+              "RECOMMENDATION",
+              "MARKET_DISCOVERY",
+              "IMPROVEMENT_SYNTHESIS"
+            ]
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "CANCELLING",
+              "CANCELLED",
+              "FAILED",
+              "SUCCEEDED",
+              "INTERRUPTED"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "recommendation_status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "market_discovery_status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "improvement_status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "COMPLETE",
+                  "PARTIAL",
+                  "INCONCLUSIVE"
+                ]
+              }
+            ]
+          },
+          "progress": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "planned": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "completed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "stage": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "planned",
+              "completed",
+              "stage"
+            ]
+          }
+        },
+        "required": [
+          "run_id",
+          "run_kind",
+          "lifecycle",
+          "version",
+          "recommendation_status",
+          "market_discovery_status",
+          "improvement_status",
+          "progress"
+        ]
+      },
+      "artifact_result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artifact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "canonical_json": {
+            "type": "string",
+            "contentEncoding": "base64"
+          },
+          "next_cursor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ]
+          }
+        },
+        "required": [
+          "artifact",
+          "sha256",
+          "size",
+          "canonical_json",
+          "next_cursor"
+        ]
+      },
+      "tools_result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tools": {
+            "type": "array",
+            "minItems": 10,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string"
+                },
+                "input_schema": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "input_schema"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tools"
+        ]
+      },
+      "replay_result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artifact_hashes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "index_hashes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "network_calls": {
+            "const": 0
+          }
+        },
+        "required": [
+          "artifact_hashes",
+          "index_hashes",
+          "network_calls"
+        ]
+      },
+      "refinement_result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "receipts_verified": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "0025": {
+                "type": "boolean"
+              },
+              "0026": {
+                "type": "boolean"
+              },
+              "0027": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "0025",
+              "0026",
+              "0027"
+            ]
+          },
+          "runtime_unique": {
+            "type": "boolean"
+          },
+          "layer_findings": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "receipts_verified",
+          "runtime_unique",
+          "layer_findings"
+        ]
+      },
+      "controlled_error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_PARAMS",
+              "RUN_NOT_FOUND",
+              "SOURCE_BASIS_UNAVAILABLE",
+              "IDEMPOTENCY_CONFLICT",
+              "QUEUE_FULL",
+              "QUOTA_EXCEEDED",
+              "INTEGRITY_ERROR",
+              "RUN_STORE_UNAVAILABLE",
+              "ARTIFACT_NOT_READY"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Invalid params",
+              "RUN_NOT_FOUND",
+              "SOURCE_BASIS_UNAVAILABLE",
+              "IDEMPOTENCY_CONFLICT",
+              "QUEUE_FULL",
+              "QUOTA_EXCEEDED",
+              "INTEGRITY_ERROR",
+              "RUN_STORE_UNAVAILABLE",
+              "ARTIFACT_NOT_READY"
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "effect_observation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "network_calls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "filesystem_reads": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "filesystem_writes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "process_spawns": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "external_mutations": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "resolve_calls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reserve_calls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "id_calls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "create_calls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "store_instance_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          },
+          "queue_instance_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          },
+          "root_instance_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          },
+          "cursor_secret_instance_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          },
+          "worker_instance_ids": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "network_calls",
+          "filesystem_reads",
+          "filesystem_writes",
+          "process_spawns",
+          "external_mutations",
+          "resolve_calls",
+          "reserve_calls",
+          "id_calls",
+          "create_calls",
+          "store_instance_ids",
+          "queue_instance_ids",
+          "root_instance_ids",
+          "cursor_secret_instance_ids",
+          "worker_instance_ids"
+        ]
+      },
+      "publication_observation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artifact_names": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string"
+            }
+          },
+          "artifact_hashes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "index_hashes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "leaked_field_names": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string"
+            }
+          },
+          "layer_findings": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "artifact_names",
+          "artifact_hashes",
+          "index_hashes",
+          "leaked_field_names",
+          "layer_findings"
+        ]
+      },
+      "contract_input": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "MECHANISM_EXTRACT"
+              },
+              "request": {
+                "$ref": "#/$defs/mechanism_extraction_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "SYNTHESIS_START"
+              },
+              "request": {
+                "$ref": "#/$defs/synthesis_start_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "SYNTHESIS_EXECUTE"
+              },
+              "request": {
+                "$ref": "#/$defs/run_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "RUN_READ"
+              },
+              "request": {
+                "$ref": "#/$defs/run_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "ARTIFACT_READ"
+              },
+              "request": {
+                "$ref": "#/$defs/artifact_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "RUN_CANCEL"
+              },
+              "request": {
+                "$ref": "#/$defs/cancel_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "TOOLS_LIST"
+              },
+              "request": {
+                "$ref": "#/$defs/empty_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "REPLAY"
+              },
+              "request": {
+                "$ref": "#/$defs/replay_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "const": "REFINEMENT_AUDIT"
+              },
+              "request": {
+                "$ref": "#/$defs/refinement_request"
+              }
+            },
+            "required": [
+              "port",
+              "request"
+            ]
+          }
+        ]
+      },
+      "mutant_contract_output": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "return_value": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/$defs/extraction_result"
+              },
+              {
+                "$ref": "#/$defs/start_receipt"
+              },
+              {
+                "$ref": "#/$defs/run_view"
+              },
+              {
+                "$ref": "#/$defs/artifact_result"
+              },
+              {
+                "$ref": "#/$defs/tools_result"
+              },
+              {
+                "$ref": "#/$defs/replay_result"
+              },
+              {
+                "$ref": "#/$defs/refinement_result"
+              }
+            ]
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/$defs/controlled_error"
+              }
+            ]
+          },
+          "effect_observation": {
+            "$ref": "#/$defs/effect_observation"
+          },
+          "publication_observation": {
+            "$ref": "#/$defs/publication_observation"
+          }
+        },
+        "required": [
+          "return_value",
+          "error",
+          "effect_observation",
+          "publication_observation"
+        ]
+      },
+      "mutant_record": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(?:M(?:00[1-9]|0[1-9][0-9]|1[0-5][0-9]|160)|P(?:0[1-9]|1[0-2])|O(?:0[1-9]|10))$"
+          },
+          "attack_entry_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "contract_input": {
+            "$ref": "#/$defs/contract_input"
+          },
+          "mutant_contract_output": {
+            "$ref": "#/$defs/mutant_contract_output"
+          },
+          "semantic_input_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "semantic_output_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "attack_entry_sha256",
+          "contract_input",
+          "mutant_contract_output",
+          "semantic_input_sha256",
+          "semantic_output_sha256"
+        ]
+      }
+    }
+  },
+  "r4_catalog_binding": {
+    "catalog_schema": "record_schema.$defs.mechanism_rule_catalog_v3",
+    "accepted_evidence_rule_schema": "record_schema.$defs.accepted_evidence_rule_v3",
+    "reference_catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "reference_catalog_counts": {
+      "rules": 4,
+      "accepted_evidence_rules": 32,
+      "IMPLEMENTATION": 8,
+      "INDEPENDENT": 12,
+      "DOCUMENTARY": 4,
+      "CONFLICT": 8
+    },
+    "documentary_shape": {
+      "role": "DOCUMENTARY",
+      "witness_kind": "DOCUMENTATION",
+      "source_kind": "documentation",
+      "status_max": "PARTIAL"
+    },
+    "documentary_semantics": {
+      "counts_for_partial_positive_evidence": true,
+      "counts_for_proven_implementation": false,
+      "counts_for_proven_independent": false,
+      "maximum_mechanism_status": "PARTIAL"
+    },
+    "decoded_catalog_policy": "Reference and positive subjects use the exact v3 bytes/hash. Negative subjects may carry a deliberate catalog or hash deviation; the neutral record envelope remains schema-valid so the independent oracle can classify that contractual violation."
+  },
+  "canonicalization": {
+    "name": "TEKT_CANONICAL_JSON_V1",
+    "algorithm": "UTF-8 JSON; lexicographically sorted object keys; compact separators; arrays retain semantic order; finite JSON primitives only",
+    "semantic_input_sha256": "sha256(TEKT_CANONICAL_JSON_V1(record.contract_input))",
+    "semantic_output_sha256": "sha256(TEKT_CANONICAL_JSON_V1(record.mutant_contract_output))",
+    "binding_exclusion": "record.id and record.attack_entry_sha256 are excluded from both semantic hashes and are never sent to the runner"
+  },
+  "runner_contract": {
+    "transport": "one UTF-8 JSON value per line on stdin and exactly one UTF-8 JSON value per line on stdout",
+    "stdin_schema": "record_schema.$defs.contract_input",
+    "stdout_schema": "record_schema.$defs.mutant_contract_output",
+    "argv": "no per-record ID, hash, field name, expected value or verdict argument",
+    "environment": "no per-record ID, hash, field name, expected value or verdict variable",
+    "determinism": "same canonical stdin in a fresh process must produce byte-equivalent canonical stdout",
+    "exit_status": {
+      "0": "one schema-valid stdout value",
+      "nonzero": "runner infrastructure failure; never a semantic verdict"
+    },
+    "oracle_invocation": "oracle supplies only contract_input; binding is joined after execution by verifier",
+    "trusted_observation": "effect and publication observations are captured or cross-checked by verifier instrumentation, never trusted solely because runner printed them"
+  },
+  "record_rules": {
+    "negative_domain": "M001-M160 exactly once",
+    "positive_domain": "P01-P12 exactly once as independent reference controls",
+    "opaque_domain": "O01-O10 exactly once as concrete contract constructions",
+    "expected_verdict_in_record": false,
+    "required_record_fields": [
+      "id",
+      "attack_entry_sha256",
+      "contract_input",
+      "mutant_contract_output",
+      "semantic_input_sha256",
+      "semantic_output_sha256"
+    ],
+    "forbidden_behavior_fields": [
+      "semantic_fault",
+      "semantic_variant_id",
+      "entry_commitment_sha256",
+      "opaque",
+      "opacity_reason",
+      "classification",
+      "expected",
+      "expected_outcome",
+      "expected_classification",
+      "verdict",
+      "outcome",
+      "altered_by"
+    ],
+    "binding_rule": "id and attack_entry_sha256 select/join a record externally but cannot influence runner behavior or semantic hashes",
+    "behavior_rule": "stdout must be a deterministic function only of schema-valid contractual stdin values and the immutable runner bytes/configuration",
+    "attack_binding_rule": "verifier recomputes commitment_sha256 for the canonical attack preimage against adversarial-cases-o8.json; oracle sees only contract_input and mutant_contract_output before the verifier joins the finding"
+  },
+  "anti_tautology_gate": {
+    "all_160_negative_binding_hashes_match": true,
+    "all_160_runner_invocations_use_binding_free_stdin": true,
+    "all_semantic_hashes_recomputed": true,
+    "all_negative_input_output_hash_pairs_unique": true,
+    "no_two_negative_records_may_differ_only_by_id_or_attack_hash": true,
+    "same_contract_input_requires_distinct_concrete_output_for_distinct_semantics": true,
+    "same_required_observable_requires_distinct_concrete_fixture_or_delta_when_attack_semantics_differ": true,
+    "semantic_delta_definition": "ordered pair (semantic_input_sha256, semantic_output_sha256)",
+    "runner_source_and_config_scan_for_forbidden_behavior_fields": true,
+    "fresh_process_repetitions": 2,
+    "orders": [
+      "canonical",
+      "reverse",
+      "rotate-61"
+    ],
+    "oracle_predicates_are_external": "oracle derives predicates from contract R4 and mechanism-rules v3 and never imports an expected verdict from records"
+  },
+  "opaque_construction_policy": {
+    "marker_flags_forbidden": true,
+    "expected_classification_forbidden": true,
+    "classification_output_forbidden": true,
+    "permitted_contract_states": [
+      "immutable identity missing or ambiguous",
+      "mechanism class outside frozen catalog",
+      "minimum witness semantically insufficient",
+      "target_state UNKNOWN with baseline absent",
+      "composition compatibility unmeasured",
+      "license UNRECOGNIZED",
+      "counterevidence budget exhausted",
+      "historical artifact unavailable without reread",
+      "provider availability not evidenced by frozen capture",
+      "utility cost or security effect without baseline"
+    ],
+    "required_evidence": "each O record contains a distinct schema-valid contractual input and contractual gap/status/error/unknown-bearing output; oracle may classify Unknown only after executing the neutral runner",
+    "score_policy": "O records remain outside numerator and denominator"
+  },
+  "binding_free_evaluator": {
+    "revision": "O22_BINDING_FREE_PUBLIC_EVALUATOR_V1",
+    "inputs": [
+      "contract_input",
+      "mutant_contract_output"
+    ],
+    "forbidden_controls": [
+      "case identity",
+      "identifier values",
+      "external and derived hash values",
+      "marker values",
+      "expected-verdict values",
+      "semantic_state",
+      "human text",
+      "transport size fingerprints"
+    ],
+    "precedence": [
+      "Violated: evaluate every applicable R4/v3 contractual violation predicate; any concrete violation terminates evaluation before the opaque rule",
+      "Unknown: only when no R4/v3 violation exists and opaque_artifact_rule matches",
+      "Preserved: otherwise"
+    ],
+    "opaque_artifact_rule": {
+      "operation": "ARTIFACT_READ",
+      "request_artifact": "hypothesis_gaps",
+      "required_error": null,
+      "return_artifact": "hypothesis_gaps",
+      "canonical_document": {
+        "encoding": "base64",
+        "canonical_bytes": "UTF-8 compact JSON with no trailing newline",
+        "wrapper_field_order": [
+          "schema_version",
+          "artifact",
+          "entries"
+        ],
+        "schema_version": "1",
+        "artifact": "hypothesis_gaps",
+        "entries_cardinality": 1,
+        "entry_field_order": [
+          "hypothesis_id",
+          "code",
+          "source_ref"
+        ],
+        "entry_additional_properties": false,
+        "hypothesis_id_pattern": "^hyp_[0-9a-f]{64}$",
+        "classification_ignores_hypothesis_id_value": true,
+        "controlled_code_source_ref_pairs": [
+          {"code":"COMPOSITION_COMPATIBILITY_UNMEASURED","source_ref":"hypothesis:composition"},
+          {"code":"LICENSE_UNRECOGNIZED","source_ref":"hypothesis:license"},
+          {"code":"COUNTEREVIDENCE_BUDGET_EXHAUSTED","source_ref":"counterevidence:search"},
+          {"code":"IMMUTABLE_IDENTITY_AMBIGUOUS","source_ref":"source:identity"},
+          {"code":"PROVIDER_CAPTURE_ABSENT","source_ref":"provider:capture"},
+          {"code":"UTILITY_COST_BASELINE_ABSENT","source_ref":"baseline:utility_cost"},
+          {"code":"SECURITY_BASELINE_ABSENT","source_ref":"baseline:security"}
+        ]
+      },
+      "integrity_requirements": [
+        "decoded bytes equal the declared canonical_json bytes",
+        "sha256 equals SHA-256 of decoded canonical bytes",
+        "size equals decoded canonical byte length",
+        "publication_observation exposes hypothesis_gaps with the same SHA-256"
+      ],
+      "binding_independence": "classification uses only operation, artifact, exact structural shape, controlled code/source_ref pair, and integrity relations; it never branches on hypothesis_id, case ID, any hash value, marker, expected value, semantic label, human text, or size fingerprint"
+    }
+  },
+  "privacy_boundary": {
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "code_patch_or_solution_disclosed": false
+  },
+  "acceptance": {
+    "negative": "160/160 independently classified Violated by oracle",
+    "positive": "12/12 independently classified Preserved",
+    "opaque": "10/10 independently classified Unknown",
+    "mutation_score": 1.0,
+    "stability": "identical classifications and semantic hashes in every repetition/order"
+  }
+}

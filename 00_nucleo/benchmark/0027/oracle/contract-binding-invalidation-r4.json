@@ -1,0 +1,41 @@
+{
+  "schema_version": "tekt.oracle-binding-invalidation.v1",
+  "step": "0027",
+  "revision": "R4",
+  "created_at": "2026-09-02T01:44:17Z",
+  "authority": "/root/oracle_0027",
+  "status": "RESEAL_REQUIRED",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "contract_transition": {
+    "previous_sha256_prefix": "ac69",
+    "current_sha256": "44980c809a12d74eafe919b88220f7a47f0987d648e6f4edfa0ea77310619725",
+    "previous_build_target": "./04_wiring/main.go",
+    "current_build_target": "./04_wiring",
+    "classification": "MECHANICAL_SINGLE_FILE_TO_PACKAGE_BUILD_GATE"
+  },
+  "oracle_binding_audit": {
+    "candidate_read": false,
+    "candidate_compiled": false,
+    "candidate_executed": false,
+    "semantic_expectation_changed": false,
+    "oracle_suite_changed": false,
+    "oracle_prompt_changed": false,
+    "corpus_changed": false,
+    "registry_changed": false,
+    "fixture_changed": false,
+    "oracle_contract_changed": false,
+    "finding": "The protected suites and public oracle contract bind observable package behavior and contain no single-file build target. No oracle artifact requires refinement for this gate-only contract change."
+  },
+  "unchanged_oracle_hashes": {
+    "oracle_contract": "d989ce3c6b7e2c236187aac5cf6f327b5f0c24b72e323c9096b4d3a5bd7a94cb",
+    "l1_suite": "90cd2ca1c8880b03acc58e6cd8e09129bfdf1d26e2b3aa2d13b94dd64b2509d0",
+    "l2_suite": "0c4b53b1ceabb969da879491d1a0d9e0f57a3aae88673131d085cfc43fe32b6c",
+    "l4_suite": "0085e3aeacd6e34086d746da37045c3155f7ca6d301eb0fba01a81e27d61c421"
+  },
+  "invalidation": {
+    "seal_r3": "INVALIDATED_BY_CONTRACT_HASH_CHANGE",
+    "receipt_r3": "INVALIDATED_BY_CONTRACT_HASH_CHANGE",
+    "reserved_artifacts_edited": false,
+    "required_next_action": "Verifier must bind the current contract hash, rerun the unchanged discriminatory gate and issue R4 receipt/seal append-only."
+  }
+}

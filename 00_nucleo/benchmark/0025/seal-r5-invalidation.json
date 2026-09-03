@@ -1,0 +1,42 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0025",
+  "revision": "R6",
+  "verdict": "R5_SEAL_INVALIDATED",
+  "invalidated_seal": {
+    "path": "00_nucleo/benchmark/0025/seal-r5.json",
+    "sha256": "4284ff2e68fa2633c8e2fa62cf8e2b17f637c7a0c414d40ab78a474e8d96c15e",
+    "revision": "R5",
+    "retained_as_historical": true
+  },
+  "trigger": {
+    "kind": "PROTECTED_ORACLE_REVISION",
+    "new_manifest_sha256": "df15667a25a1c28fbd45e2ca1d83edd00b55fe1b89b0bfa0ad8da0072b4d8fe7",
+    "new_oracle_contract_sha256": "75b77d07a1118fa1cfc72ecc99f43e67334e0c47fe9332ef07fa6e30ff79271d",
+    "reason": "R6 corrects post-seal oracle contradictions and changes protected hashes; the R5 seal cannot authorize later verification."
+  },
+  "registered_oracle_corrections": [
+    "Canonicalize only the non-injectable GeneratedAt value while keeping its envelope and every other search byte frozen.",
+    "Freeze the reachable benchmark baseline error because the baseline handler never sets Depth and therefore has no reproducible success path.",
+    "Update the owning legacy tools/list oracle to require the exact three-tool contract even with a nil optional recommender.",
+    "Add hash-bound companion tests and unique mirrored prompts for the new domain and recommendation service modules."
+  ],
+  "candidate_scope": {
+    "read": false,
+    "executed": false,
+    "evaluated": false,
+    "note": "Candidate patch remained frozen and out of scope during invalidation and R6 gate design review."
+  },
+  "affected_phases": {
+    "first_affected": "ORACLE_FREEZE",
+    "must_repeat": ["discriminatory gate", "seal"],
+    "r5_usable_for_verdict": false
+  },
+  "historical_artifacts_preserved": [
+    "00_nucleo/benchmark/0025/seal.json",
+    "00_nucleo/benchmark/0025/seal-invalidation.json",
+    "00_nucleo/benchmark/0025/seal-r5.json"
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "R6 oracle refinement occurred after candidate existence; hashes and scoped reads preserve traceability but do not establish strong pre-candidate temporal isolation."
+}

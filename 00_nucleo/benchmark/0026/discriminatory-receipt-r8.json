@@ -1,0 +1,183 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 8,
+  "gate": "hidden permanent-variant layout and causal continuity revalidation",
+  "status": "GATE_PASSED_RESEALED_WITH_TEMPORAL_LIMITATION",
+  "verdict": "RESEAL",
+  "created_at": "2026-09-01T22:05:27Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "historical_chain": {
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_seal_sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r7_receipt_sha256": "e9812fc3ea290620fbdca89237a2a69955b124d0500cfe0a68ede077bbd8e99a",
+    "r7_seal_sha256": "be931f3a7731d7ab63e3081654b7073c7ae05bda126f1189ab3ca1bffca6876c",
+    "r7_invalidation_sha256": "412dede6c3e64c42385303aa8a0bd4f00521efc5c9ff866a16c0793b7f54ef50",
+    "r6_and_r7_seals_remain_historical_only": true
+  },
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace after partial candidate existence",
+    "candidate_source_read": false,
+    "candidate_behavior_executed": false,
+    "candidate_evaluated": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r8 go list ./...",
+        "result": "PASS",
+        "normal_package_count": 29,
+        "discovered_mutant_package_count": 0,
+        "scope": "package discovery only; no candidate compilation or execution"
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r8 go test ./04_wiring/r6_gate/... -run '^$' -count=1",
+        "result": "PASS",
+        "normal_r6_packages_compiled": ["r6_gate","conformance","reference","storefixture"],
+        "hidden_mutant_packages_compiled": 0
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r8 go test ./04_wiring/r6_gate -run '^TestStep0026R6CompiledVariantsUseOneBlindConformanceSuiteThreeByThree$' -count=1",
+        "result": "PASS",
+        "duration": "62.051s",
+        "reference_subprocesses_passed": 9,
+        "mutant_subprocesses_failed": 270,
+        "orders": 3,
+        "repetitions_per_order": 3
+      },
+      {
+        "command": "independent one-pass normalization of all hidden variant common-suite failures",
+        "result": "PASS",
+        "variants_failed": 30,
+        "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1"
+      },
+      {
+        "command": "strict duplicate-key JSON, suite/prompt/source/diff hash verification, gofmt -d and git diff --check",
+        "result": "PASS",
+        "suite_entries": 29,
+        "variant_source_hashes": 30,
+        "canonical_diff_hashes": 30,
+        "common_test_copies": 31
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "frozen R8 manifest and oracle contract",
+      "R6 reference, common conformance suite, updated driver and hidden permanent variants",
+      "R6/R7 receipts, seals and invalidation artifacts",
+      "frozen predecessor hashes and R6 predecessor receipt evidence"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r8.json",
+      "00_nucleo/benchmark/0026/seal-r8.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate source was read, compiled, executed, evaluated or modified",
+      "no oracle, prompt, adversarial case, contract or manifest was modified",
+      "no historical receipt, seal or invalidation artifact was modified",
+      "the live global go test ./... candidate gate was not executed"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "63c219ed39bb9599f5a5813f021044077e4738acf89b5b401aa191ad4ed4959a",
+    "oracle_contract_sha256": "5ab20b4fdbf7b4747b18e2669471d48ec86de5e0306f51bb3c59530e8273bae1",
+    "driver_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90",
+    "reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "r6_gate_prompt_sha256": "028a7830082d204530dc84c6e0f11da40c14c38bbee0c11f209c5767403faee2",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5"
+  },
+  "hidden_layout_audit": {
+    "passed": true,
+    "previous_layout": "04_wiring/r6_gate/mutants/Mxx",
+    "corrected_layout": "04_wiring/r6_gate/testdata/mutants/Mxx",
+    "variant_count": 30,
+    "go_list_discovered_mutant_packages": 0,
+    "normal_go_test_wildcard_can_discover_hidden_variants": false,
+    "driver_addresses_hidden_variants_explicitly": true,
+    "source_bytes_changed": false,
+    "common_suite_bytes_changed": false,
+    "canonical_diff_hashes_changed": false,
+    "unique_source_hashes": 30,
+    "unique_canonical_diff_hashes": 30,
+    "common_test_copy_sha256": "97a56fe22bf3604bd1455e673a8a4975cb038f1d50bf36eaedf1f3b8cb67579d",
+    "common_test_copies_identical": true,
+    "runtime_mxx_or_defect_selector_present": false,
+    "finding": "The correction changes discovery and explicit driver paths only. The Go wildcard ignores testdata, while the driver compiles every hidden package by its exact path."
+  },
+  "positive_controls": [
+    {"id":"P01","result":"Preserved","basis":"Nine isolated reference subprocesses passed concurrent canonical Start."},
+    {"id":"P02","result":"Preserved","basis":"Nine isolated reference subprocesses passed terminal reopen."},
+    {"id":"P03","result":"Preserved","basis":"Nine isolated reference subprocesses passed HMAC cursor reopen with changed limit."},
+    {"id":"P04","result":"Preserved","basis":"Nine isolated reference subprocesses passed idempotent cancellation."},
+    {"id":"P05","result":"Preserved","basis":"Bound to the frozen predecessor snapshot/certificate and immutable R6 receipt; the separated live predecessor test was not executed."}
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 60,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "historical_pre_candidate_kills": 60,
+    "hidden_permanent_variants_revalidated": 30,
+    "stable_mutant_process_failures": 270,
+    "survivor_cases": []
+  },
+  "opaque_cases": [
+    {"id":"O01","result":"Unknown"},
+    {"id":"O02","result":"Unknown"},
+    {"id":"O03","result":"Unknown"},
+    {"id":"O04","result":"Unknown"},
+    {"id":"O05","result":"Unknown"}
+  ],
+  "predecessor_continuity": {
+    "live_predecessor_test_executed": false,
+    "live_candidate_source_required": false,
+    "frozen_baseline_usecase_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "frozen_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_predecessor_repetitions_passed": 3,
+    "finding": "The R8 driver separates predecessor verification from the isolated matrix. Predecessor continuity remains bound to pre-candidate evidence, avoiding evaluation of the partial live candidate."
+  },
+  "invalidation_chain_audit": {
+    "passed": true,
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r7_invalidation_sha256": "412dede6c3e64c42385303aa8a0bd4f00521efc5c9ff866a16c0793b7f54ef50",
+    "r8_oracle_contract_references_r7_invalidation": true,
+    "historical_artifacts_unchanged": true
+  },
+  "stability_audit": {
+    "reference_subprocesses": 9,
+    "mutant_subprocesses": 270,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_variant_witnesses_stable": true,
+    "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "normalized_classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55",
+    "required_outcomes_satisfied": true
+  },
+  "normal_global_gate_limitation": {
+    "go_list_exclusion_proved": true,
+    "normal_r6_packages_compile_without_hidden_variants": true,
+    "full_live_go_test_all_executed": false,
+    "reason": "Executing the full live repository would compile and evaluate the partial candidate, which is outside this pre-candidate artifact audit.",
+    "future_candidate_verdict_requires_full_go_test_all": true
+  },
+  "temporal_limitation": {
+    "candidate_existed_before_r8_layout_correction": true,
+    "strong_pre_candidate_independence_claimed": false,
+    "mitigation": "Only oracle-owned discovery paths changed; all source/diff/common-suite hashes were preserved, mutation execution remained isolated, and candidate source and behavior stayed out of scope.",
+    "future_candidate_verdict_requires_binding": true
+  },
+  "seal": {
+    "emitted": true,
+    "path": "00_nucleo/benchmark/0026/seal-r8.json",
+    "reason": "Hidden variants are absent from normal package discovery, the isolated 3x3 mutation matrix remains 60/60 with no survivors, positive/opaque outcomes and predecessor evidence are unchanged, and the invalidation chain is intact."
+  }
+}

@@ -1,0 +1,412 @@
+{
+  "schema_version": "bateia.source-selection.v1",
+  "step": "0027",
+  "selection_date": "2026-09-01",
+  "observed_at": "2026-09-02T00:04:27Z",
+  "status": "SELECTED_FOR_CONTRACT_FREEZE",
+  "selection_count": 1,
+  "connector": {
+    "id": "apple-itunes-search-software",
+    "display_name": "Apple iTunes Search API - software",
+    "provider": "Apple Inc.",
+    "kind": "APPLICATION_CATALOG",
+    "unit": "application",
+    "repo_backed": false,
+    "public_only": true,
+    "authentication": "NONE",
+    "credentials_required": false,
+    "version": {
+      "connector_version": "itunes-search-doc-1.0.3-response-v2",
+      "api_version_surface": "query parameter version=2",
+      "documentation_version": "1.0.3",
+      "documentation_updated": "2017-09-19",
+      "version_observability": "The provider exposes no release path version. The connector version is therefore pinned to Apple documentation version 1.0.3, its update date, response-key version 2, the exact request policy and the hashes in this file."
+    },
+    "identity": {
+      "external_id_field": "trackId",
+      "external_id_namespace": "apple-itunes-search-software",
+      "canonical_url_field": "trackViewUrl",
+      "canonical_url_allowed_host": "apps.apple.com",
+      "canonical_url_normalization": "Require HTTPS, host apps.apple.com and an /id<trackId> path witness; remove query and fragment; never follow the URL during discovery.",
+      "missing_external_id_policy": "REJECT_ITEM",
+      "cross_source_identity_claim": "NONE"
+    },
+    "declared_capabilities": {
+      "query_locales": [
+        "ar-SA",
+        "de-DE",
+        "en-US",
+        "es-ES",
+        "fr-FR",
+        "hi-IN",
+        "ja-JP",
+        "ko-KR",
+        "pt-BR",
+        "ru-RU"
+      ],
+      "markets": [
+        "BR",
+        "DE",
+        "ES",
+        "FR",
+        "IN",
+        "JP",
+        "KR",
+        "RU",
+        "SA",
+        "US"
+      ],
+      "supports_market_filter": true,
+      "market_filter_basis": "Apple documents country as the two-letter code selecting the store storefront. It is sent explicitly and is never derived from a BCP 47 locale.",
+      "query_locale_basis": "The provider documents term as any URL-encoded text string and JSON results as UTF-8. The BCP 47 query locale remains local provenance because the provider has no query-locale parameter. This is transport eligibility, not a provider guarantee of linguistic recall.",
+      "response_localization_values": [
+        "en_us",
+        "ja_jp"
+      ],
+      "response_localization_is_query_locale": false,
+      "cross_locale_market_controls_supported": true,
+      "identity_levels": [
+        "provider_product_id",
+        "canonical_url"
+      ],
+      "evidence_surfaces": [
+        "name",
+        "summary",
+        "publisher",
+        "provider_declared_language_codes",
+        "storefront_observation"
+      ],
+      "replayable": true,
+      "public_only": true
+    }
+  },
+  "endpoint_allowlist": [
+    {
+      "scheme": "https",
+      "host": "itunes.apple.com",
+      "port": 443,
+      "path": "/search",
+      "method": "GET",
+      "follow_redirects": false,
+      "dns_or_ip_override_allowed": false,
+      "user_supplied_host_path_or_url_allowed": false
+    }
+  ],
+  "request_policy": {
+    "encoding": "RFC3986_QUERY_UTF8",
+    "allowed_parameters": {
+      "term": {
+        "required": true,
+        "source": "validated semantic query text",
+        "constraints": "UTF-8 text, percent-encoded as a single query value; no raw filter, header, path or URL syntax"
+      },
+      "country": {
+        "required": true,
+        "allowed_values": [
+          "BR",
+          "DE",
+          "ES",
+          "FR",
+          "IN",
+          "JP",
+          "KR",
+          "RU",
+          "SA",
+          "US"
+        ],
+        "source": "explicit planned market"
+      },
+      "media": {
+        "required": true,
+        "allowed_values": [
+          "software"
+        ]
+      },
+      "entity": {
+        "required": true,
+        "allowed_values": [
+          "software"
+        ]
+      },
+      "limit": {
+        "required": true,
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10
+      },
+      "lang": {
+        "required": true,
+        "allowed_values": [
+          "en_us",
+          "ja_jp"
+        ],
+        "semantics": "response localization only; never product language, query locale, market or origin"
+      },
+      "version": {
+        "required": true,
+        "allowed_values": [
+          "2"
+        ]
+      },
+      "explicit": {
+        "required": true,
+        "allowed_values": [
+          "No"
+        ]
+      }
+    },
+    "forbidden_parameters": [
+      "callback"
+    ],
+    "unspecified_parameters": "FORBIDDEN",
+    "maximum_requests_per_minute": 15,
+    "maximum_concurrent_requests": 1,
+    "provider_documented_approximate_limit_per_minute": 20,
+    "rate_limit_policy": "Do not bypass throttling. Classify HTTP 429 as UNKNOWN_PROVIDER, honor Retry-After when present and start no retry after cancellation or exhausted budget.",
+    "maximum_response_bytes": 2097152,
+    "content_type_policy": "Accept a body only when it parses as one strict UTF-8 JSON object with resultCount and results. The legacy endpoint may label JSON as text/javascript; MIME alone is not evidence of validity.",
+    "network_failure_policy": "Timeout, non-2xx, rate limit, oversized body or invalid JSON is UNKNOWN_PROVIDER and never EMPTY_OBSERVED."
+  },
+  "response_policy": {
+    "external_content_trust": "UNTRUSTED",
+    "allowed_item_fields": [
+      "artistName",
+      "bundleId",
+      "description",
+      "genres",
+      "kind",
+      "languageCodesISO2A",
+      "primaryGenreName",
+      "sellerName",
+      "sellerUrl",
+      "trackCensoredName",
+      "trackId",
+      "trackName",
+      "trackViewUrl",
+      "wrapperType"
+    ],
+    "excluded_field_classes": [
+      "artwork",
+      "screenshots",
+      "previews",
+      "ratings",
+      "rating_counts",
+      "prices",
+      "release_notes",
+      "device_lists"
+    ],
+    "reviews_collected": false,
+    "user_profiles_collected": false,
+    "promotional_assets_downloaded_cached_or_exposed": false,
+    "market_observation_rule": "Attach the explicit requested country only after a successful item-bearing response for that attempt. This records the storefront surface observed, not publisher origin, global availability or installability.",
+    "listing_locale_rule": "Do not copy lang, query locale or languageCodesISO2A into listing locale. Listing locale remains unknown unless a later contracted provider field or deterministic versioned detector establishes it.",
+    "publisher_country_rule": "Always unknown for this connector because the selected response surface does not explicitly declare publisher country.",
+    "language_codes_rule": "languageCodesISO2A may be retained only as provider-declared app language metadata; it is not query locale, listing locale, publisher country or proof that the observed description is in that language.",
+    "evidence_ceiling": "DISCOVERED",
+    "capability_proven_from_catalog_metadata": false,
+    "popularity_affects_identity_evidence_or_gap": false
+  },
+  "coverage": {
+    "matrix_status": "VIABLE_10_OF_10_STOREFRONTS_OBSERVED",
+    "coverage_semantics": "A successful bounded probe shows that the public endpoint accepted the explicit storefront and returned a software result on the observation date. It does not pre-judge later corpus exposure, precision, recall, marginal gain, app availability, language quality or publisher origin.",
+    "probe_request": {
+      "term": "calendar",
+      "media": "software",
+      "entity": "software",
+      "limit": 1,
+      "lang": "en_us",
+      "version": 2,
+      "explicit": "No",
+      "purpose": "source viability only; not part of the multilingual benchmark corpus"
+    },
+    "primary_matrix": [
+      {
+        "query_locale": "pt-BR",
+        "market": "BR",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "5ce95b9d989be1dec5415c4153ca9a9c89022d3f73513cda0e51e8be2c2bb5ed"
+      },
+      {
+        "query_locale": "en-US",
+        "market": "US",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "cc95e69c6f8fde3ab9e7fcec5321bff8872af3b3eee0091c39a915f721e99aef"
+      },
+      {
+        "query_locale": "es-ES",
+        "market": "ES",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "17267c4b4ae475449a9a0c6c11d4c473376a99f3d5feae1e176dd02bef182a30"
+      },
+      {
+        "query_locale": "fr-FR",
+        "market": "FR",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "a7c8c1d07a8b41395c0bec9bb8a4c4c51a45cf89200e91131ced115de33f2735"
+      },
+      {
+        "query_locale": "de-DE",
+        "market": "DE",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "19996014debacbe653c5fbf254b19433c740bfe36f4073170df694af907ba184"
+      },
+      {
+        "query_locale": "ja-JP",
+        "market": "JP",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "28cd48d123771fcf8abeb39cb8ebf0a9c282dc0b3f44726608e46f90c0d091d3"
+      },
+      {
+        "query_locale": "ko-KR",
+        "market": "KR",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "e79d6a54f8b822a6faad9cacb1c956ede8b9dbffa8a89f4cd22513abc064fdda"
+      },
+      {
+        "query_locale": "ru-RU",
+        "market": "RU",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "4a8acc979f2864bc71dc2c68df25f094ada16bb77b151878848f3f1d0ed5c4f0"
+      },
+      {
+        "query_locale": "ar-SA",
+        "market": "SA",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "242081bccaee96439d20490fe0f7dafb5eeaf6512643c81e2f8ddb5f37e18cd4"
+      },
+      {
+        "query_locale": "hi-IN",
+        "market": "IN",
+        "probe_result": "SUCCESSFUL_BODY_RESULT_COUNT_1",
+        "response_sha256": "c8d8b975cf30e9b31f7c2f805dac2256dfe8055736eb970455bf40e3975f1498"
+      }
+    ],
+    "cross_locale_market_policy": "The query locale is recorded separately from country, and any declared query locale may be paired with any allowlisted market. The adapter sends only the validated term plus the explicit country and must not derive one from the other."
+  },
+  "official_sources": [
+    {
+      "purpose": "API overview, intended public use and promotional-content restrictions",
+      "url": "https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/index.html",
+      "retrieved_at": "2026-09-02T00:05:39Z",
+      "sha256": "5f213e4c395fe31238e698394e3955a7858969b87d03f23b02b02f6546ed21a9"
+    },
+    {
+      "purpose": "official endpoint parameters, storefront filter, entity values, result limit, response localization, response version, rate limit and caching guidance",
+      "url": "https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/Searching.html",
+      "retrieved_at": "2026-09-02T00:05:40Z",
+      "sha256": "81bd63e9b964baffeb795b46025773fd28d143cb1465a1bc3e5f28fa2467a027"
+    },
+    {
+      "purpose": "official JSON and UTF-8 response description",
+      "url": "https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/UnderstandingSearchResults.html",
+      "retrieved_at": "2026-09-02T00:05:40Z",
+      "sha256": "dd8fa2099915540d66a54b65695c63d19ccdaaca2c761dc4195f8f162f9c4382"
+    },
+    {
+      "purpose": "Apple website access and load restrictions",
+      "url": "https://www.apple.com/legal/internet-services/terms/site.html",
+      "retrieved_at": "2026-09-02T00:05:41Z",
+      "sha256": "40d705cc998bffe087deb5d52d1778bae21419e3c201f05ac7f84993a52f62ba"
+    },
+    {
+      "purpose": "Apple Media Services terms, content availability and ranking limitations",
+      "url": "https://www.apple.com/legal/internet-services/itunes/",
+      "retrieved_at": "2026-09-02T00:05:41Z",
+      "sha256": "53d8323a6087864a9953b873f491a9827128fe9a0d52e7e5dd609e0d943e0c36"
+    }
+  ],
+  "terms_policy": {
+    "access_basis": "Apple publishes the unauthenticated Search API for searching App Store content and documents the /search request. Use is limited to that purposely provided API surface and the bounded request policy above.",
+    "no_circumvention": true,
+    "no_authentication_bypass": true,
+    "no_rate_limit_bypass": true,
+    "no_storefront_restriction_bypass": true,
+    "promotional_content_policy": "Do not download, cache, expose or use artwork, screenshots, previews, badges or other promotional assets. The connector retains only the allowlisted textual and identity metadata needed for bounded discovery and links back to the App Store.",
+    "terms_revalidation": "Re-fetch and review all official source URLs before any sealed online benchmark or production release. A changed hash, documentation withdrawal, endpoint deprecation or materially changed term invalidates this selection."
+  },
+  "offline_replay_policy": {
+    "online_capture_allowed_only_for": [
+      "authorized bounded benchmark capture",
+      "authorized production discovery run"
+    ],
+    "unit_and_contract_tests_require_network": false,
+    "frozen_unit": "canonical allowlisted response projection plus request metadata, HTTP status class, provider content type, capture timestamp and SHA-256 of the received provider body",
+    "provider_body_retention": "Discard the full provider body after strict parsing, hashing and creation of the canonical allowlisted projection; do not place it in MCP artifacts.",
+    "promotional_asset_fetches": false,
+    "replay_network_calls": false,
+    "replay_version_match_required": true,
+    "replay_integrity": "Verify fixture and request hashes before parsing. Missing, mismatched or corrupt bytes are an integrity error and never EMPTY_OBSERVED.",
+    "determinism": "For the same connector version, canonical request and frozen projection, repeated replay must produce byte-identical snapshot, candidates and gaps.",
+    "empty_rule": "EMPTY_OBSERVED is allowed only for a successful captured response whose strict resultCount is zero and whose results array is empty."
+  },
+  "limitations": [
+    "Apple hosts the selected documentation in its archive; there is no published availability SLA or stable release-path version for this legacy endpoint.",
+    "The documented rate limit is approximately 20 calls per minute and explicitly subject to change.",
+    "The provider's lang parameter localizes returned results only to en_us or ja_jp; it is not a BCP 47 query-locale filter.",
+    "The provider does not receive the BCP 47 query locale. Ten-locale support is transport eligibility for percent-encoded UTF-8 term text and must still pass later corpus exposure, precision and recall gates.",
+    "country selects a storefront. It does not prove product origin, publisher country, global availability, current installability or language support.",
+    "Search results and ordering are mutable and may be affected by provider metadata, engagement and popularity; frozen observations apply only to their capture instant.",
+    "The source covers Apple's application catalog, not every software ecosystem, platform, country or product class.",
+    "The source does not explicitly provide publisher country or a trustworthy listing-locale field for the selected projection; both remain unknown.",
+    "Catalog name, description, publisher text and language codes are untrusted metadata and do not prove implemented capability.",
+    "A successful one-result source-selection probe proves endpoint/storefront viability only; it does not satisfy the Step 0027 product metrics."
+  ],
+  "risks": [
+    {
+      "id": "R01_LEGACY_ENDPOINT_CHANGE_OR_WITHDRAWAL",
+      "severity": "HIGH",
+      "mitigation": "Pin documentation and response hashes, revalidate before sealing and execution, fail as UNKNOWN_PROVIDER, and invalidate source selection on material change."
+    },
+    {
+      "id": "R02_MULTILINGUAL_RECALL_NOT_PROVIDER_GUARANTEED",
+      "severity": "HIGH",
+      "mitigation": "Keep query locale as provenance, never mark translation verified, and require the frozen multilingual corpus gates before promotion."
+    },
+    {
+      "id": "R03_STOREFRONT_MISREAD_AS_ORIGIN_OR_AVAILABILITY",
+      "severity": "CRITICAL",
+      "mitigation": "Model only storefront observation; leave listing locale and publisher country unknown; reject any implicit field copying."
+    },
+    {
+      "id": "R04_PROMOTIONAL_CONTENT_TERMS",
+      "severity": "HIGH",
+      "mitigation": "Do not fetch, cache or expose promotional assets; retain only the allowlisted textual and identity projection and revalidate official terms."
+    },
+    {
+      "id": "R05_RATE_LIMIT_OR_TRANSIENT_OUTAGE",
+      "severity": "MEDIUM",
+      "mitigation": "Cap at 15 requests per minute and one concurrent request, honor provider throttling, use bounded retry within budget, and distinguish provider unknown from empty."
+    },
+    {
+      "id": "R06_MUTABLE_RANKING_AND_METADATA",
+      "severity": "MEDIUM",
+      "mitigation": "Timestamp and hash every observation, replay only frozen projections, and never use rank, ratings or popularity for identity or evidence."
+    },
+    {
+      "id": "R07_UNTRUSTED_TEXT_AND_URLS",
+      "severity": "HIGH",
+      "mitigation": "Bound and sanitize strings, allowlist and normalize canonical URLs without following them, and prevent provider fields from controlling tools, prompts, policy or subsequent requests."
+    }
+  ],
+  "input_hashes": {
+    "00_nucleo/passos/0027-generalizar-descoberta-multilingue-e-multifuente.md": "83f80a9603bc566690ddfb98a94ca18f4bd57b528a177c56d4ba5873b74f4c15",
+    "00_nucleo/ADR/ADR-0002-estrutura-de-pastas-e-camadas-tekt.md": "b457fadd55d6328c2afce969b92a527b461edab9094b1bef66fcfebe71b79a68",
+    "00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "00_nucleo/benchmark/0025/verification-receipt.json": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a",
+    "00_nucleo/benchmark/0026/certificate.json": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+    "00_nucleo/benchmark/0026/verification-receipt.json": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2"
+  },
+  "segregation": {
+    "regime": "TEKT_FULL_PROTOCOL_SOURCE_SELECTION_PHASE",
+    "role": "CONTRACT_AUTHOR",
+    "executor": "/root/contract_0027",
+    "read_scope": "Step 0027 intent, ADR-0002, predecessor certificates/verification receipts and official public Apple documentation plus bounded source probes.",
+    "write_scope": [
+      "00_nucleo/benchmark/0027/source-selection.json"
+    ],
+    "candidate_implementation_read": false,
+    "step_0027_oracles_attacks_receipts_or_verdicts_read": false,
+    "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+  },
+  "invalidation_rule": "Any change to the selected connector, endpoint allowlist, request policy, ten-market matrix, offline replay policy, official-source hashes, terms interpretation or local input hashes invalidates this selection and all downstream Step 0027 seals."
+}

@@ -1,0 +1,86 @@
+{
+  "schema_version": "tekt.contract-seal.v1",
+  "step": "0026",
+  "revision": "R8",
+  "phase": "RESEAL_AFTER_MUTANT_DISCOVERY_INVALIDATION",
+  "verdict": "SEALED_WITH_TEMPORAL_LIMITATION",
+  "created_at": "2026-09-01T22:05:27Z",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "manifest_sha256": "63c219ed39bb9599f5a5813f021044077e4738acf89b5b401aa191ad4ed4959a",
+  "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+  "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+  "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+  "oracle_contract_sha256": "5ab20b4fdbf7b4747b18e2669471d48ec86de5e0306f51bb3c59530e8273bae1",
+  "driver_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90",
+  "reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+  "common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+  "discriminatory_receipt_path": "00_nucleo/benchmark/0026/discriminatory-receipt-r8.json",
+  "discriminatory_receipt_sha256": "be01ae770b68ca30a39e617228033e731ee3bd690a59b2c356a7e18cb861a107",
+  "causal_chain": {
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_seal_sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r7_receipt_sha256": "e9812fc3ea290620fbdca89237a2a69955b124d0500cfe0a68ede077bbd8e99a",
+    "r7_seal_sha256": "be931f3a7731d7ab63e3081654b7073c7ae05bda126f1189ab3ca1bffca6876c",
+    "r7_invalidation_sha256": "412dede6c3e64c42385303aa8a0bd4f00521efc5c9ff866a16c0793b7f54ef50",
+    "r6_and_r7_seals_historical_only": true,
+    "r8_replaces_r7_for_future_verification": true
+  },
+  "hidden_variant_layout": {
+    "path": "04_wiring/r6_gate/testdata/mutants/Mxx",
+    "permanent_variants": 30,
+    "go_list_all_discovered_mutants": 0,
+    "normal_wildcard_executes_mutants": false,
+    "driver_explicitly_executes_mutants": true,
+    "source_bytes_changed": false,
+    "canonical_diff_hashes_changed": false,
+    "common_suite_bytes_changed": false,
+    "common_test_copy_sha256": "97a56fe22bf3604bd1455e673a8a4975cb038f1d50bf36eaedf1f3b8cb67579d"
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "violated_negative_mutations": 60,
+    "total_negative_mutations": 60,
+    "survivors": 0
+  },
+  "positive_controls": {
+    "P01": "Preserved",
+    "P02": "Preserved",
+    "P03": "Preserved",
+    "P04": "Preserved",
+    "P05": "Preserved"
+  },
+  "opaque_outcomes": {
+    "O01": "Unknown",
+    "O02": "Unknown",
+    "O03": "Unknown",
+    "O04": "Unknown",
+    "O05": "Unknown"
+  },
+  "isolated_evidence": {
+    "reference_subprocesses_passed": 9,
+    "mutant_subprocesses_failed": 270,
+    "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55"
+  },
+  "predecessor_continuity": {
+    "evidence_source": "pre-candidate frozen manifest snapshot, Step 0025 certificate and immutable R6 receipt",
+    "baseline_usecase_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "live_predecessor_test_executed": false,
+    "live_candidate_source_evaluated": false
+  },
+  "candidate_scope": {
+    "source_read": false,
+    "compiled": false,
+    "behavior_executed": false,
+    "evaluated": false,
+    "modified": false,
+    "future_verdict_certified": false
+  },
+  "scope": "R8 frozen Step 0026 oracle layout and mutation benchmark. Hidden testdata variants are excluded from normal package discovery and explicitly exercised only by the mutation driver. This seal does not certify the partial or eventual candidate implementation.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "R8 was frozen after partial candidate existence. It cannot claim strong pre-candidate temporal independence; assurance rests on relocation-only oracle changes, preserved source/diff/suite hashes, isolated execution and pre-candidate predecessor evidence. Final candidate verification must separately execute the full normal go test ./... gate and bind the candidate snapshot.",
+  "invalidation_rule": "Any change to a recorded hash, reappearance of mutation fixtures in normal go list ./..., failure of the isolated matrix, use of candidate behavior to alter oracle expectations, or a newly discovered oracle contradiction invalidates this R8 seal."
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v6",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_oracle_revision": "O6",
+  "target_oracle_revision": "O7",
+  "contract_revision": "R3",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "privacy_contract": {
+    "allowed": ["case_id", "public_contract_port", "required_classification", "observed_classification", "public_gap"],
+    "excluded": ["mutation_payload", "mutation_description", "private_target", "candidate_content", "code", "patch", "implementation_solution"]
+  },
+  "negative_survivors": [
+    {"case_id":"M004","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M094","public_contract_port":"RUN_READ","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M097","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M098","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M099","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M102","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M107","public_contract_port":"SYNTHESIS_START","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M110","public_contract_port":"ARTIFACT_READ","required_classification":"Violated","observed_classification":"Unknown","public_gap":"NEGATIVE_DEVIATION_MISCLASSIFIED_AS_OPACITY"},
+    {"case_id":"M124","public_contract_port":"RUN_CANCEL","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"},
+    {"case_id":"M150","public_contract_port":"RUN_READ","required_classification":"Violated","observed_classification":"Preserved","public_gap":"NO_INDEPENDENT_R3_PREDICATE_FAILED"}
+  ],
+  "positive_control_failures": [
+    {"case_id":"P01","public_contract_port":"MECHANISM_EXTRACT"},
+    {"case_id":"P02","public_contract_port":"MECHANISM_EXTRACT"},
+    {"case_id":"P03","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P04","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P05","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P06","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P07","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P08","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"P09","public_contract_port":"SYNTHESIS_START"},
+    {"case_id":"P10","public_contract_port":"RUN_CANCEL"},
+    {"case_id":"P11","public_contract_port":"REPLAY"},
+    {"case_id":"P12","public_contract_port":"TOOLS_LIST"}
+  ],
+  "positive_control_required_classification": "Preserved",
+  "positive_control_observed_classification": "Violated",
+  "positive_control_public_gap": "REFERENCE_CONTROL_VIOLATES_ONE_OR_MORE_INDEPENDENT_R3_PREDICATES",
+  "opaque_control_failures": [
+    {"case_id":"O01","public_contract_port":"MECHANISM_EXTRACT"},
+    {"case_id":"O02","public_contract_port":"MECHANISM_EXTRACT"},
+    {"case_id":"O03","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"O04","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"O05","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"O06","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"O07","public_contract_port":"REFINEMENT_AUDIT"},
+    {"case_id":"O08","public_contract_port":"REPLAY"},
+    {"case_id":"O09","public_contract_port":"ARTIFACT_READ"},
+    {"case_id":"O10","public_contract_port":"ARTIFACT_READ"}
+  ],
+  "opaque_control_required_classification": "Unknown",
+  "opaque_control_observed_classification": "Violated",
+  "opaque_control_public_gap": "CONCRETE_OPACITY_CONSTRUCTION_ALSO_VIOLATES_R3_OR_EXPOSES_NO_QUALIFYING_OPACITY",
+  "qualification_rule": "Each negative must independently fail an R3 predicate; each positive must satisfy all applicable predicates; each opaque construction must expose real contractual uncertainty without a simultaneous violation.",
+  "o6_score": 0.9375,
+  "seal_existed_or_emitted": false
+}

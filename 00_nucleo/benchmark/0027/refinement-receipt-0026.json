@@ -1,0 +1,26 @@
+{
+  "schema_version": "tekt.refinement-receipt.v1",
+  "step": "0027",
+  "predecessor_step": "0026",
+  "predecessor_verdict": "MCP_DURABLE_RUNS_READY",
+  "created_at": "2026-09-02T01:56:21Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessor_certificate_sha256": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+  "predecessor_verification_receipt_sha256": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2",
+  "preserved_surface": {
+    "mcp_durable_runs_sha256": "a4f461bcb7a37fe4f35527e0e90b3f69b1bfc57bfe1816918e3285c958808e83",
+    "legacy_tools_4_through_7": "deep-equal except the exact five additive artifact enum suffixes authorized by contract section 3",
+    "shared_store_queue_root_secret": "one L4 instance, protected oracle PASS",
+    "cursor_hmac_quota_recovery_atomicity_and_cancellation": "covered by complete and race suites"
+  },
+  "evidence": [
+    "TestStep0027OracleMarketLifecycleRecoveryAndStatusUseTheCertifiedRuntime PASS",
+    "TestStep0027OracleReplayIsOfflineByteIdenticalAndWiringCreatesOneDurableRuntime PASS",
+    "real stdio tools/list and bateia_list_connectors PASS",
+    "go test -count=1 ./... PASS twice after R4",
+    "go test -race -count=1 ./01_core/... ./02_shell/mcp ./03_infra/... ./04_wiring PASS after R4"
+  ],
+  "result": "PRESERVED",
+  "invalidation_rule": "Any change to predecessor hashes, durable public surfaces, shared runtime identity or candidate hashes requires this refinement to be repeated."
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "tekt.step0028.oracle-authorship.v4",
+  "step": "0028",
+  "oracle_revision": "O5",
+  "contract_revision": "R3",
+  "authority": "SEGREGATED_ORACLE",
+  "read_allowlist": [
+    "00_nucleo/benchmark/0028/contract.md",
+    "00_nucleo/benchmark/0028/mechanism-rules.json",
+    "00_nucleo/benchmark/0028/executable-mutant-protocol-o5.json"
+  ],
+  "capabilities": [
+    {"role":"oracle_primary","scope":["binding_free_api","strict_decode","canonical_json","global_predicates","sequence_determinism","integration","public_contract","coverage_matrix","invalidation","protected_manifest","gates"]},
+    {"role":"oracle_extraction_predicates","scope":["mechanism_extract_contract_predicates"],"writable_paths":["04_wiring/step0028_gate/o5blackbox/extraction.go","00_nucleo/prompts/04_wiring/step0028_gate/o5blackbox/extraction.md"]},
+    {
+      "role":"oracle_runtime_predicates",
+      "scope":["synthesis_runtime_mcp_replay_refinement_contract_predicates"],
+      "writable_paths":["04_wiring/step0028_gate/o5blackbox/ports.go","00_nucleo/prompts/04_wiring/step0028_gate/o5blackbox/ports.md"],
+      "additional_structural_integration_read":["04_wiring/step0028_gate/o5blackbox/api.go","04_wiring/step0028_gate/o5blackbox/json.go","04_wiring/step0028_gate/o5blackbox/evaluator.go"],
+      "integration_read_semantic_scope":"types and helper signatures only",
+      "prohibited_inputs_read":false
+    }
+  ],
+  "candidate_read": false,
+  "adversarial_cases_read": false,
+  "mutation_commitments_read": false,
+  "executable_mutant_records_configs_manifests_or_roots_read": false,
+  "coverage_gaps_or_failures_read": false,
+  "receipts_seals_certificates_or_verdicts_read": false,
+  "workspace_isolation_attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

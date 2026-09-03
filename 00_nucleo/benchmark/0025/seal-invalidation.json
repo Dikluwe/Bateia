@@ -1,0 +1,103 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0025",
+  "verdict": "SEAL_INVALIDATED",
+  "invalidated_seal": {
+    "path": "00_nucleo/benchmark/0025/seal.json",
+    "sha256": "45ae84126c07ab2dd461758e6a75fe2312afa837cbe9b2aa91ef38b7a5fcf26f",
+    "revision": "R4",
+    "previous_verdict": "SEALED"
+  },
+  "predecessor_discriminatory_receipt": {
+    "path": "00_nucleo/benchmark/0025/discriminatory-receipt.json",
+    "sha256": "e2ad3b0793670a503b6d0957dc20ac80e0a2a602ca69a8684a764ef5d013a3aa",
+    "revision": "R4",
+    "previous_score": 1.0
+  },
+  "protected_oracle": {
+    "path": "01_core/usecase/recommendation_step0025_contract_test.go",
+    "sha256": "b02fcecda94224561f52356a44134020ef48fbaaf64c52750d4c1593d0cab6b8",
+    "integrity_unchanged": true
+  },
+  "trigger": {
+    "phase": "FIRST_POST_SEAL_BEHAVIORAL_RUN",
+    "command": "env GOCACHE=/tmp/bateia-go-cache go test ./01_core/usecase ./01_core/domain",
+    "exit_code": 1,
+    "reproduced": true,
+    "failing_oracle_tests": [
+      "TestStep0025OfflineServicePropagatesLocalesAndNeutralizesRepositoryInstructions",
+      "TestStep0025UnknownLicenseWarnsWithoutBlockingOrChangingFit"
+    ]
+  },
+  "witness": {
+    "fixture_capabilities": ["inventário", "previsão de consumo"],
+    "default_evidence_rules_have_matching_capability_rule": false,
+    "candidate_updated_at_is_zero": true,
+    "candidate_consultado_em_is_zero": true,
+    "observed_capability_status": "INCONCLUSIVE",
+    "observed_problem_alignment": "INCONCLUSIVE",
+    "observed_maintenance_status": "INCONCLUSIVE",
+    "observed_fit": "INCONCLUSIVE",
+    "observed_collection": "excluded",
+    "observed_top_choice": null,
+    "oracle_expectation": "an eligible entry in alternatives for locale provenance and known/unknown license comparison",
+    "contradiction": "Making the fixture eligible would require supplying grounded capability and maintenance evidence or weakening Unknown. The protected fixture supplies neither, while the sealed policy forbids inventing evidence or promoting opacity."
+  },
+  "code_review": [
+    {
+      "path": "01_core/usecase/evidence.go",
+      "observation": "DefaultEvidenceRules contains no rule for inventário or previsão de consumo; maintenance assessment returns INCONCLUSIVE when UpdatedAt or ConsultadoEm is zero."
+    },
+    {
+      "path": "01_core/usecase/software_alternative.go",
+      "observation": "INCONCLUSIVE maintenance sets the opaque gate; opaque candidates derive Fit=INCONCLUSIVE and are placed in excluded."
+    },
+    {
+      "path": "01_core/usecase/recommendation_step0025_contract_test.go",
+      "observation": "The protected discovery candidate leaves temporal metadata at zero and the two failing tests require an eligible alternative before asserting provenance or license invariance."
+    }
+  ],
+  "classification": {
+    "oracle_incoherence": true,
+    "candidate_defect_for_this_witness": false,
+    "unknown_policy_preserved_by_candidate": true,
+    "cancellation_failure_invalidation_basis": false,
+    "cancellation_note": "The cancellation failure was a legitimate candidate defect and was corrected; it does not motivate this invalidation."
+  },
+  "affected_phases": {
+    "first_affected": "ORACLE_AUTHORING",
+    "must_repeat": [
+      "oracle fixture design and protected suite freeze",
+      "oracle-contract and manifest hash freeze",
+      "discriminatory gate",
+      "pre-candidate seal"
+    ],
+    "current_seal_usable_for_materialization": false
+  },
+  "commands": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-go-cache go test ./01_core/usecase ./01_core/domain",
+      "result": "FAIL_REPRODUCED",
+      "detail": "Only the two named fixture-dependent Step 0025 tests fail in this run; domain package passes."
+    },
+    {
+      "command": "static review of DefaultEvidenceRules, maintenance assessment, alternative opaque gate/ranking and protected fixture",
+      "result": "ORACLE_INCOHERENCE_CONFIRMED"
+    },
+    {
+      "command": "sha256sum seal, R4 receipt and protected L1 oracle",
+      "result": "PASS",
+      "detail": "Hashes remain 45ae8412..., e2ad3b07... and b02fcecd... respectively."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "limitations": [
+    "The workspace is shared; this record attests the reproducible behavioral contradiction and causal invalidation, not strong process isolation.",
+    "The invalidation does not prescribe a replacement fixture and does not authorize weakening Unknown or changing candidate semantics.",
+    "The former seal file is retained as historical evidence but is no longer valid for materialization."
+  ]
+}

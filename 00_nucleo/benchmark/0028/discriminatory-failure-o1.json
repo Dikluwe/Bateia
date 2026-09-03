@@ -1,0 +1,86 @@
+{
+  "schema_version": "tekt.step0028.discriminatory-failure-public.v1",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "oracle_revision": "O1",
+  "contract_revision": "R3",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "created_at": "2026-09-02",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "GATE_FAILED_UNSEALED",
+  "frozen_hashes": {
+    "intent_sha256": "9105b27e0e8e9165b0b133a647669e858b977ea2ab8c7d951ed0f217a26ac1a5",
+    "manifest_sha256": "0b8fbcebf9f3af491ae1851f59715c248fa63181617cc336dc39b6969fb555ad",
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "oracle_contract_o1_sha256": "a32ad267aeb776b780db5acf20edc55291f3964184c9349ecb8502acacbda36d",
+    "oracle_protected_manifest_o1_sha256": "e9f0d32b8c9b4d42d397b0c2c53848e1ed75b59549bde644340b11b7772d9932",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "coverage_gap_o1_sha256": "7eca960c91c865e2a24c697c2568c3a99c11f90a597be16848d9c28f8f7d00e1"
+  },
+  "binding_audit": {
+    "r2_to_r3_invalidation_valid": true,
+    "protected_o1_files_hash_verified": 15,
+    "strict_json_files_verified": 12,
+    "candidate_read": false,
+    "candidate_compiled": false,
+    "candidate_executed": false
+  },
+  "gate_result": {
+    "valid_negative_cases": 160,
+    "violated": 10,
+    "survived": 150,
+    "negative_unknown": 0,
+    "mutation_score": 0.0625,
+    "required_mutation_score": 1.0,
+    "positive_controls": 12,
+    "positive_preserved": 0,
+    "positive_not_demonstrated": 12,
+    "opaque_cases": 10,
+    "opaque_unknown": 10,
+    "opaque_cases_in_denominator": false,
+    "result": "FAIL"
+  },
+  "stability_audit": {
+    "repetitions": 3,
+    "orders": 3,
+    "classification_runs": 9,
+    "stable": true,
+    "normalized_digest_sha256": "3dbc4a9a2083cbcf9a0ac047248d196732068ea9647566058b6043138f78a0c7",
+    "classification_sha256": "2ddb50fc5ec4b2b4742ecfc48a8a4cc5c18681ac57864c9ff72081d09fe2fbdf"
+  },
+  "public_feedback": {
+    "coverage_matrix_path": "00_nucleo/benchmark/0028/coverage-gap-o1.json",
+    "coverage_matrix_sha256": "7eca960c91c865e2a24c697c2568c3a99c11f90a597be16848d9c28f8f7d00e1",
+    "allowed_entry_fields": [
+      "id",
+      "public_contract_binding",
+      "required_executable_subject",
+      "o1_coverage_gap"
+    ],
+    "case_ids_are_opaque": true,
+    "attack_content_disclosed": false,
+    "candidate_content_disclosed": false,
+    "implementation_guidance_disclosed": false
+  },
+  "seal": {
+    "path": "00_nucleo/benchmark/0028/seal.json",
+    "exists": false,
+    "emitted": false,
+    "reason": "mutation_score_below_required_and_positive_controls_not_demonstrated"
+  },
+  "next_phase_boundary": {
+    "authorized_recipient": "oracle_author_o2",
+    "read_allowlist": [
+      "00_nucleo/benchmark/0028/discriminatory-failure-o1.json",
+      "00_nucleo/benchmark/0028/coverage-gap-o1.json",
+      "public contract R3 and public causal inputs already allowed to the oracle role"
+    ],
+    "forbidden_inputs_unchanged": [
+      "adversarial case contents",
+      "candidate implementation",
+      "private verifier classification rationale"
+    ],
+    "required_revalidation": "Any O2 change invalidates O1 hash bindings and requires a complete fresh pre-candidate discriminatory gate before seal."
+  }
+}

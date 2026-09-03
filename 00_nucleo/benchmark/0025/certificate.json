@@ -1,0 +1,75 @@
+{
+  "schema_version": "tekt.certificate.v1",
+  "step": "0025",
+  "contract_revision": 6,
+  "candidate_revision": "post-B01-B02-fix-1",
+  "verdict": "MCP_RECOMMENDATION_GATEWAY_READY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "scope": "The synchronous live bateia_recommend MCP gateway, shared L1 RecommendationService orchestration, strict input boundary, canonical safe projection, preserved legacy MCP tools and real L4 offline composition for the exact recorded versions.",
+  "causal_chain": {
+    "final_manifest_sha256": "9f4a06917139098b2a7a63f36cb438b936de9bdbb95d049dd9277b7f1296bc5f",
+    "r6_seal_sha256": "9ee11e374a114cf760b1bdac51fa17fa4dd49ab7717671555a5b2820c090f5af",
+    "r6_discriminatory_receipt_sha256": "d81286197c7d4c6496a00d39cced18c186f22444effa304add553883f730e6ad",
+    "negative_verification_receipt_predecessor_sha256": "e295ffdec609515379bae62283ce865cc2a5adb72476ee2a25bdc471bd68ae2e",
+    "final_verification_receipt_sha256": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a"
+  },
+  "sealed_inputs": {
+    "intent_sha256": "8ddd8785f874ed36df41fbcedfa3fc580c72740dee1adeb1449ba7037f232a6f",
+    "contract_sha256": "b0ca1ed27b52caa52918c7f1bf60f48605cff4b3f04f5bea7c65d820036f0d48",
+    "adversarial_cases_sha256": "60fe6f3be7fdd68b6a277090051a67e2b00f2d018233fa9c1f4f4713cf1a9a3a",
+    "oracle_contract_sha256": "75b77d07a1118fa1cfc72ecc99f43e67334e0c47fe9332ef07fa6e30ff79271d",
+    "l1_oracle_test_sha256": "ce6189db067fcd7dc50fbf3995d371b2674c44fb355167424aa859d3d09205eb",
+    "mcp_oracle_test_sha256": "cc88dfe582c5e61688468c89b94a173e0f23aea4d0e4105ba2ea6749c595dea6",
+    "l4_oracle_test_sha256": "dea08090da1262f2881ffc0ee26e0b86ced4b68ecaa561635a012d7d560149a5"
+  },
+  "implementation_hashes": {
+    "01_core/domain/recommendation.go": "2fa9bf8e8beba55f22279b33cff20084834e510dc6175ad2ee70b6791f149af6",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "01_core/usecase/evidence.go": "8d911e0f00ca97d8d155d8fd0ccd89ce7834f4d5d77ac2dcaadf7291a87c217f",
+    "01_core/usecase/idea_discovery.go": "0707898154e689c1da08b7d46b8a5f4974f333c6d21a9bf8a1afec23f7321daa",
+    "01_core/usecase/idea_run.go": "edbd2c3802e28ec03bde534327be5d803d2011113d21d142a8f60a77505e73ea",
+    "01_core/usecase/regional_discovery.go": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6",
+    "02_shell/cli/app.go": "b1bc79110459023ac3fa1c2ad0bd0f6133a5b27c06402d562cedabd2c97aa79b",
+    "02_shell/cli/idea_recommend.go": "1c4f1a6f8206d67c765abf2ca73be0a01a99128fd2efddd4f09ebb5391741c77",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "04_wiring/main.go": "8157b96f7b0f6a5aa9a1f423c2986fc2da0f59aa9743d926236e2167d1df7e1a"
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "rejected_negative_mutations": 26,
+    "total_negative_mutations": 26,
+    "survivors": 0,
+    "opaque_O01_O05": "Unknown"
+  },
+  "resolved_predecessor_findings": {
+    "B01_M18_cancellation_during_collection": "PASS_WITH_IDENTICAL_INDEPENDENT_OVERLAY",
+    "B02_M11_external_error_canary_leak": "PASS_WITH_IDENTICAL_INDEPENDENT_OVERLAY"
+  },
+  "final_gates": {
+    "independent_overlay_M18": "PASS",
+    "independent_overlay_M11": "PASS",
+    "go_test_all_twice_by_verifier": "PASS",
+    "go_test_all_twice_by_coordinator": "PASS_REPORTED",
+    "go_build_main": "PASS",
+    "go_vet_all": "PASS",
+    "crystalline_lint": "PASS_WITH_V12_TEST_ONLY_WARNINGS",
+    "layer_import_audit": "PASS",
+    "git_diff_check": "PASS",
+    "offline_l4_end_to_end": "PASS"
+  },
+  "architecture": {
+    "l1_io_added": false,
+    "l2_depends_on_l3": false,
+    "l4_business_logic_added": false,
+    "recommendation_service_injected_by_l4": true,
+    "cli_live_and_mcp_share_l1_orchestration": true
+  },
+  "limitations": [
+    "Execution used a shared worktree and does not provide strong process-isolation attestation.",
+    "R6 oracle refinement and the candidate corrections occurred after candidate existence; the certificate relies on hashes, predecessor receipts and repeated gates rather than strong temporal isolation.",
+    "This certificate covers only the synchronous live observable fragment and exact versions recorded here. It does not certify general functional equivalence, MCP persistence, replay/resume, asynchronous jobs, external market coverage or translation quality."
+  ],
+  "invalidation_rule": "Any change to a recorded sealed input, implementation hash, final receipt hash or certified observable requires a new verification receipt and certificate."
+}

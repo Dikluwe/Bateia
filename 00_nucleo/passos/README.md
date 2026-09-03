@@ -39,3 +39,7 @@ Cada passo deve declarar:
 | [0022](0022-calibrar-regras-de-evidencia-por-oraculos-independentes.md) | Ampliar a comprovação de capacidades com oráculos segregados e teste oculto | `IMPLEMENTADO` |
 | [0023](0023-validar-funil-completo-para-decisoes-reais-de-reuso.md) | Validar descoberta, evidência, decisão e utilidade em dez ideias reais do domínio escolhido | `DESCOBERTA APROVADA — DOWNSTREAM PENDENTE` |
 | [0024](0024-ranquear-alternativas-funcionais.md) | Ranquear alternativas funcionais para um software alvo com evidência e filtros | `IMPLEMENTADO` |
+| [0025](0025-expor-recomendacao-completa-como-ferramenta-mcp.md) | Expor o funil completo como ferramenta MCP estruturada para uma IA externa | `IMPLEMENTADO` |
+| [0026](0026-persistir-execucoes-mcp-e-consultar-por-run-id.md) | Persistir execuções MCP, acompanhar estado e ler artefatos seguros por `run_id` | `IMPLEMENTADO` |
+| [0027](0027-generalizar-descoberta-multilingue-e-multifuente.md) | Descobrir produtos em múltiplos idiomas, mercados e fontes com proveniência | `IMPLEMENTADO` |
+| [0028](0028-extrair-mecanismos-e-formular-hipoteses-de-melhoria.md) | Extrair mecanismos comprovados e formular hipóteses de melhoria rastreáveis | `PLANEJADO` |

@@ -1,0 +1,83 @@
+{
+  "schema_version": "tekt.contract-seal.v1",
+  "step": "0026",
+  "revision": "R7",
+  "phase": "RESEAL_AFTER_ORACLE_SYNTAX_INVALIDATION",
+  "verdict": "SEALED_WITH_TEMPORAL_LIMITATION",
+  "created_at": "2026-09-01T21:37:32Z",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "manifest_sha256": "bcc61d7ded7b9684798aed1d9be7d312a67e597ea9f0dff1a1e5081e2d90c7d6",
+  "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+  "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+  "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+  "oracle_contract_sha256": "170310ab8c216578fb223c16c525dac254c4144b0f89231f110d073e21b0f659",
+  "corrected_oracle_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97",
+  "corrected_oracle_prompt_sha256": "87fd87d0048e1dd473d86ca70f0161baf4c67d59182ec3b410018a67205d8e7f",
+  "discriminatory_receipt_path": "00_nucleo/benchmark/0026/discriminatory-receipt-r7.json",
+  "discriminatory_receipt_sha256": "e9812fc3ea290620fbdca89237a2a69955b124d0500cfe0a68ede077bbd8e99a",
+  "causal_chain": {
+    "historical_r6_seal_path": "00_nucleo/benchmark/0026/seal.json",
+    "historical_r6_seal_sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_invalidation_path": "00_nucleo/benchmark/0026/seal-r6-invalidation.json",
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r6_seal_remains_historical_only": true,
+    "r7_replaces_r6_for_future_verification": true
+  },
+  "oracle_correction": {
+    "previous_sha256": "fa1e664d9fdd61ad67769c818b8609ec277369437f87271d4490256cac1e2dda",
+    "corrected_sha256": "bfc014cfbb6a2c587c4651c6898c6b4bb1733abb4f9a0f87176e2317c53aad97",
+    "removed_exact_line": "name := entry.Name()",
+    "old_source_reconstructed_from_corrected_bytes": true,
+    "obligation_changed": false,
+    "expectation_changed": false,
+    "prompt_changed": false
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "violated_negative_mutations": 60,
+    "total_negative_mutations": 60,
+    "survivors": 0
+  },
+  "positive_controls": {
+    "P01": "Preserved",
+    "P02": "Preserved",
+    "P03": "Preserved",
+    "P04": "Preserved",
+    "P05": "Preserved"
+  },
+  "opaque_outcomes": {
+    "O01": "Unknown",
+    "O02": "Unknown",
+    "O03": "Unknown",
+    "O04": "Unknown",
+    "O05": "Unknown"
+  },
+  "isolated_continuity_evidence": {
+    "r6_reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "r6_common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "reference_subprocesses_passed": 9,
+    "mutant_subprocesses_failed": 270,
+    "witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55"
+  },
+  "predecessor_continuity": {
+    "evidence_source": "pre-candidate frozen manifest snapshot, Step 0025 certificate and immutable R6 receipt",
+    "baseline_usecase_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "live_post-candidate_source_required": false,
+    "live_post-candidate_source_evaluated": false
+  },
+  "candidate_scope": {
+    "source_read": false,
+    "behavior_executed": false,
+    "evaluated": false,
+    "modified": false,
+    "future_verdict_certified": false
+  },
+  "scope": "R7 frozen Step 0026 contract and oracle after a semantically null syntax correction. This reseal permits future verification against R7 but does not certify the partial or eventual candidate implementation.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "R7 was frozen after partial candidate existence. It cannot claim strong pre-candidate temporal independence; assurance rests on the exact one-line unused-declaration deletion, unchanged prompts/expectations, frozen R6 mutation artifacts and pre-candidate predecessor evidence. Candidate verification must bind the then-frozen candidate separately.",
+  "invalidation_rule": "Any change to a recorded hash, any broader oracle correction, use of live candidate state to alter expectations, or a newly discovered oracle contradiction invalidates this R7 seal."
+}

@@ -75,10 +75,10 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 				maxPerQuery = 5
 			}
 			snapshot, e := DiscoverExpansionPlan(ctx, plan, req.Strategy, req.Language, maxPerQuery, 2, deps.Discovery)
+			result.Discovery = snapshot
 			if e != nil {
 				return result, e
 			}
-			result.Discovery = snapshot
 		case domain.IdeaRunLocal:
 			result.Discovery = localDiscoverySnapshot(req, plan, deps.LocalCandidates)
 		}
@@ -131,11 +131,17 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 		result.Bundles = replayBundlesForPlans(result.Plans, deps.ReplayBundles)
 	} else {
 		for _, p := range result.Plans {
+			if err := ctx.Err(); err != nil {
+				return result, err
+			}
 			b, e := CollectEvidence(ctx, p, deps.Content)
 			if e != nil {
 				b = domain.EvidenceBundle{SchemaVersion: "1", Repository: p.Repository, Plan: p, Complete: false, Failures: []domain.ExecutionFailure{{Scope: p.Repository.Key(), Stage: "collection", Message: e.Error()}}}
 			}
 			result.Bundles = append(result.Bundles, b)
+			if err := ctx.Err(); err != nil {
+				return result, err
+			}
 		}
 	}
 	for _, bundle := range result.Bundles {
@@ -374,9 +380,6 @@ func inconclusiveRunAssessment(idea domain.IdeaSpec, bundle domain.EvidenceBundl
 }
 
 func validateIdeaRun(req domain.IdeaRunRequest, deps IdeaRunDependencies) error {
-	if req.OutputDirectory == "" {
-		return fmt.Errorf("output_directory é obrigatório")
-	}
 	if req.Strategy == "" {
 		return fmt.Errorf("strategy é obrigatória")
 	}

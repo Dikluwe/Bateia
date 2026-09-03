@@ -1,0 +1,17 @@
+{
+  "schema_version": "bateia.apple-offline-fixture-manifest.v1",
+  "step": "0027",
+  "visibility": "PROTECTED_ORACLE_ONLY",
+  "connector_id": "apple-itunes-search-software",
+  "connector_version": "itunes-search-doc-1.0.3-response-v2",
+  "provider_body_retained": false,
+  "network_required": false,
+  "allowed_item_fields": ["artistName","bundleId","description","genres","kind","languageCodesISO2A","primaryGenreName","sellerName","sellerUrl","trackCensoredName","trackId","trackName","trackViewUrl","wrapperType"],
+  "fixtures": [
+    {"path":"cross-dimension-injection.json","sha256":"ada0c25fc6e2f6cd948d790edbe8559cf667f1410000504f44f6861e94d87e29","expected_outcome":"SUCCESS_WITH_DIMENSIONS_UNINFERRED"},
+    {"path":"empty.json","sha256":"545ac24453b87a267bf2c408bb5d7b4a7a0a9f2d4467cf1e14636a128f3f44d0","expected_outcome":"EMPTY_OBSERVED"},
+    {"path":"provider-error.json","sha256":"38d60bce4ac58aa81f3ced93eed694adb16f0741dec71855b93aa64881f7a476","expected_outcome":"UNKNOWN_PROVIDER"},
+    {"path":"success.json","sha256":"54edb8b64489bdb588d62a95be60ab024699a1fd95c84ae2a8d9634dd65eb423","expected_outcome":"SUCCESS"}
+  ],
+  "invalidation_rule": "Any fixture byte, request policy, connector version or expected outcome change invalidates this manifest and downstream oracle hashes."
+}

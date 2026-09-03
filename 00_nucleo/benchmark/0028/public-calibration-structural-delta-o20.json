@@ -1,0 +1,32 @@
+{
+  "schema_version":"tekt.step0028.public-calibration-structural-delta.v1",
+  "visibility":"PUBLIC_SANITIZED_STRUCTURE_ONLY",
+  "artifact_role":"PUBLIC_PROTOCOL_PROJECTION_NOT_FIXTURE_OR_ATTACK",
+  "programmatic_comparison":{"mode":"RECURSIVE_JSON_TREE_WALK","exchange_count":7,"reported_dimensions":["json_pointer","presence","json_type","cardinality","operation","artifact","normative_enum"]},
+  "evaluate_boundary":{
+    "first_argument":{"name":"contract_input","envelope":"ContractInput","operation_pointer":"/port","request_pointer":"/request","artifact_pointer":"/request/artifact"},
+    "second_argument":{"name":"contract_output","envelope":"ContractOutput","return_pointer":"/return_value","canonical_document_pointer":"/return_value/canonical_json","canonical_document_encoding":"base64","decoded_document_pointers":["/schema_version","/artifact","/entries"]}
+  },
+  "common_real_to_previous_projection_delta":[
+    {"pointer":"/entries/*/validation_plan","real":{"presence":"present","json_type":"array","cardinality":1},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/validation_plan/*","real":{"presence":"present","json_type":"object","cardinality":7},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/assumptions","real":{"presence":"present","json_type":"array","cardinality":1},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/risks","real":{"presence":"present","json_type":"array","cardinality":1},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/counterevidence_search","real":{"presence":"present","json_type":"object","cardinality":3},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/counterevidence_search/scope_refs","real":{"presence":"present","json_type":"array","cardinality":1},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/counterevidence_search/result_refs","real":{"presence":"present","json_type":"array","cardinality":0},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/product_observation_refs","real":{"presence":"present","json_type":"array","cardinality":0},"previous_projection":{"presence":"absent"}},
+    {"pointer":"/entries/*/counter_evidence_refs","real":{"presence":"present","json_type":"array","cardinality":0},"previous_projection":{"presence":"absent"}}
+  ],
+  "state_shapes":[
+    {"semantic_state":"composition_unmeasured","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/mechanism_refs","json_type":"array","cardinality":2},{"pointer":"/entries/*/integration_unknowns","json_type":"array","cardinality":5},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"license_unrecognized","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":23},"relevant_fields":[{"pointer":"/entries/*/license","json_type":"string","normative_enum":"UNRECOGNIZED"},{"pointer":"/entries/*/transfer_mode","json_type":"string","normative_enum":"REFERENCE_ONLY"},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/warnings","json_type":"array","cardinality":1},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"counterevidence_bounded_search","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/counterevidence_search/status","json_type":"string","normative_enum":"NONE_FOUND_IN_SCOPE"},{"pointer":"/entries/*/counterevidence_search/scope_refs","json_type":"array","cardinality":1},{"pointer":"/entries/*/counterevidence_search/result_refs","json_type":"array","cardinality":0},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"immutable_identity_ambiguous","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/target_state","json_type":"string","normative_enum":"UNKNOWN"},{"pointer":"/entries/*/target_gap_refs","json_type":"array","cardinality":0},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"provider_without_frozen_capture","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/target_state","json_type":"string","normative_enum":"UNKNOWN"},{"pointer":"/entries/*/target_gap_refs","json_type":"array","cardinality":0},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"target_cost_baseline_absent","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/target_state","json_type":"string","normative_enum":"UNKNOWN"},{"pointer":"/entries/*/target_gap_refs","json_type":"array","cardinality":0},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]},
+    {"semantic_state":"target_security_baseline_absent","operation":"ARTIFACT_READ","artifact":"improvement_hypotheses","entry":{"json_type":"object","cardinality":22},"relevant_fields":[{"pointer":"/entries/*/target_state","json_type":"string","normative_enum":"UNKNOWN"},{"pointer":"/entries/*/target_gap_refs","json_type":"array","cardinality":0},{"pointer":"/entries/*/status","json_type":"string","normative_enum":"PROPOSED"},{"pointer":"/entries/*/validation_plan","json_type":"array","cardinality":1}]}
+  ],
+  "contains_values_or_payloads":false,
+  "contains_case_ids_hashes_markers_or_expectations":false
+}

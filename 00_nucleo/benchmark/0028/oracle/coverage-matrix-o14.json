@@ -1,0 +1,47 @@
+{
+  "schema_version": "tekt.step0028.coverage-matrix-public.v14",
+  "step": "0028",
+  "oracle_revision": "O14",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "source_coverage_gap_o13_sha256": "5cd383b5e1ab05d2c27859348f1be7414b0188bfda195adcb615d8f9b395b369",
+  "source_discriminatory_failure_o13_sha256": "895f3a547df72fd5f04695a7e1011092f4940e82345572ea37704003305b570b",
+  "binding_free_input": ["contract_input", "contract_output"],
+  "classification_precedence": ["Violated", "Unknown", "Preserved"],
+  "refined_predicates": [
+    {"port":"MECHANISM_EXTRACT","predicate_id":"R4.MECHANISM_EXTRACT.CANONICAL_CAUSAL_MECHANISM_ID","observable":"preimage rule_id is the catalog MechanismRule.id, independent from EvidenceSource extraction_rule_ids"},
+    {"port":"MECHANISM_EXTRACT","predicate_id":"R4.MECHANISM_EXTRACT.REAL_OPACITY_CLASSIFICATION","observable":"request-derived minimum-witness insufficiency with coherent ceiling"},
+    {"port":"ARTIFACT_READ","predicate_id":"R4.ARTIFACT_READ.REAL_OPACITY_CLASSIFICATION","observable":"all protocol O8 permitted opaque states recognized through status, plan, baseline, source and transfer relations"}
+  ],
+  "relational_opaque_states": [
+    "minimum witness semantically insufficient",
+    "target_state UNKNOWN with baseline absent",
+    "composition compatibility unmeasured",
+    "license UNRECOGNIZED with incapable transfer or status",
+    "counterevidence budget exhausted",
+    "immutable identity missing or ambiguous",
+    "provider availability not evidenced by frozen capture",
+    "utility cost or security effect without baseline"
+  ],
+  "positive_calibration_guards": [
+    "UNRECOGNIZED plus PATTERN_ADAPTATION plus PROPOSED is Preserved",
+    "UNRECOGNIZED plus REFERENCE_ONLY plus PROPOSED is Preserved",
+    "integration_unknowns without incapable composition remains Preserved"
+  ],
+  "preserved_predicate_groups": [
+    "MECHANISM_EXTRACT strict catalog, exact join, role/kind/status, provenance, novelty and safety",
+    "ARTIFACT_READ fixed-order bytes, duplicate-free JSON, hash, size, identity, ordering, cursor, pagination and safety",
+    "SYNTHESIS_START strict request, source resolution and admission order",
+    "RUN_READ and RUN_CANCEL lifecycle/progress/status invariants",
+    "REPLAY frozen inputs, determinism and live-publication immutability",
+    "REFINEMENT_AUDIT receipts, layers and singleton runtime identities",
+    "TOOLS_LIST exact ten-tool surface and tool 10 terminal position"
+  ],
+  "ports": 9,
+  "negative_regression_floor": 160,
+  "public_positive_regression_floor": 11,
+  "public_opaque_regression_floor": 1,
+  "full_protocol_positive_target": 12,
+  "full_protocol_opaque_target": 10,
+  "forbidden_evaluator_dependencies": ["case_id","attack_hash","record_binding","expected","marker","candidate"]
+}

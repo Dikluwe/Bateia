@@ -1,0 +1,39 @@
+{
+  "schema_version": "bateia.market-replay-receipt.v1",
+  "step": "0027",
+  "created_at": "2026-09-02T01:56:21Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "contract_sha256": "44980c809a12d74eafe919b88220f7a47f0987d648e6f4edfa0ea77310619725",
+  "active_seal_r4_sha256": "a8dd85c3aa567f31249e1906195f14b47dec4bbd7bdebbd8e678a97492b22bc4",
+  "inputs": {
+    "replay_implementation_sha256": "51c4b12b6fff3452b77c37f338ba323b45f82d5f4633fdb4a73f7b31376631bd",
+    "success_fixture_sha256": "54edb8b64489bdb588d62a95be60ab024699a1fd95c84ae2a8d9634dd65eb423",
+    "l4_oracle_sha256": "0085e3aeacd6e34086d746da37045c3155f7ca6d301eb0fba01a81e27d61c421"
+  },
+  "request_projection": {
+    "query_locale": "pt-BR",
+    "market": "BR",
+    "limit": 10,
+    "query_sha256": "a21c2b4af2d80d96c5b8d6cda763086aeea965d40c4d01d9d8241fbd6257f1cf"
+  },
+  "observed": {
+    "first_bytes_sha256": "fc37bcd625e493b312a2b5e2820308f03233562ebf32d8c91984053f371edc4f",
+    "second_bytes_sha256": "fc37bcd625e493b312a2b5e2820308f03233562ebf32d8c91984053f371edc4f",
+    "byte_equal": true,
+    "status": "SUCCEEDED",
+    "result_count": 6,
+    "accepted_count": 6,
+    "candidate_count": 6,
+    "network_calls": 0
+  },
+  "zero_network_evidence": {
+    "transport_injected": false,
+    "network_import_or_call_in_replay_source": false,
+    "protected_oracle_result": "PASS",
+    "r4_candidate_and_fixture_hashes_unchanged_since_execution": true
+  },
+  "command": "env GOCACHE=/tmp/bateia-go-cache go run /tmp/bateia_step0027_replay_probe.go",
+  "result": "PASS",
+  "invalidation_rule": "Any change to replay implementation, fixture, request projection or oracle hash requires a new replay execution and receipt."
+}

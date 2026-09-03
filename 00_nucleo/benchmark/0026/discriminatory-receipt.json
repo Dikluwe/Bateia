@@ -1,0 +1,208 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 1,
+  "gate": "pre-candidate discriminatory audit",
+  "status": "GATE_FAILED_UNSEALED",
+  "verdict": "DO_NOT_SEAL",
+  "created_at": "2026-09-01T18:56:10Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace",
+    "candidate_implementation_read": false,
+    "candidate_implementation_executed": false,
+    "candidate_files_written": false,
+    "mutant_implementations_executed": false,
+    "method": "hash verification and source-level discriminability audit of the frozen oracle suites against every declared control, mutation and opaque construction",
+    "commands": [
+      "sha256sum over the manifest, intent, predecessor certificate, contract, adversarial cases, oracle contract and all six suite/prompt pairs",
+      "go version",
+      "stat -f -c %T .",
+      "source inspection of only the frozen Step 0026 contract, adversarial cases, oracle contract and six oracle suites"
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      ".agents/AGENTS.md",
+      "Tekt skill and its role/artifact references",
+      "00_nucleo/passos/0026-persistir-execucoes-mcp-e-consultar-por-run-id.md",
+      "00_nucleo/benchmark/0025/certificate.json for identity verification only",
+      "00_nucleo/benchmark/0026/manifest.json",
+      "00_nucleo/benchmark/0026/contract.md",
+      "00_nucleo/benchmark/0026/adversarial-cases.json",
+      "00_nucleo/benchmark/0026/oracle-contract.json",
+      "the six frozen Step 0026 oracle suites and their mirrored prompts"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate implementation was read, executed or modified",
+      "no contract, oracle, prompt, adversarial case or manifest was modified",
+      "no seal was emitted because mutation_score is below 1.0"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_path": "00_nucleo/benchmark/0026/manifest.json",
+    "manifest_sha256": "ef3b93d2444b82d8e00140484db52384522e1669d4d762b73beaa3243104a241",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "predecessor_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "oracle_contract_sha256": "e98aa076983b3c05c577e5c8f7ab6661dc1eef3b6a526a13b60385708b31aa81",
+    "suite_prompt_hashes_match_manifest": true
+  },
+  "positive_controls": [
+    {
+      "id": "P01",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "The hash helper is tested for four set-like fields, but the required sequential and concurrent Start calls over all seven reordered/deduplicated fields are absent."
+    },
+    {
+      "id": "P02",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "The suites exercise a successful inconclusive execution and one reopen, but do not read after every confirmed transition or prove byte-identical terminal persistence."
+    },
+    {
+      "id": "P03",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "Pagination, repeatability and a changed limit are exercised on one open store; continuation of the same cursor after reopen is absent."
+    },
+    {
+      "id": "P04",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "There is no integrated witness for queued withdrawal versus dequeue, RUNNING to CANCELLING, worker acknowledgement, duplicate-signal suppression under concurrency, and the no-new-provider-call boundary."
+    },
+    {
+      "id": "P05",
+      "result": "NOT_DEMONSTRATED",
+      "reason": "Tool names and schemas are inspected, but all three legacy tools are not invoked and the same injected RecommendationService object is not observed through both synchronous and asynchronous routes."
+    }
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 9,
+    "survived": 51,
+    "unknown": 0,
+    "mutation_score": 0.15,
+    "required_score": 1.0,
+    "violated_cases": [
+      {
+        "id": "M02",
+        "witness": "TestStep0026ConcurrentStartCreatesAndCommitsExactlyOnce launches 32 concurrent starts and requires one durable create and one queue commit."
+      },
+      {
+        "id": "M08",
+        "witness": "TestStep0026LocalQueueValidatesLimitsAndCommitCannotFailForCapacity reserves the last slot and requires Commit to succeed while the queue is at capacity."
+      },
+      {
+        "id": "M12",
+        "witness": "TestStep0026ExecutePublishesBeforeSucceededAndPreservesInconclusive requires SUCCEEDED plus the unchanged INCONCLUSIVE recommendation status."
+      },
+      {
+        "id": "M13",
+        "witness": "TestStep0026StateMachineAllowsOnlyFrozenArcsAndMonotonicProgress enumerates all lifecycle pairs and rejects every pair outside the frozen table."
+      },
+      {
+        "id": "M19",
+        "witness": "TestStep0026ConcurrentStartCreatesAndCommitsExactlyOnce requires Start to return without invoking the executor."
+      },
+      {
+        "id": "M34",
+        "witness": "TestStep0026FileStorePublishesFullDocumentHashAndPaginatesBoundCursor compares hash and size against the complete compact document bytes."
+      },
+      {
+        "id": "M37",
+        "witness": "TestStep0026FileStorePublishesFullDocumentHashAndPaginatesBoundCursor rejects the same cursor when crossed to another run or artifact."
+      },
+      {
+        "id": "M39",
+        "witness": "TestStep0026FileStorePublishesFullDocumentHashAndPaginatesBoundCursor continues a limit-1 cursor with limit 2 and verifies the stored offset."
+      },
+      {
+        "id": "M42",
+        "witness": "The store suite verifies ordered pagination, last-page null cursor and repeated equality; the MCP suite requires entries to be injected JSON values."
+      }
+    ],
+    "survivor_groups": [
+      {
+        "cases": ["M01", "M03", "M04", "M05", "M06", "M07", "M09", "M10", "M11"],
+        "reason": "Identity, retry, normalization and pre-effect coverage is partial: no generated-ID entropy/input-correlation witness; no advanced retry receipt; only four of seven set-like fields and one semantic delta are hashed; no real-store concurrent CreateOrResolve barrier; validation is not exhaustive across all fields/operations; queue-full does not count ID generation; quota-full does not count executor access or scan durable bytes."
+      },
+      {
+        "cases": ["M14", "M15", "M16", "M17", "M18", "M20", "M21", "M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30", "M31", "M32", "M33"],
+        "reason": "Lifecycle, cancellation and concurrency witnesses are incomplete: terminal operations and republish-after-terminal are not exhaustively exercised; real FileStore CAS is not raced; version/progress variants remain untested; goroutine growth and store limits are absent; queued/running cancellation boundaries, terminal-result publication races, concurrent cancel idempotency, all orphan states, recovery ordering and shutdown uncertainty are absent; readiness/terminal matrix, pending/orphan visibility and blob hash/size corruption are not injected."
+      },
+      {
+        "cases": ["M35", "M36", "M38", "M40", "M41", "M43", "M44", "M45", "M46", "M47", "M48", "M49", "M50", "M51", "M52", "M53"],
+        "reason": "Artifact/store witnesses lack failure-prefix injection and breadth: no stop before each terminal prerequisite, missing-terminal-artifact matrix, complete cursor tamper/offset/version/hash/reopen-secret audit, digest-path mapping check for valid IDs, per-component symlink/hardlink and non-regular checks, crash-prefix model, concurrent quota accounting/eviction check, full disk/log privacy scan, complete raw-source canary traversal, or terminal-failure sanitization."
+      },
+      {
+        "cases": ["M54", "M55", "M56", "M57", "M58", "M59", "M60"],
+        "reason": "Closed JSON coverage is not exhaustive; no executable AST/import/forbidden-call audit is present; the Step 0025 comparison derives its legacy baseline from the same candidate server instead of a manifest-bound immutable golden and does not invoke the legacy tools; shared synchronous/asynchronous object identity is not observed; filesystem-kind checks are partial; valid missing lookup and all non-success terminal projections are not exercised."
+      }
+    ]
+  },
+  "opaque_cases": [
+    {
+      "id": "O01",
+      "result": "Unknown",
+      "reason": "The verifier observed btrfs identity but did not control or prove rename behavior at a power/crash boundary."
+    },
+    {
+      "id": "O02",
+      "result": "Unknown",
+      "reason": "No controllable power-loss, device cache or storage-controller boundary was available."
+    },
+    {
+      "id": "O03",
+      "result": "Unknown",
+      "reason": "The frozen suites provide no instrumented happens-before trace around provider cancellation observation."
+    },
+    {
+      "id": "O04",
+      "result": "Unknown",
+      "reason": "Finite black-box ID samples cannot establish 128 bits of generator entropy."
+    },
+    {
+      "id": "O05",
+      "result": "Unknown",
+      "reason": "Forced-process-removal ordering relative to shutdown and final fsync is not observable here."
+    }
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Every missing or ambiguous negative witness is counted as a surviving mutation, never as success.",
+    "opaque_cases_in_denominator": false
+  },
+  "stability_audit": {
+    "passed": false,
+    "declared_repetitions_per_case": 3,
+    "declared_orders": 3,
+    "materialized_gate_driver_found": false,
+    "reason": "No frozen driver executes all 70 cases three times in the three declared orders or compares normalized witnesses. Ordinary Go test order does not establish the declared adversarial stability property."
+  },
+  "private_detail_audit": {
+    "passed": false,
+    "findings": [
+      "The L4 oracle freezes and directly calls the unexported helper newDurableMCPServer, coupling acceptance to a private composition-helper name and signature instead of only observable server behavior.",
+      "The legacy compatibility oracle obtains its comparison baseline from the same candidate implementation with durable support disabled; without a manifest-bound immutable Step 0025 golden execution, a shared regression can compare equal to itself."
+    ]
+  },
+  "blocking_findings": [
+    "mutation_score is 0.15, below the required 1.0",
+    "none of P01-P05 is completely demonstrated by the frozen suites",
+    "51 negative mutations retain at least one concrete surviving variant",
+    "the declared repetition/reordering stability gate is not materialized",
+    "one oracle freezes an unexported L4 helper and the legacy refinement comparison is self-referential"
+  ],
+  "seal": {
+    "emitted": false,
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "reason": "A seal is forbidden until all valid negative mutations are independently Violated with mutation_score 1.0 and stable witnesses."
+  }
+}

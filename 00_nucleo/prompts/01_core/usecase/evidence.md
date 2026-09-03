@@ -9,6 +9,8 @@ O plano recebe `IdeaSpec`; a coleta registra resultado por alvo e árvore comple
 símbolos exigem declaração relacionada; evidência auxiliar não herda força
 estrutural. Calcular métricas somente de bundles e julgamentos congelados. Uma
 falha de candidato não aborta os demais.
+Verificar o contexto antes de cada chamada ao provedor e depois que ela retorna;
+um cancelamento observado não pode iniciar uma nova coleta.
 
 Rejeitar catálogos v2 com identidade, termos ou padrões genéricos/duplicados,
 proveniência ausente ou hash divergente. Quando a regra exigir independência,

@@ -1,0 +1,224 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0026",
+  "revision": 9,
+  "gate": "timeout-only L4 oracle refinement and isolated causal continuity revalidation",
+  "status": "GATE_PASSED_RESEALED_WITH_TEMPORAL_LIMITATION",
+  "verdict": "RESEAL",
+  "created_at": "2026-09-01T22:35:26Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "historical_chain": {
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_seal_sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "r6_invalidation_sha256": "84ee3f707ee430458d218e88c9695ce47709e01451ee9b65219a63fa7fdcc042",
+    "r7_receipt_sha256": "e9812fc3ea290620fbdca89237a2a69955b124d0500cfe0a68ede077bbd8e99a",
+    "r7_seal_sha256": "be931f3a7731d7ab63e3081654b7073c7ae05bda126f1189ab3ca1bffca6876c",
+    "r7_invalidation_sha256": "412dede6c3e64c42385303aa8a0bd4f00521efc5c9ff866a16c0793b7f54ef50",
+    "r8_receipt_sha256": "be01ae770b68ca30a39e617228033e731ee3bd690a59b2c356a7e18cb861a107",
+    "r8_seal_sha256": "de42b528b7738d37494658d5c33155cf95495b83a3046c82ada321a2adfae7ac",
+    "r8_invalidation_sha256": "37018f4017e63a9f069bbcdbcf73c0525e37ddd4a4bfc116178286a5ad531065",
+    "r6_r7_r8_seals_remain_historical_only": true
+  },
+  "execution": {
+    "executor": "/root/verifier_0026",
+    "runtime": "go1.26.5 linux/amd64; Linux 6.17.0-42-generic x86_64",
+    "filesystem": "btrfs",
+    "environment": "shared workspace after partial candidate existence",
+    "candidate_source_read": false,
+    "candidate_compiled": false,
+    "candidate_behavior_executed": false,
+    "candidate_evaluated": false,
+    "candidate_files_written": false,
+    "commands": [
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r9 go list ./...",
+        "result": "PASS",
+        "normal_package_count": 29,
+        "discovered_mutant_package_count": 0,
+        "scope": "package discovery metadata only; no package compilation or candidate execution"
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r9 go test ./04_wiring/r6_gate/... -run '^$' -count=1",
+        "result": "PASS",
+        "normal_r6_packages_compiled": ["r6_gate", "conformance", "reference", "storefixture"],
+        "hidden_mutant_packages_compiled": 0
+      },
+      {
+        "command": "GOCACHE=/tmp/bateia-go-cache-0026-r9 go test ./04_wiring/r6_gate -run '^TestStep0026R6CompiledVariantsUseOneBlindConformanceSuiteThreeByThree$' -count=1",
+        "result": "PASS",
+        "duration": "76.862s",
+        "reference_subprocesses_passed": 9,
+        "mutant_subprocesses_failed": 270,
+        "orders": 3,
+        "repetitions_per_order": 3
+      },
+      {
+        "command": "independent one-pass normalization of all hidden variant common-suite failures",
+        "result": "PASS",
+        "variants_failed": 30,
+        "variants_without_witness": 0,
+        "normalization": "For each ID, sort unique go test -json failing subtests; serialize the ID-keyed map as UTF-8 compact JSON with lexically sorted keys.",
+        "witness_map_sha256": "864c303d45a74fe992b4c8d1d66e49700f1e6e863e40f85fdfba30220fd0b404"
+      },
+      {
+        "command": "strict duplicate-key JSON, suite/prompt/source/diff hash verification, gofmt -d and git diff --check on protected artifacts",
+        "result": "PASS",
+        "strict_json_files": 17,
+        "suite_entries": 29,
+        "variant_source_hashes": 30,
+        "canonical_diff_hashes": 30,
+        "common_test_copies": 31
+      }
+    ]
+  },
+  "capabilities": {
+    "read_allowlist_used": [
+      "frozen R9 manifest, oracle contract, protected L4 test and mirrored prompt",
+      "R6 reference, blind common suite, hidden permanent variants and isolated driver",
+      "R6/R7/R8 receipts, seals and invalidation artifacts",
+      "frozen Step 0026 intent, Step 0025 certificate and historical R6 predecessor evidence"
+    ],
+    "write_allowlist_used": [
+      "00_nucleo/benchmark/0026/discriminatory-receipt-r9.json",
+      "00_nucleo/benchmark/0026/seal-r9.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate source was read, compiled, executed, evaluated or modified",
+      "no oracle, prompt, adversarial case, contract or manifest was modified",
+      "no historical receipt, seal or invalidation artifact was modified",
+      "the live targeted L4 candidate test and global go test ./... gate were not executed"
+    ]
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "b19982f6e73113cc807f68cf19e2e6764dd3ef22198ac48587868c8e0b4a1fdc",
+    "oracle_contract_sha256": "48b70f43ee69ab83f26393f8ae18cc848f6c3b730e52074ca87737ea5c644d74",
+    "l4_oracle_test_sha256": "502d28b0677ca1e5e0000b0df0b9161fc80183de9af9cd7ec8f80f0caebb2624",
+    "l4_oracle_prompt_sha256": "815cf5553e7cd47c9000b1b5db70d007dc3181e4b66fff2b22a70c449069e709",
+    "driver_sha256": "d36b5c1f41e21958af1da78b96aaef4c18fc032d55bfb5defd9ab34c33527a90",
+    "reference_sha256": "baaa53e62e897bb00d85c400e2cb17000b69d6a26051d0d85adc2ca2481d9b31",
+    "common_suite_sha256": "e8984331e1f8162bf9f3b34367e0348f5bd42e4117527d1bbee5d0116e033d97",
+    "r6_gate_prompt_sha256": "028a7830082d204530dc84c6e0f11da40c14c38bbee0c11f209c5767403faee2",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5",
+    "intent_sha256": "781fd3b7deae630ab6321e5dd010d83d85a439637d6a8e74a3017e2d11bb2656",
+    "step_0025_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d"
+  },
+  "timeout_only_refinement_audit": {
+    "passed": true,
+    "source_path": "04_wiring/durable_runs_step0026_contract_test.go",
+    "previous_source_sha256": "8db52176f2aa3cfbd18f676a17a37fb09ca660aa4000c9daf1c798427c35602b",
+    "corrected_source_sha256": "502d28b0677ca1e5e0000b0df0b9161fc80183de9af9cd7ec8f80f0caebb2624",
+    "source_reconstruction": "Replacing the sole 30-second deadline literal with 3 seconds removes exactly one byte and reconstructs the R8 source SHA-256.",
+    "source_semantic_change": "time.Now().Add(3 * time.Second) to time.Now().Add(30 * time.Second)",
+    "prompt_path": "00_nucleo/prompts/04_wiring/durable_runs_step0026_contract_test.md",
+    "previous_prompt_sha256": "1d807d0ec97ab876c80e143d0b46e5ea90b3c7dae8533671772d89e66e219439",
+    "corrected_prompt_sha256": "815cf5553e7cd47c9000b1b5db70d007dc3181e4b66fff2b22a70c449069e709",
+    "prompt_reconstruction": "Removing the sole new bullet that documents the 30-second scheduling envelope reconstructs the R8 prompt SHA-256 exactly.",
+    "poll_interval": "5ms unchanged",
+    "terminal_states_polled": ["SUCCEEDED", "FAILED"],
+    "required_success": "SUCCEEDED and INCONCLUSIVE unchanged",
+    "running_accepted_as_success": false,
+    "setup_artifact_pagination_cancel_reopen_assertions_changed": false,
+    "finding": "The refinement enlarges only the scheduling envelope and documents it; no observable obligation, expected value or acceptance state was weakened."
+  },
+  "hidden_layout_and_causality_audit": {
+    "passed": true,
+    "layout": "04_wiring/r6_gate/testdata/mutants/Mxx",
+    "variant_count": 30,
+    "go_list_discovered_mutant_packages": 0,
+    "normal_go_test_wildcard_can_discover_hidden_variants": false,
+    "driver_addresses_hidden_variants_explicitly": true,
+    "source_hashes_match_contract": true,
+    "canonical_diff_hashes_match_contract": true,
+    "unique_source_hashes": 30,
+    "unique_canonical_diff_hashes": 30,
+    "common_test_copy_sha256": "97a56fe22bf3604bd1455e673a8a4975cb038f1d50bf36eaedf1f3b8cb67579d",
+    "common_test_copies_identical": true,
+    "runtime_mxx_or_defect_selector_present": false,
+    "reference_and_variants_use_same_public_surface": true,
+    "common_suite_receives_attack_metadata": false,
+    "disk_crash_cases": ["M46", "M47", "M48"],
+    "real_disk_boundaries": ["open", "write", "file-sync", "rename", "dir-sync", "close-and-reopen observation"]
+  },
+  "positive_controls": [
+    {"id": "P01", "result": "Preserved", "basis": "Nine isolated reference subprocesses preserved concurrent canonical Start."},
+    {"id": "P02", "result": "Preserved", "basis": "Nine isolated reference subprocesses preserved terminal reopen."},
+    {"id": "P03", "result": "Preserved", "basis": "Nine isolated reference subprocesses preserved HMAC cursor reopen with changed limit."},
+    {"id": "P04", "result": "Preserved", "basis": "Nine isolated reference subprocesses preserved idempotent cancellation."},
+    {"id": "P05", "result": "Preserved", "basis": "Bound to the frozen predecessor snapshot, Step 0025 certificate and immutable R6 receipt; no live predecessor or candidate source was evaluated."}
+  ],
+  "negative_mutations": {
+    "denominator": 60,
+    "violated": 60,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "historical_pre_candidate_kills_preserved_from_r6": 30,
+    "hidden_permanent_variants_revalidated": 30,
+    "stable_mutant_process_failures": 270,
+    "violated_cases": [
+      "M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10",
+      "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20",
+      "M21", "M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30",
+      "M31", "M32", "M33", "M34", "M35", "M36", "M37", "M38", "M39", "M40",
+      "M41", "M42", "M43", "M44", "M45", "M46", "M47", "M48", "M49", "M50",
+      "M51", "M52", "M53", "M54", "M55", "M56", "M57", "M58", "M59", "M60"
+    ],
+    "survivor_cases": []
+  },
+  "opaque_cases": [
+    {"id": "O01", "result": "Unknown"},
+    {"id": "O02", "result": "Unknown"},
+    {"id": "O03", "result": "Unknown"},
+    {"id": "O04", "result": "Unknown"},
+    {"id": "O05", "result": "Unknown"}
+  ],
+  "unknown_policy_audit": {
+    "passed": true,
+    "negative_unknown_counted_as_violated": false,
+    "negative_unknown_treatment": "Any missing or ambiguous negative witness survives.",
+    "opaque_cases_in_denominator": false
+  },
+  "predecessor_continuity": {
+    "live_predecessor_test_executed": false,
+    "live_candidate_source_required": false,
+    "frozen_baseline_usecase_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "frozen_certificate_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "r6_receipt_sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "r6_predecessor_repetitions_passed": 3,
+    "honest_benchmark_finding_preserved": "The certified benchmark route retains the recorded invalid depth error for its frozen repos-only input; no successful baseline was invented."
+  },
+  "stability_audit": {
+    "reference_subprocesses": 9,
+    "mutant_subprocesses": 270,
+    "orders": 3,
+    "repetitions_per_order": 3,
+    "all_variant_witnesses_stable": true,
+    "historical_witness_map_sha256": "458d9768602d164a1bf20e3415b6ed1c43f556fa0ab2bcc6a7ef40118a14e8e1",
+    "r9_independent_one_pass_witness_map_sha256": "864c303d45a74fe992b4c8d1d66e49700f1e6e863e40f85fdfba30220fd0b404",
+    "normalized_classification_sha256": "4bf0410b9ac28d1bc1aa209294c8b6e00825bcdbce7faf05f97dfd811f6a3c55",
+    "required_outcomes_satisfied": true
+  },
+  "normal_global_gate_limitation": {
+    "go_list_exclusion_proved": true,
+    "normal_r6_packages_compile_without_hidden_variants": true,
+    "targeted_live_l4_test_executed": false,
+    "full_live_go_test_all_executed": false,
+    "reason": "Those commands compile or execute the existing live candidate and were explicitly outside this artifact-only revalidation.",
+    "load_tolerance_inferred_from_timeout_only_change": true,
+    "load_tolerance_operationally_proved_against_candidate": false,
+    "future_candidate_verdict_requires_targeted_repetition_and_full_go_test_all": true
+  },
+  "temporal_limitation": {
+    "candidate_existed_before_r9_timeout_correction": true,
+    "strong_pre_candidate_independence_claimed": false,
+    "mitigation": "The exact R8 bytes were reconstructed in memory, proving a one-byte 3s-to-30s source edit plus one prompt documentation line; all assertions, mutation sources, diffs, suite bytes, layout and predecessor evidence remained frozen, and candidate source and behavior stayed out of scope.",
+    "future_candidate_verdict_certified": false
+  },
+  "seal": {
+    "emitted": true,
+    "path": "00_nucleo/benchmark/0026/seal-r9.json",
+    "reason": "The timeout-only refinement preserves every semantic assertion, the hidden layout excludes all mutants from normal discovery, the isolated matrix remains stable at 60/60 with no survivors, and the complete invalidation and predecessor chains remain intact."
+  }
+}

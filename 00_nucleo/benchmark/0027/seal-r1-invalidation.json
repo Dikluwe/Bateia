@@ -1,0 +1,46 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0027",
+  "invalidated_revision": "R1",
+  "invalidated_seal_path": "00_nucleo/benchmark/0027/seal.json",
+  "invalidated_seal_sha256": "c36045da6d2715ddd85c9924a90522363d72280013623c5a6f83252281437e0f",
+  "predecessor_discriminatory_receipt_path": "00_nucleo/benchmark/0027/discriminatory-receipt.json",
+  "predecessor_discriminatory_receipt_sha256": "38c7ef5ae10721f93b88e6b6e952709b83b8da1db33829bd05bb9a1ec11ae718",
+  "invalidated_at": "2026-09-02T00:56:13Z",
+  "status": "R1_SEAL_INVALIDATED",
+  "reason": "A protected independent L1 oracle suite changed after the R1 seal. The change fixes the mechanical Go compile error caused by an unused loop index and does not alter the prompt, assertions, expectations or observable contract, but any protected-byte change invalidates the active seal.",
+  "changed_input": {
+    "path": "01_core/usecase/market_discovery_step0027_oracle_test.go",
+    "r1_sha256": "7eb96a8a6df888370b5b3f33896d7776094582e730f7c311017722ec808b041e",
+    "r2_sha256": "90cd2ca1c8880b03acc58e6cd8e09129bfdf1d26e2b3aa2d13b94dd64b2509d0",
+    "exact_change": "for i, attempt := range plan -> for _, attempt := range plan",
+    "byte_length_r1": 11990,
+    "byte_length_r2": 11990,
+    "mechanical_only": true,
+    "r1_reconstruction_sha256": "7eb96a8a6df888370b5b3f33896d7776094582e730f7c311017722ec808b041e"
+  },
+  "unchanged_causal_inputs": {
+    "l1_oracle_prompt_sha256": "b8a9caa3a2a88c7438184b3275edaa02bd92ca753b83f9b1692822ab53f9ef56",
+    "contract_sha256": "ac69fcaf3668097432d36137477f791ec0e95c193689fbbe32b1442960e6c037",
+    "adversarial_cases_sha256": "6f03a8b9e074461b58772f946fd0bff7aade8368b9094efff489a261bf129076",
+    "oracle_contract_sha256": "77198612576094e82e4dd43b74a54ffd52ac3efafcf47f3091396aa8f4e5f066",
+    "corpus_public_sha256": "3161d6e271686379246f46fe5116151c14bc2ac7dbd2072509c0d552b387c955",
+    "corpus_test_sha256": "593b21bfae4756d0c047c4d6f89b3c930ee2eb27704084282d7c88190fba9c36",
+    "expected_registry_sha256": "2e763b0383f5798a6bbfe6f6225c407013bb2b78b9a3d36b022a3092cbfba711",
+    "apple_fixture_manifest_sha256": "c77f8060db0dcef992ec897a58755444da8cb4b5698465d8555ae5f7b8cf6ee1",
+    "mcp_oracle_test_sha256": "124cd58d8f9174b32e5773e5f96a4336427c95a2ef0b26fe9fc37032287baf21",
+    "l4_oracle_test_sha256": "0085e3aeacd6e34086d746da37045c3155f7ca6d301eb0fba01a81e27d61c421"
+  },
+  "authority": {
+    "oracle_author_report": "The oracle author corrected only the unused identifier, did not read the candidate and declared the prior seal invalid.",
+    "verifier": "/root/verifier_0027",
+    "candidate_read": false,
+    "candidate_compiled": false,
+    "candidate_executed": false,
+    "candidate_evaluated": false,
+    "candidate_modified": false
+  },
+  "effect": "seal.json remains immutable historical evidence and is no longer active. A complete R2 discriminatory revalidation over the corrected hash is required before a new active seal may be emitted.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "invalidation_rule": "This invalidation is permanent historical evidence. It must not be removed or superseded by editing seal.json; future seals must reference its exact hash."
+}

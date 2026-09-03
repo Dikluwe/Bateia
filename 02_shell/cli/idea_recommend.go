@@ -29,7 +29,7 @@ type repeatedPaths []string
 func (r *repeatedPaths) String() string     { return strings.Join(*r, ",") }
 func (r *repeatedPaths) Set(v string) error { *r = append(*r, v); return nil }
 
-func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider) error {
+func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, recommendationServices ...*usecase.RecommendationService) error {
 	fs := flag.NewFlagSet("idea recommend", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	ideaPath := fs.String("idea", "", "IdeaSpec JSON")
@@ -153,22 +153,40 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
 	defer cancel()
-	result, runErr := usecase.RunIdeaPipeline(ctx, req, deps)
+	var result domain.IdeaRunResult
+	var alternatives domain.SoftwareAlternativeReport
+	var runErr error
+	usesRecommendationService := runMode == domain.IdeaRunLive && targetRepository == nil && !canReuseEvidence
+	if usesRecommendationService {
+		recommendationService := usecase.NewRecommendationService(semantic, discovery, content)
+		if len(recommendationServices) > 0 && recommendationServices[0] != nil {
+			recommendationService = recommendationServices[0]
+		}
+		execution, recommendErr := recommendationService.RecommendWithRun(ctx, domain.RecommendationRequest{
+			Idea: idea, Policy: policy, Target: target,
+			Search: domain.RecommendationSearch{Strategy: strings.ToLower(*strategy), Language: *language, Locales: normalizedSearchLocales, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates},
+		})
+		result, alternatives, runErr = execution.Run, execution.Recommendation.Alternatives, recommendErr
+	} else {
+		result, runErr = usecase.RunIdeaPipeline(ctx, req, deps)
+	}
 	if runErr != nil {
 		manifest.Status = domain.IdeaRunFailed
 		manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "pipeline", Message: runErr.Error()}}
 		_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
 		return runErr
 	}
-	alternativesStarted := time.Now()
-	alternativeDiscovery, alternativeAssessments := alternativeInputsForTarget(runMode, result.Discovery, result.Assessment.Assessments, targetRepository)
-	alternatives, err := usecase.RankSoftwareAlternatives(target, idea, alternativeDiscovery, alternativeAssessments, policy)
-	result.StageDurations["alternatives"] = time.Since(alternativesStarted).Milliseconds()
-	if err != nil {
-		manifest.Status = domain.IdeaRunFailed
-		manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "alternatives", Message: err.Error()}}
-		_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-		return err
+	if !usesRecommendationService {
+		alternativesStarted := time.Now()
+		alternativeDiscovery, alternativeAssessments := alternativeInputsForTarget(runMode, result.Discovery, result.Assessment.Assessments, targetRepository)
+		alternatives, err = usecase.RankSoftwareAlternatives(target, idea, alternativeDiscovery, alternativeAssessments, policy)
+		result.StageDurations["alternatives"] = time.Since(alternativesStarted).Milliseconds()
+		if err != nil {
+			manifest.Status = domain.IdeaRunFailed
+			manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "alternatives", Message: err.Error()}}
+			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
+			return err
+		}
 	}
 	artifacts := []struct {
 		path  string

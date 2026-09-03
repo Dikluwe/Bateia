@@ -1,0 +1,81 @@
+{
+  "schema_version": "tekt.seal-invalidation.v1",
+  "step": "0026",
+  "revision": "R6-INVALIDATION-1",
+  "verdict": "R6_SEAL_INVALIDATED",
+  "created_at": "2026-09-01T21:29:27Z",
+  "invalidated_seal": {
+    "path": "00_nucleo/benchmark/0026/seal.json",
+    "sha256": "057795f4215e7cc00c25c1d70aed1287b1e5115c32ac250174c20e090108606f",
+    "revision": "R6",
+    "retained_as_historical": true,
+    "usable_to_authorize_candidate_materialization": false
+  },
+  "invalidated_receipt": {
+    "path": "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+    "sha256": "72934d4186d64b1325c5eafea906d83f9205d30e3a7b07429d03ee04db35c081",
+    "retained_as_historical": true,
+    "finding": "The R6 receipt accurately records the substitute mutation matrix but cannot support a seal because a protected manifest-bound oracle suite does not compile."
+  },
+  "trigger": {
+    "kind": "PROTECTED_ORACLE_COMPILE_FAILURE",
+    "command": "GOCACHE=/tmp/bateia-go-cache-0026-r6-invalidation go test ./03_infra/runstore",
+    "exit_code": 1,
+    "output_sha256": "f0c6e1793869bbfce50fce7d0a581ac8cb0d7769301ef992101c1d8bfc77ecde",
+    "observed_error": "03_infra/runstore/file_store_step0026_r2_test.go:372:3: declared and not used: name",
+    "file": "03_infra/runstore/file_store_step0026_r2_test.go",
+    "file_sha256": "fa1e664d9fdd61ad67769c818b8609ec277369437f87271d4490256cac1e2dda",
+    "line": 372,
+    "evidence": "The callback declares name := entry.Name(), but the subsequent checks use path and never read name.",
+    "reproduced_by_verifier": true
+  },
+  "frozen_state_at_invalidation": {
+    "manifest_sha256": "4560f45773fb346e6fdbca928e97dae0167273476633773c678388ac18fb1579",
+    "oracle_contract_sha256": "9ebe53a8f428f475240e1e1c1009ea18f866fbe68bf0eed3039869234d875441",
+    "contract_sha256": "051401825055aee91dd72e43788998c6dc05fd93c34bfb30652c4377b3cc3b93",
+    "adversarial_cases_sha256": "bab0efe2145762ff13e93c5126e6ee35b0560c95bf071da3ddf059e81b2a01b5"
+  },
+  "why_r6_gate_did_not_detect_it": {
+    "finding": "The R6 driver compiled the isolated R6 reference and permanent variants plus the predecessor-only file list. It did not compile every manifest-bound oracle package.",
+    "gofmt_is_not_compilation": true,
+    "hash_match_is_not_compilation": true,
+    "consequence": "The 60/60 substitute mutation score remains historical evidence, but pre-candidate seal integrity is false until all protected suites compile."
+  },
+  "candidate_scope": {
+    "source_read_by_verifier": false,
+    "modified": false,
+    "behavior_executed": false,
+    "package_compile_command_invoked": true,
+    "package_compile_result": "aborted with protected oracle build error before any test execution",
+    "evaluated_for_verdict": false
+  },
+  "affected_phases": {
+    "first_affected": "ORACLE_FREEZE",
+    "must_repeat": [
+      "oracle-author correction and freeze",
+      "manifest and oracle-contract hash binding",
+      "compilation of every protected oracle package",
+      "independent discriminatory gate",
+      "seal"
+    ],
+    "r6_usable_for_verdict": false
+  },
+  "required_recovery_procedure": [
+    "The oracle-author, not the verifier or implementer, corrects the unused declaration without reading or adapting to candidate behavior.",
+    "The oracle-author reruns gofmt and compiles every manifest-bound oracle package, including ./03_infra/runstore.",
+    "The coordinator records new immutable oracle and manifest hashes while preserving R1-R6 and this invalidation artifact.",
+    "The independent verifier rechecks strict JSON, hashes, package compilation, predecessor evidence, positive controls, all mutation witnesses and the full stability matrix.",
+    "A new receipt and replacement seal must reference this invalidation and may be emitted only if the corrected frozen oracle is fully green with score 1.0."
+  ],
+  "historical_artifacts_preserved": [
+    "00_nucleo/benchmark/0026/discriminatory-receipt.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r2.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r3.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r4.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r5.json",
+    "00_nucleo/benchmark/0026/discriminatory-receipt-r6.json",
+    "00_nucleo/benchmark/0026/seal.json"
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "temporal_limitation": "The oracle contradiction was discovered during the first candidate compilation attempt. Any correction and replacement seal occur after candidate existence and therefore cannot claim strong pre-candidate temporal isolation; the candidate must remain frozen and out of scope throughout oracle correction and revalidation."
+}

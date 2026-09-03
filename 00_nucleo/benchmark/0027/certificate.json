@@ -1,0 +1,75 @@
+{
+  "schema_version": "tekt.certificate.v1",
+  "step": "0027",
+  "contract_revision": "R4",
+  "candidate_revision": "FINAL-R4-BOUND",
+  "verdict": "MULTISOURCE_MARKET_DISCOVERY_READY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "created_at": "2026-09-02T01:56:21Z",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "scope": "Exact Step 0027 multilingual, multisource market-discovery fragment bound to the R4 contract, Apple connector version, ten-market matrix, protected corpus/fixtures, MCP stdio surface and local shared durable runtime.",
+  "causal_chain": {
+    "manifest_sha256": "7661f40f1b1b01cf0c99196bec9f81f7c462c9a9c529888c54dea8485844c2a3",
+    "contract_r4_sha256": "44980c809a12d74eafe919b88220f7a47f0987d648e6f4edfa0ea77310619725",
+    "oracle_contract_sha256": "d989ce3c6b7e2c236187aac5cf6f327b5f0c24b72e323c9096b4d3a5bd7a94cb",
+    "adversarial_cases_sha256": "6f03a8b9e074461b58772f946fd0bff7aade8368b9094efff489a261bf129076",
+    "contract_binding_invalidation_r4_sha256": "8268a9a8d6f893f6c62de5b873101652fa848b9c29ea7b4301aeed277ff5cac7",
+    "discriminatory_receipt_r4_sha256": "954d4d1a29cc17e9c0745988eb513a0c02e11a744d22bad1b175e8d52641dee8",
+    "seal_r4_sha256": "a8dd85c3aa567f31249e1906195f14b47dec4bbd7bdebbd8e678a97492b22bc4",
+    "candidate_receipt_sha256": "115750f24d17e67e9970ac3945677d402a9011eb03c38e8bb3703228cd917d0a",
+    "replay_receipt_sha256": "af006b3ed1ba039a661c9ce4f65b96995b6ef686b241f0a0f668c39e166fcf05",
+    "public_execution_receipt_sha256": "a4ad2bde0a7eb9000d0263541f92ae46fde5832301111543e205f76ba1c203cd",
+    "refinement_receipt_0025_sha256": "f06d49e4e7220b45c117699b34a57d367a812abfa2e0e4ef1ed9a85d4eb2e501",
+    "refinement_receipt_0026_sha256": "13f3d6701094b046635ea39cee46726b92a95ef5581f180e3d887dcba473d195",
+    "verification_receipt_sha256": "cbd88c68cdabb5b1683dc73e7d546c561939b0f3557c525d4ca72697c89930c8"
+  },
+  "critical_implementation_hashes": {
+    "domain": "332f215d796e14388e29754072be1f4a233d56d0a6b5355c8371341ec4a084cc",
+    "usecase": "ed56ff34d6ac6f4ab03feddfecb37b348a874433bea0336bd655d017d8269a81",
+    "mcp": "9cbd2e2a4f2bec99d2b6e08a4a1a2066c31e9a48de3efd8ce20bbe0f818ce824",
+    "apple": "dd14b69fd037ed351bf2afb2e3563b7eed5af513e7b815992f988c9f7c9a0b1f",
+    "replay": "51c4b12b6fff3452b77c37f338ba323b45f82d5f4633fdb4a73f7b31376631bd",
+    "wiring": "d05860075780c5673eeaab8ce4ed223fa8a878376e9d6730c09126b0670d3cb2",
+    "package_binary": "62d3c995a280ee7b2d3a68d789a13913c1d28a0580ec57ff55870e88cc967c29"
+  },
+  "mutation_score": {
+    "valid_negative_mutations": 90,
+    "violated": 90,
+    "survivors": 0,
+    "score": 1.0,
+    "positive_controls_preserved": 5,
+    "opaque_cases_unknown": 5,
+    "opaque_cases_excluded": true
+  },
+  "final_gates": {
+    "protected_hashes_and_strict_json": "PASS",
+    "go_test_all_twice": "PASS",
+    "race": "PASS",
+    "vet": "PASS",
+    "corrected_literal_package_build": "PASS",
+    "crystalline_lint": "PASS_WITH_WARNINGS",
+    "git_diff_check": "PASS",
+    "protected_oracles": "PASS",
+    "real_mcp_stdio": "PASS",
+    "offline_replay_twice": "PASS",
+    "single_bounded_public_apple_execution": "PASS",
+    "reference_metrics": "PASS",
+    "refinement_0025": "PRESERVED",
+    "refinement_0026": "PRESERVED"
+  },
+  "architecture": {
+    "l1_external_effects": 0,
+    "l2_concrete_l3_or_l4_dependencies": 0,
+    "l3_upward_dependencies": 0,
+    "l4_duplicate_store_or_queue": 0,
+    "registered_non_repository_connectors": ["apple-itunes-search-software"],
+    "mcp_tool_count": 9
+  },
+  "report_path": "00_nucleo/laudos/0027-generalizar-descoberta-multilingue-e-multifuente.md",
+  "limitations": [
+    "Executed in a shared workspace without strong isolation attestation.",
+    "Certifies only the recorded hashes and observable fragment, not general functional equivalence or future provider availability.",
+    "Contracted opaque outcomes remain Unknown."
+  ],
+  "invalidation_rule": "Any change to a causal-chain, protected-input, candidate, predecessor or gate-evidence hash invalidates this certificate."
+}

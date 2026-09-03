@@ -1,0 +1,94 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v17",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_mutants_revision": "O14",
+  "source_oracle_revision": "O17",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "causal_hashes": {
+    "contract_r4_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "rules_v3_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "protocol_o8_sha256": "c86b04d028bd6c0f33ddcff78ca323f70ab2b72d96bc86a6046b2ec6598755bb",
+    "manifest_o14_sha256": "02640f383d37b392c74d4ae1fc12e9bf5ef1ada041f85a4191e63683e4518ac8",
+    "oracle_contract_o17_sha256": "735eac83e3cc9e8d918d6c4c8ed81fc15fe14a9115430650e779b9c57f7b05a9",
+    "matrix_o17_sha256": "e1dcd6d75990cb6c17982bd5ce0548e3105818a51a14cd839fe4038ed9df11c6",
+    "protected_manifest_o17_sha256": "736019da8a8b087bedfbae7d92b8c13fd83ac2aa69a6e50489abdcdca4686090",
+    "discriminatory_failure_o17_sha256": "3af90e4e7c65cca9b4e797b9cbe9f34315215375de055cfcb211e23e1da21379"
+  },
+  "execution_summary": {
+    "orders": ["canonical", "reverse", "rotate-61"],
+    "repetitions_per_order": 2,
+    "total_exchanges": 1092,
+    "classification_digest_sha256": "a8bd9b1fa7564e24888dbbfa54f19e630310fa95f8b43434c9db2f0b53fe979e",
+    "negative_violated": 160,
+    "positive_preserved": 12,
+    "opaque_unknown": 3,
+    "opaque_preserved": 7
+  },
+  "generic_binding_free_decision_table": [
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["improvement_hypotheses", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/mechanism_refs", "/entries/*/integration_unknowns", "/entries/*/status", "/entries/*/validation_plan", "/entries/*/code"],
+      "operator": "typed full-hypothesis relation OR controlled gap code",
+      "necessary_and_sufficient_public_relation": "multiple mechanism_refs AND nonempty integration_unknowns AND status INCONCLUSIVE AND nonempty validation_plan; alternatively a controlled code joining COMPOSITION or COMPATIBILITY with UNMEASURED, UNKNOWN or INSUFFICIENT",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/code"],
+      "operator": "exact controlled enum equality",
+      "necessary_and_sufficient_public_relation": "code equals LICENSE_NOT_RECOGNIZED",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["improvement_hypotheses", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/counterevidence_search/status", "/entries/*/status", "/entries/*/validation_plan", "/entries/*/code"],
+      "operator": "enum conjunction OR controlled gap code",
+      "necessary_and_sufficient_public_relation": "counterevidence_search.status BUDGET_EXHAUSTED AND hypothesis status INCONCLUSIVE AND nonempty validation_plan; alternatively a controlled code joining COUNTEREVIDENCE or BUDGET with EXHAUSTED",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["mechanism_gaps", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/code"],
+      "operator": "controlled-code token conjunction",
+      "necessary_and_sufficient_public_relation": "code joins IDENTITY or BINDING with MISSING, AMBIGUOUS, UNBOUND or UNRESOLVED",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["mechanism_gaps", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/code"],
+      "operator": "controlled-code token conjunction",
+      "necessary_and_sufficient_public_relation": "code joins PROVIDER or CAPTURE with UNKNOWN, UNAVAILABLE, NOT_EVIDENCED or MISSING",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["improvement_hypotheses", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/target_state", "/entries/*/target_gap_refs", "/entries/*/status", "/entries/*/code"],
+      "operator": "typed baseline relation OR controlled gap code",
+      "necessary_and_sufficient_public_relation": "utility or cost effect is unmeasured because its baseline is absent under an incapable status; alternatively code joins UTILITY or COST with BASELINE and MISSING, ABSENT or WITHOUT",
+      "classification": "Unknown"
+    },
+    {
+      "operation": "ARTIFACT_READ",
+      "artifact_types": ["improvement_hypotheses", "hypothesis_gaps"],
+      "json_pointers": ["/return_value/artifact", "/return_value/canonical_json", "/artifact", "/entries/*/target_state", "/entries/*/target_gap_refs", "/entries/*/status", "/entries/*/code"],
+      "operator": "typed baseline relation OR controlled gap code",
+      "necessary_and_sufficient_public_relation": "security effect is unmeasured because its baseline is absent under an incapable status; alternatively code joins SECURITY with BASELINE and MISSING, ABSENT or WITHOUT",
+      "classification": "Unknown"
+    }
+  ],
+  "precedence": "Any decidable schema, integrity, provenance, ordering, safety or status failure overrides Unknown and yields Violated.",
+  "observable_cause": "The seven public structural rows above do not activate Unknown for the corresponding frozen executable exchanges and instead fall through to Preserved.",
+  "gate_result": "FAIL",
+  "receipt_emitted": false,
+  "seal_emitted": false,
+  "candidate_read_compiled_or_executed": false,
+  "protected_fixture_or_test_detail_disclosed": false
+}

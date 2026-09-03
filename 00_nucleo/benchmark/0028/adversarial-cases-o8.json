@@ -1,0 +1,2250 @@
+{
+  "schema_version": "tekt.adversarial-cases.v2",
+  "step": "0028",
+  "adversarial_revision": "O8",
+  "contract_revision": "R4",
+  "catalog_revision": "tekt.mechanism-rules.v3",
+  "authority": {
+    "role": "ADVERSARY",
+    "executor": "/root/adversary_0028",
+    "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+    "write_scope": [
+      "00_nucleo/benchmark/0028/adversarial-cases-o8.json",
+      "00_nucleo/benchmark/0028/adversarial-cases-invalidation-o8.json"
+    ],
+    "candidate_implementation_read": false,
+    "protected_oracles_corpus_labels_receipts_seals_certificate_or_verdict_read": false,
+    "executable_mutants_generated": false
+  },
+  "frozen_inputs": {
+    "intent_sha256": "9105b27e0e8e9165b0b133a647669e858b977ea2ab8c7d951ed0f217a26ac1a5",
+    "manifest_sha256": "0b8fbcebf9f3af491ae1851f59715c248fa63181617cc336dc39b6969fb555ad",
+    "contract_sha256": "0053b5eb34b563100d8165483937d6c8e9e8acf5b2d41a66f379802c37b97322",
+    "mechanism_rules_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+    "contract_catalog_invalidation_sha256": "77e00c1eed39b972c6e415a45c208303e7af548740c8f7b68d78bb6c3ad33289",
+    "mechanism_extraction_prompt_sha256": "18423bbbf5b6240f821a252b514887373f6bfb82659f8c89d9bdb0fa7f3376bb",
+    "predecessor_adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "adr_0002_sha256": "b457fadd55d6328c2afce969b92a527b461edab9094b1bef66fcfebe71b79a68",
+    "certificate_0025_sha256": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "certificate_0026_sha256": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+    "certificate_0027_sha256": "acf05df728b05ccdc5bc15f78a18e49f19e743b2016ab1141e553ca2417c7e43"
+  },
+  "commitment_scheme": {
+    "algorithm": "sha256(TEKT_CANONICAL_JSON_V1(preimage))",
+    "canonical_json": "UTF-8 compact JSON; object keys recursively sorted lexicographically; arrays retain semantic order; finite JSON primitives only",
+    "entry_preimage_fields": [
+      "id",
+      "class",
+      "target",
+      "mutation",
+      "witness"
+    ],
+    "root_preimage": "ordered array of {id,commitment_sha256} in canonical case order",
+    "entry_count": 182,
+    "entry_commitment_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c"
+  },
+  "score_policy": {
+    "formula": "negative cases classified Violated / 160",
+    "required_score": 1,
+    "negative_denominator": 160,
+    "positive_controls_excluded": 12,
+    "opaque_cases_excluded": 10,
+    "unknown_never_counts_as_rejection": true
+  },
+  "execution_policy": {
+    "repetitions_per_case": 3,
+    "orders": [
+      "ascending",
+      "descending",
+      "deterministic permutation seeded by sha256(contract_sha256 + mechanism_rules_sha256)"
+    ],
+    "stability": "Every repetition and order must yield the same classification and normalized witness; an Unknown or flaky negative is a survivor.",
+    "isolation": "Each case uses fresh pure inputs and fresh runtime fakes unless its setup explicitly requires retry, race, reopen or replay."
+  },
+  "coverage_index": {
+    "assessment_bundle_binding": [
+      "M005",
+      "M006",
+      "M007",
+      "M008",
+      "M009",
+      "M010",
+      "M011",
+      "M017",
+      "M024",
+      "M025",
+      "M026",
+      "M027",
+      "M043",
+      "M044",
+      "M045"
+    ],
+    "cross_source_and_extraction": [
+      "M001",
+      "M002",
+      "M003",
+      "M004",
+      "M012",
+      "M013",
+      "M014",
+      "M015",
+      "M016",
+      "M018",
+      "M019",
+      "M020",
+      "M021",
+      "M022",
+      "M023",
+      "M028",
+      "M029",
+      "M030",
+      "M031",
+      "M032",
+      "M033",
+      "M034",
+      "M035",
+      "M036",
+      "M037",
+      "M038",
+      "M039",
+      "M040",
+      "M041",
+      "M042",
+      "M046",
+      "M047",
+      "M048"
+    ],
+    "novelty_popularity_adoption": [
+      "M049",
+      "M050",
+      "M051",
+      "M052",
+      "M053",
+      "M054",
+      "M055",
+      "M056",
+      "M057",
+      "M058",
+      "M059",
+      "M060"
+    ],
+    "target_proposal_license_compatibility": [
+      "M061",
+      "M062",
+      "M063",
+      "M064",
+      "M065",
+      "M066",
+      "M067",
+      "M068",
+      "M069",
+      "M070",
+      "M071",
+      "M072",
+      "M073",
+      "M074",
+      "M075",
+      "M076",
+      "M077",
+      "M078",
+      "M079",
+      "M080",
+      "M081",
+      "M082",
+      "M083",
+      "M084",
+      "M085",
+      "M086",
+      "M095",
+      "M096"
+    ],
+    "counterevidence": [
+      "M087",
+      "M088",
+      "M089",
+      "M090",
+      "M091",
+      "M092"
+    ],
+    "source_hash_terminal_validation": [
+      "M097",
+      "M098",
+      "M099",
+      "M100",
+      "M101",
+      "M102",
+      "M103",
+      "M104",
+      "M105",
+      "M106",
+      "M107",
+      "M108",
+      "M109",
+      "M110",
+      "M111",
+      "M112"
+    ],
+    "idempotency_parallel_cancel": [
+      "M113",
+      "M114",
+      "M115",
+      "M116",
+      "M117",
+      "M118",
+      "M119",
+      "M120",
+      "M121",
+      "M122",
+      "M123",
+      "M124",
+      "M125"
+    ],
+    "replay_injection_safe_content": [
+      "M126",
+      "M127",
+      "M128",
+      "M129",
+      "M130",
+      "M131",
+      "M132",
+      "M133",
+      "M143",
+      "M144"
+    ],
+    "tools_artifacts_lifecycle": [
+      "M134",
+      "M135",
+      "M136",
+      "M137",
+      "M138",
+      "M139",
+      "M140",
+      "M141",
+      "M142",
+      "M145",
+      "M146",
+      "M147",
+      "M148",
+      "M149",
+      "M150",
+      "M151"
+    ],
+    "runtime_layers_refinement": [
+      "M120",
+      "M121",
+      "M152",
+      "M153",
+      "M154",
+      "M155",
+      "M156",
+      "M157",
+      "M158",
+      "M159",
+      "M160"
+    ]
+  },
+  "cases": [
+    {
+      "id": "M001",
+      "class": "negative",
+      "target": "mechanism.docs_only",
+      "mutation": "Promote a promotional README alone to a PROVEN mechanism.",
+      "witness": {
+        "setup": "Supply only a bound DOCUMENTATION source for one catalog rule.",
+        "assert": "Status is at most PARTIAL and never PROVEN."
+      },
+      "commitment_sha256": "1adb814f838edf74703017e0c4c9a0b9d3baf9d4208be016e7dc449d5ab44316"
+    },
+    {
+      "id": "M002",
+      "class": "negative",
+      "target": "mechanism.independence",
+      "mutation": "Count two documentation pages as implementation plus independent witness.",
+      "witness": {
+        "setup": "Bind two distinct documentation hashes in one immutable source.",
+        "assert": "No PROVEN mechanism is emitted."
+      },
+      "commitment_sha256": "6b8f8855f5c3ae0b633aa19699174f4b20279aa0fa277e33b465e3bdbd8d3419"
+    },
+    {
+      "id": "M003",
+      "class": "negative",
+      "target": "mechanism.product_only",
+      "mutation": "Convert a non-repo-backed market product into an ArchitecturalMechanism.",
+      "witness": {
+        "setup": "Declare only a market_candidates source with product metadata.",
+        "assert": "The product remains an observation and no mechanism is created from it."
+      },
+      "commitment_sha256": "97f03ef0b5b59a1d65db46faad2cb74400a3e488464b35cf62e15e70669b6d29"
+    },
+    {
+      "id": "M004",
+      "class": "negative",
+      "target": "proposal.authority",
+      "mutation": "Let an external proposal create a missing implementation witness or evidence ref.",
+      "witness": {
+        "setup": "Propose a named mechanism absent from all declared artifacts.",
+        "assert": "Input is rejected for unresolved ref or preserved without invented evidence."
+      },
+      "commitment_sha256": "eb05fac8d7f755e630048a4e767fe4414c8690adb65b8fcd86e9c8d49fb8f365"
+    },
+    {
+      "id": "M005",
+      "class": "negative",
+      "target": "extraction.rule_origin",
+      "mutation": "Infer RuleID by scanning CollectedEvidence.Content for catalog keywords.",
+      "witness": {
+        "setup": "Put append-only keywords in content while EvidenceSource.RuleID is absent or unrelated.",
+        "assert": "No inferred rule participates; a controlled gap is emitted."
+      },
+      "commitment_sha256": "ba30f80d3d4230e512c55b241eb47144cbd8fce93f7c0ce44eeba68eef53f2ae"
+    },
+    {
+      "id": "M006",
+      "class": "negative",
+      "target": "extraction.metadata_origin",
+      "mutation": "Infer Symbol or Line from CollectedEvidence.Content.",
+      "witness": {
+        "setup": "Embed symbol-like and line-like text only in raw content.",
+        "assert": "Witness Symbol and Line come only from EvidenceSource and raw content is ignored except for hashing."
+      },
+      "commitment_sha256": "a993beb3dc3484bc3bc32e73182defbf060fd9414b5be5a2bbe8741e49abf635"
+    },
+    {
+      "id": "M007",
+      "class": "negative",
+      "target": "extraction.binding.zero",
+      "mutation": "Accept an evaluated EvidenceSource with zero matching bundle items.",
+      "witness": {
+        "setup": "Use a source tuple absent from EvidenceBundle.Items.",
+        "assert": "UNBOUND_EVALUATED_SOURCE is emitted and the source does not contribute."
+      },
+      "commitment_sha256": "0cdacaf9f370b4891887b713773428da345a108417e66be8e2a53590fb909656"
+    },
+    {
+      "id": "M008",
+      "class": "negative",
+      "target": "extraction.binding.ambiguous",
+      "mutation": "Choose an arbitrary bundle item when an evaluated source has multiple exact matches.",
+      "witness": {
+        "setup": "Provide two bundle items matching kind, ref, path and content_hash.",
+        "assert": "AMBIGUOUS_BUNDLE_BINDING is emitted and neither item contributes."
+      },
+      "commitment_sha256": "3d0a7e95fe14311c9ac47b7d5e166690ceee525d8cd5def7eb047e3786d01324"
+    },
+    {
+      "id": "M009",
+      "class": "negative",
+      "target": "extraction.content_integrity",
+      "mutation": "Trust declared content_hash without recomputing it over CollectedEvidence.Content.",
+      "witness": {
+        "setup": "Tamper content while retaining both declared hashes.",
+        "assert": "EVIDENCE_CONTENT_HASH_MISMATCH is emitted and the source is excluded."
+      },
+      "commitment_sha256": "9be82277f1563d6b6858cfa77e6984dfac929ffe33c1994c185921865ed489fc"
+    },
+    {
+      "id": "M010",
+      "class": "negative",
+      "target": "extraction.assessment_identity",
+      "mutation": "Ignore divergence between CandidateAssessment.Repository and EvidenceSource.Ref.",
+      "witness": {
+        "setup": "Assessment is owner/a@commit while its source is owner/b@commit.",
+        "assert": "Identity inconsistency prevents positive proof."
+      },
+      "commitment_sha256": "dbda9e3a8a8ad70e9bb21430fdb7828735817b7fad116b3319d8a054d9596b53"
+    },
+    {
+      "id": "M011",
+      "class": "negative",
+      "target": "extraction.bundle_identity",
+      "mutation": "Bind EvidenceSource to CollectedEvidence with a different immutable ref.",
+      "witness": {
+        "setup": "Keep kind/path/hash equal but change bundle repository or commit.",
+        "assert": "The exact join fails and no cross-identity witness contributes."
+      },
+      "commitment_sha256": "8faad6a13e29b6700c019acbfdc26104250110a139c083de9b587c5d47e5e534"
+    },
+    {
+      "id": "M012",
+      "class": "negative",
+      "target": "extraction.cross_repository",
+      "mutation": "Combine implementation from one repository with a test from another.",
+      "witness": {
+        "setup": "Provide catalog-compatible witnesses under owner/a and owner/b at immutable commits.",
+        "assert": "They remain separate and cannot yield one PROVEN mechanism."
+      },
+      "commitment_sha256": "4148b9dc820859be422571936b3d66a8faa30773e071c376cf7d593e8297d957"
+    },
+    {
+      "id": "M013",
+      "class": "negative",
+      "target": "extraction.cross_commit",
+      "mutation": "Combine code and test from different commits of the same repository.",
+      "witness": {
+        "setup": "Use owner/a at two distinct valid commits.",
+        "assert": "Grouping by repository and commit prevents PROVEN composition."
+      },
+      "commitment_sha256": "9cc6d376cce3b5ddcba507d1955bec5bd3afe6651b2450b570994b96b02b5ceb"
+    },
+    {
+      "id": "M014",
+      "class": "negative",
+      "target": "extraction.mutable_identity",
+      "mutation": "Accept owner/repo without a 40- or 64-hex immutable commit.",
+      "witness": {
+        "setup": "Use HEAD, main, tag text or an empty commit.",
+        "assert": "A gap is emitted and no mechanism enters the catalog."
+      },
+      "commitment_sha256": "f042c87456cbc0ff638df3cfd15e5b51e2ece03eab580c66fbc51c345369a573"
+    },
+    {
+      "id": "M015",
+      "class": "negative",
+      "target": "extraction.repository_shape",
+      "mutation": "Accept an HTTPS URL in Repository instead of owner/repo.",
+      "witness": {
+        "setup": "Set Repository to https://example.invalid/owner/repo.",
+        "assert": "The source is invalid and no URL is followed or published."
+      },
+      "commitment_sha256": "f023fbd4f9955688062daa72087117fb9c92eb3e42641f202bc9ef030d9091ca"
+    },
+    {
+      "id": "M016",
+      "class": "negative",
+      "target": "extraction.path_safety",
+      "mutation": "Accept an absolute, empty-segment, dot or dot-dot witness path.",
+      "witness": {
+        "setup": "Exercise /tmp/x, a//b, ./a and a/../b.",
+        "assert": "Each source is rejected or gapped without filesystem access."
+      },
+      "commitment_sha256": "4b585a89ad4688d5ff4e6b33b35b9ad8038da60075a47daaaab21dcda426f08c"
+    },
+    {
+      "id": "M017",
+      "class": "negative",
+      "target": "extraction.source_kind",
+      "mutation": "Accept a structurally incompatible source kind for a catalog witness role.",
+      "witness": {
+        "setup": "Map TEST to file or IMPLEMENTATION to documentation.",
+        "assert": "The source does not count toward its role and a controlled gap remains."
+      },
+      "commitment_sha256": "83d7ce23af68bd3df306a1ea07fdcd65e9d3024f92e0ff10a39273681fcb7d34"
+    },
+    {
+      "id": "M018",
+      "class": "negative",
+      "target": "catalog.closed_world",
+      "mutation": "Use lexical, fuzzy, alias or nearest-class fallback for an unknown EvidenceSource.RuleID.",
+      "witness": {
+        "setup": "Use rule_id append-only-writ with otherwise strong sources.",
+        "assert": "RULE_NOT_IN_MECHANISM_CATALOG is emitted and no approximate mechanism is created."
+      },
+      "commitment_sha256": "3cc1fad6fd7599a112ce987d61aff8e4e8e60c466873f02021dce315c6c97244"
+    },
+    {
+      "id": "M019",
+      "class": "negative",
+      "target": "catalog.hash",
+      "mutation": "Initialize with a rule catalog whose bytes do not match RuleCatalogSHA256.",
+      "witness": {
+        "setup": "Change one catalog byte while retaining the frozen hash argument.",
+        "assert": "Initialization fails deterministically before extraction."
+      },
+      "commitment_sha256": "1c5e0d9e943e35a01786950a382a43e537a6452eefdc60d94cf5e12aa3924a62"
+    },
+    {
+      "id": "M020",
+      "class": "negative",
+      "target": "catalog.strict_json",
+      "mutation": "Accept unknown catalog fields.",
+      "witness": {
+        "setup": "Add an unrecognized top-level or per-rule property.",
+        "assert": "Strict catalog validation prevents initialization."
+      },
+      "commitment_sha256": "bcffda641803a570f4b8a999f576330e6e6e9ff8a386967d78591a5be3352fa2"
+    },
+    {
+      "id": "M021",
+      "class": "negative",
+      "target": "catalog.duplicate_rule",
+      "mutation": "Accept duplicate mechanism rule IDs or classes.",
+      "witness": {
+        "setup": "Duplicate MR-BOUNDED-QUEUE-V1 with different templates.",
+        "assert": "Catalog initialization fails instead of choosing by order."
+      },
+      "commitment_sha256": "d8863b99575cb529cdb4ed4519164cb4f50570f0fd124f68595f7f896fef04ef"
+    },
+    {
+      "id": "M022",
+      "class": "negative",
+      "target": "catalog.role_collision",
+      "mutation": "Accept one evidence rule_id under incompatible roles.",
+      "witness": {
+        "setup": "Declare queue-capacity-test as INDEPENDENT and CONFLICT.",
+        "assert": "Catalog initialization fails deterministically."
+      },
+      "commitment_sha256": "b27ccb8d815198ffbb8fdf5a1b36e0564686f8f71a166471a39bf1ba2aec059d"
+    },
+    {
+      "id": "M023",
+      "class": "negative",
+      "target": "catalog.version",
+      "mutation": "Accept schema/catalog version other than tekt.mechanism-rules.v3/3.",
+      "witness": {
+        "setup": "Replay an otherwise valid v1 or v2 catalog, or a catalog_version other than 3.",
+        "assert": "Initialization fails and no fallback catalog is used."
+      },
+      "commitment_sha256": "ff0f381896c7479a3e523589b45e7e0b08fd41407f77d1c22e638e1ee03a881c"
+    },
+    {
+      "id": "M024",
+      "class": "negative",
+      "target": "assessment.partial_ceiling",
+      "mutation": "Promote a mechanism to PROVEN using a positive source whose parent status is PARTIAL.",
+      "witness": {
+        "setup": "Implementation is under PARTIAL and independent test under PROVEN.",
+        "assert": "The resulting mechanism is at most PARTIAL."
+      },
+      "commitment_sha256": "1b77e3a8d27bd2895d2974341ce4b1f5a214e2646c5a7d415aa472b49d48e430"
+    },
+    {
+      "id": "M025",
+      "class": "negative",
+      "target": "assessment.absent_source",
+      "mutation": "Count a positive rule nested under parent status ABSENT.",
+      "witness": {
+        "setup": "Bind a valid implementation source under ABSENT.",
+        "assert": "It produces an inconsistency gap and contributes no positive proof."
+      },
+      "commitment_sha256": "a9655b6006e909a2ddcae9153ffef0caead9b2f30ec44155a385ff207a750106"
+    },
+    {
+      "id": "M026",
+      "class": "negative",
+      "target": "assessment.inconclusive_source",
+      "mutation": "Count a positive rule nested under parent status INCONCLUSIVE or CONFLICT.",
+      "witness": {
+        "setup": "Bind otherwise valid implementation/test sources under those statuses.",
+        "assert": "They do not establish PARTIAL or PROVEN."
+      },
+      "commitment_sha256": "17faf8b3ec8a9a713e27f40efb3f94be57b50ed5c5cbe79c299b7c6ea02d055d"
+    },
+    {
+      "id": "M027",
+      "class": "negative",
+      "target": "assessment.conflict_consistency",
+      "mutation": "Treat a catalog CONFLICT rule under a non-CONFLICT parent as valid central counterevidence.",
+      "witness": {
+        "setup": "Place unbounded-queue under parent PROVEN.",
+        "assert": "An evaluation-inconsistent gap is emitted rather than silently trusting the mismatch."
+      },
+      "commitment_sha256": "45c87594420edd3aac2941ad7a08b2d5a3e3c0fe2b0300d63dcb9971d2ab16fb"
+    },
+    {
+      "id": "M028",
+      "class": "negative",
+      "target": "mechanism.conflict_precedence",
+      "mutation": "Ignore a catalog CONFLICT source under parent CONFLICT and keep the mechanism PROVEN.",
+      "witness": {
+        "setup": "Provide complete positive proof plus a bound central conflict.",
+        "assert": "Mechanism is INCONCLUSIVE and conflict remains visible."
+      },
+      "commitment_sha256": "d5aeae349cc64f2c82d5acf558f4db20af9dc82e66f635d6687d0f0fa3ea6e9f"
+    },
+    {
+      "id": "M029",
+      "class": "negative",
+      "target": "mechanism.distinct_hashes",
+      "mutation": "Count duplicate occurrences of one content hash as the two hashes required for PROVEN.",
+      "witness": {
+        "setup": "Duplicate one source across paths or assessments with the same content hash.",
+        "assert": "Deduplication leaves one hash and PROVEN is impossible."
+      },
+      "commitment_sha256": "3efea83c97404ce82bb1b22e965541bee257631fd88fc6046f47076204356285"
+    },
+    {
+      "id": "M030",
+      "class": "negative",
+      "target": "mechanism.central_fields",
+      "mutation": "Emit PROVEN when purpose, strategy or boundaries is empty.",
+      "witness": {
+        "setup": "Use a catalog/template projection missing each central field in turn.",
+        "assert": "No PROVEN mechanism is emitted."
+      },
+      "commitment_sha256": "027b2cdf456a099b1390b3d1faadc0edd20313e1da73f5de36b9b455448a5dfc"
+    },
+    {
+      "id": "M031",
+      "class": "negative",
+      "target": "mechanism.language_ecosystem",
+      "mutation": "Ignore catalog language or repository-backed ecosystem limits.",
+      "witness": {
+        "setup": "Present a syntactically strong source outside the declared language/ecosystem limits.",
+        "assert": "It cannot exceed the catalog's permitted status."
+      },
+      "commitment_sha256": "a32d250c55144e749b0beb9040993d13738647b4bb588d59a902ca57538c361f"
+    },
+    {
+      "id": "M032",
+      "class": "negative",
+      "target": "mechanism.limits",
+      "mutation": "Publish more than 64 witnesses or more than 32 items in a structural field.",
+      "witness": {
+        "setup": "Supply 65 distinct witnesses and 33 data-flow items.",
+        "assert": "Limits are enforced deterministically without silent unsafe overflow."
+      },
+      "commitment_sha256": "cdbf80044ed2deb2be5a90d51a3fb9d04e4de56585dd285df65536961dc379e2"
+    },
+    {
+      "id": "M033",
+      "class": "negative",
+      "target": "mechanism.bundle_order",
+      "mutation": "Let EvidenceBundle item order change mechanism IDs or catalog bytes.",
+      "witness": {
+        "setup": "Extract all permutations of the same bundle.",
+        "assert": "Mechanism/gap bytes and IDs are identical."
+      },
+      "commitment_sha256": "93f6180de7aec031c2a6d7a77e2b8252ae7367acafabe08fb59fd553beee98fa"
+    },
+    {
+      "id": "M034",
+      "class": "negative",
+      "target": "mechanism.assessment_order",
+      "mutation": "Let CandidateAssessment or nested source order change outputs.",
+      "witness": {
+        "setup": "Permute assessments, capabilities and sources.",
+        "assert": "Canonical mechanism and gap bytes are identical."
+      },
+      "commitment_sha256": "42082c26a43b0d2ddea8eb9403d8dc3ec06a5c8afb9fdea04f2b17e147fab47b"
+    },
+    {
+      "id": "M035",
+      "class": "negative",
+      "target": "mechanism.id_nondeterminism",
+      "mutation": "Include time, checkout path, PID, locale, map order or discovery position in mechanism_id.",
+      "witness": {
+        "setup": "Repeat extraction while varying only those incidental values.",
+        "assert": "The mech_ ID and output bytes remain unchanged."
+      },
+      "commitment_sha256": "b44c05385932410d95922495ed09a9969c869d5e7b1a2767873f78ba0ed9420f"
+    },
+    {
+      "id": "M036",
+      "class": "negative",
+      "target": "mechanism.id_counterevidence",
+      "mutation": "Omit counterevidence hashes from the mechanism ID preimage.",
+      "witness": {
+        "setup": "Add one distinct bound counterevidence hash to otherwise identical input.",
+        "assert": "The mechanism ID changes according to the complete canonical witness hash set."
+      },
+      "commitment_sha256": "6a40e566e2114775cd2536610a698a537fe11515949599e2892332ce7c4a7d17"
+    },
+    {
+      "id": "M037",
+      "class": "negative",
+      "target": "mechanism.id_collision",
+      "mutation": "Overwrite a different canonical mechanism when two preimages yield one ID.",
+      "witness": {
+        "setup": "Inject a hash function fake that collides distinct canonical bytes.",
+        "assert": "INTEGRITY_ERROR is returned and neither object is silently replaced."
+      },
+      "commitment_sha256": "253b66bbac1c185e81597287fd4d557581761c517cdb09ad38c248b9b6e9c4f9"
+    },
+    {
+      "id": "M038",
+      "class": "negative",
+      "target": "mechanism.unknown_gap",
+      "mutation": "Drop unsupported taxonomy or insufficient witnesses without a gap.",
+      "witness": {
+        "setup": "Use a valid bound source with an uncataloged rule or no qualifying pair.",
+        "assert": "A deterministic Unknown gap is published."
+      },
+      "commitment_sha256": "ded01186618631ca6c3f0dacb0d33a6ecdf878d7e7a934ef9460cc82fe291e44"
+    },
+    {
+      "id": "M039",
+      "class": "negative",
+      "target": "mechanism.safe_projection",
+      "mutation": "Publish snippet, CollectedEvidence.Content, README, full test, body, checkout path or URL.",
+      "witness": {
+        "setup": "Seed each raw surface with a unique canary.",
+        "assert": "No canary or raw field appears in mechanism_catalog, gaps, logs or errors."
+      },
+      "commitment_sha256": "cbf380b044a1db7c2b90b300d96465027b7b1ed9dc0dd9890c5bb59ce54ffff3"
+    },
+    {
+      "id": "M040",
+      "class": "negative",
+      "target": "mechanism.path_opacity",
+      "mutation": "Open a witness Path during extraction.",
+      "witness": {
+        "setup": "Use a valid opaque path backed by a filesystem spy.",
+        "assert": "Zero filesystem reads occur."
+      },
+      "commitment_sha256": "2a903026b52cbd28137a549ca5a8943ebcb65b0b59e36413c6825d7aa09dd423"
+    },
+    {
+      "id": "M041",
+      "class": "negative",
+      "target": "mechanism.content_execution",
+      "mutation": "Parse or execute third-party content to classify a mechanism.",
+      "witness": {
+        "setup": "Content contains executable-looking instructions and a tool canary.",
+        "assert": "Only hash verification touches content; no parser, command or tool action occurs."
+      },
+      "commitment_sha256": "890f2aad90a195d941626a85836b09aa1c5bc59aa7c1ee2a6cb529a38fd01a33"
+    },
+    {
+      "id": "M042",
+      "class": "negative",
+      "target": "mechanism.rule_grouping",
+      "mutation": "Combine witnesses accepted by different mechanism-rule IDs into one proof.",
+      "witness": {
+        "setup": "Supply bounded-queue implementation and content-address independent test.",
+        "assert": "Grouping by mechanism-rule ID prevents a PROVEN hybrid."
+      },
+      "commitment_sha256": "eb565db1a2a2961508d777d80cff31e72fe4fefe8475a8a194d05c37c60e2f8b"
+    },
+    {
+      "id": "M043",
+      "class": "negative",
+      "target": "mechanism.source_strength",
+      "mutation": "Use EvidenceSource.Strength to override the parent EvidenceStatus ceiling.",
+      "witness": {
+        "setup": "Mark a source strong while its CapabilityEvidence status is PARTIAL.",
+        "assert": "Status remains at most PARTIAL."
+      },
+      "commitment_sha256": "216a3f9050d2053a51a30838d49eb35cb9e7ded6fc3a1b2495c50adc84c7285b"
+    },
+    {
+      "id": "M044",
+      "class": "negative",
+      "target": "mechanism.witness_identity.source_kind",
+      "mutation": "Omit SourceKind from witness deduplication identity.",
+      "witness": {
+        "setup": "Provide otherwise equal sources with distinct source kinds and structural validity.",
+        "assert": "They are validated and represented by the full contracted identity, not accidentally collapsed."
+      },
+      "commitment_sha256": "c5393e642a56d809eafbca7bb6b09bd4924e937cf203f8bcbc3e07b6a44f589e"
+    },
+    {
+      "id": "M045",
+      "class": "negative",
+      "target": "mechanism.witness_identity.assessment_status",
+      "mutation": "Omit parent assessment status from witness identity and reuse a PROVEN occurrence for a PARTIAL occurrence.",
+      "witness": {
+        "setup": "Repeat one source under PROVEN and PARTIAL parents.",
+        "assert": "The statuses remain distinguishable and the weaker occurrence cannot be upgraded."
+      },
+      "commitment_sha256": "cf90dcaa22c3711ee8b5f9a67bad1b3836f93d63fd587d4f87feb2a8fb7b7c67"
+    },
+    {
+      "id": "M046",
+      "class": "negative",
+      "target": "mechanism.partial_preservation",
+      "mutation": "Silently discard a valid bound positive source that supports PARTIAL.",
+      "witness": {
+        "setup": "Provide one cataloged positive source with central fields but no independent pair.",
+        "assert": "A PARTIAL mechanism is preserved rather than erased."
+      },
+      "commitment_sha256": "4e15a324077722235e385178f6524a0c80de1947be17b2e689d7c5842dcd89a1"
+    },
+    {
+      "id": "M047",
+      "class": "negative",
+      "target": "mechanism.documentation_partial",
+      "mutation": "Drop documentation-only evidence instead of preserving the allowed PARTIAL ceiling.",
+      "witness": {
+        "setup": "Bind one catalog-relevant documentation source with central fields.",
+        "assert": "The mechanism remains visible as PARTIAL with provenance."
+      },
+      "commitment_sha256": "545193a11bd888fb40cb275d50a97a4a4b3f2eda41e3e85568bf83db9940ee54"
+    },
+    {
+      "id": "M048",
+      "class": "negative",
+      "target": "mechanism.counterevidence_projection",
+      "mutation": "Remove contradictory witnesses from counter_evidence or extraction_rule_ids to make output cleaner.",
+      "witness": {
+        "setup": "Supply one bound catalog conflict alongside positives.",
+        "assert": "Conflict provenance remains explicit and affects status/identity."
+      },
+      "commitment_sha256": "003fdeb50aa2468e6f702237ab922657360d8000ab52bf1814b02236bb9d951b"
+    },
+    {
+      "id": "M049",
+      "class": "negative",
+      "target": "novelty.conventional",
+      "mutation": "Label a mechanism DIVERGENT when its class is in the frozen baseline.",
+      "witness": {
+        "setup": "Use a PROVEN class listed in ConventionalBaseline.MechanismClasses.",
+        "assert": "Novelty is CONVENTIONAL."
+      },
+      "commitment_sha256": "0591575ceb3d5fa192bdb4257892048a2e0e172fc74d7c5cc5fa412a5485c80d"
+    },
+    {
+      "id": "M050",
+      "class": "negative",
+      "target": "novelty.missing_baseline",
+      "mutation": "Label a mechanism DIVERGENT when the conventional baseline is absent.",
+      "witness": {
+        "setup": "Extract a PROVEN mechanism with nil baseline.",
+        "assert": "Novelty is UNKNOWN."
+      },
+      "commitment_sha256": "9aeb630260f47047e89819c6d3bce209b2a98a173e3ccf2f8b3529d337a7432e"
+    },
+    {
+      "id": "M051",
+      "class": "negative",
+      "target": "novelty.invalid_baseline",
+      "mutation": "Label a mechanism DIVERGENT against an invalid baseline or mismatched idea hash.",
+      "witness": {
+        "setup": "Use a malformed baseline or one bound to another idea.",
+        "assert": "Novelty is UNKNOWN and no superiority is inferred."
+      },
+      "commitment_sha256": "9f2938f7fc129e55635e94bfaa4b617fcf902ce04e7cb21e6bd29eb8e4f0cc16"
+    },
+    {
+      "id": "M052",
+      "class": "negative",
+      "target": "novelty.unproven",
+      "mutation": "Label a PARTIAL or INCONCLUSIVE mechanism DIVERGENT.",
+      "witness": {
+        "setup": "Use a class absent from a valid baseline but without PROVEN evidence.",
+        "assert": "Novelty is UNKNOWN."
+      },
+      "commitment_sha256": "11d775036db24980f8247b95d3ff47ded0df0b88b658408d964fd6554505e9c2"
+    },
+    {
+      "id": "M053",
+      "class": "negative",
+      "target": "novelty.status_bonus",
+      "mutation": "Raise evidence or hypothesis status because novelty is DIVERGENT.",
+      "witness": {
+        "setup": "Compare identical proof except novelty classification.",
+        "assert": "All status fields are unchanged."
+      },
+      "commitment_sha256": "b51e31455cbc84c54b2de263b0bc3a7fdacb90ec26eae659152d08d5d2613315"
+    },
+    {
+      "id": "M054",
+      "class": "negative",
+      "target": "novelty.order_bonus",
+      "mutation": "Move divergent mechanisms or hypotheses ahead of conventional ones solely for novelty.",
+      "witness": {
+        "setup": "Provide IDs whose canonical order conflicts with novelty order.",
+        "assert": "Output follows canonical contracted order without novelty bonus."
+      },
+      "commitment_sha256": "950908b56165006f6c50225885a76b93770115932e160b4d64e75814216ebf46"
+    },
+    {
+      "id": "M055",
+      "class": "negative",
+      "target": "popularity.evidence",
+      "mutation": "Raise mechanism status using stars, downloads, ratings, ranking or corpus frequency.",
+      "witness": {
+        "setup": "Vary only popularity metadata around an incomplete witness set.",
+        "assert": "Status and evidence remain unchanged."
+      },
+      "commitment_sha256": "1b270aa808f2ccfd5de25e28dad096611fe82ea8751e0e68d8da51ecaee146f3"
+    },
+    {
+      "id": "M056",
+      "class": "negative",
+      "target": "adoption.hypothesis",
+      "mutation": "Use legacy AdoptionRate to promote a hypothesis to SUPPORTED.",
+      "witness": {
+        "setup": "Give an unsupported hypothesis AdoptionRate=1 and then 0.",
+        "assert": "Status bytes are identical and not elevated."
+      },
+      "commitment_sha256": "0afc7bf5ab58535095099fc84b44c6e251510cf51c8603d9b0a1c48270b7ebe2"
+    },
+    {
+      "id": "M057",
+      "class": "negative",
+      "target": "popularity.identity",
+      "mutation": "Include popularity, ranking or AdoptionRate in mechanism/hypothesis hashes.",
+      "witness": {
+        "setup": "Vary only those legacy values.",
+        "assert": "IDs and request/artifact hashes remain identical."
+      },
+      "commitment_sha256": "9d7d53df8c30a2944094be3371161d43ca6c8d8166502131ea51ebd373f8ee30"
+    },
+    {
+      "id": "M058",
+      "class": "negative",
+      "target": "popularity.selection",
+      "mutation": "Drop a rare proven mechanism or preserve only the most frequent mechanism.",
+      "witness": {
+        "setup": "Supply one rare and one common PROVEN mechanism.",
+        "assert": "Both are preserved under canonical ordering."
+      },
+      "commitment_sha256": "993d20470d29861bfd29f6ff47796a384b913e07c359c63b056eea8a2d10dd43"
+    },
+    {
+      "id": "M059",
+      "class": "negative",
+      "target": "legacy.authority",
+      "mutation": "Treat MineOntologicalImprovements or ImprovementRecommendation as evidence/support in 0028.",
+      "witness": {
+        "setup": "Provide legacy recommendations without contracted sources.",
+        "assert": "They contribute nothing to evidence, novelty or support."
+      },
+      "commitment_sha256": "987d8ab0f583c0d8880897e4afc531e10260db645e67227679431742b5f61595"
+    },
+    {
+      "id": "M060",
+      "class": "negative",
+      "target": "novelty.side_effects",
+      "mutation": "Let DIVERGENT alter license, fit, transfer mode or adoption disposition.",
+      "witness": {
+        "setup": "Compare conventional and divergent mechanisms with equal license/evidence.",
+        "assert": "Only novelty label differs."
+      },
+      "commitment_sha256": "87c0f99eed6c28755c581d1a4a85abf1b2eb1ccaebcd3ee0d5fac583288850e6"
+    },
+    {
+      "id": "M061",
+      "class": "negative",
+      "target": "target.unknown_as_absent",
+      "mutation": "Convert target state UNKNOWN into ABSENT or a proved gap.",
+      "witness": {
+        "setup": "Supply a frozen target report whose relevant state is UNKNOWN.",
+        "assert": "Target remains UNKNOWN and hypothesis is at most PROPOSED unless opaqueness requires INCONCLUSIVE."
+      },
+      "commitment_sha256": "0fa6b632579a5da3dd6163cf784648caa9aec4c93962bb51b14ffa628ac61ec8"
+    },
+    {
+      "id": "M062",
+      "class": "negative",
+      "target": "target.missing",
+      "mutation": "Promote a product hypothesis without target repository/report to SUPPORTED.",
+      "witness": {
+        "setup": "Provide valid mechanisms but no target evidence.",
+        "assert": "Status is at most PROPOSED and the first validation step measures current state."
+      },
+      "commitment_sha256": "249c2d1a5485634c487f29f5c0fcb6db1a50d5869599ca7056dbe49a04e20519"
+    },
+    {
+      "id": "M063",
+      "class": "negative",
+      "target": "target.baseline",
+      "mutation": "Support a PARTIAL/PRESENT target property without its own baseline measurement.",
+      "witness": {
+        "setup": "Claim latency reduction with no current latency witness.",
+        "assert": "Effect stays unmeasurable and hypothesis cannot be SUPPORTED."
+      },
+      "commitment_sha256": "985be4f9732f460d4d83fafe6bd785931a15c00c59f4cc2c211acfaba4531dd9"
+    },
+    {
+      "id": "M064",
+      "class": "negative",
+      "target": "product.architecture",
+      "mutation": "Use product name, description or store metadata as proof of implemented architecture.",
+      "witness": {
+        "setup": "A product description claims append-only recovery but has no repo source.",
+        "assert": "It remains only a product observation."
+      },
+      "commitment_sha256": "1c81ab161d6b16710fe18483920300070578b0098b8e92e4fa8edc069d20d0da"
+    },
+    {
+      "id": "M065",
+      "class": "negative",
+      "target": "product.support",
+      "mutation": "Promote a proposal depending only on product observations to SUPPORTED.",
+      "witness": {
+        "setup": "Declare only market product refs and persuasive rationale.",
+        "assert": "Status is at most PROPOSED and validation requests technical evidence."
+      },
+      "commitment_sha256": "eac4876ea9418a56835cb9de826ddb69b94f5ac57d157cb1ccf70bd0a3489441"
+    },
+    {
+      "id": "M066",
+      "class": "negative",
+      "target": "proposal.supplied_status",
+      "mutation": "Accept status, evidence, license, compatibility or adoption fields supplied by an external proposal.",
+      "witness": {
+        "setup": "Add each forbidden field to a proposal.",
+        "assert": "Strict input validation rejects it before store, queue or I/O."
+      },
+      "commitment_sha256": "5ca84eb47b737ae6f24283104945a4107bf110852665425b107a5714c85d00e0"
+    },
+    {
+      "id": "M067",
+      "class": "negative",
+      "target": "proposal.mechanism_elevation",
+      "mutation": "Let proposal rhetoric elevate referenced PARTIAL mechanism to PROVEN.",
+      "witness": {
+        "setup": "Reference a PARTIAL mechanism with an authoritative rationale.",
+        "assert": "Mechanism status is immutable and hypothesis cannot be SUPPORTED."
+      },
+      "commitment_sha256": "e899b58d4effd5fd8447111f2291110c8b5c5d712176f03bb42e6becf7da1b24"
+    },
+    {
+      "id": "M068",
+      "class": "negative",
+      "target": "proposal.invalid_ref",
+      "mutation": "Invent or silently drop an unresolved mechanism/product reference.",
+      "witness": {
+        "setup": "Use syntactically valid IDs absent from declared source artifacts.",
+        "assert": "Start returns Invalid params before queueing."
+      },
+      "commitment_sha256": "50462d5f49721e314b4fc8355defb7ce8cc948040fd243f5623466454a0b5e36"
+    },
+    {
+      "id": "M069",
+      "class": "negative",
+      "target": "proposal.ref_category",
+      "mutation": "Accept a product observation ID in mechanism_refs or a mechanism ID in product_observation_refs.",
+      "witness": {
+        "setup": "Swap the two reference categories.",
+        "assert": "Start rejects the request before idempotency or queue activity."
+      },
+      "commitment_sha256": "6e0cb98e0bd0f272454449536b23fd3881f26664817db16789f5ca4753ca9c87"
+    },
+    {
+      "id": "M070",
+      "class": "negative",
+      "target": "rule_derived.opacity",
+      "mutation": "Generate RULE_DERIVED hypotheses using embedding, fuzzy similarity, frequency or an online model.",
+      "witness": {
+        "setup": "Use near-synonyms without literal frozen taxonomy correspondence and instrument model/network calls.",
+        "assert": "No hypothesis is derived and zero opaque/model calls occur."
+      },
+      "commitment_sha256": "5e2841d735e38aa7e565d85e45d1f95ea768d2dbca45318e7c72228e5d0c1d4b"
+    },
+    {
+      "id": "M071",
+      "class": "negative",
+      "target": "source.degraded_support",
+      "mutation": "Allow a hypothesis depending on a FAILED/CANCELLED/INTERRUPTED source to become SUPPORTED.",
+      "witness": {
+        "setup": "Resolve an intact published artifact from a non-SUCCEEDED terminal source.",
+        "assert": "SOURCE_RUN_NOT_SUCCEEDED is visible and dependent hypothesis is INCONCLUSIVE."
+      },
+      "commitment_sha256": "f5386be22863dad50f6ad5c3496cecdda7d7d6386fd69377fcfd2c7d8037c97b"
+    },
+    {
+      "id": "M072",
+      "class": "negative",
+      "target": "hypothesis.partial_mechanism",
+      "mutation": "Promote a hypothesis referencing a PARTIAL mechanism to SUPPORTED.",
+      "witness": {
+        "setup": "Satisfy every other support condition.",
+        "assert": "Initial policy still prevents SUPPORTED."
+      },
+      "commitment_sha256": "ba3258cf8afaa9e66d0079e8fdf9f87254d22a22584b00e43e1bb4e28efd2884"
+    },
+    {
+      "id": "M073",
+      "class": "negative",
+      "target": "hypothesis.inconclusive_mechanism",
+      "mutation": "Leave a hypothesis PROPOSED when a referenced mechanism is INCONCLUSIVE.",
+      "witness": {
+        "setup": "Reference one INCONCLUSIVE mechanism.",
+        "assert": "Hypothesis status is INCONCLUSIVE by precedence."
+      },
+      "commitment_sha256": "59cb2cb2a27b183cde2efc99e49174b98fdf6666cb55c99dae46e20620a6923c"
+    },
+    {
+      "id": "M074",
+      "class": "negative",
+      "target": "license.unrecognized_exclusion",
+      "mutation": "Drop a mechanism or hypothesis because its license is UNRECOGNIZED.",
+      "witness": {
+        "setup": "Use otherwise admissible evidence with unrecognized license.",
+        "assert": "Object is preserved with LICENSE_NOT_RECOGNIZED."
+      },
+      "commitment_sha256": "090f4482f590754b0a0e2efdb598bb5ef21e91f2e43c302340482d28c73cdf49"
+    },
+    {
+      "id": "M075",
+      "class": "negative",
+      "target": "license.unrecognized_reuse",
+      "mutation": "Automatically select COMPONENT_REUSE for UNRECOGNIZED license.",
+      "witness": {
+        "setup": "Request direct reuse with unknown license.",
+        "assert": "Transfer mode is limited to PATTERN_ADAPTATION, REFERENCE_ONLY or UNKNOWN."
+      },
+      "commitment_sha256": "cb9bb70874e1bff3b6eb930fca7413d1264c0c196ce88d57ac3306efbc7a856d"
+    },
+    {
+      "id": "M076",
+      "class": "negative",
+      "target": "license.incompatible_visibility",
+      "mutation": "Hide an INCOMPATIBLE license or its conflict from projection.",
+      "witness": {
+        "setup": "Resolve a proved incompatible license.",
+        "assert": "License and conflict remain visible in hypothesis/gaps/report."
+      },
+      "commitment_sha256": "7baa32c854a7da16c7d8302c58f1b40f22c86ca4147d677f07e39d62ae9518fe"
+    },
+    {
+      "id": "M077",
+      "class": "negative",
+      "target": "license.incompatible_reuse",
+      "mutation": "Keep direct-reuse hypothesis SUPPORTED despite INCOMPATIBLE license.",
+      "witness": {
+        "setup": "Set transfer mode COMPONENT_REUSE with incompatible license.",
+        "assert": "Hypothesis is CONFLICTING."
+      },
+      "commitment_sha256": "9d57a990a47f58226ac46007817d62d51ab6e63978828e71a44bb6d0b201d6bd"
+    },
+    {
+      "id": "M078",
+      "class": "negative",
+      "target": "license.compatible_authority",
+      "mutation": "Treat COMPATIBLE license as approval of support or adoption.",
+      "witness": {
+        "setup": "Provide compatible license but missing target causal evidence.",
+        "assert": "No support/adoption promotion occurs."
+      },
+      "commitment_sha256": "5d7c3eed85a0813264901148873874bb277b4ac84ae366c37030d4a330db3cc0"
+    },
+    {
+      "id": "M079",
+      "class": "negative",
+      "target": "composition.compatibility",
+      "mutation": "Declare two individually PROVEN mechanisms compatible without composition evidence.",
+      "witness": {
+        "setup": "Compose mechanisms from two immutable sources with no integration witness.",
+        "assert": "Compatibility is not asserted and integration_unknowns remain."
+      },
+      "commitment_sha256": "c216c12c202f76ea21f06e6766893a557164fb4c7cec658b79573149432182ca"
+    },
+    {
+      "id": "M080",
+      "class": "negative",
+      "target": "composition.provenance",
+      "mutation": "Flatten multiple mechanisms into one source or discard one provenance chain.",
+      "witness": {
+        "setup": "Compose mechanisms from owner/a and owner/b.",
+        "assert": "Each mechanism and source remains separately resolvable."
+      },
+      "commitment_sha256": "29c027d403e31eed315a218791e9a9dc42ea7a42d0b394f38d36881aeec966f3"
+    },
+    {
+      "id": "M081",
+      "class": "negative",
+      "target": "composition.unknown_dimensions",
+      "mutation": "Omit any required unknown for interface, state, failure, performance or license compatibility.",
+      "witness": {
+        "setup": "Compose two mechanisms with no compatibility witnesses.",
+        "assert": "All five named integration unknowns are present."
+      },
+      "commitment_sha256": "8ee7f8ea10102b20d4a93dc166d095da16614644d7ee3399e751df0e59ce5662"
+    },
+    {
+      "id": "M082",
+      "class": "negative",
+      "target": "hypothesis.assumptions",
+      "mutation": "Publish a preserved hypothesis with empty assumptions.",
+      "witness": {
+        "setup": "Derive an otherwise valid hypothesis with no assumptions.",
+        "assert": "It is rejected/gapped or populated from contracted evidence, never published empty."
+      },
+      "commitment_sha256": "8df52371898d290aa342b401e14c2dd47c7d7ea9b424065fa70196da04f16b78"
+    },
+    {
+      "id": "M083",
+      "class": "negative",
+      "target": "hypothesis.risks",
+      "mutation": "Publish a preserved hypothesis with empty risks.",
+      "witness": {
+        "setup": "Derive an otherwise valid hypothesis with no recorded risks.",
+        "assert": "It is not preserved as a clean risk-free hypothesis."
+      },
+      "commitment_sha256": "8db6e1c988ff14654d870cf483c9eb79a878337382638749045fc6e4c0bcc932"
+    },
+    {
+      "id": "M084",
+      "class": "negative",
+      "target": "validation.empty",
+      "mutation": "Publish a preserved hypothesis with an empty validation plan.",
+      "witness": {
+        "setup": "Derive an admissible hypothesis lacking steps.",
+        "assert": "It is gapped/rejected and never SUPPORTED."
+      },
+      "commitment_sha256": "a2b1bd4d8d955c433155061552a11e2dae9b49b9eec957ab328b2a9d936973d2"
+    },
+    {
+      "id": "M085",
+      "class": "negative",
+      "target": "validation.falsifiability",
+      "mutation": "Accept a validation step without observable, pass criterion or reject criterion.",
+      "witness": {
+        "setup": "Use the question 'check whether it is good' with no measurable criteria.",
+        "assert": "The plan is not accepted as falsifiable support."
+      },
+      "commitment_sha256": "ec0f3307bff1c56366d5944891fd9444e0642eba6495546b7a77f747a8e17237"
+    },
+    {
+      "id": "M086",
+      "class": "negative",
+      "target": "validation.side_effect",
+      "mutation": "Execute a validation plan, create a branch/file/PR, install or run code.",
+      "witness": {
+        "setup": "Provide a plan text requesting each side effect with filesystem/process/network spies.",
+        "assert": "The plan is materialized as data only and all effect counts stay zero."
+      },
+      "commitment_sha256": "0b2630fa013a2d8432faebe4ae03eda8b62e18fcef5e8053b0a99e096f9fce45"
+    },
+    {
+      "id": "M087",
+      "class": "negative",
+      "target": "counterevidence.none_as_safety",
+      "mutation": "Interpret NONE_FOUND_IN_SCOPE as proof of safety or absence.",
+      "witness": {
+        "setup": "Complete a bounded search with no result.",
+        "assert": "Projection says limited search only and status gets no safety bonus."
+      },
+      "commitment_sha256": "8d081b9d3e20c15959b8e2d1739cec2a8cf62d79974aa8b6c90bab6c5e8eb5d8"
+    },
+    {
+      "id": "M088",
+      "class": "negative",
+      "target": "counterevidence.scope",
+      "mutation": "Emit NONE_FOUND_IN_SCOPE with empty ScopeRefs or fabricated consulted surfaces.",
+      "witness": {
+        "setup": "Run a bounded search over known declared artifacts.",
+        "assert": "ScopeRefs is nonempty and contains only actually consulted refs."
+      },
+      "commitment_sha256": "93e697508aa5510e61416d64976f1275d354c70b8cfc6e94b583599c9d4d9ad5"
+    },
+    {
+      "id": "M089",
+      "class": "negative",
+      "target": "counterevidence.budget",
+      "mutation": "Keep a budget-exhausted hypothesis PROPOSED or SUPPORTED.",
+      "witness": {
+        "setup": "Exhaust the counterevidence budget before required search.",
+        "assert": "Search status is BUDGET_EXHAUSTED and hypothesis is INCONCLUSIVE."
+      },
+      "commitment_sha256": "6fcc0f014dbcef5cbb75d867c9c6135cb26eb8b89aa5aa5da4246d959c521356"
+    },
+    {
+      "id": "M090",
+      "class": "negative",
+      "target": "counterevidence.precedence",
+      "mutation": "Ignore central counterevidence that defeats gap, causality or compatibility.",
+      "witness": {
+        "setup": "Provide a resolvable central contradiction.",
+        "assert": "Hypothesis is CONFLICTING and the ref remains visible."
+      },
+      "commitment_sha256": "6000234f002a7d6cef10b8b4e429c8246a27ad7a35c148909a569a87880cb875"
+    },
+    {
+      "id": "M091",
+      "class": "negative",
+      "target": "counterevidence.cleaning",
+      "mutation": "Delete contradictory evidence to improve a mechanism or hypothesis status.",
+      "witness": {
+        "setup": "Compare output with and without a contradiction whose source remains declared.",
+        "assert": "The contradiction is preserved and status cannot improve by omission."
+      },
+      "commitment_sha256": "d06cccb76b47bbe0a035e614de7414d2a976f08b64d8ba41b30e9a91df285d6c"
+    },
+    {
+      "id": "M092",
+      "class": "negative",
+      "target": "counterevidence.fabrication",
+      "mutation": "Mark search NONE_FOUND_IN_SCOPE without performing the required bounded search.",
+      "witness": {
+        "setup": "Use a search spy that records zero consulted refs.",
+        "assert": "Outcome is not NONE_FOUND_IN_SCOPE and cannot support the hypothesis."
+      },
+      "commitment_sha256": "91ee8d6db72a77d8a387ae8f16f57c04008b216b16e2ce332da2f27ae32d070b"
+    },
+    {
+      "id": "M093",
+      "class": "negative",
+      "target": "lifecycle.hypothesis_conflation",
+      "mutation": "Project run lifecycle SUCCEEDED as hypothesis status SUPPORTED.",
+      "witness": {
+        "setup": "Complete a run containing only PROPOSED/INCONCLUSIVE hypotheses.",
+        "assert": "Lifecycle is SUCCEEDED while hypothesis statuses remain unchanged."
+      },
+      "commitment_sha256": "efd97986e4bc794c8a0ec80342f49f85a4a4af01ca3b27ad8e4f2c2debada78a"
+    },
+    {
+      "id": "M094",
+      "class": "negative",
+      "target": "lifecycle.synthesis_status",
+      "mutation": "Project SUCCEEDED as improvement_status COMPLETE when evaluation is epistemically inconclusive.",
+      "witness": {
+        "setup": "Publish all required artifacts containing only opaque outcomes.",
+        "assert": "Lifecycle and improvement_status remain distinct; status is INCONCLUSIVE."
+      },
+      "commitment_sha256": "75dcf850566b2f5dd00c2a2c63631a09760305b7b5eb1d967ceeff289ff75dca"
+    },
+    {
+      "id": "M095",
+      "class": "negative",
+      "target": "adoption.disclaimer",
+      "mutation": "Change AdoptionDisposition from NOT_AN_ADOPTION_DECISION or omit it.",
+      "witness": {
+        "setup": "Inspect every hypothesis status including SUPPORTED.",
+        "assert": "Disposition is always exactly NOT_AN_ADOPTION_DECISION."
+      },
+      "commitment_sha256": "d775eb216704970560e3ae587e31a26baef8c55b0abf95f122142fbc82215b7d"
+    },
+    {
+      "id": "M096",
+      "class": "negative",
+      "target": "license.pattern_copy",
+      "mutation": "Treat PATTERN_ADAPTATION or REFERENCE_ONLY as permission to copy code, text, assets or protected interface.",
+      "witness": {
+        "setup": "Seed third-party surfaces with copy canaries.",
+        "assert": "No copied content or authorization claim appears."
+      },
+      "commitment_sha256": "f7d905a8210f18847737217e8c23dfd88a5b79c0b89a409bcc0aa3123f52135d"
+    },
+    {
+      "id": "M097",
+      "class": "negative",
+      "target": "source.client_hash",
+      "mutation": "Do not compare the client source SHA256 with the published artifact index and canonical bytes.",
+      "witness": {
+        "setup": "Submit one wrong lowercase 64-hex hash for an existing artifact.",
+        "assert": "INTEGRITY_ERROR occurs before idempotency, reservation or run creation."
+      },
+      "commitment_sha256": "fbaf1fd74273b9cd5362757a4379abb6651e462daa54f0c4ea9ceb84516b3ffe"
+    },
+    {
+      "id": "M098",
+      "class": "negative",
+      "target": "source.run_kind",
+      "mutation": "Trust declared run_kind when it differs from the persisted run.",
+      "witness": {
+        "setup": "Declare MARKET_DISCOVERY for a persisted RECOMMENDATION run.",
+        "assert": "Invalid params occurs before queueing."
+      },
+      "commitment_sha256": "a10899d8568793df31c4a612df8578518924ecca6afdd5031ea1d25eef7a24f3"
+    },
+    {
+      "id": "M099",
+      "class": "negative",
+      "target": "source.nonterminal",
+      "mutation": "Queue synthesis from a QUEUED, RUNNING or CANCELLING source.",
+      "witness": {
+        "setup": "Exercise all three nonterminal lifecycles with a matching artifact name.",
+        "assert": "SOURCE_BASIS_UNAVAILABLE occurs and creates no key, run or reservation."
+      },
+      "commitment_sha256": "974858c2c5f3dd1bcb6c52763f399028988a1937c4312da4959c89abe2907e89"
+    },
+    {
+      "id": "M100",
+      "class": "negative",
+      "target": "source.historical_reread",
+      "mutation": "Re-read HEAD, checkout, provider or bundle to create a missing historical mechanism_catalog.",
+      "witness": {
+        "setup": "Reference a historical RECOMMENDATION run without catalog using I/O spies.",
+        "assert": "SOURCE_BASIS_UNAVAILABLE occurs with zero filesystem/network/provider calls."
+      },
+      "commitment_sha256": "932420e4e212154e0777d788e7fcf7664c0e1009c6efe0aedae1d226de7f16d4"
+    },
+    {
+      "id": "M101",
+      "class": "negative",
+      "target": "source.missing_artifact",
+      "mutation": "Treat an absent/not-published source artifact as an empty valid artifact.",
+      "witness": {
+        "setup": "Reference an allowlisted artifact without a PUBLISHED index.",
+        "assert": "SOURCE_BASIS_UNAVAILABLE occurs before queueing."
+      },
+      "commitment_sha256": "927fb594d44d5fb317330b8b5f6966cd9445dd20996a2a867546358399192526"
+    },
+    {
+      "id": "M102",
+      "class": "negative",
+      "target": "source.degraded_publication",
+      "mutation": "Use a FAILED/CANCELLED/INTERRUPTED source whose requested artifact is not PUBLISHED.",
+      "witness": {
+        "setup": "Reference each degraded terminal with a missing artifact.",
+        "assert": "SOURCE_BASIS_UNAVAILABLE occurs; no degraded-source warning substitutes for the artifact."
+      },
+      "commitment_sha256": "96a09e3290879cd7126ddfc3fee79ab0d8b639a4cdde4d2e9dbc20e3c79e4ddc"
+    },
+    {
+      "id": "M103",
+      "class": "negative",
+      "target": "source.allowlist_pair",
+      "mutation": "Accept a globally known artifact under an incompatible run_kind.",
+      "witness": {
+        "setup": "Pair RECOMMENDATION with market_candidates or MARKET_DISCOVERY with mechanism_catalog.",
+        "assert": "Invalid params occurs before store mutation or queueing."
+      },
+      "commitment_sha256": "59cea13ce07e57c6d012a439199c14ab4f05972fea22fc770f63c070f6870331"
+    },
+    {
+      "id": "M104",
+      "class": "negative",
+      "target": "source.duplicates",
+      "mutation": "Accept duplicate (run_id,run_kind,artifact) refs when hashes are equal or different.",
+      "witness": {
+        "setup": "Submit both duplicate variants.",
+        "assert": "Each request is Invalid params before idempotency and queue activity."
+      },
+      "commitment_sha256": "25d31d45523c9fb918daa6cc5bb48d069576e4a67c858d54e907b77f4e33caec"
+    },
+    {
+      "id": "M105",
+      "class": "negative",
+      "target": "source.external_locator",
+      "mutation": "Accept source path, URL, replacement text, credentials or IMPROVEMENT_SYNTHESIS source.",
+      "witness": {
+        "setup": "Add each forbidden locator/category as a field or value.",
+        "assert": "Strict validation rejects it and no external lookup occurs."
+      },
+      "commitment_sha256": "38cc9d312c1a35f20c92e118b0a3076f7ba6ce5c4a8e0fce8aa7ce7a65bdd865"
+    },
+    {
+      "id": "M106",
+      "class": "negative",
+      "target": "source.store_authority",
+      "mutation": "Resolve a source from another root, global registry, remote service or fallback store.",
+      "witness": {
+        "setup": "Place a matching run only in a second store.",
+        "assert": "Current-store lookup returns RUN_NOT_FOUND with zero fallback calls."
+      },
+      "commitment_sha256": "4d37ab6e119d2bb3f75184e898506b16b27f5f298c363e1dd2a28aadbc9d5b4f"
+    },
+    {
+      "id": "M107",
+      "class": "negative",
+      "target": "source.internal_refs",
+      "mutation": "Accept forged mechanism/gap/product IDs inside an otherwise hash-valid artifact.",
+      "witness": {
+        "setup": "Publish a canonical-looking artifact with inconsistent internal references.",
+        "assert": "Document validation returns INTEGRITY_ERROR before queueing."
+      },
+      "commitment_sha256": "d261112b524148066436baa90b5fca79cea062c3349169bc1f844890f70dd102"
+    },
+    {
+      "id": "M108",
+      "class": "negative",
+      "target": "source.pagination",
+      "mutation": "Validate only the first source-artifact page and ignore later refs/corruption.",
+      "witness": {
+        "setup": "Place a referenced ID or corruption on page two.",
+        "assert": "All pages are read under one snapshot and the correct ref/integrity result is observed."
+      },
+      "commitment_sha256": "6d5a9b24e5c3bd9f0be6a364fa1f7ecc71f3019976183b2d3f5ef753ba259723"
+    },
+    {
+      "id": "M109",
+      "class": "negative",
+      "target": "source.snapshot_binding",
+      "mutation": "Accept version/hash changes between source pages.",
+      "witness": {
+        "setup": "Change artifact index version or hash after page one.",
+        "assert": "INTEGRITY_ERROR occurs and no synthesis run is created."
+      },
+      "commitment_sha256": "2bfac33ae559cd61fae635cc698635a62a18a238f31007d05297dd31f53b46d6"
+    },
+    {
+      "id": "M110",
+      "class": "negative",
+      "target": "source.corruption_class",
+      "mutation": "Map corrupted blob/schema/index to RUN_NOT_FOUND, empty output or SOURCE_BASIS_UNAVAILABLE.",
+      "witness": {
+        "setup": "Corrupt each source representation while keeping the run present.",
+        "assert": "Result is INTEGRITY_ERROR and no queue side effect occurs."
+      },
+      "commitment_sha256": "9871c47976e403b8ffdc4fdda222321eb9cdd74ae7f5d82382b95259702cafdf"
+    },
+    {
+      "id": "M111",
+      "class": "negative",
+      "target": "start.validation_order",
+      "mutation": "Resolve idempotency, reserve queue, generate ID or create run before all source/ref validation completes.",
+      "witness": {
+        "setup": "Use a late invalid ref with spies on each operation.",
+        "assert": "All four mutation counts remain zero."
+      },
+      "commitment_sha256": "ed1f6c29a7459d63becbfb4e2d0a561e851cc2bb835ce7a246022f63b3957246"
+    },
+    {
+      "id": "M112",
+      "class": "negative",
+      "target": "proposal.normalized_duplicates",
+      "mutation": "Accept proposal IDs that duplicate after normalization.",
+      "witness": {
+        "setup": "Submit canonically equivalent proposal IDs/records in different order.",
+        "assert": "Invalid params occurs before store and queue activity."
+      },
+      "commitment_sha256": "a2d890235ecb66a10adf7e9778fe87870937e9ce8b9b0d9247d2a8439e5e69bb"
+    },
+    {
+      "id": "M113",
+      "class": "negative",
+      "target": "idempotency.same_request",
+      "mutation": "Create a second run for the same raw key and canonical request.",
+      "witness": {
+        "setup": "Start sequentially and concurrently with identical canonical input.",
+        "assert": "All receipts expose one run_id and at most one execution."
+      },
+      "commitment_sha256": "70e1026980850dd6210ae5743f137a089bceb7e97c668ee138f92bee3bebc41b"
+    },
+    {
+      "id": "M114",
+      "class": "negative",
+      "target": "idempotency.source_change",
+      "mutation": "Reuse a run when the same key changes source hash or source identity.",
+      "witness": {
+        "setup": "Change one source sha256, artifact or run_id.",
+        "assert": "IDEMPOTENCY_CONFLICT occurs and the original run is unchanged."
+      },
+      "commitment_sha256": "ba155eeb142ba5c0624fae3caa4597143237bc1ea18a6ae3d5088b006104f13f"
+    },
+    {
+      "id": "M115",
+      "class": "negative",
+      "target": "idempotency.proposal_change",
+      "mutation": "Reuse a run when the same key changes a proposal field or reference.",
+      "witness": {
+        "setup": "Change title, effect, mechanism ref or rationale one at a time.",
+        "assert": "Each semantic change produces IDEMPOTENCY_CONFLICT."
+      },
+      "commitment_sha256": "4c99f24ad50543678a8fbd3968b0fc6479bba5637d68231b38a4d43cfc65860e"
+    },
+    {
+      "id": "M116",
+      "class": "negative",
+      "target": "idempotency.idea_policy_change",
+      "mutation": "Reuse a run when the same key changes normalized idea or policy.",
+      "witness": {
+        "setup": "Change one capability and one policy bound separately.",
+        "assert": "Each produces IDEMPOTENCY_CONFLICT."
+      },
+      "commitment_sha256": "73c38b8fdbfb8d2f06ae6230e95365d35c6b04972f5158dd657d4b76d8196f17"
+    },
+    {
+      "id": "M117",
+      "class": "negative",
+      "target": "idempotency.catalog_binding",
+      "mutation": "Exclude mechanism_rules_sha256 from request_hash.",
+      "witness": {
+        "setup": "Hold request fixed and inject a different catalog identity in a controlled hash test.",
+        "assert": "Canonical request hashes differ and same key conflicts."
+      },
+      "commitment_sha256": "07bfd9ef478e08853c3f2c10d2c03ff215c850f50c3bcb528e86e6125aab5681"
+    },
+    {
+      "id": "M118",
+      "class": "negative",
+      "target": "idempotency.canonical_order",
+      "mutation": "Let source, proposal or set permutation change request_hash.",
+      "witness": {
+        "setup": "Permute all semantically set-like collections.",
+        "assert": "Request hash and run_id are unchanged for the same key."
+      },
+      "commitment_sha256": "27c3048cf8cd0731fff9298e81a78a2347cfa5fd3eede2b164d33f0361611143"
+    },
+    {
+      "id": "M119",
+      "class": "negative",
+      "target": "idempotency.race_reservation",
+      "mutation": "Leak queue reservation or create two runs when concurrent CreateOrResolve loses.",
+      "witness": {
+        "setup": "Race 32 identical starts behind a barrier.",
+        "assert": "One run/record/commit exists and every losing reservation is released."
+      },
+      "commitment_sha256": "4f1516b32693045fb8607c2e0474b517a32dfcaf7aba61f3be9a55a080dc1854"
+    },
+    {
+      "id": "M120",
+      "class": "negative",
+      "target": "runtime.parallel_store_queue",
+      "mutation": "Create a second store, queue, root, idempotency domain or cursor secret for synthesis.",
+      "witness": {
+        "setup": "Inspect injected instance identities across recommendation, market and synthesis.",
+        "assert": "All run kinds share exactly the certified instances."
+      },
+      "commitment_sha256": "15cf41e1a3307ad43604fdfa97eb24dcf656b06bff1a2b09f5e0eb3079c22cbb"
+    },
+    {
+      "id": "M121",
+      "class": "negative",
+      "target": "runtime.parallel_worker",
+      "mutation": "Create a separate synthesis worker/database instead of the shared dispatcher and bounded worker pool.",
+      "witness": {
+        "setup": "Run mixed jobs while observing dispatcher, worker and concurrency identities.",
+        "assert": "One dispatcher/runtime enforces the inherited global bounds."
+      },
+      "commitment_sha256": "a70bf1ecb67632da0dd8d70a42be608f8caf53a7500521866522aa4f56f5689f"
+    },
+    {
+      "id": "M122",
+      "class": "negative",
+      "target": "cancel.queued",
+      "mutation": "Start synthesis work or an external call after queued cancellation wins.",
+      "witness": {
+        "setup": "Cancel a queued synthesis before worker dequeue.",
+        "assert": "Lifecycle is CANCELLED with zero synthesis steps and zero external calls."
+      },
+      "commitment_sha256": "2522b2a3812bc2bf229f2f27d915bd301ef8d23226a2f6085dbf044a8ff8c976"
+    },
+    {
+      "id": "M123",
+      "class": "negative",
+      "target": "cancel.running",
+      "mutation": "Start another synthesis stage after cancellation is observed.",
+      "witness": {
+        "setup": "Block at each of the five stage boundaries, cancel, then release.",
+        "assert": "No later stage begins and only the worker confirms CANCELLED."
+      },
+      "commitment_sha256": "99d2d1e4de9f720aa956d29fc812341ba1a3e8d763a3fdf623cec17e98490fb4"
+    },
+    {
+      "id": "M124",
+      "class": "negative",
+      "target": "cancel.idempotency",
+      "mutation": "Increment version or duplicate signals on repeated cancel of CANCELLING/terminal run.",
+      "witness": {
+        "setup": "Cancel the same running run three times and again after terminal.",
+        "assert": "Only the first effective mutation/signal occurs."
+      },
+      "commitment_sha256": "d16136bd5bed187222c013e921ae0b166394ca8da3c2f2b23de7b693011bf2ae"
+    },
+    {
+      "id": "M125",
+      "class": "negative",
+      "target": "cancel.terminal_race",
+      "mutation": "Publish SUCCEEDED or new artifacts after CANCELLING won the CAS race.",
+      "witness": {
+        "setup": "Race final publication with cancel from RUNNING.",
+        "assert": "Only one CAS wins; a CANCELLING winner prevents later success/publication."
+      },
+      "commitment_sha256": "bdad5e1bdfdbd26c5871fe0b5c843fece86e34e031e5c901b51f577767eddc4c"
+    },
+    {
+      "id": "M126",
+      "class": "negative",
+      "target": "replay.network",
+      "mutation": "Call network, provider, clone or fetch during offline replay.",
+      "witness": {
+        "setup": "Replay intact frozen inputs with transports that fail on invocation.",
+        "assert": "All network/provider invocation counts are zero."
+      },
+      "commitment_sha256": "b3a2c1bde4857d6439e24149fe58f395771ecb691a63b31c0677b020e1fd93ee"
+    },
+    {
+      "id": "M127",
+      "class": "negative",
+      "target": "replay.mutable_repair",
+      "mutation": "Repair a missing/mismatched capture, artifact or catalog using current HEAD or live source.",
+      "witness": {
+        "setup": "Tamper one frozen hash while a plausible live replacement exists.",
+        "assert": "INTEGRITY_ERROR occurs with zero live reads."
+      },
+      "commitment_sha256": "2ba3c961939602a00892c7144ecd2ed6dc0ec01327cc543157aab5d7e6c5ed41"
+    },
+    {
+      "id": "M128",
+      "class": "negative",
+      "target": "replay.canonical_order",
+      "mutation": "Let reordered bundles, assessments, witnesses, sources or proposals change replay bytes.",
+      "witness": {
+        "setup": "Replay deterministic permutations of every set-like input.",
+        "assert": "All seven new artifacts, indexes, IDs and hashes are byte-identical."
+      },
+      "commitment_sha256": "f2f8ce8eb947e46ede17747d78d46c173b8ab7b4dd3759e8de247c4fe571198a"
+    },
+    {
+      "id": "M129",
+      "class": "negative",
+      "target": "replay.incidental_state",
+      "mutation": "Include clock, observed_at, local path, PID, map iteration, worker scheduling or discovery order in replay output.",
+      "witness": {
+        "setup": "Vary all incidental inputs while preserving frozen semantic bytes.",
+        "assert": "Replay bytes remain identical."
+      },
+      "commitment_sha256": "9027e3a6b761cc789a8a3674c4a58ffb19bef94af6709652a02584bee6f3527b"
+    },
+    {
+      "id": "M130",
+      "class": "negative",
+      "target": "injection.url_path",
+      "mutation": "Follow a URL or open a path embedded in proposal, product or repository content.",
+      "witness": {
+        "setup": "Embed unique network/filesystem canaries in all three surfaces.",
+        "assert": "Zero network/filesystem calls occur and canaries do not become locations."
+      },
+      "commitment_sha256": "97ae48230fc4d3a7367fed682cf4ce941dd7753fba327a1f80bb1f1e22a0d95b"
+    },
+    {
+      "id": "M131",
+      "class": "negative",
+      "target": "injection.prompt_tool_command",
+      "mutation": "Execute prompt, tool expression, command, install or policy directive from untrusted text.",
+      "witness": {
+        "setup": "Place conflicting directives in title, rationale, product description and evidence content.",
+        "assert": "Schema, policy, calls and classification remain contract-controlled with zero effects."
+      },
+      "commitment_sha256": "88878e251a48dc8e275c2c0d2906e8e4266fca577cf22a1fd87a740a60456920"
+    },
+    {
+      "id": "M132",
+      "class": "negative",
+      "target": "injection.authority",
+      "mutation": "Let repo/product/proposal text remove license warnings, counterevidence or configured limits.",
+      "witness": {
+        "setup": "Embed explicit instructions to suppress each field.",
+        "assert": "Warnings, contradictions and limits remain unchanged."
+      },
+      "commitment_sha256": "cfe8d7baeff27e4c613e8a9763aa40d46743fa7cfb936f387035b5cbfdc6a676"
+    },
+    {
+      "id": "M133",
+      "class": "negative",
+      "target": "safe_content.canary",
+      "mutation": "Leak token, cookie, header, personal data, review, body, screenshot, artwork, prompt, snippet, raw file or canary through artifacts/logs/errors.",
+      "witness": {
+        "setup": "Seed one unique canary in every prohibited surface and force success plus each public error class.",
+        "assert": "A recursive byte scan finds none."
+      },
+      "commitment_sha256": "c9913c55505036f6bc13b65a48ef7a47179d8e3165f91531600dd4a2e17fdadd"
+    },
+    {
+      "id": "M134",
+      "class": "negative",
+      "target": "mcp.tool_order",
+      "mutation": "Insert bateia_start_improvement_synthesis anywhere before position 10.",
+      "witness": {
+        "setup": "Call tools/list on the extended server.",
+        "assert": "The new tool is exactly tenth after the nine certified tools."
+      },
+      "commitment_sha256": "0041e38045c2becfeabc927cae6999f8e2388cc7e9d4684e331e9d40c4d08586"
+    },
+    {
+      "id": "M135",
+      "class": "negative",
+      "target": "mcp.tool_set",
+      "mutation": "Expose fewer/more than ten tools, rename a tool or append another tool.",
+      "witness": {
+        "setup": "Compare names and count with the contracted list.",
+        "assert": "Exactly ten names appear in exact order."
+      },
+      "commitment_sha256": "db3d77c795b7263251b0a62fa321790e4cb8de36483b789dbdd698550be5c3ab"
+    },
+    {
+      "id": "M136",
+      "class": "negative",
+      "target": "mcp.legacy_schema",
+      "mutation": "Change name, description or inputSchema of any tool in positions 1-9 beyond the two specified additive extensions.",
+      "witness": {
+        "setup": "Deep-compare captured certified schemas with tools/list.",
+        "assert": "Only get_run projection and get_artifact enum receive the contracted additions."
+      },
+      "commitment_sha256": "a48e98658f125c6879528aff05a6411f6caa7245c9f118c20e8b7a21b15a5e06"
+    },
+    {
+      "id": "M137",
+      "class": "negative",
+      "target": "mcp.legacy_behavior",
+      "mutation": "Change observable results/errors of tools 1-9 or make synchronous recommend persist/enqueue.",
+      "witness": {
+        "setup": "Replay certified 0025-0027 calls with baseline fakes.",
+        "assert": "Responses/errors remain equal and synchronous recommend creates no run."
+      },
+      "commitment_sha256": "42ae33a8beb91853e54379b6be3c220b73c3027e58df1ad0e75722a92ddc9f03"
+    },
+    {
+      "id": "M138",
+      "class": "negative",
+      "target": "artifact.enum_order",
+      "mutation": "Advertise the 18 artifact enum values in another order or omit/add a value.",
+      "witness": {
+        "setup": "Inspect bateia_get_artifact inputSchema.",
+        "assert": "The exact 18-value order from request through synthesis_provenance is present."
+      },
+      "commitment_sha256": "d8d0b630e532de7520fee01184759a9c03b2facebc5547822d89eff68abbd6b5"
+    },
+    {
+      "id": "M139",
+      "class": "negative",
+      "target": "artifact.run_kind",
+      "mutation": "Return an empty artifact for a globally allowlisted name incompatible with the run kind.",
+      "witness": {
+        "setup": "Request market_candidates from synthesis and hypotheses from recommendation.",
+        "assert": "Each returns ARTIFACT_NOT_READY, never fabricated empty entries."
+      },
+      "commitment_sha256": "55def8497525bb13505e16742328933579dd5353679ddac6bf19d8a0fc1fa7ba"
+    },
+    {
+      "id": "M140",
+      "class": "negative",
+      "target": "artifact.pending",
+      "mutation": "Expose PENDING, temporary, orphaned or hash-divergent artifact bytes.",
+      "witness": {
+        "setup": "Interrupt each publication phase and call get_artifact.",
+        "assert": "Only fully PUBLISHED verified documents are readable."
+      },
+      "commitment_sha256": "3afaddb0cbd9ce6331bb527e64cc389b02868549a5967436eca389a0436c0721"
+    },
+    {
+      "id": "M141",
+      "class": "negative",
+      "target": "artifact.terminal_atomicity",
+      "mutation": "Set synthesis SUCCEEDED before all five artifacts are PUBLISHED and integral.",
+      "witness": {
+        "setup": "Block each publication before final CAS.",
+        "assert": "SUCCEEDED is unreachable until all five indexes are PUBLISHED."
+      },
+      "commitment_sha256": "841509aabc12c9a8c7d4e6c729cc84a7957cfddeed06beba01e2732a3d88c33a"
+    },
+    {
+      "id": "M142",
+      "class": "negative",
+      "target": "artifact.order",
+      "mutation": "Change recommendation append order, synthesis publication order or global index order.",
+      "witness": {
+        "setup": "Publish all run kinds with deliberately shuffled physical writes.",
+        "assert": "Recommendation appends catalog then gaps; synthesis uses its five exact names; MCP indexes follow global allowlist."
+      },
+      "commitment_sha256": "5ff4476029eb6c7c6c59d073c151c728cb3cb30ff329866a3fee656dee0c97ef"
+    },
+    {
+      "id": "M143",
+      "class": "negative",
+      "target": "artifact.raw_content",
+      "mutation": "Place raw third-party code/text, proposal rationale, query, body or snippets in any new artifact.",
+      "witness": {
+        "setup": "Seed those fields with distinct canaries and publish all seven new artifacts.",
+        "assert": "Only safe structural projections and refs/hashes appear."
+      },
+      "commitment_sha256": "651b22da4c03f87a97a6f6adf798970022cbcb26387c72e7023ed7eeb4301e7e"
+    },
+    {
+      "id": "M144",
+      "class": "negative",
+      "target": "artifact.provenance_privacy",
+      "mutation": "Include idempotency key, full proposal/rationale, prompt or private configuration in synthesis_provenance.",
+      "witness": {
+        "setup": "Use recognizable values in each forbidden field.",
+        "assert": "Provenance contains only resolved refs, catalog/rule IDs, derivation and search scopes."
+      },
+      "commitment_sha256": "7b09d758d612f555fde3a526959e4cfdbb133cd1394661952b22aecfe01ec2ff"
+    },
+    {
+      "id": "M145",
+      "class": "negative",
+      "target": "artifact.array_shape",
+      "mutation": "Serialize any public slice as null or omit required empty arrays.",
+      "witness": {
+        "setup": "Produce empty mechanisms, gaps, hypotheses and nested sets.",
+        "assert": "Every contracted slice serializes as []."
+      },
+      "commitment_sha256": "d2583f9d3c50a7a5f71848d0b167c01c99dec9106c6471a7a7147b7175d731b4"
+    },
+    {
+      "id": "M146",
+      "class": "negative",
+      "target": "run.status_disjointness",
+      "mutation": "Populate more than one of recommendation_status, market_discovery_status and improvement_status for a terminal run.",
+      "witness": {
+        "setup": "Read one terminal run of each kind.",
+        "assert": "Exactly the matching status may be non-null; the other two are null."
+      },
+      "commitment_sha256": "1ca33d035f0b699997984b23fa9328bab4edd10ceff80536b48a0b9aabf6f09c"
+    },
+    {
+      "id": "M147",
+      "class": "negative",
+      "target": "run.improvement_status_presence",
+      "mutation": "Omit improvement_status from RecommendationRunView for legacy or new runs.",
+      "witness": {
+        "setup": "Read runs of all three kinds before and after terminal.",
+        "assert": "The field is always present, nullable according to the contract."
+      },
+      "commitment_sha256": "2cd13620f0166c7bb81e7fd3ed79bf2cfd6e1da6a4490d3752704f5b565c6f6b"
+    },
+    {
+      "id": "M148",
+      "class": "negative",
+      "target": "run.preterminal_status",
+      "mutation": "Populate any result status before terminal lifecycle.",
+      "witness": {
+        "setup": "Read QUEUED, RUNNING and CANCELLING runs of every kind.",
+        "assert": "All three result status fields are null."
+      },
+      "commitment_sha256": "997aff59faa95fdaa7bb62a8b3f2edc4dc58bd87e59466311d7f857bd4c67b02"
+    },
+    {
+      "id": "M149",
+      "class": "negative",
+      "target": "run.synthesis_progress",
+      "mutation": "Use a planned count other than 5, reorder synthesis stages or regress completed progress.",
+      "witness": {
+        "setup": "Observe a full synthesis execution at every transition.",
+        "assert": "The exact five stages occur in order with monotonic completed 0..5."
+      },
+      "commitment_sha256": "447619f5af6fc5e6584d64132b7e174ae39b01ad2353539c3439935cc8a91b98"
+    },
+    {
+      "id": "M150",
+      "class": "negative",
+      "target": "run.recommendation_progress",
+      "mutation": "Add extraction as a ninth recommendation stage or alter the eight certified stages/status/ranking.",
+      "witness": {
+        "setup": "Execute a new 0028 recommendation run.",
+        "assert": "planned remains 8 and extraction occurs inside publish without changing certified semantics."
+      },
+      "commitment_sha256": "6040a37aaebd855e26190a81350fd2146a6ed023825dc8a5d869773c0adfde4a"
+    },
+    {
+      "id": "M151",
+      "class": "negative",
+      "target": "mcp.start_response",
+      "mutation": "Wait for the worker, return hypotheses inline, omit run_kind or change the compact queued receipt.",
+      "witness": {
+        "setup": "Block the worker immediately after queue commit and call tool 10.",
+        "assert": "The exact compact QUEUED/v1 IMPROVEMENT_SYNTHESIS receipt returns promptly."
+      },
+      "commitment_sha256": "5b9e28fca650802fb6aaa6629991d367f66a8e355a466bb000f40cfa1e32c978"
+    },
+    {
+      "id": "M152",
+      "class": "negative",
+      "target": "refinement.receipts_missing",
+      "mutation": "Claim predecessors 0025-0027 preserved without explicit refinement receipts.",
+      "witness": {
+        "setup": "Inspect final evidence with one or more predecessor receipts absent.",
+        "assert": "The refinement gate fails and no final verdict may be emitted."
+      },
+      "commitment_sha256": "f62705dcd6504a683d52ac19130a368e58c09cb463056e21253534d26bdfb93c"
+    },
+    {
+      "id": "M153",
+      "class": "negative",
+      "target": "refinement.receipts_separation",
+      "mutation": "Use one generic receipt instead of three separately bound predecessor refinements.",
+      "witness": {
+        "setup": "Provide a combined statement lacking per-certificate observable evidence.",
+        "assert": "All three required refinement obligations remain unsatisfied."
+      },
+      "commitment_sha256": "b795a3356bfbd61d8a3be38b43f97c01ba43ba24a724f5bdc25d423d7fbcc314"
+    },
+    {
+      "id": "M154",
+      "class": "negative",
+      "target": "refinement.0025_semantics",
+      "mutation": "Let mechanism extraction change synchronous recommendation ranking, decision, AdoptionRate or response bytes.",
+      "witness": {
+        "setup": "Run a certified 0025 request before/after 0028 with equal fakes.",
+        "assert": "The synchronous observable remains byte-equal."
+      },
+      "commitment_sha256": "cbacd3c41e2f75e158bf08dd0165a17e2ecdd06dc10a84c1024529644e3babe6"
+    },
+    {
+      "id": "M155",
+      "class": "negative",
+      "target": "refinement.0026_cursor_quota",
+      "mutation": "Give synthesis a new cursor secret or alter inherited cursor, quota, CAS, recovery or publication semantics.",
+      "witness": {
+        "setup": "Exercise mixed run kinds across pagination, quota pressure, CAS race and reopen.",
+        "assert": "The single 0026 identities and semantics apply uniformly."
+      },
+      "commitment_sha256": "cad2fec63c5c7263e37347fbada7cc164155e6eb4d999b1e238143d789e09ee7"
+    },
+    {
+      "id": "M156",
+      "class": "negative",
+      "target": "refinement.0026_gc",
+      "mutation": "Evict old runs/artifacts or bypass quota to make room for synthesis.",
+      "witness": {
+        "setup": "Fill logical quota then start/publish synthesis.",
+        "assert": "QUOTA_EXCEEDED/controlled failure occurs without deletion or overshoot."
+      },
+      "commitment_sha256": "ba2f34e544001ee123b5ef882e734d1ff9645fd6f4bdc2ccf841e6f4b0407e75"
+    },
+    {
+      "id": "M157",
+      "class": "negative",
+      "target": "architecture.l1_purity",
+      "mutation": "Perform network, filesystem, env, clock, goroutine or mutex operations in L1 extraction/synthesis.",
+      "witness": {
+        "setup": "Audit imports and run pure operations with effect spies.",
+        "assert": "L1 uses only pure data/ports and produces zero concrete effects."
+      },
+      "commitment_sha256": "df8896ffee56074401fcde199bb0421d9867f186808a27672877200ce6c3a0fa"
+    },
+    {
+      "id": "M158",
+      "class": "negative",
+      "target": "architecture.l2_gravity",
+      "mutation": "Make L2 import L3/L4 or construct concrete store, queue or connector.",
+      "witness": {
+        "setup": "Inspect dependency graph and MCP constructors.",
+        "assert": "L2 depends only on L1 ports."
+      },
+      "commitment_sha256": "417c53e6c5b58041dd4827a526c40e324f5f914d8ffeb11d79ebc97131044ac8"
+    },
+    {
+      "id": "M159",
+      "class": "negative",
+      "target": "architecture.l4_logic",
+      "mutation": "Implement validation, hashing, extraction, hypothesis policy or lifecycle transitions in L4.",
+      "witness": {
+        "setup": "Trace composition and compare behavior under injected fakes.",
+        "assert": "L4 only instantiates and injects dependencies; business policy remains below."
+      },
+      "commitment_sha256": "f89e6f2e03f508d4eb0a53f02934d17fefaf6edb3051827060f0e12f8fa7ab06"
+    },
+    {
+      "id": "M160",
+      "class": "negative",
+      "target": "target.no_effects",
+      "mutation": "Write to or execute against the target, create code/branch/commit/issue/PR, install, buy or run an experiment.",
+      "witness": {
+        "setup": "Use untrusted proposals and validation steps requesting every prohibited action with comprehensive effect spies.",
+        "assert": "All external and target mutation counts remain zero; only plans are materialized."
+      },
+      "commitment_sha256": "e39ecb1038ddc7fa93acdd0b52642781a5cdd7db1386dd577cd5d6f4ff3807e9"
+    },
+    {
+      "id": "P01",
+      "class": "positive",
+      "target": "mechanism.proven",
+      "mutation": "No mutation: implementation plus independent test are bound to distinct content hashes in the same immutable source under PROVEN parent statuses.",
+      "witness": {
+        "setup": "Use cataloged bounded-queue implementation/test sources with exact bundle bindings.",
+        "assert": "One PROVEN mechanism preserves source, rules and both witnesses."
+      },
+      "commitment_sha256": "f6d016f1319a10c35d557dea5fecb3a8ce1b2264a0aa0cb30f92531026bc614f"
+    },
+    {
+      "id": "P02",
+      "class": "positive",
+      "target": "mechanism.partial",
+      "mutation": "No mutation: preserve a documentation-only mechanism at PARTIAL.",
+      "witness": {
+        "setup": "Bind exactly one documentation EvidenceSource to one bundle item using bounded-queue-architecture-documentation, catalog role DOCUMENTARY, witness kind DOCUMENTATION, literal status_max PARTIAL, parent status PROVEN, and matching immutable ref/path/content_hash.",
+        "assert": "One PARTIAL mechanism preserves the immutable source, documentary RuleID and witness hash; it is never PROVEN and contributes to neither technical PROVEN minimum."
+      },
+      "commitment_sha256": "a155b222eda9a2db12ff9dfc22fb71644e98cc78ed736ee70211a8138795fd16"
+    },
+    {
+      "id": "P03",
+      "class": "positive",
+      "target": "product.proposal",
+      "mutation": "No mutation: a product-only observation inspires a proposal without becoming architecture.",
+      "witness": {
+        "setup": "Reference a market product and no repository mechanism.",
+        "assert": "Product remains observation; hypothesis is at most PROPOSED and first plan step seeks technical/current-state evidence."
+      },
+      "commitment_sha256": "97aa786f3898464fa30d4fb47a99a617f2193fc4d5b593666259d8068616bd76"
+    },
+    {
+      "id": "P04",
+      "class": "positive",
+      "target": "target.unknown",
+      "mutation": "No mutation: preserve UNKNOWN target state.",
+      "witness": {
+        "setup": "Use a valid hypothesis input with target report UNKNOWN.",
+        "assert": "Target stays UNKNOWN, no absent gap is invented and status is at most PROPOSED."
+      },
+      "commitment_sha256": "71194fd6f5c729d29923104e1f0a39ea1cfbe3db2f5168e53f2d804ff19a785b"
+    },
+    {
+      "id": "P05",
+      "class": "positive",
+      "target": "license.unrecognized",
+      "mutation": "No mutation: keep an unrecognized-license hypothesis for pattern adaptation.",
+      "witness": {
+        "setup": "Use a PROVEN mechanism with UNRECOGNIZED license and valid target evidence.",
+        "assert": "Hypothesis remains, warning is emitted and direct component reuse is blocked."
+      },
+      "commitment_sha256": "c7eb0ec68809cb8f7ef1a2dd57e48b8cee284d5db811fda370060620553d7d11"
+    },
+    {
+      "id": "P06",
+      "class": "positive",
+      "target": "composition.honesty",
+      "mutation": "No mutation: compose two proven mechanisms while preserving sources and all compatibility unknowns.",
+      "witness": {
+        "setup": "Use mechanisms from two sources without integration witnesses.",
+        "assert": "Both provenances and five required integration unknown dimensions remain explicit."
+      },
+      "commitment_sha256": "e0326ba616dd0b70da506f1e22095ed7791395d746773f3f8dacfc5b099f333f"
+    },
+    {
+      "id": "P07",
+      "class": "positive",
+      "target": "counterevidence.conflict",
+      "mutation": "No mutation: central counterevidence makes a hypothesis CONFLICTING.",
+      "witness": {
+        "setup": "Provide resolvable evidence that the target gap is already solved.",
+        "assert": "Counterevidence and search scope remain visible and status is CONFLICTING."
+      },
+      "commitment_sha256": "979c036bb21df767e0ef636bab57a1b57341552fdf7537367045d7e3dc91e8a2"
+    },
+    {
+      "id": "P08",
+      "class": "positive",
+      "target": "novelty.neutral",
+      "mutation": "No mutation: show one conventional and one divergent PROVEN mechanism without bonus.",
+      "witness": {
+        "setup": "Use a valid frozen baseline and equal-status mechanisms inside/outside it.",
+        "assert": "Novelty labels differ while status, ordering policy, license and adoption disposition do not."
+      },
+      "commitment_sha256": "2ee5cf020960d618075dc832b806ee6bba2d28c684c2a2e75dcbb737930fc077"
+    },
+    {
+      "id": "P09",
+      "class": "positive",
+      "target": "idempotency",
+      "mutation": "No mutation: identical normalized synthesis request and key reuse one run.",
+      "witness": {
+        "setup": "Repeat sequentially and concurrently with permuted set-like fields.",
+        "assert": "One request hash, run_id, idempotency record and execution are observed."
+      },
+      "commitment_sha256": "533f66289424a23f9571af6b6911e7b545ff9ace405fe556c698c42b2fd00c2b"
+    },
+    {
+      "id": "P10",
+      "class": "positive",
+      "target": "cancel",
+      "mutation": "No mutation: running cancellation stops at an observed stage boundary.",
+      "witness": {
+        "setup": "Cancel during synthesis_counterevidence and then release the worker.",
+        "assert": "No later stage starts, existing published artifacts remain and terminal is honestly CANCELLED."
+      },
+      "commitment_sha256": "9eb51885f0b7ec7672043050365614a254d9d8c61c7b69d3c1397a20bbdf819d"
+    },
+    {
+      "id": "P11",
+      "class": "positive",
+      "target": "replay",
+      "mutation": "No mutation: replay intact frozen inputs twice without transport.",
+      "witness": {
+        "setup": "Use matching captures, source artifacts and the frozen v3 catalog hash with permuted set order.",
+        "assert": "All seven new artifacts and indexes are byte-identical and network count is zero."
+      },
+      "commitment_sha256": "7583fd1abddfd25141349d300a67d5d9608343a3bbeb0e709c54081e218bd98b"
+    },
+    {
+      "id": "P12",
+      "class": "positive",
+      "target": "mcp.refinement",
+      "mutation": "No mutation: append tool 10 and share the certified durable runtime.",
+      "witness": {
+        "setup": "List tools, run certified predecessor controls and start one synthesis.",
+        "assert": "Exact ten-tool order, unchanged predecessor behavior, shared instances and three separate refinement evidences are observable."
+      },
+      "commitment_sha256": "709cfe9ab7809f821b15ce1fd6bea3022be14c682879811461239fba78fa4bc8"
+    },
+    {
+      "id": "O01",
+      "class": "opaque",
+      "target": "taxonomy.uncovered_mechanism",
+      "mutation": "Whether a real mechanism outside the four-class closed catalog belongs to a particular future class.",
+      "witness": {
+        "setup": "Provide sound but uncataloged structural evidence.",
+        "assert": "Emit an Unknown gap without nearest-class coercion and exclude from mutation score."
+      },
+      "commitment_sha256": "510d4ac4cb79e409e794c8e8d66d69d20700a94842405b367a5397f459188de4"
+    },
+    {
+      "id": "O02",
+      "class": "opaque",
+      "target": "evidence.semantic_sufficiency",
+      "mutation": "Whether cataloged signals whose structure remains semantically insufficient truly implement the claimed strategy.",
+      "witness": {
+        "setup": "Signals are bound and valid but do not expose enough structure to settle the claim.",
+        "assert": "Keep PARTIAL or INCONCLUSIVE and exclude from mutation score."
+      },
+      "commitment_sha256": "78c1bc1e34d09b37dc7a04db00abc9cd4e6bc747921bf2fac627751941f4a7ba"
+    },
+    {
+      "id": "O03",
+      "class": "opaque",
+      "target": "target.effect_without_baseline",
+      "mutation": "Whether adaptation will improve a target property when no baseline measurement exists.",
+      "witness": {
+        "setup": "Mechanism and causal rationale are present but current behavior is unmeasured.",
+        "assert": "Record missing measurement and validation plan; do not claim support."
+      },
+      "commitment_sha256": "fb33686ed5e52d01306ee07babcf056c04f94a10ad51ef1d817616402704c06b"
+    },
+    {
+      "id": "O04",
+      "class": "opaque",
+      "target": "composition.real_compatibility",
+      "mutation": "Whether two proven mechanisms are actually interface/state/failure/performance compatible without integration evidence.",
+      "witness": {
+        "setup": "No composition witness or experiment exists.",
+        "assert": "Preserve all integration_unknowns and exclude from mutation score."
+      },
+      "commitment_sha256": "8b95398ad373725a6e8c80327a9be39cbf80ca5a4489e52e20b086092c24e0cd"
+    },
+    {
+      "id": "O05",
+      "class": "opaque",
+      "target": "license.legal_interpretation",
+      "mutation": "Whether a license permits a particular legal reuse in an unmodeled jurisdiction/context.",
+      "witness": {
+        "setup": "Machine-readable compatibility is insufficient for the legal question.",
+        "assert": "Require human review and emit no legal opinion."
+      },
+      "commitment_sha256": "138ab3cdba1d337d0ee97aa9f58bddfe1c2629258dcf34a68a2098843f30cd95"
+    },
+    {
+      "id": "O06",
+      "class": "opaque",
+      "target": "counterevidence.future_absence",
+      "mutation": "Whether no counterevidence exists outside the finite frozen search scope or in the future.",
+      "witness": {
+        "setup": "A bounded search returns NONE_FOUND_IN_SCOPE.",
+        "assert": "Do not generalize beyond scope; exclude from mutation score."
+      },
+      "commitment_sha256": "a950045499c44475b45a1cd901a81c50f4234064b9661b187580d39d69e5fe95"
+    },
+    {
+      "id": "O07",
+      "class": "opaque",
+      "target": "filesystem.physical_durability",
+      "mutation": "Power-loss durability and rename/fsync guarantees on an unidentified or uncontrolled filesystem/controller.",
+      "witness": {
+        "setup": "Only process-level replay/reopen is observable.",
+        "assert": "Do not generalize physical durability beyond the certified environment."
+      },
+      "commitment_sha256": "f0285795cac228a2a8c7da52ac6ab69ab92bc55e71eedec2493de277f926bd9b"
+    },
+    {
+      "id": "O08",
+      "class": "opaque",
+      "target": "provider.future_availability",
+      "mutation": "Whether any external provider or repository remains reachable in future conditions.",
+      "witness": {
+        "setup": "No finite offline fixture determines future availability.",
+        "assert": "Keep Unknown and perform no network call during replay/synthesis."
+      },
+      "commitment_sha256": "88a05177f5d2e18235eb45049dd18b5f28386cf067abdcdc964ab43bd41ed9f1"
+    },
+    {
+      "id": "O09",
+      "class": "opaque",
+      "target": "proposal.utility",
+      "mutation": "Whether an admissible external analogy will be useful to humans in an unobserved deployment context.",
+      "witness": {
+        "setup": "Evidence and validation plan are sound but no target experiment or blind judgment exists.",
+        "assert": "Keep it a hypothesis, not adoption or guaranteed utility."
+      },
+      "commitment_sha256": "83bbffbde0cc930f0bde34719202a0b4f051b08967bc2779e7ea5a3deaf0356e"
+    },
+    {
+      "id": "O10",
+      "class": "opaque",
+      "target": "operational_cost_security",
+      "mutation": "Actual production cost, performance and security of an unimplemented adaptation.",
+      "witness": {
+        "setup": "No target implementation or experiment exists in scope.",
+        "assert": "Record risks/missing evidence and leave the properties for validation."
+      },
+      "commitment_sha256": "a7b75f49731cb00b65dd516a35a5af7c9bc6ab8fea63c267c44091c86eb1bb78"
+    }
+  ]
+}

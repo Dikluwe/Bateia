@@ -1,0 +1,36 @@
+{
+  "schema_version": "tekt.step0028.public-execution-receipt.v1",
+  "step": "0028",
+  "created_at": "2026-09-03T00:01:43Z",
+  "executor": "/root/verifier_0027",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "execution_kind": "REAL_COMPILED_MCP_STDIO_PUBLIC_SURFACE",
+  "binary_sha256": "8abaaf70817cbc30421cde9957b403d70b02934cece74746e837a2b152afb7d3",
+  "command_projection": "initialize followed by tools/list over stdio; separate fresh durable roots",
+  "runs": 2,
+  "first_output_sha256": "d92d46b3a8d8c8a9e2dbcf13fc285ecb5ea50e9e34a2c2491272b8beab9c04d1",
+  "second_output_sha256": "d92d46b3a8d8c8a9e2dbcf13fc285ecb5ea50e9e34a2c2491272b8beab9c04d1",
+  "byte_identical": true,
+  "observed": {
+    "jsonrpc_responses": 2,
+    "tool_count": 10,
+    "predecessor_tool_count": 9,
+    "predecessor_capture_sha256": "ee630cff5eada0dee4afe82ad9513dea7b760f0beb7905e915d2714a9114a596",
+    "predecessor_tools_preserved": true,
+    "additive_tool": "bateia_start_improvement_synthesis",
+    "artifact_enum_additions": 7
+  },
+  "external_execution": {
+    "network_calls": 0,
+    "external_model_calls": 0,
+    "provider_requests": 0,
+    "reason": "Step 0028 adds deterministic local extraction and synthesis and authorizes no new public provider call."
+  },
+  "safety": {
+    "secrets_used_or_recorded": false,
+    "raw_provider_content_recorded": false,
+    "protected_fixture_content_recorded": false
+  },
+  "result": "PASS",
+  "invalidation_rule": "Any change to the compiled binary, MCP surface, basal capture or stdio projection invalidates this receipt."
+}

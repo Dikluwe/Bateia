@@ -1,0 +1,65 @@
+{
+  "schema_version": "tekt.step0028.extraction-fixtures.v1",
+  "rule_catalog_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+  "cases": {
+    "append_log_proven": {
+      "repository": {"owner":"atlas","repo":"ledger","commit":"1111111111111111111111111111111111111111"},
+      "baseline_classes": ["APPEND_ONLY_LOG_RECOVERY"],
+      "bundle_items": [
+        {"kind":"symbol","path":"ledger/log.go","content":"append-record-v1","content_hash":"sha256:946284ba16eebba991b15fff6640d9ce00ff7f94e0d9fef97a969bde821bf7c9"},
+        {"kind":"test","path":"ledger/replay_test.go","content":"replay-test-v1","content_hash":"sha256:0ada5f5f9c002a844b7ca23063d6ec5f8e6195d06a990ec451d7f2d45ed8a7e0"}
+      ],
+      "evaluated_sources": [
+        {"parent_status":"PROVEN","kind":"symbol","path":"ledger/log.go","symbol":"Append","line":41,"rule_id":"append-only-write","content_hash":"sha256:946284ba16eebba991b15fff6640d9ce00ff7f94e0d9fef97a969bde821bf7c9","snippet":"ORACLE_TEST_CANARY_APPEND_DO_NOT_PUBLISH"},
+        {"parent_status":"PROVEN","kind":"test","path":"ledger/replay_test.go","symbol":"","line":12,"rule_id":"append-only-recovery-test","content_hash":"sha256:0ada5f5f9c002a844b7ca23063d6ec5f8e6195d06a990ec451d7f2d45ed8a7e0","snippet":"ORACLE_TEST_CANARY_REPLAY_DO_NOT_PUBLISH"}
+      ]
+    },
+    "queue_proven_reordered": {
+      "repository": {"owner":"forge","repo":"worker","commit":"2222222222222222222222222222222222222222"},
+      "baseline_classes": ["BOUNDED_QUEUE_BACKPRESSURE"],
+      "bundle_items": [
+        {"kind":"test","path":"queue/capacity_test.go","content":"queue-test-v1","content_hash":"sha256:8cfd024ef0fc27f558b63ac20c4bf653595fbdf41c679ea738ca662297e23301"},
+        {"kind":"symbol","path":"queue/queue.go","content":"queue-capacity-v1","content_hash":"sha256:0b00cbba1ccbce65a7a5a0fcb86aebc92ef852b1d090f448cc361ffeb08b632e"}
+      ],
+      "evaluated_sources": [
+        {"parent_status":"PROVEN","kind":"test","path":"queue/capacity_test.go","symbol":"","line":8,"rule_id":"queue-capacity-test","content_hash":"sha256:8cfd024ef0fc27f558b63ac20c4bf653595fbdf41c679ea738ca662297e23301","snippet":""},
+        {"parent_status":"PROVEN","kind":"symbol","path":"queue/queue.go","symbol":"Reserve","line":27,"rule_id":"bounded-queue-capacity","content_hash":"sha256:0b00cbba1ccbce65a7a5a0fcb86aebc92ef852b1d090f448cc361ffeb08b632e","snippet":""}
+      ]
+    },
+    "documentation_only": {
+      "repository": {"owner":"cache","repo":"archive","commit":"3333333333333333333333333333333333333333"},
+      "baseline_classes": [],
+      "bundle_items": [
+        {"kind":"documentation","path":"docs/storage.md","content":"docs-only-v1","content_hash":"sha256:b8f5b7be60629a5345d7ad2ba2906e0f5f49127d84112b431d69db5a905d46d5"}
+      ],
+      "evaluated_sources": [
+        {"parent_status":"PARTIAL","kind":"documentation","path":"docs/storage.md","symbol":"","line":0,"rule_id":"content-address-schema","content_hash":"sha256:b8f5b7be60629a5345d7ad2ba2906e0f5f49127d84112b431d69db5a905d46d5","snippet":"promotional claim only"}
+      ]
+    },
+    "cross_repository_witness": {
+      "repository": {"owner":"ports","repo":"core","commit":"4444444444444444444444444444444444444444"},
+      "baseline_classes": ["PORT_ADAPTER_ISOLATION"],
+      "bundle_items": [
+        {"kind":"symbol","path":"core/port.go","content":"cross-code-v1","content_hash":"sha256:1544e9f697f9149db8712ffd9f6e37fb6ab4a91046e60adf24c17dd5e14ee9c2"}
+      ],
+      "evaluated_sources": [
+        {"parent_status":"PROVEN","owner":"ports","repo":"core","commit":"4444444444444444444444444444444444444444","kind":"symbol","path":"core/port.go","symbol":"StoragePort","line":9,"rule_id":"inward-port-interface","content_hash":"sha256:1544e9f697f9149db8712ffd9f6e37fb6ab4a91046e60adf24c17dd5e14ee9c2","snippet":""},
+        {"parent_status":"PROVEN","owner":"ports","repo":"adapter-tests","commit":"5555555555555555555555555555555555555555","kind":"test","path":"adapter/substitution_test.go","symbol":"","line":5,"rule_id":"adapter-substitution-test","content_hash":"sha256:a5c7efe5f92ea8982805c1e2df489ba995b7f2caae892e740ef8148e827d5195","snippet":""}
+      ]
+    },
+    "central_counterevidence": {
+      "repository": {"owner":"forge","repo":"overload","commit":"6666666666666666666666666666666666666666"},
+      "baseline_classes": ["BOUNDED_QUEUE_BACKPRESSURE"],
+      "bundle_items": [
+        {"kind":"symbol","path":"queue/queue.go","content":"queue-capacity-v1","content_hash":"sha256:0b00cbba1ccbce65a7a5a0fcb86aebc92ef852b1d090f448cc361ffeb08b632e"},
+        {"kind":"test","path":"queue/capacity_test.go","content":"queue-test-v1","content_hash":"sha256:8cfd024ef0fc27f558b63ac20c4bf653595fbdf41c679ea738ca662297e23301"},
+        {"kind":"symbol","path":"queue/fallback.go","content":"counter-unbounded-v1","content_hash":"sha256:a1b365dc7df821c8ed6348922ed956638020c75eff0a5e9f8458e6815bb7a18d"}
+      ],
+      "evaluated_sources": [
+        {"parent_status":"PROVEN","kind":"symbol","path":"queue/queue.go","symbol":"Reserve","line":27,"rule_id":"bounded-queue-capacity","content_hash":"sha256:0b00cbba1ccbce65a7a5a0fcb86aebc92ef852b1d090f448cc361ffeb08b632e","snippet":""},
+        {"parent_status":"PROVEN","kind":"test","path":"queue/capacity_test.go","symbol":"","line":8,"rule_id":"queue-capacity-test","content_hash":"sha256:8cfd024ef0fc27f558b63ac20c4bf653595fbdf41c679ea738ca662297e23301","snippet":""},
+        {"parent_status":"CONFLICT","kind":"symbol","path":"queue/fallback.go","symbol":"Fallback","line":14,"rule_id":"unbounded-queue","content_hash":"sha256:a1b365dc7df821c8ed6348922ed956638020c75eff0a5e9f8458e6815bb7a18d","snippet":"ORACLE_TEST_CANARY_CONFLICT_DO_NOT_PUBLISH"}
+      ]
+    }
+  }
+}

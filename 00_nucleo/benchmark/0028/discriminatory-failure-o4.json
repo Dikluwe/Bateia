@@ -1,0 +1,134 @@
+{
+  "schema_version": "tekt.step0028.discriminatory-failure-public.v4",
+  "visibility": "PUBLIC_ALLOWLISTED_ADVERSARY_ORACLE_FEEDBACK",
+  "step": "0028",
+  "oracle_revision": "O4",
+  "next_oracle_revision": "O5",
+  "contract_revision": "R3",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "created_at": "2026-09-02",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "FAIL_NO_SEAL",
+  "frozen_hashes": {
+    "intent_sha256": "9105b27e0e8e9165b0b133a647669e858b977ea2ab8c7d951ed0f217a26ac1a5",
+    "manifest_sha256": "0b8fbcebf9f3af491ae1851f59715c248fa63181617cc336dc39b6969fb555ad",
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "mutation_commitments_o4_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5",
+    "entry_commitment_root_sha256": "a486a67b330946daea5d9bfb41f7764ce35a1e300f94bb77210341d3893a4a3a",
+    "oracle_contract_o4_sha256": "27fcd6e858c401855b02d3519c862b50a09c1e0fb9497c761b9d6733fb0736bf",
+    "coverage_matrix_o4_sha256": "8ad04f6b09acb51b9839d9a18ca36fd15e2b894f3199fff8545e99388d1b4a54",
+    "oracle_invalidation_o3_to_o4_sha256": "202fa11a10f23491027fceb59f968252b5844df9f0933102a378bf4be2179868",
+    "oracle_authorship_o4_sha256": "1ef481abb68e7f797e22bb314711ff9310bdbbd35faa94f4fb9cf1cdacc5691d",
+    "oracle_protected_manifest_o4_sha256": "3d25e9223b18d7f23018fe03f843ab3ebf30a2c825e3069141e320afcf90fb09",
+    "coverage_gap_o4_sha256": "1ba8dc8e1a302663fa0991674aff1762fdf89927430fcf1b799a700a155578ce",
+    "executable_mutant_protocol_o5_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb"
+  },
+  "input_audit": {
+    "strict_json_valid": true,
+    "primary_input_hashes_matched": 9,
+    "protected_manifest_o4_files_verified": 14,
+    "effective_inherited_manifest_files_verified": 59,
+    "manifest_hash_mismatches": 0,
+    "canonical_attack_entry_hashes_recomputed": 182,
+    "entry_commitment_root_verified": true,
+    "candidate_read_compiled_or_executed": false,
+    "oracle_attacks_candidate_receipt_or_seal_edited": false
+  },
+  "technical_execution": {
+    "package": "./04_wiring/step0028_gate/conformance",
+    "candidate_imported": false,
+    "runs": [
+      {
+        "command": "go test -count=2 -shuffle=17 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -count=2 -shuffle=53 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -count=2 -shuffle=101 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -race -count=2 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go vet ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      }
+    ],
+    "mechanical_negative_classifications": 160,
+    "mechanical_positive_preserved": 12,
+    "mechanical_opaque_unknown": 10,
+    "binding_free_distinct_negative_behaviors": 19
+  },
+  "qualified_gate_result": {
+    "valid_negative_cases": 160,
+    "violated": 0,
+    "survived_or_not_semantically_executed": 160,
+    "mutation_score": 0.0,
+    "required_mutation_score": 1.0,
+    "positive_controls": 12,
+    "positive_preserved": 12,
+    "opaque_cases": 10,
+    "opaque_unknown_executed": 0,
+    "opaque_marker_classifications": 10,
+    "opaque_cases_in_denominator": false,
+    "result": "FAIL"
+  },
+  "failure_findings": [
+    {
+      "code": "ID_DERIVED_BEHAVIOR_SELECTOR",
+      "affected_ids": "M001-M160",
+      "finding": "the field selector is parsed from semantic_variant_id and copied into SemanticFault; it is not a concrete contractual input difference"
+    },
+    {
+      "code": "EXTERNAL_BINDING_INCLUDED_IN_SEMANTIC_INPUT_HASH",
+      "affected_ids": "M001-M160",
+      "finding": "semantic input uniqueness is produced by SemanticVariantID and EntryCommitmentSHA256 rather than independently meaningful contractual fixtures"
+    },
+    {
+      "code": "GENERIC_BEHAVIOR_COLLAPSE",
+      "affected_ids": "M001-M160",
+      "finding": "160 records collapse to 19 port/fault behaviors after ID and attack hash are excluded"
+    },
+    {
+      "code": "ATTACK_BINDING_NOT_CONNECTED_TO_RUNNER_SEMANTICS",
+      "affected_ids": "M001-M160",
+      "finding": "per-entry hashes are cryptographically correct but only echoed as metadata and do not bind a concrete contract input/output pair"
+    },
+    {
+      "code": "OPAQUE_MARKER_IS_NOT_A_REAL_OPAQUE_CONSTRUCTION",
+      "affected_ids": "O01-O10",
+      "finding": "a generic Opaque flag directly forces Classification=Unknown and the subject does not execute the selected contractual port"
+    }
+  ],
+  "public_bridge": {
+    "coverage_gap_path": "00_nucleo/benchmark/0028/coverage-gap-o4.json",
+    "coverage_gap_sha256": "1ba8dc8e1a302663fa0991674aff1762fdf89927430fcf1b799a700a155578ce",
+    "protocol_path": "00_nucleo/benchmark/0028/executable-mutant-protocol-o5.json",
+    "protocol_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+    "expected_verdict_transferred": false,
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "code_patch_or_solution_disclosed": false
+  },
+  "seal": {
+    "path": "00_nucleo/benchmark/0028/seal-o4.json",
+    "exists": false,
+    "emitted": false,
+    "reason": "qualified mutation score below 1.0 and Unknown produced only by a marker"
+  },
+  "next_phase_boundary": {
+    "adversary": "materialize black-box records and runner package from attacks under the public O5 protocol",
+    "oracle": "derive predicates from contract R3 and execute only binding-free contractual stdin",
+    "verifier": "join external bindings, recompute semantic hashes, enforce anti-tautology and calculate the gate",
+    "candidate_access": false
+  }
+}

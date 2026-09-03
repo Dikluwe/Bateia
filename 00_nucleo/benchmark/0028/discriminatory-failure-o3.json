@@ -1,0 +1,127 @@
+{
+  "schema_version": "tekt.step0028.discriminatory-failure-public.v3",
+  "visibility": "PUBLIC_ALLOWLISTED_ORACLE_FEEDBACK",
+  "step": "0028",
+  "oracle_revision": "O3",
+  "next_oracle_revision": "O4",
+  "contract_revision": "R3",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_GATE",
+  "created_at": "2026-09-02",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "FAIL_NO_SEAL",
+  "frozen_hashes": {
+    "intent_sha256": "9105b27e0e8e9165b0b133a647669e858b977ea2ab8c7d951ed0f217a26ac1a5",
+    "manifest_sha256": "0b8fbcebf9f3af491ae1851f59715c248fa63181617cc336dc39b6969fb555ad",
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "oracle_contract_o3_sha256": "5517334d04a1678f6c770e5b0f500238cd07f16c43d44e2d1908af04344486c2",
+    "coverage_matrix_o3_sha256": "ef3ff51ca1ca80812eae792ad6b7724bea8af73779ed666096830b2f211a3c00",
+    "oracle_invalidation_o2_to_o3_sha256": "2bd913c2bee306392549880b5318005ca786487a21914cbe2399d458e74212f7",
+    "oracle_authorship_o3_sha256": "06d2f67f98320b7d9a132918a66ab7a2377a63458546462e650fee96249ed6dc",
+    "oracle_protected_manifest_o3_sha256": "5f048eb2c30f0520cc18a59f30544abf6bf4d46c5aaf368a3c03837256cf1600",
+    "protected_variants_o3_sha256": "92d9cbde529d122cffa8176d94cba071b3bf769479a3e6d23fcbc794d07f1399",
+    "coverage_gap_o3_sha256": "f97c12b13b36d0aa741cbe2db3910d3b6b671f03bb7cbad5a14e644b1e912876",
+    "mutation_commitments_o4_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5"
+  },
+  "input_audit": {
+    "strict_json_documents_validated": 16,
+    "protected_manifest_files_verified": 49,
+    "protected_manifest_hash_mismatches": 0,
+    "negative_ids_unique_and_complete": true,
+    "positive_ids_unique_and_complete": true,
+    "opaque_ids_unique_and_complete": true,
+    "candidate_read_compiled_or_executed": false,
+    "oracle_attacks_candidate_or_seal_edited": false
+  },
+  "technical_execution": {
+    "package": "./04_wiring/step0028_gate/conformance",
+    "candidate_imported": false,
+    "stdlib_only": true,
+    "runs": [
+      {
+        "command": "go test -count=2 -shuffle=17 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -count=2 -shuffle=53 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -count=2 -shuffle=101 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go test -race -count=2 ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      },
+      {
+        "command": "go vet ./04_wiring/step0028_gate/conformance",
+        "result": "PASS"
+      }
+    ],
+    "mechanical_negative_deep_equal_rejections": 160,
+    "distinct_control_observable_pairs": 63,
+    "reused_generic_pair_assignments": 97
+  },
+  "qualified_gate_result": {
+    "valid_negative_cases": 160,
+    "violated": 0,
+    "survived_or_not_semantically_executed": 160,
+    "mutation_score": 0.0,
+    "required_mutation_score": 1.0,
+    "positive_controls": 12,
+    "positive_preserved": 12,
+    "opaque_cases": 10,
+    "opaque_unknown_executed": 0,
+    "opaque_not_demonstrated": 10,
+    "opaque_cases_in_denominator": false,
+    "result": "FAIL"
+  },
+  "failure_findings": [
+    {
+      "code": "TAUTOLOGICAL_POST_OBSERVATION_MUTATION",
+      "affected_ids": "M001-M160",
+      "finding": "the variant delegates to the preserved reference and then mutates Observation directly; rejection by deep equality does not execute the committed semantic mutation"
+    },
+    {
+      "code": "NON_INDEPENDENT_GENERIC_VARIANT_REUSE",
+      "affected_ids": "M001-M160",
+      "finding": "160 IDs are represented by only 63 control/observable pairs; an ID-specific marker is not an independent obligation-specific subject behavior"
+    },
+    {
+      "code": "ATTACK_ENTRY_COMMITMENT_NOT_CONSUMED",
+      "affected_ids": "M001-M160",
+      "finding": "the O3 suite does not verify or consume canonical per-ID commitments to the frozen adversarial entries"
+    },
+    {
+      "code": "UNKNOWN_CLASSIFIER_ABSENT",
+      "affected_ids": "O01-O10",
+      "finding": "the evaluator has no Unknown outcome and no executable opaque cases; declared labels are not execution evidence"
+    }
+  ],
+  "public_feedback": {
+    "coverage_gap_path": "00_nucleo/benchmark/0028/coverage-gap-o3.json",
+    "coverage_gap_sha256": "f97c12b13b36d0aa741cbe2db3910d3b6b671f03bb7cbad5a14e644b1e912876",
+    "mutation_commitments_path": "00_nucleo/benchmark/0028/mutation-commitments-o4.json",
+    "mutation_commitments_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5",
+    "entry_commitment_root_sha256": "a486a67b330946daea5d9bfb41f7764ce35a1e300f94bb77210341d3893a4a3a",
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "code_or_patch_disclosed": false,
+    "implementation_solution_disclosed": false
+  },
+  "seal": {
+    "path": "00_nucleo/benchmark/0028/seal-o3.json",
+    "exists": false,
+    "emitted": false,
+    "reason": "qualified mutation score below 1.0 and opaque Unknown classification not executable"
+  },
+  "next_phase_boundary": {
+    "allowed_recipient": "SEGREGATED_ORACLE_O4",
+    "candidate_access": false,
+    "required_action": "replace tautological output overwrites with independently executable commitment-bound semantic variants and add executable Unknown classification before repeating the discriminatory gate"
+  }
+}

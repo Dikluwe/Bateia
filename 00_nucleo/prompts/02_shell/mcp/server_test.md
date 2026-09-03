@@ -9,6 +9,8 @@ Verificar de forma determinística o comportamento público do contrato relacion
 ## Restrições
 
 - manter o arquivo na camada e no pacote atuais;
+- após o Passo 0025, `tools/list` deve anunciar exatamente, inclusive quando o recommender
+  opcional for `nil`, `bateia_search`, `bateia_benchmark` e `bateia_recommend`, nessa ordem;
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/02_shell/mcp/server.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.

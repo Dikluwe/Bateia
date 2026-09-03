@@ -25,11 +25,17 @@ import (
 )
 
 type CLIApp struct {
-	funnel *usecase.SearchFunnel
+	funnel         *usecase.SearchFunnel
+	recommendation mcp.RecommendationRecommender
+	durableRuns    mcp.DurableRecommendationRuns
 }
 
-func NewCLIApp(funnel *usecase.SearchFunnel) *CLIApp {
-	return &CLIApp{funnel: funnel}
+func NewCLIApp(funnel *usecase.SearchFunnel, recommenders ...mcp.RecommendationRecommender) *CLIApp {
+	app := &CLIApp{funnel: funnel}
+	if len(recommenders) > 0 {
+		app.recommendation = recommenders[0]
+	}
+	return app
 }
 
 func (a *CLIApp) Run(args []string) error {
@@ -47,7 +53,7 @@ func (a *CLIApp) Run(args []string) error {
 		case "benchmark":
 			return RunBenchmarkCommand(args[1:], os.Stdout)
 		case "mcp":
-			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
+			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns)
 			return mcpServer.Serve(context.Background())
 		case "tui":
 			return RunTUI(a.funnel, "", "go")
@@ -123,7 +129,7 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 	}
 
 	if *mcpFlag {
-		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout)
+		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns)
 		return mcpServer.Serve(context.Background())
 	}
 

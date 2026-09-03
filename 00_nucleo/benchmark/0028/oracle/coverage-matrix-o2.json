@@ -1,0 +1,180 @@
+{
+  "schema_version": "tekt.step0028.oracle-coverage-matrix.v2",
+  "step": "0028",
+  "oracle_revision": "O2",
+  "contract_revision": "R3",
+  "phase": "PRE_CANDIDATE",
+  "source_feedback": {
+    "coverage_gap_o1_sha256": "7eca960c91c865e2a24c697c2568c3a99c11f90a597be16848d9c28f8f7d00e1",
+    "discriminatory_failure_o1_sha256": "d85a18daa25d523f2dca9d5225e2789929a375181032a089fcca302a578a67ec"
+  },
+  "coverage_policy": {
+    "negative_domain": "M001-M160",
+    "positive_domain": "P01-P12",
+    "ranges_are_inclusive": true,
+    "every_range_requires_executable_case_ids": true,
+    "every_positive_requires_its_own_case_id": true,
+    "opaque_domain_is_separate": true,
+    "opaque_cases_count_toward_mutation_score": false
+  },
+  "mutation_groups": [
+    {
+      "group": "EXTRACTOR_PUBLIC_INTERFACE_AND_BUNDLE",
+      "first": "M001",
+      "last": "M002",
+      "operations": ["EXTRACT"],
+      "capability": "MechanismExtractor public interface with exact frozen-bundle bindings",
+      "executable_case_ids": ["P01-PROVEN-BINDING", "P02-DOCUMENTATION-CEILING", "N-CROSS-SOURCE", "N-BUNDLE-HASH"]
+    },
+    {
+      "group": "SYNTHESIS_PRODUCT_SEPARATION",
+      "first": "M003",
+      "last": "M004",
+      "operations": ["EXTRACT", "HYPOTHESIS"],
+      "capability": "synthesis executor with captured public artifacts and product-observation separation",
+      "executable_case_ids": ["P03-PRODUCT-ONLY", "P03-ARTIFACT-PUBLICATION"]
+    },
+    {
+      "group": "EXTRACTOR_AND_STRICT_CATALOG",
+      "first": "M005",
+      "last": "M048",
+      "operations": ["EXTRACT"],
+      "capability": "MechanismExtractor plus strict closed-world catalog decoder, source-kind validation and canonical identities",
+      "executable_case_ids": ["P01-PROVEN-BINDING", "P02-DOCUMENTATION-CEILING", "N-CATALOG-INTEGRITY", "N-RULE-UNKNOWN", "N-RULE-FROM-CONTENT", "N-SOURCE-KIND", "N-CROSS-SOURCE", "N-BUNDLE-HASH", "N-PARTIAL-PARENT"]
+    },
+    {
+      "group": "CANONICAL_COMPARISON_POPULARITY_NOVELTY",
+      "first": "M049",
+      "last": "M060",
+      "operations": ["EXTRACT", "HYPOTHESIS"],
+      "capability": "canonical extractor and synthesis comparison with popularity and novelty held non-causal",
+      "executable_case_ids": ["P08-POPULARITY-LOW", "P08-POPULARITY-HIGH", "P01-PROVEN-BINDING"]
+    },
+    {
+      "group": "HYPOTHESES_GAPS_AND_VALIDATION_PLANS",
+      "first": "M061",
+      "last": "M086",
+      "operations": ["EXTRACT", "HYPOTHESIS", "LIFECYCLE"],
+      "capability": "synthesis executor with canonical hypothesis, gap, comparison, provenance and validation-plan artifacts",
+      "executable_case_ids": ["P03-ARTIFACT-PUBLICATION", "P04-UNKNOWN-TARGET", "P05-UNKNOWN-LICENSE", "P06-COMPOSITION-UNKNOWN", "P07-CENTRAL-COUNTEREVIDENCE", "N-COUNTER-BUDGET"]
+    },
+    {
+      "group": "COUNTEREVIDENCE_SEARCH",
+      "first": "M087",
+      "last": "M092",
+      "operations": ["EXTRACT", "HYPOTHESIS"],
+      "capability": "observable counterevidence search with scope, results and budget ceiling",
+      "executable_case_ids": ["P07-CENTRAL-COUNTEREVIDENCE", "N-COUNTER-BUDGET", "P03-ARTIFACT-PUBLICATION"]
+    },
+    {
+      "group": "LIFECYCLE_STATUS_PROJECTION",
+      "first": "M093",
+      "last": "M096",
+      "operations": ["LIFECYCLE"],
+      "capability": "public run projection keeping lifecycle, synthesis status and hypothesis status disjoint",
+      "executable_case_ids": ["P04-UNKNOWN-TARGET", "P05-LIFECYCLE-QUEUED", "P05-LIFECYCLE-RUNNING", "P05-LIFECYCLE-FAILED"]
+    },
+    {
+      "group": "STARTER_STORE_AND_PREFLIGHT",
+      "first": "M097",
+      "last": "M112",
+      "operations": ["START"],
+      "capability": "ImprovementSynthesisStarter with injected store and observable pre-queue effect counters",
+      "executable_case_ids": ["P09-IDEMPOTENT-REUSE", "N-SOURCE-MISSING", "N-SOURCE-NONTERMINAL", "N-SOURCE-HASH", "N-SOURCE-CANONICAL"]
+    },
+    {
+      "group": "IDEMPOTENCY_REORDERING_AND_CONCURRENCY",
+      "first": "M113",
+      "last": "M119",
+      "operations": ["START"],
+      "capability": "starter idempotency under repetition, semantic reordering and concurrent starts",
+      "executable_case_ids": ["P09-IDEMPOTENT-REUSE", "P09-CANONICAL-CONCURRENT", "N-IDEMPOTENCY-CONFLICT", "N-START-NEW"]
+    },
+    {
+      "group": "SHARED_RUNTIME_IDENTITIES",
+      "first": "M120",
+      "last": "M121",
+      "operations": ["RUNTIME"],
+      "capability": "composition-root observation of one store, queue, root, secret and worker identity",
+      "executable_case_ids": ["P12-RUNTIME", "N-RUNTIME-DUPLICATED"]
+    },
+    {
+      "group": "CANCELLATION_AND_WORKER_RECOVERY",
+      "first": "M122",
+      "last": "M125",
+      "operations": ["LIFECYCLE"],
+      "capability": "durable dispatcher and worker boundaries with cancellation and recovery observed",
+      "executable_case_ids": ["P10-CANCEL-RECOVERY"]
+    },
+    {
+      "group": "OFFLINE_REPLAY",
+      "first": "M126",
+      "last": "M129",
+      "operations": ["REPLAY"],
+      "capability": "offline replay with disabled transport, frozen hash validation and byte-identical output",
+      "executable_case_ids": ["P11-OFFLINE-REPLAY", "P11-OFFLINE-REPLAY-PERMUTED", "N-REPLAY-INTEGRITY"]
+    },
+    {
+      "group": "EFFECT_SPIES_AND_SANITIZED_SCANS",
+      "first": "M130",
+      "last": "M133",
+      "operations": ["SAFETY"],
+      "capability": "recursive public-output scan plus external-effect spies",
+      "executable_case_ids": ["P12-SAFETY-SANITIZES", "N-SAFETY-CLEAN"]
+    },
+    {
+      "group": "TOOLS_LIST_GOLDEN_HASH",
+      "first": "M134",
+      "last": "M138",
+      "operations": ["TOOLS"],
+      "capability": "tools/list capture bound to the predecessor nine-tool golden hash and append-only tool 10",
+      "executable_case_ids": ["P12-TOOLS", "N-TOOLS-BASELINE-HASH"]
+    },
+    {
+      "group": "STORE_ARTIFACT_GET_AND_PUBLISH",
+      "first": "M139",
+      "last": "M145",
+      "operations": ["EXTRACT", "HYPOTHESIS", "LIFECYCLE"],
+      "capability": "store, publisher and get-artifact observations over canonical state and bytes",
+      "executable_case_ids": ["P03-ARTIFACT-PUBLICATION", "P04-UNKNOWN-TARGET", "P05-UNKNOWN-LICENSE", "P06-COMPOSITION-UNKNOWN", "P07-CENTRAL-COUNTEREVIDENCE"]
+    },
+    {
+      "group": "STARTER_WORKER_AND_RUN_VIEW",
+      "first": "M146",
+      "last": "M151",
+      "operations": ["START", "LIFECYCLE"],
+      "capability": "starter, worker and RecommendationRunView observed across lifecycle transitions",
+      "executable_case_ids": ["P09-IDEMPOTENT-REUSE", "P10-CANCEL-RECOVERY", "P05-LIFECYCLE-QUEUED", "P05-LIFECYCLE-RUNNING", "P05-LIFECYCLE-FAILED"]
+    },
+    {
+      "group": "PREDECESSOR_REFINEMENT_AND_SHARED_RUNTIME",
+      "first": "M152",
+      "last": "M156",
+      "operations": ["TOOLS", "RUNTIME", "REFINEMENT"],
+      "capability": "three separate predecessor refinement harnesses plus shared runtime identity",
+      "executable_case_ids": ["P12-TOOLS", "P12-RUNTIME", "P12-REFINEMENTS", "N-RUNTIME-DUPLICATED"]
+    },
+    {
+      "group": "ARCHITECTURE_AND_EFFECT_AUDIT",
+      "first": "M157",
+      "last": "M160",
+      "operations": ["SAFETY", "RUNTIME"],
+      "capability": "layer audit and effect spies over public subjects",
+      "executable_case_ids": ["P12-SAFETY-SANITIZES", "P12-RUNTIME", "N-RUNTIME-DUPLICATED"]
+    }
+  ],
+  "positive_controls": [
+    {"id":"P01","operations":["EXTRACT"],"capability":"proven mechanism with exact bundle binding, immutable source, witnesses and complete provenance","executable_case_ids":["P01-PROVEN-BINDING"]},
+    {"id":"P02","operations":["EXTRACT"],"capability":"documentation-only mechanism preserved at its epistemic ceiling","executable_case_ids":["P02-DOCUMENTATION-CEILING"]},
+    {"id":"P03","operations":["EXTRACT","HYPOTHESIS"],"capability":"product-only input remains an observation in captured synthesis artifacts","executable_case_ids":["P03-PRODUCT-ONLY","P03-ARTIFACT-PUBLICATION"]},
+    {"id":"P04","operations":["HYPOTHESIS","LIFECYCLE"],"capability":"unknown target remains non-absent with causally correlated gaps and status","executable_case_ids":["P04-UNKNOWN-TARGET"]},
+    {"id":"P05","operations":["HYPOTHESIS"],"capability":"unrecognized license preserves the hypothesis, warning, source and reuse ceiling","executable_case_ids":["P05-UNKNOWN-LICENSE"]},
+    {"id":"P06","operations":["HYPOTHESIS"],"capability":"multi-mechanism composition preserves each source and all unwitnessed compatibility unknowns","executable_case_ids":["P06-COMPOSITION-UNKNOWN"]},
+    {"id":"P07","operations":["EXTRACT","HYPOTHESIS"],"capability":"central counterevidence and search scope remain observable and status-causal","executable_case_ids":["P07-CENTRAL-COUNTEREVIDENCE"]},
+    {"id":"P08","operations":["EXTRACT","HYPOTHESIS"],"capability":"paired canonical comparison proves popularity and novelty do not elevate status or ordering","executable_case_ids":["P08-POPULARITY-LOW","P08-POPULARITY-HIGH"]},
+    {"id":"P09","operations":["START"],"capability":"starter reuses one run under repetition, reordering and concurrency without duplicate effects","executable_case_ids":["P09-IDEMPOTENT-REUSE","P09-CANONICAL-CONCURRENT"]},
+    {"id":"P10","operations":["LIFECYCLE"],"capability":"worker observes cancellation before new work and preserves recovery semantics","executable_case_ids":["P10-CANCEL-RECOVERY"]},
+    {"id":"P11","operations":["REPLAY"],"capability":"two offline replay permutations yield byte-identical outputs and zero network calls","executable_case_ids":["P11-OFFLINE-REPLAY","P11-OFFLINE-REPLAY-PERMUTED"]},
+    {"id":"P12","operations":["TOOLS","RUNTIME","REFINEMENT","SAFETY"],"capability":"ten-tool append-only registry, shared runtime identities and three distinct predecessor refinements","executable_case_ids":["P12-TOOLS","P12-RUNTIME","P12-REFINEMENTS","P12-SAFETY-SANITIZES"]}
+  ]
+}

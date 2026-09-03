@@ -61,56 +61,61 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 	}
 
 	outcomes := make([]discoveryOutcome, len(plan.Expansions))
-	sem := make(chan struct{}, policy.Concurrency)
-	var wg sync.WaitGroup
-	started := 0
-	var completed atomic.Int64
-discoveryLoop:
 	for index, expansion := range plan.Expansions {
 		if strings.TrimSpace(expansion.ID) == "" || strings.TrimSpace(expansion.Query) == "" {
 			return domain.DiscoverySnapshot{}, fmt.Errorf("expansão %d possui id ou query vazia", index)
 		}
-		select {
-		case <-ctx.Done():
-			break discoveryLoop
-		case sem <- struct{}{}:
-			if ctx.Err() != nil {
-				<-sem
-				break discoveryLoop
-			}
-			started++
-			wg.Add(1)
-			go func(index int, expansion domain.SearchExpansion) {
-				defer wg.Done()
-				defer func() { <-sem }()
-				request := domain.DiscoveryRequest{ExpansionID: expansion.ID, Query: expansion.Query, Discriminators: append([]string(nil), expansion.Discriminators...), RepositoryScope: expansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
-				if expansion.Regional != nil {
-					request.SearchLocale = expansion.Regional.Locale
-					request.RegionalProposalID = expansion.Regional.ProposalID
-				}
-				result, err := provider.Discover(ctx, request)
-				for attemptIndex := range result.Attempts {
-					if result.Attempts[attemptIndex].SearchLocale == "" {
-						result.Attempts[attemptIndex].SearchLocale = request.SearchLocale
-					}
-					if result.Attempts[attemptIndex].RegionalProposalID == "" {
-						result.Attempts[attemptIndex].RegionalProposalID = request.RegionalProposalID
-					}
-				}
-				outcomes[index].discovery = domain.ExpansionDiscovery{Expansion: expansion, Provider: result}
-				if err != nil {
-					outcomes[index].failure = &domain.ExecutionFailure{Scope: expansion.ID, Stage: "discovery", Message: err.Error()}
-				}
-				done := int(completed.Add(1))
-				if reporter != nil {
-					status := "SUCCEEDED"
-					if err != nil {
-						status = "FAILED"
-					}
-					reporter.ReportDiscoveryProgress(domain.DiscoveryProgressEvent{ExpansionID: expansion.ID, AttemptIndex: -1, Status: status, Completed: done, Planned: len(plan.Expansions)})
-				}
-			}(index, expansion)
+	}
+	// A porta não exige que o provider seja thread-safe. Mantemos a fronteira
+	// serial para que cancelamento observado impeça o início da próxima chamada;
+	// o paralelismo limitado permanece responsabilidade do adapter concreto.
+	sem := make(chan struct{}, 1)
+	var wg sync.WaitGroup
+	started := 0
+	var completed atomic.Int64
+	for index, expansion := range plan.Expansions {
+		if ctx.Err() != nil {
+			break
 		}
+		sem <- struct{}{}
+		if ctx.Err() != nil {
+			<-sem
+			break
+		}
+		started++
+		currentIndex, currentExpansion := index, expansion
+		wg.Go(func() {
+			defer func() { <-sem }()
+			if ctx.Err() != nil {
+				return
+			}
+			request := domain.DiscoveryRequest{ExpansionID: currentExpansion.ID, Query: currentExpansion.Query, Discriminators: append([]string(nil), currentExpansion.Discriminators...), RepositoryScope: currentExpansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
+			if currentExpansion.Regional != nil {
+				request.SearchLocale = currentExpansion.Regional.Locale
+				request.RegionalProposalID = currentExpansion.Regional.ProposalID
+			}
+			result, err := provider.Discover(ctx, request)
+			for attemptIndex := range result.Attempts {
+				if result.Attempts[attemptIndex].SearchLocale == "" {
+					result.Attempts[attemptIndex].SearchLocale = request.SearchLocale
+				}
+				if result.Attempts[attemptIndex].RegionalProposalID == "" {
+					result.Attempts[attemptIndex].RegionalProposalID = request.RegionalProposalID
+				}
+			}
+			outcomes[currentIndex].discovery = domain.ExpansionDiscovery{Expansion: currentExpansion, Provider: result}
+			if err != nil {
+				outcomes[currentIndex].failure = &domain.ExecutionFailure{Scope: currentExpansion.ID, Stage: "discovery", Message: err.Error()}
+			}
+			done := int(completed.Add(1))
+			if reporter != nil {
+				status := "SUCCEEDED"
+				if err != nil {
+					status = "FAILED"
+				}
+				reporter.ReportDiscoveryProgress(domain.DiscoveryProgressEvent{ExpansionID: currentExpansion.ID, AttemptIndex: -1, Status: status, Completed: done, Planned: len(plan.Expansions)})
+			}
+		})
 	}
 	wg.Wait()
 	if started == 0 {

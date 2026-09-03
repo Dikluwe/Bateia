@@ -1,0 +1,103 @@
+{
+  "schema_version": "tekt.step0028.coverage-gap-public.v4",
+  "visibility": "PUBLIC_ALLOWLISTED_ADVERSARY_ORACLE_FEEDBACK",
+  "step": "0028",
+  "source_oracle_revision": "O4",
+  "target_oracle_revision": "O5",
+  "contract_revision": "R3",
+  "phase": "POST_DISCRIMINATORY_FAILURE_PRE_SEAL",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "source_hashes": {
+    "contract_r3_sha256": "f8d8649a9bb3dd1707ae01f3cedc93648b1bd3c501d62a506f745b66a03c928b",
+    "mechanism_rules_v2_sha256": "a09c6d7cc086848914e9d9c8f2f83f83ad91c35db7746608a377f31e6ef88cb5",
+    "adversarial_cases_sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "mutation_commitments_o4_sha256": "0408fa27c802444c3131c138c7e09500b802f2109ba52a5826c3e1bd834d14e5",
+    "entry_commitment_root_sha256": "a486a67b330946daea5d9bfb41f7764ce35a1e300f94bb77210341d3893a4a3a",
+    "oracle_contract_o4_sha256": "27fcd6e858c401855b02d3519c862b50a09c1e0fb9497c761b9d6733fb0736bf",
+    "coverage_matrix_o4_sha256": "8ad04f6b09acb51b9839d9a18ca36fd15e2b894f3199fff8545e99388d1b4a54",
+    "oracle_invalidation_o3_to_o4_sha256": "202fa11a10f23491027fceb59f968252b5844df9f0933102a378bf4be2179868",
+    "oracle_authorship_o4_sha256": "1ef481abb68e7f797e22bb314711ff9310bdbbd35faa94f4fb9cf1cdacc5691d",
+    "oracle_protected_manifest_o4_sha256": "3d25e9223b18d7f23018fe03f843ab3ebf30a2c825e3069141e320afcf90fb09",
+    "executable_mutant_protocol_o5_sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb"
+  },
+  "qualified_gate_result": {
+    "negative_domain": "M001-M160",
+    "violated": 0,
+    "survived_or_not_semantically_executed": 160,
+    "mutation_score": 0.0,
+    "required_mutation_score": 1.0,
+    "positive_domain": "P01-P12",
+    "positive_preserved": 12,
+    "opaque_domain": "O01-O10",
+    "opaque_unknown_executed": 0,
+    "opaque_marker_classifications": 10,
+    "opaque_in_denominator": false,
+    "result": "FAIL"
+  },
+  "o4_gaps": [
+    {
+      "code": "BEHAVIOR_SELECTED_BY_SEMANTIC_ID_MARKER",
+      "affected_ids": "M001-M160",
+      "public_evidence": "the executor parses a field token from semantic_variant_id and routes behavior through a SemanticFault input marker"
+    },
+    {
+      "code": "BINDING_MARKERS_CREATE_FALSE_INPUT_UNIQUENESS",
+      "affected_ids": "M001-M160",
+      "public_evidence": "SemanticVariantID and EntryCommitmentSHA256 are included in the hashed input even though both are external bindings"
+    },
+    {
+      "code": "ONE_HUNDRED_SIXTY_IDS_COLLAPSE_TO_NINETEEN_BEHAVIORS",
+      "affected_ids": "M001-M160",
+      "public_evidence": "after external binding markers are removed, only 19 required-port and fault-token pairs remain"
+    },
+    {
+      "code": "ENTRY_HASH_ECHOED_NOT_BEHAVIORALLY_BOUND",
+      "affected_ids": "M001-M160",
+      "public_evidence": "the canonical attack-entry hash is copied into execution metadata but does not determine or verify a concrete contractual input/output delta"
+    },
+    {
+      "code": "OPAQUE_FLAG_FORCES_UNKNOWN",
+      "affected_ids": "O01-O10",
+      "public_evidence": "one generic Opaque flag and reason directly force Classification=Unknown while the subject ignores the selected contractual port"
+    }
+  ],
+  "o5_bridge": {
+    "path": "00_nucleo/benchmark/0028/executable-mutant-protocol-o5.json",
+    "sha256": "455d6beec665765a0cca96b209ed5e651e7103c9a9dc5bebba51faa1b23b1fdb",
+    "adversary_output": "160 black-box runner records derived privately from attacks",
+    "oracle_input": "binding-free contractual stdin and contractual stdout only",
+    "verifier_join": "id and canonical attack-entry hash joined externally after execution",
+    "expected_verdict_transferred": false
+  },
+  "required_o5_capabilities": {
+    "negative": [
+      "concrete schema-valid contract input and mutant contract output per M ID",
+      "behavior is a deterministic function only of contract values and immutable runner bytes",
+      "semantic hashes exclude ID and attack-entry hash",
+      "no two records differ only by external binding",
+      "semantically distinct attacks have distinct concrete fixture/output deltas",
+      "oracle predicates are derived independently from contract R3"
+    ],
+    "positive": [
+      "twelve independent reference controls remain Preserved",
+      "positive records carry no expected verdict"
+    ],
+    "opaque": [
+      "ten distinct concrete contract constructions exercise real Unknown policy states",
+      "no Opaque flag, expected classification or classification marker",
+      "oracle determines Unknown after black-box execution"
+    ]
+  },
+  "privacy_boundary": {
+    "mutation_payload_disclosed": false,
+    "mutation_description_disclosed": false,
+    "private_target_disclosed": false,
+    "candidate_content_disclosed": false,
+    "code_patch_or_solution_disclosed": false
+  },
+  "seal": {
+    "path": "00_nucleo/benchmark/0028/seal-o4.json",
+    "exists": false,
+    "emitted": false
+  }
+}

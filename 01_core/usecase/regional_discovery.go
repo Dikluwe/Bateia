@@ -165,7 +165,10 @@ func PlanRegionalDiscovery(catalog domain.RegionalQueryCatalog, concept string, 
 }
 
 func regionalConceptForPlan(plan domain.ExpansionPlan) string {
-	triggers := []string{"organizar receitas culinárias", "receitas culinárias", "gerenciador de receitas", "recipe manager"}
+	triggers := []string{
+		"organizar receitas culinárias", "receitas culinárias", "gerenciador de receitas", "recipe manager",
+		"desperdício alimentar", "food waste", "inventário", "inventory", "previsão de consumo", "consumption forecast",
+	}
 	for _, expansion := range plan.Expansions {
 		for _, trigger := range triggers {
 			if containsPhrase(expansion.Query, trigger) || containsPhrase(trigger, expansion.Query) {

@@ -1,0 +1,3 @@
+# Prompt espelhado — avaliação normativa O4
+
+Avalie commitments por predicates públicos, campo a campo somente sobre `required_observable_fields`. Para negativos, demonstre primeiro o baseline `Preserved`; depois exija semantic ID e entry hash exatos, mutation stage anterior à observação, hash de entrada diferente e cardinalidade pública de desvio exatamente um para classificar `Violated`. Para positivos, exija igualdade dos campos normativos. Para opacos, emita explicitamente `Unknown` somente quando ambos os predicates o exigirem; nunca use deep-equal integral como substituto da relação normativa.

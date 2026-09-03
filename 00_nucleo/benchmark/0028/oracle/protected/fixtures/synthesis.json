@@ -1,0 +1,43 @@
+{
+  "schema_version": "tekt.step0028.synthesis-fixtures.v1",
+  "cases": {
+    "product_only": {
+      "idea": {"problem":"reduce missed household maintenance","users":["households"],"capabilities":["reminders"]},
+      "source_kind": "MARKET_DISCOVERY",
+      "product_observation_refs": ["product:catalog:1001"],
+      "mechanism_refs": [],
+      "proposal": {"proposal_id":"product-question","title":"prioritize reminders","target_property":"reminder relevance","expected_effect":"reduce irrelevant reminders","assumptions":["a technical mechanism may exist"],"derivation":"EXTERNAL_AGENT_PROPOSAL","rationale":"ORACLE_TEST_CANARY_PRODUCT_DO_NOT_PUBLISH"},
+      "expected_first_validation_question": "observe the current target state and obtain repository-backed technical evidence"
+    },
+    "unknown_target": {
+      "idea": {"problem":"recover interrupted local updates","users":["operators"],"capabilities":["recovery"]},
+      "target_state": "UNKNOWN",
+      "target_gap_refs": [],
+      "mechanism_refs": ["mech_1111111111111111111111111111111111111111111111111111111111111111"],
+      "source_hashes": ["1111111111111111111111111111111111111111111111111111111111111111"],
+      "counterevidence_search": {"status":"NONE_FOUND_IN_SCOPE","scope_refs":["artifact:target-observation"],"result_refs":[]}
+    },
+    "unrecognized_license": {
+      "idea": {"problem":"isolate provider-specific integration","users":["maintainers"],"capabilities":["provider substitution"]},
+      "target_state": "ABSENT",
+      "target_gap_refs": ["gap:provider-coupling"],
+      "mechanism_refs": ["mech_2222222222222222222222222222222222222222222222222222222222222222"],
+      "license": "UNRECOGNIZED",
+      "requested_transfer_mode": "COMPONENT_REUSE",
+      "required_warning": "LICENSE_NOT_RECOGNIZED",
+      "allowed_transfer_modes": ["PATTERN_ADAPTATION","REFERENCE_ONLY","UNKNOWN"]
+    },
+    "popularity_novelty_invariant": {
+      "base": {"stars":0,"downloads":0,"adoption_rate":0,"novelty":"DIVERGENT","status":"PROVEN"},
+      "variant": {"stars":999999999,"downloads":999999999,"adoption_rate":1,"novelty":"DIVERGENT","status":"PROVEN"},
+      "fields_required_equal": ["mechanism_status","hypothesis_status","order","causal_hash","license","fit"]
+    },
+    "composition_unknown": {
+      "idea": {"problem":"durable bounded ingestion","users":["operators"],"capabilities":["bounded admission","recovery"]},
+      "mechanism_refs": ["mech_1111111111111111111111111111111111111111111111111111111111111111","mech_3333333333333333333333333333333333333333333333333333333333333333"],
+      "source_refs": ["atlas/ledger@1111111111111111111111111111111111111111","forge/worker@2222222222222222222222222222222222222222"],
+      "required_integration_unknowns": ["failure model compatibility","interface compatibility","license compatibility","performance compatibility","state model compatibility"],
+      "must_not_claim": ["compatible","safe","ready for adoption"]
+    }
+  }
+}

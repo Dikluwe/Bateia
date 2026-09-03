@@ -1,0 +1,169 @@
+{
+  "schema_version": "tekt.discriminatory-receipt.v1",
+  "step": "0027",
+  "revision": "R2",
+  "contract_revision": 1,
+  "phase": "LOGICAL_PRE_CANDIDATE_REVALIDATION_AFTER_MECHANICAL_ORACLE_FIX",
+  "status": "GATE_PASSED_WITH_TEMPORAL_LIMITATION",
+  "verdict": "ACCEPTED_FOR_R2_SEAL",
+  "created_at": "2026-09-02T00:56:13Z",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "executor": "/root/verifier_0027",
+  "protocol": "tekt-materializacao-segregada/full",
+  "historical_chain": {
+    "r1_discriminatory_receipt_path": "00_nucleo/benchmark/0027/discriminatory-receipt.json",
+    "r1_discriminatory_receipt_sha256": "38c7ef5ae10721f93b88e6b6e952709b83b8da1db33829bd05bb9a1ec11ae718",
+    "r1_seal_path": "00_nucleo/benchmark/0027/seal.json",
+    "r1_seal_sha256": "c36045da6d2715ddd85c9924a90522363d72280013623c5a6f83252281437e0f",
+    "r1_invalidation_path": "00_nucleo/benchmark/0027/seal-r1-invalidation.json",
+    "r1_invalidation_sha256": "56c3843b64804cde8f554419617921a74ab03aa7aaa3333eaa086824b441cdf7",
+    "r1_seal_historical_only": true
+  },
+  "oracle_delta": {
+    "path": "01_core/usecase/market_discovery_step0027_oracle_test.go",
+    "r1_sha256": "7eb96a8a6df888370b5b3f33896d7776094582e730f7c311017722ec808b041e",
+    "r2_sha256": "90cd2ca1c8880b03acc58e6cd8e09129bfdf1d26e2b3aa2d13b94dd64b2509d0",
+    "exact_change": "for i, attempt := range plan -> for _, attempt := range plan",
+    "r1_reconstructed_in_memory": true,
+    "reconstructed_r1_sha256": "7eb96a8a6df888370b5b3f33896d7776094582e730f7c311017722ec808b041e",
+    "byte_length_changed": false,
+    "assertions_changed": false,
+    "expectations_changed": false,
+    "prompt_changed": false,
+    "contract_binding_changed": false,
+    "semantic_change": false,
+    "gofmt_result": "PASS"
+  },
+  "candidate_scope": {
+    "candidate_exists_during_r2": true,
+    "candidate_source_read": false,
+    "candidate_compiled": false,
+    "candidate_executed": false,
+    "candidate_evaluated": false,
+    "candidate_modified": false,
+    "candidate_behavior_used_to_change_oracle": false,
+    "future_candidate_verdict_certified": false
+  },
+  "capabilities": {
+    "read_scope": [
+      "R1 receipt, R1 seal and R1 invalidation chain",
+      "R2 L1 oracle suite, unchanged oracle prompts/suites, contract, adversarial cases, corpora, expected registry and fixtures",
+      "manifest, intent, source selection, ADR-0002 and predecessor certificates/receipts"
+    ],
+    "write_scope": [
+      "00_nucleo/benchmark/0027/seal-r1-invalidation.json",
+      "00_nucleo/benchmark/0027/discriminatory-receipt-r2.json",
+      "00_nucleo/benchmark/0027/seal-r2.json"
+    ],
+    "forbidden_actions_respected": [
+      "no candidate source was read, compiled, executed, evaluated or modified",
+      "no contract, manifest, source selection, prompt, corpus, fixture, oracle, test or adversarial case was modified",
+      "no R1 historical artifact was overwritten",
+      "no certificate, final verification receipt, final verdict or laudo was emitted"
+    ]
+  },
+  "frozen_hashes": {
+    "intent": "83f80a9603bc566690ddfb98a94ca18f4bd57b528a177c56d4ba5873b74f4c15",
+    "adr_0002": "b457fadd55d6328c2afce969b92a527b461edab9094b1bef66fcfebe71b79a68",
+    "manifest": "7661f40f1b1b01cf0c99196bec9f81f7c462c9a9c529888c54dea8485844c2a3",
+    "source_selection": "cd833b03cd84a933b587da9a034fdb6d10c023fee423049a27e41de9d0539460",
+    "contract": "ac69fcaf3668097432d36137477f791ec0e95c193689fbbe32b1442960e6c037",
+    "adversarial_cases": "6f03a8b9e074461b58772f946fd0bff7aade8368b9094efff489a261bf129076",
+    "oracle_contract": "77198612576094e82e4dd43b74a54ffd52ac3efafcf47f3091396aa8f4e5f066",
+    "corpus_public": "3161d6e271686379246f46fe5116151c14bc2ac7dbd2072509c0d552b387c955",
+    "corpus_test": "593b21bfae4756d0c047c4d6f89b3c930ee2eb27704084282d7c88190fba9c36",
+    "expected_registry": "2e763b0383f5798a6bbfe6f6225c407013bb2b78b9a3d36b022a3092cbfba711",
+    "apple_fixture_manifest": "c77f8060db0dcef992ec897a58755444da8cb4b5698465d8555ae5f7b8cf6ee1",
+    "apple_fixture_cross_dimension": "ada0c25fc6e2f6cd948d790edbe8559cf667f1410000504f44f6861e94d87e29",
+    "apple_fixture_empty": "545ac24453b87a267bf2c408bb5d7b4a7a0a9f2d4467cf1e14636a128f3f44d0",
+    "apple_fixture_provider_error": "38d60bce4ac58aa81f3ced93eed694adb16f0741dec71855b93aa64881f7a476",
+    "apple_fixture_success": "54edb8b64489bdb588d62a95be60ab024699a1fd95c84ae2a8d9634dd65eb423",
+    "l1_oracle_test_r2": "90cd2ca1c8880b03acc58e6cd8e09129bfdf1d26e2b3aa2d13b94dd64b2509d0",
+    "mcp_oracle_test": "124cd58d8f9174b32e5773e5f96a4336427c95a2ef0b26fe9fc37032287baf21",
+    "l4_oracle_test": "0085e3aeacd6e34086d746da37045c3155f7ca6d301eb0fba01a81e27d61c421",
+    "l1_oracle_prompt": "b8a9caa3a2a88c7438184b3275edaa02bd92ca753b83f9b1692822ab53f9ef56",
+    "mcp_oracle_prompt": "d017603f3dc533f13b8dc527023fb890d65fbf081583d9a6eac2b269600baa89",
+    "l4_oracle_prompt": "cb954c0558a340f98fdc97a92a9803c813cd69dbb303d93ae5e44236b5f1ce58",
+    "certificate_0025": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+    "verification_receipt_0025": "a49e2733cbf47f03a7f537b8ec4efd548333302d36ad877a4422344f95f4bf4a",
+    "certificate_0026": "a04d6b07a939c1ce5fb7fb184e5cb56cc3cc34ed0b2b54c8087415a18a4a99ed",
+    "verification_receipt_0026": "76c0c20aa66d00252a96d1cd78a78d0faa519b0113c63ff187d94dad3cff38d2"
+  },
+  "witness_mapping": {
+    "W01_MCP_BOUNDARY": ["M08", "M21", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30", "M32", "M34", "M84", "M85", "M86"],
+    "W02_REGISTRY_PLAN": ["M07", "M09", "M33", "M52", "M53", "M62", "M63"],
+    "W03_DIMENSIONS_QUERY": ["M01", "M02", "M03", "M04", "M05", "M06", "M43", "M44", "M45", "M61"],
+    "W04_APPLE_PROVIDER": ["M10", "M35", "M36", "M37", "M38", "M39", "M40", "M41", "M42", "M46", "M47", "M48", "M49", "M50"],
+    "W05_IDENTITY_EVIDENCE": ["M12", "M13", "M14", "M15", "M16", "M17", "M55", "M56", "M57", "M58", "M59", "M60"],
+    "W06_SHARED_RUNTIME": ["M11", "M18", "M31", "M51", "M54", "M64", "M65", "M66", "M67", "M68", "M69", "M70", "M87", "M88"],
+    "W07_REPLAY_ARTIFACTS": ["M19", "M20", "M71", "M72", "M73", "M74", "M75", "M76"],
+    "W08_LINEAGE_ARCHITECTURE": ["M22", "M77", "M78", "M79", "M80", "M81", "M82", "M83", "M89", "M90"]
+  },
+  "witness_mapping_audit": {
+    "mapped_negative_cases": 90,
+    "unique_negative_cases": 90,
+    "missing_cases": [],
+    "duplicate_cases": [],
+    "canonical_mapping_sha256": "81dce84bb6fd89f1c13901e1a03879c6a868d1ce4977b6d3731b1f2d2010d1fe",
+    "temporary_reference_projection_cases": 90,
+    "temporary_reference_projection_sha256": "3bf9d2ff5e1a1168b8997d41adf7ee7cff5d16cc84dcc8078fd2d7dead4d4b84",
+    "classification_sha256": "cdb7704bb21d5b8b3c08a82e9f5f7e4c385d8e23c9c2cb655e92b8ae50dac13f",
+    "r1_mapping_projection_and_classification_preserved": true,
+    "result": "PASS"
+  },
+  "mutation_score": {
+    "required": 1.0,
+    "observed": 1.0,
+    "valid_negative_mutations": 90,
+    "violated": 90,
+    "survived": 0,
+    "unknown_negative": 0,
+    "result": "PASS"
+  },
+  "positive_controls": {"P01": "Preserved", "P02": "Preserved", "P03": "Preserved", "P04": "Preserved", "P05": "Preserved"},
+  "opaque_outcomes": {"O01": "Unknown", "O02": "Unknown", "O03": "Unknown", "O04": "Unknown", "O05": "Unknown"},
+  "unknown_policy_audit": {
+    "opaque_cases_excluded_from_denominator": true,
+    "unknown_counted_as_violation": false,
+    "unknown_converted_to_preserved": false,
+    "result": "PASS"
+  },
+  "commands": [
+    {
+      "command": "in-memory exact reconstruction: replace the sole `for _, attempt := range plan` with `for i, attempt := range plan` and SHA-256 the reconstructed bytes",
+      "result": "PASS",
+      "detail": "one occurrence; reconstructed hash equals the R1 sealed L1 oracle hash; byte length unchanged"
+    },
+    {
+      "command": "strict duplicate-key JSON parse over Step 0027 JSON; verify R2 protected hashes and unchanged prompt/expectation/contract/corpus/fixture/attack hashes",
+      "result": "PASS",
+      "detail": "14 JSON artifacts before R2 receipt; 15 protected inputs checked"
+    },
+    {
+      "command": "recompute M01-M90/P01-P05/O01-O05 classification, W01-W08 unique coverage and temporary reference-projection hashes",
+      "result": "PASS",
+      "detail": "90 Violated, five Preserved, five Unknown excluded; score 1.0"
+    },
+    {
+      "command": "gofmt -d 01_core/usecase/market_discovery_step0027_oracle_test.go",
+      "result": "PASS",
+      "detail": "empty diff"
+    },
+    {
+      "command": "candidate source inspection, candidate compilation, candidate execution, protected Go test execution or future candidate evaluation",
+      "result": "NOT_RUN_BY_SCOPE"
+    }
+  ],
+  "temporal_limitation": "A candidate already existed before this R2 mechanical correction and reseal. The oracle author and verifier did not read or execute it, and exact byte reconstruction proves the sole unused-identifier edit, but the shared workspace and post-candidate ordering cannot establish strong pre-candidate temporal independence.",
+  "limitations": [
+    "R2 is a logical pre-candidate discriminatory reseal, not a behavioral candidate verdict.",
+    "Hash reconstruction and unchanged witness semantics provide causal traceability, not strong isolation attestation.",
+    "All candidate, refinement, product-metric, architecture and final gates remain pending."
+  ],
+  "seal": {
+    "authorized": true,
+    "path": "00_nucleo/benchmark/0027/seal-r2.json",
+    "basis": "The R1 seal was explicitly invalidated, the sole protected change is mechanically reconstructed, all other causal inputs are unchanged, and the complete discriminatory gate remains 90/90 with positive and opaque policies preserved."
+  },
+  "invalidation_rule": "Any change to a recorded R2 hash, assertion, expectation, prompt, witness mapping, Unknown policy or invalidation-chain artifact invalidates this receipt and the R2 seal. Candidate behavior must not be used to revise these expectations."
+}

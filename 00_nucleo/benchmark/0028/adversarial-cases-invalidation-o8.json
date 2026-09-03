@@ -1,0 +1,63 @@
+{
+  "schema_version": "tekt.step0028.adversarial-cases-invalidation.v1",
+  "visibility": "PUBLIC",
+  "step": "0028",
+  "authority": "ADVERSARY",
+  "phase": "PRE_EXECUTABLE_PROTOCOL_PRE_CANDIDATE_PRE_SEAL",
+  "cause": {
+    "kind": "CONTRACT_CATALOG_REFINEMENT",
+    "contract_catalog_invalidation_path": "00_nucleo/benchmark/0028/contract-catalog-invalidation-r4.json",
+    "contract_catalog_invalidation_sha256": "77e00c1eed39b972c6e415a45c208303e7af548740c8f7b68d78bb6c3ad33289"
+  },
+  "predecessor": {
+    "path": "00_nucleo/benchmark/0028/adversarial-cases.json",
+    "sha256": "96e132cac16a9b13c4c9d873ca8f319dbb2b49a0d876ccfdace0082f6e8995c4",
+    "contract_revision": "R3",
+    "catalog_revision": "tekt.mechanism-rules.v2",
+    "status": "INVALID_FOR_R4_V3_DERIVATIONS"
+  },
+  "successor": {
+    "path": "00_nucleo/benchmark/0028/adversarial-cases-o8.json",
+    "sha256": "689da72a627f5f3941bc532321ea935ae06f757f15c3c4462afd4767898156e0",
+    "contract_revision": "R4",
+    "catalog_revision": "tekt.mechanism-rules.v3",
+    "entry_count": 182,
+    "entry_commitment_root_sha256": "48ef70cb5b63e040afe732fa554a3eb771516ff1d7fb0f23557f465aa40a370c"
+  },
+  "semantic_rebind": {
+    "negative_mutations_preserved": 160,
+    "positive_controls_preserved": 12,
+    "opaque_constructions_preserved": 10,
+    "version_reference_rebound": [
+      "M023",
+      "P11"
+    ],
+    "satisfiable_control_rebound": [
+      "P02"
+    ],
+    "negative_cases_added": 0,
+    "negative_cases_removed": 0,
+    "controls_removed_as_impossible_under_r4": 0,
+    "explicit_classification_fields_removed": 182
+  },
+  "invalidation_scope": [
+    "The predecessor attack set cannot bind a protocol, executable package or discriminatory gate under R4/v3.",
+    "Every executable package derived from the predecessor R3/v2 attack set remains invalidated and is not regenerated in this phase.",
+    "The successor may be frozen only by the segregated verifier in a new R4/v3 executable protocol."
+  ],
+  "capabilities": {
+    "candidate_implementation_read": false,
+    "oracle_protected_material_read": false,
+    "receipts_seals_certificates_or_verdicts_read": false,
+    "executable_mutants_generated": false
+  },
+  "emissions": {
+    "protocol": false,
+    "executable_mutants": false,
+    "oracle": false,
+    "receipt": false,
+    "seal": false,
+    "certificate": false,
+    "final_verdict": false
+  }
+}

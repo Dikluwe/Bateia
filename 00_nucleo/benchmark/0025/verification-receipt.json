@@ -1,0 +1,190 @@
+{
+  "schema_version": "tekt.verification-receipt.v1",
+  "step": "0025",
+  "contract_revision": 6,
+  "candidate_revision": "post-B01-B02-fix-1",
+  "baseline_commit": "21c48e3571807777013710bcb6675c95c4130d9e",
+  "verdict": "MCP_RECOMMENDATION_GATEWAY_READY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "executor": "/root/verifier_0025",
+  "scope": "Independent post-seal evaluation of the corrected Step 0025 candidate against the R6 observable synchronous live MCP recommendation contract, protected oracle suites and adversarial cases.",
+  "supersedes": {
+    "artifact": "00_nucleo/benchmark/0025/verification-receipt.json",
+    "predecessor_sha256": "e295ffdec609515379bae62283ce865cc2a5adb72476ee2a25bdc471bd68ae2e",
+    "predecessor_verdict": "BLOCKED_BY_CONTRACT_VIOLATIONS",
+    "predecessor_findings": [
+      "B01-M18-CANCELLATION-DURING-COLLECTION",
+      "B02-M11-EXTERNAL-ERROR-CANARY-LEAK"
+    ],
+    "preservation": "The predecessor bytes are identified by hash and its two blocking observations, commands and outputs are restated in the resolution records below."
+  },
+  "candidate_authority": {
+    "read": true,
+    "executed": true,
+    "edited": false,
+    "contract_or_oracle_edited": false
+  },
+  "sealed_chain": {
+    "active_seal_path": "00_nucleo/benchmark/0025/seal-r6.json",
+    "active_seal_sha256": "9ee11e374a114cf760b1bdac51fa17fa4dd49ab7717671555a5b2820c090f5af",
+    "discriminatory_receipt_sha256": "d81286197c7d4c6496a00d39cced18c186f22444effa304add553883f730e6ad",
+    "r5_invalidation_sha256": "13b391ff614cafb8c4c0bcbbc284bba0408b9d7f3d5d845c55dce13a9044884b",
+    "pre_verdict_manifest_sha256_recorded_by_seal": "df15667a25a1c28fbd45e2ca1d83edd00b55fe1b89b0bfa0ad8da0072b4d8fe7",
+    "final_integration_manifest_sha256": "9f4a06917139098b2a7a63f36cb438b936de9bdbb95d049dd9277b7f1296bc5f",
+    "contract_sha256": "b0ca1ed27b52caa52918c7f1bf60f48605cff4b3f04f5bea7c65d820036f0d48",
+    "adversarial_cases_sha256": "60fe6f3be7fdd68b6a277090051a67e2b00f2d018233fa9c1f4f4713cf1a9a3a",
+    "oracle_contract_sha256": "75b77d07a1118fa1cfc72ecc99f43e67334e0c47fe9332ef07fa6e30ff79271d",
+    "l1_oracle_test_sha256": "ce6189db067fcd7dc50fbf3995d371b2674c44fb355167424aa859d3d09205eb",
+    "mcp_oracle_test_sha256": "cc88dfe582c5e61688468c89b94a173e0f23aea4d0e4105ba2ea6749c595dea6",
+    "l4_oracle_test_sha256": "dea08090da1262f2881ffc0ee26e0b86ced4b68ecaa561635a012d7d560149a5",
+    "protected_inputs_unchanged_during_revalidation": true
+  },
+  "implementation_hashes": {
+    "01_core/domain/recommendation.go": "2fa9bf8e8beba55f22279b33cff20084834e510dc6175ad2ee70b6791f149af6",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "01_core/usecase/evidence.go": "8d911e0f00ca97d8d155d8fd0ccd89ce7834f4d5d77ac2dcaadf7291a87c217f",
+    "01_core/usecase/idea_discovery.go": "0707898154e689c1da08b7d46b8a5f4974f333c6d21a9bf8a1afec23f7321daa",
+    "01_core/usecase/idea_run.go": "edbd2c3802e28ec03bde534327be5d803d2011113d21d142a8f60a77505e73ea",
+    "01_core/usecase/regional_discovery.go": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6",
+    "02_shell/cli/app.go": "b1bc79110459023ac3fa1c2ad0bd0f6133a5b27c06402d562cedabd2c97aa79b",
+    "02_shell/cli/idea_recommend.go": "1c4f1a6f8206d67c765abf2ca73be0a01a99128fd2efddd4f09ebb5391741c77",
+    "02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "04_wiring/main.go": "8157b96f7b0f6a5aa9a1f423c2986fc2da0f59aa9743d926236e2167d1df7e1a"
+  },
+  "post_fix_prompt_hashes": {
+    "00_nucleo/prompts/01_core/usecase/evidence.md": "a6c97bddb5b28b5ae70d4469aae1b87c39c1e5c8d07e524062c20aeb76a65601",
+    "00_nucleo/prompts/01_core/usecase/idea_run.md": "7322370ae1329e7a7e38c598fe61f5973def5290d68778ed9f58332002a99284"
+  },
+  "predecessor_findings_resolution": [
+    {
+      "id": "B01-M18-CANCELLATION-DURING-COLLECTION",
+      "contract_binding": "M18-context-cancellation-ignored",
+      "status": "RESOLVED",
+      "implementation_observation": "CollectEvidence checks ctx before the first content port and after each returning port; IdeaRun checks ctx before each candidate and immediately after collection, preventing the next candidate from starting.",
+      "same_witness_command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 -overlay=/tmp/step0025_cancel_overlay.json ./01_core/usecase -run '^TestStep0025VerifierCancellationDuringCollectionStartsNoNewCall$' -v",
+      "witness_fixture_sha256": "0b951d177539dcbad099a19dbb63370d7cb54b3ef59308f20f0dde4ca959dead",
+      "overlay_sha256": "3e8610cccc7bf72d7eaf6e61d85558e987673cd4cf734823732c51ec6b2fb047",
+      "previous_result": "FAIL: 1 new content call started after observable cancellation",
+      "current_result": "PASS"
+    },
+    {
+      "id": "B02-M11-EXTERNAL-ERROR-CANARY-LEAK",
+      "contract_binding": "M11-unsanitized-secret-in-response",
+      "status": "RESOLVED",
+      "implementation_observation": "Failure messages now derive only from a stable stage/category. Collection failures embedded in alternative reasons are replaced by a controlled public fallback instead of echoing the provider message.",
+      "same_witness_command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 -overlay=/tmp/step0025_cancel_overlay.json ./01_core/usecase -run '^TestStep0025VerifierProviderErrorIsNotSerializedDirectly$' -v",
+      "witness_fixture_sha256": "0b951d177539dcbad099a19dbb63370d7cb54b3ef59308f20f0dde4ca959dead",
+      "overlay_sha256": "3e8610cccc7bf72d7eaf6e61d85558e987673cd4cf734823732c51ec6b2fb047",
+      "previous_result": "FAIL: arbitrary adapter canary survived in failures[].message",
+      "current_result": "PASS"
+    }
+  ],
+  "mutation_score": {
+    "required": 1.0,
+    "sealed_discriminatory_score": 1.0,
+    "negative_mutations_rejected": 26,
+    "total_negative_mutations": 26,
+    "survivors": 0,
+    "opaque_outcomes": {
+      "O01": "Unknown",
+      "O02": "Unknown",
+      "O03": "Unknown",
+      "O04": "Unknown",
+      "O05": "Unknown"
+    },
+    "result": "PASS"
+  },
+  "observable_and_architecture_results": {
+    "same_l1_recommendation_service_for_cli_live_and_mcp": "PASS",
+    "legacy_tools_and_exact_three_tool_list": "PASS",
+    "strict_schema_and_runtime_validation_before_ports": "PASS",
+    "unknown_license_warning_without_blocking_or_fit_change": "PASS",
+    "repository_content_inert_and_public_projection_sanitized": "PASS",
+    "canonical_reordering_and_repetition": "PASS",
+    "cancellation_starts_no_new_provider_or_content_call": "PASS",
+    "l1_added_io": false,
+    "l2_imports_l3": false,
+    "real_l4_offline_composition_and_injection": "PASS"
+  },
+  "gates": [
+    {
+      "name": "candidate-and-prompt-hash-integrity",
+      "command": "sha256sum ten candidate files and two post-fix mirrored prompts",
+      "result": "PASS"
+    },
+    {
+      "name": "protected-hash-integrity",
+      "command": "sha256sum manifest, R6 seal, contract, adversarial cases, oracle contract and protected suites",
+      "result": "PASS"
+    },
+    {
+      "name": "independent-M18-overlay",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 -overlay=/tmp/step0025_cancel_overlay.json ./01_core/usecase -run '^TestStep0025VerifierCancellationDuringCollectionStartsNoNewCall$' -v",
+      "result": "PASS"
+    },
+    {
+      "name": "independent-M11-overlay",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 -overlay=/tmp/step0025_cancel_overlay.json ./01_core/usecase -run '^TestStep0025VerifierProviderErrorIsNotSerializedDirectly$' -v",
+      "result": "PASS"
+    },
+    {
+      "name": "full-go-suite-first-independent-pass",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 ./...",
+      "result": "PASS",
+      "execution_note": "Rerun outside the filesystem/network sandbox solely to permit localhost httptest listeners; all packages passed."
+    },
+    {
+      "name": "full-go-suite-second-independent-pass",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go test -count=1 ./...",
+      "result": "PASS",
+      "execution_note": "Second separate verifier pass; all packages passed."
+    },
+    {
+      "name": "coordinator-full-go-suite-repeat",
+      "command": "go test -count=1 ./...",
+      "result": "PASS_REPORTED_BY_COORDINATOR",
+      "execution_note": "Two additional separate coordinator passes, both exit 0."
+    },
+    {
+      "name": "build",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go build -o /tmp/bateia-step0025-verifier-final ./04_wiring/main.go",
+      "result": "PASS"
+    },
+    {
+      "name": "vet",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go vet ./...",
+      "result": "PASS"
+    },
+    {
+      "name": "crystalline-architecture",
+      "command": "crystalline-lint .",
+      "result": "PASS_WITH_WARNINGS",
+      "detail": "exit 0; six V12 warnings are confined to offline fake/test declarations in the protected L4 suite"
+    },
+    {
+      "name": "layer-import-audit",
+      "command": "env GOCACHE=/tmp/bateia-go-cache go list -f '{{.ImportPath}} {{join .Imports \" \"}}' ./01_core/... ./02_shell/...",
+      "result": "PASS",
+      "detail": "No L1 import of shell/infra and no L2 import of L3."
+    },
+    {
+      "name": "diff-integrity",
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "certificate": {
+    "authorized": true,
+    "path": "00_nucleo/benchmark/0025/certificate.json"
+  },
+  "laudo": {
+    "authorized": true,
+    "path": "00_nucleo/laudos/0025-expor-recomendacao-completa-como-ferramenta-mcp.md"
+  },
+  "limitations": [
+    "Verification ran in a shared worktree and does not attest strong process isolation.",
+    "R6 oracle refinement and the B01/B02 candidate correction occurred after a candidate already existed; hashes and predecessor receipts provide traceability, not strong pre-candidate temporal isolation.",
+    "The first in-sandbox full-suite attempt was environmentally blocked by prohibited localhost listeners; both escalated verifier reruns and both coordinator reruns passed.",
+    "This receipt certifies only the recorded synchronous live MCP observable fragment and exact candidate hashes; it does not claim general functional equivalence, persistence, replay/resume MCP behavior or multilingual translation quality."
+  ]
+}

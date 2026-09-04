@@ -1,0 +1,620 @@
+{
+  "schema_version": "bateia.step0029.blind-novelty-inventory.v2",
+  "inventory_id": "EXP29-C01-slot-2-a",
+  "status": "FROZEN_PRE_SECOND_MEMBER",
+  "created_at": "2026-09-03",
+  "author": {
+    "task_identity": "/root/avaliador_cego_r2",
+    "role": "blind_novelty_evaluator_slot_2",
+    "authority": "inventory_only",
+    "comparison_authority_exercised": false
+  },
+  "protocol": {
+    "regime": "FULL_SEGREGATION_SCOPED_TO_BLIND_INVENTORY",
+    "purpose": "Congelar o conteúdo semântico de CANDIDATE_P antes da existência do segundo membro do slot 2.",
+    "frozen_before_second_member": true,
+    "input_label": "CANDIDATE_P",
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "comparison_judgment": "NOT_PERFORMED"
+  },
+  "input_identity": {
+    "candidate": {
+      "label": "CANDIDATE_P",
+      "path": "00_nucleo/benchmark/0029/sessions-temperature-r1/21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f/output.json",
+      "sha256": "8e25857af63d45cc2f672aa7b0f5688d232432e2667c9551b2439f940883b735"
+    },
+    "case": {
+      "case_id": "EXP29-C01",
+      "canonical_case_sha256_from_contract": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    }
+  },
+  "semantic_inventory": {
+    "alternatives": [
+      {
+        "id": "ALT-01",
+        "canonical_name": "conventional_fixed_worker_queue_retries_dlq",
+        "source_name": "Fila convencional com pool fixo, retries e dead-letter queue",
+        "decision": "ADAPT",
+        "definition": "Baseline assíncrono com pool fixo de workers, retries exponenciais e dead-letter queue, parcialmente adequado a picos e isolamento de falhas.",
+        "semantic_components": [
+          "asynchronous_task_queue",
+          "fixed_worker_pool",
+          "exponential_retry",
+          "dead_letter_queue",
+          "partial_peak_absorption",
+          "failure_isolation"
+        ],
+        "gaps": [
+          "recuperação independente após reinício não demonstrada",
+          "idempotência de efeitos não resolvida",
+          "observabilidade de progresso não especificada",
+          "proteção de dados sensíveis não especificada",
+          "adaptação necessária para limitar admissão sob consumidor lento"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "fila de tarefas convencional",
+          "fixed worker queue",
+          "worker pool com retries e DLQ",
+          "task queue with exponential backoff and dead letter queue",
+          "fila assíncrona baseline"
+        ]
+      },
+      {
+        "id": "ALT-02",
+        "canonical_name": "bounded_queue_with_backpressure",
+        "source_name": "Fila limitada com backpressure",
+        "decision": "ADAPT",
+        "definition": "Fila de capacidade explícita que aplica pressão, atraso ou rejeição observável aos produtores quando consumidores ficam lentos.",
+        "semantic_components": [
+          "explicit_queue_capacity",
+          "producer_backpressure",
+          "observable_wait_or_rejection",
+          "bounded_inflight_work"
+        ],
+        "gaps": [
+          "persistência e retomada após reinício não demonstradas",
+          "ausência de efeitos duplicados não demonstrada",
+          "custos, limites e integração desconhecidos"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "bounded queue",
+          "fila de capacidade finita",
+          "fila com limite máximo",
+          "bounded buffer",
+          "fila com retropressão",
+          "controle de admissão por saturação"
+        ]
+      },
+      {
+        "id": "ALT-03",
+        "canonical_name": "durable_processing_component_with_idempotent_effects",
+        "source_name": "Componente de processamento durável com efeitos idempotentes",
+        "decision": "INVESTIGATE",
+        "definition": "Componente conceitual que persiste trabalho e estado, retoma após reinício e aplica efeitos logicamente no máximo uma vez mediante idempotência ou deduplicação.",
+        "semantic_components": [
+          "durable_work_and_state",
+          "restart_recovery",
+          "idempotency_or_deduplication",
+          "logical_at_most_once_effect"
+        ],
+        "gaps": [
+          "mecanismo concreto de durabilidade não especificado",
+          "idempotência não demonstrada",
+          "componente e implementação não identificados",
+          "custo, licença, capacidade e operação desconhecidos"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "durable workflow component",
+          "persistent job processor",
+          "processamento recuperável",
+          "durable job engine",
+          "registro durável com efeito idempotente",
+          "retomada sem duplicação lógica"
+        ]
+      },
+      {
+        "id": "ALT-04",
+        "canonical_name": "custom_clinical_triage_pipeline",
+        "source_name": "Construção de pipeline próprio de triagem",
+        "decision": "BUILD",
+        "definition": "Construção focal que integra fila limitada, persistência, idempotência e observabilidade sob os limites operacionais da rede.",
+        "semantic_components": [
+          "custom_build",
+          "integrated_backpressure",
+          "integrated_persistence",
+          "integrated_idempotency",
+          "integrated_observability"
+        ],
+        "gaps": [
+          "necessidade de construir não demonstrada",
+          "durabilidade, deduplicação, observabilidade, segurança e custos por validar",
+          "operação durante lentidão ou indisponibilidade de classificadores não especificada"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "pipeline próprio",
+          "solução sob medida",
+          "custom triage pipeline",
+          "build from scratch",
+          "implementar internamente",
+          "compor solução própria"
+        ]
+      }
+    ],
+    "mechanisms": [
+      {
+        "id": "MEC-01",
+        "canonical_name": "bounded_queue_backpressure",
+        "source_name": "BOUNDED_QUEUE_BACKPRESSURE",
+        "operation": "Limitar trabalho admitido ou mantido em fila quando o consumo cai, propagando pressão aos produtores.",
+        "contribution": "Conter memória e trabalho em voo durante picos, lentidão ou indisponibilidade de classificadores.",
+        "submechanisms": [
+          "effective_capacity_limit",
+          "slow_or_block_producer",
+          "observable_rejection",
+          "wait_or_resume_policy"
+        ],
+        "limitations": [
+          "não fornece durabilidade por si só",
+          "não garante idempotência",
+          "não define diagnóstico, intervenção ou proteção de dados",
+          "implementação e limites operacionais ausentes"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "bounded queue",
+          "backpressure",
+          "back-pressure",
+          "retropressão",
+          "bounded buffer",
+          "admission control",
+          "producer throttling",
+          "reject or delay on full"
+        ],
+        "non_equivalent_details": [
+          "fila local limitada não prova limite ponta a ponta",
+          "autoscaling sem controle de admissão não equivale a backpressure",
+          "rejeitar, bloquear e adiar são políticas distintas sob o mesmo mecanismo"
+        ]
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "id": "HYP-01",
+        "canonical_claim": "Fila explicitamente limitada com backpressure conterá memória e trabalho em voo durante picos e classificadores lentos.",
+        "expected_effect": "Produtores são retardados ou rejeitados de forma observável e o acúmulo permanece nos limites configurados.",
+        "assumptions": [
+          "limite de capacidade é efetivo",
+          "produtor respeita o sinal de backpressure",
+          "há política de rejeição, espera ou retomada"
+        ],
+        "counterevidence_to_seek": [
+          "memória continua crescendo com consumidores lentos",
+          "produtor ignora ou não recebe backpressure",
+          "limite causa perda silenciosa de trabalho aceito"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "bounded queue caps memory",
+          "limite de fila contém RAM",
+          "backpressure limita trabalho em voo",
+          "rejeição observável sob saturação"
+        ]
+      },
+      {
+        "id": "HYP-02",
+        "canonical_claim": "Persistência transacional de estado combinada com efeitos idempotentes permitirá retomada após reinício sem duplicação lógica.",
+        "expected_effect": "Trabalho aceito é recuperado e reprocessado enquanto cada efeito externo lógico ocorre no máximo uma vez.",
+        "assumptions": [
+          "estado e anexo ou referência necessária estão em armazenamento durável",
+          "cada efeito tem chave de idempotência ou deduplicação",
+          "fronteiras de confirmação, processamento e efeito externo são controladas"
+        ],
+        "counterevidence_to_seek": [
+          "trabalho aceito desaparece após reinício",
+          "reprocessamento duplica classificação, notificação ou registro",
+          "tentativas e efeitos não podem ser correlacionados"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "transactional job state",
+          "durable inbox with idempotent effects",
+          "restart-safe idempotent processing",
+          "persistência mais chave de deduplicação",
+          "at-most-once logical effect",
+          "controlar fronteira de ack e efeito"
+        ]
+      },
+      {
+        "id": "HYP-03",
+        "canonical_claim": "Eventos estruturados de progresso, falha e intervenção explicarão por que documentos permanecem sem classificação.",
+        "expected_effect": "Operadores distinguem pendência, retry, falha permanente, indisponibilidade e necessidade de intervenção.",
+        "assumptions": [
+          "eventos e estados são correlacionáveis por anexo",
+          "há retenção e acesso operacional autorizados",
+          "eventos não expõem dados além do limite permitido"
+        ],
+        "counterevidence_to_seek": [
+          "item sem estado ou causa observável",
+          "tentativas não correlacionáveis ao anexo",
+          "logs ou métricas vazam dados sensíveis"
+        ],
+        "evidence_refs": [
+          "CASE_INPUT"
+        ],
+        "normalization_terms": [
+          "structured progress events",
+          "eventos de estado por documento",
+          "audit trail",
+          "observabilidade por item",
+          "eventos de falha e intervenção",
+          "workflow status correlacionado"
+        ]
+      }
+    ],
+    "atomic_semantic_units": [
+      {
+        "id": "UNIT-01",
+        "concept": "asynchronous_queue_and_fixed_worker_pool",
+        "covered_by": ["ALT-01"]
+      },
+      {
+        "id": "UNIT-02",
+        "concept": "exponential_retry_and_dead_letter_queue",
+        "covered_by": ["ALT-01"]
+      },
+      {
+        "id": "UNIT-03",
+        "concept": "explicit_effective_queue_capacity",
+        "covered_by": ["ALT-02", "MEC-01", "HYP-01"]
+      },
+      {
+        "id": "UNIT-04",
+        "concept": "producer_backpressure_or_throttling",
+        "covered_by": ["ALT-02", "MEC-01", "HYP-01"]
+      },
+      {
+        "id": "UNIT-05",
+        "concept": "observable_rejection_delay_or_wait_policy",
+        "covered_by": ["ALT-02", "MEC-01", "HYP-01"]
+      },
+      {
+        "id": "UNIT-06",
+        "concept": "bounded_memory_and_inflight_work",
+        "covered_by": ["ALT-02", "MEC-01", "HYP-01"]
+      },
+      {
+        "id": "UNIT-07",
+        "concept": "durable_work_state_and_attachment_reference",
+        "covered_by": ["ALT-03", "HYP-02"]
+      },
+      {
+        "id": "UNIT-08",
+        "concept": "transactional_persistence_boundary",
+        "covered_by": ["HYP-02"]
+      },
+      {
+        "id": "UNIT-09",
+        "concept": "restart_recovery_of_accepted_work",
+        "covered_by": ["ALT-03", "HYP-02"]
+      },
+      {
+        "id": "UNIT-10",
+        "concept": "idempotency_key_or_deduplication_per_effect",
+        "covered_by": ["ALT-03", "HYP-02"]
+      },
+      {
+        "id": "UNIT-11",
+        "concept": "logical_at_most_once_external_effect",
+        "covered_by": ["ALT-03", "HYP-02"]
+      },
+      {
+        "id": "UNIT-12",
+        "concept": "controlled_ack_processing_effect_boundaries",
+        "covered_by": ["HYP-02"]
+      },
+      {
+        "id": "UNIT-13",
+        "concept": "correlation_of_attempts_states_and_effects",
+        "covered_by": ["HYP-02", "HYP-03"]
+      },
+      {
+        "id": "UNIT-14",
+        "concept": "structured_progress_failure_and_intervention_events",
+        "covered_by": ["HYP-03"]
+      },
+      {
+        "id": "UNIT-15",
+        "concept": "pending_retry_permanent_failure_unavailable_and_intervention_states",
+        "covered_by": ["HYP-03"]
+      },
+      {
+        "id": "UNIT-16",
+        "concept": "event_retention_and_authorized_operational_access",
+        "covered_by": ["HYP-03"]
+      },
+      {
+        "id": "UNIT-17",
+        "concept": "sensitive_data_minimization_in_logs_metrics_and_events",
+        "covered_by": ["ALT-01", "ALT-04", "HYP-03"]
+      },
+      {
+        "id": "UNIT-18",
+        "concept": "custom_integrated_triage_pipeline_build",
+        "covered_by": ["ALT-04"]
+      },
+      {
+        "id": "UNIT-19",
+        "concept": "cost_license_capacity_and_operational_effort_unknown",
+        "covered_by": ["ALT-02", "ALT-03", "ALT-04"]
+      },
+      {
+        "id": "UNIT-20",
+        "concept": "synthetic_only_fault_injection_validation",
+        "covered_by": ["HYP-01", "HYP-02", "HYP-03"]
+      }
+    ]
+  },
+  "normalization_and_paraphrase_policy": {
+    "text_normalization": [
+      "ignorar caixa, plural, flexão e pontuação não semântica",
+      "normalizar equivalentes pt-BR e ingleses",
+      "comparar mecanismo causal, garantia, dependências e trade-offs",
+      "comparar entre categorias; mover ideia entre alternativa, mecanismo e hipótese não cria novidade"
+    ],
+    "canonical_synonym_groups": {
+      "conventional_queue": ["fila convencional", "task queue", "job queue", "worker queue"],
+      "bounded_queue": ["fila limitada", "bounded queue", "finite-capacity queue", "bounded buffer"],
+      "backpressure": ["backpressure", "back-pressure", "retropressão", "producer throttling", "admission control"],
+      "durable_processing": ["processamento durável", "durable workflow", "persistent job processor", "restart-safe worker"],
+      "transactional_state": ["persistência transacional", "transactional work state", "durable state boundary", "persist before acknowledgment"],
+      "idempotency": ["chave de idempotência", "deduplication key", "efeito lógico no máximo uma vez", "idempotent effect"],
+      "operational_events": ["eventos estruturados", "audit trail", "progresso por item", "state events", "trilha de falha e intervenção"],
+      "custom_build": ["pipeline próprio", "custom build", "build from scratch", "solução sob medida"]
+    },
+    "not_novel_rules": [
+      "renomear, traduzir ou mudar a categoria de item congelado",
+      "especificar tecnologia ou produto sem novo mecanismo causal comprovado",
+      "adicionar métrica, risco, lacuna, dependência ou teste a item já inventariado",
+      "combinar backpressure, persistência, idempotência e observabilidade sem nova interação causal",
+      "reformular transactional persistence, ack boundary ou idempotency key",
+      "repetir retenção, segurança, custo, licença ou capacidade como hipótese nova"
+    ],
+    "potentially_novel_if_supported": [
+      "protocolo concreto que feche atomicamente a janela entre estado e efeito externo",
+      "mecanismo novo para identidade quando reenvios não compartilham chave estável",
+      "alternativa concreta reutilizável com evidência independente",
+      "mecanismo de limitação ponta a ponta além da fila principal",
+      "arquitetura materialmente distinta de fila, processador durável ou pipeline próprio"
+    ]
+  },
+  "evidence_question_coverage": [
+    {
+      "question_id": "EQ-01",
+      "question": "Que mecanismo limita admissão quando consumidores ficam lentos?",
+      "coverage": "DIRECT",
+      "answer_inventory": ["ALT-02", "MEC-01", "HYP-01", "UNIT-03", "UNIT-04", "UNIT-05", "UNIT-06"],
+      "covered_claim": "Fila com limite efetivo aplica backpressure, espera, atraso ou rejeição observável ao produtor.",
+      "evidence_boundary": "A classe é declarada no caso, mas nenhuma implementação ou configuração é demonstrada."
+    },
+    {
+      "question_id": "EQ-02",
+      "question": "Como o trabalho aceito sobrevive a reinício sem duplicar efeitos?",
+      "coverage": "HYPOTHETICAL_ARCHITECTURE_ONLY",
+      "answer_inventory": ["ALT-03", "HYP-02", "UNIT-07", "UNIT-08", "UNIT-09", "UNIT-10", "UNIT-11", "UNIT-12", "UNIT-13"],
+      "covered_claim": "Persistir transacionalmente estado e referência, controlar fronteiras de confirmação, retomar trabalho e usar idempotência ou deduplicação por efeito.",
+      "evidence_boundary": "Durabilidade, atomicidade, recuperação e idempotência não são propriedades demonstradas."
+    },
+    {
+      "question_id": "EQ-03",
+      "question": "Que evidência separa uma propriedade demonstrada de uma hipótese de integração?",
+      "coverage": "DIRECT_WITH_EXPLICIT_BOUNDARY",
+      "answer_inventory": ["CASE_INPUT"],
+      "covered_claim": "A entrada demonstra requisitos, restrições, baseline e classe declarada; todas as propriedades de solução permanecem hipóteses a validar.",
+      "evidence_boundary": "Não há repositório, implementação, execução, custo ou licença observável."
+    }
+  ],
+  "evidence_baseline": {
+    "references": [
+      {
+        "reference_id": "CASE_INPUT",
+        "source_type": "CASE_INPUT",
+        "locator": "EXP29-C01; cenário, requisitos, restrições e mecanismo suportado",
+        "sha256_as_reported_by_candidate": "",
+        "candidate_verification_status": "VERIFIED",
+        "mechanically_resolvable_from_known_case": true,
+        "canonical_case_sha256_from_contract": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+        "supports": [
+          "problema e capacidades desejadas",
+          "baseline convencional",
+          "reenvio e indisponibilidade de classificadores",
+          "classe BOUNDED_QUEUE_BACKPRESSURE",
+          "ausência de repositório e evidência operacional"
+        ],
+        "does_not_support": [
+          "implementação concreta",
+          "recuperação após reinício",
+          "idempotência ou atomicidade",
+          "custos, licença ou segurança operacional"
+        ]
+      }
+    ],
+    "property_status": {
+      "case_requirements_and_constraints": "DEMONSTRATED_AS_INPUT_FACTS",
+      "bounded_queue_backpressure_class": "DECLARED_BY_CASE",
+      "bounded_memory_in_implementation": "UNKNOWN",
+      "durable_restart_recovery": "UNKNOWN",
+      "idempotent_effects": "UNKNOWN",
+      "operational_explainability": "UNKNOWN",
+      "data_protection": "UNKNOWN",
+      "cost_license_and_capacity": "UNKNOWN"
+    }
+  },
+  "counterevidence_baseline": {
+    "explicit_counter_evidence": [
+      "O mecanismo fornecido limita admissão, mas não cobre durabilidade, recuperação independente ou idempotência.",
+      "Reenvio da fonte torna retry ou reprocessamento sem deduplicação capaz de duplicar efeitos.",
+      "Não há evidência de retenção de trabalho aceito após reinício.",
+      "Não há evidência de custos, licença, capacidade ou integração.",
+      "Dados clínicos reais não estão autorizados para validação em produção."
+    ],
+    "hypothesis_specific_counterevidence_to_seek": [
+      "memória cresce sob consumidor lento",
+      "produtor ignora backpressure",
+      "limite causa perda silenciosa",
+      "trabalho aceito desaparece após reinício",
+      "reprocessamento duplica efeito",
+      "tentativas e efeitos não são correlacionáveis",
+      "item sem estado ou causa",
+      "logs ou métricas vazam dados sensíveis"
+    ]
+  },
+  "unknowns_baseline": [
+    "tecnologia e durabilidade da fila",
+    "semântica de entrega e confirmação",
+    "estratégia de deduplicação e idempotência por anexo",
+    "escopo do limite operacional para dados sensíveis",
+    "retenção, criptografia, acesso e auditoria",
+    "métricas e interface de progresso e intervenção",
+    "limites de pico, latência e capacidade",
+    "custos, licenças e esforço de operação",
+    "comportamento quando admissão é limitada ou recusada",
+    "existência de recuperação independente após reinício"
+  ],
+  "actionability_baseline": {
+    "overall_decision": "INVESTIGATE",
+    "decision_rationale": "Adaptar fila limitada é plausível para backpressure; recuperação, idempotência, observabilidade, segurança, custos e licença precisam ser validados antes de escolher reutilização, adaptação ou construção.",
+    "conditional_build_direction": "Pipeline próprio é alternativa BUILD já inventariada, mas não recomendação demonstrada.",
+    "validation_targets": [
+      {
+        "id": "VAL-01",
+        "target": "backpressure e limite de memória",
+        "method": "pico sintético com classificadores progressivamente lentos ou indisponíveis; medir fila, memória, rejeição e latência",
+        "success": "memória e trabalho em voo dentro dos limites e limitação observável",
+        "failure": "crescimento sem limite ou perda sem registro"
+      },
+      {
+        "id": "VAL-02",
+        "target": "recuperação após reinício",
+        "method": "interromper produtores e workers em pontos distintos e rastrear todo trabalho aceito após reinício",
+        "success": "trabalho recuperável ou marcado para intervenção sem perda silenciosa",
+        "failure": "trabalho perdido ou estado inconsistente"
+      },
+      {
+        "id": "VAL-03",
+        "target": "idempotência e deduplicação",
+        "method": "reenviar anexo sintético, provocar retries e interromper antes e depois de efeitos simulados",
+        "success": "nenhum efeito lógico duplicado",
+        "failure": "efeito duplicado sem reconciliação"
+      },
+      {
+        "id": "VAL-04",
+        "target": "explicabilidade operacional",
+        "method": "executar sucesso, retry, falha permanente e indisponibilidade e inspecionar estados, eventos e intervenção",
+        "success": "estado, causa, tentativas e próxima ação por item sem dados sensíveis indevidos",
+        "failure": "causa indeterminável ou violação do limite de dados"
+      }
+    ]
+  },
+  "frozen_novelty_rubric": {
+    "unit_of_judgment": "Cada alternativa, mecanismo ou hipótese materialmente distinta no segundo membro.",
+    "required_tests": [
+      {
+        "id": "RUBRIC-01",
+        "criterion": "is_target_item_type",
+        "rule": "Deve ser alternativa, mecanismo ou hipótese; risco, lacuna, evidência ou teste isolado não conta."
+      },
+      {
+        "id": "RUBRIC-02",
+        "criterion": "absent_from_frozen_inventory",
+        "rule": "O conteúdo causal não pode constar de alternativas, mecanismos, hipóteses, unidades atômicas ou sinônimos congelados."
+      },
+      {
+        "id": "RUBRIC-03",
+        "criterion": "materially_distinct_not_paraphrase",
+        "rule": "Deve diferir em mecanismo causal, garantia, dependência ou trade-off; tradução, detalhe operacional ou recombinação não basta."
+      },
+      {
+        "id": "RUBRIC-04",
+        "criterion": "mechanically_resolvable_evidence_support",
+        "rule": "A evidência deve ter locator resolvível nas entradas públicas permitidas e sustentar especificamente o item."
+      },
+      {
+        "id": "RUBRIC-05",
+        "criterion": "no_unsupported_extrapolation",
+        "rule": "Não pode depender de propriedade, componente, execução, custo, licença ou garantia não sustentada."
+      }
+    ],
+    "all_tests_required": true,
+    "ambiguous_item": "UNKNOWN_NOT_COUNTED_AS_NOVEL",
+    "unknown_default_success": false,
+    "cross_category_matching": true,
+    "combination_rule": "Combinação de itens congelados só é nova com interação causal materialmente distinta e evidência específica.",
+    "specificity_rule": "Produto, algoritmo ou configuração específica permanece coberto se apenas instancia mecanismo congelado.",
+    "evidence_rule": "A entrada do caso prova requisitos e classe declarada, não propriedades de implementação.",
+    "comparison_deferred": true,
+    "criteria_frozen": true
+  },
+  "read_allowlist_and_attestation": {
+    "declared_pilot_data_allowlist": [
+      {
+        "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+        "scope": "already_known"
+      },
+      {
+        "path": "00_nucleo/benchmark/0029/corpus-public.json",
+        "scope": "already_known_case_EXP29-C01_only"
+      },
+      {
+        "path": "00_nucleo/benchmark/0029/sessions-temperature-r1/21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f/output.json",
+        "scope": "entire_file_as_CANDIDATE_P"
+      }
+    ],
+    "actual_new_pilot_data_reads_for_slot_2_inventory": [
+      "somente o output rotulado CANDIDATE_P"
+    ],
+    "known_inputs_reused_without_reread": [
+      "temperature-pilot-contract-r2.json",
+      "caso EXP29-C01"
+    ],
+    "inherited_deviation": {
+      "present": true,
+      "code": "CORPUS_LOGICAL_SCOPE_OVERREAD_IN_PRIOR_PHASE",
+      "description": "Em fase anterior, a extração de EXP29-C01 exibiu também os casos públicos EXP29-V01 e EXP29-V02.",
+      "materiality_for_slot_2_arm_or_profile_blinding": "NON_MATERIAL",
+      "reason": "Os casos públicos adicionais não contêm rótulo, perfil, segundo membro nem saída operacional deste slot.",
+      "perfect_isolation_claimed": false
+    },
+    "forbidden_artifacts_read_for_this_inventory": [],
+    "slot_1_arm_or_profile_revelation_read": false,
+    "external_model_executed": false,
+    "external_mcp_executed": false,
+    "candidate_label": "CANDIDATE_P",
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "comparison_judgment": "NOT_PERFORMED",
+    "isolation_claim": "BLIND_TO_SLOT_2_ARM_AND_PROFILE_WITH_INHERITED_NON_MATERIAL_PUBLIC_CORPUS_DEVIATION"
+  }
+}

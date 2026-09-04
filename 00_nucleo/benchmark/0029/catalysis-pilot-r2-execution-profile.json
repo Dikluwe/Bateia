@@ -1,0 +1,121 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-execution-profile.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "codex_cli": {
+    "path": "/usr/bin/codex",
+    "version": "codex-cli 0.149.0",
+    "required_prefix": [
+      "/usr/bin/codex",
+      "--search",
+      "exec"
+    ],
+    "rejected_shape": "codex exec --search"
+  },
+  "common": {
+    "environment": {
+      "CODEX_HOME": "/tmp/codex-step0029-home"
+    },
+    "codex_home_policy": "AUTH_ONLY; only pre-existing authentication material is permitted",
+    "cwd": "/tmp/bateia-catalysis-pilot-empty",
+    "cwd_policy": "EXISTING_EMPTY_DIRECTORY",
+    "argv_after_exec": [
+      "--ignore-user-config",
+      "--ignore-rules",
+      "--ephemeral",
+      "--skip-git-repo-check",
+      "--sandbox",
+      "read-only",
+      "--config",
+      "approval_policy=\"never\"",
+      "--model",
+      "gpt-5.6-sol",
+      "--config",
+      "model_reasoning_effort=\"high\"",
+      "--cd",
+      "/tmp/bateia-catalysis-pilot-empty",
+      "--output-schema",
+      "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "--output-last-message",
+      "PER_ARM_OUTPUT_PATH",
+      "--json"
+    ],
+    "prompt_transport": "Frozen UTF-8 prompt bytes via stdin; never interpolate or rewrite.",
+    "native_web": {
+      "enabled_by": "top-level --search before exec",
+      "calls_min": 1,
+      "calls_max": 3,
+      "enforcement": "FAIL_CLOSED_POSTCONDITION_AND_HARD_STOP_ON_VIOLATION"
+    },
+    "external_features": {
+      "native_web_search": true,
+      "apps": false,
+      "browser_use": false,
+      "browser_use_external": false,
+      "computer_use": false,
+      "image_generation": false,
+      "in_app_browser": false,
+      "multi_agent": false,
+      "plugins": false,
+      "remote_plugin": false,
+      "shell_tool": false,
+      "skill_search": false,
+      "tool_suggest": false
+    },
+    "approval_policy": "never",
+    "sandbox": "read-only",
+    "timeout_seconds": 900,
+    "maximum_output_unicode_characters": 18000,
+    "single_global_in_flight": true,
+    "cadence_seconds_between_starts": 120
+  },
+  "control": {
+    "arm_id": "IA_INTERNET",
+    "prompt_sha256": "d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8",
+    "mcp_servers": {},
+    "mcp_server_count": 0,
+    "enabled_tools": [
+      "web_search"
+    ]
+  },
+  "treatment": {
+    "arm_id": "IA_INTERNET_BATEIA",
+    "prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56",
+    "mcp_servers": {
+      "bateia": {
+        "command": "env",
+        "args": [
+          "BATEIA_RUN_ROOT=/tmp/bateia-catalysis-pilot-r1-run",
+          "BATEIA_MCP_MAX_TOOL_CALLS=1",
+          "/tmp/bateia-temperature-pilot-r1",
+          "mcp"
+        ],
+        "cwd": "/repos/Antigravity/Bateia",
+        "required": true,
+        "enabled_tools": [
+          "bateia_recommend"
+        ],
+        "default_tools_approval_mode": "approve"
+      }
+    },
+    "mcp_server_count": 1,
+    "enabled_tools": [
+      "web_search",
+      "bateia_recommend"
+    ],
+    "bateia_recommend_calls_exactly": 1,
+    "binary": {
+      "path": "/tmp/bateia-temperature-pilot-r1",
+      "sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+    }
+  },
+  "dispatch_preconditions": [
+    "Resolved argv begins exactly with codex --search exec.",
+    "Every common flag appears in each arm invocation.",
+    "Prompt bytes match the arm hash.",
+    "Control has zero MCP configuration after --ignore-user-config.",
+    "Treatment has exactly the frozen Bateia server and tool.",
+    "Bateia binary hash matches before treatment dispatch.",
+    "No unlisted feature or tool is enabled."
+  ]
+}

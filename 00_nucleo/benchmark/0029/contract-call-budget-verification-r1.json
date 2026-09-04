@@ -1,0 +1,235 @@
+{
+  "schema_version": "tekt.step0029.contract-call-budget-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T07:03:54Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_FAIL_CLOSED_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "result": "FAIL_CLOSED_PENDING_BOUNDED_CALL_BUDGET_ENFORCEMENT",
+  "cell_verdict": "INVALID_OUTPUT_NONRETRYABLE_CORRECTLY_CLASSIFIED",
+  "eventual_continuation_verdict": "CONDITIONALLY_RESUMABLE_DISTINCT_CONTRACT_ONLY_AFTER_REDESIGN_RESEAL_AND_FOCAL_CANARY_VERIFICATION",
+  "current_dispatch_authorization": "BLOCKED",
+  "validation_and_test": "BLOCKED_PENDING_FINAL_CONTRACT_GATE",
+  "inputs": {
+    "cell_id": "9c04760475c1fb025615d8d384bb77f9b5c2c577d972e889602e3c36bcb0cb4f",
+    "cell_directory": "00_nucleo/benchmark/0029/sessions-r2/9c04760475c1fb025615d8d384bb77f9b5c2c577d972e889602e3c36bcb0cb4f",
+    "execution_queue_r2_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f",
+    "randomization_plan_r2_sha256": "0fbbe7496c8c93ee27600ea1b327a9330e586313095dc246f25fdf68bfa04012",
+    "prompt_contract_r2_sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c",
+    "engineering_investigation_schema_r2_file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "engineering_investigation_schema_r2_canonical_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df",
+    "execution_isolation_profiles_r3_sha256": "0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04",
+    "execution_seal_r4_sha256": "c48e445947b7a15aa13ea30775783dfc95234cdf1a793f475b9e025ba2b07339",
+    "corpus_public_sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "corpus_registry_sha256": "ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee",
+    "invocation_sha256": "b380ddd3f1aac03fcbaa5e5ecc7d03f44e3cef71f4dc8608ca84e510f27d71f7",
+    "prompt_bytes_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048",
+    "output_sha256": "06eeecd13c5bdad65d1b24cbf1afe1d288b7164bfe295939360b11dab577fafe",
+    "events_sha256": "6bd68e63aecfc8904cff44c95a4716bbeab447b69b4f6cd2d37da2da0040f07f",
+    "stderr_sha256": "fb8923d11626823190474777b8e542b6d5ea45f896ea70209519e9fedd74560b",
+    "dispatch_receipt_sha256": "39c7ec550d5e1f5edffaaeb521b4c1309970c82f9697dfdac07ac62fb874eb00",
+    "execution_state_r2_sha256": "6bd8887ad1a57d9c7e06a8529e41ab88f74b9a81ba8bb9d2e7f551c2454c2893",
+    "automation_config_path": "/home/dikluwe/.codex/automations/passo-29-contract/automation.toml",
+    "automation_config_sha256_at_verification": "564a99ada32468ae237d64fb132aed0f2c2b38ea22886364f9518e5b75069302"
+  },
+  "executed_by_verifier": [
+    {
+      "command": "Python 3 strict duplicate-key audit of 12 JSON inputs and 100 events.jsonl records, with SHA-256 recomputation",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 queue, order, identity, R4 seal and byte-exact prompt reconstruction audit",
+      "result": "PASS"
+    },
+    {
+      "command": "Python jsonschema 4.10.3 Draft7 recursive validation of output.json against engineering-investigation.schema-r2.json",
+      "result": "PASS",
+      "schema_violations": 0
+    },
+    {
+      "command": "Python 3 lifecycle pairing and canonical request/response SHA-256 recomputation for all 48 terminal MCP cycles",
+      "result": "PASS",
+      "request_response_hashes_checked": 96,
+      "hash_mismatches": 0
+    },
+    {
+      "command": "Python 3 unchanged-poll, usage, elapsed-time, budget, run-status, retry and execution-state reconciliation",
+      "result": "PASS"
+    },
+    {
+      "command": "Python tomllib audit of /home/dikluwe/.codex/automations/passo-29-contract/automation.toml",
+      "result": "PASS_PAUSED"
+    }
+  ],
+  "sealed_identity_audit": {
+    "revised_plan_root_sha256": "622b59c348265fd3974989bfdab31b82ac89dedd72a1a554ab3fce114dcba114",
+    "root_matches_queue_plan_receipt_and_state": true,
+    "queue_membership_unique": true,
+    "pair_id": "853b77da20704a3dc0a8ac6e4b11bba1a213e493a64c840e2e18caded4644392",
+    "case_id": "EXP29-C01",
+    "profile_id": "LUNA-high",
+    "resolved_model_id": "gpt-5.6-luna",
+    "reasoning_effort": "high",
+    "split": "CONTRACT",
+    "arm": "AGENT_WITH_BATEIA",
+    "identity_matches_queue_invocation_and_receipt": true,
+    "execution_profile": "R3",
+    "execution_seal": "R4",
+    "mcp_default_tools_approval_mode": "approve",
+    "bateia_tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "tool_surface_matches_profile_and_invocation": true,
+    "r4_execution_seal_matches_receipt": true
+  },
+  "prompt_and_schema_audit": {
+    "case_canonical_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+    "case_hash_matches_corpus_registry": true,
+    "prompt_construction": "base_instruction + LF LF + treatment_instruction + LF LF + compact insertion-ordered EXP29-C01 JSON + LF",
+    "prompt_byte_exact_reconstruction": true,
+    "prompt_bytes_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048",
+    "prompt_matches_invocation_and_receipt": true,
+    "prompt_contract_output_schema_equals_schema_file": true,
+    "output_strict_json": true,
+    "output_recursive_schema_valid": true,
+    "schema_violations": 0,
+    "output_bytes_match_final_agent_message": true,
+    "output_utf8_characters": 16790,
+    "output_utf8_bytes": 17195,
+    "max_output_utf8_characters": 20000,
+    "output_character_limit_passed": true
+  },
+  "tool_cycle_audit": {
+    "events_jsonl_records": 100,
+    "terminal_tool_cycles": 48,
+    "unique_started_ids": 48,
+    "unique_completed_ids": 48,
+    "started_and_completed_id_sets_equal": true,
+    "completed_cycles": 31,
+    "failed_invalid_params_cycles": 17,
+    "terminal_cycles_by_tool": {
+      "bateia_get_artifact": 24,
+      "bateia_get_run": 8,
+      "bateia_search": 7,
+      "bateia_start_improvement_synthesis": 3,
+      "bateia_benchmark": 3,
+      "bateia_list_connectors": 1,
+      "bateia_start_recommendation": 1,
+      "bateia_start_market_discovery": 1
+    },
+    "receipt_sequences_contiguous_1_through_48": true,
+    "event_names_and_statuses_match_receipt": true,
+    "canonical_request_hashes_checked": 48,
+    "canonical_response_hashes_checked": 48,
+    "canonical_hash_mismatches": 0,
+    "all_terminal_cycles_count_toward_bateia_call_budget": true,
+    "get_run_cycles": 8,
+    "unchanged_status_polls": 5,
+    "unchanged_poll_derivation": "After the first RUNNING observation for the recommendation run, five later get_run calls repeated the same canonical request and response; the other two get_run cycles target a different run or observe a terminally changed response.",
+    "max_unchanged_status_polls": 12,
+    "unchanged_poll_limit_passed": true
+  },
+  "usage_and_budget_audit": {
+    "started_at": "2026-09-03T03:47:06-03:00",
+    "finished_at": "2026-09-03T03:55:58-03:00",
+    "elapsed_milliseconds_recomputed": 532000,
+    "duration_milliseconds_receipt": 532000,
+    "wall_clock_budget_seconds": 900,
+    "wall_clock_budget_passed": true,
+    "input_tokens": 1147817,
+    "cached_input_tokens": 1056512,
+    "output_tokens": 14176,
+    "reasoning_tokens": 5542,
+    "usage_matches_turn_completed_event": true,
+    "bateia_calls_observed": 48,
+    "max_bateia_calls": 25,
+    "bateia_call_budget_passed": false,
+    "bateia_call_budget_excess": 23,
+    "limits_exceeded": [
+      "BATEIA_CALL_BUDGET:48>25"
+    ],
+    "infrastructure_retries": 0,
+    "max_infrastructure_retries": 1,
+    "monetary_cost": {
+      "state": "UNKNOWN",
+      "reason": "No frozen price table or per-session charge was exposed by the host."
+    }
+  },
+  "classification_audit": {
+    "model_output_observed": {
+      "state": "KNOWN",
+      "value": true
+    },
+    "output_schema_valid": {
+      "state": "KNOWN",
+      "value": true
+    },
+    "status": "INVALID_OUTPUT",
+    "status_basis": "A schema-valid output does not erase behavioral budget extrapolation; 48 terminal Bateia calls exceed the immutable maximum of 25.",
+    "status_correct": true,
+    "behavioral_session_counted": true,
+    "retry_eligible": false,
+    "retry_denial_basis": "Budget extrapolation is observed model behavior and ModelOutputObserved is KNOWN(true); retry is allowed only for confirmed INFRA_FAILURE with KNOWN(false) output.",
+    "itt_treatment": "POLICY_SCORE_ZERO_REMAINS_IN_DENOMINATOR",
+    "cell_repeat_allowed": false
+  },
+  "state_and_automation_audit": {
+    "state_status": "CONTRACT_BLOCKED_LIMIT_EXCEEDED",
+    "state_phase": "CONTRACT",
+    "behavioral_sessions_dispatched": 7,
+    "behavioral_sessions_max": 108,
+    "contract_dispatched": 7,
+    "contract_valid": 5,
+    "contract_invalid_output": 1,
+    "contract_tool_unavailable": 1,
+    "receipt_directory_count": 7,
+    "receipt_status_counts_match_state": true,
+    "first_seven_contract_cells_match_frozen_queue_order": true,
+    "last_receipt_matches_audited_cell": true,
+    "in_flight": null,
+    "next_distinct_contract_cell_id_reserved_not_authorized": "98bced16e28024e44087967ffc7a7cf4a2691771b78095f2d150b604b4528c2b",
+    "blocking_failure": {
+      "code": "BATEIA_CALL_BUDGET",
+      "observed": 48,
+      "maximum": 25,
+      "cell_repeat_allowed": false
+    },
+    "automation_id": "passo-29-contract",
+    "automation_status_at_verification": "PAUSED",
+    "automation_pause_verified_from_local_toml": true,
+    "automation_config_sha256_at_verification": "564a99ada32468ae237d64fb132aed0f2c2b38ea22886364f9518e5b75069302"
+  },
+  "eventual_continuation_assessment": {
+    "acceptable_now": false,
+    "eventually_acceptable": true,
+    "scope_if_reauthorized": "DISTINCT_REMAINING_CONTRACT_CELLS_ONLY",
+    "mandatory_preconditions": [
+      "Preserve the 9c047 cell invocation, prompt, output, events and receipt byte-for-byte; never repeat it, and retain INVALID_OUTPUT with policy score zero in the ITT denominator.",
+      "Publish a bounded redesign that mechanically counts every terminal Bateia cycle, including invalid-parameter failures and polling calls, and prevents a twenty-sixth call without increasing the immutable maximum of 25.",
+      "Demonstrate the guard deterministically on synthetic 25-call and 26-call event streams without executing a model or MCP session, including fail-closed accounting when no final schema-valid output exists.",
+      "Bind the redesigned controller or execution profile, unchanged queue, prompt, schema, tool allowlist and per-cell budgets in a successor manifest and execution seal.",
+      "Obtain an independent focal verification of that successor seal and budget guard before unpausing automation or dispatching another cell.",
+      "Resume first with one distinct CONTRACT treatment cell as a canary; audit it before authorizing the rest of the remaining CONTRACT queue.",
+      "Keep VALIDATION and TEST blocked until all 18 CONTRACT cells are accounted for and an explicit final CONTRACT gate passes."
+    ],
+    "prohibited_actions": [
+      "Do not reclassify the observed failure as INFRA_FAILURE, TOOL_UNAVAILABLE or VALID_OUTPUT.",
+      "Do not retry, replace, exclude or mutate 9c047.",
+      "Do not raise max_bateia_calls above 25 or weaken any other frozen budget.",
+      "Do not unpause passo-29-contract or dispatch the reserved next cell under the current unguarded execution design.",
+      "Do not enter VALIDATION or TEST based on this focal audit."
+    ],
+    "reason": "This is the first observed call-budget failure and exposes a concrete missing enforcement boundary, so a bounded redesign with a new mechanical witness is proportionate. Continuing the existing executor would risk the same semantic violation and is therefore fail-closed."
+  },
+  "model_or_mcp_sessions_executed_by_verifier": 0,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "limitations": [
+    "The verifier audited captured bytes, frozen manifests and local automation configuration but did not rerun the model, MCP server or external dispatcher.",
+    "The automation status is mutable external state; PAUSED is attested only at the recorded verification time and TOML hash.",
+    "The shared workspace does not provide strong independent isolation attestation.",
+    "The event stream exposes no per-tool timestamps, so lifecycle pairing and canonical hashes are verified but individual tool durations are not independently recomputable.",
+    "This focal report does not authorize resumption, pass the final CONTRACT gate, judge output quality or demonstrate uplift."
+  ],
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "047aa79c53f1e967e87c729af6bf24b9d63f8623d42af20faaff653231abcd56",
+  "invalidation_rule": "Any byte change to the audited queue, plan, prompt contract, schema, profile, R4 seal, corpus, cell invocation/prompt/output/events/stderr/receipt or execution state requires a successor focal verification; automation status must be rechecked immediately before any future resumption decision."
+}

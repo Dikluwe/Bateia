@@ -1,0 +1,118 @@
+{
+  "schema_version": "bateia.step0030.positive-opaque-fixtures.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/adversario_0030",
+  "contract_sha256": "a1b0ae928064c38a1663149e19c6d25ef9da6ee4e6c9dea9f2043f44f45681d1",
+  "positive_fixtures": [
+    {
+      "id": "P01_COMPLETE_PAIR",
+      "purpose": "Preserve a complete comparable pair with native web in both arms and one prior completed Bateia recommendation only in treatment.",
+      "input": {
+        "pair_id": "EXP29-V02",
+        "preflight": "PASS",
+        "queue_committed": true,
+        "shared": {
+          "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "schema_sha256": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+          "native_web_budget": {"min": 1, "max": 3},
+          "timeout_seconds": 900
+        },
+        "arms": [
+          {
+            "arm": "IA_INTERNET",
+            "dispatch_count": 1,
+            "mcp_calls": [],
+            "native_web_machines": 2,
+            "structural_output": "VALID",
+            "editorial": "TARGET_MET",
+            "answer_state": "CONCLUSIVE"
+          },
+          {
+            "arm": "IA_INTERNET_BATEIA",
+            "dispatch_count": 1,
+            "mcp_calls": [{"tool": "bateia_recommend", "status": "completed", "ordinal": 1}],
+            "first_native_web_ordinal": 2,
+            "native_web_machines": 2,
+            "structural_output": "VALID",
+            "editorial": "TARGET_MET",
+            "answer_state": "INCONCLUSIVE"
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "Preserved",
+        "reason_code": "PAIR_COMPLETE_PRESERVED",
+        "itt_denominator_cells": 2,
+        "automatic_winner": null
+      }
+    },
+    {
+      "id": "P02_R3_DUAL_ID",
+      "purpose": "Decode the protected R3 duplicate-key telemetry without first-wins or last-wins loss.",
+      "input": {
+        "path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl",
+        "sha256": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73"
+      },
+      "expected": {
+        "verdict": "Preserved",
+        "reason_code": "R3_DUAL_ID_DECODED",
+        "record_count": 12,
+        "encoding": "DUAL_ID_CODEX_0_149",
+        "machines": [
+          {"start_sequence": 5, "finish_sequence": 6, "ids": ["item_1", "exec-c37f624f-6f68-42f4-a1ad-062b2ad66980"], "normalized_web_call_id": "exec-c37f624f-6f68-42f4-a1ad-062b2ad66980"},
+          {"start_sequence": 7, "finish_sequence": 8, "ids": ["item_2", "exec-14ddd14a-a4b7-4540-ac4a-214590e95745"], "normalized_web_call_id": "exec-14ddd14a-a4b7-4540-ac4a-214590e95745"},
+          {"start_sequence": 9, "finish_sequence": 10, "ids": ["item_3", "exec-9b4ef73e-c8e5-4036-bd3f-61ee8ec7a886"], "normalized_web_call_id": "exec-9b4ef73e-c8e5-4036-bd3f-61ee8ec7a886"}
+        ]
+      }
+    }
+  ],
+  "opaque_fixtures": [
+    {
+      "id": "O01_UNKNOWN_ENCODING",
+      "purpose": "An unfrozen ID encoding must remain opaque.",
+      "input": {
+        "started": "{\"type\":\"item.started\",\"item\":{\"id\":\"call-7\",\"type\":\"web_search\",\"action\":{\"type\":\"other\"}}}",
+        "completed": "{\"type\":\"item.completed\",\"item\":{\"id\":\"call-7\",\"type\":\"web_search\",\"action\":{\"type\":\"search\",\"queries\":[\"q\"]}}}"
+      },
+      "expected": {
+        "verdict": "Unknown",
+        "reason_code": "WEB_EVENT_ENCODING_OPAQUE",
+        "encoding": "OPAQUE",
+        "normalized_web_call_id": null
+      }
+    },
+    {
+      "id": "O02_UNKNOWN_COST",
+      "purpose": "Absent cost observations cannot be imputed from call or text volume.",
+      "input": {
+        "blind_quality_delta": 1,
+        "native_web_calls": 2,
+        "raw_output_bytes": 4096,
+        "currency_cost": null,
+        "exposed_tokens": null
+      },
+      "expected": {
+        "verdict": "Unknown",
+        "reason_code": "COST_UNKNOWN",
+        "gain_per_unit_cost": null
+      }
+    },
+    {
+      "id": "O03_UNKNOWN_CAUSAL_LINK",
+      "purpose": "A direction and later output claim without a link through resolvable web evidence cannot receive catalytic credit.",
+      "input": {
+        "bateia_direction": {"id": "D1", "content": "Investigate adapter isolation"},
+        "later_web_action": {"query": "adapter isolation", "locator": null},
+        "output_claim": {"text": "Adapter isolation is preferable", "evidence_ref": null}
+      },
+      "expected": {
+        "verdict": "Unknown",
+        "reason_code": "CAUSAL_LINK_UNKNOWN",
+        "catalysis_classification": "UNKNOWN",
+        "useful_catalysis_credit": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "schema_version": "bateia.step0029.blind-novelty-comparison.v2",
+  "comparison_id": "EXP29-C01-slot-3",
+  "created_at": "2026-09-03",
+  "author": {
+    "task_identity": "/root/avaliador_cego_r2",
+    "role": "blind_novelty_evaluator_slot_3",
+    "authority": "comparison_only"
+  },
+  "status": "FINAL_BLIND_COMPARISON",
+  "inputs": {
+    "candidate_m": {
+      "label": "CANDIDATE_M",
+      "artifact": "00_nucleo/benchmark/0029/blind-r2/slot-3-a-inventory.json",
+      "sha256": "495e256ef2f7adb8815846769dcb4bb0d3b410f3af4731b522ecc123d23cc49d",
+      "frozen_before_candidate_n": true
+    },
+    "candidate_n": {
+      "label": "CANDIDATE_N",
+      "artifact": "00_nucleo/benchmark/0029/sessions-temperature-r2/15c6712582f3f68922952286363aeb5fe84867b1c6a88b3b19f56950dd84b5f1/output.json",
+      "sha256": "155badb9723397fbc50d1bd1c1bcd92836ee18ef8d6a7278c9797f3336d31df3"
+    },
+    "contract": {
+      "artifact": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    }
+  },
+  "rubric_application": {
+    "frozen_inventory_used_without_revision": true,
+    "required_tests": [
+      "is_target_item_type",
+      "absent_from_frozen_inventory",
+      "materially_distinct_not_paraphrase",
+      "mechanically_resolvable_evidence_support",
+      "no_unsupported_extrapolation"
+    ],
+    "all_tests_required": true,
+    "ambiguous_policy": "UNKNOWN_NOT_COUNTED_AS_NOVEL",
+    "cross_category_matching_applied": true,
+    "candidate_n_confirmed_novel_semantic_core_count": 2,
+    "candidate_n_confirmed_novel_category_occurrence_count": 4,
+    "candidate_n_potentially_novel_but_unknown_count": 2
+  },
+  "materially_new_items_in_candidate_n": {
+    "alternatives": [
+      {
+        "id": "N-ALT-01",
+        "semantic_core_id": "CORE-ATOMIC-OUTBOX",
+        "candidate_n_item": "Ledger de jobs com inbox/outbox transacional",
+        "material_delta": "Além do processador próprio genérico de M, grava resultado e intenção de publicação no mesmo commit e delega aplicação do efeito a consumidor que propaga a mesma chave.",
+        "evidence_refs": ["CASE-001", "BATEIA-03"],
+        "mechanically_resolvable_support": "PARTIAL_SUFFICIENT_FOR_ARCHITECTURAL_HYPOTHESIS",
+        "support_detail": "CASE-001 resolve mecanicamente a necessidade de sobreviver a reinício e evitar duplicação; BATEIA-03 permanece UNKNOWN. O item é contado somente como alternativa BUILD hipotética, não como componente ou propriedade demonstrada.",
+        "unsupported_extrapolation_test": "PASS_AS_HYPOTHESIS_ONLY",
+        "novelty_result": "CONFIRMED_NOVEL"
+      }
+    ],
+    "mechanisms": [
+      {
+        "id": "N-MEC-01",
+        "semantic_core_id": "CORE-ATOMIC-OUTBOX",
+        "candidate_n_item": "Resultado e intenção de publicação gravados atomicamente; consumidor aplica efeito com a mesma chave",
+        "material_delta": "Fecha a janela entre commit do resultado e intenção de publicar, que M apenas identificava como risco entre efeito e registro idempotente.",
+        "evidence_refs": ["CASE-001", "BATEIA-03"],
+        "mechanically_resolvable_support": "PARTIAL_SUFFICIENT_FOR_MECHANISM_HYPOTHESIS",
+        "support_detail": "O caso resolve a obrigação causal; nenhuma execução ou implementação da outbox é demonstrada.",
+        "unsupported_extrapolation_test": "PASS_AS_PROPOSED_MECHANISM",
+        "novelty_result": "CONFIRMED_NOVEL"
+      },
+      {
+        "id": "N-MEC-02",
+        "semantic_core_id": "CORE-CIRCUIT-BREAKER",
+        "candidate_n_item": "Circuit breaker para interromper chamadas durante indisponibilidade",
+        "material_delta": "M cobre backoff, jitter, retries limitados e tempestade de retries, mas não o estado de circuito que suspende proativamente chamadas ao classificador indisponível.",
+        "evidence_refs": ["CASE-001"],
+        "mechanically_resolvable_support": "RESOLVABLE_FOR_HYPOTHESIS",
+        "support_detail": "A restrição pública de classificadores lentos ou indisponíveis sustenta diretamente a aplicabilidade, sem provar implementação.",
+        "unsupported_extrapolation_test": "PASS_AS_PROPOSED_MECHANISM",
+        "novelty_result": "CONFIRMED_NOVEL"
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "id": "N-HYP-01",
+        "semantic_core_id": "CORE-ATOMIC-OUTBOX",
+        "candidate_n_item": "Chave persistente e outbox reduzem duplicação sob falha entre processamento e confirmação",
+        "material_delta": "Materializa a interação causal entre unicidade no inbox, commit da intenção e publicação posterior, além de chave condicional isolada.",
+        "evidence_refs": ["BATEIA-03"],
+        "mechanically_resolvable_support": "UNKNOWN_FROM_EXPLICIT_REF_BUT_CASE_REQUIREMENT_IS_RESOLVABLE",
+        "support_detail": "A referência declarada é externa e UNKNOWN; a hipótese permanece contada apenas porque repete o mecanismo N-MEC-01, cuja relevância à obrigação pública é resolvível. Não conta como núcleo adicional.",
+        "unsupported_extrapolation_test": "PASS_AS_HYPOTHESIS_ONLY",
+        "novelty_result": "CONFIRMED_NOVEL_SAME_CORE_AS_N_MEC_01"
+      }
+    ],
+    "unique_semantic_cores": [
+      {
+        "id": "CORE-ATOMIC-OUTBOX",
+        "category_occurrences": ["N-ALT-01", "N-MEC-01", "N-HYP-01"]
+      },
+      {
+        "id": "CORE-CIRCUIT-BREAKER",
+        "category_occurrences": ["N-MEC-02"]
+      }
+    ],
+    "potentially_new_but_not_counted": [
+      {
+        "id": "N-POTENTIAL-01",
+        "category": "mechanism_and_hypothesis",
+        "candidate_n_item": "Chave e efeito por versão do anexo",
+        "material_distinctness": "POTENTIALLY_DISTINCT",
+        "reason": "Pode resolver o risco congelado de bloquear reprocessamento legítimo, mas semântica e identidade de versão são Unknown no caso.",
+        "evidence_refs": ["BATEIA-03"],
+        "mechanically_resolvable_support": "UNKNOWN",
+        "novelty_result": "UNKNOWN_NOT_COUNTED_AS_NOVEL"
+      },
+      {
+        "id": "N-POTENTIAL-02",
+        "category": "alternative",
+        "candidate_n_item": "Candidatos retornados pelo Bateia",
+        "material_distinctness": "UNKNOWN",
+        "reason": "Nenhum candidato concreto, mecanismo próprio ou propriedade verificável é identificado.",
+        "evidence_refs": ["BATEIA-01", "BATEIA-02", "BATEIA-03"],
+        "mechanically_resolvable_support": "UNKNOWN",
+        "novelty_result": "UNKNOWN_NOT_COUNTED_AS_NOVEL"
+      }
+    ]
+  },
+  "rejected_paraphrases": {
+    "alternatives": [
+      {
+        "candidate_n_item": "Fila convencional com workers",
+        "matched_candidate_m_items": ["ALT-01", "UNIT-01", "UNIT-02", "UNIT-04", "UNIT-05"],
+        "result": "NOT_NOVEL",
+        "reason": "É a fila convencional reforçada já congelada."
+      },
+      {
+        "candidate_n_item": "Runtime local de workflows duráveis",
+        "matched_candidate_m_items": ["ALT-02", "UNIT-06"],
+        "result": "NOT_NOVEL",
+        "reason": "Localidade não muda o mecanismo de workflow durável, histórico, retomada e progresso."
+      }
+    ],
+    "mechanisms": [
+      {
+        "candidate_n_item": "Fila limitada por itens e bytes com spool durável limitado",
+        "matched_candidate_m_items": ["ALT-01", "MEC-01", "HYP-01", "UNIT-01", "UNIT-08", "UNIT-09"],
+        "result": "NOT_NOVEL",
+        "reason": "Quota por bytes e spool são especificações do mecanismo já congelado de fila durável limitada; o risco de mover backlog ao armazenamento também já constava."
+      },
+      {
+        "candidate_n_item": "Ledger durável com máquina de estados e leases recuperáveis",
+        "matched_candidate_m_items": ["MEC-02", "MEC-04", "MEC-05", "HYP-02", "UNIT-10", "UNIT-11", "UNIT-12", "UNIT-18", "UNIT-23"],
+        "result": "NOT_NOVEL",
+        "reason": "Persistência antes do aceite, lease, retomada, estados, tentativas e erros já estão congelados."
+      },
+      {
+        "candidate_n_item": "Inbox, identidade estável, restrição única e consumidores idempotentes",
+        "matched_candidate_m_items": ["MEC-03", "HYP-03", "UNIT-13", "UNIT-14", "UNIT-15", "UNIT-16", "UNIT-17"],
+        "result": "NOT_NOVEL_EXCEPT_ATOMIC_OUTBOX_CORE",
+        "reason": "Chave, hash, unicidade e escrita condicional são paráfrases; somente o commit atômico da intenção de publicação foi isolado como novo."
+      },
+      {
+        "candidate_n_item": "Retries limitados, backoff, jitter e quarentena",
+        "matched_candidate_m_items": ["MEC-04", "MEC-05", "UNIT-04", "UNIT-05", "UNIT-19", "UNIT-21", "UNIT-22"],
+        "result": "NOT_NOVEL_EXCEPT_CIRCUIT_BREAKER",
+        "reason": "Retry control e intervenção já constam; somente o circuit breaker é materialmente novo."
+      },
+      {
+        "candidate_n_item": "Telemetria por correlação e auditoria minimizada",
+        "matched_candidate_m_items": ["MEC-05", "HYP-04", "UNIT-23", "UNIT-24"],
+        "result": "NOT_NOVEL",
+        "reason": "Contadores, identificadores opacos, códigos e ausência de conteúdo clínico são detalhes da observabilidade congelada."
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "candidate_n_item": "Admissão limitada com spool durável",
+        "matched_candidate_m_items": ["HYP-01", "MEC-01", "UNIT-01", "UNIT-08", "UNIT-09"],
+        "result": "NOT_NOVEL"
+      },
+      {
+        "candidate_n_item": "Ledger com leases recuperáveis",
+        "matched_candidate_m_items": ["HYP-02", "MEC-02", "MEC-04", "UNIT-10", "UNIT-11", "UNIT-12", "UNIT-18", "UNIT-20"],
+        "result": "NOT_NOVEL"
+      },
+      {
+        "candidate_n_item": "Máquina de estados auditável com códigos de falha",
+        "matched_candidate_m_items": ["HYP-04", "MEC-05", "UNIT-23", "UNIT-24"],
+        "result": "NOT_NOVEL"
+      }
+    ],
+    "non_novel_validation_details": [
+      "Limites separados de itens, bytes e disco aumentam precisão de teste, não criam mecanismo novo.",
+      "Relógio controlável, RBAC, taxonomia de falhas, SLO e modelo de custo são dependências e critérios operacionais, não itens da rubrica de novidade.",
+      "Testar worker e coordenador em cada transição especializa a injeção de falhas já congelada."
+    ]
+  },
+  "mechanically_resolvable_evidence": {
+    "candidate_m": {
+      "status": "RESOLVABLE_WITHIN_FROZEN_INVENTORY",
+      "references": ["E1"],
+      "scope": "Requisitos, baseline, classe de backpressure e restrições; propriedades de implementação permanecem Unknown."
+    },
+    "candidate_n": {
+      "status": "PARTIAL",
+      "references": [
+        {
+          "reference_id": "CASE-001",
+          "source_type": "CASE_INPUT",
+          "mechanically_resolvable": true,
+          "scope": "Requisitos, restrições, baseline, indisponibilidade de classificadores e necessidade de backpressure, recuperação e ausência de duplicação."
+        },
+        {
+          "reference_id": "BATEIA-01",
+          "source_type": "BATEIA_RUN",
+          "sha256": "UNKNOWN",
+          "mechanically_resolvable": false,
+          "result": "UNKNOWN"
+        },
+        {
+          "reference_id": "BATEIA-02",
+          "source_type": "BATEIA_RUN",
+          "sha256": "UNKNOWN",
+          "mechanically_resolvable": false,
+          "candidate_verification_status": "UNKNOWN",
+          "result": "UNKNOWN"
+        },
+        {
+          "reference_id": "BATEIA-03",
+          "source_type": "BATEIA_RUN",
+          "sha256": "UNKNOWN",
+          "mechanically_resolvable": false,
+          "result": "UNKNOWN"
+        }
+      ],
+      "interpretation": "CASE-001 sustenta relevância e enquadramento hipotético; nenhuma alegação sobre candidatos ou execuções externas é verificável e nenhuma propriedade de implementação é tratada como demonstrada."
+    }
+  },
+  "evidence_question_comparison": [
+    {
+      "question_id": "EQ-01",
+      "topic": "limite de admissão sob consumidor lento",
+      "candidate_m": "DIRECT_CASE_SUPPORTED_CLASS",
+      "candidate_n": "DIRECT_CASE_SUPPORTED_CLASS_WITH_BYTE_AND_DISK_SPECIFICITY",
+      "preferred": "TIE",
+      "reason": "N detalha itens, bytes e spool, mas permanece no mecanismo congelado de capacidade limitada."
+    },
+    {
+      "question_id": "EQ-02",
+      "topic": "sobrevivência a reinício sem efeitos duplicados",
+      "candidate_m": "PERSIST_BEFORE_ACK_PLUS_CONDITIONAL_EFFECT_HYPOTHESIS",
+      "candidate_n": "TRANSACTIONAL_INBOX_OUTBOX_PLUS_IDEMPOTENT_CONSUMER_HYPOTHESIS",
+      "preferred": "CANDIDATE_N",
+      "reason": "N acrescenta o commit conjunto da intenção de publicação e circuito de consumo idempotente, reduzindo uma janela de falha que M apenas registrava como risco."
+    },
+    {
+      "question_id": "EQ-03",
+      "topic": "separar propriedade demonstrada de hipótese",
+      "candidate_m": "DIRECT_WITH_CASE_ONLY_BOUNDARY",
+      "candidate_n": "DIRECT_CASE_BOUNDARY_PLUS_UNRESOLVABLE_EXTERNAL_REFERENCES",
+      "preferred": "CANDIDATE_M",
+      "reason": "N preserva inconclusividade, mas três referências externas permanecem mecanicamente irresolvíveis."
+    }
+  ],
+  "counterevidence_and_unknowns_comparison": {
+    "candidate_m": {
+      "strengths": [
+        "doze alvos de contraevidência cobrem ack, armazenamento, identidade, lease, retry, DLQ e telemetria",
+        "unknowns amplos de carga, regulação, efeitos, topologia e operação",
+        "não depende de execução externa"
+      ]
+    },
+    "candidate_n": {
+      "strengths": [
+        "explicita crescimento ilimitado de disco, janela publicação-confirmação e retenção da chave",
+        "unknowns incluem stack, versionamento, desastre, LGPD organizacional e downstream",
+        "preserva cobertura externa como Unknown"
+      ],
+      "weaknesses": [
+        "afirma três buscas sem artefatos ou hashes verificáveis",
+        "adequação de outbox e circuit breaker não foi executada"
+      ]
+    },
+    "new_material_unknowns_or_counterevidence_in_n": [
+      "expiração do registro de deduplicação antes do último reenvio",
+      "divergência entre métricas e ledger",
+      "recuperação de desastre e backup ainda indefinidos"
+    ],
+    "preferred": "CANDIDATE_N",
+    "reason": "N preserva as lacunas de M e adiciona fronteiras concretas de retenção da deduplicação, consistência de observabilidade e desastre."
+  },
+  "actionability_comparison": {
+    "candidate_m": {
+      "decision": "INVESTIGATE",
+      "validation_targets": 5,
+      "strength": "Testa fronteiras, idempotência, explicabilidade e viabilidade antes de BUILD."
+    },
+    "candidate_n": {
+      "decision": "ADAPT_WITHOUT_PRODUCT_SELECTION",
+      "validation_targets": 5,
+      "strength": "Define limites por itens, bytes e disco, testes de coordenador, versão de chave, outbox/destino sintético, RBAC, SLO e custo operacional."
+    },
+    "delta": "MORE_SPECIFIC_IMPLEMENTATION_AND_OPERATION_GATES",
+    "preferred": "CANDIDATE_N",
+    "reason": "N traduz o desenho em critérios mais executáveis sem alegar que algum produto já passou."
+  },
+  "criterion_verdicts": [
+    {
+      "criterion": "confirmed_material_novelty",
+      "winner": "CANDIDATE_N",
+      "reason": "N acrescenta dois núcleos causais: outbox transacional e circuit breaker."
+    },
+    {
+      "criterion": "mechanically_resolvable_evidence_support",
+      "winner": "CANDIDATE_M",
+      "reason": "M depende apenas do caso; N mistura suporte público suficiente para hipóteses com três referências externas irresolvíveis."
+    },
+    {
+      "criterion": "evidence_question_coverage",
+      "winner": "CANDIDATE_N",
+      "reason": "Q1 empata, Q2 melhora materialmente com outbox e Q3 favorece M; o delta causal em Q2 decide o conjunto."
+    },
+    {
+      "criterion": "counterevidence_and_unknown_preservation",
+      "winner": "CANDIDATE_N",
+      "reason": "N adiciona retenção de deduplicação, consistência ledger-métricas e recuperação de desastre."
+    },
+    {
+      "criterion": "actionability",
+      "winner": "CANDIDATE_N",
+      "reason": "Os gates são mais específicos em quota, versão, outbox, RBAC, SLO e custo."
+    }
+  ],
+  "overall_verdict": {
+    "winner": "CANDIDATE_N",
+    "novelty_uplift": "POSITIVE_TWO_UNIQUE_SEMANTIC_CORES",
+    "reason": "CANDIDATE_N acrescenta outbox transacional e circuit breaker como hipóteses causais distintas, preserva Unknown para propriedades não executadas e torna validação/operabilidade mais específicas. Referências externas não contribuem para o veredito.",
+    "unknown_does_not_default_to_success": true
+  },
+  "confidence": {
+    "level": "MEDIUM_HIGH",
+    "score": 0.84,
+    "basis": [
+      "inventário M explicitamente reservou protocolo de fechamento da janela estado-efeito como potencial novidade",
+      "descrição N da outbox é causalmente específica, não mera menção nominal",
+      "circuit breaker é separável de retry/backoff já congelados",
+      "incerteza residual sobre o limiar de suporte de hipótese baseado apenas no caso"
+    ]
+  },
+  "limitations": [
+    "BATEIA-01, BATEIA-02 e BATEIA-03 não foram lidos; status, candidatos e conclusões permanecem Unknown.",
+    "Outbox e circuit breaker são reconhecidos como hipóteses de arquitetura aplicáveis, não propriedades demonstradas.",
+    "Não há veredito sobre produto, implementação, desempenho, licença, conformidade ou equivalência funcional geral.",
+    "O inventário M herda sobreleitura pública anterior de casos de validação, não material para cegamento, mas impeditiva de atestação de isolamento perfeito."
+  ],
+  "attestation": {
+    "candidate_labels_used_exclusively": ["CANDIDATE_M", "CANDIDATE_N"],
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "forbidden_artifacts_read": [],
+    "reveals_read": false,
+    "external_model_executed": false,
+    "external_mcp_executed": false,
+    "comparison_inputs_only": true,
+    "isolation_claim": "BLIND_TO_ARM_AND_PROFILE_WITH_INHERITED_NON_MATERIAL_PUBLIC_CORPUS_DEVIATION"
+  }
+}

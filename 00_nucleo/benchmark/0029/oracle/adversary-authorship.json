@@ -1,0 +1,48 @@
+{
+  "schema_version": "tekt.step0029.adversary-authorship.v1",
+  "step": "0029",
+  "revision": "R1",
+  "role": "ADVERSARIO",
+  "executor": "/root/adversario_0029",
+  "environment": "workspace compartilhado /repos/Antigravity/Bateia",
+  "regime": "PROTOCOLO_TEKT_COMPLETO_PRE_CANDIDATO",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "causal_predecessor": "solicitacao do coordenador para autoria adversarial segregada antes de implementacao candidata",
+  "inherited_context": [
+    "pedido do usuario raiz",
+    "instrucao operacional do coordenador",
+    "module import path bateia fornecido pelo coordenador"
+  ],
+  "read_allowlist": [
+    {"path":".agents/AGENTS.md","sha256":"0c8154925d3587fae78ec4ce82753fda16018424cbe6276bcb760401774de528"},
+    {"path":"00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md","sha256":"135f8de345e2b7dd2f53f45d7ec30611ea836d360b29111f9cc751df64b4877a"},
+    {"path":"00_nucleo/benchmark/0029/contract.md","sha256":"48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7"},
+    {"path":"00_nucleo/benchmark/0029/agent-profile-snapshot.json","sha256":"e01c2b8010f177ea6f57a3af7a4255623f9f3b8f917cf7a053112ed50a11876b"},
+    {"path":"00_nucleo/benchmark/0029/corpus-registry.json","sha256":"ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee"}
+  ],
+  "operational_inputs": [
+    {"path":"/home/dikluwe/.codex/skills/tekt-materializacao-segregada/SKILL.md","sha256":"66990d349a9e89851686cd94590a84711c69364f76b6df501230f64daf3b0c48"},
+    {"path":"/home/dikluwe/.codex/skills/tekt-materializacao-segregada/references/papeis-e-capacidades.md","sha256":"f59f44c4e53e89651963115c582872b4d3cd59d89689d103baa9ef8b464d2417"}
+  ],
+  "forbidden_inputs_read": false,
+  "candidate_implementation_read": false,
+  "external_io_performed": false,
+  "write_allowlist": [
+    "00_nucleo/benchmark/0029/adversarial-cases.json",
+    "04_wiring/step0029_experiment/harness_adversarial_test.go",
+    "00_nucleo/prompts/04_wiring/step0029_experiment/harness_adversarial_test.md",
+    "00_nucleo/benchmark/0029/oracle/adversary-authorship.json"
+  ],
+  "produced_artifacts": [
+    {"path":"00_nucleo/benchmark/0029/adversarial-cases.json","sha256":"cc2c039d9b5f24031b4603dd88bf8b325f383229f33f892eef10e4adca04ea73"},
+    {"path":"04_wiring/step0029_experiment/harness_adversarial_test.go","sha256":"ee1ee904c71d7e9f7c9ea73a1b86792802fce42f976f56dccf1ebd9cf40bcf06"},
+    {"path":"00_nucleo/prompts/04_wiring/step0029_experiment/harness_adversarial_test.md","sha256":"e3ef4eabc5574931bdadbb377ed972a1f656be3f91b68de288e18c9cbe54e53a"}
+  ],
+  "negative_case_count": 25,
+  "required_mutation_score": 1.0,
+  "limitations": [
+    "workspace compartilhado nao prova isolamento material",
+    "suite nao foi executada porque a implementacao candidata ainda nao existe",
+    "positivos e opacos permanecem sob autoria independente dos oraculos"
+  ]
+}

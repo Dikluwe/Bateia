@@ -1,0 +1,177 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-contract.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_PRE_EXECUTION",
+  "case": {
+    "id": "EXP29-V02",
+    "sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0"
+  },
+  "shared_configuration": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "output_schema_path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "output_schema_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "timeout_seconds": 900,
+    "maximum_output_unicode_characters": 18000,
+    "native_web_search_calls_min": 1,
+    "native_web_search_calls_max": 3
+  },
+  "frozen_prompts": {
+    "base_instruction": "Investigue o caso fornecido e devolva somente um objeto JSON válido conforme o schema EngineeringInvestigation. Não peça esclarecimentos, não execute ações externas além das pesquisas autorizadas e preserve como Unknown tudo que não puder sustentar.",
+    "shared_web_instruction": "Faça entre 1 e 3 chamadas à ferramenta nativa web_search para reduzir incerteza. Toda alegação pública relevante deve ter localizador direto e suporte resolvível. Depois conclua em até 18.000 caracteres Unicode.",
+    "control_delta": "Pesquise diretamente na internet quando isso puder reduzir incerteza e conclua com evidências rastreáveis.",
+    "treatment_delta": "Antes da primeira pesquisa web, faça exatamente uma chamada a bateia_recommend como orientação inicial. Depois faça entre 1 e 3 chamadas nativas web_search para confirmar, rejeitar ou aprofundar as direções recebidas. Não use nenhuma outra ferramenta.",
+    "control_rendering": "base_instruction + LF LF + shared_web_instruction + LF LF + control_delta + LF LF + canonical_case_json + LF",
+    "treatment_rendering": "base_instruction + LF LF + shared_web_instruction + LF LF + treatment_delta + LF LF + canonical_case_json + LF",
+    "post_start_mutation": "PROHIBITED"
+  },
+  "arms": {
+    "IA_INTERNET": {
+      "native_tools_exact_allowlist": [
+        "web_search"
+      ],
+      "mcp_servers_exact_allowlist": [],
+      "mcp_tools_exact_allowlist": [],
+      "web_search_calls": "1..3"
+    },
+    "IA_INTERNET_BATEIA": {
+      "native_tools_exact_allowlist": [
+        "web_search"
+      ],
+      "mcp_servers_exact_allowlist": [
+        "bateia"
+      ],
+      "mcp_tools_exact_allowlist": [
+        "bateia_recommend"
+      ],
+      "web_search_calls": "1..3",
+      "bateia_recommend_calls": 1,
+      "required_order": "successful or INCONCLUSIVE bateia_recommend return precedes first web_search start"
+    }
+  },
+  "execution_contract": {
+    "order": [
+      "IA_INTERNET_BATEIA",
+      "IA_INTERNET"
+    ],
+    "order_authority": "seed b98fbedbae1a06c68307b507a3c3d094c72b2ee651d02c1a97e287b84a4650c5",
+    "sessions_exactly": 2,
+    "sessions_hard_cap": 2,
+    "global_count_before": 15,
+    "global_count_after": 17,
+    "global_cap": 108,
+    "single_in_flight": true,
+    "cadence_seconds": 120,
+    "fresh_session_each_arm": true,
+    "retry_or_replacement": false,
+    "terminal_signal": "exit_code from preserved session_id only",
+    "yield_and_poll_timeout": "NON_TERMINAL"
+  },
+  "arm_validity_predicate": [
+    "one and only one behavioral output",
+    "exit_code captured from the same preserved process session",
+    "output valid against frozen schema R2",
+    "output length at most 18000 Unicode characters",
+    "native web_search call count between 1 and 3 inclusive",
+    "no tool, MCP, app or shell outside the arm exact allowlist",
+    "no overlap with any other model process",
+    "treatment additionally has exactly one bateia_recommend completed before first web_search"
+  ],
+  "pair_success_predicate": {
+    "required_valid_pairs": 1,
+    "exactly": true,
+    "members": "both arms valid under the same frozen case, model, effort, shared prompt, schema and limits",
+    "unpaired_or_invalid": "NOT_SUCCESS_AND_STOP",
+    "stop_after_pair": true
+  },
+  "trace_contract": {
+    "immutable_ordered_events_required": true,
+    "event_fields": [
+      "event_id",
+      "session_id",
+      "arm_id",
+      "tool_name",
+      "started_at",
+      "finished_at",
+      "request_sha256",
+      "response_sha256",
+      "status"
+    ],
+    "bateia_direction_fields": [
+      "direction_id",
+      "direction_summary",
+      "bateia_event_id"
+    ],
+    "web_link_fields": [
+      "web_event_id",
+      "prior_direction_id",
+      "query_sha256",
+      "public_locator",
+      "disposition"
+    ],
+    "allowed_dispositions": [
+      "CONFIRMED",
+      "REJECTED",
+      "USEFULLY_NARROWED",
+      "UNRESOLVED"
+    ],
+    "attribution_without_ordered_link": "UNKNOWN_NOT_CATALYSIS"
+  },
+  "evaluation_contract": {
+    "blind_output_judge": {
+      "must_finish_before_reveal": true,
+      "sees": [
+        "opaque output labels",
+        "case",
+        "schema",
+        "frozen quality rubric"
+      ],
+      "must_not_see": [
+        "arm mapping",
+        "tool trace",
+        "call counts",
+        "cost",
+        "expected direction"
+      ],
+      "verdicts": [
+        "LEFT_BETTER",
+        "RIGHT_BETTER",
+        "TIE",
+        "UNKNOWN"
+      ],
+      "volume_rule": "More words, claims, sources or calls do not establish higher quality without decision-relevant supported utility."
+    },
+    "post_reveal_catalysis_auditor": {
+      "starts_after_blind_receipt_hash_is_frozen": true,
+      "sees": [
+        "frozen blind receipt",
+        "arm mapping",
+        "ordered tool trace",
+        "resolvable public locators",
+        "retrieval overhead"
+      ],
+      "catalysis_requires": "At least one observable direction_id from Bateia linked to a later web_event_id with CONFIRMED, REJECTED or USEFULLY_NARROWED disposition and a useful supported finding reflected in the final investigation.",
+      "inconclusive": "Neutral abstention; neither automatic loss nor success.",
+      "efficiency": "Assess useful supported findings per web call and total overhead including Bateia; volume or cost alone cannot win."
+    },
+    "combined_reporting": {
+      "treatment_uplift": "Blind judge favors the revealed treatment and catalysis auditor proves at least one catalytic path.",
+      "no_forced_winner": true,
+      "preselected_winner": null,
+      "scope": "ONE_PAIR_EXPLORATORY_ONLY"
+    }
+  },
+  "live_web_contract": {
+    "same_local_experiment_window": true,
+    "byte_identity_expected": false,
+    "timestamp_and_locator_required": true,
+    "material_temporal_drift": "UNKNOWN_CONFOUNDING unless independently resolved; never automatic equality or treatment effect"
+  },
+  "classification": {
+    "Preserved": "All applicable public invariants are demonstrated.",
+    "Violated": "A public witness demonstrates at least one invariant breach.",
+    "Unknown": "Identity, terminality, trace linkage, temporal comparability, parseability or support cannot be established.",
+    "unknown_default": "No success, failure, tie, zero or retry is inferred."
+  }
+}

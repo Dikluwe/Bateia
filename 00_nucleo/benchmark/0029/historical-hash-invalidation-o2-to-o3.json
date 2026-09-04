@@ -1,0 +1,51 @@
+{
+  "schema_version": "tekt.step0029.historical-hash-invalidation.v1",
+  "step": "0029",
+  "from_revision": "O2",
+  "to_revision": "O3",
+  "authority": "HISTORICAL_ORACLE_AUTHOR",
+  "executor": "/root/oraculo_0029",
+  "reason_code": "ADDITIVE_SERVER_BUDGET_EXTENSION_INVALIDATED_LEGACY_BYTE_IDENTITY_ONLY",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "public_verifier_cause": {
+    "failed_hash_gates": 3,
+    "failed_legacy_behavior_gates": 0,
+    "server_prompt_previous_sha256": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e",
+    "server_prompt_successor_sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+    "server_previous_sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "server_successor_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5"
+  },
+  "historical_evidence_preserved": [
+    {
+      "path": "00_nucleo/prompts/02_shell/mcp/server.md",
+      "sha256": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e",
+      "role": "CERTIFIED_PREDECESSOR_IDENTITY"
+    },
+    {
+      "path": "02_shell/mcp/server.go",
+      "sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+      "role": "CERTIFIED_PREDECESSOR_IDENTITY"
+    }
+  ],
+  "invalidation_scope": [
+    "byte-equality gate for predecessor server.md",
+    "byte-equality gate for predecessor server.go in Step 0026 R3",
+    "byte-equality gate for basal server.go in Step 0027"
+  ],
+  "not_invalidated": [
+    "Step 0025 literal tool schemas and response goldens",
+    "actual execution of search, benchmark and recommendation through offline fakes",
+    "absence of durable fields in synchronous legacy responses",
+    "Step 0026 durable schemas, lifecycle projections and sanitization",
+    "Step 0027 runtime equality for tools 1-7 modulo the five contracted artifact enum suffixes",
+    "exact tools 8 and 9 schemas and side-effect-free listing",
+    "temperature-pilot O2 call-budget oracles M1-M4"
+  ],
+  "candidate_visibility": {
+    "implementation_content_read": false,
+    "behavioral_or_model_output_read": false,
+    "only_sha256_identity_observed": true
+  },
+  "invalidation_rule": "The historical digests remain immutable evidence of the predecessor but cease to be the expected digest of the additive successor. Acceptance requires the successor mapping plus all pre-existing semantic goldens and runtime comparisons.",
+  "verdict": "HISTORICAL_BYTE_IDENTITY_INVALIDATED_SEMANTIC_OBLIGATIONS_PRESERVED_FOR_SUCCESSOR_VERIFICATION"
+}

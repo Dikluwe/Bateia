@@ -1,0 +1,123 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-contract.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_PRE_EXECUTION",
+  "success_predicate": {
+    "required_valid_pair_count": 3,
+    "exactly": true,
+    "pair_validity": "A e B são VALID_OUTPUT, pertencem ao mesmo slot, caso, modelo, reasoning_effort e instruções compartilhadas; diferem apenas pela instrução e capacidade Bateia autorizadas no braço B.",
+    "unpaired_valid_output": "NOT_SUCCESS",
+    "unknown_or_invalid_member": "PAIR_NOT_VALID",
+    "fourth_pair": "PROHIBITED"
+  },
+  "case": {
+    "case_id": "EXP29-C01",
+    "canonical_case_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+  },
+  "prompts": {
+    "base_instruction": "Investigue a ideia de software fornecida e devolva somente um objeto JSON válido conforme o schema EngineeringInvestigation. Não execute ações externas, não peça esclarecimentos e preserve como Unknown tudo que não puder sustentar.",
+    "sol_shared_compactness_instruction": "Seja conciso e mantenha o objeto JSON completo abaixo de 18.000 caracteres.",
+    "treatment_instruction": "Use o Bateia para investigar alternativas, mecanismos e hipóteses antes de concluir. Você dispõe de no máximo 3 chamadas e somente de bateia_recommend. Não repita uma chamada; depois conclua.",
+    "terra_luna_A_rendering": "base_instruction + LF LF + canonical_case_json + LF",
+    "terra_luna_B_rendering": "base_instruction + LF LF + treatment_instruction + LF LF + canonical_case_json + LF",
+    "sol_A_rendering": "base_instruction + LF LF + sol_shared_compactness_instruction + LF LF + canonical_case_json + LF",
+    "sol_B_rendering": "base_instruction + LF LF + sol_shared_compactness_instruction + LF LF + treatment_instruction + LF LF + canonical_case_json + LF",
+    "sol_pair_rule": "A e B recebem literalmente a mesma instrução compartilhada de concisão; somente B recebe treatment_instruction.",
+    "frozen_before_execution": true
+  },
+  "output_validity": {
+    "schema_path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "schema_file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "maximum_unicode_characters": 20000,
+    "sol_prompt_soft_target_unicode_characters_exclusive": 18000,
+    "requirements": [
+      "exactly one behavioral output for the cell",
+      "valid schema",
+      "no forbidden tool or MCP",
+      "all treatment call budgets respected",
+      "terminal exit_code captured for the same session_id",
+      "no concurrent process overlap"
+    ]
+  },
+  "ordered_execution": [
+    "slot-1:TERRA-high:preserved-A,new-B",
+    "slot-2:LUNA-low:preserved-A,new-B",
+    "slot-3:SOL-high:fresh-A,fresh-B"
+  ],
+  "fallback_contract": {
+    "profile": "SOL-medium",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "maximum_sessions": 2,
+    "complete_pair_only": true,
+    "activation_max": 1,
+    "content_independent": true
+  },
+  "execution_caps": {
+    "additional_behavioral_sessions": 6,
+    "global_behavioral_sessions": 17,
+    "cadence_seconds_between_starts": 120,
+    "single_in_flight": true
+  },
+  "arm_capabilities": {
+    "A": {
+      "mcp_servers": [],
+      "enabled_tools": []
+    },
+    "B": {
+      "mcp_servers": [
+        "bateia"
+      ],
+      "enabled_tools": [
+        "bateia_recommend"
+      ],
+      "mcp_attempts_max": 3,
+      "bateia_forwarded_calls_max": 3,
+      "fourth_attempt": "INVALID_OUTPUT"
+    }
+  },
+  "monitor_contract": {
+    "yield_or_poll_timeout_is_terminal": false,
+    "preserve_session_id": true,
+    "only_terminal_signal": "exit_code from the same session_id",
+    "retry_requires": [
+      "terminal exit_code",
+      "non-success infrastructure classification",
+      "zero observed agent_message",
+      "no prior behavioral output",
+      "budget available"
+    ],
+    "overlap": "VIOLATED",
+    "posthoc_duplicate_salvage": "VIOLATED"
+  },
+  "blinded_novelty_rubric": {
+    "must_be_frozen_before_B_start": true,
+    "evaluator_inputs_before_B": [
+      "anonymized A output",
+      "case evidence questions",
+      "this rubric definition"
+    ],
+    "evaluator_forbidden_before_judgment": [
+      "arm labels",
+      "profile label",
+      "B output",
+      "treatment call trace",
+      "expected direction"
+    ],
+    "new_item_test": [
+      "is an alternative, mechanism or hypothesis",
+      "is absent from the frozen A inventory",
+      "is materially distinct rather than paraphrase",
+      "has mechanically resolvable evidence support",
+      "does not depend on unsupported extrapolation"
+    ],
+    "ambiguous_item": "UNKNOWN_NOT_COUNTED_AS_NOVEL"
+  },
+  "classification": {
+    "Preserved": "All applicable invariants hold.",
+    "Violated": "A public witness establishes breach of an invariant.",
+    "Unknown": "Available public evidence cannot establish identity, terminality, parseability, support or budget compliance.",
+    "unknown_default_success": false
+  }
+}

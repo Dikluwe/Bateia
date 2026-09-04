@@ -1,0 +1,60 @@
+{
+  "schema_version": "tekt.step0029.historical-refinement-seal.v1",
+  "step": "0029",
+  "revision": "O3",
+  "seal_kind": "HISTORICAL_LINEAGE_INPUT_SEAL",
+  "status": "SEALED_INPUTS_PENDING_INTACT_TOOLCHAIN_EXECUTION",
+  "authority": "HISTORICAL_ORACLE_AUTHOR",
+  "executor": "/root/oraculo_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "authorship": {
+    "path": "00_nucleo/benchmark/0029/historical-refinement-o3-authorship.json",
+    "sha256": "ba52554898401112dd195270463c73143525c3972724098b998f41afdd1aadc3"
+  },
+  "lineage": {
+    "invalidation": {
+      "path": "00_nucleo/benchmark/0029/historical-hash-invalidation-o2-to-o3.json",
+      "sha256": "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca"
+    },
+    "successor": {
+      "path": "00_nucleo/benchmark/0029/historical-hash-successor-o3.json",
+      "sha256": "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156"
+    },
+    "predecessor_server_md_sha256": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e",
+    "successor_server_md_sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+    "predecessor_server_go_sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+    "successor_server_go_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5"
+  },
+  "sealed_oracles": [
+    {"path":"02_shell/mcp/durable_runs_step0026_r2_test.go","sha256":"52fc1ab6b20a9b450d945d7ac84817c2b63eee37d7b88e5ec28c61d0e37bd307"},
+    {"path":"02_shell/mcp/durable_runs_step0026_r3_test.go","sha256":"a78552efa39cbc24ffc7f22923a7683a25242ec795290ada97edff87ba5c2892"},
+    {"path":"02_shell/mcp/market_discovery_step0027_oracle_test.go","sha256":"c4e1287e4f6f078e3240c7f43ce84df6e9608038e20fa9868ef4008d4f234e3e"}
+  ],
+  "sealed_prompts": [
+    {"path":"00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_r2_test.md","sha256":"ffc9e3d2809426eba00940a0697b64c848708f21825dbefbdbb809be1223ffad"},
+    {"path":"00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_r3_test.md","sha256":"e9fcc8676d5a4ee12aeac4a59a4f2ea635f90d3bb878ab2ccbe07c3e36870c44"},
+    {"path":"00_nucleo/prompts/02_shell/mcp/market_discovery_step0027_oracle_test.md","sha256":"5291ffb6ca477a5ec6c72dce502c79ed442bab2b3962a036f396f7cae1224adf"}
+  ],
+  "acceptance_rule": "The additive successor is acceptable only when all three sealed historical tests pass together; each test binds exact successor and lineage hashes while retaining its original literal goldens, real offline calls and runtime tool comparisons.",
+  "publicly_preserved_gates": {
+    "temperature_pilot_o2": "PASS_REPORTED_BY_INDEPENDENT_VERIFIER",
+    "mutants_m1_m2_m3_m4": "PASS_REPORTED_BY_INDEPENDENT_VERIFIER",
+    "race_vet_build_lint_diff": "PASS_REPORTED_BY_INDEPENDENT_VERIFIER",
+    "real_preflight": "THREE_FORWARDED_AND_FOURTH_MINUS_32010_PASS_REPORTED"
+  },
+  "pending_gate": {
+    "command": "go test ./02_shell/mcp -run '^(TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact)$' -count=1",
+    "attempts": 2,
+    "tests_started": 0,
+    "blocking_cause": "LOCAL_GOROOT_MISSING_STANDARD_PACKAGE_TESTING",
+    "required_result": "PASS_3_OF_3"
+  },
+  "regressions": {
+    "observed": 0,
+    "measurement_complete": false,
+    "reason": "Selected tests could not start; no regression-free final certificate is claimed."
+  },
+  "promotion_authorized": false,
+  "final_verdict_emitted": false,
+  "invalidation_rule": "Any byte change to a sealed lineage artifact, oracle, prompt, server successor, or any failure of the three-test conjunction invalidates this seal."
+}

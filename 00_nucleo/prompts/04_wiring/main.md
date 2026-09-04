@@ -30,6 +30,12 @@ Conforme ADR-0002, a camada $L_4$ (Fiação) é o ponto de montagem único da ap
    - GitHub `Client`
 4. Instanciar o caso de uso `SearchFunnel` de $L_1$, injetando os adaptadores de $L_3$ como implementações das interfaces de $L_1$.
 5. Instanciar e executar a `CLIApp` de $L_2$, passando o orquestrador e o gerador de relatórios Markdown.
+6. No caminho `mcp`, interpretar opcionalmente
+   `BATEIA_MCP_MAX_TOOL_CALLS` como inteiro decimal positivo. Quando presente,
+   aplicar o orçamento process-local ao servidor MCP antes de `Serve`; quando
+   ausente, preservar comportamento ilimitado. Valor vazio, zero, negativo ou
+   inválido deve falhar fechado antes de servir requisições. L₄ apenas traduz a
+   configuração e injeta o limite; a contenção pertence a L₂.
 
 ---
 
@@ -54,3 +60,4 @@ Então exibe as opções de ajuda da CLI do Bateia sem erros de compilação ou 
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 (ADR-0002) | main.go |
+| 2026-09-03 | Orçamento MCP process-local para o piloto de temperatura do Passo 0029 | main.go |

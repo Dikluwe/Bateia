@@ -1,0 +1,29 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-invocation.r3.v1",
+  "arm_id": "IA_INTERNET_BATEIA",
+  "dispatch_order": 1,
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "non_secret_environment": {
+    "CODEX_HOME": "/tmp/codex-catalysis-pilot-auth-home",
+    "BATEIA_RUN_ROOT": "/tmp/bateia-catalysis-pilot-r1-run",
+    "BATEIA_MCP_MAX_TOOL_CALLS": "1"
+  },
+  "working_directory": "/tmp/bateia-catalysis-pilot-empty",
+  "prompt_path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/prompt.txt",
+  "prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56",
+  "output_path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/output.json",
+  "events_path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl",
+  "stderr_path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/stderr.log",
+  "schema_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+  "bateia_binary_sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b",
+  "timeout_seconds": 900,
+  "global_session_before": 15,
+  "global_session_after": 16,
+  "resolved_argv": [
+    "/usr/bin/codex", "--search", "exec", "--ignore-user-config", "--ignore-rules", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "--config", "approval_policy=\"never\"", "--model", "gpt-5.6-sol", "--config", "model_reasoning_effort=\"high\"", "--cd", "/tmp/bateia-catalysis-pilot-empty", "--output-schema", "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json", "--output-last-message", "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/output.json", "--json", "--disable", "apps", "--disable", "browser_use", "--disable", "browser_use_external", "--disable", "computer_use", "--disable", "image_generation", "--disable", "in_app_browser", "--disable", "multi_agent", "--disable", "plugins", "--disable", "remote_plugin", "--disable", "shell_tool", "--disable", "skill_search", "--disable", "tool_suggest", "--config", "mcp_servers.bateia.command=\"env\"", "--config", "mcp_servers.bateia.args=[\"BATEIA_RUN_ROOT=/tmp/bateia-catalysis-pilot-r1-run\",\"BATEIA_MCP_MAX_TOOL_CALLS=1\",\"/tmp/bateia-temperature-pilot-r1\",\"mcp\"]", "--config", "mcp_servers.bateia.cwd=\"/repos/Antigravity/Bateia\"", "--config", "mcp_servers.bateia.required=true", "--config", "mcp_servers.bateia.enabled_tools=[\"bateia_recommend\"]", "--config", "mcp_servers.bateia.default_tools_approval_mode=\"approve\""
+  ],
+  "stdin": "exact prompt_path bytes",
+  "mcp_servers": ["bateia"],
+  "mcp_enabled_tools": ["bateia_recommend"]
+}

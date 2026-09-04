@@ -1,0 +1,71 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-adversarial-cases.v3",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "contract_path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-contract.json",
+  "gate_status": "DESIGNED_NOT_EXECUTED",
+  "preserved_r2_suite": {
+    "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-adversarial-cases.json",
+    "sha256": "39db0fa53aea70e2deac34bf37abd723aac441f66bfc7c8f8cff2387430dae10",
+    "mutants": 15,
+    "r2_verified_mutation_score": 1.0,
+    "semantic_cases_changed": false
+  },
+  "positive_focal_cases": [
+    {
+      "id": "P-R3-PREFLIGHT-PASS",
+      "fixture": "Auth-only home and empty cwd pass; binaries match; tools/list advertises bateia_recommend without tools/call; each argv has all twelve disables; control has zero MCP config and treatment has exactly six frozen MCP config pairs.",
+      "expected": "Preserved"
+    },
+    {
+      "id": "P-R3-PREFLIGHT-FAIL-ZERO",
+      "fixture": "One deterministic global preflight check fails before the first arm.",
+      "expected": "Preserved",
+      "required_effect": "No codex --search exec starts and behavioral session count remains zero."
+    }
+  ],
+  "opaque_focal_cases": [
+    {
+      "id": "O-R3-AUTH-HASH-MISSING",
+      "fixture": "auth.json inventory is correct but its SHA-256 cannot be recorded in the restricted preflight receipt.",
+      "expected": "Unknown",
+      "required_effect": "Preflight fails and zero behavioral sessions start."
+    }
+  ],
+  "focal_mutants": [
+    {
+      "id": "M-R3-MISSING-DISABLE",
+      "mutation": "Either resolved argv omits, duplicates, renames or reorders any of the twelve required --disable feature pairs.",
+      "expected": "Violated",
+      "witness": "Resolved argv differs from profile or disable multiset/count/order is not exact."
+    },
+    {
+      "id": "M-R3-MCP-ARGV-ABSENT-OR-EXTRA",
+      "mutation": "Control contains any MCP config, or treatment omits/changes one of six Bateia config pairs or adds another server/tool.",
+      "expected": "Violated",
+      "witness": "Per-arm resolved argv MCP projection differs from the frozen profile."
+    },
+    {
+      "id": "M-R3-AUTH-HOME-NOT-AUTH-ONLY",
+      "mutation": "CODEX_HOME differs, contains any entry besides auth.json, or auth.json is not a regular mode-0600 file.",
+      "expected": "Violated",
+      "witness": "Preflight inventory/type/mode differs from the exact auth-only predicate."
+    },
+    {
+      "id": "M-R3-CWD-NOT-EMPTY",
+      "mutation": "Working directory is absent after creation step, differs from frozen path or contains at least one entry at a required check.",
+      "expected": "Violated",
+      "witness": "Preflight or per-session directory inventory count is not zero."
+    }
+  ],
+  "r3_discriminatory_gate": {
+    "preserved_mutants": 15,
+    "new_focal_mutants": 4,
+    "total_valid_mutants": 19,
+    "required_rejections": 19,
+    "required_mutation_score": 1.0,
+    "actual_mutation_score": null,
+    "procedure": "Run focal profile cases and four new mutants first; only after they pass, rerun preserved positives, opaques, all nineteen mutants, repetitions and both orders.",
+    "seal_blocker_until_independently_executed": true
+  }
+}

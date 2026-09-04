@@ -1,0 +1,126 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-web-event-schema-witness.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "generator": "Codex CLI 0.149.0 app-server generate-json-schema",
+  "official_local_sources": [
+    {
+      "path": "/tmp/codex-catalysis-schema/ClientRequest.json",
+      "sha256": "1024db9d23b156e04b020a5d101982841dab158b84ecc9ecec399ab119ac9a1f"
+    },
+    {
+      "path": "/tmp/codex-catalysis-schema/codex_app_server_protocol.v2.schemas.json",
+      "sha256": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9"
+    }
+  ],
+  "projection_policy": "Only normative fields needed to identify and order native web actions are copied; unrelated metadata is intentionally omitted.",
+  "WebSearchCallResponseItem": {
+    "type": "object",
+    "title": "WebSearchCallResponseItem",
+    "properties": {
+      "id": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "status": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "action": {
+        "anyOf": [
+          {
+            "$ref": "#/ResponsesApiWebSearchAction"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    }
+  },
+  "ResponsesApiWebSearchAction": {
+    "oneOf": [
+      {
+        "type": "object",
+        "title": "SearchResponsesApiWebSearchAction",
+        "properties": {
+          "type": {
+            "const": "search"
+          },
+          "query": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "queries": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      {
+        "type": "object",
+        "title": "OpenPageResponsesApiWebSearchAction",
+        "properties": {
+          "type": {
+            "const": "open_page"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      {
+        "type": "object",
+        "title": "FindInPageResponsesApiWebSearchAction",
+        "properties": {
+          "type": {
+            "const": "find_in_page"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    ]
+  },
+  "runtime_acceptance": {
+    "required_item_id": "non-empty string",
+    "required_action": "non-null action with supported type",
+    "search_identity": "at least one non-empty query or queries entry",
+    "open_or_find_identity": "non-empty action.url",
+    "status": "record exact value; null or absent is Unknown and cannot prove completion",
+    "unsupported_other_action": "Unknown and fail closed for arm validity"
+  },
+  "non_invention": {
+    "response_body": "Unknown when not publicly emitted",
+    "response_sha256": "Unknown when no response payload is publicly emitted",
+    "wall_clock_timestamps": "Optional; Unknown when absent",
+    "locator": "May be action.url or a direct locator in the final output; never synthesize one."
+  }
+}

@@ -2,16 +2,18 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-08-24
+ * @updated 2026-09-03
  */
 
 package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,6 +34,26 @@ import (
 func newMCPServer(funnel *usecase.SearchFunnel, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, reader io.Reader, writer io.Writer) *mcp.MCPServer {
 	recommendationService := usecase.NewRecommendationService(semantic, discovery, content)
 	return mcp.NewMCPServer(funnel, reader, writer, recommendationService)
+}
+
+func parseMCPMaxToolCalls(raw string, present bool) (*int, error) {
+	if !present {
+		return nil, nil
+	}
+	if raw == "" || raw[0] < '1' || raw[0] > '9' {
+		return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
+	}
+	for index := 1; index < len(raw); index++ {
+		if raw[index] < '0' || raw[index] > '9' {
+			return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
+		}
+	}
+	parsed, err := strconv.ParseInt(raw, 10, strconv.IntSize)
+	if err != nil || parsed <= 0 {
+		return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
+	}
+	limit := int(parsed)
+	return &limit, nil
 }
 
 func loadEnvFile(filepath string) {
@@ -145,6 +167,15 @@ func main() {
 	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithProgressReporter(cli.LogProgressReporter{})
 	recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, contentProvider)
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "mcp") {
+		rawToolCallLimit, toolCallLimitPresent := os.LookupEnv("BATEIA_MCP_MAX_TOOL_CALLS")
+		toolCallLimit, toolCallLimitErr := parseMCPMaxToolCalls(rawToolCallLimit, toolCallLimitPresent)
+		if toolCallLimitErr != nil {
+			log.Fatalf("Erro ao inicializar orçamento MCP: %v", toolCallLimitErr)
+		}
+		toolCallBudget, toolCallBudgetErr := mcp.NewToolCallBudget(toolCallLimit)
+		if toolCallBudgetErr != nil {
+			log.Fatalf("Erro ao inicializar orçamento MCP: %v", toolCallBudgetErr)
+		}
 		config, configErr := loadDurableLocalConfig()
 		if configErr != nil {
 			log.Fatalf("Erro ao inicializar configuração MCP durável: %v", configErr)
@@ -157,6 +188,7 @@ func main() {
 		if serverErr != nil {
 			log.Fatalf("Erro ao inicializar descoberta de mercado MCP: %v", serverErr)
 		}
+		server.WithToolCallBudget(toolCallBudget)
 		serveErr := server.Serve(context.Background())
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		shutdownErr := shutdown(ctx)

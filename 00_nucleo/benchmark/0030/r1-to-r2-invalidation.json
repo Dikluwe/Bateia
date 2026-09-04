@@ -1,0 +1,24 @@
+{
+  "schema_version": "bateia.step0030.contract-invalidation.r1-to-r2.v1",
+  "created_at": "2026-09-03",
+  "status": "R1_INVALIDATED_BEFORE_SEAL",
+  "verification_receipt": {
+    "path": "00_nucleo/benchmark/0030/contract-verification-r1.json",
+    "sha256": "7d89e19f6a89d15e492b55bd17a663206aa7548d644da56ce04bbf5ada2c2829"
+  },
+  "causes": [
+    "CONTRACT_AUTHORSHIP_SCHEMA_PATH_MISSING",
+    "ORACLE_AUTHORITY_BINDING_MISMATCH",
+    "VERIFIER_AUTHORITY_BINDING_MISMATCH",
+    "RANDOMIZATION_PLAN_PATH_MISSING"
+  ],
+  "refinement_hypothesis": "A successor authority manifest with observed executors, a standalone randomization plan, the real historical schema path, and explicit separation of historical-schema validity from compact-schema validity will make all bindings executable without changing the estimand, cases, budgets, prompts, rubrics, decoder semantics or Unknown policy.",
+  "scope": "Only the failed binding/path layer and the ambiguous historical fixture classification may change. R1 remains immutable and no implementation or behavioral session may start before an R2 seal.",
+  "cost": {
+    "contract_revisions_before_r2": 1,
+    "behavioral_sessions": 0,
+    "model_calls": 0,
+    "web_calls": 0,
+    "mcp_tool_calls": 0
+  }
+}

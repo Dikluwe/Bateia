@@ -1,0 +1,44 @@
+{
+  "schema_version": "bateia.step0029.execution-state.v2",
+  "step": "0029",
+  "status": "CONTRACT_BLOCKED_LIMIT_EXCEEDED",
+  "phase": "CONTRACT",
+  "revised_plan_root_sha256": "622b59c348265fd3974989bfdab31b82ac89dedd72a1a554ab3fce114dcba114",
+  "behavioral_sessions_dispatched": 7,
+  "behavioral_sessions_max": 108,
+  "split_counts": {
+    "CONTRACT": {"dispatched": 7, "valid": 5, "invalid_output": 1, "tool_unavailable": 1, "max": 18},
+    "VALIDATION": {"dispatched": 0, "valid": 0, "max": 36},
+    "TEST": {"dispatched": 0, "valid": 0, "max": 54}
+  },
+  "next_cell_id": "98bced16e28024e44087967ffc7a7cf4a2691771b78095f2d150b604b4528c2b",
+  "next_cell_split": "CONTRACT",
+  "next_cell_arm": "AGENT_ALONE",
+  "next_cell_profile": "TERRA-high",
+  "automation_id": "passo-29-contract",
+  "in_flight": null,
+  "last_receipt": "sessions-r2/9c04760475c1fb025615d8d384bb77f9b5c2c577d972e889602e3c36bcb0cb4f/dispatch-receipt.json",
+  "blocking_failure": {
+    "code": "BATEIA_CALL_BUDGET",
+    "cell_id": "9c04760475c1fb025615d8d384bb77f9b5c2c577d972e889602e3c36bcb0cb4f",
+    "observed": 48,
+    "maximum": 25,
+    "model_output_observed": true,
+    "cell_repeat_allowed": false,
+    "required_action": "Independent audit and bounded redesign before any further CONTRACT dispatch."
+  },
+  "receipt_amendments": [
+    "sessions-r2/767295c8dccaffae4227cc6238d42ccb3fec15a05236005f0e708321383b2942/dispatch-receipt-amendment-r1.json",
+    "sessions-r2/274071ce5e0a72792e1ced63dd124b6050dc3a7f9fb3786eaf859c4088d6688d/dispatch-receipt-amendment-r1.json"
+  ],
+  "active_execution_seal": "execution-seal-r4.json",
+  "active_execution_profile": "execution-isolation-profiles-r3.json",
+  "resolved_calibration_failure": {
+    "code": "MCP_TOOL_APPROVAL_POLICY_NEVER",
+    "model_output_observed": true,
+    "cell_repeat_allowed": false,
+    "required_change": "Set mcp_servers.bateia.default_tools_approval_mode=approve for future treatment cells and reseal the execution profile.",
+    "resolution": "Applied only to future AGENT_WITH_BATEIA cells in execution-isolation-profiles-r3.json; independently verified READY_CONTRACT_ONLY; c56e remains UNKNOWN in the ITT denominator and is never repeated."
+  },
+  "superseded_state": "execution-state.json"
+}

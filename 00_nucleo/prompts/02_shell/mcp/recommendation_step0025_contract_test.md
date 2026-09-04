@@ -40,4 +40,10 @@ envelope permanece congelado; nenhum outro byte do relatório pode ser normaliza
 O teste legado proprietário de `tools/list` também exige as três ferramentas contratuais,
 na ordem congelada, mesmo quando o recommender opcional é `nil`.
 
+No refinamento explícito do Passo 0031, substitua somente os arrays `required` de
+policy/search/raiz e acrescente as anotações de defaults congeladas. Campos
+operacionais omitidos deixam de ser casos negativos; problema/capacidades,
+valores explícitos inválidos, campos desconhecidos, ordem, nomes, projeção e
+isolamento continuam protegidos. Preserve esse sucessor como golden independente.
+
 Não leia, adapte nem corrija implementação candidata. `Unknown` não satisfaz caso negativo.

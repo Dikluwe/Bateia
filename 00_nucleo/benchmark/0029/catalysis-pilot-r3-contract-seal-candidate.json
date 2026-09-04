@@ -1,0 +1,82 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-contract-seal-candidate.v3",
+  "created_at": "2026-09-03",
+  "issuer": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_NOT_SEALED",
+  "verdict": "READY_FOR_INDEPENDENT_FOCAL_OPERATIONAL_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "causal_chain": {
+    "intent_sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca",
+    "r2_verification_sha256": "3d041c4c502331f138fade630644bbe5f3ca38bde8329859411d959bb575446c",
+    "r2_to_r3_invalidation": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-to-r3-invalidation.json",
+      "sha256": "286ec6898e299c79298e09545c03741b20ce9bcf31a4a9e1f569fa14feedc41d"
+    }
+  },
+  "preserved_bindings": {
+    "case_id": "EXP29-V02",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "schema_r2_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "control_prompt_sha256": "d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8",
+    "treatment_prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56",
+    "web_witness_sha256": "a028ea36778ee2c630070d5c2b37fb22ce249c9daa8f2b82cfbb51657c348c56",
+    "estimand_model_order_budgets_normalization_rubric_and_winner_policy": "UNCHANGED"
+  },
+  "candidate_artifacts": {
+    "blind_mapping_seal_sha256": "cbde00b41491bb05ee8c394abbd51335cb22f9c63f3387ec0845ed16dabf6111",
+    "execution_profile": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-execution-profile.json",
+      "sha256": "fde727959a400213d4480244876e7a3647a401df1b91377e40b84d8ba1cdf20c"
+    },
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-methodology.json",
+      "sha256": "1653b1b93394e050be8d6151bee4048adf840b39ac9df63c6eb9d07ceeb11e6b"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-contract.json",
+      "sha256": "36bfd348ed185fa9549f79945ded6bbbf102735575e49376aee244129736a4c5"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-adversarial-cases.json",
+      "sha256": "3f82741ff54b339ab20f64c51c0fdeb7d6b4fc256d4427978ca2a58bd36812df"
+    },
+    "oracle_authorship": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-oracle-authorship.json",
+      "sha256": "924a6dcf9a2be50ab4abffa0c3c44d4ab8d40f67ec538179358e748f4cbd23e2"
+    }
+  },
+  "blind_mapping_confidentiality": {
+    "mapping_content_in_this_candidate": false,
+    "blind_evaluator_access_before_receipt": "PROHIBITED",
+    "reveal_condition": "Frozen blind comparison receipt bytes and SHA-256"
+  },
+  "verified_predecessor_discrimination": {
+    "r2_mutants": 15,
+    "r2_mutation_score": 1.0,
+    "scope": "Preserved R2 semantics only; does not verify R3 operational additions."
+  },
+  "r3_discriminatory_gate": {
+    "preserved_mutants": 15,
+    "new_focal_mutants": 4,
+    "total_mutants": 19,
+    "required_rejections": 19,
+    "required_score": 1.0,
+    "actual_score": null,
+    "status": "NOT_EXECUTED"
+  },
+  "preflight_status": "NOT_EXECUTED; auth.json secret and hash are intentionally not frozen here",
+  "seal_blockers": [
+    "independent execution-profile feasibility recut has not passed",
+    "four focal operational mutants have not been killed",
+    "full nineteen-mutant repetition and reordering gate has not run",
+    "auth-only home, empty cwd, resolved argv and non-recommendation tools/list preflight receipt do not yet exist",
+    "blind evaluator capability denial for the mapping seal has not been independently attested"
+  ],
+  "immutability_rule": "Any byte change to a bound artifact invalidates this candidate and requires regeneration before verification.",
+  "prohibitions": [
+    "Do not treat this candidate as a final seal or execution authorization.",
+    "Do not expose the blind mapping seal to the evaluator before its receipt is frozen.",
+    "Do not execute model, web or bateia_recommend from this artifact.",
+    "Do not read session outputs or preselect a winner."
+  ]
+}

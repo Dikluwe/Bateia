@@ -1,0 +1,242 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-contract-seal.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T11:10:47Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_PRE_IMPLEMENTATION_GATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "SEALED_PRE_IMPLEMENTATION",
+  "verdict": "PASS_MUTATION_SCORE_1_0",
+  "frozen_inputs": {
+    "temperature_pilot_spec_r1": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-spec-r1.json",
+      "sha256": "fa02c8cbdb93251bd1cc9d98b9f59f1e59c7889d08c0f8cc09c680951b1dc650"
+    },
+    "temperature_pilot_manifest_r1": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-manifest-r1.json",
+      "sha256": "cb87ce8dc84ccbcf710912b62c9ca94bc97372f6ab5bbf9e944c1b9b6be3fbf8"
+    },
+    "temperature_pilot_contract_r1": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r1.json",
+      "sha256": "1371f6c1f145d8b71728ecc2716b73653d2a334590f290b4922bbb5924eb519a"
+    },
+    "l2_oracle": {
+      "path": "02_shell/mcp/temperature_pilot_budget_oracle_test.go",
+      "sha256": "b9d65fb25309f6b5bd8f63ebd97c731c914a643cb09f22fe22ce20ca50c0e599"
+    },
+    "l4_oracle": {
+      "path": "04_wiring/temperature_pilot_config_oracle_test.go",
+      "sha256": "9666406fe4f5422a616d507450b00995542c31bd037b23a8b33a9517de122bcf"
+    },
+    "l2_oracle_prompt": {
+      "path": "00_nucleo/prompts/02_shell/mcp/temperature_pilot_budget_oracle_test.md",
+      "sha256": "4fe3d3251325edc3397adb54843871e25c5bc8a348ccf75d5a2890387d5c30a4"
+    },
+    "l4_oracle_prompt": {
+      "path": "00_nucleo/prompts/04_wiring/temperature_pilot_config_oracle_test.md",
+      "sha256": "8c1a38082ecd555d4b05adf55b03c920d977bf5c07f182007ff0161073da3546"
+    },
+    "oracle_authorship_o2": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-oracle-authorship-r1.json",
+      "sha256": "592978f5cfda057076c7947fa23088d38b51f733ce07c2227939c4ae7c018903"
+    },
+    "o1_to_o2_invalidation": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-input-invalidation-o1-to-o2.json",
+      "sha256": "501f2d832d82f4b8aa680d6a09946448d9566e5843ceaf9fe847dd19dcb11ff1"
+    },
+    "l2_production_prompt": {
+      "path": "00_nucleo/prompts/02_shell/mcp/server.md",
+      "sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34"
+    },
+    "l4_production_prompt": {
+      "path": "00_nucleo/prompts/04_wiring/main.md",
+      "sha256": "c3b9f7499bec9a6a0acf49a336b2870c3d44d9863cdbb6994454a12934776175"
+    },
+    "step0029_contract": {
+      "path": "00_nucleo/benchmark/0029/contract.md",
+      "sha256": "48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7"
+    },
+    "call_budget_failure_verification": {
+      "path": "00_nucleo/benchmark/0029/contract-call-budget-verification-r1.json",
+      "sha256": "2b22880b4245c912a1c40803d41135381e640f4b1c53290c403295b165d34ad8"
+    },
+    "baseline_execution_queue_r2_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f"
+  },
+  "hash_and_lineage_gate": {
+    "strict_json_inputs_checked": 7,
+    "files_hashed": 13,
+    "hash_mismatches": 0,
+    "authorship_outputs_match_current_bytes": true,
+    "o1_to_o2_invalidation_chain_valid": true,
+    "public_reason_code": "M2_INTERLEAVING_WITNESS_MISSING",
+    "o1_reported_score": {
+      "killed": 2,
+      "total": 3,
+      "score": 0.6666666666666666
+    },
+    "o2_expected_score_before_verification": 1.0
+  },
+  "executable_gate_method": {
+    "workspace_candidate_read": false,
+    "workspace_candidate_executed": false,
+    "oracle_sources": "The exact repository L2 and L4 oracle files were mounted read-only by symlink into an isolated temporary Go module.",
+    "fixture_scope": "Verifier-authored minimal deterministic API fixtures only; no repository production source was copied, opened or compiled.",
+    "temporary_module": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+    "l2_fixture_sha256": "968a64db45f6962538e1407d29e05c4312b917de65492552df46d73dfbe57b32",
+    "l4_fixture_sha256": "08ae29d878244306dc11fac0566e46ecddf934f58d38afef20a8447853693e38",
+    "behavioral_model_or_mcp_sessions": 0,
+    "network_or_external_actions": 0
+  },
+  "executed_commands": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=REFERENCE go test -count=1 ./...",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 0,
+      "result": "PASS_L2_AND_L4_REFERENCE"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=M1_OFF_BY_ONE go test -count=1 -run '^TestToolCallBudgetForwardsExactlyNThenRejectsBeforeCallback$' ./02_shell/mcp",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 1,
+      "result": "MUTANT_KILLED",
+      "witness": "temperature_pilot_budget_oracle_test.go:68: exhausted request was forwarded"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=M2_RESET_ON_NON_CALL go test -count=1 -run '^TestToolCallBudgetNonCallsDoNotConsumeAndToolLabelsShareCounter$' ./02_shell/mcp",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 1,
+      "result": "MUTANT_KILLED",
+      "witness": "temperature_pilot_budget_oracle_test.go:107: exhausted request was forwarded"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=M3_PACKAGE_GLOBAL_COUNTER go test -count=1 -run '^TestToolCallBudgetIsProcessInstanceLocal$' ./02_shell/mcp",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 1,
+      "result": "MUTANT_KILLED",
+      "witness": "temperature_pilot_budget_oracle_test.go:131: request rejected unexpectedly with exhaustion error"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=M4_PERMISSIVE_CONFIG go test -count=1 -run '^TestParseMCPMaxToolCallsInvalidFailsClosed$' ./04_wiring",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 1,
+      "result": "MUTANT_KILLED",
+      "witness": "temperature_pilot_config_oracle_test.go:30: invalid +3 did not fail closed"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-oracle-verifier-r1/gocache PILOT_ORACLE_FIXTURE_MUTANT=REFERENCE go test -count=1 ./04_wiring ./02_shell/mcp",
+      "working_directory": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+      "exit_code": 0,
+      "result": "PASS_REVERSED_PACKAGE_ORDER"
+    },
+    {
+      "command": "Python 3 strict JSON, SHA-256, authorship-output and O1-to-O2 invalidation audit",
+      "exit_code": 0,
+      "result": "PASS"
+    }
+  ],
+  "mutation_gate": {
+    "contractual": {
+      "mutants": [
+        "M1_OFF_BY_ONE",
+        "M2_COUNTER_PER_TOOL_OR_METHOD",
+        "M3_PACKAGE_GLOBAL_COUNTER"
+      ],
+      "killed": 3,
+      "total": 3,
+      "score": 1.0,
+      "required_score": 1.0,
+      "result": "PASS"
+    },
+    "extended_l2_l4": {
+      "mutants": [
+        "M1_OFF_BY_ONE",
+        "M2_COUNTER_PER_TOOL_OR_METHOD",
+        "M3_PACKAGE_GLOBAL_COUNTER",
+        "M4_PERMISSIVE_CONFIGURATION"
+      ],
+      "killed": 4,
+      "total": 4,
+      "score": 1.0,
+      "required_score": 1.0,
+      "result": "PASS"
+    },
+    "reference_controls": {
+      "runs": 2,
+      "normal_order_passed": true,
+      "reversed_order_passed": true,
+      "regressions": 0
+    }
+  },
+  "o2_refinement_assessment": {
+    "changed_scope": [
+      "L2 non-call semantics explicitly prohibit reset after partial consumption",
+      "L2 oracle interleaves tools/call and non-call methods",
+      "L2 oracle prompt records the interleaving witness",
+      "authorship receipt and contract hashes were refreshed"
+    ],
+    "preserved_scope": [
+      "L4 oracle and prompt",
+      "spec and manifest",
+      "production prompts",
+      "baseline queue and experiment contract",
+      "M1 and M3 witnesses and all positive controls"
+    ],
+    "cases_corrected": [
+      "M2_COUNTER_PER_TOOL_OR_METHOD"
+    ],
+    "cases_regressed": [],
+    "discriminatory_delta": {
+      "killed_before": 2,
+      "killed_after": 3,
+      "delta": 1
+    },
+    "result": "MONOTONIC_FOCAL_IMPROVEMENT"
+  },
+  "l2_l4_alignment": {
+    "l2_guard_contract_aligned": true,
+    "l2_exact_n_and_pre_callback_boundary_covered": true,
+    "l2_non_call_interleaving_and_instance_scope_covered": true,
+    "l4_absent_and_canonical_positive_configuration_covered": true,
+    "l4_invalid_configuration_grammar_covered": true,
+    "shared_limit_value": 3,
+    "integration_before_serve": "SEALED_REQUIREMENT_PENDING_CANDIDATE_IMPLEMENTATION_VERIFICATION",
+    "assessment": "ALIGNED_FOR_PRE_IMPLEMENTATION_CONTRACT_SEAL"
+  },
+  "authorship_and_isolation_assessment": {
+    "authorship_receipt_revision": "O2",
+    "authorship_claims_candidate_read": false,
+    "authorship_claims_candidate_executed": false,
+    "verifier_read_candidate": false,
+    "verifier_executed_candidate": false,
+    "assessment": "PROCEDURALLY_CONSISTENT_WITH_HASHED_LINEAGE",
+    "strong_isolation_attested": false,
+    "limitation": "The shared filesystem and inherited project history do not independently prove absence of candidate access; the maximum defensible attestation is EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO."
+  },
+  "seal_scope": {
+    "authorizes": "Candidate implementation may begin from the frozen production prompts and this sealed focal contract.",
+    "does_not_authorize": [
+      "behavioral model or MCP sessions",
+      "temperature pilot dispatch",
+      "VALIDATION or TEST phase progression",
+      "uplift claims"
+    ],
+    "post_implementation_requirements": [
+      "Compile and execute the sealed independent L2/L4 oracles against the candidate.",
+      "Verify L4 reads BATEIA_MCP_MAX_TOOL_CALLS with os.LookupEnv, rejects invalid configuration before Serve and threads the parsed limit into the process-local L2 guard.",
+      "Verify the twenty-sixth-call prevention redesign without changing the original Step 0029 budget or prior behavioral receipts.",
+      "Recompute all sealed hashes and invalidate this seal on any protected-input change."
+    ]
+  },
+  "model_or_mcp_behavioral_sessions_executed_by_verifier": 0,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "limitations": [
+    "The executable mutation score measures oracle discrimination against explicit verifier fixtures, not correctness of a future candidate.",
+    "The L4 parser oracle freezes configuration grammar but does not itself prove that future wiring returns errors before Serve; that remains a post-implementation gate.",
+    "Concurrent Dispatch behavior is outside this focal sequential-stdio contract.",
+    "This seal covers only the deterministic forwarding and configuration boundary and does not establish behavioral uplift."
+  ],
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "cf840d37ccf3341bef278786f5b1c76867422fde4522038c0d701feeefbc4748",
+  "invalidation_rule": "Any byte change to a frozen input, public API, exact exhaustion code/message, counting or pre-effect boundary, configuration grammar, L2/L4 oracle, oracle prompt or authorship/invalidation record invalidates this seal and requires a successor focal verification before candidate implementation proceeds."
+}

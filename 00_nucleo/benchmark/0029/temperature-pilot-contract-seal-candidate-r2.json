@@ -1,0 +1,57 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-contract-seal-candidate.v2",
+  "created_at": "2026-09-03",
+  "issuer": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_NOT_SEALED",
+  "verdict": "READY_FOR_INDEPENDENT_DISCRIMINATORY_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "frozen_root": {
+    "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+    "sha256": "fbccbb27aa931b781387dabb668902d2ed12d2142be6821028a3445c672166cb"
+  },
+  "candidate_artifacts": {
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2.json",
+      "sha256": "b969bbf2854f25d148365ff5dc73ef5ce512de908debdf4c4ba3d284477dd8b1"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-adversarial-cases-r2.json",
+      "sha256": "703e4f62957e3d4a3075c91f326586a5aa4ad15e0a9c0c61658283ec3b8a5819"
+    },
+    "authorship": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-oracle-authorship-r2.json",
+      "sha256": "92078d9af33ebfed35e1e857b194fb121f47bca06fa1cb8649a6595f54d555fe"
+    }
+  },
+  "preserved_baseline_receipts": [
+    {
+      "profile": "TERRA-high",
+      "sha256": "0427665c8dc9b6006bf2c26d4bfb22fb2444b4d8562ac26e65db3ca0c14330e1"
+    },
+    {
+      "profile": "LUNA-low",
+      "sha256": "8f127d5889833753fc264a9fb1657cf790f907cbeb98476cfac4d5189ccbb5a4"
+    }
+  ],
+  "explicitly_excluded_receipt_sha256": "d01e237ae09ca3818e707ce41b8b33e9ac93a500f8d195649fcb786c0f0a544c",
+  "mutation_gate": {
+    "required_score": 1.0,
+    "actual_score": null,
+    "status": "NOT_EXECUTED"
+  },
+  "seal_blockers": [
+    "independent verifier has not executed positive, opaque and four mutant cases",
+    "repetition and reordering checks have not run",
+    "derived SOL prompt byte hashes have not been independently materialized",
+    "no implementation or execution authorization has been verified"
+  ],
+  "prohibitions": [
+    "Do not treat this candidate as an execution seal.",
+    "Do not execute model or MCP from this artifact.",
+    "Do not issue a final certificate before independent gates pass."
+  ]
+}

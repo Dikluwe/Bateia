@@ -1,0 +1,34 @@
+{
+  "schema_version": "tekt.step0029.mcp-approval-refinement.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:54:28-03:00",
+  "authority": "/root",
+  "role": "EXECUTION_PROFILE_IMPLEMENTER",
+  "reason_code": "MCP_TOOL_APPROVAL_POLICY_NEVER",
+  "observed_cell": "c56e37b398670377758536839e52e007eb57b1c4a3d0f0aa66b4d749b228869e",
+  "observed_receipt_sha256": "1d8cd41230a915c84d5242fbcc7ba3bfb132919eae20a1c9a69c4b7490952c70",
+  "model_output_observed": true,
+  "observed_cell_repeat_allowed": false,
+  "old_profile_sha256": "31e9b3260e63b12730005ed24a671482b0425372914eb76d39ca00048fb344b0",
+  "new_profile_sha256": "0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04",
+  "change": {
+    "key": "mcp_servers.bateia.default_tools_approval_mode",
+    "old_value": "UNSPECIFIED",
+    "new_value": "approve",
+    "scope": "FUTURE_AGENT_WITH_BATEIA_CELLS_ONLY"
+  },
+  "preserved": [
+    "schema R2",
+    "prompt contract R2",
+    "case corpus",
+    "profile matrix",
+    "tool allowlists",
+    "randomization seed and queue",
+    "budgets and 108-session cap",
+    "two completed behavioral receipts"
+  ],
+  "analysis_policy": "The observed TOOL_UNAVAILABLE treatment cell remains in the intention-to-treat denominator and is never repeated.",
+  "phase_policy": "Continue only within CONTRACT; do not advance to VALIDATION unless a later treatment cell proves a successful Bateia call and the final CONTRACT gate accepts the recorded protocol deviation.",
+  "official_config_reference": "https://developers.openai.com/codex/config-reference#mcp_servers-id-default_tools_approval_mode",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

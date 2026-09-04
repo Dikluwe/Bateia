@@ -1,0 +1,42 @@
+{
+  "schema_version": "bateia.step0030.contract-candidate.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_UNVERIFIED",
+  "experiment_manifest_sha256": "65807ca25b1858c1074c4f8abd53274ade6f5eb007951d480cd4cc34096097a8",
+  "bound_artifacts": {
+    "compact-output-schema.json": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+    "output-bound-proof.json": "dbc6a5766ece9ce767af9fcd60794cf5df7c4e2bbd881e533539356252ee069b",
+    "web-event-decoder-contract.json": "8a11f29cc3443009e06ce1b359c97ad9ccb257c3ac3f224c03169689ec1c9206",
+    "pair-dispatch-contract.json": "b4c742d32ac0219013be0c48cef7f4f4adee6a13ddacdcde4b74283c916787b1",
+    "prompt-control.txt": "e829365177d7bf9ba60dce8dc900fb64dc1273d021eeddc7ee6076246958a86b",
+    "prompt-treatment.txt": "17f654629700affbed15e0380c18b4fd2c26891c11a20d2c5549e5fee2aea22a",
+    "execution-profile.json": "935eeecbccc05d19f8cc34016a7c7d5c49b03da05fc53057a763650e77ac02be",
+    "rubric.json": "068b4b5d07a89eb5dc95e12ad46782d1a7fbad4d4acbef932b57c93089aa35a4",
+    "catalysis-trace-rubric.json": "be4267262777544d257a9c2dca1a1e950f031495bb834ee489b8d35cd54df6ad"
+  },
+  "frozen_obligations": {
+    "population": "EXP29-C01, EXP29-V01 and EXP29-V02, all STEP0030_CALIBRATION",
+    "estimand": "paired IA_INTERNET_BATEIA minus IA_INTERNET under identical case, model, effort, output contract and native-web budget",
+    "completion": "exactly three pair records and six committed session starts after one global PASS preflight; global counter 16 to 22 of 108",
+    "dispatch": "both arms of every pair are attempted exactly once in the frozen order, even if the first arm is invalid; single global in-flight, at least 120 seconds between starts, timeout 900 seconds, no behavioral retry",
+    "model": "gpt-5.6-sol with high reasoning effort",
+    "control": "one to three native web calls and zero MCP calls",
+    "treatment": "exactly one completed bateia_recommend before the first of one to three native web calls, with no other MCP tool",
+    "output": "one schema-valid CompactEngineeringInvestigation JSON, byte-identical to the last assistant message and at most 65536 raw UTF-8 bytes",
+    "editorial_target": "18000 Unicode characters; an excess is recorded only as concision debt and never creates structural invalidity",
+    "decoder": "scan raw JSONL tokens without map-last-wins; classify unsupported event encodings OPAQUE and preserve Unknown",
+    "evaluation": "freeze blind output-quality receipts before revealing arms, events, invocation, order, tool volume or cost; audit catalysis only after reveal",
+    "inconclusive": "neutral evidence, never an automatic success or defeat",
+    "causal_credit": "requires an observable Bateia direction followed by later native web evidence with a locator and a useful confirmed, rejected or narrowed finding; volume or cost alone cannot win"
+  },
+  "unknown_policy": "Unknown is an explicit abstention for unavailable or undecodable facts. It cannot be imputed as pass, fail, causal credit or equality.",
+  "winner_policy": "No expected winner is selected. A treatment advantage requires blind quality advantage plus useful trace-supported catalysis; otherwise report no supported advantage or insufficient evidence.",
+  "required_future_gates": {
+    "contract_verification": "PENDING_INDEPENDENT_ORACLE",
+    "mutation_score": "PENDING; required 1.0 against the step-0030 mutant set",
+    "order_repeat": "PENDING; repeat only if this calibration qualifies under the frozen rubric",
+    "final_verdict": "PENDING_INDEPENDENT_VERIFIER"
+  },
+  "authorization": "This candidate authorizes no model, web, MCP, tool, fixture modification or implementation access. It is not a final seal."
+}

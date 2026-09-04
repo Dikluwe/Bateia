@@ -15,3 +15,8 @@ Teste A/B independente derivado do Passo 0026, contrato R1 e superfície públic
 ## Ambiente
 
 Servidor `stdio` inteiramente em memória, porta fake controlada, zero filesystem e rede.
+## Refinamento explícito 0031
+
+Preserve a derivação profunda do schema síncrono, mas aceite o sucessor em que o
+start exige somente `idempotency_key` e `idea`. Todos os outros requisitos de
+durabilidade, ordem, envelopes e erros deste oráculo permanecem inalterados.

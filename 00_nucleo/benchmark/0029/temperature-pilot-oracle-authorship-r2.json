@@ -1,0 +1,48 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-oracle-authorship.v2",
+  "created_at": "2026-09-03",
+  "executor": "/root/oraculo_metodo_r2",
+  "environment": "shared repository workspace; no strong isolation attestation",
+  "roles": [
+    "methodology authority",
+    "contract author",
+    "oracle and adversarial-case author"
+  ],
+  "role_fusion_assessment": "Allowed for this pre-implementation phase because this authority neither implements the runner nor verifies or certifies the candidate.",
+  "read_allowlist": [
+    ".agents/AGENTS.md",
+    "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-spec-r1.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-prompt-contract-r1.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-isolation-profile-r1.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-queue-r1.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-execution-state-r1.json",
+    "00_nucleo/benchmark/0029/sessions-temperature-r1/01a8fee35a505ce895482fa9cb060e7503f6e763d41f5c72c196bb1682806cfe/dispatch-receipt.json",
+    "00_nucleo/benchmark/0029/sessions-temperature-r1/21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f/dispatch-receipt.json",
+    "00_nucleo/benchmark/0029/sessions-temperature-r1/be54278da25935556ebb242ee77482f5bccd472f93af57f95633da0688b398c8/dispatch-receipt.json"
+  ],
+  "protected_inputs_not_read": [
+    "sessions-temperature-r1/**/output.json",
+    "all agent_message content"
+  ],
+  "write_allowlist": [
+    "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-adversarial-cases-r2.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-oracle-authorship-r2.json",
+    "00_nucleo/benchmark/0029/temperature-pilot-contract-seal-candidate-r2.json"
+  ],
+  "forbidden_capabilities": [
+    "model execution",
+    "MCP execution",
+    "runner implementation",
+    "final gate execution",
+    "candidate verification",
+    "final certification"
+  ],
+  "causal_predecessor": {
+    "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+    "sha256": "fbccbb27aa931b781387dabb668902d2ed12d2142be6821028a3445c672166cb"
+  },
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

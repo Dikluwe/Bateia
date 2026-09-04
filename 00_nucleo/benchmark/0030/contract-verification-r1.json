@@ -1,0 +1,136 @@
+{
+  "schema_version": "bateia.step0030.contract-verification.r1.v1",
+  "created_at": "2026-09-03",
+  "verifier": "/root/verificador_contrato_0030",
+  "role": "independent_contract_verifier",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "verdict": "REPROVADO",
+  "seal_issued": false,
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "reason_codes": [
+    "CONTRACT_AUTHORSHIP_SCHEMA_PATH_MISSING",
+    "ORACLE_AUTHORITY_BINDING_MISMATCH",
+    "VERIFIER_AUTHORITY_BINDING_MISMATCH",
+    "RANDOMIZATION_PLAN_PATH_MISSING"
+  ],
+  "claim_boundary": "This receipt rejects only the pre-implementation Step 0030 contract chain. It does not evaluate candidate implementation, authorize behavioral sessions, judge output quality or establish Bateia uplift.",
+  "input_hashes": {
+    "00_nucleo/passos/0030-corrigir-teste-de-catalise-da-busca.md": "2a7a5bd76847c6dcf8d40f05c7acbc6d502fb3c3e96e38be331d04ba3c60f03f",
+    "00_nucleo/benchmark/0030/intent.json": "5378e9dc2416437b4e2ac020206a8d1d39f4d7e40f9368f43cf6e53a91eb4f37",
+    "00_nucleo/benchmark/0030/authority-manifest.json": "da86319d3037bb0cb7a15a38972ac8866f4f5463aa4ec1fc2a4bc38bbf6a5d4b",
+    "00_nucleo/benchmark/0030/baseline-verification.json": "049f275a340eb37c8e15e66c01668312c2b85838eb83b3a7bcb68162edcd45b4",
+    "00_nucleo/benchmark/0030/experiment-manifest.json": "65807ca25b1858c1074c4f8abd53274ade6f5eb007951d480cd4cc34096097a8",
+    "00_nucleo/benchmark/0030/compact-output-schema.json": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+    "00_nucleo/benchmark/0030/output-bound-proof.json": "dbc6a5766ece9ce767af9fcd60794cf5df7c4e2bbd881e533539356252ee069b",
+    "00_nucleo/benchmark/0030/web-event-decoder-contract.json": "8a11f29cc3443009e06ce1b359c97ad9ccb257c3ac3f224c03169689ec1c9206",
+    "00_nucleo/benchmark/0030/pair-dispatch-contract.json": "b4c742d32ac0219013be0c48cef7f4f4adee6a13ddacdcde4b74283c916787b1",
+    "00_nucleo/benchmark/0030/prompt-control.txt": "e829365177d7bf9ba60dce8dc900fb64dc1273d021eeddc7ee6076246958a86b",
+    "00_nucleo/benchmark/0030/prompt-treatment.txt": "17f654629700affbed15e0380c18b4fd2c26891c11a20d2c5549e5fee2aea22a",
+    "00_nucleo/benchmark/0030/execution-profile.json": "935eeecbccc05d19f8cc34016a7c7d5c49b03da05fc53057a763650e77ac02be",
+    "00_nucleo/benchmark/0030/rubric.json": "068b4b5d07a89eb5dc95e12ad46782d1a7fbad4d4acbef932b57c93089aa35a4",
+    "00_nucleo/benchmark/0030/catalysis-trace-rubric.json": "be4267262777544d257a9c2dca1a1e950f031495bb834ee489b8d35cd54df6ad",
+    "00_nucleo/benchmark/0030/contract-authorship.json": "ae672a78fb0de5650d9c5a465e8c46ae370fe9eef174e70085b91d7c9a4fecc4",
+    "00_nucleo/benchmark/0030/contract-candidate.json": "a1b0ae928064c38a1663149e19c6d25ef9da6ee4e6c9dea9f2043f44f45681d1",
+    "00_nucleo/benchmark/0030/positive-opaque-fixtures.json": "0cd9d62182928650615ff073c1e1fdbc7bd6854e502958fb35743d9d985ffa41",
+    "00_nucleo/benchmark/0030/adversarial-mutations.json": "095e21fda17bf368459965708b93287f8c386195934b2218aea387f6ac40ef70",
+    "00_nucleo/benchmark/0030/oracle-authorship.json": "6874448d48bf8e3e4e419fd4d05985713d5c3bafb30b58f97baf3b4e4337d599",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r3-results.json": "3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r3-final-verification.json": "7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2",
+    "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/output.json": "42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8"
+  },
+  "gates": {
+    "json_syntax": {
+      "status": "PASS",
+      "parsed_contract_json_files": 16
+    },
+    "declared_hashes": {
+      "status": "PASS_FOR_EXISTING_PATHS",
+      "note": "All declared hashes whose paths exist match their bytes, including the four protected R3 artifacts. A matching hash at a differently named file does not repair a missing declared path."
+    },
+    "path_and_authority_binding": {
+      "status": "FAIL",
+      "findings": [
+        {
+          "reason_code": "CONTRACT_AUTHORSHIP_SCHEMA_PATH_MISSING",
+          "declared_path": "00_nucleo/benchmark/0029/engineering-investigation-output-schema-r2.json",
+          "declared_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+          "observed": "PATH_ABSENT",
+          "existing_different_path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+          "existing_different_path_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+        },
+        {
+          "reason_code": "ORACLE_AUTHORITY_BINDING_MISMATCH",
+          "authority_manifest_executor": "/root/avaliador_cego_r2",
+          "oracle_authorship_author": "/root/adversario_0030",
+          "fixture_author": "/root/adversario_0030",
+          "mutation_author": "/root/adversario_0030"
+        },
+        {
+          "reason_code": "VERIFIER_AUTHORITY_BINDING_MISMATCH",
+          "authority_manifest_executor": "/root/verificador_metodo_r2",
+          "executing_verifier": "/root/verificador_contrato_0030"
+        },
+        {
+          "reason_code": "RANDOMIZATION_PLAN_PATH_MISSING",
+          "required_by": "Step 0030 artifact plan and protected-until-seal randomization mapping",
+          "expected_path": "00_nucleo/benchmark/0030/randomization-plan.json",
+          "observed": "PATH_ABSENT",
+          "note": "A randomization object embedded in execution-profile.json does not satisfy the named standalone artifact binding."
+        }
+      ]
+    },
+    "output_bound": {
+      "status": "PASS",
+      "method": "Independent recursive evaluation of bounded strings, enums, arrays and closed required objects under the declared canonical UTF-8 recurrence.",
+      "computed_canonical_maximum_bytes": 47353,
+      "hard_serialized_bytes_max": 65536,
+      "margin_bytes": 18183,
+      "inequality": "47353 <= 65536"
+    },
+    "protected_r3_fixture": {
+      "status": "PASS",
+      "events_records": 12,
+      "events_bytes": 85114,
+      "dual_id_machines": 3,
+      "start_sequences": [5, 7, 9],
+      "finish_sequences": [6, 8, 10],
+      "encoding": "DUAL_ID_CODEX_0_149",
+      "output_unicode_characters": 22578,
+      "output_utf8_bytes": 23267,
+      "historical_r2_schema_validation_errors": 0,
+      "classification": "VALID_SCHEMA_EDITORIAL_TARGET_EXCEEDED"
+    },
+    "discriminatory_corpus": {
+      "status": "NOT_EXECUTED_FAIL_FAST",
+      "positive_fixtures": 2,
+      "opaque_fixtures": 3,
+      "mutants": 19,
+      "requested_repetitions": 2,
+      "requested_orders": ["declared", "reverse"],
+      "mutation_score": null,
+      "reason": "The protocol requires binding and path integrity before discriminatory execution. The failed upstream gate forbids sealing regardless of downstream fixture outcomes. Unknown was not converted to success."
+    }
+  },
+  "writes": {
+    "contract_verification": "00_nucleo/benchmark/0030/contract-verification-r1.json",
+    "contract_seal": null
+  },
+  "forbidden_access_attestation": {
+    "candidate_implementation_read_or_written": false,
+    "contract_inputs_modified": false,
+    "model_sessions_executed": false,
+    "native_web_executed": false,
+    "mcp_or_tool_calls_executed": false,
+    "protected_r3_fixture_modified": false
+  },
+  "reproduction_commands": [
+    "sha256sum <each path listed in input_hashes>",
+    "test -e 00_nucleo/benchmark/0029/engineering-investigation-output-schema-r2.json",
+    "sha256sum 00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "python3 jsonschema validation of the protected R3 output against 00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "duplicate-preserving JSON object-pair scan of the 12 protected R3 JSONL records",
+    "recursive schema-bound calculation using S(n)=2+6*n, A(k,e)=2+k*e+max(k-1,0), and the declared closed-object recurrence"
+  ],
+  "invalidation_rule": "Any change to the Step, intent, authority bindings, contract artifacts, oracle artifacts, protected R3 bytes, expected paths, Unknown policy or requested execution order invalidates this receipt."
+}

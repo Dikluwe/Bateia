@@ -1,0 +1,294 @@
+{
+  "schema_version": "bateia.step0030.preflight-verification.v1",
+  "completed_at_utc": "2026-09-03T21:30:23Z",
+  "issuer": "/root/preflight_0030",
+  "role": "independent_preflight_verifier",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "PASS",
+  "verdict": "AUTHORIZED_EXACTLY_SIX_BEHAVIORAL_SESSIONS_IN_SEALED_ORDER",
+  "behavioral_activity_during_preflight": {
+    "model_sessions_started": 0,
+    "native_web_calls": 0,
+    "mcp_tools_call_sent": 0,
+    "bateia_recommend_calls": 0,
+    "protected_test_case_content_opened": false
+  },
+  "bindings": {
+    "contract_seal": {
+      "path": "00_nucleo/benchmark/0030/contract-seal-r2.json",
+      "sha256": "01147b3cf441d90c895f98eacfae95e2feb560d1541a0b256a05afd08e27fcc4",
+      "status": "SEALED"
+    },
+    "implementation_receipt": {
+      "path": "00_nucleo/benchmark/0030/implementation-receipt.json",
+      "revision": 2,
+      "sha256": "6f6312e1d69a16a7f50b294eadca8c06bec50e487683d01014e524e7d48f45f3"
+    },
+    "sealed_hashes_recomputed": 27,
+    "sealed_hash_mismatches": 0,
+    "implementation_file_hash_mismatches": 0,
+    "protected_r3_hash_mismatches": 0,
+    "sealed_inputs_unchanged_after_implementation": true
+  },
+  "public_calibration_corpus": {
+    "path": "00_nucleo/benchmark/0029/corpus-public.json",
+    "sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "public_cases_exactly": 3,
+    "cases": [
+      {
+        "case_id": "EXP29-C01",
+        "family": "durable-processing",
+        "canonical_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+      },
+      {
+        "case_id": "EXP29-V01",
+        "family": "local-first-ledger",
+        "canonical_sha256": "98adbe6cc88b5e2144ad1a3575079e3b05653c1bb7444a65a9f2e7fbb6bc5181"
+      },
+      {
+        "case_id": "EXP29-V02",
+        "family": "extensible-platform",
+        "canonical_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0"
+      }
+    ],
+    "protected_test_registry_content_used": false,
+    "protected_test_case_files_opened": false
+  },
+  "runtime_identity": {
+    "codex": {
+      "path": "/usr/bin/codex",
+      "version": "codex-cli 0.149.0",
+      "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477"
+    },
+    "bateia": {
+      "path": "/tmp/bateia-temperature-pilot-r1",
+      "sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+    },
+    "auth_only_codex_home": {
+      "path": "/tmp/codex-step0030-auth-home",
+      "directory_mode": "0700",
+      "entries_exactly": [
+        "auth.json"
+      ],
+      "auth_json_type": "regular_file",
+      "auth_json_mode": "0600",
+      "auth_json_is_valid_nonempty_object": true,
+      "credential_bytes_logged": false,
+      "credential_hash_recorded": false
+    },
+    "working_directory": {
+      "path": "/tmp/bateia-step0030-empty",
+      "directory_mode": "0700",
+      "entries": 0,
+      "status": "EMPTY"
+    }
+  },
+  "profiles_and_capabilities": {
+    "execution_profile_sha256": "b57ed396e499a2017fcea2cdb39f12a20beebaa42252b4037f0f494650c909b5",
+    "randomization_plan_sha256": "89c1de4c946962abc662c3e3ca80b41150677e9c3ddbbe48dd662bb9ea6cfb9c",
+    "randomization_order_keys_recomputed": 6,
+    "randomization_order_is_ascending": true,
+    "model_both_arms": "gpt-5.6-sol",
+    "reasoning_effort_both_arms": "high",
+    "output_schema_both_arms": "00_nucleo/benchmark/0030/compact-output-schema.json",
+    "native_web_postcondition_both_arms": "1..3",
+    "timeout_seconds_both_arms": 900,
+    "behavioral_retries_both_arms": 0,
+    "control_mcp_servers": 0,
+    "control_enabled_tools": [
+      "web_search"
+    ],
+    "treatment_mcp_servers": 1,
+    "treatment_mcp_tools_exactly": [
+      "bateia_recommend"
+    ],
+    "treatment_enabled_tools": [
+      "web_search",
+      "bateia_recommend"
+    ],
+    "treatment_max_mcp_tool_calls": 1,
+    "treatment_requires_recommend_completed_before_first_web": true,
+    "disable_pairs_each_invocation": 12
+  },
+  "rendered_queue": [
+    {
+      "sequence": 1,
+      "case_id": "EXP29-V02",
+      "arm_id": "IA_INTERNET",
+      "prompt_sha256": "2a12f1e26eaa7510632e60d6b12f90f65454e931591c309f74220f0fb31e38ca",
+      "prompt_bytes": 3260,
+      "invocation_sha256": "46d97ee4d929e4f915410d5dd4754c79bf751f5d099df5d6cc16f94af41a79b0"
+    },
+    {
+      "sequence": 2,
+      "case_id": "EXP29-V01",
+      "arm_id": "IA_INTERNET_BATEIA",
+      "prompt_sha256": "2892377f2852fc655e193ae4069b04baa10d466dbe0a113da2262d3d5c4c2266",
+      "prompt_bytes": 3394,
+      "invocation_sha256": "87f9362b77029a5677ddc4445770494d43d0726a7eeaf75ede6fddf0ae692937"
+    },
+    {
+      "sequence": 3,
+      "case_id": "EXP29-C01",
+      "arm_id": "IA_INTERNET_BATEIA",
+      "prompt_sha256": "3103e0814ac0bb9143e7b26e9131c1589cc9d8ec4ce9e06296f2b6f7baf38953",
+      "prompt_bytes": 2886,
+      "invocation_sha256": "6bc86718b920c5328f4cd6c94ecaf7b26101ba54fe3810edf3a9996bf1204212"
+    },
+    {
+      "sequence": 4,
+      "case_id": "EXP29-C01",
+      "arm_id": "IA_INTERNET",
+      "prompt_sha256": "015d2b0e3100d73cb776abbc75aee1c222045083d29285d8fdfe9f4a5903b28f",
+      "prompt_bytes": 2722,
+      "invocation_sha256": "25c3ff1c8a139f4d96301dc9e014991958bbf4a4fe31c5ca8319c7c38dcfc3c4"
+    },
+    {
+      "sequence": 5,
+      "case_id": "EXP29-V01",
+      "arm_id": "IA_INTERNET",
+      "prompt_sha256": "7997057daec502d778d46293d0a790337acc1ce64ca191cff5d443f5e2e36941",
+      "prompt_bytes": 3230,
+      "invocation_sha256": "93a9c73a8f265ddb11abc2501f33e196f1a49aa60f8e587a6b25d688d8177dfc"
+    },
+    {
+      "sequence": 6,
+      "case_id": "EXP29-V02",
+      "arm_id": "IA_INTERNET_BATEIA",
+      "prompt_sha256": "c650ba716d444d75c16335b75af056ed06881130a84b6c537655bc7dad4aa268",
+      "prompt_bytes": 3424,
+      "invocation_sha256": "568045f51ed5402355515e9f7443711d1a2b23f17cf5ecee7e1a161378153283"
+    }
+  ],
+  "rendering_verification": {
+    "template_marker_occurrences_each": 1,
+    "replacement_algorithm": "replace the sole ASCII marker with RFC8259 canonical case JSON using recursively sorted object keys, compact separators and unescaped Unicode",
+    "prompt_byte_mismatches": 0,
+    "invocation_argv_mismatches": 0,
+    "stdin_hash_or_size_mismatches": 0,
+    "unexpected_prestart_session_files": 0,
+    "output_event_stderr_files_before_start": 0
+  },
+  "mcp_handshake": {
+    "executed": true,
+    "working_directory": "/tmp/bateia-step0030-empty",
+    "run_root": "/tmp/bateia-step0030-preflight-handshake",
+    "operations_exactly": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "stdin_eof_shutdown"
+    ],
+    "protocol_version": "2024-11-05",
+    "server_name": "bateia-mcp",
+    "server_version": "1.0.0",
+    "tool_count": 10,
+    "advertised_tool_names_ordered_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "bateia_recommend_advertised": true,
+    "tools_call_sent": false,
+    "network_dependent_tools_called": 0,
+    "note": "The server emitted a non-fatal Bleve fallback warning; initialize and tools/list completed successfully and no behavioral method was sent."
+  },
+  "decoder_and_historical_fixture": {
+    "events_path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl",
+    "events_sha256": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "records": 12,
+    "dual_id_machines": 3,
+    "start_sequences": [
+      5,
+      7,
+      9
+    ],
+    "finish_sequences": [
+      6,
+      8,
+      10
+    ],
+    "normalized_call_count_state": "Known",
+    "normalized_call_count": 3,
+    "duplicate_preserving_scanner": true,
+    "conventional_last_wins_parser_used": false,
+    "unknown_policy_preserved": true,
+    "sealed_exec_id_pattern_implemented": "^exec-[0-9a-fA-F-]{36}$",
+    "accepted_web_action_required_for_machine": true
+  },
+  "historical_output_classification": {
+    "output_path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/output.json",
+    "output_sha256": "42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8",
+    "raw_bytes": 23267,
+    "unicode_characters": 22578,
+    "editorial_target": 18000,
+    "historical_schema_errors": 0,
+    "historical_classification": "VALID_SCHEMA_EDITORIAL_TARGET_EXCEEDED",
+    "successor_compact_schema_errors": 120,
+    "successor_classification": "INVALID_COMPACT_SCHEMA",
+    "repair_truncation_or_reclassification_performed": false,
+    "editorial_excess_treated_as_structural_invalidity": false
+  },
+  "compact_schema_bound": {
+    "schema_sha256": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+    "proof_sha256": "dbc6a5766ece9ce767af9fcd60794cf5df7c4e2bbd881e533539356252ee069b",
+    "independently_recomputed_canonical_maximum_bytes": 47353,
+    "hard_output_bytes_max": 65536,
+    "margin_bytes": 18183,
+    "unbounded_or_open_schema_nodes": 0,
+    "raw_cap_implemented": true,
+    "verdict": "PASS"
+  },
+  "intention_to_treat_simulation": {
+    "preflight_false_queue_length": 0,
+    "preflight_true_queue_length": 6,
+    "first_cell_simulated_invalid": true,
+    "queue_after_first_behavioral_failure_length": 6,
+    "later_cells_still_required": 5,
+    "retry_or_replacement": false,
+    "single_global_in_flight": true,
+    "minimum_seconds_between_starts": 120,
+    "global_sessions_before": 16,
+    "global_sessions_reserved": 6,
+    "global_sessions_after_complete": 22,
+    "global_cap": 108
+  },
+  "implementation_gates": {
+    "independent_oracle_test": "PASS",
+    "focal_layer_packages": "PASS",
+    "go_build_04_wiring_recursive": "PASS",
+    "git_diff_check": "PASS",
+    "crystalline_lint_exit_code": 0,
+    "crystalline_lint_new_step0030_warnings": 0,
+    "crystalline_lint_existing_warnings_only": true,
+    "global_suite_final_vector": "FAIL_BASELINE_EQUIVALENT",
+    "global_suite_only_stable_failure": "04_wiring/r4_gate TestStep0026R4CausalGateConsumesDeclaredAttacksThreeByThree: retrocompatibility got=SURVIVED want=Violated",
+    "step0029_package": "PASS",
+    "r5_transient_audit": {
+      "first_parallel_full_suite_observation": "One M28 failure occurred once while packages ran in parallel.",
+      "candidate_files_changed_under_r5": 0,
+      "isolated_repetitions": 2,
+      "isolated_result": "PASS_BOTH",
+      "final_full_suite_result": "PASS_R5",
+      "classification": "TRANSIENT_PARALLEL_INTERFERENCE_NOT_STEP0030_REGRESSION"
+    }
+  },
+  "unknown_and_blinding_guards": {
+    "inconclusive_policy": "NEUTRAL_NO_AUTOMATIC_WIN_LOSS_OR_SCORE",
+    "opaque_telemetry": "Unknown",
+    "causal_linkage_without_direction_web_output_chain": "Unknown",
+    "blind_quality_must_freeze_before_trace_reveal": true,
+    "blind_judge_may_receive_arm_mapping_or_trace": false
+  },
+  "authorization": {
+    "queue_committed": true,
+    "sessions_authorized": 6,
+    "dispatch_order": "Exactly the rendered_queue order above.",
+    "dispatch_each_exactly_once": true,
+    "behavioral_retry_or_replacement": false,
+    "continue_after_behavioral_invalidity": true,
+    "single_global_in_flight": true,
+    "minimum_seconds_between_starts": 120,
+    "maximum_global_count_after_queue": "22/108",
+    "session_23": "PROHIBITED_WITHOUT_NEW_COMPATIBLE_AUTHORIZATION",
+    "failure_boundary": "An infrastructure failure after any start is recorded without retry and does not erase completed evidence; independently startable committed cells remain required."
+  },
+  "claim_boundary": "This PASS authorizes only the six exploratory Step 0030 calibration sessions under the exact sealed inputs and rendered invocations. It does not establish Bateia uplift, behavioral quality, causal catalysis, general product equivalence or strong isolation attestation."
+}

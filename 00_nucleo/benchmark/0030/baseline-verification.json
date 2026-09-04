@@ -1,0 +1,27 @@
+{
+  "schema_version": "bateia.step0030.baseline-verification.v1",
+  "observed_at": "2026-09-03T20:22:21Z",
+  "phase": "BEFORE_STEP0030_IMPLEMENTATION",
+  "commands": [
+    {
+      "command": "go test ./04_wiring/step0029_experiment",
+      "status": "PASS"
+    },
+    {
+      "command": "go test ./04_wiring/r4_gate",
+      "status": "FAIL_PREEXISTING",
+      "witness": "TestStep0026R4CausalGateConsumesDeclaredAttacksThreeByThree: order=0 repetition=0 category=retrocompatibility got=SURVIVED want=Violated"
+    },
+    {
+      "command": "go build -o /tmp/bateia-step0030-baseline-build ./04_wiring",
+      "status": "PASS"
+    }
+  ],
+  "frozen_witness_files": {
+    "04_wiring/r4_gate/discriminatory_step0026_r4_test.go": "de7483519cb2209055b81d3267b50e4bbb2a76e98caa00d1fd1626e7739a3113",
+    "04_wiring/step0029_experiment/harness.go": "114143d2148ad6fc3c3b94f5c7b7a5f78e9e7911023c4eeed09f2185d570d775",
+    "04_wiring/step0029_experiment/types.go": "90bb66e4bea2aafaec93e0daa869bc3b7b2ed595f8c65b3cfe42ea41885fc165"
+  },
+  "regression_rule": "Step 0030 must pass its focal packages, preserve the Step 0029 package pass, preserve package build, and introduce no additional full-suite failure beyond the frozen R4 witness.",
+  "claim_boundary": "This receipt records the observable baseline only and does not excuse, repair or approve the preexisting R4 failure."
+}

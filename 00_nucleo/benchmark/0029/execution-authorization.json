@@ -1,0 +1,37 @@
+{
+  "schema_version": "bateia.step0029.execution-authorization.v1",
+  "step": "0029",
+  "created_at": "2026-09-02T23:51:54-03:00",
+  "authority": "user",
+  "authorization_status": "AUTHORIZED_UNDER_FROZEN_PLAN_CAP",
+  "source_messages_sha256": [
+    "6c0a837a5d211c3e75daf78bdb4f2aaddada94f946111e13e0e151363d904abd",
+    "1c401e4e9dbfcfa8f1be55c475eda808dda5a6365cc58be61d37e6dd03644205"
+  ],
+  "frozen_plan_sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+  "post_gate_seal_sha256": "b45259ad04e6d0deb3c3c01724c856931377b434434ab0c0e3d60131b6ec470d",
+  "authorized_budget": {
+    "behavioral_sessions_max": 108,
+    "contract_sessions_max": 18,
+    "validation_sessions_max": 36,
+    "test_sessions_max": 54,
+    "wall_clock_seconds_per_cell": 900,
+    "bateia_calls_per_treatment_cell_max": 25,
+    "unchanged_status_polls_per_cell_max": 12,
+    "output_utf8_characters_per_cell_max": 20000,
+    "infrastructure_retries_per_cell_max": 1,
+    "human_follow_up_per_cell_max": 0,
+    "monetary_cost": {
+      "state": "UNKNOWN",
+      "reason": "The current Codex host does not expose a frozen price table or per-session monetary charge; the user authorized the finite operational cap already present in the plan."
+    }
+  },
+  "cadence": {
+    "interval_seconds": 120,
+    "source": "COORDINATOR_DEFAULT_ANNOUNCED_TO_USER",
+    "modifiable_by_user": true
+  },
+  "dispatch_policy": "One clean session per cadence tick, phase-gated in CONTRACT then VALIDATION then TEST order; stop immediately on any frozen gate failure.",
+  "sessions_dispatched_at_authorization": 0,
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

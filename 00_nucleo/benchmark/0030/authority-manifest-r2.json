@@ -1,0 +1,54 @@
+{
+  "schema_version": "bateia.step0030.authority-manifest.v2",
+  "created_at": "2026-09-03",
+  "supersedes": "authority-manifest.json",
+  "supersession_reason": "R1 pre-seal verification observed different oracle and contract-verifier executors. The successor records actual authorities without rewriting history.",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "roles": [
+    {
+      "role": "intent_author",
+      "executor": "user with /root as recorder",
+      "writes": ["intent.json", "authority-manifest.json", "authority-manifest-r2.json", "r1-to-r2-invalidation.json"],
+      "must_not": ["approve own materialization", "issue final certificate"]
+    },
+    {
+      "role": "contract_author",
+      "executor": "/root/oraculo_metodo_r2",
+      "writes": ["R1 contract artifacts", "R2 successor contract artifacts"],
+      "must_not": ["read implementation candidate before seal", "execute behavioral sessions", "issue final certificate"]
+    },
+    {
+      "role": "oracle_and_adversary_author",
+      "executor": "/root/adversario_0030",
+      "writes": ["positive-opaque-fixtures.json", "adversarial-mutations.json", "oracle-authorship.json"],
+      "must_not": ["read implementation candidate before seal", "judge behavioral outputs", "issue final certificate"]
+    },
+    {
+      "role": "contract_verifier",
+      "executor": "/root/verificador_contrato_0030",
+      "writes": ["contract-verification-r1.json", "future R2 verification and seal"],
+      "must_not": ["edit artifacts verified", "implement candidate", "judge blind quality"]
+    },
+    {
+      "role": "implementer_and_dispatcher",
+      "executor": "/root",
+      "writes": ["prompts mirrored to code", "L1-L4 candidate", "session evidence", "mechanical receipts"],
+      "must_not": ["edit protected R2 contract after seal", "blind-judge own outputs", "issue final certificate"]
+    },
+    {
+      "role": "blind_judge",
+      "executor": "fresh subagent selected after opaque outputs exist",
+      "must_not": ["read mapping", "read traces", "read arm directories before judgment"]
+    },
+    {
+      "role": "post_reveal_verifier",
+      "executor": "fresh verifier selected after blind receipts freeze",
+      "must_not": ["edit evidence or judgments", "change rubric", "convert Unknown to success"]
+    }
+  ],
+  "communication": "Only canonical project artifacts and their hashes transfer obligations between roles.",
+  "protected_until_r2_seal": ["R2 contract artifacts", "oracle fixtures", "mutations", "standalone randomization plan"],
+  "protected_until_blind_receipt": ["arm mapping", "session traces", "invocations", "treatment identity"],
+  "isolation_limit": "Shared filesystem and inherited context prevent strong isolation attestation."
+}

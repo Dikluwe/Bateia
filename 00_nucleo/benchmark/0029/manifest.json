@@ -1,0 +1,55 @@
+{
+  "schema_version": "tekt.step0029.manifest.v1",
+  "step": "0029",
+  "protocol": "TEKT_FULL_SEGREGATED",
+  "attestation_limit": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "created_at": "2026-09-02T22:26:05-03:00",
+  "baseline": {
+    "git_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "step_0028_certificate_path": "00_nucleo/benchmark/0028/certificate.json",
+    "step_0028_certificate_sha256": "7b1098c57c6425a2adb2fb6d0d15fea9917502d201e3fb46ae0dfe5dc5ba6506",
+    "required_verdict": "MECHANISM_IMPROVEMENT_SYNTHESIS_READY"
+  },
+  "frozen_inputs": [
+    {"path":"00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md","sha256":"135f8de345e2b7dd2f53f45d7ec30611ea836d360b29111f9cc751df64b4877a"},
+    {"path":"00_nucleo/benchmark/0029/contract.md","sha256":"48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7"},
+    {"path":"00_nucleo/prompts/04_wiring/step0029_experiment/harness.md","sha256":"77271fc1b51b52d61e861a206e9efc32aaabee26c5250c3531194121b9d87111"},
+    {"path":"00_nucleo/benchmark/0029/agent-profile-snapshot.json","sha256":"e01c2b8010f177ea6f57a3af7a4255623f9f3b8f917cf7a053112ed50a11876b"},
+    {"path":"00_nucleo/benchmark/0029/host-capability-snapshot.json","sha256":"7b8932298281dd80b3a8076b4217d19c1b0bb737061c1a6f69f2cef765c22aea"},
+    {"path":"00_nucleo/benchmark/0029/prompt-contract.json","sha256":"e18cd5dfe705df2308589989464c23e6e69ec4654bbf33b9eaff3d10a3030fb7"},
+    {"path":"00_nucleo/benchmark/0029/tool-allowlists.json","sha256":"58d79667ffb2e1b005015ece63f13fc95d1e7ea21b26ae1f081955eabb53b5db"},
+    {"path":"00_nucleo/benchmark/0029/randomization-seed.json","sha256":"979eafc7876f14bf0fc81e78bb0cd79415f89ae956fb23793fb462de9e686cbb"},
+    {"path":"00_nucleo/benchmark/0029/corpus-public.json","sha256":"0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96"},
+    {"path":"00_nucleo/benchmark/0029/corpus-registry.json","sha256":"ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee"},
+    {"path":"00_nucleo/benchmark/0029/oracle/protected/test-cases.json","sha256":"62f95cebe415f7205d29af051ec3aa79b97e9f36a7543be05bafb6d08f836bcb"},
+    {"path":"00_nucleo/benchmark/0029/rubric.json","sha256":"a4b2f1fe39405d01bc955f8f72032753e779a14989dda481cf24cd938fddafe0"},
+    {"path":"00_nucleo/benchmark/0029/adversarial-cases.json","sha256":"cc2c039d9b5f24031b4603dd88bf8b325f383229f33f892eef10e4adca04ea73"},
+    {"path":"00_nucleo/benchmark/0029/oracle/positive-opaque-cases.json","sha256":"ec7e61cd99d778c063e4a2984d0fa64fa0bb66e9949ac573e965ad7df8cb758a"},
+    {"path":"04_wiring/step0029_experiment/harness_adversarial_test.go","sha256":"ee1ee904c71d7e9f7c9ea73a1b86792802fce42f976f56dccf1ebd9cf40bcf06"},
+    {"path":"04_wiring/step0029_experiment/harness_oracle_test.go","sha256":"007be952b1296bd1b189645776f33fef3c01d392b6239b76c118ce7d81b1f134"}
+  ],
+  "observables": [
+    "exact 108-cell matrix with 18/36/54 split counts and paired arms",
+    "no silent profile substitution and exactly ten Bateia tools in treatment only",
+    "retry only for confirmed pre-output infrastructure failure",
+    "all dispatched cells retained in ITT denominator with Unknown preserved",
+    "deterministic safe receipts and blinded byte-stable projections",
+    "three-judge scoring, paired uplift and verdict precedence",
+    "mutation score 1.0 with positive and opaque controls"
+  ],
+  "unknown_policy": "Unknown is never inferred from a zero value, never promoted to evidence or success, and is excluded only from the metric that cannot be observed while the cell remains in the denominator.",
+  "roles": [
+    {"role":"AUTHOR_INTENT","executor":"user","write":["step 0029"]},
+    {"role":"AUTHOR_CONTRACT","executor":"/root/contrato_0029","write":["contract","harness prompt"]},
+    {"role":"AUTHOR_CASES","executor":"/root/casos_0029","write":["public and protected corpus"]},
+    {"role":"AUTHOR_ORACLES","executor":"/root/oraculo_0029","write":["rubric","positive and opaque controls","oracle tests"]},
+    {"role":"ADVERSARY","executor":"/root/adversario_0029","write":["negative mutations","adversarial tests"]},
+    {"role":"IMPLEMENTER","executor":"/root/implementador_0029","read":["public contract and frozen public inputs"],"deny":["tests","attacks","protected corpus","verdict"]},
+    {"role":"VERIFIER","executor":"pending","write":["receipts","certificate","laudo"]}
+  ],
+  "execution_budget": {
+    "behavioral_sessions_max": 108,
+    "external_sessions_authorized": false,
+    "reason": "No explicit paid-session budget was supplied; this materialization may certify only the local harness."
+  }
+}

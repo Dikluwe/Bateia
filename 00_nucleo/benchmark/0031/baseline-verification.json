@@ -1,0 +1,25 @@
+{
+  "schema_version": "bateia.step0031.baseline-verification.v1",
+  "observed_at": "2026-09-03",
+  "phase": "BEFORE_STEP0031_IMPLEMENTATION",
+  "git_head": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "working_tree_note": "The baseline contains user-owned and prior-step uncommitted changes. Step 0031 must preserve unrelated changes and compare only its declared paths.",
+  "commands": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go test ./01_core/usecase ./02_shell/mcp ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "command": "crystalline-lint .",
+      "status": "PASS"
+    }
+  ],
+  "baseline_files": {
+    "02_shell/mcp/server.go": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+    "01_core/usecase/recommendation.go": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "00_nucleo/prompts/02_shell/mcp/server.md": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+    "00_nucleo/prompts/01_core/usecase/recommendation.md": "b5115cde4c609e5ce263e399cba154f2010387d28ff7e4cd9b5df7c48044e7b6"
+  },
+  "scoped_diff_sha256": "1585723d03bffaabfdcfb0a171abf03e284b31637381dcb3eacaa8eedbb282fc",
+  "regression_rule": "Focal packages and build must remain green; any newly observed failure must be attributable and fail the step until resolved."
+}

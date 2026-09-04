@@ -1,0 +1,45 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-invalidation.r1-to-r2.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "status": "R1_CANDIDATE_INVALIDATED_R2_REQUIRED",
+  "trigger": {
+    "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-methodology-verification.json",
+    "sha256": "efd24649613b38a8530e5e0b417d35b95bae6250bb3c17f69d8cfac4c1482c5b",
+    "verdict": "REPROVADO",
+    "reason_code": "CODEX_0_149_TRACE_FIELDS_NOT_OBSERVABLE_AS_CONTRACTED"
+  },
+  "invalidated_r1_artifacts": {
+    "methodology_sha256": "63153d5f732a515beb6988cf55f86003c13a78e9b2ea2d0dbc3c93b99f43db8f",
+    "contract_sha256": "f3a38717f7f199cdc353b008e2270bb861b2fffe67ecdef05fefb52f1e10542d",
+    "adversarial_cases_sha256": "10489d800ba33fcc6e2222940554f93cd4c5bcaa58f988a560f367127e78ed3a",
+    "oracle_authorship_sha256": "f819cd3eca52969896155f5a3530546571a8c349b1522dde0a0e870ccf8e7e37",
+    "contract_seal_candidate_sha256": "284ec35738645579411af5b31e465980c5e9bfaace52dd957c70f6fcdcf87a1e"
+  },
+  "preserved_without_change": {
+    "intent_sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca",
+    "case_id": "EXP29-V02",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "execution_order": [
+      "IA_INTERNET_BATEIA",
+      "IA_INTERNET"
+    ],
+    "new_behavioral_sessions_hard_cap": 2,
+    "global_after_complete": 17,
+    "global_cap": 108,
+    "estimand_and_winner_policy": "UNCHANGED"
+  },
+  "focal_changes": [
+    "Replace mandatory wall-clock tool timestamps with one-based JSONL start_sequence and finish_sequence.",
+    "Freeze derivation of session_id, event_id, arm_id and canonical request/response hashes.",
+    "Bind an official Codex CLI 0.149.0 web-event schema witness.",
+    "Fail closed when runtime web JSONL lacks sufficient public identity or action fields.",
+    "Freeze exact per-arm execution profiles and Bateia binary identity.",
+    "Bind independently materialized prompt byte hashes."
+  ],
+  "behavioral_sessions_before_invalidation": 0,
+  "r1_files_modified": false,
+  "effect": "R1 is not execution-authorized and cannot be sealed. Only an independently verified R2 successor may proceed."
+}

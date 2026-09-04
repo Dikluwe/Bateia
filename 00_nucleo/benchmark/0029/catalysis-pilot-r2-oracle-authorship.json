@@ -1,0 +1,71 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-oracle-authorship.v2",
+  "created_at": "2026-09-03",
+  "executor": "/root/oraculo_metodo_r2",
+  "environment": "shared repository workspace",
+  "roles": [
+    "successor contract author",
+    "normalization oracle author",
+    "adversarial-case author"
+  ],
+  "role_fusion_assessment": "Permitted in the pre-implementation authoring phase because this authority cannot implement, execute, verify or certify the successor.",
+  "read_inputs": [
+    {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-methodology-verification.json",
+      "sha256": "efd24649613b38a8530e5e0b417d35b95bae6250bb3c17f69d8cfac4c1482c5b"
+    },
+    {
+      "path": "/tmp/codex-catalysis-schema/ClientRequest.json",
+      "sha256": "1024db9d23b156e04b020a5d101982841dab158b84ecc9ecec399ab119ac9a1f",
+      "scope": "WebSearchCallResponseItem and ResponsesApiWebSearchAction only"
+    },
+    {
+      "path": "/tmp/codex-catalysis-schema/codex_app_server_protocol.v2.schemas.json",
+      "sha256": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+      "scope": "hash binding and matching named definitions only"
+    },
+    {
+      "path": "/tmp/bateia-temperature-pilot-r1",
+      "sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b",
+      "scope": "identity hash only"
+    },
+    {
+      "path": "tekt-materializacao-segregada/SKILL.md and mandatory references",
+      "scope": "normative rules"
+    }
+  ],
+  "preserved_inputs_from_verified_predecessor": {
+    "intent_sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "schema_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+  },
+  "session_outputs_read": [],
+  "sessions_existing": 0,
+  "write_allowlist": [
+    "00_nucleo/benchmark/0029/catalysis-pilot-r1-to-r2-invalidation.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-web-event-schema-witness.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-execution-profile.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-methodology.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-contract.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-adversarial-cases.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-oracle-authorship.json",
+    "00_nucleo/benchmark/0029/catalysis-pilot-r2-contract-seal-candidate.json"
+  ],
+  "capabilities_not_used": [
+    "model execution",
+    "web execution",
+    "MCP execution",
+    "session-output access",
+    "implementation",
+    "verification",
+    "winner selection",
+    "certification"
+  ],
+  "isolation_limits": [
+    "Shared filesystem does not prove strong capability isolation.",
+    "Inherited conversation contains predecessor authoring context.",
+    "Schema hashes prove byte identity, not that codex exec JSONL will expose the same shape at runtime.",
+    "Runtime mismatch remains fail-closed Unknown until independently tested."
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-manifest.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T04:12:00-03:00",
+  "regime": "FULL_PROTOCOL_FOCAL_REDESIGN",
+  "intent": {
+    "path": "00_nucleo/benchmark/0029/temperature-pilot-spec-r1.json",
+    "sha256": "fa02c8cbdb93251bd1cc9d98b9f59f1e59c7889d08c0f8cc09c680951b1dc650"
+  },
+  "frozen_prompts": {
+    "02_shell/mcp/server.go": {
+      "path": "00_nucleo/prompts/02_shell/mcp/server.md",
+      "sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34"
+    },
+    "04_wiring/main.go": {
+      "path": "00_nucleo/prompts/04_wiring/main.md",
+      "sha256": "c3b9f7499bec9a6a0acf49a336b2870c3d44d9863cdbb6994454a12934776175"
+    }
+  },
+  "baseline": {
+    "execution_queue_r2_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f",
+    "contract_sha256": "48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7",
+    "failure_verification_sha256": "2b22880b4245c912a1c40803d41135381e640f4b1c53290c403295b165d34ad8",
+    "behavioral_sessions_already_consumed": 7
+  },
+  "roles": [
+    {
+      "role": "INTENT_AND_MANIFEST_AUTHOR",
+      "executor": "/root",
+      "writes": ["temperature-pilot-spec-r1.json", "temperature-pilot-manifest-r1.json", "temperature-pilot-queue-r1.json"],
+      "prohibited": ["independent verdict"]
+    },
+    {
+      "role": "CONTRACT_ORACLE_AND_ADVERSARY",
+      "executor": "/root/oraculo_0029",
+      "reads": ["temperature-pilot-spec-r1.json", "temperature-pilot-manifest-r1.json", "frozen mirrored prompts", "predecessor contract and failure verification"],
+      "writes": ["temperature-pilot-contract-r1.json", "independent oracle tests and adversarial fixtures"],
+      "prohibited": ["candidate implementation", "behavioral sessions", "final verdict"]
+    },
+    {
+      "role": "IMPLEMENTER",
+      "executor": "/root/implementador_0029",
+      "reads_after_contract_seal": ["frozen mirrored prompts", "temperature-pilot-contract-r1.json"],
+      "writes": ["candidate production code and implementation-authored unit tests"],
+      "prohibited": ["independent oracle tests", "verification receipt", "behavioral sessions"]
+    },
+    {
+      "role": "INDEPENDENT_VERIFIER",
+      "executor": "/root/verificador_0029",
+      "reads": ["sealed contract/oracles", "candidate implementation", "receipts"],
+      "writes": ["verification receipts and seals"],
+      "prohibited": ["candidate correction", "behavioral sessions"]
+    }
+  ],
+  "required_observables": [
+    "legacy unlimited mode unchanged when configuration is absent",
+    "positive limit N forwards exactly N tools/call requests",
+    "request N+1 is rejected with code -32010 and stable sanitized message before any handler side effect",
+    "initialize, notifications/initialized and tools/list do not consume budget",
+    "invalid limit configuration fails before Serve",
+    "pilot treatment exposes only bateia_recommend",
+    "receipt separates MCP attempts from forwarded Bateia calls",
+    "three complete pairs maximum and stop after tranche"
+  ],
+  "unknown_policy": "Missing isolation proof, missing output, unresolved evidence or unavailable cost remains UNKNOWN and never becomes success or zero implicitly.",
+  "calibration_budget": {
+    "oracle_revisions_max": 2,
+    "full_gate_runs_max": 2,
+    "behavioral_canary_pairs_before_seal": 0,
+    "pilot_pairs_after_seal_max": 3
+  },
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "limitation": "Roles share a filesystem and inherited project history; authority and write scope are procedural rather than OS-attested."
+}

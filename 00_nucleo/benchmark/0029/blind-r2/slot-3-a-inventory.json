@@ -1,0 +1,539 @@
+{
+  "schema_version": "bateia.step0029.blind-novelty-inventory.v2",
+  "inventory_id": "EXP29-C01-slot-3-a",
+  "status": "FROZEN_PRE_SECOND_MEMBER",
+  "created_at": "2026-09-03",
+  "author": {
+    "task_identity": "/root/avaliador_cego_r2",
+    "role": "blind_novelty_evaluator_slot_3",
+    "authority": "inventory_only",
+    "comparison_authority_exercised": false
+  },
+  "protocol": {
+    "regime": "FULL_SEGREGATION_SCOPED_TO_BLIND_INVENTORY",
+    "purpose": "Congelar o conteúdo semântico de CANDIDATE_M antes da existência do segundo membro do slot 3.",
+    "frozen_before_second_member": true,
+    "input_label": "CANDIDATE_M",
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "comparison_judgment": "NOT_PERFORMED"
+  },
+  "input_identity": {
+    "candidate": {
+      "label": "CANDIDATE_M",
+      "path": "00_nucleo/benchmark/0029/sessions-temperature-r2/2220912aee3d726df47fbc534fc67a852305b9f60d7e7715b4f70c7fd662bd73/output.json",
+      "sha256": "e04487f74b0fb49c03608863101680286698ca64d2defa517aaf91f2b57699b7"
+    },
+    "case": {
+      "case_id": "EXP29-C01",
+      "canonical_case_sha256_from_contract": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    }
+  },
+  "semantic_inventory": {
+    "alternatives": [
+      {
+        "id": "ALT-01",
+        "canonical_name": "reinforced_conventional_queue",
+        "source_name": "Fila convencional reforçada",
+        "decision": "ADAPT",
+        "definition": "Evolução mínima da baseline com fila durável e limitada, workers fixos, confirmação após conclusão, retries com jitter e DLQ operacional.",
+        "semantic_components": [
+          "durable_bounded_queue",
+          "fixed_worker_pool",
+          "ack_after_completion",
+          "exponential_retry_with_jitter",
+          "operational_dead_letter_queue"
+        ],
+        "gaps": [
+          "recuperação independente não demonstrada",
+          "semântica de entrega e confirmação indefinida",
+          "idempotência de classificação e efeitos downstream não coberta",
+          "custo e licença desconhecidos"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "fila convencional adaptada",
+          "reinforced task queue",
+          "durable bounded worker queue",
+          "worker queue com jitter e DLQ",
+          "fila persistente com ack após conclusão"
+        ]
+      },
+      {
+        "id": "ALT-02",
+        "canonical_name": "durable_workflow_orchestrator",
+        "source_name": "Orquestrador de workflows duráveis",
+        "decision": "INVESTIGATE",
+        "definition": "Classe de orquestrador que pode registrar etapas, tentativas e progresso para favorecer retomada e explicabilidade.",
+        "semantic_components": [
+          "durable_workflow_history",
+          "step_and_attempt_tracking",
+          "restart_resume",
+          "progress_visibility"
+        ],
+        "gaps": [
+          "produto ou mecanismo concreto não observado",
+          "persistência não implica efeito exatamente uma vez",
+          "dados, custo, licença e capacidade desconhecidos"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "durable workflow engine",
+          "orquestrador persistente",
+          "workflow history engine",
+          "motor de workflow recuperável",
+          "saga or workflow runtime"
+        ]
+      },
+      {
+        "id": "ALT-03",
+        "canonical_name": "custom_durable_processor",
+        "source_name": "Processador durável próprio",
+        "decision": "BUILD",
+        "definition": "Componente próprio com controle específico sobre admissão, persistência, leasing, deduplicação, reprocessamento, retenção, auditoria e intervenção.",
+        "semantic_components": [
+          "custom_build",
+          "controlled_admission",
+          "durable_state",
+          "leasing",
+          "deduplication",
+          "reprocessing",
+          "audit_and_intervention"
+        ],
+        "gaps": [
+          "maior risco de implementação e operação",
+          "necessidade de construir não demonstrada",
+          "componentes reutilizáveis ainda não avaliados"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "pipeline próprio",
+          "custom durable worker",
+          "processador sob medida",
+          "build from scratch",
+          "serviço interno de triagem durável"
+        ]
+      }
+    ],
+    "mechanisms": [
+      {
+        "id": "MEC-01",
+        "canonical_name": "bounded_queue_backpressure",
+        "source_name": "Fila limitada com backpressure",
+        "operation": "Definir capacidade máxima e bloquear, rejeitar ou desacelerar admissão quando não houver espaço.",
+        "contribution": "Conter memória e tornar saturação explícita.",
+        "limitations": [
+          "rejeição não protocolada pode ser confundida com aceite",
+          "não fornece durabilidade ou idempotência",
+          "classe declarada, não demonstrada por execução"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "bounded queue",
+          "bounded buffer",
+          "fila finita",
+          "backpressure",
+          "retropressão",
+          "admission control",
+          "producer throttling",
+          "reject block or delay on full"
+        ]
+      },
+      {
+        "id": "MEC-02",
+        "canonical_name": "durable_record_before_acceptance",
+        "source_name": "Registro durável antes do aceite",
+        "operation": "Persistir payload ou referência protegida e estado inicial antes de confirmar recebimento.",
+        "contribution": "Permitir retomada após reinício sem perder trabalho confirmado.",
+        "limitations": [
+          "recuperação independente não demonstrada",
+          "atomicidade entre persistência e confirmação por validar",
+          "retenção e localização de dados desconhecidas"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "persist before ack",
+          "durable inbox before acceptance",
+          "write-ahead job record",
+          "registro persistente antes de confirmar",
+          "ack after durable commit"
+        ]
+      },
+      {
+        "id": "MEC-03",
+        "canonical_name": "stable_idempotency_key_and_conditional_effect",
+        "source_name": "Chave idempotente e efeitos condicionais",
+        "operation": "Derivar identidade estável do anexo ou evento e gravar resultado ou efeito com unicidade ou operação condicional.",
+        "contribution": "Transformar reenvio e reexecução em resultado conhecido e evitar efeito duplicado.",
+        "limitations": [
+          "hash pode exigir normalização e proteção contra correlação",
+          "efeito externo pode não aceitar operação condicional",
+          "idempotência ponta a ponta não demonstrada",
+          "reprocessamento legítimo pode ser bloqueado incorretamente"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "idempotency key",
+          "deduplication key",
+          "stable attachment identity",
+          "content hash identity",
+          "unique constraint per effect",
+          "compare-and-set effect",
+          "conditional write",
+          "logical at-most-once effect"
+        ]
+      },
+      {
+        "id": "MEC-04",
+        "canonical_name": "lease_bounded_retries_and_operational_dlq",
+        "source_name": "Leasing, retries limitados e DLQ",
+        "operation": "Worker obtém posse temporária; falha ou expiração libera item para retry com atraso; esgotamento encaminha à intervenção.",
+        "contribution": "Tolerar classificador lento ou indisponível sem bloqueio indefinido.",
+        "limitations": [
+          "timeout inadequado causa execução concorrente",
+          "DLQ sem resolução desloca o acúmulo",
+          "retries amplificam indisponibilidade",
+          "capacidade humana de intervenção pode ser excedida"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "visibility timeout",
+          "lease-based worker claim",
+          "posse temporária do job",
+          "retry budget",
+          "limited retries",
+          "exponential backoff with jitter",
+          "dead-letter intervention queue",
+          "retry storm control"
+        ]
+      },
+      {
+        "id": "MEC-05",
+        "canonical_name": "persistent_state_machine_and_event_trail",
+        "source_name": "Máquina de estados e trilha de eventos",
+        "operation": "Registrar transições recebido, aguardando, processando, concluído, falhou e requer intervenção, com motivo e tentativa.",
+        "contribution": "Expor progresso, falhas e justificativas por item.",
+        "limitations": [
+          "telemetria não deve carregar conteúdo clínico desnecessário",
+          "estados e códigos de motivo ainda não definidos",
+          "auditoria não prova correção da classificação"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "persistent item state machine",
+          "workflow state",
+          "event trail",
+          "audit trail",
+          "status por documento",
+          "reason codes",
+          "manual intervention state"
+        ]
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "id": "HYP-01",
+        "canonical_claim": "Capacidade explícita na admissão com sinal de retry estabilizará memória durante picos.",
+        "expected_effect": "Sobrecarga vira espera ou rejeição mensurável e memória permanece no orçamento.",
+        "assumptions": [
+          "fonte respeita backoff ou há entrada durável",
+          "capacidade é dimensionada com carga sintética representativa"
+        ],
+        "counterevidence_to_seek": [
+          "memória cresce com fila cheia",
+          "item aceito desaparece durante saturação",
+          "reenvio agressivo agrava carga"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "bounded admission caps memory",
+          "retry-after on saturation",
+          "backoff estabiliza entrada",
+          "espera ou rejeição mensurável"
+        ]
+      },
+      {
+        "id": "HYP-02",
+        "canonical_claim": "Persistir item antes do aceite e recuperar estados incompletos eliminará perda lógica em reinícios.",
+        "expected_effect": "Todo item confirmado conclui, volta à fila ou requer intervenção.",
+        "assumptions": [
+          "persistência e confirmação têm fronteira transacional segura",
+          "armazenamento sobrevive independentemente dos workers"
+        ],
+        "counterevidence_to_seek": [
+          "aceite confirmado sem registro recuperável",
+          "item persistido fica órfão",
+          "falha comum remove workers e armazenamento"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "persist-before-ack recovery",
+          "durable acceptance boundary",
+          "recover nonterminal jobs",
+          "retomada independente do worker"
+        ]
+      },
+      {
+        "id": "HYP-03",
+        "canonical_claim": "Chave idempotente com escrita condicional evitará efeitos repetidos sob reenvio ou lease expirado.",
+        "expected_effect": "Múltiplas entregas produzem no máximo um efeito lógico observável.",
+        "assumptions": [
+          "identidade é estável para o mesmo anexo",
+          "todos os efeitos relevantes participam da proteção"
+        ],
+        "counterevidence_to_seek": [
+          "mesmo anexo recebe identidades distintas",
+          "efeito ocorre antes do registro idempotente",
+          "reprocessamento legítimo é bloqueado"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "conditional idempotent effect",
+          "dedup under redelivery",
+          "lease-expiry duplicate suppression",
+          "unique logical effect"
+        ]
+      },
+      {
+        "id": "HYP-04",
+        "canonical_claim": "Estados persistidos e códigos de motivo reduzirão documentos sem explicação operacional.",
+        "expected_effect": "Item não concluído tem estado, última tentativa, motivo e próxima ação.",
+        "assumptions": [
+          "toda transição passa pelo registro de estado",
+          "telemetria usa identificadores sem conteúdo sensível"
+        ],
+        "counterevidence_to_seek": [
+          "estado impossível ou sem transição causal",
+          "falha sem código de motivo",
+          "dado clínico em log ou métrica"
+        ],
+        "evidence_refs": ["E1"],
+        "normalization_terms": [
+          "reason-coded state machine",
+          "operational explainability per item",
+          "status e ação seguinte",
+          "audit events without payload"
+        ]
+      }
+    ],
+    "atomic_semantic_units": [
+      {"id": "UNIT-01", "concept": "durable_bounded_queue", "covered_by": ["ALT-01", "MEC-01"]},
+      {"id": "UNIT-02", "concept": "fixed_worker_pool", "covered_by": ["ALT-01"]},
+      {"id": "UNIT-03", "concept": "ack_after_completion_or_durable_persistence", "covered_by": ["ALT-01", "MEC-02", "HYP-02"]},
+      {"id": "UNIT-04", "concept": "exponential_retry_with_jitter", "covered_by": ["ALT-01", "MEC-04"]},
+      {"id": "UNIT-05", "concept": "operational_dead_letter_queue", "covered_by": ["ALT-01", "MEC-04", "MEC-05"]},
+      {"id": "UNIT-06", "concept": "durable_workflow_history_and_progress", "covered_by": ["ALT-02"]},
+      {"id": "UNIT-07", "concept": "custom_durable_processor_build", "covered_by": ["ALT-03"]},
+      {"id": "UNIT-08", "concept": "bounded_admission_block_reject_or_slow", "covered_by": ["MEC-01", "HYP-01"]},
+      {"id": "UNIT-09", "concept": "protocolled_saturation_and_retry_signal", "covered_by": ["MEC-01", "HYP-01"]},
+      {"id": "UNIT-10", "concept": "persist_protected_payload_or_reference_before_acceptance", "covered_by": ["MEC-02", "HYP-02"]},
+      {"id": "UNIT-11", "concept": "transactional_persistence_ack_boundary", "covered_by": ["MEC-02", "HYP-02"]},
+      {"id": "UNIT-12", "concept": "storage_failure_independence", "covered_by": ["HYP-02"]},
+      {"id": "UNIT-13", "concept": "stable_normalized_attachment_or_event_identity", "covered_by": ["MEC-03", "HYP-03"]},
+      {"id": "UNIT-14", "concept": "unique_or_conditional_effect_write", "covered_by": ["MEC-03", "HYP-03"]},
+      {"id": "UNIT-15", "concept": "end_to_end_idempotency_across_all_effects", "covered_by": ["MEC-03", "HYP-03"]},
+      {"id": "UNIT-16", "concept": "hash_correlation_and_normalization_risk", "covered_by": ["MEC-03"]},
+      {"id": "UNIT-17", "concept": "legitimate_reprocessing_false_deduplication_risk", "covered_by": ["MEC-03", "HYP-03"]},
+      {"id": "UNIT-18", "concept": "temporary_worker_lease_and_expiry", "covered_by": ["MEC-04", "HYP-03"]},
+      {"id": "UNIT-19", "concept": "bounded_retry_budget_and_backoff", "covered_by": ["MEC-04"]},
+      {"id": "UNIT-20", "concept": "concurrent_execution_from_bad_timeout", "covered_by": ["MEC-04"]},
+      {"id": "UNIT-21", "concept": "retry_storm_amplification", "covered_by": ["MEC-04", "HYP-01"]},
+      {"id": "UNIT-22", "concept": "dlq_human_intervention_capacity", "covered_by": ["MEC-04", "MEC-05"]},
+      {"id": "UNIT-23", "concept": "persistent_item_state_reason_attempt_and_next_action", "covered_by": ["MEC-05", "HYP-04"]},
+      {"id": "UNIT-24", "concept": "telemetry_data_minimization", "covered_by": ["MEC-05", "HYP-04"]},
+      {"id": "UNIT-25", "concept": "synthetic_fault_injection_at_each_processing_boundary", "covered_by": ["HYP-01", "HYP-02", "HYP-03", "HYP-04"]},
+      {"id": "UNIT-26", "concept": "reuse_viability_comparison_cost_license_data_controls", "covered_by": ["ALT-01", "ALT-02", "ALT-03"]}
+    ]
+  },
+  "normalization_and_paraphrase_policy": {
+    "text_normalization": [
+      "ignorar caixa, plural, flexão e pontuação não semântica",
+      "normalizar equivalentes pt-BR e ingleses",
+      "comparar mecanismo causal, garantia, dependências e trade-offs",
+      "comparar entre categorias; mover conteúdo entre alternativa, mecanismo e hipótese não cria novidade"
+    ],
+    "canonical_synonym_groups": {
+      "bounded_queue": ["fila limitada", "bounded queue", "finite-capacity queue", "bounded buffer"],
+      "durable_acceptance": ["registro antes do aceite", "persist before ack", "durable inbox", "ack after commit"],
+      "idempotency": ["chave idempotente", "deduplication key", "unique effect", "conditional write", "compare-and-set"],
+      "leasing": ["lease", "visibility timeout", "temporary claim", "posse temporária"],
+      "retry_control": ["retry limitado", "retry budget", "exponential backoff", "jitter", "retry storm control"],
+      "workflow_state": ["máquina de estados", "workflow history", "event trail", "reason codes", "audit trail"],
+      "human_intervention": ["DLQ operacional", "manual review queue", "fila de intervenção", "requires intervention"],
+      "custom_build": ["processador próprio", "pipeline próprio", "custom durable worker", "build from scratch"]
+    },
+    "not_novel_rules": [
+      "renomear, traduzir ou mudar categoria de item congelado",
+      "reapresentar fila limitada, persistência antes do aceite, chave idempotente, lease, retries/DLQ ou máquina de estados",
+      "adicionar somente métrica, risco, lacuna, dependência ou teste",
+      "combinar unidades já congeladas sem nova interação causal",
+      "citar tecnologia ou produto sem demonstrar mecanismo distinto",
+      "repetir jitter, timeout, escrita condicional, normalização de identidade ou códigos de motivo"
+    ],
+    "potentially_novel_if_supported": [
+      "protocolo novo que feche atomicamente a janela entre efeito externo e registro idempotente",
+      "mecanismo de identidade robusto a normalizações adversariais sem correlação indevida",
+      "alternativa concreta reutilizável com propriedades verificáveis",
+      "mecanismo ponta a ponta para capacidade de armazenamento e intervenção, além da fila em memória",
+      "arquitetura materialmente distinta de fila reforçada, workflow durável ou processador próprio"
+    ]
+  },
+  "evidence_question_coverage": [
+    {
+      "question_id": "EQ-01",
+      "question": "Que mecanismo limita admissão quando consumidores ficam lentos?",
+      "coverage": "DIRECT",
+      "answer_inventory": ["MEC-01", "HYP-01", "UNIT-08", "UNIT-09"],
+      "covered_claim": "Capacidade máxima com bloqueio, rejeição ou desaceleração e sinal protocolado de retry/backoff.",
+      "evidence_boundary": "Classe indicada pelo caso, sem execução que demonstre limite."
+    },
+    {
+      "question_id": "EQ-02",
+      "question": "Como o trabalho aceito sobrevive a reinício sem duplicar efeitos?",
+      "coverage": "HYPOTHETICAL_ARCHITECTURE_ONLY",
+      "answer_inventory": ["MEC-02", "MEC-03", "MEC-04", "HYP-02", "HYP-03", "UNIT-10", "UNIT-11", "UNIT-12", "UNIT-13", "UNIT-14", "UNIT-15", "UNIT-18"],
+      "covered_claim": "Persistir antes do aceite, recuperar estados, usar lease e retries limitados e condicionar todos os efeitos a identidade estável.",
+      "evidence_boundary": "Recuperação independente, atomicidade e idempotência ponta a ponta não foram demonstradas."
+    },
+    {
+      "question_id": "EQ-03",
+      "question": "Que evidência separa uma propriedade demonstrada de uma hipótese de integração?",
+      "coverage": "DIRECT_WITH_EXPLICIT_BOUNDARY",
+      "answer_inventory": ["E1"],
+      "covered_claim": "E1 sustenta requisitos, baseline, classe e restrições; alternativas e mecanismos concretos permanecem hipóteses.",
+      "evidence_boundary": "Nenhuma execução, artefato de implementação, medição, custo ou licença foi fornecido."
+    }
+  ],
+  "evidence_baseline": {
+    "references": [
+      {
+        "reference_id": "E1",
+        "source_type": "CASE_INPUT",
+        "locator": "EXP29-C01",
+        "sha256_as_reported_by_candidate": "UNKNOWN",
+        "candidate_verification_status": "VERIFIED",
+        "mechanically_resolvable_from_known_case": true,
+        "canonical_case_sha256_from_contract": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+        "supports": [
+          "requisitos, usuários, restrições e baseline",
+          "necessidade de backpressure por fila limitada",
+          "critérios de inconclusividade",
+          "dados exclusivamente sintéticos e ausência de ações externas"
+        ],
+        "does_not_support": [
+          "produto ou implementação",
+          "durabilidade e recuperação",
+          "idempotência e leasing",
+          "medição de memória e vazão",
+          "custo, licença e controles operacionais"
+        ]
+      }
+    ],
+    "property_status": {
+      "case_requirements": "DEMONSTRATED_AS_INPUT_FACTS",
+      "bounded_queue_class": "DECLARED_BY_CASE",
+      "all_implementation_properties": "UNKNOWN",
+      "all_candidate_technologies": "UNKNOWN"
+    }
+  },
+  "counterevidence_baseline": {
+    "explicit_counter_evidence": [
+      "Nenhuma execução ou artefato de investigação foi fornecido.",
+      "Sobrevivência do trabalho a reinícios não foi demonstrada.",
+      "Ausência de efeitos duplicados não foi demonstrada.",
+      "Limite de memória, vazão e recuperação não foram medidos.",
+      "Custo, licença, residência, retenção e acesso são desconhecidos."
+    ],
+    "hypothesis_specific_counterevidence_to_seek": [
+      "memória cresce com fila cheia",
+      "aceite confirmado sem registro",
+      "item persistido órfão",
+      "falha comum remove armazenamento e worker",
+      "mesmo anexo recebe identidades diferentes",
+      "efeito precede registro idempotente",
+      "reprocessamento legítimo é bloqueado",
+      "lease expirado cria execução concorrente",
+      "retry storm amplifica indisponibilidade",
+      "DLQ excede capacidade humana",
+      "estado sem causa",
+      "telemetria expõe conteúdo sensível"
+    ]
+  },
+  "unknowns_baseline": [
+    "taxa de pico, tamanho de anexos, latência e SLA",
+    "limite operacional e requisitos regulatórios aplicáveis",
+    "destino e natureza dos efeitos idempotentes",
+    "semântica de aceite e backoff da fonte",
+    "tecnologias disponíveis",
+    "topologia e independência do armazenamento durável",
+    "retenção, criptografia, acesso, exclusão e auditoria",
+    "custo, licença, capacidade da equipe e operação",
+    "critérios de intervenção e reprocessamento",
+    "precisão e comportamento dos classificadores"
+  ],
+  "actionability_baseline": {
+    "overall_decision": "INVESTIGATE",
+    "decision_rationale": "Adaptar a baseline é promissor, mas recuperação independente, idempotência, custo, licença e dados impedem REUSE; BUILD depende de avaliar componentes concretos.",
+    "validation_targets": [
+      {"id": "VAL-01", "target": "backpressure e memória", "method": "carga sintética acima da capacidade", "success": "memória limitada, saturação explícita e nenhuma perda silenciosa", "failure": "crescimento ilimitado, encerramento ou perda"},
+      {"id": "VAL-02", "target": "recuperação em cada fronteira", "method": "falhas entre persistência, classificação, efeito e confirmação", "success": "item confirmado pendente, concluído ou em intervenção", "failure": "item desaparece ou fica órfão"},
+      {"id": "VAL-03", "target": "idempotência ponta a ponta", "method": "reenvio, retries concorrentes e expiração de lease", "success": "um efeito lógico por chave com duplicatas rastreáveis", "failure": "efeito repetido ou duplicata inexplicada"},
+      {"id": "VAL-04", "target": "explicabilidade operacional", "method": "sucesso, timeout, indisponibilidade, erro e DLQ sintéticos", "success": "estado, tentativas, motivo, transição e ação sem conteúdo sensível", "failure": "item sem causa/ação ou telemetria excessiva"},
+      {"id": "VAL-05", "target": "reutilização e viabilidade", "method": "comparar fila adaptada, workflow e construção por propriedades, operação, licença, custo e dados", "success": "opção passa testes e tem custo/licença/responsabilidade explícitos", "failure": "propriedade crítica ou viabilidade permanece desconhecida"}
+    ]
+  },
+  "frozen_novelty_rubric": {
+    "unit_of_judgment": "Cada alternativa, mecanismo ou hipótese materialmente distinta no segundo membro.",
+    "required_tests": [
+      {"id": "RUBRIC-01", "criterion": "is_target_item_type", "rule": "Deve ser alternativa, mecanismo ou hipótese; risco, lacuna, evidência ou teste isolado não conta."},
+      {"id": "RUBRIC-02", "criterion": "absent_from_frozen_inventory", "rule": "Conteúdo causal não pode constar das categorias, unidades atômicas ou sinônimos congelados."},
+      {"id": "RUBRIC-03", "criterion": "materially_distinct_not_paraphrase", "rule": "Deve diferir em mecanismo, garantia, dependência ou trade-off; tradução, detalhe operacional ou recombinação não basta."},
+      {"id": "RUBRIC-04", "criterion": "mechanically_resolvable_evidence_support", "rule": "Evidência deve ter locator resolvível nas entradas públicas e sustentar especificamente o item."},
+      {"id": "RUBRIC-05", "criterion": "no_unsupported_extrapolation", "rule": "Não pode depender de propriedade, execução, custo, licença ou garantia não sustentada."}
+    ],
+    "all_tests_required": true,
+    "ambiguous_item": "UNKNOWN_NOT_COUNTED_AS_NOVEL",
+    "unknown_default_success": false,
+    "cross_category_matching": true,
+    "combination_rule": "Combinação só é nova com interação causal distinta e evidência específica.",
+    "specificity_rule": "Produto, algoritmo ou configuração permanece coberto quando apenas instancia mecanismo congelado.",
+    "evidence_rule": "O caso prova requisitos e classe, não propriedades de implementação.",
+    "comparison_deferred": true,
+    "criteria_frozen": true
+  },
+  "read_allowlist_and_attestation": {
+    "declared_pilot_data_allowlist": [
+      {"path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json", "scope": "already_known"},
+      {"path": "00_nucleo/benchmark/0029/corpus-public.json", "scope": "already_known_case_EXP29-C01_only"},
+      {"path": "00_nucleo/benchmark/0029/sessions-temperature-r2/2220912aee3d726df47fbc534fc67a852305b9f60d7e7715b4f70c7fd662bd73/output.json", "scope": "entire_file_as_CANDIDATE_M"}
+    ],
+    "actual_new_pilot_data_reads_for_slot_3_inventory": [
+      "somente o output rotulado CANDIDATE_M"
+    ],
+    "known_inputs_reused_without_reread": [
+      "temperature-pilot-contract-r2.json",
+      "caso EXP29-C01"
+    ],
+    "inherited_deviation": {
+      "present": true,
+      "code": "CORPUS_LOGICAL_SCOPE_OVERREAD_IN_PRIOR_PHASE",
+      "description": "Em fase anterior, a extração de EXP29-C01 exibiu também EXP29-V01 e EXP29-V02.",
+      "materiality_for_slot_3_arm_or_profile_blinding": "NON_MATERIAL",
+      "reason": "Casos públicos adicionais não contêm rótulo, perfil, segundo membro ou saída operacional deste slot.",
+      "perfect_isolation_claimed": false
+    },
+    "forbidden_artifacts_read_for_this_inventory": [],
+    "reveals_read": false,
+    "external_model_executed": false,
+    "external_mcp_executed": false,
+    "candidate_label": "CANDIDATE_M",
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "comparison_judgment": "NOT_PERFORMED",
+    "isolation_claim": "BLIND_TO_SLOT_3_ARM_AND_PROFILE_WITH_INHERITED_NON_MATERIAL_PUBLIC_CORPUS_DEVIATION"
+  }
+}

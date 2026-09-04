@@ -1,0 +1,57 @@
+{
+  "schema_version": "bateia.step0029.external-dispatch-receipt.v1",
+  "experiment_id": "bateia-agent-uplift-0029-v1",
+  "cell_id": "dfad83f2f14d056e6fc83089b169b487e8f7611cc0cd7cf76a4b6c7d491f777a",
+  "pair_id": "853b77da20704a3dc0a8ac6e4b11bba1a213e493a64c840e2e18caded4644392",
+  "case_id": "EXP29-C01",
+  "profile_id": "LUNA-high",
+  "split": "CONTRACT",
+  "arm": "AGENT_ALONE",
+  "prompt_contract_sha256": "e18cd5dfe705df2308589989464c23e6e69ec4654bbf33b9eaff3d10a3030fb7",
+  "prompt_bytes_sha256": "b61bef6bc9eb7817c56dd9feffb45d33615a43ac8dfc521f5e5ee77c6d178fa2",
+  "tool_allowlist_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "output_schema_sha256": "733188f48995655d0583804ba30f8db162f223577f42fecda2632701a3db7241",
+  "status": "INFRA_FAILURE",
+  "behavioral_session_counted": false,
+  "model_output_observed": {"state":"KNOWN","value":false},
+  "output_schema_valid": {"state":"UNKNOWN","reason":"No model output was produced."},
+  "output_sha256": null,
+  "tool_calls": [],
+  "attempts": [
+    {
+      "attempt_index": 0,
+      "started_at": "2026-09-03T00:17:57-03:00",
+      "finished_at": "2026-09-03T00:21:28-03:00",
+      "status": "INFRA_FAILURE",
+      "infrastructure_failure_confirmed": {"state":"KNOWN","value":true},
+      "model_output_observed": {"state":"KNOWN","value":false},
+      "reason_code": "SANDBOX_NETWORK_DENIED",
+      "events_sha256": "0082ad864a2b791578e38bb223ccbb483c4741fa09a482e4355930c74abfdd05",
+      "stderr_sha256": "b42fbaec770b303e54088382698d66b9954c9a60f4a709dc3fbe7efb161e69c5"
+    },
+    {
+      "attempt_index": 1,
+      "started_at": "2026-09-03T00:21:55-03:00",
+      "finished_at": "2026-09-03T00:22:00-03:00",
+      "status": "INFRA_FAILURE",
+      "infrastructure_failure_confirmed": {"state":"KNOWN","value":true},
+      "model_output_observed": {"state":"KNOWN","value":false},
+      "reason_code": "OUTPUT_SCHEMA_TRANSPORT_UNSUPPORTED",
+      "host_error_code": "invalid_json_schema",
+      "events_sha256": "118f99199dcc65abd2cfebc81e7a46b404abbcab176b7b181e0fec3166a3fd0c",
+      "stderr_sha256": "ff1989d6add691df474c86005dfbf337a854286471ed4a05b7bb717d6a92455a"
+    }
+  ],
+  "budget_observation": {
+    "wall_clock_seconds_limit": 900,
+    "max_infrastructure_retries": 1,
+    "infrastructure_retries_used": 1,
+    "max_bateia_calls": 0,
+    "bateia_calls_observed": 0,
+    "max_output_utf8_characters": 20000,
+    "output_utf8_characters": 0
+  },
+  "gate_decision": "STOP_BEFORE_NEXT_CONTRACT_CELL",
+  "gate_reason": "The frozen common output schema cannot be captured by this host's structured-output transport, and the cell's sole infrastructure retry is exhausted.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

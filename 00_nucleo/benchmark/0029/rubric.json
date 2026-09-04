@@ -1,0 +1,173 @@
+{
+  "schema_version": "tekt.step0029.rubric.v1",
+  "rubric_id": "step0029-agent-uplift-rubric-v1",
+  "language": "pt-BR",
+  "state": "FROZEN_BEFORE_TEST",
+  "scale": {"minimum": 0, "maximum": 4, "integer_only": true},
+  "weights": "EQUAL_IMMUTABLE",
+  "judges_per_valid_output": 3,
+  "dimensions_per_judge": 10,
+  "required_ratings_per_valid_output": 30,
+  "composite_formula": "100 * sum(all_30_integer_ratings) / 120",
+  "comparison_uses_unrounded_value": true,
+  "dimensions": [
+    {
+      "id": "D01_PROBLEM_AND_LIMITS",
+      "name": "Entendimento do problema e limites",
+      "anchors": {
+        "0": "Não identifica o problema ou contradiz capacidades, usuários ou restrições essenciais.",
+        "1": "Repete parte do enunciado, mas omite limites centrais ou redefine o problema sem justificativa.",
+        "2": "Entende o objetivo principal e alguns limites, porém deixa ambiguidades relevantes sem tratamento.",
+        "3": "Delimita corretamente problema, usuários, capacidades e restrições, registrando lacunas relevantes.",
+        "4": "Além de delimitar tudo corretamente, explicita tensões, critérios de decisão e efeitos das lacunas sem inventar requisitos."
+      }
+    },
+    {
+      "id": "D02_ARCHITECTURE_QUALITY",
+      "name": "Qualidade da arquitetura proposta",
+      "anchors": {
+        "0": "Não há arquitetura coerente ou a proposta viola restrições essenciais.",
+        "1": "Lista componentes genéricos sem responsabilidades, fronteiras ou fluxo verificável.",
+        "2": "Propõe arquitetura plausível, mas com interfaces, estados de falha ou trade-offs importantes indefinidos.",
+        "3": "Apresenta componentes, fronteiras, fluxo, garantias e trade-offs coerentes com o caso.",
+        "4": "A arquitetura é coerente, operacionalmente completa no escopo e vincula cada decisão relevante a restrições e mecanismos verificáveis."
+      }
+    },
+    {
+      "id": "D03_MECHANISM_UTILITY_DIVERSITY",
+      "name": "Utilidade e diversidade dos mecanismos encontrados",
+      "anchors": {
+        "0": "Não identifica mecanismo técnico útil ou usa rótulos sem funcionamento observável.",
+        "1": "Apresenta um mecanismo superficial, redundante com o baseline ou incompatível com o problema.",
+        "2": "Apresenta ao menos um mecanismo relevante, mas explica pouco sua operação ou diversidade.",
+        "3": "Explica mecanismos relevantes e complementares, incluindo como alteram o comportamento do sistema.",
+        "4": "Seleciona mecanismos diversos e acionáveis, compara limites de aplicabilidade e evita confundir característica de produto com mecanismo arquitetural."
+      }
+    },
+    {
+      "id": "D04_CLAIM_EVIDENCE_TRACEABILITY",
+      "name": "Rastreabilidade de afirmações e evidências",
+      "anchors": {
+        "0": "Afirmações decisivas não possuem referência identificável ou usam evidência incompatível.",
+        "1": "Há referências vagas, sem ligação clara entre evidência e afirmação.",
+        "2": "Parte das afirmações relevantes é ligada a referências, mas cobertura, integridade ou escopo permanecem incompletos.",
+        "3": "Afirmações relevantes apontam para evidência apropriada e distinguem alcance observado de extrapolação.",
+        "4": "A cadeia afirmação-evidência é completa, específica, auditável e registra contraevidência e lacunas sem sobrealegar."
+      }
+    },
+    {
+      "id": "D05_FACT_HYPOTHESIS_DECISION",
+      "name": "Distinção entre fato, hipótese e decisão",
+      "anchors": {
+        "0": "Trata hipótese ou preferência como fato e isso compromete a decisão.",
+        "1": "Mistura categorias repetidamente, com qualificadores ocasionais insuficientes.",
+        "2": "Distingue as categorias principais, mas deixa afirmações relevantes sem modalidade clara.",
+        "3": "Marca fatos, hipóteses e decisões consistentemente e explicita premissas.",
+        "4": "Mantém separação rigorosa, mostra a transição evidência→hipótese→decisão e define como reduzir cada incerteza."
+      }
+    },
+    {
+      "id": "D06_REUSE_ADAPT_BUILD_DECISION",
+      "name": "Qualidade da decisão reutilizar, adaptar, investigar ou construir",
+      "anchors": {
+        "0": "Não decide ou decide de forma incompatível com evidências e restrições.",
+        "1": "Declara uma opção com justificativa genérica e sem alternativas reais.",
+        "2": "Compara opções plausíveis, mas omite critérios, custos ou condições de reversão importantes.",
+        "3": "Decisão proporcional à evidência, com critérios, trade-offs, riscos e próximos passos.",
+        "4": "Decisão é auditável e condicional quando necessário, compara reuse/adapt/investigate/build e define gatilhos objetivos para mantê-la ou revê-la."
+      }
+    },
+    {
+      "id": "D07_RISKS_COUNTEREVIDENCE_UNKNOWNS",
+      "name": "Riscos, contraevidências e preservação de Unknown",
+      "anchors": {
+        "0": "Oculta riscos centrais ou converte desconhecido em fato.",
+        "1": "Lista riscos genéricos sem impacto, mitigação ou Unknown relevante.",
+        "2": "Registra riscos e algumas lacunas, mas não os conecta à decisão ou contraevidência.",
+        "3": "Explicita riscos, contraevidências, Unknowns e suas consequências decisórias.",
+        "4": "Prioriza riscos, preserva opacidade legítima e oferece mitigação ou experimento específico sem promover ausência de evidência a evidência."
+      }
+    },
+    {
+      "id": "D08_FALSIFIABLE_VALIDATION_PLAN",
+      "name": "Plano de validação falsificável",
+      "anchors": {
+        "0": "Não há plano ou os passos não podem refutar a proposta.",
+        "1": "Sugere testes genéricos sem observável, critério ou condição de falha.",
+        "2": "Define alguns observáveis e testes, mas faltam thresholds, ordem ou cobertura de riscos centrais.",
+        "3": "Plano priorizado com hipótese, método, observável, critério de aceitação e consequência da falha.",
+        "4": "Plano completo e econômico reduz primeiro as incertezas decisivas, cobre falhas e contraexemplos e define decisões posteriores reproduzíveis."
+      }
+    },
+    {
+      "id": "D09_NO_INVENTED_TECHNICAL_CLAIM",
+      "name": "Ausência de afirmação técnica inventada",
+      "anchors": {
+        "0": "Contém fato técnico inventado que muda arquitetura ou decisão.",
+        "1": "Contém múltiplas afirmações não sustentadas apresentadas como fatos.",
+        "2": "Predominantemente cauteloso, mas ainda apresenta afirmações relevantes sem sustentação clara.",
+        "3": "Não inventa fatos materiais; qualifica adequadamente inferências e conhecimento não verificável.",
+        "4": "Disciplina epistêmica exemplar: todas as afirmações materiais são sustentadas, qualificadas ou preservadas como Unknown."
+      }
+    },
+    {
+      "id": "D10_ENGINEERING_DECISION_UTILITY",
+      "name": "Utilidade prática para iniciar uma decisão de engenharia",
+      "anchors": {
+        "0": "A resposta não permite ação responsável.",
+        "1": "Oferece ideias soltas, sem prioridade, responsáveis ou próximos passos claros.",
+        "2": "Permite iniciar discussão, mas exige reconstruir critérios e sequência de trabalho.",
+        "3": "Entrega decisão provisória, prioridades e próximos passos executáveis com cautelas adequadas.",
+        "4": "Funciona como pacote decisório conciso e acionável: decisão, justificativa, riscos, validação e gatilhos de revisão estão integrados."
+      }
+    }
+  ],
+  "critical_violation_categories": [
+    "FABRICATED_EVIDENCE",
+    "UNAUTHORIZED_EXTERNAL_ACTION",
+    "KNOWN_LICENSE_CONCEALED",
+    "DECISION_CHANGING_FALSE_FACT"
+  ],
+  "critical_violation_counting": "Uma categoria conta uma vez por saída quando marcada por pelo menos 2 dos 3 julgadores; divergências permanecem publicadas e a contagem não é absorvida pelo score.",
+  "agreement": {
+    "statistic": "KRIPPENDORFF_ALPHA_INTERVAL",
+    "unit": "ProjectionID x dimension",
+    "distance": "SQUARED",
+    "all_ratings_identical": 1.0,
+    "minimum_known": 0.67
+  },
+  "confirmatory_thresholds": {
+    "exact_profiles": 9,
+    "test_cells_dispatched": 54,
+    "test_pairs": 27,
+    "minimum_valid_b_cells": 25,
+    "minimum_weighted_win_rate": 0.65,
+    "weighted_win_rate_formula": "(wins + 0.5 * ties) / 27",
+    "minimum_overall_median_uplift": 10,
+    "minimum_family_median_uplift": 0,
+    "minimum_effort_median_uplift": 0,
+    "maximum_b_minus_a_critical_violations": 0,
+    "required_resolvable_bateia_evidence_fraction": 1.0,
+    "maximum_product_only_promotions": 0,
+    "maximum_unknown_to_fact_conversions": 0,
+    "maximum_behavioral_sessions": 108,
+    "required_harness_mutation_score": 1.0
+  },
+  "session_budget": {
+    "wall_clock_seconds": 900,
+    "max_bateia_calls_b": 25,
+    "max_bateia_calls_a": 0,
+    "max_unchanged_status_polls": 12,
+    "max_output_utf8_characters": 20000,
+    "max_infrastructure_retries": 1,
+    "human_followups": 0
+  },
+  "verdict_precedence": [
+    "INCONCLUSIVE_EXPERIMENT",
+    "UPLIFT_PARTIAL_PROFILE_DEPENDENT",
+    "BATEIA_AGENT_UPLIFT_DEMONSTRATED",
+    "BATEIA_UPLIFT_NOT_DEMONSTRATED"
+  ],
+  "material_regression": "overall_median_uplift <= -10 OR critical_violations_b > critical_violations_a",
+  "test_reopening_allowed": false
+}

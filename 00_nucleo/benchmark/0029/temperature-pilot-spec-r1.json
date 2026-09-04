@@ -1,0 +1,84 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-spec.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T04:10:00-03:00",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_REDESIGN",
+  "objective": "Executar três comparações pareadas exploratórias para medir se evidência do Bateia acrescenta alternativas, mecanismos ou hipóteses novas e sustentadas.",
+  "interpretation_of_user_authorization": {
+    "comparisons": 3,
+    "new_behavioral_sessions": 6,
+    "bateia_forwarded_calls_per_treatment_max": 3,
+    "mcp_attempts_per_treatment_max": 3,
+    "global_behavioral_session_cap_unchanged": 108,
+    "prior_behavioral_sessions_preserved": 7,
+    "maximum_total_after_pilot": 13
+  },
+  "predecessors": {
+    "contract_sha256": "48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7",
+    "execution_queue_r2_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f",
+    "execution_state_r2_sha256": "6bd8887ad1a57d9c7e06a8529e41ab88f74b9a81ba8bb9d2e7f551c2454c2893",
+    "call_budget_verification_sha256": "2b22880b4245c912a1c40803d41135381e640f4b1c53290c403295b165d34ad8"
+  },
+  "sampling": {
+    "population": "Pares CONTRACT ainda totalmente não executados na fila R2.",
+    "selection_rule": "Selecionar os três pares elegíveis com menor order_key mínimo; ordenar as seis células pelo order_key R2 e depois cell_id.",
+    "selected_pair_ids": [
+      "a6643c76951b2ec8fa60aeee3717ca3712634fa55fbd23d2fedf8f2b5024c3a7",
+      "fd31d271266212e23d027c1b0d9dc6002b2f5d42ea717ea1f206f5d8298a1ebd",
+      "45fff492752d82ac0be44e01b37cba80a78266f0f09e2ed0c64fe969d5831d13"
+    ],
+    "profiles": ["TERRA-high", "LUNA-low", "SOL-high"],
+    "case_id": "EXP29-C01",
+    "split": "CONTRACT_TEMPERATURE_PILOT"
+  },
+  "treatment": {
+    "enabled_tools": ["bateia_recommend"],
+    "instruction": "Use o Bateia para investigar alternativas, mecanismos e hipóteses antes de concluir. Você dispõe de no máximo 3 chamadas e somente de bateia_recommend. Não repita uma chamada; depois conclua.",
+    "default_tools_approval_mode": "approve",
+    "forwarded_call_budget": 3,
+    "attempt_budget": 3,
+    "mechanical_guard": "O servidor rejeita a quarta tools/call antes de invocar qualquer operação Bateia. Uma quarta tentativa observada torna a célula INVALID_OUTPUT e nunca é retryable."
+  },
+  "control": {
+    "enabled_tools": [],
+    "mcp_servers": [],
+    "instruction": "Unchanged base instruction only."
+  },
+  "shared_constraints": {
+    "output_schema": "engineering-investigation.schema-r2.json",
+    "wall_clock_seconds": 900,
+    "max_output_utf8_characters": 20000,
+    "max_infrastructure_retries": 1,
+    "fresh_session": true,
+    "context_shared": false,
+    "human_follow_up_allowed": false,
+    "cadence_seconds": 120
+  },
+  "classification": {
+    "valid_output": "Schema válido, nenhum limite excedido e no máximo 3 tentativas/encaminhamentos Bateia.",
+    "invalid_output": "Schema inválido, limite excedido ou quarta tentativa MCP observada, mesmo que o bloqueio mecânico proteja o Bateia.",
+    "retry": "Somente INFRA_FAILURE confirmado antes de qualquer saída do modelo; comportamento observado nunca repete célula.",
+    "unknown": "Falha de ferramenta/perfil/infra sem saída válida permanece UNKNOWN no ITT; não vira zero nem sucesso."
+  },
+  "temperature_readout": {
+    "scope": "EXPLORATORY_ONLY",
+    "unit": "Par A/B com mesmo caso, modelo e reasoning effort.",
+    "primary_observable": "Quantidade de alternativas, mecanismos ou hipóteses materialmente novas em B, ausentes em A, com referência de evidência mecanicamente resolvível.",
+    "secondary_observables": [
+      "Cobertura das perguntas de evidência do caso.",
+      "Qualidade da contraevidência e dos unknowns.",
+      "Decisão reuse/build mais acionável sem extrapolação não sustentada."
+    ],
+    "blinding": "Anonimizar os braços antes de comparação e revelar A/B somente após o julgamento.",
+    "stop_after": "Três pares completos ou qualquer novo fail-closed, o que ocorrer primeiro.",
+    "prohibited_claim": "Não estimar uplift confirmatório nem generalizar além destes três pares."
+  },
+  "required_implementation_observable": {
+    "configuration": "BATEIA_MCP_MAX_TOOL_CALLS=3 no processo MCP do braço B.",
+    "backward_compatibility": "Variável ausente preserva comportamento ilimitado legado.",
+    "boundary": "As três primeiras tools/call são encaminhadas; a quarta recebe erro JSON-RPC estável sem alcançar handlers ou serviços internos.",
+    "receipt": "Registrar tentativas MCP e chamadas efetivamente encaminhadas separadamente."
+  },
+  "existing_automation": "passo-29-contract permanece PAUSED e não será reutilizada até novo selo e canário focal.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

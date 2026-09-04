@@ -1,0 +1,52 @@
+{
+  "schema_version": "bateia.step0031.authority-manifest.v1",
+  "created_at": "2026-09-03",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0031_MCP_DEFAULTS",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "reason": "Roles share a filesystem and inherited history. Write ownership and read prohibitions reduce coupling but do not prove strong isolation.",
+  "roles": [
+    {
+      "role": "intent_author",
+      "executor": "user with /root as recorder",
+      "writes": ["intent.json", "authoritative step", "baseline-verification.json", "authority-manifest.json"],
+      "must_not": ["author the independent oracle", "issue the final certificate"]
+    },
+    {
+      "role": "contract_author",
+      "executor": "fresh segregated agent",
+      "reads": ["Step 0031", "intent", "baseline", "existing public API and historical contracts"],
+      "writes": ["contract-candidate.json", "contract-authorship.json"],
+      "must_not": ["read candidate implementation created after the baseline", "implement production code", "issue the final certificate"]
+    },
+    {
+      "role": "oracle_and_adversary_author",
+      "executor": "fresh segregated agent",
+      "reads": ["sealed intent and candidate contract", "baseline implementation only"],
+      "writes": ["independent oracle tests", "adversarial mutations", "oracle-authorship.json"],
+      "must_not": ["read candidate implementation before oracle freeze", "edit production code", "issue the final certificate"]
+    },
+    {
+      "role": "contract_verifier",
+      "executor": "fresh segregated agent",
+      "reads": ["all pre-implementation protected artifacts"],
+      "writes": ["contract-verification.json", "contract-seal.json"],
+      "must_not": ["edit artifacts verified", "implement production code"]
+    },
+    {
+      "role": "implementer",
+      "executor": "/root",
+      "reads": ["sealed contract", "frozen oracle", "production baseline"],
+      "writes": ["declared production files", "prompt mirrors", "implementation receipt"],
+      "must_not": ["weaken sealed oracle or contract", "issue the final certificate"]
+    },
+    {
+      "role": "final_verifier",
+      "executor": "fresh segregated agent",
+      "reads": ["sealed artifacts", "candidate diff", "test outputs", "mutation results"],
+      "writes": ["final-verification.json", "certificate.json"],
+      "must_not": ["edit candidate", "reinterpret failed attacks as success"]
+    }
+  ],
+  "communication": "Canonical artifacts and their SHA-256 hashes carry obligations between roles.",
+  "protected_before_implementation": ["intent", "contract", "oracle tests", "mutations", "contract verification and seal"]
+}

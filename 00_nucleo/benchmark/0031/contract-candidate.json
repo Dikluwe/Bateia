@@ -1,0 +1,496 @@
+{
+  "schema_version": "bateia.step0031.contract-candidate.v1",
+  "step": "0031",
+  "status": "CANDIDATE_UNSEALED",
+  "protocol": "tekt-materializacao-segregada/full",
+  "authorship_role": "contract_author",
+  "frozen_inputs": {
+    "step": {
+      "path": "00_nucleo/passos/0031-autopreencher-parametros-da-recomendacao.md",
+      "sha256": "3f2ce89a268c073c3956f00d4770da274d330c1b7ef0c173ebcd83a98fe7611e"
+    },
+    "intent": {
+      "path": "00_nucleo/benchmark/0031/intent.json",
+      "sha256": "b8cd0bc958140676ed1092377f267efe7d5ffbef511f3f73db8f9082935fc355"
+    },
+    "baseline_verification": {
+      "path": "00_nucleo/benchmark/0031/baseline-verification.json",
+      "sha256": "b57431eae00b82134d38533b6816de7f37f1e6e28c4d03bdf5334bc4641cda04"
+    },
+    "authority_manifest": {
+      "path": "00_nucleo/benchmark/0031/authority-manifest.json",
+      "sha256": "5c344adf4bab1ef1a80e3fafa3462fd954c9ef0d2ef10c783a3fb0076da6a06e"
+    },
+    "supersession": {
+      "path": "00_nucleo/benchmark/0031/supersession.json",
+      "sha256": "919896e9948073c44b87b046c0974b1c448a3e56bd949bcbdd0c88885712c0d0"
+    },
+    "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5"
+  },
+  "claim": {
+    "objective": "The MCP recommendation gateways accept the minimum business intent and server-side materialize every omitted operational field from one versioned profile.",
+    "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+    "fragment_only": true,
+    "does_not_claim": [
+      "general functional equivalence",
+      "search-result uplift or better recommendations",
+      "acceptance or inference of the flat Step 0030 payload",
+      "legal exhaustiveness or legal advice",
+      "that an allowed license was found on a candidate",
+      "strong process or filesystem isolation"
+    ]
+  },
+  "observable_surfaces": [
+    {
+      "surface": "bateia_recommend inputSchema returned by tools/list",
+      "observation": "decoded JSON object"
+    },
+    {
+      "surface": "request delivered by bateia_recommend to the injected RecommendationRecommender port",
+      "observation": "domain.RecommendationRequest captured by an in-memory spy before provider I/O"
+    },
+    {
+      "surface": "bateia_start_recommendation inputSchema returned by durable tools/list",
+      "observation": "decoded JSON object"
+    },
+    {
+      "surface": "idempotency key and request delivered by bateia_start_recommendation to DurableRecommendationRuns.Start",
+      "observation": "string and domain.RecommendationRequest captured by an in-memory spy"
+    },
+    {
+      "surface": "invalid MCP invocation",
+      "observation": "JSON-RPC error code and count of downstream port calls"
+    },
+    {
+      "surface": "license evidence and projected recommendation",
+      "observation": "candidate license status/identifier, decision policy and public warning/blocker fields"
+    }
+  ],
+  "required_business_intent": {
+    "root_required": [
+      "idea"
+    ],
+    "idea_required": [
+      "problem",
+      "capabilities"
+    ],
+    "rules": [
+      "idea.problem is a non-empty string after existing normalization",
+      "idea.capabilities contains at least one non-empty capability after existing normalization",
+      "the server does not infer either field from arbitrary root fields"
+    ]
+  },
+  "default_profile": {
+    "id": "BATEIA_RECOMMEND_DEFAULTS_V1",
+    "policy": {
+      "schema_version": "1",
+      "allowed_licenses": [
+        "0BSD",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "BSL-1.0",
+        "ISC",
+        "MIT",
+        "Unlicense",
+        "Zlib"
+      ],
+      "require_local": false,
+      "allow_archived": false,
+      "max_components": 5,
+      "extend_min_coverage": 0.5,
+      "integration_min_value": 0.5
+    },
+    "target": {
+      "name": "$normalized(idea.problem)"
+    },
+    "search": {
+      "strategy": "lexical",
+      "language": "",
+      "locales": [
+        "pt-BR",
+        "en-US"
+      ],
+      "max_per_query": 5,
+      "max_candidates": 8
+    },
+    "immutability": "Changing any value or the semantic membership of the license allowlist requires a new profile version and a new contract. Canonical normalization may copy and order slices but may not mutate shared profile state."
+  },
+  "materialization_rules": {
+    "authority": "The server applies defaults; JSON Schema default annotations are descriptive and are not trusted as the execution mechanism.",
+    "timing": "Defaults are resolved before either injected recommendation port is called and before external search, semantic, discovery or content I/O.",
+    "objects": {
+      "policy": "omitted or {} resolves each omitted member from V1",
+      "target": "omitted or {} resolves name from normalized idea.problem",
+      "search": "omitted or {} resolves each omitted member from V1"
+    },
+    "field_precedence": [
+      {
+        "class": "omitted member",
+        "expected": "use the exact corresponding V1 value"
+      },
+      {
+        "class": "explicit valid non-default member",
+        "expected": "preserve the supplied semantic value and validate it"
+      },
+      {
+        "class": "explicit null",
+        "expected": "reject as Invalid params; null is not omission"
+      },
+      {
+        "class": "explicit invalid zero",
+        "paths": [
+          "policy.max_components",
+          "policy.extend_min_coverage",
+          "policy.integration_min_value",
+          "search.max_per_query",
+          "search.max_candidates"
+        ],
+        "expected": "reject as Invalid params; do not replace by a default"
+      },
+      {
+        "class": "explicit empty list",
+        "paths": [
+          "policy.allowed_licenses",
+          "search.locales"
+        ],
+        "expected": "preserve an explicit empty list; do not replace by a default"
+      },
+      {
+        "class": "explicit false",
+        "paths": [
+          "policy.require_local",
+          "policy.allow_archived"
+        ],
+        "expected": "accept false; it is value-equivalent to V1 but must never be rejected as missing"
+      },
+      {
+        "class": "explicit empty string with invalid domain meaning",
+        "paths": [
+          "policy.schema_version",
+          "search.strategy"
+        ],
+        "expected": "reject as Invalid params; do not replace by a default"
+      },
+      {
+        "class": "explicit empty language",
+        "paths": [
+          "search.language"
+        ],
+        "expected": "accept and preserve; it is value-equivalent to V1"
+      },
+      {
+        "class": "explicit empty target name",
+        "paths": [
+          "target.name"
+        ],
+        "expected_at_gateway_port": "preserve the explicit empty string, distinguishing it from omitted target.name",
+        "expected_in_real_service": "the pre-existing L1 target normalization may subsequently resolve an empty or whitespace-only name to normalized idea.problem, preserving the meaning of a previously valid complete request"
+      }
+    ],
+    "copy_semantics": "Each invocation receives request-owned license and locale slices. A caller or downstream consumer mutating one request cannot change defaults observed by a later invocation."
+  },
+  "mcp_schema_contract": {
+    "bateia_recommend": {
+      "tool_name_and_description": "preserved from Step 0025",
+      "root_additionalProperties": false,
+      "root_required_exactly": [
+        "idea"
+      ],
+      "idea_required_exactly": [
+        "problem",
+        "capabilities"
+      ],
+      "policy_required_members": [],
+      "target_required_members": [],
+      "search_required_members": [],
+      "all_nested_objects_additionalProperties": false,
+      "static_default_annotations": {
+        "policy.schema_version": "1",
+        "policy.allowed_licenses": [
+          "0BSD",
+          "Apache-2.0",
+          "BSD-2-Clause",
+          "BSD-3-Clause",
+          "BSL-1.0",
+          "ISC",
+          "MIT",
+          "Unlicense",
+          "Zlib"
+        ],
+        "policy.require_local": false,
+        "policy.allow_archived": false,
+        "policy.max_components": 5,
+        "policy.extend_min_coverage": 0.5,
+        "policy.integration_min_value": 0.5,
+        "search.strategy": "lexical",
+        "search.language": "",
+        "search.locales": [
+          "pt-BR",
+          "en-US"
+        ],
+        "search.max_per_query": 5,
+        "search.max_candidates": 8
+      },
+      "dynamic_default_annotation": {
+        "path": "target.name",
+        "must_identify": "idea.problem",
+        "form": "a human-readable description or a JSON Schema annotation that unambiguously says omitted target.name uses idea.problem"
+      },
+      "preserved_constraints": [
+        "policy.schema_version const 1",
+        "policy.max_components minimum 2",
+        "coverage thresholds exclusiveMinimum 0 and maximum 1",
+        "search.strategy enum literal or lexical",
+        "search.locales uniqueItems and existing ten-locale enum",
+        "search.max_per_query range 1 through 25",
+        "search.max_candidates range 1 through 20"
+      ]
+    },
+    "bateia_start_recommendation": {
+      "schema_relation": "The idea, policy, target and search property schemas are deeply equal to bateia_recommend at the same tools/list observation.",
+      "root_required_exactly": [
+        "idempotency_key",
+        "idea"
+      ],
+      "idempotency_key_schema_and_runtime_validation": "preserved from Step 0026",
+      "other_durable_tools": "schemas and behavior preserved from Step 0026"
+    },
+    "runtime_schema_parity": "Every payload rejected by preserved schema type/range/additionalProperties constraints is rejected by runtime with -32602 before a downstream port call."
+  },
+  "sync_async_parity": {
+    "comparison": "Remove the async-only idempotency_key and compare the RecommendationRequest captured by the two injected ports.",
+    "requirement": "For byte-equivalent recommendation arguments, sync and async deliver deeply equal default-resolved requests, including nil-versus-empty slice semantics where JSON can distinguish them.",
+    "full_request_requirement": "A previously valid complete request is accepted by both paths and retains its previous semantic values.",
+    "error_requirement": "The same invalid recommendation member is -32602 in both paths and neither downstream port is called."
+  },
+  "compatibility": {
+    "preserved": [
+      "tool names and tool order",
+      "nested idea/policy/target/search shape",
+      "strict unknown-field rejection",
+      "all Step 0025 validation ranges and enums",
+      "meaning of every previously valid complete request",
+      "idempotency validation and durable operations from Step 0026",
+      "public result projection, status, sanitization and error classes"
+    ],
+    "explicitly_superseded": [
+      "Step 0025 root required array idea,policy,target,search",
+      "Step 0025 policy required array",
+      "Step 0025 search required array",
+      "Step 0026 start root required array idempotency_key,idea,policy,target,search"
+    ],
+    "not_added": [
+      "root aliases such as desired_capabilities",
+      "flat-payload inference",
+      "new provider or search strategy",
+      "license assignment to candidates"
+    ]
+  },
+  "license_policy": {
+    "meaning": "policy.allowed_licenses is an acceptance allowlist, not candidate metadata",
+    "omitted": "materialize the exact V1 permissive SPDX allowlist",
+    "explicit_empty": "preserve empty and let existing decision semantics evaluate it; never repopulate it",
+    "unknown_candidate": "retain the candidate's unknown/inconclusive evidence status and existing warning or blocker semantics; never write a V1 license identifier into candidate evidence",
+    "proven_disallowed_candidate": "remains disallowed according to existing decision behavior",
+    "legal_boundary": "The V1 allowlist is curated and versioned but is not a claim of legal completeness or compatibility for a particular use."
+  },
+  "unknown_policy": {
+    "invalid_input": "Fail closed with JSON-RPC -32602 and zero downstream port calls for unknown fields, explicit null, wrong types, invalid explicit values, missing business intent or trailing JSON values.",
+    "opaque_domain_evidence": "Preserve INCONCLUSIVE/Unknown for missing or unsupported candidate-license evidence. A default allowlist is not evidence.",
+    "contract_evaluation": "Unknown never counts as Preserved for a positive case or Violated for a negative mutation. It is accepted only for an explicitly opaque case.",
+    "indistinguishable_provenance": "When an explicit value equals its default, public value equality cannot prove whether an implementation internally defaulted or preserved it. Only acceptance and the resulting value are contracted; internal provenance remains Unknown."
+  },
+  "required_oracle_cases": {
+    "positive": [
+      {
+        "id": "P31-01-minimal-sync",
+        "input": "idea only",
+        "expected": "one recommender call with the exact V1 profile and target.name resolved from idea.problem"
+      },
+      {
+        "id": "P31-02-minimal-async",
+        "input": "idempotency_key plus idea only",
+        "expected": "one durable Start call with the key and the same exact request as P31-01"
+      },
+      {
+        "id": "P31-03-empty-operational-objects",
+        "input": "idea plus policy:{}, target:{}, search:{}",
+        "expected": "same default-resolved request as P31-01"
+      },
+      {
+        "id": "P31-04-partial-overlay",
+        "input": "one non-default valid field in each optional object",
+        "expected": "explicit fields retained and all other fields filled independently from V1"
+      },
+      {
+        "id": "P31-05-complete-compatibility",
+        "input": "a previously valid complete Step 0025 request",
+        "expected": "same semantic request values and one downstream call"
+      },
+      {
+        "id": "P31-06-explicit-empty-lists",
+        "input": "allowed_licenses:[] and locales:[]",
+        "expected": "both remain explicit empty slices and no V1 list is injected"
+      },
+      {
+        "id": "P31-07-explicit-booleans",
+        "input": "require_local:false and allow_archived:true",
+        "expected": "false is accepted and true remains true"
+      },
+      {
+        "id": "P31-08-target-presence",
+        "input": "paired omitted target.name and explicit target.name empty",
+        "expected": "gateway spy sees idea.problem for omission and empty for explicit empty; a real service may normalize the latter later"
+      },
+      {
+        "id": "P31-09-repeat-copy-safety",
+        "input": "two minimal calls with mutation of the first captured request slices between them",
+        "expected": "second call still receives the unmodified exact V1 lists"
+      }
+    ],
+    "negative": [
+      {
+        "id": "N31-01-missing-idea",
+        "expected": "-32602 and zero downstream calls"
+      },
+      {
+        "id": "N31-02-missing-or-empty-business-intent",
+        "expected": "-32602 and zero downstream calls"
+      },
+      {
+        "id": "N31-03-explicit-zero",
+        "expected": "each bounded numeric zero is rejected separately, never defaulted"
+      },
+      {
+        "id": "N31-04-explicit-invalid-string",
+        "expected": "empty schema_version and empty strategy are rejected separately"
+      },
+      {
+        "id": "N31-05-explicit-null",
+        "expected": "null optional object and null optional member are rejected separately, never treated as omission"
+      },
+      {
+        "id": "N31-06-unknown-fields",
+        "expected": "unknown root and nested fields are rejected separately"
+      },
+      {
+        "id": "N31-07-range-and-relation",
+        "expected": "preserved limits and integration_min_value <= extend_min_coverage remain enforced"
+      },
+      {
+        "id": "N31-08-sync-async-invalid-parity",
+        "expected": "the same invalid recommendation fragment cannot reach either port"
+      }
+    ],
+    "opaque": [
+      {
+        "id": "O31-01-equal-default-provenance",
+        "classification": "Unknown",
+        "reason": "The public value cannot reveal whether explicit false or empty language was internally preserved or overwritten by an equal default."
+      },
+      {
+        "id": "O31-02-license-legal-completeness",
+        "classification": "Unknown",
+        "reason": "The observable contract has no legal context sufficient to prove completeness or compatibility."
+      },
+      {
+        "id": "O31-03-unsupported-license-evidence",
+        "classification": "Unknown",
+        "reason": "Unsupported or absent candidate evidence must remain domain-inconclusive and cannot be resolved from the default allowlist."
+      }
+    ]
+  },
+  "discriminatory_attacks": [
+    {
+      "id": "M31-01-minimal-still-rejected",
+      "violation_witness": "P31-01 or P31-02"
+    },
+    {
+      "id": "M31-02-one-optional-object-still-required",
+      "violation_witness": "P31-01 and schema required arrays"
+    },
+    {
+      "id": "M31-03-one-omitted-member-left-at-zero-value",
+      "violation_witness": "P31-03 and field-by-field exact profile comparison"
+    },
+    {
+      "id": "M31-04-license-profile-member-added-removed-or-replaced",
+      "violation_witness": "P31-01 exact allowed_licenses"
+    },
+    {
+      "id": "M31-05-license-profile-used-as-candidate-license",
+      "violation_witness": "O31-03 domain Unknown plus candidate evidence assertion"
+    },
+    {
+      "id": "M31-06-explicit-empty-license-list-defaulted",
+      "violation_witness": "P31-06"
+    },
+    {
+      "id": "M31-07-explicit-empty-locales-defaulted",
+      "violation_witness": "P31-06"
+    },
+    {
+      "id": "M31-08-explicit-zero-defaulted",
+      "violation_witness": "N31-03"
+    },
+    {
+      "id": "M31-09-explicit-null-treated-as-omitted",
+      "violation_witness": "N31-05"
+    },
+    {
+      "id": "M31-10-explicit-non-default-boolean-overwritten",
+      "violation_witness": "P31-07 allow_archived:true"
+    },
+    {
+      "id": "M31-11-target-omission-and-explicit-empty-collapsed-at-gateway",
+      "violation_witness": "P31-08"
+    },
+    {
+      "id": "M31-12-sync-and-async-use-different-defaults",
+      "violation_witness": "P31-01 versus P31-02"
+    },
+    {
+      "id": "M31-13-complete-request-changed",
+      "violation_witness": "P31-05"
+    },
+    {
+      "id": "M31-14-unknown-field-accepted",
+      "violation_witness": "N31-06"
+    },
+    {
+      "id": "M31-15-schema-advertises-old-required-arrays",
+      "violation_witness": "mcp_schema_contract root and nested required assertions"
+    },
+    {
+      "id": "M31-16-schema-default-annotation-diverges-from-runtime",
+      "violation_witness": "static schema defaults deep-equal the captured minimal request"
+    },
+    {
+      "id": "M31-17-default-slices-alias-shared-state",
+      "violation_witness": "P31-09"
+    },
+    {
+      "id": "M31-18-validation-occurs-after-downstream-call",
+      "violation_witness": "all N31 cases assert zero port calls"
+    }
+  ],
+  "discriminatory_gate": {
+    "required_mutation_score": 1.0,
+    "valid_negative_mutation_count": 18,
+    "formula": "valid negative mutations rejected / 18",
+    "unknown_for_negative": "surviving mutation",
+    "opaque_cases_in_denominator": false,
+    "order_checks": [
+      "repeat every positive and negative case",
+      "run the same cases in at least two deterministic orders",
+      "minimal sync and async equality is independent of execution order"
+    ],
+    "seal_rule": "Any surviving valid mutation, positive classified other than Preserved, negative classified other than Violated, or opaque classified other than Unknown prevents sealing."
+  },
+  "refinement_boundary": {
+    "preserved_contract": "Step 0025 and Step 0026 outside the exact required/default surface named in supersession.json",
+    "historical_test_policy": "A historical exact-schema oracle may be refined only to preserve old stable properties and assert this explicit supersession; historical evidence must not be rewritten as if the old contract never existed.",
+    "final_verdict_language": "At most EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO and only for the MCP default-materialization fragment recorded here."
+  }
+}

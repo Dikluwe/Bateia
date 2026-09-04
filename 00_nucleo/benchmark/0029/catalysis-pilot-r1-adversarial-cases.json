@@ -1,0 +1,104 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-adversarial-cases.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "contract_path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-contract.json",
+  "gate_status": "DESIGNED_NOT_EXECUTED",
+  "positive_cases": [
+    {
+      "id": "P-VALID-PAIR",
+      "fixture": "Treatment runs first, calls bateia_recommend once, then web_search 1..3 times; control uses web_search 1..3 times; both outputs and sessions are valid and non-overlapping.",
+      "expected": "Preserved"
+    },
+    {
+      "id": "P-INCONCLUSIVE-NEUTRAL",
+      "fixture": "Bateia returns INCONCLUSIVE; later web research is valid, but no supported catalytic path is established.",
+      "expected": "Preserved",
+      "evaluation": "Valid pair; neutral abstention and no demonstrated catalysis, without automatic arm loss or win."
+    }
+  ],
+  "opaque_cases": [
+    {
+      "id": "O-TRACE-LINK",
+      "fixture": "A later web query resembles a Bateia direction, but immutable trace identifiers cannot link them.",
+      "expected": "Unknown",
+      "evaluation": "Do not count catalysis."
+    },
+    {
+      "id": "O-TEMPORAL-DRIFT",
+      "fixture": "A public page materially changes between treatment-first and control, and the prior content cannot be reconstructed.",
+      "expected": "Unknown",
+      "evaluation": "Confounded comparison, not equality and not arm effect."
+    }
+  ],
+  "mutants": [
+    {
+      "id": "M-CONTROL-NO-WEB",
+      "mutation": "Control emits schema-valid output with zero native web_search calls.",
+      "expected": "Violated",
+      "witness": "control web_search count = 0"
+    },
+    {
+      "id": "M-TREATMENT-NO-BATEIA",
+      "mutation": "Treatment uses web_search but never calls bateia_recommend.",
+      "expected": "Violated",
+      "witness": "treatment bateia_recommend count = 0"
+    },
+    {
+      "id": "M-BATEIA-AFTER-WEB",
+      "mutation": "Treatment starts web_search before bateia_recommend completes.",
+      "expected": "Violated",
+      "witness": "first web started_at precedes Bateia finished_at"
+    },
+    {
+      "id": "M-WEB-CARDINALITY",
+      "mutation": "Either arm makes zero or at least four native web_search calls.",
+      "expected": "Violated",
+      "witness": "web_search count outside inclusive range 1..3"
+    },
+    {
+      "id": "M-OTHER-TOOL",
+      "mutation": "An arm invokes shell, browser, app, another native tool, another MCP or a treatment MCP tool other than bateia_recommend.",
+      "expected": "Violated",
+      "witness": "tool event absent from exact arm allowlist"
+    },
+    {
+      "id": "M-ATTRIBUTION-WITHOUT-TRACE",
+      "mutation": "Auditor credits catalysis from semantic resemblance without ordered direction_id to later web_event_id linkage.",
+      "expected": "Violated",
+      "witness": "catalysis=true with no complete observable path"
+    },
+    {
+      "id": "M-INCONCLUSIVE-AUTOMATIC",
+      "mutation": "INCONCLUSIVE is converted automatically into treatment defeat or success.",
+      "expected": "Violated",
+      "witness": "winner or loser derived solely from Bateia status INCONCLUSIVE"
+    },
+    {
+      "id": "M-VOLUME-COST-WIN",
+      "mutation": "A winner is selected solely for more words, claims, references, calls or retrieval cost.",
+      "expected": "Violated",
+      "witness": "advantage lacks decision-relevant supported utility after cost normalization"
+    },
+    {
+      "id": "M-DRIFT-AS-EQUALITY",
+      "mutation": "Material live-web temporal drift is treated as evidence of arm equality.",
+      "expected": "Violated",
+      "witness": "tie/equality asserted despite unresolved time-indexed source difference"
+    },
+    {
+      "id": "M-INVALID-OR-DUPLICATE-SALVAGE",
+      "mutation": "An invalid, overlength, duplicate or post-hoc-selected output is used to complete the pair.",
+      "expected": "Violated",
+      "witness": "pair valid despite invalidity, output count != 1 or post-hoc selection"
+    }
+  ],
+  "discriminatory_gate": {
+    "valid_mutants": 10,
+    "required_rejections": 10,
+    "required_mutation_score": 1.0,
+    "actual_mutation_score": null,
+    "repetition_and_reordering_required": true,
+    "seal_blocker_until_independently_executed": true
+  }
+}

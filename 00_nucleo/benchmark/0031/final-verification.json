@@ -1,0 +1,102 @@
+{
+  "schema_version": "bateia.step0031.final-verification.v1",
+  "step": "0031",
+  "verified_at": "2026-09-03",
+  "role": "final_verifier",
+  "executor": "/root/verificador_final_0031",
+  "verdict": "PASS",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "scope": "Only the frozen Step 0031 MCP schema and server-side default-materialization fragment for synchronous and durable recommendation gateways.",
+  "integrity": {
+    "sealed_inputs_unchanged": true,
+    "implementation_receipt_matches_workspace": true,
+    "git_head": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "contract_seal": "3599dd9f3d27bbd1a51ba2011d8ac4139fbd4c070aa30b05f5dbce919cae8679",
+    "implementation_receipt": "e85e8211dbaadc10b09fa5e10ef3a685c634573989b83f27f903af001f7191f0",
+    "protected_oracle": "ec53ded687fd5ee664fee1cd2eea05ce8c59f09de71872e1340dc4c8cd7adda3",
+    "adversarial_mutations": "17ddbd022a5350338fd5468bd58840be0844ce509f05165d67adf82336afe3b1"
+  },
+  "candidate_hashes": {
+    "01_core/usecase/recommendation.go": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+    "02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42",
+    "02_shell/mcp/durable_runs.go": "436989b07761406908297d733e8c07cb890c12aae92613cc541a232d8e1ec29e",
+    "00_nucleo/prompts/01_core/usecase/recommendation.md": "99e4bd18974e12d8f746bfd2d2dcff4ce515696395019798a83dfcde0b6fc766",
+    "00_nucleo/prompts/02_shell/mcp/server.md": "b5075f7cbb40a86a15d90ff690b410e4a47a8b3d806c5def3794dd8c4b76f564",
+    "00_nucleo/prompts/02_shell/mcp/durable_runs.md": "80b0d731d45300eb409d884f5be04e14aae71ebe21d866a456440264d71b43dc"
+  },
+  "executed_gates": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-final-oracle go test ./02_shell/mcp -run Step0031 -count=2",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-final-focal go test ./01_core/usecase ./02_shell/mcp ./04_wiring -count=1",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-final-build-cache go build -o /tmp/bateia-step0031-final-build ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "command": "crystalline-lint .",
+      "status": "EXIT_0_WITH_PREEXISTING_WARNINGS",
+      "finding": "No warning identifies a Step 0031 candidate or oracle path; reported V12 and V7 warnings belong to pre-existing Step 0026-0029 material."
+    }
+  ],
+  "mutation_gate": {
+    "method": "Executable protected-oracle replay plus static witness-to-implementation audit.",
+    "required_score": 1.0,
+    "observed_score": 1.0,
+    "valid_negative_mutations": 18,
+    "rejected": 18,
+    "survivors": 0,
+    "negative_unknown": 0,
+    "outcomes": {
+      "M31-01-minimal-still-rejected": "VIOLATED_BY_MINIMAL_SYNC_AND_ASYNC_ORACLE",
+      "M31-02-one-optional-object-still-required": "VIOLATED_BY_MINIMAL_AND_SCHEMA_REQUIRED_ORACLE",
+      "M31-03-one-omitted-member-left-at-zero-value": "VIOLATED_BY_EMPTY_OBJECT_EXACT_PROFILE_ORACLE",
+      "M31-04-license-profile-member-added-removed-or-replaced": "VIOLATED_BY_EXACT_ORDERED_ALLOWLIST_ORACLE",
+      "M31-05-license-profile-used-as-candidate-license": "VIOLATED_BY_INCONCLUSIVE_LICENSE_PROJECTION_AND_SCOPED_DIFF_AUDIT",
+      "M31-06-explicit-empty-license-list-defaulted": "VIOLATED_BY_NON_NIL_EMPTY_LICENSE_ORACLE",
+      "M31-07-explicit-empty-locales-defaulted": "VIOLATED_BY_NON_NIL_EMPTY_LOCALE_ORACLE",
+      "M31-08-explicit-zero-defaulted": "VIOLATED_BY_FIVE_ZERO_CASES_ON_BOTH_PATHS",
+      "M31-09-explicit-null-treated-as-omitted": "VIOLATED_BY_NULL_OBJECT_AND_MEMBER_CASES",
+      "M31-10-explicit-non-default-boolean-overwritten": "VIOLATED_BY_ALLOW_ARCHIVED_TRUE_ON_BOTH_PATHS",
+      "M31-11-target-omission-and-explicit-empty-collapsed-at-gateway": "VIOLATED_BY_GATEWAY_SPY_DISTINCTION",
+      "M31-12-sync-and-async-use-different-defaults": "VIOLATED_BY_DEEP_EQUALITY_IN_BOTH_EXECUTION_ORDERS",
+      "M31-13-complete-request-changed": "VIOLATED_BY_COMPLETE_REQUEST_PARITY_ORACLE",
+      "M31-14-unknown-field-accepted": "VIOLATED_BY_STRICT_DECODER_CASES_AND_LEGACY_FOCAL_SUITE",
+      "M31-15-schema-advertises-old-required-arrays": "VIOLATED_BY_EXACT_SYNC_AND_ASYNC_REQUIRED_ARRAYS",
+      "M31-16-schema-default-annotation-diverges-from-runtime": "VIOLATED_BY_SCHEMA_TO_CAPTURED_REQUEST_COMPARISON",
+      "M31-17-default-slices-alias-shared-state": "VIOLATED_BY_CROSS_CALL_SLICE_CORRUPTION_ORACLE",
+      "M31-18-validation-occurs-after-downstream-call": "VIOLATED_BY_ZERO_PORT_CALL_ASSERTIONS_FOR_ALL_NEGATIVES"
+    }
+  },
+  "semantic_audit": {
+    "sync_async_parity": "PASS: both decoders invoke materializeRecommendationArguments and validate before their respective injected ports.",
+    "omitted_vs_explicit": "PASS: pointer presence preserves false, zero, empty string and non-nil empty slices; omissions alone receive V1 defaults; invalid explicit values fail closed.",
+    "license_anti_assignment": "PASS: the V1 list is materialized only into policy.allowed_licenses; candidate evidence paths were not changed and an inconclusive license remains identifier-free and source-free.",
+    "copy_safety": "PASS: default constructors create fresh slices and explicit lists are copied before forwarding.",
+    "unknown_policy": "PASS: three opaque controls remain Unknown and are excluded from the negative denominator.",
+    "historical_refinement": "PASS: Step 0025/0026 exact required arrays are explicitly superseded; complete request semantics, strict fields, durable idempotency and the nine-tool registry remain covered by the focal suite and hashed successor artifacts."
+  },
+  "global_suite": {
+    "repeated": false,
+    "reason": "The assignment permitted relying on the reproducible implementation receipt once the protected oracle, focal packages and build passed.",
+    "known_baseline_only": [
+      "Step 0026 R4 retrocompatibility survivor",
+      "sandbox loopback socket restrictions in three infrastructure packages"
+    ],
+    "counted_as_success": false
+  },
+  "limitations": [
+    "Shared filesystem and inherited history do not provide strong process, filesystem or temporal isolation attestation.",
+    "The verification does not claim legal completeness of the permissive allowlist, search-result uplift, flat Step 0030 payload support or general functional equivalence.",
+    "Equal-value provenance remains unobservable when an explicit value equals its default.",
+    "The global suite was not repeated; its known R4 and sandbox failures remain baseline conditions, not successful gates."
+  ]
+}

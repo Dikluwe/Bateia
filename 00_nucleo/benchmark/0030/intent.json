@@ -1,0 +1,73 @@
+{
+  "schema_version": "bateia.step0030.intent.v1",
+  "created_at": "2026-09-03",
+  "author_of_intent": "user",
+  "materializer": "/root",
+  "objective": "Measure whether IA-managed Bateia catalyzes IA-managed native web research relative to the same IA-managed native web research without Bateia.",
+  "estimand": "IA_INTERNET_BATEIA minus IA_INTERNET within the same case, model, reasoning effort, output contract and native-web budget.",
+  "authoritative_step": {
+    "path": "00_nucleo/passos/0030-corrigir-teste-de-catalise-da-busca.md",
+    "sha256": "2a7a5bd76847c6dcf8d40f05c7acbc6d502fb3c3e96e38be331d04ba3c60f03f"
+  },
+  "protected_r3_baseline": {
+    "results_sha256": "3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524",
+    "verification_sha256": "7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2",
+    "events_sha256": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "output_sha256": "42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8"
+  },
+  "cases": [
+    {
+      "id": "EXP29-C01",
+      "step0030_split": "CALIBRATION",
+      "family": "durable-processing",
+      "case_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+    },
+    {
+      "id": "EXP29-V01",
+      "step0030_split": "CALIBRATION",
+      "family": "local-first-ledger",
+      "case_sha256": "98adbe6cc88b5e2144ad1a3575079e3b05653c1bb7444a65a9f2e7fbb6bc5181"
+    },
+    {
+      "id": "EXP29-V02",
+      "step0030_split": "CALIBRATION",
+      "family": "extensible-platform",
+      "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0"
+    }
+  ],
+  "case_source": {
+    "path": "00_nucleo/benchmark/0029/corpus-public.json",
+    "sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "interpretation": "All three public cases form STEP0030_CALIBRATION; no protected TEST case is opened."
+  },
+  "profile": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "codex_cli_version": "codex-cli 0.149.0",
+    "codex_cli_sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477"
+  },
+  "arms": {
+    "control": "IA_INTERNET with 1..3 native web searches and no MCP",
+    "treatment": "IA_INTERNET_BATEIA with exactly one completed bateia_recommend before 1..3 native web searches"
+  },
+  "shared_limits": {
+    "wall_clock_seconds": 900,
+    "native_web_calls_min": 1,
+    "native_web_calls_max": 3,
+    "editorial_unicode_target": 18000,
+    "hard_serialized_bytes_max": 65536,
+    "single_global_in_flight": true,
+    "seconds_between_starts_min": 120,
+    "behavioral_retries": 0
+  },
+  "session_budget": {
+    "global_before": 16,
+    "new_sessions_exactly_if_complete": 6,
+    "global_after_if_complete": 22,
+    "global_cap": 108
+  },
+  "randomization_seed_commitment": "36bcbd0cd0b03a631ad6e14854db8aa72ae3b416bc9b15b92dad47e3d4fbc3f2",
+  "unknown_policy": "Preserve Unknown for unsupported web event encodings, unavailable runtime observations, opaque causal links and unknown cost. INCONCLUSIVE is a neutral answer state, never an automatic win or loss.",
+  "execution_authorization": "The user explicitly authorized execution of Step 0030 on 2026-09-03. Behavioral dispatch remains conditional on a sealed contract and passing preflight.",
+  "claim_boundary": "Three calibration pairs can diagnose methodology and produce exploratory evidence only; they cannot establish general Bateia uplift."
+}

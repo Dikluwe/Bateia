@@ -1,0 +1,50 @@
+{
+  "schema_version": "bateia.step0030.experiment-manifest.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "frozen_inputs": {
+    "step_sha256": "2a7a5bd76847c6dcf8d40f05c7acbc6d502fb3c3e96e38be331d04ba3c60f03f",
+    "intent_sha256": "5378e9dc2416437b4e2ac020206a8d1d39f4d7e40f9368f43cf6e53a91eb4f37",
+    "authority_manifest_sha256": "da86319d3037bb0cb7a15a38972ac8866f4f5463aa4ec1fc2a4bc38bbf6a5d4b",
+    "corpus_public_0029_sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "schema_r2_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "codex_web_witness_sha256": "a028ea36778ee2c630070d5c2b37fb22ce249c9daa8f2b82cfbb51657c348c56",
+    "protected_r3_results_sha256": "3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524",
+    "protected_r3_verification_sha256": "7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2",
+    "protected_r3_events_sha256": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "protected_r3_output_sha256": "42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8"
+  },
+  "cases": [
+    {"id": "EXP29-C01", "split": "STEP0030_CALIBRATION", "family": "durable-processing", "sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"},
+    {"id": "EXP29-V01", "split": "STEP0030_CALIBRATION", "family": "local-first-ledger", "sha256": "98adbe6cc88b5e2144ad1a3575079e3b05653c1bb7444a65a9f2e7fbb6bc5181"},
+    {"id": "EXP29-V02", "split": "STEP0030_CALIBRATION", "family": "extensible-platform", "sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0"}
+  ],
+  "experiment": {
+    "estimand": "IA_INTERNET_BATEIA minus IA_INTERNET within identical case, model, effort, output contract and native-web budget.",
+    "pairs": 3,
+    "sessions_exactly": 6,
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "global_count": "16 + 6 = 22 <= 108",
+    "native_web_each_arm": "1..3",
+    "treatment": "exactly one completed bateia_recommend before first web lifecycle",
+    "single_global_in_flight": true,
+    "seconds_between_starts_min": 120
+  },
+  "contract_artifact_hashes": {
+    "compact_output_schema": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+    "output_bound_proof": "dbc6a5766ece9ce767af9fcd60794cf5df7c4e2bbd881e533539356252ee069b",
+    "web_event_decoder_contract": "8a11f29cc3443009e06ce1b359c97ad9ccb257c3ac3f224c03169689ec1c9206",
+    "pair_dispatch_contract": "b4c742d32ac0219013be0c48cef7f4f4adee6a13ddacdcde4b74283c916787b1",
+    "prompt_control": "e829365177d7bf9ba60dce8dc900fb64dc1273d021eeddc7ee6076246958a86b",
+    "prompt_treatment": "17f654629700affbed15e0380c18b4fd2c26891c11a20d2c5549e5fee2aea22a",
+    "execution_profile": "935eeecbccc05d19f8cc34016a7c7d5c49b03da05fc53057a763650e77ac02be",
+    "blind_rubric": "068b4b5d07a89eb5dc95e12ad46782d1a7fbad4d4acbef932b57c93089aa35a4",
+    "catalysis_trace_rubric": "be4267262777544d257a9c2dca1a1e950f031495bb834ee489b8d35cd54df6ad"
+  },
+  "unknown_policy": "Unknown is preserved for opaque encodings, unavailable observations, causal linkage and cost. INCONCLUSIVE is neutral and never an automatic win or loss.",
+  "authorization_boundary": "Contract authoring does not dispatch sessions. Execution requires sealed contract, independent preflight PASS and the existing explicit authorization.",
+  "claim_boundary": "Three calibration pairs are exploratory and cannot establish general Bateia uplift."
+}

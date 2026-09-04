@@ -1,0 +1,299 @@
+{
+  "schema_version": "tekt.step0029.catalysis-pilot-methodology-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T19:09:14Z",
+  "executor": "/root/verificador_metodo_r2",
+  "role": "INDEPENDENT_PRE_EXECUTION_VERIFIER",
+  "authority": "READ_ONLY_AUDIT_AND_THIS_RECEIPT_ONLY",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_AB_CATALYSIS_PILOT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "verdict": "REPROVADO",
+  "status": "FAIL_CLOSED_PENDING_TRACE_CONTRACT_REFINEMENT",
+  "contract_seal_emitted": false,
+  "blocking_reason_code": "CODEX_0_149_TRACE_FIELDS_NOT_OBSERVABLE_AS_CONTRACTED",
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "verified_inputs": {
+    "intent": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-intent.json",
+      "sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca"
+    },
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-methodology.json",
+      "sha256": "63153d5f732a515beb6988cf55f86003c13a78e9b2ea2d0dbc3c93b99f43db8f"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-contract.json",
+      "sha256": "f3a38717f7f199cdc353b008e2270bb861b2fffe67ecdef05fefb52f1e10542d"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-adversarial-cases.json",
+      "sha256": "10489d800ba33fcc6e2222940554f93cd4c5bcaa58f988a560f367127e78ed3a"
+    },
+    "oracle_authorship": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-oracle-authorship.json",
+      "sha256": "f819cd3eca52969896155f5a3530546571a8c349b1522dde0a0e870ccf8e7e37"
+    },
+    "seal_candidate": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-contract-seal-candidate.json",
+      "sha256": "284ec35738645579411af5b31e465980c5e9bfaace52dd957c70f6fcdcf87a1e"
+    },
+    "corpus": {
+      "path": "00_nucleo/benchmark/0029/corpus-public.json",
+      "sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96"
+    },
+    "registry": {
+      "path": "00_nucleo/benchmark/0029/corpus-registry.json",
+      "sha256": "ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee"
+    },
+    "schema": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+    }
+  },
+  "integrity_gate": {
+    "strict_json_files": 9,
+    "duplicate_keys": 0,
+    "trailing_values": 0,
+    "hash_mismatches": 0,
+    "candidate_bindings_match_current_bytes": true,
+    "result": "PASS"
+  },
+  "case_and_prompt_gate": {
+    "case_id": "EXP29-V02",
+    "registry_canonicalization": "RFC8259 UTF-8 JSON with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode",
+    "computed_case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "case_hash_matches_intent_methodology_contract_candidate_and_registry": true,
+    "execution_order_seed_sha256": "b98fbedbae1a06c68307b507a3c3d094c72b2ee651d02c1a97e287b84a4650c5",
+    "seed_first_nibble": "b",
+    "seed_rule_result": "IA_INTERNET_BATEIA_THEN_IA_INTERNET",
+    "control_prompt_bytes": 2935,
+    "control_prompt_sha256": "d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8",
+    "treatment_prompt_bytes": 3080,
+    "treatment_prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56",
+    "prompt_hashes_status": "INDEPENDENTLY_MATERIALIZED_NOT_YET_BOUND_IN_CONTRACT",
+    "result": "PASS_WITH_REQUIRED_HASH_FREEZE_IN_SUCCESSOR"
+  },
+  "discriminatory_gate": {
+    "positive_cases": {
+      "P-VALID-PAIR": "Preserved",
+      "P-INCONCLUSIVE-NEUTRAL": "Preserved"
+    },
+    "opaque_cases": {
+      "O-TRACE-LINK": "Unknown",
+      "O-TEMPORAL-DRIFT": "Unknown"
+    },
+    "mutants": {
+      "M-CONTROL-NO-WEB": "Violated",
+      "M-TREATMENT-NO-BATEIA": "Violated",
+      "M-BATEIA-AFTER-WEB": "Violated",
+      "M-WEB-CARDINALITY": "Violated",
+      "M-OTHER-TOOL": "Violated",
+      "M-ATTRIBUTION-WITHOUT-TRACE": "Violated",
+      "M-INCONCLUSIVE-AUTOMATIC": "Violated",
+      "M-VOLUME-COST-WIN": "Violated",
+      "M-DRIFT-AS-EQUALITY": "Violated",
+      "M-INVALID-OR-DUPLICATE-SALVAGE": "Violated"
+    },
+    "valid_mutants": 10,
+    "rejected_mutants": 10,
+    "mutation_score": 1.0,
+    "required_mutation_score": 1.0,
+    "runs_per_order": 2,
+    "orders": [
+      "declared",
+      "reverse"
+    ],
+    "classification_vector_stable": true,
+    "result": "PASS"
+  },
+  "codex_cli_preflight": {
+    "binary": "/usr/bin/codex",
+    "version": "codex-cli 0.149.0",
+    "model_web_or_mcp_sessions_executed": 0,
+    "help_checks": {
+      "ephemeral": "SUPPORTED_BY_CODEX_EXEC",
+      "ignore_user_config": "SUPPORTED_BY_CODEX_EXEC",
+      "ignore_rules": "SUPPORTED_BY_CODEX_EXEC",
+      "skip_git_repo_check": "SUPPORTED_BY_CODEX_EXEC",
+      "sandbox_read_only": "SUPPORTED",
+      "output_schema": "SUPPORTED_BY_CODEX_EXEC",
+      "jsonl_events": "SUPPORTED_BY_CODEX_EXEC_JSON",
+      "output_last_message": "SUPPORTED_BY_CODEX_EXEC",
+      "search": "SUPPORTED_ONLY_AS_TOP_LEVEL_OPTION_BEFORE_EXEC"
+    },
+    "search_parser_checks": {
+      "codex_exec_search_help": "REJECTED_UNEXPECTED_ARGUMENT_SEARCH",
+      "codex_search_exec_help": "ACCEPTED",
+      "required_invocation_shape": "codex --search exec ..."
+    },
+    "output_schema_and_ignore_user_config": "FEASIBLE_IF_EXPLICITLY_PRESENT_IN_EACH_ARM_INVOCATION",
+    "result": "PARTIAL"
+  },
+  "historical_event_preflight": {
+    "source": {
+      "path": "00_nucleo/benchmark/0029/sessions-temperature-r2/15c6712582f3f68922952286363aeb5fe84867b1c6a88b3b19f56950dd84b5f1/events.jsonl",
+      "sha256": "e65fd8616fcfa831769487ffe0ed25c6969bae2d0bf55614533d6f752f5e4f53",
+      "records": 16,
+      "completed_mcp_cycles": 3
+    },
+    "raw_field_observability": {
+      "event_id": "ABSENT; item.id exists for tool lifecycle items",
+      "session_id": "ABSENT; thread.started.thread_id exists once and can be propagated",
+      "arm_id": "ABSENT; available only from a separately frozen invocation envelope",
+      "tool_name": "ABSENT_AS_NAMED; item.tool exists for MCP calls",
+      "started_at": "ABSENT",
+      "finished_at": "ABSENT",
+      "request_sha256": "ABSENT; derivable from canonical item.arguments when present",
+      "response_sha256": "ABSENT; derivable from canonical completed item.result when present",
+      "status": "PRESENT for MCP lifecycle items"
+    },
+    "publicly_derivable_without_invention": {
+      "normalized_session_id": "thread.started.thread_id",
+      "normalized_event_id": "SHA-256(thread_id + NUL + item.id), with the algorithm frozen before execution",
+      "arm_id": "copy from the sealed per-arm invocation and record provenance as INVOCATION_DERIVED",
+      "tool_order": "one-based immutable JSONL line ordinal; matching item.id binds started and completed lifecycle entries",
+      "request_sha256": "SHA-256 of UTF-8 JSON for item.arguments with sorted keys, no insignificant whitespace and unescaped Unicode",
+      "response_sha256": "SHA-256 of UTF-8 JSON for completed item.result with sorted keys, no insignificant whitespace and unescaped Unicode",
+      "per_tool_wall_clock_timestamps": "NOT_DERIVABLE"
+    },
+    "sample_mcp_normalization": [
+      {
+        "raw_item_id": "item_1",
+        "start_line": 4,
+        "completion_line": 7,
+        "normalized_event_id": "7bf9866c18722c131d34f047b25c52f607689094363ff82645fdfd75bd8fac98",
+        "request_sha256": "17d2bca4da83b11afa37fdb422e711f69e52403c0b9b87d533436934c3f58985",
+        "response_sha256": "8d2325a6a15eec9a93143dd5d6bcf1b71900dd6ab9b08d403f6c05df92995b93"
+      },
+      {
+        "raw_item_id": "item_4",
+        "start_line": 8,
+        "completion_line": 11,
+        "normalized_event_id": "1e975d7422ab48ccd2d2e28911747e50301ed76385f0cb8ace8a0f7d5de8a46d",
+        "request_sha256": "a84bc2c763e3238eab0ca6bf405214cc1c268be60fa1f33ab9f011298577d384",
+        "response_sha256": "2ab793d6e513a969a878a38ab5e79e8a89cde5eb774c2fa3beb442315367e5d3"
+      },
+      {
+        "raw_item_id": "item_7",
+        "start_line": 12,
+        "completion_line": 14,
+        "normalized_event_id": "8ddee7d51924163d23a08870ae703dbc8d521880199c04ae4e82663f43ac87b0",
+        "request_sha256": "7d2e52a60b0030c6ed6ddd508cf2d20087fb6d0c6fd91efd43f7c387c1f7b236",
+        "response_sha256": "8b3d213afa93e84e32016c8a0595ceba7f3820b2b793c056726f27eb7122659c"
+      }
+    ],
+    "native_web_event_fixture_found_in_allowed_historical_artifacts": false,
+    "web_event_id_query_status_and_locator_extraction": "Unknown",
+    "temporal_order_via_jsonl_sequence": "DERIVABLE_FOR_MCP; WEB SIDE UNVERIFIED",
+    "temporal_order_via_started_at_finished_at": "NOT_FEASIBLE_FROM_OBSERVED_JSONL",
+    "result": "FAIL_CLOSED"
+  },
+  "capability_and_budget_preflight": {
+    "common_native_tool": "web_search",
+    "native_web_search_enablement": "CLI top-level --search is available",
+    "native_web_search_call_range": "1..3 is a post-execution validity predicate; no preventive per-call cap is exposed by --help",
+    "control_mcp_allowlist": [],
+    "treatment_mcp_server_allowlist": [
+      "bateia"
+    ],
+    "treatment_mcp_tool_allowlist": [
+      "bateia_recommend"
+    ],
+    "treatment_bateia_recommend_calls": 1,
+    "historical_single_tool_allowlist_evidence": "Temperature R2 invocations and events demonstrate sessions exposing and using only bateia_recommend.",
+    "ignore_user_config_required_by_verifier": true,
+    "ignore_rules_required_by_verifier": true,
+    "fresh_auth_only_codex_home_required_by_verifier": true,
+    "empty_working_directory_required_by_verifier": true,
+    "shell_and_other_native_tools": "The contract prohibits their use, but no catalysis execution-profile artifact freezes the exact disabling flags and configuration.",
+    "mcp_exact_allowlist_and_one_call_guard": "Not bound in a catalysis execution-profile artifact.",
+    "result": "FAIL_CLOSED_PENDING_EXECUTION_PROFILE"
+  },
+  "blocking_findings": [
+    {
+      "code": "PER_TOOL_TIMESTAMPS_ABSENT",
+      "contract_requirement": "started_at and finished_at for every immutable ordered trace event",
+      "observed": "Codex CLI 0.149.0 historical JSONL has lifecycle order but no per-event wall-clock timestamps.",
+      "classification": "Unknown",
+      "effect": "The contract cannot be satisfied literally without inventing timestamps."
+    },
+    {
+      "code": "NATIVE_WEB_EVENT_SHAPE_UNVERIFIED",
+      "contract_requirement": "web_event_id, query_sha256, public_locator, disposition and linkage to a prior direction",
+      "observed": "No native web_search event exists in the allowed local historical artifacts, and --help documents availability but not event JSON shape.",
+      "classification": "Unknown",
+      "effect": "The executor cannot yet prove that web query identity and linkage can be normalized from public fields."
+    },
+    {
+      "code": "CATALYSIS_EXECUTION_PROFILE_NOT_FROZEN",
+      "contract_requirement": "exact native/MCP allowlists, no shell/apps, output schema, ignored user configuration and call caps",
+      "observed": "The semantic contract states the restrictions but does not bind a byte-exact per-arm CLI/configuration profile.",
+      "classification": "Unknown",
+      "effect": "Capability isolation and the exact one-call treatment boundary are not independently reproducible before dispatch."
+    },
+    {
+      "code": "PROMPT_HASHES_NOT_CONTRACT_BOUND",
+      "contract_requirement": "frozen prompts",
+      "observed": "The verifier derived byte hashes using the registry canonicalization, but neither hash is stored in the contract candidate.",
+      "classification": "Violated",
+      "effect": "A successor must freeze both hashes before any session starts."
+    }
+  ],
+  "minimum_explicit_refinement": {
+    "scope": "Focal successor revision; do not redesign the experiment or change the estimand, case, model, arm order, budgets or winner policy.",
+    "required_changes": [
+      "Replace mandatory per-tool started_at/finished_at with required start_sequence and finish_sequence derived from immutable one-based JSONL line ordinals. Keep wall-clock timestamps optional and classify them Unknown when absent; never synthesize them.",
+      "Freeze normalized_event_id as SHA-256(thread.started.thread_id + NUL + item.id), normalized session_id as thread.started.thread_id, arm_id as invocation-derived, and exact canonical request/response hash algorithms.",
+      "Add a Codex CLI 0.149.0 native web_search JSONL fixture or an equivalent public schema witness. Define exact raw paths for query, status and locator. If the runtime event is unsupported, malformed or lacks query identity, classify the arm Unknown/invalid and stop without replacement.",
+      "Define precedence exclusively by completed Bateia lifecycle line before native web start line; do not require unavailable wall-clock timestamps for this ordering predicate.",
+      "Freeze a catalysis execution profile with an auth-only CODEX_HOME, empty working directory, --ignore-user-config, --ignore-rules, --ephemeral, --skip-git-repo-check, read-only sandbox, no approval prompts, --output-schema, --json and --output-last-message.",
+      "Place --search before the exec subcommand: codex --search exec. The form codex exec --search is rejected by 0.149.0.",
+      "Freeze control with no MCP server and treatment with only the bateia server and enabled_tools=[bateia_recommend], plus a mechanically enforced one-call guard or fail-closed postcondition before any second Bateia call can be used.",
+      "Bind the derived prompt hashes control=d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8 and treatment=0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56."
+    ],
+    "successor_gate": "Regenerate contract, adversarial/authorship artifacts and seal candidate, then rerun only the affected feasibility, positive/opaque boundary and full mutation/reordering gates before sealing."
+  },
+  "executed_by_verifier": [
+    {
+      "command": "SHA-256 and strict duplicate-key/trailing-value audit of six candidate artifacts, corpus, registry and schema",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 deterministic positive, opaque and ten-mutant classification in declared and reverse order, twice per order",
+      "result": "PASS_MUTATION_SCORE_1_0"
+    },
+    {
+      "command": "Python 3 canonical EXP29-V02 and control/treatment prompt materialization",
+      "result": "PASS"
+    },
+    {
+      "command": "codex --version; codex --help; codex exec --help; codex app-server --help; codex exec-server --help; codex app-server generate-json-schema --help",
+      "result": "PASS_NO_MODEL_OR_SERVER_EXECUTION"
+    },
+    {
+      "command": "codex exec --search --help",
+      "result": "EXPECTED_PARSER_REJECTION"
+    },
+    {
+      "command": "codex --search exec --help",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 read-only inspection and normalization of historical Codex JSONL MCP lifecycle events",
+      "result": "PARTIAL_MCP_DERIVATIONS_PASS_WEB_AND_TIMESTAMPS_UNKNOWN"
+    }
+  ],
+  "behavioral_sessions_executed_by_verifier": 0,
+  "web_searches_executed_by_verifier": 0,
+  "mcp_calls_executed_by_verifier": 0,
+  "files_written_by_verifier": [
+    "00_nucleo/benchmark/0029/catalysis-pilot-r1-methodology-verification.json"
+  ],
+  "limitations": [
+    "The shared workspace and inherited conversation do not provide strong proof of capability isolation.",
+    "The historical MCP event stream is consistent with the installed 0.149.0 environment but is not itself cryptographically bound to a CLI-version field.",
+    "No model, web search or MCP call was executed, so native web event feasibility remains Unknown rather than inferred from product familiarity.",
+    "Mutation score 1.0 proves discriminatory power of the authored observable cases, not executability of fields absent from the real transport."
+  ],
+  "invalidation_rule": "Any byte change to intent, methodology, contract, adversarial cases, authorship, seal candidate, corpus, registry, schema or the historical event witness invalidates this verification."
+}

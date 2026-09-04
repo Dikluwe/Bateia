@@ -1,0 +1,42 @@
+{
+  "schema_version": "bateia.step0029.prompt-contract.v1",
+  "language": "pt-BR",
+  "base_instruction": "Investigue a ideia de software fornecida e devolva somente um objeto JSON válido conforme o schema EngineeringInvestigation. Não execute ações externas, não peça esclarecimentos e preserve como Unknown tudo que não puder sustentar.",
+  "treatment_instruction": "Use o Bateia como ferramenta para investigar alternativas, mecanismos e hipóteses antes de concluir.",
+  "arm_a_suffix": "",
+  "arm_b_suffix": "Use o Bateia como ferramenta para investigar alternativas, mecanismos e hipóteses antes de concluir.",
+  "zero_shot": true,
+  "bateia_tutorial_included": false,
+  "follow_up_allowed": false,
+  "output_schema": {
+    "name": "EngineeringInvestigation",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "problem_restatement",
+      "conventional_baseline",
+      "alternatives",
+      "mechanisms",
+      "improvement_hypotheses",
+      "reuse_build_decision",
+      "evidence_references",
+      "counter_evidence",
+      "risks",
+      "unknowns",
+      "validation_plan"
+    ],
+    "properties": {
+      "problem_restatement": {"type": "string"},
+      "conventional_baseline": {"type": "array", "items": {"type": "string"}},
+      "alternatives": {"type": "array", "items": {"type": "object"}},
+      "mechanisms": {"type": "array", "items": {"type": "object"}},
+      "improvement_hypotheses": {"type": "array", "items": {"type": "object"}},
+      "reuse_build_decision": {"type": "string"},
+      "evidence_references": {"type": "array", "items": {"type": "object"}},
+      "counter_evidence": {"type": "array", "items": {"type": "string"}},
+      "risks": {"type": "array", "items": {"type": "string"}},
+      "unknowns": {"type": "array", "items": {"type": "string"}},
+      "validation_plan": {"type": "array", "items": {"type": "object"}}
+    }
+  }
+}

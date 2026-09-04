@@ -1,0 +1,376 @@
+{
+  "schema_version": "tekt.step0029.schema-r2-verification-receipt.v2",
+  "step": "0029",
+  "created_at": "2026-09-03T05:37:06Z",
+  "finalized_at": "2026-09-03T05:43:19Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FINAL_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "result": "READY",
+  "verdict": "READY_SCHEMA_R2_LOCAL_GATES_PASS_REVISED_PLAN_NOT_DISPATCHED_BY_VERIFIER",
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "go_version": "go1.26.5 linux/amd64",
+  "inputs": {
+    "engineering_investigation_schema_r2": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+      "canonical_schema_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df"
+    },
+    "prompt_contract_r2": {
+      "path": "00_nucleo/benchmark/0029/prompt-contract-r2.json",
+      "sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c"
+    },
+    "schema_transport_refinement_r1": {
+      "path": "00_nucleo/benchmark/0029/schema-transport-refinement-r1.json",
+      "sha256": "54cae1534b1cd46ee7a88206b1df28867a5cdeb7546112a7fb59b24ac7c5a345"
+    },
+    "randomization_plan_r2": {
+      "path": "00_nucleo/benchmark/0029/randomization-plan-r2.json",
+      "sha256": "0fbbe7496c8c93ee27600ea1b327a9330e586313095dc246f25fdf68bfa04012"
+    },
+    "execution_queue_r2": {
+      "path": "00_nucleo/benchmark/0029/execution-queue-r2.json",
+      "sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f"
+    },
+    "execution_authorization_r2": {
+      "path": "00_nucleo/benchmark/0029/execution-authorization-r2.json",
+      "sha256": "465240faa77243afa4662c6c8d826cc6c34521e0534e63c6d7fa3041c8b9fa74"
+    },
+    "execution_isolation_profiles_r2": {
+      "path": "00_nucleo/benchmark/0029/execution-isolation-profiles-r2.json",
+      "sha256": "31e9b3260e63b12730005ed24a671482b0425372914eb76d39ca00048fb344b0"
+    },
+    "harness_go": {
+      "path": "04_wiring/step0029_experiment/harness.go",
+      "sha256": "114143d2148ad6fc3c3b94f5c7b7a5f78e9e7911023c4eeed09f2185d570d775"
+    },
+    "harness_prompt": {
+      "path": "00_nucleo/prompts/04_wiring/step0029_experiment/harness.md",
+      "sha256": "058dc3c1c8245193f625d88815796b60fa918fc2646c72decf50a8bde74c4898"
+    },
+    "schema_r2_oracle_test_go": {
+      "path": "04_wiring/step0029_experiment/schema_r2_oracle_test.go",
+      "sha256": "4bfb8a20b97cab80224985e453da93c58fc3a02d635083bc3201cb75220c922a"
+    },
+    "schema_r2_oracle_prompt": {
+      "path": "00_nucleo/prompts/04_wiring/step0029_experiment/schema_r2_oracle_test.md",
+      "sha256": "5f86b8bf2b60ab58ab4be9f02003a4135840603627670eed31e3ffb4279fb987"
+    },
+    "harness_oracle_test_go_final_control": {
+      "path": "04_wiring/step0029_experiment/harness_oracle_test.go",
+      "sha256": "81b91c208e79f8a9482eb313c445bb8ef33f8f0341672596d1fe32b97429a303"
+    }
+  },
+  "executed_by_verifier": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-verify-cache go test -count=1 -v ./04_wiring/step0029_experiment -run '^TestSchemaR2'",
+      "result": "PASS",
+      "tests": 5,
+      "detail": "Positive mixed-object control, 15 missing/type/additional-property subtests, three invalid-enum subtests, six-object closure audit, and standalone-to-prompt schema identity all passed."
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-test1-cache go test -count=1 ./04_wiring/step0029_experiment",
+      "result": "FAIL",
+      "failing_test": "TestAnonymizeIsBlindDeterministicAndDoesNotRepairText",
+      "reason_code": "R2_SCHEMA_REJECTS_PREDECESSOR_EVIDENCE_REFERENCE_FIXTURE"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-test2-cache go test -count=1 ./04_wiring/step0029_experiment",
+      "result": "FAIL",
+      "failing_test": "TestAnonymizeIsBlindDeterministicAndDoesNotRepairText",
+      "reason_code": "R2_SCHEMA_REJECTS_PREDECESSOR_EVIDENCE_REFERENCE_FIXTURE"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-race-cache go test -race -count=1 ./04_wiring/step0029_experiment",
+      "result": "FAIL",
+      "failing_test": "TestAnonymizeIsBlindDeterministicAndDoesNotRepairText",
+      "reason_code": "R2_SCHEMA_REJECTS_PREDECESSOR_EVIDENCE_REFERENCE_FIXTURE"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-vet-cache go vet ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-build-cache go build ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-mutation-cache go test -count=1 -v ./04_wiring/step0029_experiment -run '^TestAdversarialMutationScoreIsOne$'",
+      "result": "PASS",
+      "mutation_score": 1.0,
+      "rejected_mutants": 25,
+      "valid_mutants": 25
+    },
+    {
+      "command": "Python 3 strict duplicate-key/trailing-value audit of the seven requested R2 JSON inputs",
+      "result": "PASS",
+      "files": 7,
+      "duplicate_keys": 0,
+      "trailing_values": 0
+    },
+    {
+      "command": "Python 3 independent schema/hash/queue/profile/invalidation audit using SHA-256, NUL-separated digestParts, map-key canonical JSON for schema hashes, and serialized field order for the encoding/json Cell root",
+      "result": "FAIL_WITH_TWO_PUBLIC_FINDINGS",
+      "queue_and_schema_checks": "PASS",
+      "oracle_frozen_hash_bindings": "FAIL"
+    },
+    {
+      "command": "crystalline-lint .",
+      "result": "PASS_WITH_WARNINGS",
+      "exit_code": 0,
+      "detail": "Existing V12 L4-logic warnings include the Step 0029 harness and tests; no severity violation caused a nonzero exit."
+    },
+    {
+      "command": "git diff --check && git diff --cached --check",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 exact audit of the three SHA-256 bindings declared by schema_r2_oracle_test.md after the segregated correction",
+      "result": "PASS",
+      "bindings": 3,
+      "mismatches": 0
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-refocal-anonymize-cache go test -count=1 -v ./04_wiring/step0029_experiment -run '^TestAnonymizeIsBlindDeterministicAndDoesNotRepairText$'",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-refocal-schema-cache go test -count=1 -v ./04_wiring/step0029_experiment -run '^TestSchemaR2'",
+      "result": "PASS",
+      "tests": 5
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-test1-cache go test -count=1 ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-test2-cache go test -count=1 ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-race-cache go test -race -count=1 ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-vet-cache go vet ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-build-cache go build ./04_wiring/step0029_experiment",
+      "result": "PASS"
+    },
+    {
+      "command": "crystalline-lint .",
+      "result": "PASS_WITH_WARNINGS",
+      "exit_code": 0,
+      "phase": "FINAL_SUCCESSOR"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0029-schema-r2-final-mutation-cache go test -count=1 -v ./04_wiring/step0029_experiment -run '^TestAdversarialMutationScoreIsOne$'",
+      "result": "PASS",
+      "mutation_score": 1.0,
+      "rejected_mutants": 25,
+      "valid_mutants": 25
+    },
+    {
+      "command": "Final Python 3 strict JSON, schema closure/identity, root 622b, 108/54 matrix, exact ten-tool surface, empty arm A and three oracle-hash binding audit; then git diff --check and git diff --cached --check",
+      "result": "PASS"
+    }
+  ],
+  "diagnostic_attempts_not_counted_as_gate_results": [
+    {
+      "attempt": "First inline Python structural audit",
+      "result": "SCRIPT_SYNTAX_ERROR",
+      "effect": "No audit assertion executed and no repository artifact changed; corrected invocation followed."
+    },
+    {
+      "attempt": "Lexicographically sorted-key recomputation of execution queue cells",
+      "result": "METHOD_NOT_APPLICABLE",
+      "computed_sha256": "af9b32f68ee4af0c5f982e8d4a41d98ef20db89c63d9d657b9aa43dc23ba41b7",
+      "effect": "Not treated as a plan mismatch because BuildPlan hashes encoding/json struct field order; corrected serialized-order recomputation produced the frozen root."
+    },
+    {
+      "attempt": "Final receipt input-stability check",
+      "result": "PROTECTED_INPUT_CHANGED_CONCURRENTLY_AND_WAS_REAUDITED",
+      "changed_path": "00_nucleo/prompts/04_wiring/step0029_experiment/schema_r2_oracle_test.md",
+      "previous_sha256": "681e2bf091bedaecce64c3fad58e6fc66eb424f1d20a911e8dbea3c36ca49ca0",
+      "current_sha256": "abfc02dd2914c1769ee23194d280493889acb2bbf7b23ca1f552bce9033a782b",
+      "effect": "The first receipt projection was rejected before delivery. The current prompt was audited again; no test, candidate, prompt or input was edited by the verifier."
+    },
+    {
+      "attempt": "Segregated O7 correction stabilized and successor gates were rerun",
+      "result": "SUCCESSOR_INPUTS_PASS",
+      "changed_path": "00_nucleo/prompts/04_wiring/step0029_experiment/schema_r2_oracle_test.md",
+      "intermediate_sha256": "abfc02dd2914c1769ee23194d280493889acb2bbf7b23ca1f552bce9033a782b",
+      "final_sha256": "5f86b8bf2b60ab58ab4be9f02003a4135840603627670eed31e3ffb4279fb987",
+      "effect": "All three declared input hashes became exact. The verifier reran affected focal gates before any successor full gate."
+    }
+  ],
+  "schema_audit": {
+    "strict_json": "PASS",
+    "object_schemas": 6,
+    "all_objects_additional_properties_false": true,
+    "all_objects_required_equals_properties": true,
+    "standalone_schema_equals_prompt_output_schema": true,
+    "canonical_output_schema_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df",
+    "canonical_hash_matches_randomization_plan": true,
+    "host_transport_shape_local_oracle": "PASS",
+    "limitation": "No model session or host response-format capture was executed by this verifier."
+  },
+  "queue_and_randomization_audit": {
+    "root_algorithm": "SHA256 of the compact encoding/json serialization of the ordered []Cell value; object fields retain Go struct serialization order and arrays retain their order",
+    "computed_root_sha256": "622b59c348265fd3974989bfdab31b82ac89dedd72a1a554ab3fce114dcba114",
+    "root_matches_queue_plan_and_authorization": true,
+    "execution_queue_file_hash_matches_plan": true,
+    "cells": 108,
+    "pairs": 54,
+    "split_cells": {
+      "CONTRACT": 18,
+      "VALIDATION": 36,
+      "TEST": 54
+    },
+    "arms": {
+      "AGENT_ALONE": 54,
+      "AGENT_WITH_BATEIA": 54
+    },
+    "profiles": 9,
+    "cell_invariant_errors": 0,
+    "pair_invariant_errors": 0,
+    "order_key_and_cell_id_recomputed": true,
+    "all_frozen_input_hashes_recomputed_when_local_source_available": true
+  },
+  "tool_and_isolation_audit": {
+    "general_tool_allowlist_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "bateia_tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "derived_treatment_allowlist_sha256": "00906435a783732ff3580a12da70c1bf804acc02a97939c3e936de266967ea0c",
+    "bateia_tools": [
+      "bateia_search",
+      "bateia_benchmark",
+      "bateia_recommend",
+      "bateia_start_recommendation",
+      "bateia_get_run",
+      "bateia_get_artifact",
+      "bateia_cancel_run",
+      "bateia_list_connectors",
+      "bateia_start_market_discovery",
+      "bateia_start_improvement_synthesis"
+    ],
+    "arm_a_declared_mcp_servers": 0,
+    "arm_a_queue_tools_empty": true,
+    "arm_b_declared_mcp_servers": [
+      "bateia"
+    ],
+    "arm_b_queue_and_profile_tools_exact": true,
+    "common_fresh_ephemeral_ignore_user_config": true,
+    "common_empty_workdir_read_only_no_approval": true,
+    "web_shell_apps_plugins_multi_agent_disabled": true,
+    "human_follow_up_disabled": true,
+    "runtime_isolation_attested": false,
+    "limitation": "This is a structural audit of frozen profiles and queue cells; no live MCP tools/list or clean-session runtime registry was executed."
+  },
+  "revision_and_evidence_audit": {
+    "predecessor_randomization_plan_sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+    "predecessor_failure_verification_sha256": "b055ad56c8622011383a35cabb6c1e5f47c7ad7bda28ab89c9f8469b4c942815",
+    "predecessor_prompt_contract_sha256": "e18cd5dfe705df2308589989464c23e6e69ec4654bbf33b9eaff3d10a3030fb7",
+    "predecessor_root_sha256": "5215fc6764efea3f5b1a079c854c5a0b0837546f44aed4b9a1093eb13b4f2bf3",
+    "predecessor_hash_links_match": true,
+    "invalidation_flags_complete": true,
+    "old_plan_queue_prompt_schema_overlay_dispatch_receipt_and_attempt_streams_preserved": true,
+    "prior_failed_attempts_reused": false,
+    "behavioral_sessions_executed_by_verifier": 0
+  },
+  "findings": [
+    {
+      "id": "SCHEMA-R2-F01",
+      "status": "RESOLVED_BEFORE_FINAL_SUCCESSOR_GATE",
+      "severity": "HISTORICAL_BLOCKING",
+      "reason_code": "R2_SCHEMA_REJECTS_PREDECESSOR_EVIDENCE_REFERENCE_FIXTURE",
+      "evidence": "In the initial snapshot, TestAnonymizeIsBlindDeterministicAndDoesNotRepairText failed in both ordinary package runs and under race because its purportedly valid fixture used evidence_references objects with artifact/hash/run_id, while R2 requires reference_id/source_type/locator/sha256/supports/verification_status.",
+      "historical_impact": "The initial package did not preserve its positive anonymization control and was correctly fail-closed.",
+      "resolution_evidence": "After a non-verifier correction, the focused Anonymize control passed, both complete package repetitions passed, and race passed. Final harness_oracle_test.go SHA-256 is 81b91c208e79f8a9482eb313c445bb8ef33f8f0341672596d1fe32b97429a303.",
+      "verifier_edits_to_fixture_or_contract": false
+    },
+    {
+      "id": "SCHEMA-R2-F02",
+      "status": "RESOLVED_BEFORE_FINAL_SUCCESSOR_GATE",
+      "severity": "HISTORICAL_BLOCKING",
+      "reason_code": "ORACLE_PROMPT_FROZEN_INPUT_HASHES_STALE",
+      "evidence": {
+        "initial_observed_prompt_snapshot": {
+          "sha256": "681e2bf091bedaecce64c3fad58e6fc66eb424f1d20a911e8dbea3c36ca49ca0",
+          "obsolete_bindings": {
+            "engineering-investigation.schema-r2.json": {
+              "declared_sha256": "2fbe13a88cd0989ef975e2d279c02db7850fd9bfc0d6fce28d8cf1637e0e58bb",
+              "actual_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+            },
+            "schema-transport-refinement-r1.json": {
+              "declared_sha256": "a5549ff0478e5e27b1e830891572ef5b6e4a04e30dba65f3a698c54e63440aca",
+              "actual_sha256": "54cae1534b1cd46ee7a88206b1df28867a5cdeb7546112a7fb59b24ac7c5a345"
+            },
+            "prompt-contract-r2.json": {
+              "declared_sha256": "8f1f6922879b9563e1ab82ce723e717c508a89621b0af4ad5a327a0ff857dcaa",
+              "actual_sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c"
+            }
+          }
+        },
+        "intermediate_observed_prompt_snapshot": {
+          "sha256": "abfc02dd2914c1769ee23194d280493889acb2bbf7b23ca1f552bce9033a782b",
+          "schema_binding_corrected": true,
+          "remaining_obsolete_bindings": {
+            "schema-transport-refinement-r1.json": {
+              "declared_sha256": "54cae1534b1cd46d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee",
+              "actual_sha256": "54cae1534b1cd46ee7a88206b1df28867a5cdeb7546112a7fb59b24ac7c5a345"
+            },
+            "prompt-contract-r2.json": {
+              "declared_sha256": "204fcd66d878657ea6f57a3af7a4255623f9f3b8f917cf7a053112ed50a11876b",
+              "actual_sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c"
+            }
+          }
+        },
+        "final_observed_prompt_snapshot": {
+          "sha256": "5f86b8bf2b60ab58ab4be9f02003a4135840603627670eed31e3ffb4279fb987",
+          "declared_bindings": 3,
+          "matching_bindings": 3,
+          "mismatches": 0
+        }
+      },
+      "historical_impact": "The initial and intermediate oracle prompts did not identify the exact files consumed by the R2 oracle tests and were correctly rejected as non-reproducible.",
+      "resolution_evidence": "The final prompt binds all three actual SHA-256 values exactly, and the verifier reran the hash audit before focused and complete successor gates.",
+      "verifier_edits_to_prompt": false
+    }
+  ],
+  "active_findings": [],
+  "gates": {
+    "schema_r2_focal_and_controls": "PASS",
+    "historical_package_and_race_gate": "FAIL_CLOSED_PRESERVED_IN_FINDINGS",
+    "package_test_first_run": "PASS",
+    "package_test_second_run": "PASS",
+    "race": "PASS",
+    "vet": "PASS",
+    "build": "PASS",
+    "strict_json": "PASS",
+    "schema_transport_identity": "PASS",
+    "schema_objects_closed_and_fully_required": "PASS",
+    "queue_root_and_matrix": "PASS",
+    "profiles_and_tool_surface": "PASS_STRUCTURAL_ONLY",
+    "predecessor_invalidation_and_preservation": "PASS",
+    "oracle_frozen_hash_bindings": "PASS_3_OF_3",
+    "mutation_score_1_0": "PASS",
+    "crystalline_lint": "PASS_WITH_WARNINGS",
+    "git_diff_check": "PASS",
+    "external_model_sessions": "NOT_EXECUTED"
+  },
+  "limitations": [
+    "The shared workspace and inherited context do not permit strong isolation attestation.",
+    "No model, judging, external, paid, MCP or behavioral session was executed.",
+    "The Bateia tool surface and A/B isolation were verified from frozen artifacts, not from a live runtime registry.",
+    "Initial functional and race failures remain recorded as historical resolved findings and are not rewritten as passes.",
+    "Crystalline lint exits zero but reports architectural warnings, including V12 warnings for Step 0029 L4 logic."
+  ],
+  "verifier_authorizes_or_executes_model_sessions": false,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "e78d39bed65b77ca5409df89d0adb722b5b6d7db8906351450e11e8125b991e2",
+  "invalidation_rule": "Any byte change to an audited R2 input, harness, oracle, queue, profile, authorization or predecessor evidence requires a new schema R2 verification receipt."
+}

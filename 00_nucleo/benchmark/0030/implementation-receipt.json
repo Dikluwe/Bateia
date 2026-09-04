@@ -1,0 +1,45 @@
+{
+  "schema_version": "bateia.step0030.implementation-receipt.v1",
+  "created_at_utc": "2026-09-03T21:24:14Z",
+  "revision": 2,
+  "authority": "/root",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "sealed_contract_sha256": "01147b3cf441d90c895f98eacfae95e2feb560d1541a0b256a05afd08e27fcc4",
+  "files": {
+    "00_nucleo/prompts/01_core/experiment/catalysis/harness.md": "3eba9e29467aa6512f3bc723a727950c9a25e410f3060e3dd43e7a2ce1700a47",
+    "00_nucleo/prompts/01_core/experiment/catalysis/harness_test.md": "f4620af0b60c608e50edc5cb014eade804f35ce3c2a62b7b7fca6de3ba1e7f1c",
+    "00_nucleo/prompts/02_shell/experiment/catalysis/report.md": "2d4c85f70cc80786f61ec83c13198b0b296135581c527fabbfd96b76cf4d49c1",
+    "00_nucleo/prompts/03_infra/experiment/catalysis/capture.md": "f364d66ac08d30f719951b29b56ce2eed2df2adec2b8ddb689f4bf95cbf43eb7",
+    "00_nucleo/prompts/04_wiring/step0030_catalysis/compose.md": "2b7a587f4e179f8029d7475d6fa0c8e9a8b5f8017cbd0d834a33d3cbd4e16a4b",
+    "01_core/experiment/catalysis/harness.go": "8475a9189da22e19e436b9e85c600278c81bdc5f9ae3c76dea05088f98cf05a4",
+    "01_core/experiment/catalysis/harness_test.go": "f29d501fb343454c9ac92c32110a8bd1073c8865d31961dbe287f6484fde2a60",
+    "02_shell/experiment/catalysis/report.go": "d957264f1d14d2905b4bb6e716b6a7adc9b52eca199ecd41b71e1968c668e69c",
+    "03_infra/experiment/catalysis/capture.go": "077a0a89296de9e691850053cc7a6278c8414c7b490b32dc337af0e5700fabfc",
+    "04_wiring/step0030_catalysis/compose.go": "b59f31d98e2e0dda1931d72741fbba3e3595ee044779feea3b680f4e7d4b26e1"
+  },
+  "independent_oracle": {
+    "author": "/root/testador_0030",
+    "prompt_path": "00_nucleo/prompts/01_core/experiment/catalysis/catalysis_step0030_oracle_test.md",
+    "prompt_sha256": "15fd3b35d05685da23a275e085150aa3c56c9c4715cae7aa15c3dd5e6eb6bba6",
+    "test_path": "01_core/experiment/catalysis/catalysis_step0030_oracle_test.go",
+    "test_sha256": "a552d29ebe53a34f72fcd54d0633ca0ba45bb215a8555fca1d162b8e40b1bd17"
+  },
+  "preflight_r1_corrections": [
+    "Independent oracle prompt and test now have a mirrored path; excluded fixture-reading test has an explicit orphan exception.",
+    "L4 now contains only a static L1-port/L3-adapter binding and declares no function or type.",
+    "Web exec IDs use the sealed ^exec-[0-9a-fA-F-]{36}$ shape.",
+    "A paired web lifecycle becomes a machine only when search query/queries or open_page/find_in_page url is observable."
+  ],
+  "verification": {
+    "focal_go_test": "PASS",
+    "layer_packages_go_test": "PASS",
+    "go_build_04_wiring_recursive": "PASS",
+    "crystalline_lint": "PASS_WITH_PREEXISTING_WARNINGS",
+    "loopback_packages_outside_sandbox": "PASS",
+    "global_suite": "FAIL_BASELINE_EQUIVALENT",
+    "global_suite_known_failure": "04_wiring/r4_gate order=0 repetition=0 category=retrocompatibility got=SURVIVED want=Violated",
+    "baseline_same_known_failure": true
+  },
+  "behavioral_sessions_started": 0,
+  "claim": "The corrected L1-L4 harness and independent oracle pass their local gates. This receipt does not authorize behavioral sessions without a fresh independent preflight PASS."
+}

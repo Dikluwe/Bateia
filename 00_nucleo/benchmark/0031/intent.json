@@ -1,0 +1,24 @@
+{
+  "schema_version": "bateia.step0031.intent.v1",
+  "created_at": "2026-09-03",
+  "author_of_intent": "user",
+  "materializer": "/root",
+  "objective": "Allow an AI caller to provide only the business intent while Bateia fills omitted recommendation policy, target and search parameters from a versioned profile.",
+  "authoritative_step": {
+    "path": "00_nucleo/passos/0031-autopreencher-parametros-da-recomendacao.md",
+    "sha256": "3f2ce89a268c073c3956f00d4770da274d330c1b7ef0c173ebcd83a98fe7611e"
+  },
+  "required_business_intent": [
+    "idea.problem",
+    "idea.capabilities"
+  ],
+  "default_profile": "BATEIA_RECOMMEND_DEFAULTS_V1",
+  "default_semantics": {
+    "omitted": "materialize the corresponding V1 default",
+    "explicit": "preserve the supplied value and validate it, including false, zero, empty string and empty list",
+    "license": "default a permissive-license allowlist; never assign or infer a candidate license"
+  },
+  "compatibility": "Every previously valid complete recommendation request retains its meaning; only previously missing optional operational fields become accepted.",
+  "unknown_policy": "Unknown fields and explicit invalid values fail closed. Unknown candidate licenses remain unknown and are never rewritten as permitted.",
+  "claim_boundary": "This step reduces MCP invocation friction. It does not prove search uplift, add flat-payload inference, or provide legal advice."
+}

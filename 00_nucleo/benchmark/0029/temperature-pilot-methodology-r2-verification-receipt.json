@@ -1,0 +1,171 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-methodology-verification-receipt.v2",
+  "step": "0029",
+  "created_at": "2026-09-03T12:24:12Z",
+  "executor": "/root/verificador_metodo_r2",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_METHODOLOGY_REFINEMENT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "PASS",
+  "verdict": "READY_FOR_R2_CONTRACT_SEAL",
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "inputs": {
+    "intent": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+      "sha256": "fbccbb27aa931b781387dabb668902d2ed12d2142be6821028a3445c672166cb"
+    },
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2.json",
+      "sha256": "b969bbf2854f25d148365ff5dc73ef5ce512de908debdf4c4ba3d284477dd8b1"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-adversarial-cases-r2.json",
+      "sha256": "703e4f62957e3d4a3075c91f326586a5aa4ad15e0a9c0c61658283ec3b8a5819"
+    },
+    "authorship": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-oracle-authorship-r2.json",
+      "sha256": "92078d9af33ebfed35e1e857b194fb121f47bca06fa1cb8649a6595f54d555fe"
+    },
+    "seal_candidate": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-seal-candidate-r2.json",
+      "sha256": "b2ca3a4da73f4d8947bfac4fbfde73f1611dc995e5a111fe9736d9306000b89f"
+    },
+    "schema_r2": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+    },
+    "corpus_public": {
+      "path": "00_nucleo/benchmark/0029/corpus-public.json",
+      "sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96"
+    }
+  },
+  "strict_json_and_hash_gate": {
+    "strict_json_inputs_checked": 6,
+    "duplicate_keys": 0,
+    "trailing_values": 0,
+    "hash_mismatches": 0,
+    "frozen_r1_bindings_checked": 8,
+    "frozen_r1_binding_mismatches": 0,
+    "candidate_artifact_bindings_match_current_bytes": true
+  },
+  "substantive_contract_audit": {
+    "success_is_exactly_three_valid_pairs": true,
+    "unpaired_output_is_not_success": true,
+    "primary_plan_additional_sessions": 4,
+    "fallback_profile": "SOL-medium",
+    "fallback_pre_frozen": true,
+    "fallback_additional_sessions_max": 2,
+    "additional_behavioral_sessions_hard_cap": 6,
+    "global_behavioral_sessions_before_r2": 11,
+    "global_behavioral_sessions_hard_cap": 17,
+    "global_original_cap": 108,
+    "global_bound_holds": "17<=108",
+    "arm_a_tools": [],
+    "arm_b_tools": [
+      "bateia_recommend"
+    ],
+    "arm_b_mcp_attempts_max": 3,
+    "arm_b_bateia_forwarded_calls_max": 3,
+    "fourth_attempt_is_invalid": true,
+    "cadence_seconds_between_starts": 120,
+    "single_global_in_flight": true,
+    "rubric_blinded_and_frozen_before_each_B": true,
+    "unknown_never_defaults_to_success_or_zero": true,
+    "assessment": "PASS"
+  },
+  "sol_prompt_materialization": {
+    "canonical_case_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+    "case_rendering": "compact insertion-ordered EXP29-C01 JSON, established by exact reconstruction of both frozen R1 prompt hashes",
+    "shared_compactness_instruction": "Seja conciso e mantenha o objeto JSON completo abaixo de 18.000 caracteres.",
+    "shared_instruction_byte_identical_in_A_and_B": true,
+    "only_B_adds_treatment_instruction_and_capability": true,
+    "sol_A_prompt_bytes_sha256": "f5e4f1ae587c2ccba50219e499edab6946aa648e1bc4bf0216a83e640ec4a5a1",
+    "sol_B_prompt_bytes_sha256": "baa26ee619101cb0f089cd63f4f43255ee6745112b2852432e753e2fc61ef781"
+  },
+  "discriminatory_gate": {
+    "positive_cases": {
+      "P-MONITOR-01": "Preserved",
+      "P-PAIR-ORDER-01": "Preserved"
+    },
+    "opaque_cases": {
+      "O-SESSION-01": "Unknown",
+      "O-NOVELTY-01": "Unknown"
+    },
+    "mutants": {
+      "M-YIELD-AS-EXIT": "Violated",
+      "M-LOST-SESSION-ID": "Violated",
+      "M-OVERLAP": "Violated",
+      "M-POSTHOC-SALVAGE": "Violated"
+    },
+    "valid_mutants": 4,
+    "rejected_mutants": 4,
+    "mutation_score": 1.0,
+    "required_mutation_score": 1.0,
+    "result": "PASS"
+  },
+  "determinism_gate": {
+    "runs_per_order": 2,
+    "orders": [
+      "declared",
+      "reverse"
+    ],
+    "classification_vector_stable": true,
+    "regressions": 0,
+    "result": "PASS"
+  },
+  "local_monitor_preflight": {
+    "model_sessions": 0,
+    "mcp_calls": 0,
+    "command": "sleep 2",
+    "initial_poll_yield_milliseconds": 250,
+    "initial_result": "YIELD_WITH_SESSION_ID",
+    "session_id": 66797,
+    "continuation": "poll the same session_id",
+    "terminal_result": "exit_code=0",
+    "session_id_preserved_until_exit_code": true,
+    "process_starts": 1,
+    "overlaps": 0,
+    "retries": 0,
+    "result": "PASS"
+  },
+  "executed_by_verifier": [
+    {
+      "command": "python3 -m json.tool for each of the six R2 input artifacts",
+      "runtime": "Python 3.12.3",
+      "result": "PASS"
+    },
+    {
+      "command": "sha256sum over the six R2 inputs and referenced R1/schema/baseline artifacts",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 strict duplicate-key, frozen-binding, prompt-byte, invariant and public fixture classifier audit",
+      "runtime": "Python 3.12.3",
+      "result": "PASS_MUTATION_SCORE_1_0"
+    },
+    {
+      "command": "exec_command sleep 2 with yield_time 250 ms; write_stdin poll using returned session_id 66797",
+      "result": "PASS_SAME_SESSION_TO_EXIT_CODE"
+    }
+  ],
+  "scope": {
+    "authorizes": "Seal the exact R2 methodology and contract inputs for the next phase and execute only under their pair-first, budget, monitor, tool-boundary and blinding rules.",
+    "does_not_authorize": [
+      "any behavioral model or MCP session by this verifier",
+      "any change to a sealed input",
+      "overlap, retry without terminal eligibility, duplicate salvage or a fourth Bateia attempt",
+      "a confirmatory uplift claim or generalization beyond three completed pairs"
+    ]
+  },
+  "limitations": [
+    "The shared repository and inherited conversation do not provide strong isolation attestation.",
+    "The discriminatory gate evaluates the public methodology contract and verifier-authored binding-free fixtures; it does not execute a behavioral model, MCP server or future runner.",
+    "The local sleep preflight proves same-session polling behavior for this host transport only; the execution authority must preserve the same invariant for every behavioral process.",
+    "Prompt byte hashes are derived from the insertion-ordered compact case rendering already proven by the frozen R1 A and B prompt hashes."
+  ],
+  "invalidation_rule": "Any byte change to intent, methodology, contract, adversarial cases, authorship, seal candidate, schema, canonical case, preserved baseline receipts or frozen R1 bindings invalidates this receipt and the successor seal."
+}

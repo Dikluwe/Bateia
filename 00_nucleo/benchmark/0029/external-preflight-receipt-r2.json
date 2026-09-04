@@ -1,0 +1,44 @@
+{
+  "schema_version": "bateia.step0029.external-preflight-receipt.v2",
+  "step": "0029",
+  "created_at": "2026-09-03T00:16:52-03:00",
+  "executor": "/root",
+  "supersedes_observation": "external-preflight-receipt.json",
+  "authorization_sha256": "508ca757597fb2d61cd4d3b67dadc7fe1383541b895c3f5cabecf3821953756b",
+  "randomization_root_sha256": "5215fc6764efea3f5b1a079c854c5a0b0837546f44aed4b9a1093eb13b4f2bf3",
+  "execution_queue_file_sha256": "e7c7e3f30cefb9878d577bb92c83cc360eb75ac289e4e6eea7064db853babc28",
+  "profiles": {
+    "isolation_profile_file_sha256": "248cd44b8550db0accd422f5d9f27b5b57542fcbb3a0d80ddee00c9dd1641d97",
+    "arm_a": {
+      "status": "READY",
+      "bateia_enabled": false,
+      "mcp_servers": []
+    },
+    "arm_b": {
+      "status": "READY",
+      "bateia_enabled": true,
+      "server_command": ["go", "run", "./04_wiring", "mcp"],
+      "server_tools_listed": 10,
+      "enabled_tools": [
+        "bateia_search",
+        "bateia_benchmark",
+        "bateia_recommend",
+        "bateia_start_recommendation",
+        "bateia_get_run",
+        "bateia_get_artifact",
+        "bateia_cancel_run",
+        "bateia_list_connectors",
+        "bateia_start_market_discovery",
+        "bateia_start_improvement_synthesis"
+      ],
+      "tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea"
+    }
+  },
+  "schema": {
+    "file_sha256": "731c862f249c874369e8041220eb7854eda90ebafbe3ceb2046c7a1464054e30",
+    "canonical_sha256": "733188f48995655d0583804ba30f8db162f223577f42fecda2632701a3db7241"
+  },
+  "result": "READY_TO_DISPATCH_CONTRACT",
+  "behavioral_sessions_dispatched": 0,
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

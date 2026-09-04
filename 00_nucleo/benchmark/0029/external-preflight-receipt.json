@@ -1,0 +1,57 @@
+{
+  "schema_version": "bateia.step0029.external-preflight-receipt.v1",
+  "step": "0029",
+  "created_at": "2026-09-02T23:51:54-03:00",
+  "executor": "/root",
+  "authorization_sha256": "508ca757597fb2d61cd4d3b67dadc7fe1383541b895c3f5cabecf3821953756b",
+  "frozen_plan_sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+  "preflight": {
+    "project": {
+      "label": "Bateia",
+      "project_id": "cdbdf497-9ee9-4f65-bf75-84f689fac4f1",
+      "is_git_repository": true,
+      "status": "AVAILABLE"
+    },
+    "profiles": {
+      "required": 9,
+      "available": 9,
+      "models": ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"],
+      "reasoning_efforts": ["low", "medium", "high"],
+      "status": "AVAILABLE"
+    },
+    "bateia_tool_surface": {
+      "required": 10,
+      "available": 0,
+      "required_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+      "required_tools": [
+        "bateia_search",
+        "bateia_benchmark",
+        "bateia_recommend",
+        "bateia_start_recommendation",
+        "bateia_get_run",
+        "bateia_get_artifact",
+        "bateia_cancel_run",
+        "bateia_list_connectors",
+        "bateia_start_market_discovery",
+        "bateia_start_improvement_synthesis"
+      ],
+      "observed_tools": [],
+      "observation": "The active Codex tool registry contains no tool whose name or description exposes Bateia.",
+      "status": "TOOL_UNAVAILABLE"
+    }
+  },
+  "result": "BLOCKED_BEFORE_CONTRACT_SMOKE",
+  "reason_code": "BATEIA_MCP_NOT_REGISTERED_FOR_CLEAN_AGENT_SESSIONS",
+  "contract_sessions_dispatched": 0,
+  "behavioral_sessions_dispatched": 0,
+  "cadence_automation_created": false,
+  "cadence_automation_reason": "A recurring dispatcher would only create invalid control/treatment pairs while the required treatment tool surface is absent.",
+  "required_next_action": "Register the exact certified ten-tool Bateia MCP surface for clean Codex project tasks, without exposing it to arm A, then rerun preflight under the same frozen hashes.",
+  "forbidden_fallbacks": [
+    "Do not substitute shell or CLI access for the ten MCP tools.",
+    "Do not dispatch arm B without Bateia and classify it as a valid treatment.",
+    "Do not expose Bateia to arm A.",
+    "Do not advance to VALIDATION or TEST."
+  ],
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

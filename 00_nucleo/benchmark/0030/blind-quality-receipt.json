@@ -1,0 +1,182 @@
+{
+  "schema_version": "bateia.step0030.blind-quality-receipt.v1",
+  "step": "0030",
+  "rubric_schema_version": "bateia.step0030.blind-quality-rubric.v1",
+  "scale": [0, 1, 2, 3, 4, "Unknown"],
+  "regime": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "input_sha256": {
+    "EXP29-C01": {
+      "LEFT": "2a157538b8143e4cef0cf64ed5c4f0cccb84510ca1a90742d35ffac95cc8ce30",
+      "RIGHT": "f53ef24f7ee3f607f39a6b027ab95c694509682b9a22b53718769c95ed711317"
+    },
+    "EXP29-V01": {
+      "LEFT": "1d466157cbb562a007dea7e8fe17aac6b7975075e06791fdf00b85d5ceb62db5",
+      "RIGHT": "460fed361dd130918d850d1f9d70714e0535308fdd3150f9f9da9de1f33e2ec5"
+    },
+    "EXP29-V02": {
+      "LEFT": "49b9fcb7668aad9127d967c2e60edbdf53917163d15bc97f4a03dcaaeeb0afd2",
+      "RIGHT": "8f786ea1947d8d5366f2b89b84dd844c570c4625a3c4a7c46bc0b1156d5f47ff"
+    }
+  },
+  "dimensions": [
+    "final engineering decision utility",
+    "coverage of case evidence questions",
+    "validity, directness and diversity of resolvable support",
+    "novel supported alternatives, mechanisms or hypotheses",
+    "claim-evidence calibration, counterevidence and explicit Unknown",
+    "actionable falsifiable validation plan",
+    "concision and utility per exposed cost"
+  ],
+  "evaluations": {
+    "EXP29-C01": {
+      "scores": {
+        "LEFT": {
+          "final engineering decision utility": 3,
+          "coverage of case evidence questions": 4,
+          "validity, directness and diversity of resolvable support": 3,
+          "novel supported alternatives, mechanisms or hypotheses": 4,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 4,
+          "actionable falsifiable validation plan": 3,
+          "concision and utility per exposed cost": 3
+        },
+        "RIGHT": {
+          "final engineering decision utility": 3,
+          "coverage of case evidence questions": 3,
+          "validity, directness and diversity of resolvable support": 2,
+          "novel supported alternatives, mechanisms or hypotheses": 2,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 3,
+          "actionable falsifiable validation plan": 2,
+          "concision and utility per exposed cost": 3
+        }
+      },
+      "rationale": {
+        "final engineering decision utility": "LEFT escolhe ADAPTAR o baseline com quorum queue limitada, rejeicao explicita, confirms, ack manual e registro idempotente; RIGHT chega a direcao semelhante, mas sua segunda alternativa apenas repete o baseline e deixa menos claro o pacote minimo de mudancas.",
+        "coverage of case evidence questions": "LEFT responde diretamente a admissao lenta com max-length-bytes/reject-publish, a recuperacao com confirms e redelivery, e separa durabilidade de transporte de idempotencia de efeitos. RIGHT cobre saturacao e durabilidade, mas desenvolve menos a explicabilidade e nao oferece validacao especifica de efeitos duplicados.",
+        "validity, directness and diversity of resolvable support": "LEFT traz o caso e tres locators oficiais e tematicamente diretos do RabbitMQ; a diversidade editorial e apenas moderada por serem do mesmo fornecedor. WEB-TEMPORAL e WEB-RMQ-CONFIRMS sao citados mas nao materializados. RIGHT inclui caso, um locator de execucao sem resultado util e apenas duas paginas RabbitMQ materializadas; PUB-RMQ-CONFIRMS, PUB-RMQ-MEMORY e PUB-RMQ-ALARMS ficam pendentes.",
+        "novel supported alternatives, mechanisms or hypotheses": "LEFT acrescenta Temporal como investigacao, distingue admissao limitada de recuperacao at-least-once e formula uma hipotese separada de idempotencia transacional. RIGHT compara RabbitMQ ao proprio baseline e oferece uma unica hipotese principal.",
+        "claim-evidence calibration, counterevidence and explicit Unknown": "LEFT explicita que reject-publish nao e limite matematico estrito, que confirms/acks nao eliminam duplicatas e que custo, licenca, topologia, RPO e RTO sao desconhecidos. RIGHT reconhece Invalid params, riscos de perda/duplicacao e lacunas de capacidade, mas tem apenas um item de contraevidencia.",
+        "actionable falsifiable validation plan": "LEFT define testes sinteticos de saturacao e reinicio com criterios observaveis, incluindo NACK, limites, itens confirmados e estados terminais; falta um ensaio dedicado de idempotencia e explicabilidade. RIGHT fornece somente o ensaio de admissao/memoria.",
+        "concision and utility per exposed cost": "Ambos obedecem ao formato compacto e sofrem truncamentos visiveis de strings. LEFT usa o volume adicional para cobrir mecanismos, contraevidencia e dois testes; RIGHT e menor, mas perde utilidade material.",
+        "locator_assessment": {
+          "LEFT": "case://EXP29-C01 e internamente direcionado ao caso fornecido. As URLs de quorum-queues, maxlength e reliability sao sintaticamente resolviveis e apontam para paginas especificas; sem navegacao, seu conteudo nao foi revalidado. A concentracao em um unico fornecedor limita independencia, e dois IDs usados nao possuem entrada correspondente em evidence_references.",
+          "RIGHT": "case://EXP29-C01 e direcionado ao caso. O locator mcp:// aponta apenas para uma execucao fracassada e nao e resolvivel neste julgamento cego; as duas URLs RabbitMQ sao plausiveis e diretas, mas nao diversificadas. Tres IDs usados carecem de locator materializado. Marcacoes VERIFIED nao foram tratadas como verificacao independente."
+        }
+      },
+      "verdict": "LEFT_BETTER",
+      "verdict_rationale": "LEFT entrega cobertura mais completa, hipoteses adicionais relevantes, calibracao superior e um segundo ensaio de recuperacao. A vantagem nao decorre de volume, mas da conexao mais forte entre admissao, durabilidade e idempotencia."
+    },
+    "EXP29-V01": {
+      "scores": {
+        "LEFT": {
+          "final engineering decision utility": 3,
+          "coverage of case evidence questions": 4,
+          "validity, directness and diversity of resolvable support": 2,
+          "novel supported alternatives, mechanisms or hypotheses": 3,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 4,
+          "actionable falsifiable validation plan": 4,
+          "concision and utility per exposed cost": 3
+        },
+        "RIGHT": {
+          "final engineering decision utility": 3,
+          "coverage of case evidence questions": 3,
+          "validity, directness and diversity of resolvable support": 2,
+          "novel supported alternatives, mechanisms or hypotheses": 2,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 3,
+          "actionable falsifiable validation plan": 2,
+          "concision and utility per exposed cost": 2
+        }
+      },
+      "rationale": {
+        "final engineering decision utility": "LEFT recomenda investigar o snapshot antes de reutiliza-lo e adaptar um nucleo CRDT auditavel; a prudencia e adequada diante de testes e licenca ausentes. RIGHT propoe BUILD do protocolo com SQLite como substrato e ideias do CouchDB, tambem util, mas com menos evidencia materializada para SQLite.",
+        "coverage of case evidence questions": "LEFT trata replay deterministico, autoria, conflitos multivalorados, truncamento e relogios divergentes, alem de explicitar garantias nao testadas do snapshot. RIGHT cobre ledger e conflitos, mas nao testa relogios divergentes e ambos deixam o ciclo de anexos grandes/incompletos insuficientemente especificado.",
+        "validity, directness and diversity of resolvable support": "LEFT ancora o caso com o snapshot_id e o SHA declarado, mais duas paginas oficiais e diretas do Automerge; B0 so prova ausencia de recomendacao, e E3/E4 sao IDs pendentes. RIGHT traz dois locators internos do caso/snapshot e duas paginas CouchDB plausiveis; E-SQLITE-WAL e E-AUTOMERGE-CONF sao citados sem entradas materializadas.",
+        "novel supported alternatives, mechanisms or hypotheses": "LEFT combina investigacao do snapshot, Automerge, log append-only e registro multivalorado de conflitos. RIGHT oferece ledger e CouchDB, mas apenas um mecanismo e uma hipotese, com artefatos textuais 'evidence_refs' aparecendo indevidamente dentro de listas de gaps/limitations.",
+        "claim-evidence calibration, counterevidence and explicit Unknown": "LEFT separa claramente o snapshot nao inspecionado das propriedades documentais, reconhece vencedor padrao em Automerge/CouchDB e enumera algoritmo, truncamento, relogios e licenca como Unknown. RIGHT marca o snapshot UNVERIFIED e lista riscos importantes, mas sustenta parte da direcao SQLite por referencia pendente.",
+        "actionable falsifiable validation plan": "LEFT propoe fault injection em toda fronteira de byte e um teste de convergencia com relogios atrasados, adiantados, regressivos, permutacoes e duplicatas; os oraculos de prefixo confirmado e hash logico sao falsificaveis. RIGHT testa apenas truncamento/corrupcao de cauda.",
+        "concision and utility per exposed cost": "LEFT e compacto apesar da cobertura ampla. RIGHT e menor, mas a economia elimina testes centrais e deixa artefatos de montagem em arrays, reduzindo legibilidade e utilidade por caractere.",
+        "locator_assessment": {
+          "LEFT": "O URN C0 identifica exatamente o caso e o snapshot fornecidos, e seu SHA coincide com immutable_ref. E1/E2 sao URLs oficiais e especificas do Automerge, plausivelmente resolviveis sem que seu conteudo seja aqui confirmado. B0 nao e navegavel sob o regime e E3/E4 nao foram materializados; a diversidade efetiva e caso mais um produto.",
+          "RIGHT": "case:EXP29-V01 e seu fragmento repository_basis sao diretamente resolviveis no caso fornecido; o SHA de E-SNAPSHOT coincide com immutable_ref e o status UNVERIFIED e calibrado. As duas URLs CouchDB sao especificas, mas de uma unica fonte editorial. As alegacoes SQLite e Automerge apontam para IDs sem locators correspondentes."
+        }
+      },
+      "verdict": "LEFT_BETTER",
+      "verdict_rationale": "LEFT vence principalmente pela calibracao do snapshot e pelo plano excepcionalmente falsificavel que cobre tanto recuperacao byte a byte quanto convergencia sem relogio confiavel."
+    },
+    "EXP29-V02": {
+      "scores": {
+        "LEFT": {
+          "final engineering decision utility": 3,
+          "coverage of case evidence questions": 4,
+          "validity, directness and diversity of resolvable support": 2,
+          "novel supported alternatives, mechanisms or hypotheses": 3,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 4,
+          "actionable falsifiable validation plan": 3,
+          "concision and utility per exposed cost": 3
+        },
+        "RIGHT": {
+          "final engineering decision utility": 4,
+          "coverage of case evidence questions": 4,
+          "validity, directness and diversity of resolvable support": 2,
+          "novel supported alternatives, mechanisms or hypotheses": 3,
+          "claim-evidence calibration, counterevidence and explicit Unknown": 3,
+          "actionable falsifiable validation plan": 4,
+          "concision and utility per exposed cost": 3
+        }
+      },
+      "rationale": {
+        "final engineering decision utility": "LEFT oferece um gate prudente: investigar Open Forms e o host sandbox, adaptar apenas se japones, soberania e isolamento passarem, senao construir. RIGHT transforma a racionalidade do caso em decisao focal: BUILD de um nucleo pequeno, reutilizar mecanismos maduros e executar spike limitado antes de descartar Open Forms; isso e mais diretamente acionavel.",
+        "coverage of case evidence questions": "LEFT diferencia portas/adaptadores de isolamento e propoe sandbox por capacidades, cobrindo ainda idioma e governanca como lacunas. RIGHT vai alem na concretude de falha e permissao com workloads separados, identidade propria, limites, timeout/circuit breaker e teste explicito de fronteira regional.",
+        "validity, directness and diversity of resolvable support": "LEFT materializa caso, um erro de execucao e duas paginas Open Forms, mas usa referencias ausentes de Form.io, Extism e arquitetura Open Forms. RIGHT materializa caso e tres locators Open Forms, enquanto referencias a Backstage, Kubernetes e Sigstore ficam pendentes. Em ambos, o apoio resolvivel e pouco diverso e insuficiente para confirmar o mecanismo principal de isolamento.",
+        "novel supported alternatives, mechanisms or hypotheses": "LEFT articula Open Forms, Form.io, WebAssembly por capacidades e registro assinado. RIGHT articula Open Forms, Backstage, isolamento por workload/rede e imagens assinadas. As duas propostas sao fortes conceitualmente, mas perdem pontos porque varios apoios citados nao foram materializados.",
+        "claim-evidence calibration, counterevidence and explicit Unknown": "LEFT explicita que separacao logica nao prova isolamento, que plugins Django rodam no processo e que ja-JP, CPU/timeout e recuperacao permanecem desconhecidos. RIGHT reconhece a mesma limitacao de plugins em processo e riscos de BUILD, mas registra somente um contraexemplo, um risco e um Unknown amplos.",
+        "actionable falsifiable validation plan": "LEFT testa compatibilidade funcional e extensoes hostis contra arquivos, rede, memoria, loop e crash. RIGHT separa tres gates: independencia do adaptador, caos de falha e matriz de dados/egress por municipio, com criterios negativos explicitos para perda, duplicacao, segredo, destino e fronteira regional.",
+        "concision and utility per exposed cost": "Ambos sao compactos e sofrem truncamentos de strings. LEFT usa mais campos de calibracao; RIGHT converte espaco em um terceiro gate de validacao de alta utilidade. Nenhum ganha apenas por volume.",
+        "locator_assessment": {
+          "LEFT": "case-input:EXP29-V02 e diretamente associado ao caso. As duas URLs Open Forms sao plausiveis e relativamente diretas; o locator de erro nao oferece propriedade arquitetural. REF-FORMIO-*, REF-EXTISM-* e REF-OPENFORMS-AR sao usados sem entrada materializada, portanto a diversidade alegada nao e auditavel neste pacote.",
+          "RIGHT": "user-provided:EXP29-V02 e resolvivel no pacote. As tres URLs sao especificas e apontam para repositorio/documentacao do Open Forms, mas constituem uma unica familia editorial. REF-BS-*, REF-K8S-* e REF-SIGSTORE-* nao possuem locator materializado, enfraquecendo o suporte a isolamento, permissao e assinatura."
+        }
+      },
+      "verdict": "RIGHT_BETTER",
+      "verdict_rationale": "RIGHT vence por margem estreita: sua decisao focal e seu plano em tres gates cobrem com maior utilidade operacional as fronteiras, a contencao e a soberania. LEFT permanece superior em calibracao, mas nao testa diretamente a fronteira regional."
+    }
+  },
+  "blindness_declaration": {
+    "judge_role": "independent_blind_quality_judge",
+    "examined_only": [
+      ".agents/AGENTS.md",
+      "00_nucleo/benchmark/0030/rubric.json",
+      "00_nucleo/benchmark/0030/compact-output-schema.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-C01/case.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-C01/LEFT.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-C01/RIGHT.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V01/case.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V01/LEFT.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V01/RIGHT.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V02/case.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V02/LEFT.json",
+      "00_nucleo/benchmark/0030/blind/EXP29-V02/RIGHT.json"
+    ],
+    "not_examined": [
+      "arm labels or mappings",
+      "manifests",
+      "invocations outside opaque outputs",
+      "sessions",
+      "tool traces",
+      "stderr",
+      "execution order",
+      "call counts",
+      "costs",
+      "Bateia status outside opaque outputs",
+      "git diff"
+    ],
+    "network_used": false,
+    "internet_used": false,
+    "mcp_used": false,
+    "external_evidence_opened": false,
+    "arm_identity_inferred": false,
+    "inconclusive_treated_as_neutral": true,
+    "volume_treated_as_gain": false,
+    "embedded_disclosure_note": "Algumas copias opacas autorizadas continham locators e textos sobre erro/status de Bateia, inclusive uma mencao a invocation=single. Esses fragmentos foram inevitavelmente vistos como conteudo interno permitido, nao foram expandidos nem usados para inferir identidade de braco, ordem, custo ou desempenho operacional.",
+    "isolation_attestation": "Nao ha atestacao forte de isolamento porque o filesystem e compartilhado; a declaracao registra disciplina de acesso, nao prova criptografica ou ambiental."
+  }
+}

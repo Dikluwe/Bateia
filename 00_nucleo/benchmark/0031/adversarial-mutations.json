@@ -1,0 +1,33 @@
+{
+  "schema_version": "bateia.step0031.adversarial-mutations.v1",
+  "step": "0031",
+  "role": "oracle_and_adversary_author",
+  "baseline": {"git_head":"6aae9ea29b65bb942d14aff2fb6d659668f01bd5","scoped_diff_sha256":"1585723d03bffaabfdcfb0a171abf03e284b31637381dcb3eacaa8eedbb282fc"},
+  "valid_negative_mutations": [
+    {"id":"M31-01-minimal-still-rejected","witness":"minimal sync or async request reaches its port"},
+    {"id":"M31-02-one-optional-object-still-required","witness":"minimal request and exact root required arrays"},
+    {"id":"M31-03-one-omitted-member-left-at-zero-value","witness":"empty objects and exact V1 request"},
+    {"id":"M31-04-license-profile-member-added-removed-or-replaced","witness":"exact ordered V1 allowlist"},
+    {"id":"M31-05-license-profile-used-as-candidate-license","witness":"inconclusive candidate retains empty identifier and sources while V1 policy is exposed"},
+    {"id":"M31-06-explicit-empty-license-list-defaulted","witness":"non-nil empty allowed_licenses"},
+    {"id":"M31-07-explicit-empty-locales-defaulted","witness":"non-nil empty locales"},
+    {"id":"M31-08-explicit-zero-defaulted","witness":"five bounded zeros are -32602 before both ports"},
+    {"id":"M31-09-explicit-null-treated-as-omitted","witness":"null object and members are -32602"},
+    {"id":"M31-10-explicit-non-default-boolean-overwritten","witness":"allow_archived true reaches both ports"},
+    {"id":"M31-11-target-omission-and-explicit-empty-collapsed-at-gateway","witness":"omission becomes idea.problem; explicit empty remains empty"},
+    {"id":"M31-12-sync-and-async-use-different-defaults","witness":"deep equality in both deterministic orders"},
+    {"id":"M31-13-complete-request-changed","witness":"complete request deep equality on both paths"},
+    {"id":"M31-14-unknown-field-accepted","witness":"unknown root and nested fields are -32602"},
+    {"id":"M31-15-schema-advertises-old-required-arrays","witness":"exact root and nested required arrays"},
+    {"id":"M31-16-schema-default-annotation-diverges-from-runtime","witness":"annotations equal captured V1 request; target identifies idea.problem"},
+    {"id":"M31-17-default-slices-alias-shared-state","witness":"mutation of one downstream request cannot affect later calls"},
+    {"id":"M31-18-validation-occurs-after-downstream-call","witness":"every negative has zero port calls"}
+  ],
+  "opaque_controls": [
+    {"id":"O31-01-equal-default-provenance","classification":"Unknown"},
+    {"id":"O31-02-license-legal-completeness","classification":"Unknown"},
+    {"id":"O31-03-unsupported-license-evidence","classification":"Unknown"}
+  ],
+  "order_gate": ["positive forward and reverse", "negative forward and reverse", "sync-first and async-first"],
+  "gate": {"required_mutation_score":1.0,"denominator":18,"unknown_for_negative":"survivor","opaque_controls_in_denominator":false}
+}

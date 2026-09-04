@@ -1,0 +1,53 @@
+{
+  "schema_version": "bateia.step0030.web-event-decoder-contract.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "input": "Raw UTF-8 JSONL bytes; each non-empty physical line is scanned as one JSON value.",
+  "scanner_requirement": "Tokenized duplicate-preserving JSON scanner. Deserialization into map/dictionary before duplicate accounting is prohibited.",
+  "protected_fixture": {
+    "path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl",
+    "sha256": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "expected_records": 12,
+    "expected_dual_web_machines": 3,
+    "expected_start_sequences": [5, 7, 9],
+    "expected_finish_sequences": [6, 8, 10]
+  },
+  "raw_paths": {
+    "lifecycle": "$.type",
+    "item_object": "$.item",
+    "item_id_occurrences": "all direct key occurrences named id inside $.item, preserving lexical order",
+    "item_type": "$.item.type",
+    "action": "$.item.action",
+    "query": "$.item.query or $.item.action.query/queries",
+    "status": "$.item.status when present"
+  },
+  "encodings": {
+    "SINGLE_EXEC_ID": "Exactly one $.item.id occurrence matching ^exec-[0-9a-fA-F-]{36}$.",
+    "DUAL_ID_CODEX_0_149": "Exactly two $.item.id occurrences in lexical order: first ^item_[0-9]+$, second ^exec-[0-9a-fA-F-]{36}$.",
+    "OPAQUE": "Any other count, order, prefix, type or malformed representation."
+  },
+  "normalization": {
+    "SINGLE_EXEC_ID": "normalized_web_call_id is the sole exec-* value.",
+    "DUAL_ID_CODEX_0_149": "normalized_web_call_id is the second occurrence only because this rule is frozen before implementation.",
+    "OPAQUE": "normalized_web_call_id is Unknown; never apply first-wins, last-wins or deduplication.",
+    "normalized_event_id": "sha256(UTF8(thread.started.thread_id)||0x00||UTF8(normalized_web_call_id)) when both operands are known; otherwise Unknown.",
+    "raw_evidence": "Always preserve raw line bytes and SHA-256."
+  },
+  "state_machine": {
+    "key": "ordered vector of all raw $.item.id occurrences",
+    "valid": "Exactly one item.started precedes exactly one item.completed with identical key vector and accepted web action; no completion-before-start or second transition.",
+    "physical_call_count": "Count matched start/completion machines even when normalized identity is Unknown.",
+    "normalized_call_count": "Count distinct known normalized_web_call_id values only; otherwise Unknown.",
+    "action_vocabulary": "Use the frozen Codex witness fields for search query/queries and open_page/find_in_page url.",
+    "unknown_policy": "OPAQUE telemetry makes adherence/catalysis linkage Unknown but does not delete output, cancel the paired arm or remove the session from the ITT denominator."
+  },
+  "fixture_expectation": {
+    "classification": "DUAL_ID_CODEX_0_149",
+    "ordered_pairs": [
+      ["item_1", "exec-c37f624f-6f68-42f4-a1ad-062b2ad66980"],
+      ["item_2", "exec-14ddd14a-a4b7-4540-ac4a-214590e95745"],
+      ["item_3", "exec-9b4ef73e-c8e5-4036-bd3f-61ee8ec7a886"]
+    ],
+    "last_wins_parser": "Violated"
+  }
+}

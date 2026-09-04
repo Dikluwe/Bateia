@@ -1,0 +1,119 @@
+{
+  "schema_version": "bateia.step0030.execution-profile.r2.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "supersedes_sha256": "935eeecbccc05d19f8cc34016a7c7d5c49b03da05fc53057a763650e77ac02be",
+  "authority_manifest_r2_sha256": "09cc4603a8c8220789495f314ea64e659cf5fed8d211e9dd3d14ad27e7c94488",
+  "codex": {
+    "path": "/usr/bin/codex",
+    "version": "codex-cli 0.149.0",
+    "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+    "prefix": ["/usr/bin/codex", "--search", "exec"]
+  },
+  "environment": {
+    "CODEX_HOME": "/tmp/codex-step0030-auth-home",
+    "policy": "Before-first-session receipt proves exactly one regular auth.json mode 0600 without recording credential bytes."
+  },
+  "cwd": {
+    "path": "/tmp/bateia-step0030-empty",
+    "policy": "Create and prove zero entries at global preflight and immediately before each session."
+  },
+  "common_after_exec_argv": [
+    "--ignore-user-config", "--ignore-rules", "--ephemeral", "--skip-git-repo-check",
+    "--sandbox", "read-only", "--config", "approval_policy=\"never\"",
+    "--model", "gpt-5.6-sol", "--config", "model_reasoning_effort=\"high\"",
+    "--cd", "/tmp/bateia-step0030-empty",
+    "--output-schema", "/repos/Antigravity/Bateia/00_nucleo/benchmark/0030/compact-output-schema.json",
+    "--json",
+    "--disable", "apps", "--disable", "browser_use", "--disable", "browser_use_external",
+    "--disable", "computer_use", "--disable", "image_generation", "--disable", "in_app_browser",
+    "--disable", "multi_agent", "--disable", "plugins", "--disable", "remote_plugin",
+    "--disable", "shell_tool", "--disable", "skill_search", "--disable", "tool_suggest"
+  ],
+  "path_template": {
+    "root": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0030/sessions/{sequence}-{case_id}-{arm_id}",
+    "prompt": "{root}/prompt.txt",
+    "output": "{root}/output.json",
+    "events": "{root}/events.jsonl",
+    "stderr": "{root}/stderr.log",
+    "invocation": "{root}/invocation.json",
+    "output_argv": ["--output-last-message", "{root}/output.json"]
+  },
+  "prompt_rendering": {
+    "control_template_sha256": "e829365177d7bf9ba60dce8dc900fb64dc1273d021eeddc7ee6076246958a86b",
+    "treatment_template_sha256": "17f654629700affbed15e0380c18b4fd2c26891c11a20d2c5549e5fee2aea22a",
+    "case_replacement": "Replace the single ASCII marker {{CANONICAL_CASE_JSON}} with RFC8259 canonical case JSON; no other byte changes."
+  },
+  "control": {
+    "arm_id": "IA_INTERNET",
+    "additional_argv": [],
+    "mcp_servers": 0,
+    "enabled_tools": ["web_search"]
+  },
+  "treatment": {
+    "arm_id": "IA_INTERNET_BATEIA",
+    "additional_argv": [
+      "--config", "mcp_servers.bateia.command=\"env\"",
+      "--config", "mcp_servers.bateia.args=[\"BATEIA_RUN_ROOT=/tmp/bateia-step0030-runs/{cell_id}\",\"BATEIA_MCP_MAX_TOOL_CALLS=1\",\"/tmp/bateia-temperature-pilot-r1\",\"mcp\"]",
+      "--config", "mcp_servers.bateia.cwd=\"/repos/Antigravity/Bateia\"",
+      "--config", "mcp_servers.bateia.required=true",
+      "--config", "mcp_servers.bateia.enabled_tools=[\"bateia_recommend\"]",
+      "--config", "mcp_servers.bateia.default_tools_approval_mode=\"approve\""
+    ],
+    "mcp_servers": 1,
+    "enabled_tools": ["web_search", "bateia_recommend"],
+    "bateia_binary_sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+  },
+  "external_capture": {
+    "stdin": "exact rendered prompt bytes",
+    "stdout": "events path byte-for-byte",
+    "stderr": "stderr path byte-for-byte",
+    "invocation": "resolved argv, non-secret environment inventory, redirections and hashes saved before start",
+    "raw_output_bytes_max": 65536,
+    "truncate_repair_or_summarize": false
+  },
+  "protected_r3_fixture_classification": {
+    "historical_schema": {
+      "path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+      "validation_errors_observed": 0,
+      "classification": "VALID_SCHEMA_EDITORIAL_TARGET_EXCEEDED"
+    },
+    "successor_compact_schema": {
+      "path": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0030/compact-output-schema.json",
+      "sha256": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+      "validation_errors_observed": 120,
+      "classification": "INVALID_COMPACT_SCHEMA"
+    },
+    "editorial": {
+      "unicode_characters": 22578,
+      "target": 18000,
+      "classification": "EDITORIAL_TARGET_EXCEEDED_NON_STRUCTURAL"
+    },
+    "preflight_rule": "Confirm both frozen classifications from the protected bytes. Do not repair, truncate, translate, canonicalize or reclassify the fixture."
+  },
+  "global_preflight": [
+    "Rehash intent, cases, preserved prompts, compact schema, proof, decoder, dispatch, rubrics, randomization plan, Codex and Bateia binaries and this profile.",
+    "Bind authority-manifest-r2.json and its actual contract, oracle/adversary and verifier executors.",
+    "Prove auth-only CODEX_HOME and empty cwd.",
+    "Prove equal model, effort, native search and budgets; control zero MCP and treatment exactly one server/tool.",
+    "Perform Bateia initialize and tools/list only; never tools/call.",
+    "Decode protected R3 events as three DUAL_ID_CODEX_0_149 machines without last-wins parsing.",
+    "Confirm protected R3 output has zero historical R2 schema errors, exceeds the editorial target, and has exactly 120 successor compact-schema violations; do not repair it.",
+    "Simulate invalid first arm and prove all later cells remain dispatch-required.",
+    "Reproduce compact schema bound 47353 <= 65536."
+  ],
+  "preflight_failure": "FAIL_CLOSED_ZERO_BEHAVIORAL_SESSIONS",
+  "runtime": {
+    "timeout_seconds": 900,
+    "single_global_in_flight": true,
+    "seconds_between_starts_min": 120,
+    "web_calls_each_arm": "1..3 postcondition",
+    "behavioral_retries": 0
+  },
+  "randomization": {
+    "path": "00_nucleo/benchmark/0030/randomization-plan-r2.json",
+    "sha256": "89c1de4c946962abc662c3e3ca80b41150677e9c3ddbbe48dd662bb9ea6cfb9c",
+    "mapping_semantics": "Exactly the six-cell mapping embedded in execution-profile.json; no seed, key, order or dispatch rule changed."
+  }
+}

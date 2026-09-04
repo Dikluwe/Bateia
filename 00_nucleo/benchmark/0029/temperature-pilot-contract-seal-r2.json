@@ -1,0 +1,135 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-contract-seal.v2",
+  "step": "0029",
+  "created_at": "2026-09-03T12:24:12Z",
+  "issuer": "/root/verificador_metodo_r2",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_METHODOLOGY_REFINEMENT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "SEALED_PRE_EXECUTION",
+  "verdict": "PASS_MUTATION_SCORE_1_0",
+  "frozen_inputs": {
+    "intent": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+      "sha256": "fbccbb27aa931b781387dabb668902d2ed12d2142be6821028a3445c672166cb"
+    },
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2.json",
+      "sha256": "b969bbf2854f25d148365ff5dc73ef5ce512de908debdf4c4ba3d284477dd8b1"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-adversarial-cases-r2.json",
+      "sha256": "703e4f62957e3d4a3075c91f326586a5aa4ad15e0a9c0c61658283ec3b8a5819"
+    },
+    "authorship": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-oracle-authorship-r2.json",
+      "sha256": "92078d9af33ebfed35e1e857b194fb121f47bca06fa1cb8649a6595f54d555fe"
+    },
+    "seal_candidate": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-seal-candidate-r2.json",
+      "sha256": "b2ca3a4da73f4d8947bfac4fbfde73f1611dc995e5a111fe9736d9306000b89f"
+    },
+    "output_schema": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+    },
+    "canonical_case": {
+      "source_path": "00_nucleo/benchmark/0029/corpus-public.json",
+      "source_file_sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+      "case_id": "EXP29-C01",
+      "canonical_case_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c"
+    },
+    "preserved_baseline_receipts": [
+      {
+        "profile": "TERRA-high",
+        "path": "00_nucleo/benchmark/0029/sessions-temperature-r1/be54278da25935556ebb242ee77482f5bccd472f93af57f95633da0688b398c8/dispatch-receipt.json",
+        "sha256": "0427665c8dc9b6006bf2c26d4bfb22fb2444b4d8562ac26e65db3ca0c14330e1"
+      },
+      {
+        "profile": "LUNA-low",
+        "path": "00_nucleo/benchmark/0029/sessions-temperature-r1/21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f/dispatch-receipt.json",
+        "sha256": "8f127d5889833753fc264a9fb1657cf790f907cbeb98476cfac4d5189ccbb5a4"
+      }
+    ],
+    "excluded_invalid_receipt": {
+      "path": "00_nucleo/benchmark/0029/sessions-temperature-r1/01a8fee35a505ce895482fa9cb060e7503f6e763d41f5c72c196bb1682806cfe/dispatch-receipt.json",
+      "sha256": "d01e237ae09ca3818e707ce41b8b33e9ac93a500f8d195649fcb786c0f0a544c"
+    }
+  },
+  "verification_receipt": {
+    "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-verification-receipt.json",
+    "sha256": "158df3bca418cda4ff2890798e61f169dc8e44805dae1101cad801bc024d4171"
+  },
+  "mutation_gate": {
+    "positive_cases_preserved": 2,
+    "opaque_cases_unknown": 2,
+    "valid_mutants": 4,
+    "rejected_mutants": 4,
+    "score": 1.0,
+    "required_score": 1.0,
+    "repetition_runs_per_order": 2,
+    "orders": [
+      "declared",
+      "reverse"
+    ],
+    "result": "PASS"
+  },
+  "sealed_execution_bounds": {
+    "success": "exactly three valid comparable A/B pairs; unpaired outputs are not success",
+    "primary_additional_sessions": 4,
+    "fallback": "one pre-frozen SOL-medium complete pair only",
+    "fallback_additional_sessions_max": 2,
+    "additional_behavioral_sessions_hard_cap": 6,
+    "global_behavioral_sessions_hard_cap": 17,
+    "original_global_cap": 108,
+    "cadence_seconds_between_starts": 120,
+    "single_global_in_flight": true,
+    "monitor": "yield and poll timeout are non-terminal; preserve the same session_id until exit_code",
+    "retry": "only after eligible terminal non-success with zero agent_message and no prior behavioral output",
+    "duplicate": "INVALID_OUTPUT with no post hoc salvage",
+    "arm_a_enabled_tools": [],
+    "arm_b_enabled_tools": [
+      "bateia_recommend"
+    ],
+    "arm_b_mcp_attempts_max": 3,
+    "arm_b_forwarded_calls_max": 3,
+    "fourth_attempt": "INVALID_OUTPUT_AND_STOP_CURRENT_PAIR",
+    "blinding": "freeze anonymized A inventory and novelty rubric before B; reveal arm labels only after judgment",
+    "scope": "EXPLORATORY_ONLY"
+  },
+  "sealed_sol_prompts": {
+    "shared_compactness_instruction_byte_identical": true,
+    "A_prompt_bytes_sha256": "f5e4f1ae587c2ccba50219e499edab6946aa648e1bc4bf0216a83e640ec4a5a1",
+    "B_prompt_bytes_sha256": "baa26ee619101cb0f089cd63f4f43255ee6745112b2852432e753e2fc61ef781"
+  },
+  "local_monitor_preflight": {
+    "result": "PASS",
+    "session_id": 66797,
+    "yield_non_terminal": true,
+    "same_session_polled_to_exit_code": 0,
+    "overlaps": 0,
+    "retries": 0,
+    "behavioral_model_sessions": 0,
+    "mcp_calls": 0
+  },
+  "seal_scope": {
+    "authorizes": "Proceed under the exact frozen R2 methodology and contract, subject to every sealed bound and fail-closed rule.",
+    "does_not_authorize": [
+      "editing or substituting any frozen input",
+      "treating session limits or isolated valid outputs as success",
+      "overlap, duplicate salvage, content-selected fallback or an unauthorized retry",
+      "more than three Bateia attempts or forwarded calls in arm B",
+      "any tool or MCP in arm A or any B tool other than bateia_recommend",
+      "confirmatory uplift or generalization beyond the three completed pairs"
+    ],
+    "verifier_dispatched_behavioral_sessions": false,
+    "verifier_executed_mcp": false
+  },
+  "invalidation_rule": "Any byte change to a frozen input or verification receipt invalidates this seal before another process start.",
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "0091a5eb2f409bf5a67db90bde3361586737901142106b3bcbff2e6629b699fc"
+}

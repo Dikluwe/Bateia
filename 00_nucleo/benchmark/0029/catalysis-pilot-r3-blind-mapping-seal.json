@@ -1,0 +1,36 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-blind-mapping-seal.v3",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "status": "PRE_FROZEN_CONTENT_INDEPENDENT_MAPPING",
+  "seed_material": "step0029-catalysis-pilot-r3|blind-mapping|EXP29-V02|SOL-high",
+  "seed_sha256": "1431123bd4df223faa48e6243595a19489908ca44a843a1e48d8eb07e5400ba8",
+  "rule": "Odd first hexadecimal nibble maps treatment to CANDIDATE_LEFT; even maps treatment to CANDIDATE_RIGHT.",
+  "first_hexadecimal_nibble": "1",
+  "parity": "ODD",
+  "mapping": {
+    "IA_INTERNET_BATEIA": "CANDIDATE_LEFT",
+    "IA_INTERNET": "CANDIDATE_RIGHT"
+  },
+  "opaque_copy_paths": {
+    "CANDIDATE_LEFT": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/blind/CANDIDATE_LEFT.json",
+    "CANDIDATE_RIGHT": "/repos/Antigravity/Bateia/00_nucleo/benchmark/0029/sessions-catalysis-r3/blind/CANDIDATE_RIGHT.json"
+  },
+  "copy_rule": "After arm validity checks, copy output bytes unchanged to the mapped opaque path and record source/output SHA-256 equality without exposing the source path to the blind evaluator.",
+  "access_control": {
+    "blind_evaluator_before_receipt": "PROHIBITED",
+    "execution_orchestrator": "READ_REQUIRED",
+    "post_reveal_auditor": "READ_ONLY_AFTER_BLIND_RECEIPT_HASH_FROZEN"
+  },
+  "blind_evaluator_forbidden_before_receipt": [
+    "this mapping seal",
+    "seed material, rule or resolved mapping",
+    "treatment/control directories",
+    "invocation files",
+    "events JSONL",
+    "stderr logs",
+    "execution order",
+    "tool traces and call counts"
+  ],
+  "invalidation": "Any byte change to the seed, rule, mapping or copied-output identity invalidates blinding and the pair."
+}

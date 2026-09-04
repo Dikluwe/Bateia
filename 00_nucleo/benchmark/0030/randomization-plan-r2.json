@@ -1,0 +1,19 @@
+{
+  "schema_version": "bateia.step0030.randomization-plan.r2.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "source_execution_profile_r1_sha256": "935eeecbccc05d19f8cc34016a7c7d5c49b03da05fc53057a763650e77ac02be",
+  "seed_commitment": "36bcbd0cd0b03a631ad6e14854db8aa72ae3b416bc9b15b92dad47e3d4fbc3f2",
+  "derivation": "order_key=sha256(UTF8(seed_commitment)||NUL||UTF8(case_id)||NUL||UTF8(arm_id)); ascending order_key, then case_id, then arm_id",
+  "content_independent": true,
+  "ordered_cells": [
+    {"sequence": 1, "case_id": "EXP29-V02", "arm_id": "IA_INTERNET", "order_key": "3a647fcd9201c52e9c2ae874023d278ff43d1eec44eef1b616b8b45a5bd2b3da"},
+    {"sequence": 2, "case_id": "EXP29-V01", "arm_id": "IA_INTERNET_BATEIA", "order_key": "bf05f213756abc18817eedb238a56917bedd6cae077078338c6a9f9a92608f38"},
+    {"sequence": 3, "case_id": "EXP29-C01", "arm_id": "IA_INTERNET_BATEIA", "order_key": "c1411fc13b95c70dc81e946d3195d65afb3ba4d7a29ab090ba600385beb36530"},
+    {"sequence": 4, "case_id": "EXP29-C01", "arm_id": "IA_INTERNET", "order_key": "f306b8fc7ab5043a20fa0eeb684c749489cc2cebc52a4baf3e1e3f7e671e2896"},
+    {"sequence": 5, "case_id": "EXP29-V01", "arm_id": "IA_INTERNET", "order_key": "f7cde4bf612800f786c81008f928011feee5a2fee72449d3a429fe6cd91b1358"},
+    {"sequence": 6, "case_id": "EXP29-V02", "arm_id": "IA_INTERNET_BATEIA", "order_key": "f95b893d1530d692a9eeb107d4deaaa7d814b05d139f55fc73df56e1b810b3da"}
+  ],
+  "dispatch_rule": "After preflight every cell is dispatched once; earlier behavioral validity cannot remove or reorder later cells.",
+  "immutability": "This is a byte-for-byte semantic extraction of execution-profile.json.randomization; no seed, key, mapping or rule changed."
+}

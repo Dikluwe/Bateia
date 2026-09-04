@@ -1,0 +1,50 @@
+{
+  "schema_version": "tekt.step0029.historical-hash-successor.v1",
+  "step": "0029",
+  "revision": "O3",
+  "authority": "HISTORICAL_ORACLE_AUTHOR",
+  "executor": "/root/oraculo_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "predecessor_to_successor": [
+    {
+      "path": "00_nucleo/prompts/02_shell/mcp/server.md",
+      "predecessor_sha256": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e",
+      "successor_sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+      "change_class": "ADDITIVE_PROCESS_LOCAL_TOOL_CALL_BUDGET_SPEC"
+    },
+    {
+      "path": "02_shell/mcp/server.go",
+      "predecessor_sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
+      "successor_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+      "change_class": "ADDITIVE_PROCESS_LOCAL_TOOL_CALL_BUDGET_IMPLEMENTATION"
+    }
+  ],
+  "acceptance_conjunction": [
+    "successor file hashes match exactly",
+    "historical predecessor hashes remain recorded in the invalidation artifact",
+    "Step 0026 R2 executes search, benchmark and recommendation and retains literal schemas/goldens",
+    "Step 0026 R3 retains independent benchmark and recommendation byte goldens and unchanged core predecessor hashes",
+    "Step 0027 compares tools 1-7 semantically at runtime and permits only its previously contracted artifact enum suffixes",
+    "temperature-pilot focal O2 guard tests, M1-M4, race, vet, build, lint, diff and real preflight retain the public verifier pass"
+  ],
+  "legacy_property_witnesses": [
+    "TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute",
+    "TestStep0026R3LegacyBenchmarkAndRecommendationUseIndependentByteGoldens",
+    "TestStep0026R3PredecessorServerHashesRemainCertified",
+    "TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact"
+  ],
+  "extension_properties": {
+    "configuration_absent": "legacy unlimited behavior",
+    "configured_limit": "first N tools/call forwarded",
+    "exhausted_limit": "N+1 rejected with -32010 before decoding or effects",
+    "non_call_methods": "do not consume or reset counter",
+    "scope": "counter isolated per server instance"
+  },
+  "unknown_policy": "A changed digest without the complete acceptance conjunction is not presumed compatible; missing execution evidence remains UNKNOWN.",
+  "status": "SUCCESSOR_CANDIDATE_FOR_HISTORICAL_REFINEMENT_GATE",
+  "limitations": [
+    "This artifact does not replace or erase predecessor certificates.",
+    "The current local Go toolchain could not start the three focal tests because its GOROOT lacks package testing; a verifier must execute them in an intact toolchain before final promotion.",
+    "No behavioral/model output was read or executed by this authority."
+  ]
+}

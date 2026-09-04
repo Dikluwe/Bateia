@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/durable_runs.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 
 package mcp
@@ -130,7 +130,7 @@ func durableToolsList() (map[string]interface{}, error) {
 	_ = json.Unmarshal(startSchemaBytes, &startSchema)
 	properties := startSchema["properties"].(map[string]interface{})
 	properties["idempotency_key"] = map[string]interface{}{"type": "string", "minLength": float64(1), "maxLength": float64(128), "pattern": `^[\u0020-\u002E\u0030-\u005B\u005D-\u007E]+$`}
-	startSchema["required"] = []string{"idempotency_key", "idea", "policy", "target", "search"}
+	startSchema["required"] = []string{"idempotency_key", "idea"}
 	tools = append(tools,
 		map[string]interface{}{"name": "bateia_start_recommendation", "description": "Inicia recomendação durável assíncrona", "inputSchema": startSchema},
 		map[string]interface{}{"name": "bateia_get_run", "description": "Consulta execução durável", "inputSchema": runIDSchema()},
@@ -216,24 +216,20 @@ type durableStartArguments struct {
 }
 
 func decodeDurableStart(raw json.RawMessage) (string, domain.RecommendationRequest, error) {
+	if err := rejectRecommendationNulls(raw); err != nil {
+		return "", domain.RecommendationRequest{}, errors.New("invalid")
+	}
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.DisallowUnknownFields()
 	var input durableStartArguments
-	if err := decoder.Decode(&input); err != nil || decoder.Decode(&struct{}{}) != io.EOF || input.IdempotencyKey == nil || input.Idea == nil || input.Policy == nil || input.Target == nil || input.Search == nil ||
-		input.Policy.SchemaVersion == nil || input.Policy.AllowedLicenses == nil || input.Policy.RequireLocal == nil || input.Policy.AllowArchived == nil || input.Policy.MaxComponents == nil || input.Policy.ExtendMinCoverage == nil || input.Policy.IntegrationMinValue == nil ||
-		input.Search.Strategy == nil || input.Search.Locales == nil || input.Search.MaxPerQuery == nil || input.Search.MaxCandidates == nil {
+	if err := decoder.Decode(&input); err != nil || decoder.Decode(&struct{}{}) != io.EOF || input.IdempotencyKey == nil || input.Idea == nil {
 		return "", domain.RecommendationRequest{}, errors.New("invalid")
 	}
 	key := *input.IdempotencyKey
 	if !validDurableKey(key) {
 		return "", domain.RecommendationRequest{}, errors.New("invalid")
 	}
-	request := domain.RecommendationRequest{
-		Idea:   domain.IdeaSpec{Problem: input.Idea.Problem, Users: input.Idea.Users, Capabilities: input.Idea.Capabilities, Constraints: input.Idea.Constraints, NonGoals: input.Idea.NonGoals, PreferredStack: input.Idea.PreferredStack},
-		Policy: domain.ReuseDecisionPolicy{SchemaVersion: *input.Policy.SchemaVersion, AllowedLicenses: *input.Policy.AllowedLicenses, RequireLocal: *input.Policy.RequireLocal, AllowArchived: *input.Policy.AllowArchived, MaxComponents: *input.Policy.MaxComponents, ExtendMinCoverage: *input.Policy.ExtendMinCoverage, IntegrationMinValue: *input.Policy.IntegrationMinValue},
-		Target: domain.SoftwareAlternativeTarget{Name: input.Target.Name},
-		Search: domain.RecommendationSearch{Strategy: *input.Search.Strategy, Language: input.Search.Language, Locales: *input.Search.Locales, MaxPerQuery: *input.Search.MaxPerQuery, MaxCandidates: *input.Search.MaxCandidates},
-	}
+	request := materializeRecommendationArguments(recommendationArguments{Idea: input.Idea, Policy: input.Policy, Target: input.Target, Search: input.Search})
 	if _, err := usecase.ValidateRecommendationRequest(request); err != nil {
 		return "", domain.RecommendationRequest{}, errors.New("invalid")
 	}

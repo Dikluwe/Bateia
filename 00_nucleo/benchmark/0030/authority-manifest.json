@@ -1,0 +1,61 @@
+{
+  "schema_version": "bateia.step0030.authority-manifest.v1",
+  "created_at": "2026-09-03",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "reason": "All authorities share one filesystem and inherited conversation history; artifact allowlists and write ownership are recorded but cannot prove strong isolation.",
+  "roles": [
+    {
+      "role": "intent_author",
+      "executor": "user with /root as recorder",
+      "reads": ["domain objective", "Step 0030", "protected R3 hashes", "public corpus"],
+      "writes": ["intent.json", "authority-manifest.json"],
+      "must_not": ["approve own materialization", "issue final certificate"]
+    },
+    {
+      "role": "contract_author",
+      "executor": "/root/oraculo_metodo_r2",
+      "reads": ["Step 0030", "intent.json", "authority-manifest.json", "protected R3 fixtures", "public corpus", "Codex schema witness"],
+      "writes": ["contract candidate", "output schema", "decoder contract", "dispatch contract", "rubrics", "prompts", "execution profile", "randomization plan"],
+      "must_not": ["read implementation candidate before seal", "execute behavioral sessions", "issue final certificate"]
+    },
+    {
+      "role": "oracle_and_adversary_author",
+      "executor": "/root/avaliador_cego_r2",
+      "reads": ["Step 0030", "intent.json", "contract candidate", "protected R3 fixtures"],
+      "writes": ["positive opaque fixtures", "negative mutations", "oracle authorship"],
+      "must_not": ["read implementation candidate before seal", "judge behavioral outputs", "issue final certificate"]
+    },
+    {
+      "role": "contract_verifier",
+      "executor": "/root/verificador_metodo_r2",
+      "reads": ["all pre-implementation protected artifacts"],
+      "writes": ["discriminatory verification", "contract seal"],
+      "must_not": ["edit artifacts verified", "implement candidate", "judge blind quality"]
+    },
+    {
+      "role": "implementer_and_dispatcher",
+      "executor": "/root",
+      "reads": ["sealed contract", "public implementation inputs"],
+      "writes": ["prompts mirrored to code", "L1-L4 implementation", "session evidence", "mechanical receipts"],
+      "must_not": ["edit protected contract after seal", "blind-judge own outputs", "issue final certificate"]
+    },
+    {
+      "role": "blind_judge",
+      "executor": "fresh subagent selected after outputs",
+      "reads": ["opaque outputs", "case", "blind rubric"],
+      "writes": ["blind judgments"],
+      "must_not": ["read mapping", "read traces", "read arm directories before judgment"]
+    },
+    {
+      "role": "post_reveal_verifier",
+      "executor": "/root/verificador_metodo_r2",
+      "reads": ["sealed inputs", "implementation receipts", "blind judgments", "traces after blind freeze"],
+      "writes": ["trace audit", "final verification", "certificate"],
+      "must_not": ["edit evidence or judgments", "change rubric", "convert Unknown to success"]
+    }
+  ],
+  "communication": "Only canonical project artifacts and their hashes transfer obligations between roles.",
+  "protected_until_seal": ["contract artifacts", "oracle fixtures", "mutations", "randomization mapping"],
+  "protected_until_blind_receipt": ["arm mapping", "session traces", "invocations", "treatment identity"]
+}

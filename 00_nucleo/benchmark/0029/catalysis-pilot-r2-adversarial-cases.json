@@ -1,0 +1,152 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-adversarial-cases.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "contract_path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-contract.json",
+  "gate_status": "DESIGNED_NOT_EXECUTED",
+  "positive_cases": [
+    {
+      "id": "P-VALID-SEQUENCE-PAIR",
+      "fixture": "Treatment Bateia finish_sequence=6; first observable web sequence=8; treatment and control each have 1..3 distinct valid web events, one valid output and terminal exit_code, with no overlap.",
+      "expected": "Preserved"
+    },
+    {
+      "id": "P-NO-WEB-RESPONSE-BODY",
+      "fixture": "Valid web item exposes id/action/query/status and ordered lifecycle but no response body; response_sha256 is Unknown and final output carries direct locators.",
+      "expected": "Preserved",
+      "note": "No response bytes or hash are invented."
+    },
+    {
+      "id": "P-INCONCLUSIVE-NEUTRAL",
+      "fixture": "Bateia returns INCONCLUSIVE before later valid web research; no complete supported catalytic path exists.",
+      "expected": "Preserved",
+      "evaluation": "Valid pair, neutral abstention, no automatic win/loss and no demonstrated catalysis."
+    }
+  ],
+  "opaque_cases": [
+    {
+      "id": "O-WEB-SHAPE-MISSING",
+      "fixture": "Runtime JSONL does not expose non-empty web item.id or sufficient action query/url.",
+      "expected": "Unknown",
+      "operational_effect": "Arm cannot be validated; hard stop without replacement."
+    },
+    {
+      "id": "O-OPTIONAL-TIMESTAMP",
+      "fixture": "All required sequence fields exist but no per-tool wall-clock timestamp is emitted.",
+      "expected": "Unknown",
+      "scope": "Timestamp field only; ordering remains sequence-derived and may be Preserved."
+    },
+    {
+      "id": "O-TRACE-LINK",
+      "fixture": "Web finding resembles a Bateia direction but normalized identifiers do not establish the link.",
+      "expected": "Unknown",
+      "operational_effect": "Do not count catalysis."
+    },
+    {
+      "id": "O-TEMPORAL-DRIFT",
+      "fixture": "Live public content changes materially between arms and prior content cannot be reconstructed.",
+      "expected": "Unknown",
+      "operational_effect": "Confounding, not equality or arm effect."
+    }
+  ],
+  "mutants": [
+    {
+      "id": "M-CONTROL-NO-WEB",
+      "mutation": "Control has zero distinct normalized web event IDs.",
+      "expected": "Violated",
+      "witness": "web_event_count=0"
+    },
+    {
+      "id": "M-TREATMENT-NO-BATEIA",
+      "mutation": "Treatment has no completed bateia_recommend event.",
+      "expected": "Violated",
+      "witness": "completed_bateia_count=0"
+    },
+    {
+      "id": "M-BATEIA-AFTER-WEB",
+      "mutation": "Bateia does not complete strictly before the first observable web line.",
+      "expected": "Violated",
+      "witness": "bateia_finish_sequence >= first_web_observable_sequence"
+    },
+    {
+      "id": "M-WEB-CARDINALITY",
+      "mutation": "Either arm has zero or at least four distinct normalized web events.",
+      "expected": "Violated",
+      "witness": "web_event_count outside 1..3"
+    },
+    {
+      "id": "M-OTHER-TOOL",
+      "mutation": "Any unlisted native tool, MCP, app, feature or shell is observed.",
+      "expected": "Violated",
+      "witness": "tool or capability absent from exact arm allowlist"
+    },
+    {
+      "id": "M-ATTRIBUTION-WITHOUT-TRACE",
+      "mutation": "Catalysis is credited without normalized Bateia direction, later web event and useful supported disposition.",
+      "expected": "Violated",
+      "witness": "catalysis=true without complete ordered path"
+    },
+    {
+      "id": "M-INCONCLUSIVE-AUTOMATIC",
+      "mutation": "INCONCLUSIVE automatically produces treatment win or loss.",
+      "expected": "Violated",
+      "witness": "winner derived solely from INCONCLUSIVE status"
+    },
+    {
+      "id": "M-VOLUME-COST-WIN",
+      "mutation": "Raw word, source, call or cost volume alone selects a winner.",
+      "expected": "Violated",
+      "witness": "advantage lacks decision-relevant supported utility"
+    },
+    {
+      "id": "M-DRIFT-AS-EQUALITY",
+      "mutation": "Unresolved material live-web drift is classified as equality.",
+      "expected": "Violated",
+      "witness": "tie asserted despite unresolved time-indexed source difference"
+    },
+    {
+      "id": "M-INVALID-DUPLICATE-SALVAGE",
+      "mutation": "Invalid, duplicate, overlength or post-hoc-selected output completes the pair.",
+      "expected": "Violated",
+      "witness": "pair valid with output count != 1 or another validity breach"
+    },
+    {
+      "id": "M-SYNTHETIC-TIMESTAMPS",
+      "mutation": "Missing wall-clock timestamps are invented or used instead of sequence ordinals.",
+      "expected": "Violated",
+      "witness": "timestamp has no raw public source or precedence ignores JSONL sequence"
+    },
+    {
+      "id": "M-EVENT-ID-WRONG-DERIVATION",
+      "mutation": "event_id omits the NUL separator, uses another session field or does not bind item.id.",
+      "expected": "Violated",
+      "witness": "event_id != sha256(UTF8(thread.started.thread_id)||0x00||UTF8(item.id))"
+    },
+    {
+      "id": "M-WEB-MISSING-FIELDS-ACCEPTED",
+      "mutation": "A web event lacking id, action or required query/url is counted as valid.",
+      "expected": "Violated",
+      "witness": "web count includes an item rejected by the witness acceptance predicate"
+    },
+    {
+      "id": "M-INVENTED-WEB-RESPONSE-HASH",
+      "mutation": "A response body or response_sha256 is synthesized when runtime emits none.",
+      "expected": "Violated",
+      "witness": "non-Unknown response field lacks an explicit raw payload source"
+    },
+    {
+      "id": "M-PROFILE-DRIFT",
+      "mutation": "Invocation changes CLI order, flags, cwd, CODEX_HOME, feature set, MCP configuration, prompt hash or Bateia binary hash.",
+      "expected": "Violated",
+      "witness": "invocation differs from frozen execution profile"
+    }
+  ],
+  "discriminatory_gate": {
+    "valid_mutants": 15,
+    "required_rejections": 15,
+    "required_mutation_score": 1.0,
+    "actual_mutation_score": null,
+    "affected_feasibility_positive_opaque_full_mutation_and_reordering_gates_required": true,
+    "seal_blocker_until_independently_executed": true
+  }
+}

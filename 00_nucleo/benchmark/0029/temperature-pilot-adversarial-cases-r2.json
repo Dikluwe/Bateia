@@ -1,0 +1,71 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-adversarial-cases.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "contract_path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+  "gate_status": "DESIGNED_NOT_EXECUTED",
+  "positive_cases": [
+    {
+      "id": "P-MONITOR-01",
+      "fixture": "Um processo retorna session_id, dois polls dão yield/timeout, polls posteriores usam a mesma session_id e retornam exit_code=0; exatamente um agent_message e um output válido existem.",
+      "expected": "Preserved"
+    },
+    {
+      "id": "P-PAIR-ORDER-01",
+      "fixture": "Cada slot completa A+B antes do próximo, há 120 segundos entre inícios e o executor para no terceiro par válido.",
+      "expected": "Preserved"
+    }
+  ],
+  "opaque_cases": [
+    {
+      "id": "O-SESSION-01",
+      "fixture": "A session_id persistida torna-se ilegível e não há exit_code atribuível ao processo original.",
+      "expected": "Unknown",
+      "required_action": "Bloquear novo início; não inferir término, não retry e não completar par."
+    },
+    {
+      "id": "O-NOVELTY-01",
+      "fixture": "Uma hipótese aparentemente nova depende de referência que o avaliador não consegue resolver mecanicamente.",
+      "expected": "Unknown",
+      "required_action": "Não contar como novidade nem como zero negativo."
+    }
+  ],
+  "mutants": [
+    {
+      "id": "M-YIELD-AS-EXIT",
+      "mutation": "Tratar yield ou timeout de poll como conclusão do processo e liberar nova execução.",
+      "expected": "Violated",
+      "witness": "Não existe exit_code para a session_id original no momento em que o novo processo é iniciado.",
+      "kills": "terminalidade, exclusão mútua e não duplicação"
+    },
+    {
+      "id": "M-LOST-SESSION-ID",
+      "mutation": "Descartar a session_id após yield e iniciar retry ou próxima célula.",
+      "expected": "Violated",
+      "witness": "O ledger muda de RUNNING_WITH_SESSION_ID para novo início sem exit_code do processo original.",
+      "kills": "continuidade causal do monitor e fail-closed Unknown"
+    },
+    {
+      "id": "M-OVERLAP",
+      "mutation": "Iniciar qualquer célula enquanto outra ainda não registrou exit_code terminal.",
+      "expected": "Violated",
+      "witness": "Intervalos start_at/terminal_at se intersectam ou há duas reservas in_flight simultâneas.",
+      "kills": "single_global_in_flight e pair-first"
+    },
+    {
+      "id": "M-POSTHOC-SALVAGE",
+      "mutation": "Após duplicata, escolher a saída menor, schema-válida ou mais favorável e promovê-la a canônica.",
+      "expected": "Violated",
+      "witness": "model_outputs_observed > 1 para a célula e alguma saída é classificada VALID_OUTPUT ou usada em par.",
+      "kills": "não seleção post hoc, validade da célula e cegamento"
+    }
+  ],
+  "discriminatory_requirement": {
+    "valid_mutants": 4,
+    "required_rejected_mutants": 4,
+    "required_mutation_score": 1.0,
+    "actual_mutation_score": null,
+    "seal_blocker_until_executed": true,
+    "repetition_and_reordering_required": true
+  }
+}

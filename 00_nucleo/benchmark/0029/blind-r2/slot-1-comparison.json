@@ -1,0 +1,354 @@
+{
+  "schema_version": "bateia.step0029.blind-novelty-comparison.v2",
+  "comparison_id": "EXP29-C01-slot-1",
+  "created_at": "2026-09-03",
+  "author": {
+    "task_identity": "/root/avaliador_cego_r2",
+    "role": "blind_novelty_evaluator_slot_1",
+    "authority": "comparison_only"
+  },
+  "status": "FINAL_BLIND_COMPARISON",
+  "inputs": {
+    "candidate_x": {
+      "label": "CANDIDATE_X",
+      "artifact": "00_nucleo/benchmark/0029/blind-r2/slot-1-a-inventory.json",
+      "sha256": "3fc955ac111673dcd48148fba717e94156c42f4123b898f503bdebeb106428bc",
+      "frozen_before_candidate_y": true
+    },
+    "candidate_y": {
+      "label": "CANDIDATE_Y",
+      "artifact": "00_nucleo/benchmark/0029/sessions-temperature-r2/736ece03ba708d77c35ded55edbdf4d038ec9f2b931796a8647c3d7a69f1a0c6/output.json",
+      "sha256": "e0ad99bdac93876088be64c8f12bc411e12335b9c8b7cdeb1378b9aa6566dfc2"
+    },
+    "contract": {
+      "artifact": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    }
+  },
+  "rubric_application": {
+    "frozen_inventory_used_without_revision": true,
+    "required_tests": [
+      "is_target_item_type",
+      "absent_from_frozen_inventory",
+      "materially_distinct_not_paraphrase",
+      "mechanically_resolvable_evidence_support",
+      "no_unsupported_extrapolation"
+    ],
+    "all_tests_required": true,
+    "ambiguous_policy": "UNKNOWN_NOT_COUNTED_AS_NOVEL",
+    "cross_category_matching_applied": true,
+    "candidate_y_confirmed_novel_item_count": 0,
+    "candidate_y_potentially_novel_but_unknown_count": 1
+  },
+  "materially_new_items_in_candidate_y": {
+    "alternatives": [],
+    "mechanisms": [],
+    "improvement_hypotheses": [],
+    "potentially_new_but_not_counted": [
+      {
+        "id": "Y-POTENTIAL-01",
+        "category": "mechanism_and_improvement_hypothesis",
+        "candidate_y_text": "Registrar atomicamente a conclusão do efeito e usar uma outbox ou registro de efeitos.",
+        "candidate_y_locations": [
+          "mechanisms[2]",
+          "improvement_hypotheses[2]"
+        ],
+        "relation_to_candidate_x": "CANDIDATE_X já cobre chave estável, idempotência de efeitos e reconciliação de falha parcial, mas congelou transactional outbox como detalhe relacionado não automaticamente equivalente e potencialmente novo se resolver a janela estado-efeito.",
+        "material_distinctness": "AMBIGUOUS_POTENTIALLY_DISTINCT",
+        "reason": "CANDIDATE_Y não define se a atomicidade abrange conjuntamente estado e efeito externo, nem descreve o protocolo causal que fecharia a janela de falha.",
+        "evidence_refs": [
+          "BATEIA-1",
+          "BATEIA-2"
+        ],
+        "mechanically_resolvable_support": "UNKNOWN",
+        "support_reason": "As referências apontam para execuções externas não presentes na allowlist, registram sha256 UNKNOWN e são descritas como INCONCLUSIVE; tampouco sustentam positivamente a atomicidade ou a outbox.",
+        "unsupported_extrapolation_test": "UNKNOWN",
+        "novelty_result": "UNKNOWN_NOT_COUNTED_AS_NOVEL"
+      }
+    ]
+  },
+  "rejected_paraphrases": {
+    "alternatives": [
+      {
+        "candidate_y_item": "Candidatos de mensageria retornados",
+        "matched_candidate_x_items": [
+          "ALT-01",
+          "ALT-02",
+          "MEC-01"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "É um agrupamento não identificado de candidatos, não uma alternativa concreta; os atributos citados são fila limitada, persistência, redelivery e intervenção já inventariados."
+      },
+      {
+        "candidate_y_item": "Candidatos de workflow durável retornados",
+        "matched_candidate_x_items": [
+          "ALT-03",
+          "MEC-02",
+          "MEC-03"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "É classe genérica sem candidato concreto; recuperação, retries, histórico e idempotência são reformulações das unidades duráveis e operacionais congeladas."
+      }
+    ],
+    "mechanisms": [
+      {
+        "candidate_y_item": "BOUNDED_QUEUE_BACKPRESSURE",
+        "matched_candidate_x_items": [
+          "ALT-02",
+          "MEC-01",
+          "UNIT-05",
+          "UNIT-06",
+          "UNIT-07"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Fila limitada que recusa, adia ou sinaliza ao produtor é correspondência direta do mecanismo congelado."
+      },
+      {
+        "candidate_y_item": "Registro durável de trabalho com estados",
+        "matched_candidate_x_items": [
+          "ALT-03",
+          "MEC-02",
+          "MEC-03",
+          "UNIT-08",
+          "UNIT-10",
+          "UNIT-13",
+          "UNIT-14"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Persistir identificador, estado, tentativas e resultado antes de processar, retomando não terminais, já está integralmente inventariado."
+      },
+      {
+        "candidate_y_item": "Chave idempotente por anexo e efeito",
+        "matched_candidate_x_items": [
+          "ALT-03",
+          "MEC-02",
+          "UNIT-09",
+          "UNIT-11",
+          "UNIT-12"
+        ],
+        "result": "NOT_NOVEL_EXCEPT_FOR_AMBIGUOUS_ATOMIC_OUTBOX_DETAIL",
+        "reason": "Identidade estável, deduplicação de efeitos e reconciliação já estão congeladas; somente a possível atomicidade/outbox foi separada como Y-POTENTIAL-01 e não contou por suporte UNKNOWN."
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "candidate_y_item": "Limite explícito de fila com estado de adiamento",
+        "matched_candidate_x_items": [
+          "HYP-01",
+          "MEC-01",
+          "UNIT-05",
+          "UNIT-06",
+          "UNIT-07"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "É a mesma hipótese causal de conter memória por limite e sinalizar saturação."
+      },
+      {
+        "candidate_y_item": "Máquina de estados persistida antes do reconhecimento e retomada após reinício",
+        "matched_candidate_x_items": [
+          "HYP-02",
+          "MEC-02",
+          "MEC-03",
+          "UNIT-08",
+          "UNIT-10",
+          "UNIT-13"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Persistir aceitação antes de processamento e retomar trabalho não terminal já define a mesma fronteira; explicitar o reconhecimento ao produtor é especificação operacional coberta."
+      },
+      {
+        "candidate_y_item": "Deduplicação por chave de conteúdo/origem e outbox ou registro de efeitos",
+        "matched_candidate_x_items": [
+          "HYP-02",
+          "MEC-02",
+          "UNIT-09",
+          "UNIT-11",
+          "UNIT-12"
+        ],
+        "result": "NOT_NOVEL_EXCEPT_FOR_AMBIGUOUS_ATOMIC_OUTBOX_DETAIL",
+        "reason": "Chave derivada, deduplicação e registro de efeitos são cobertos; a outbox indeterminada é Y-POTENTIAL-01 e permanece UNKNOWN."
+      }
+    ],
+    "non_novel_validation_details": [
+      "Separar recuperação e idempotência em dois testes aumenta granularidade, mas não cria alternativa, mecanismo ou hipótese.",
+      "Forçar classificador indisponível e exceder tentativas é instância de validação da fila de intervenção já congelada.",
+      "Métricas de fila e memória, falhas injetáveis e chaves sintéticas são dependências de teste já cobertas."
+    ]
+  },
+  "mechanically_resolvable_evidence": {
+    "candidate_x": {
+      "status": "RESOLVABLE_WITHIN_FROZEN_INVENTORY",
+      "reference": "E1",
+      "scope": "Requisitos, restrições, baseline, classe BOUNDED_QUEUE_BACKPRESSURE e ausência de base de repositório/execução.",
+      "boundary": "Não prova propriedades de implementação; CANDIDATE_X as marca como hipóteses ou unknowns."
+    },
+    "candidate_y": {
+      "status": "UNKNOWN",
+      "references": [
+        {
+          "reference_id": "BATEIA-1",
+          "locator_present": true,
+          "sha256": "UNKNOWN",
+          "underlying_artifact_in_allowlist": false,
+          "reported_status": "INCONCLUSIVE",
+          "mechanically_resolvable": false
+        },
+        {
+          "reference_id": "BATEIA-2",
+          "locator_present": true,
+          "sha256": "UNKNOWN",
+          "underlying_artifact_in_allowlist": false,
+          "reported_status": "INCONCLUSIVE",
+          "mechanically_resolvable": false
+        },
+        {
+          "reference_id": "BATEIA-3",
+          "locator_present": true,
+          "sha256": "UNKNOWN",
+          "underlying_artifact_in_allowlist": false,
+          "reported_status": "INCONCLUSIVE",
+          "mechanically_resolvable": false
+        }
+      ],
+      "interpretation": "A saída permite verificar que CANDIDATE_Y declarou três buscas inconclusivas, mas não permite verificar mecanicamente as execuções, contagens, cobertura ou candidatos subjacentes."
+    }
+  },
+  "evidence_question_comparison": [
+    {
+      "question_id": "EQ-01",
+      "topic": "limite de admissão sob consumidores lentos",
+      "candidate_x": "DIRECT_CONCEPTUAL_SUPPORT_WITH_EXPLICIT_IMPLEMENTATION_BOUNDARY",
+      "candidate_y": "DIRECT_CONCEPTUAL_ANSWER_BUT_EXTERNAL_SUPPORT_UNKNOWN",
+      "delta": "NO_MATERIAL_UPLIFT",
+      "preferred": "CANDIDATE_X",
+      "reason": "Ambos descrevem fila limitada e sinalização de saturação; Y apenas adiciona alegação não verificável de busca inconclusiva."
+    },
+    {
+      "question_id": "EQ-02",
+      "topic": "sobrevivência a reinício sem duplicar efeitos",
+      "candidate_x": "HYPOTHETICAL_ARCHITECTURE_ONLY_WITH_ATOMICITY_GAP_EXPLICIT",
+      "candidate_y": "HYPOTHETICAL_ARCHITECTURE_ONLY_WITH_ATOMIC_OUTBOX_AMBIGUITY",
+      "delta": "NO_CONFIRMED_MATERIAL_UPLIFT",
+      "preferred": "CANDIDATE_X",
+      "reason": "Y explicita reconhecimento ao produtor e menciona outbox, mas não define nem sustenta a atomicidade; X documenta mais claramente a lacuna."
+    },
+    {
+      "question_id": "EQ-03",
+      "topic": "separar propriedade demonstrada de hipótese",
+      "candidate_x": "DIRECT_WITH_MECHANICALLY_RESOLVABLE_CASE_BOUNDARY",
+      "candidate_y": "DIRECT_BOUNDARY_BUT_BATEIA_RUN_SUPPORT_UNKNOWN",
+      "delta": "CANDIDATE_Y_ADDS_UNVERIFIABLE_NEGATIVE_SEARCH_CLAIMS",
+      "preferred": "CANDIDATE_X",
+      "reason": "Y corretamente mantém as propostas como hipóteses, porém suas evidências externas não são resolvíveis e têm SHA desconhecido."
+    }
+  ],
+  "counterevidence_and_unknowns_comparison": {
+    "candidate_x": {
+      "strengths": [
+        "quatro contraevidências explícitas e nove alvos específicos de refutação",
+        "unknowns separados para implementação, semântica, identidade, políticas, dados, custo, atomicidade e intervenção",
+        "lacuna de atomicidade estado-efeito explicitamente preservada"
+      ],
+      "weaknesses": [
+        "nenhuma evidência de implementação concreta"
+      ]
+    },
+    "candidate_y": {
+      "strengths": [
+        "preserva como inconclusivas as alegações sobre candidatos externos",
+        "alerta que fila ou workflow durável não prova idempotência",
+        "torna explícitos acúmulo fora da fila, identidade variável e efeito não consultável"
+      ],
+      "weaknesses": [
+        "contraevidência central depende de três execuções externas não resolvíveis",
+        "omite ou comprime unknowns de ordenação, política de overflow, atomicidade, esquema de estados, responsável e SLA",
+        "não inclui validação focal de retenção, criptografia, acesso e exposição de dados"
+      ]
+    },
+    "new_counterevidence_or_unknowns_in_y": [],
+    "paraphrased_or_more_specific_in_y": [
+      "acúmulo em componente fora da fila limitada corresponde ao limite sobre todos os buffers de X",
+      "fila local por processo corresponde à lacuna de limite compartilhado e ponta a ponta de X",
+      "identificadores diferentes para a mesma imagem corresponde à identidade estável desconhecida de X",
+      "capacidade, orçamento e limites numéricos correspondem à capacidade finita aceitável desconhecida de X"
+    ],
+    "preferred": "CANDIDATE_X"
+  },
+  "actionability_comparison": {
+    "candidate_x": {
+      "decision": "INVESTIGATE_WITH_CONDITIONAL_BUILD_HYPOTHESIS",
+      "validation_targets": 3,
+      "notable_strength": "Integra backpressure, recuperação/idempotência e explicabilidade com verificação explícita de proteção de dados."
+    },
+    "candidate_y": {
+      "decision": "INVESTIGATE",
+      "validation_targets": 4,
+      "notable_strength": "Separa recuperação, idempotência e intervenção em testes focais com critérios observáveis.",
+      "notable_gap": "Não testa diretamente proteção de dados e não identifica alternativa concreta acionável."
+    },
+    "delta": "REORGANIZATION_AND_GRANULARITY_WITHOUT_NEW_CAUSAL_ITEM",
+    "preferred": "TIE",
+    "reason": "Y melhora a decomposição dos testes; X cobre melhor dados sensíveis e dependências. Ambos permanecem em INVESTIGATE."
+  },
+  "criterion_verdicts": [
+    {
+      "criterion": "confirmed_material_novelty",
+      "winner": "TIE",
+      "reason": "CANDIDATE_Y tem zero itens novos que passem todos os testes; o possível outbox atômico permanece UNKNOWN e não conta."
+    },
+    {
+      "criterion": "mechanically_resolvable_evidence_support",
+      "winner": "CANDIDATE_X",
+      "reason": "E1 é resolvível no inventário congelado; BATEIA-1/2/3 não são resolvíveis pela allowlist e têm SHA desconhecido."
+    },
+    {
+      "criterion": "evidence_question_coverage",
+      "winner": "CANDIDATE_X",
+      "reason": "Ambos cobrem as três perguntas, mas X mantém fronteiras de evidência mais completas e verificáveis."
+    },
+    {
+      "criterion": "counterevidence_and_unknown_preservation",
+      "winner": "CANDIDATE_X",
+      "reason": "X é mais abrangente e preserva explicitamente atomicidade, políticas, dados e intervenção como unknowns."
+    },
+    {
+      "criterion": "actionability",
+      "winner": "TIE",
+      "reason": "Y decompõe melhor os testes; X cobre proteção de dados e dependências de forma mais completa."
+    }
+  ],
+  "overall_verdict": {
+    "winner": "CANDIDATE_X",
+    "novelty_uplift": "TIE_NO_CONFIRMED_NEW_ITEMS",
+    "reason": "CANDIDATE_Y não acrescenta item materialmente novo com suporte mecanicamente resolvível. CANDIDATE_X vence no conjunto por evidência pública resolvível, limites epistêmicos, contraevidência e unknowns mais completos; acionabilidade empata.",
+    "unknown_does_not_default_to_success": true
+  },
+  "confidence": {
+    "level": "HIGH",
+    "score": 0.9,
+    "basis": [
+      "correspondências semânticas diretas entre quase todos os itens Y e o inventário congelado X",
+      "critério explícito que impede contar referências externas não resolvíveis",
+      "único possível delta causal isolado e corretamente rebaixado a UNKNOWN"
+    ]
+  },
+  "limitations": [
+    "Não foram lidos os artefatos subjacentes a BATEIA-1, BATEIA-2 ou BATEIA-3; suas alegações permanecem UNKNOWN por desenho da allowlist.",
+    "O veredito cobre somente alternativas, mecanismos, hipóteses, evidência, contraevidência, unknowns e acionabilidade observáveis nas duas entradas.",
+    "Não é veredito sobre validade operacional, desempenho ou equivalência funcional geral de qualquer solução.",
+    "O inventário X registra uma sobreleitura anterior de casos de validação; o desvio não revelou rótulo, perfil ou saída do segundo membro, mas impede alegar isolamento perfeito da fase de inventário."
+  ],
+  "attestation": {
+    "candidate_labels_used_exclusively": [
+      "CANDIDATE_X",
+      "CANDIDATE_Y"
+    ],
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "forbidden_artifacts_read": [],
+    "external_model_executed": false,
+    "external_mcp_executed": false,
+    "comparison_inputs_only": true,
+    "isolation_claim": "BLIND_TO_ARM_AND_PROFILE_WITH_INHERITED_NON_MATERIAL_INVENTORY_DEVIATION"
+  }
+}

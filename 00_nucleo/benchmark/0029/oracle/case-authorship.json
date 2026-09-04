@@ -1,0 +1,90 @@
+{
+  "schema_version": "tekt.step0029.case-authorship.v1",
+  "step": "0029",
+  "role": "AUTOR_DOS_CASOS",
+  "executor": "codex-agent:/root/casos_0029",
+  "environment": {
+    "workspace": "/repos/Antigravity/Bateia",
+    "execution_mode": "segregated-role-task",
+    "network_used": false,
+    "strong_filesystem_isolation_attested": false
+  },
+  "regime": "PROTOCOLO_COMPLETO_RESTRITO_A_AUTORIA_DE_CASOS",
+  "attestation": "SEGREGADO_POR_ALLOWLIST_DE_CAPACIDADE_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "inherited_context": [
+    "system and repository operating policy",
+    "parent role assignment naming allowed inputs and outputs"
+  ],
+  "read_allowlist": [
+    {
+      "path": ".agents/AGENTS.md",
+      "sha256": "0c8154925d3587fae78ec4ce82753fda16018424cbe6276bcb760401774de528"
+    },
+    {
+      "path": "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md",
+      "sha256": "135f8de345e2b7dd2f53f45d7ec30611ea836d360b29111f9cc751df64b4877a"
+    },
+    {
+      "path": "00_nucleo/benchmark/0028/certificate.json",
+      "sha256": "7b1098c57c6425a2adb2fb6d0d15fea9917502d201e3fb46ae0dfe5dc5ba6506"
+    },
+    {
+      "path": "00_nucleo/benchmark/0028/oracle/corpus-public.json",
+      "sha256": "d6cad7db2f867ee598959818d98c86e179e01f6f39dc43081aa2b2ec557bc188"
+    },
+    {
+      "path": "00_nucleo/benchmark/0028/oracle/conventional-baselines.json",
+      "sha256": "ff393d02285fb96d33da27c06e6e9175bb83f8e9d7a8ea773f74407e92303b0f"
+    },
+    {
+      "path": "/home/dikluwe/.codex/skills/tekt-materializacao-segregada/SKILL.md",
+      "sha256": "66990d349a9e89851686cd94590a84711c69364f76b6df501230f64daf3b0c48"
+    },
+    {
+      "path": "/home/dikluwe/.codex/skills/tekt-materializacao-segregada/references/papeis-e-capacidades.md",
+      "sha256": "f59f44c4e53e89651963115c582872b4d3cd59d89689d103baa9ef8b464d2417"
+    }
+  ],
+  "write_allowlist": [
+    "00_nucleo/benchmark/0029/corpus-public.json",
+    "00_nucleo/benchmark/0029/corpus-registry.json",
+    "00_nucleo/benchmark/0029/oracle/protected/test-cases.json",
+    "00_nucleo/benchmark/0029/oracle/case-authorship.json"
+  ],
+  "capabilities_denied": [
+    "read Step 0029 implementation",
+    "read Step 0029 tests",
+    "read or write Step 0029 contract or rubric",
+    "read or write Step 0029 attacks, outputs, receipts, seals, reports, certificates or verdicts",
+    "write production Go code",
+    "execute agent experiment sessions",
+    "judge or score agent outputs"
+  ],
+  "inputs_frozen": true,
+  "causal_predecessor": {
+    "step": "0028",
+    "certificate_sha256": "7b1098c57c6425a2adb2fb6d0d15fea9917502d201e3fb46ae0dfe5dc5ba6506",
+    "verdict": "MECHANISM_IMPROVEMENT_SYNTHESIS_READY"
+  },
+  "artifacts_produced": [
+    {
+      "path": "00_nucleo/benchmark/0029/corpus-public.json",
+      "sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96"
+    },
+    {
+      "path": "00_nucleo/benchmark/0029/oracle/protected/test-cases.json",
+      "sha256": "62f95cebe415f7205d29af051ec3aa79b97e9f36a7543be05bafb6d08f836bcb"
+    },
+    {
+      "path": "00_nucleo/benchmark/0029/corpus-registry.json",
+      "sha256": "ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee"
+    }
+  ],
+  "self_hash": "EXCLUDED_TO_AVOID_RECURSIVE_BINDING",
+  "created_at": "2026-09-03T01:27:54Z",
+  "limitations": [
+    "Isolation is capability-based and instruction-enforced; the shared workspace does not provide a strong filesystem attestation.",
+    "The author did not execute, score or inspect any agent response.",
+    "The TEST content is committed only to the protected case file and exposed elsewhere solely through IDs, splits and hashes."
+  ]
+}

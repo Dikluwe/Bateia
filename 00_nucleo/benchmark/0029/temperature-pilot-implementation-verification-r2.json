@@ -1,0 +1,304 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-implementation-verification.v2",
+  "step": "0029",
+  "revision": "R2_AFTER_HISTORICAL_REFINEMENT_O3",
+  "created_at": "2026-09-03T11:39:28Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_SUCCESSOR_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "verdict": "PASS_LOCAL_IMPLEMENTATION_VERIFIED",
+  "historical_refinement_verdict": "O3_SUCCESSOR_PROMOTED_BY_INTACT_TOOLCHAIN_EXECUTION",
+  "behavioral_model_sessions_executed": 0,
+  "mcp_behavioral_sessions_executed": 0,
+  "inputs": {
+    "predecessor_verification": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-implementation-verification-r1.json",
+      "sha256": "280a23811f64c64e3b68c1b69cc902a88d61f05bd001c08e90daf6d451086e29",
+      "verdict": "FAIL_CLOSED",
+      "preserved_as_intermediate_evidence": true
+    },
+    "historical_o3_seal": {
+      "path": "00_nucleo/benchmark/0029/historical-refinement-o3-seal.json",
+      "sha256": "156179df3bbfb15404612a8206f34fa73632b17a157836334d8b3c883aa399e0"
+    },
+    "historical_o2_to_o3_invalidation": {
+      "path": "00_nucleo/benchmark/0029/historical-hash-invalidation-o2-to-o3.json",
+      "sha256": "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
+      "reason_code": "ADDITIVE_SERVER_BUDGET_EXTENSION_INVALIDATED_LEGACY_BYTE_IDENTITY_ONLY"
+    },
+    "historical_o3_successor": {
+      "path": "00_nucleo/benchmark/0029/historical-hash-successor-o3.json",
+      "sha256": "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156"
+    },
+    "historical_o3_authorship": {
+      "path": "00_nucleo/benchmark/0029/historical-refinement-o3-authorship.json",
+      "sha256": "ba52554898401112dd195270463c73143525c3972724098b998f41afdd1aadc3"
+    },
+    "temperature_pilot_contract_seal_o2": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-seal-r1.json",
+      "sha256": "bc8b01c6687b15c82b3020b3d0fea50d25a5381731915168a6b88f51c75b41c0"
+    },
+    "temperature_pilot_contract_o2": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-r1.json",
+      "sha256": "1371f6c1f145d8b71728ecc2716b73653d2a334590f290b4922bbb5924eb519a"
+    }
+  },
+  "immutability_audit": {
+    "candidate": [
+      {
+        "path": "02_shell/mcp/server.go",
+        "expected_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+        "observed_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+        "result": "UNCHANGED"
+      },
+      {
+        "path": "04_wiring/main.go",
+        "expected_sha256": "ec577457e08e3423aec1967c9fed50cc406fee51386236c24ec4d4f6519cda8e",
+        "observed_sha256": "ec577457e08e3423aec1967c9fed50cc406fee51386236c24ec4d4f6519cda8e",
+        "result": "UNCHANGED"
+      }
+    ],
+    "sealed_o2_oracles_and_prompts": [
+      {
+        "path": "02_shell/mcp/temperature_pilot_budget_oracle_test.go",
+        "sha256": "b9d65fb25309f6b5bd8f63ebd97c731c914a643cb09f22fe22ce20ca50c0e599"
+      },
+      {
+        "path": "04_wiring/temperature_pilot_config_oracle_test.go",
+        "sha256": "9666406fe4f5422a616d507450b00995542c31bd037b23a8b33a9517de122bcf"
+      },
+      {
+        "path": "00_nucleo/prompts/02_shell/mcp/temperature_pilot_budget_oracle_test.md",
+        "sha256": "4fe3d3251325edc3397adb54843871e25c5bc8a348ccf75d5a2890387d5c30a4"
+      },
+      {
+        "path": "00_nucleo/prompts/04_wiring/temperature_pilot_config_oracle_test.md",
+        "sha256": "8c1a38082ecd555d4b05adf55b03c920d977bf5c07f182007ff0161073da3546"
+      }
+    ],
+    "o3_updated_historical_oracles": [
+      {
+        "path": "02_shell/mcp/durable_runs_step0026_r2_test.go",
+        "sha256": "52fc1ab6b20a9b450d945d7ac84817c2b63eee37d7b88e5ec28c61d0e37bd307"
+      },
+      {
+        "path": "02_shell/mcp/durable_runs_step0026_r3_test.go",
+        "sha256": "a78552efa39cbc24ffc7f22923a7683a25242ec795290ada97edff87ba5c2892"
+      },
+      {
+        "path": "02_shell/mcp/market_discovery_step0027_oracle_test.go",
+        "sha256": "c4e1287e4f6f078e3240c7f43ce84df6e9608038e20fa9868ef4008d4f234e3e"
+      }
+    ],
+    "o3_updated_prompts": [
+      {
+        "path": "00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_r2_test.md",
+        "sha256": "ffc9e3d2809426eba00940a0697b64c848708f21825dbefbdbb809be1223ffad"
+      },
+      {
+        "path": "00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_r3_test.md",
+        "sha256": "e9fcc8676d5a4ee12aeac4a59a4f2ea635f90d3bb878ab2ccbe07c3e36870c44"
+      },
+      {
+        "path": "00_nucleo/prompts/02_shell/mcp/market_discovery_step0027_oracle_test.md",
+        "sha256": "5291ffb6ca477a5ec6c72dce502c79ed442bab2b3962a036f396f7cae1224adf"
+      }
+    ],
+    "production_prompt": {
+      "path": "00_nucleo/prompts/02_shell/mcp/server.md",
+      "sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34"
+    },
+    "strict_json_artifacts_checked": 4,
+    "hash_mismatches": 0,
+    "result": "PASS"
+  },
+  "executed_gates": [
+    {
+      "order": 1,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-cache go test -count=1 ./02_shell/mcp -run '^(TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact)$'",
+      "exit_code": 0,
+      "result": "PASS_3_OF_3",
+      "output": "ok bateia/02_shell/mcp 0.007s"
+    },
+    {
+      "order": 2,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-pkg1-cache go test -count=1 ./02_shell/mcp ./04_wiring",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "order": 3,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-pkg2-cache go test -count=1 ./04_wiring ./02_shell/mcp",
+      "exit_code": 0,
+      "result": "PASS_REVERSED_PACKAGE_ORDER"
+    },
+    {
+      "order": 4,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-focal-cache go test -count=1 -run '^(TestToolCallBudget|TestParseMCPMaxToolCalls)' ./02_shell/mcp ./04_wiring",
+      "exit_code": 0,
+      "result": "PASS_O2_FOCAL"
+    },
+    {
+      "order": 5,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-race-cache go test -race -count=1 -run '^(TestToolCallBudget|TestParseMCPMaxToolCalls)' ./02_shell/mcp ./04_wiring",
+      "exit_code": 0,
+      "result": "PASS_RACE"
+    },
+    {
+      "order": 6,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-vet-cache go vet ./02_shell/mcp ./04_wiring",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "order": 7,
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-build-cache go build ./02_shell/mcp ./04_wiring",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "order": 8,
+      "command": "crystalline-lint .",
+      "exit_code": 0,
+      "result": "PASS_WITH_PREEXISTING_V12_V7_WARNINGS"
+    },
+    {
+      "order": 9,
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "order": 10,
+      "command": "python3 -m json.tool <each O3 lineage JSON>",
+      "exit_code": 0,
+      "result": "PASS_STRICT_JSON"
+    }
+  ],
+  "mutation_gate": {
+    "method": "Exact sealed O2 L2/L4 oracles mounted by read-only symlink in the pre-existing verifier-authored temporary fixture module; candidate production source was not substituted or mutated.",
+    "temporary_module": "/tmp/bateia-temperature-pilot-oracle-verifier-r1",
+    "fixture_hashes": {
+      "l2": "968a64db45f6962538e1407d29e05c4312b917de65492552df46d73dfbe57b32",
+      "l4": "08ae29d878244306dc11fac0566e46ecddf934f58d38afef20a8447853693e38"
+    },
+    "reference_controls": {
+      "normal_order": "PASS",
+      "reversed_order": "PASS",
+      "runs": 2
+    },
+    "mutants": [
+      {
+        "id": "M1_OFF_BY_ONE",
+        "exit_code": 1,
+        "result": "KILLED",
+        "witness": "temperature_pilot_budget_oracle_test.go:68: exhausted request was forwarded"
+      },
+      {
+        "id": "M2_COUNTER_PER_TOOL_OR_METHOD",
+        "fixture_selector": "M2_RESET_ON_NON_CALL",
+        "exit_code": 1,
+        "result": "KILLED",
+        "witness": "temperature_pilot_budget_oracle_test.go:107: exhausted request was forwarded"
+      },
+      {
+        "id": "M3_PACKAGE_GLOBAL_COUNTER",
+        "exit_code": 1,
+        "result": "KILLED",
+        "witness": "temperature_pilot_budget_oracle_test.go:131: request rejected unexpectedly with exhaustion error"
+      },
+      {
+        "id": "M4_PERMISSIVE_CONFIGURATION",
+        "fixture_selector": "M4_PERMISSIVE_CONFIG",
+        "exit_code": 1,
+        "result": "KILLED",
+        "witness": "temperature_pilot_config_oracle_test.go:30: invalid +3 did not fail closed"
+      }
+    ],
+    "contractual_score": {
+      "killed": 3,
+      "total": 3,
+      "score": 1.0,
+      "result": "PASS"
+    },
+    "extended_l2_l4_score": {
+      "killed": 4,
+      "total": 4,
+      "score": 1.0,
+      "result": "PASS"
+    }
+  },
+  "offline_mcp_preflight": {
+    "executed": true,
+    "reason_for_repetition": "O3 changed the active historical test slice; the successor verification reconfirmed the real compiled server boundary.",
+    "binary_build_command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r2-preflight-build-cache go build -o /tmp/bateia-temperature-pilot-impl-verifier-r2/bateia ./04_wiring",
+    "server_command": "env BATEIA_MCP_MAX_TOOL_CALLS=3 BATEIA_RUN_ROOT=/tmp/bateia-temperature-pilot-impl-verifier-r2/runs /tmp/bateia-temperature-pilot-impl-verifier-r2/bateia mcp",
+    "working_directory": "/tmp/bateia-temperature-pilot-impl-verifier-r2/preflight-empty",
+    "sequence": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call offline_unknown_1",
+      "tools/call offline_unknown_2",
+      "tools/call offline_unknown_3",
+      "tools/call offline_unknown_4"
+    ],
+    "first_three_calls": {
+      "forwarded": 3,
+      "responses": [
+        "-32601 Unknown tool: offline_unknown_1",
+        "-32601 Unknown tool: offline_unknown_2",
+        "-32601 Unknown tool: offline_unknown_3"
+      ]
+    },
+    "fourth_call": {
+      "forwarded": false,
+      "code": -32010,
+      "message": "Bateia tool call budget exhausted"
+    },
+    "server_exit_code": 0,
+    "network_dependent_tools_called": 0,
+    "model_or_codex_sessions": 0,
+    "durable_run_outputs": 0,
+    "only_run_root_file": "cursor.key",
+    "result": "PASS_EXACT_BOUNDARY"
+  },
+  "historical_o3_assessment": {
+    "three_test_conjunction": "PASS",
+    "legacy_semantic_goldens_preserved": true,
+    "offline_real_tool_execution_witnesses_preserved": true,
+    "runtime_tool_surface_comparisons_preserved": true,
+    "predecessor_identities_preserved_in_lineage": true,
+    "successor_identities_bound": true,
+    "previous_r1_failure_erased": false,
+    "assessment": "The O3 refinement replaces only obsolete active-path byte-equality expectations with explicit predecessor-to-successor lineage. The prior FAIL_CLOSED receipt remains immutable evidence; the intact toolchain now satisfies the O3 promotion conjunction."
+  },
+  "scope_and_limitations": {
+    "verified": [
+      "local Go implementation and O2 focal contract",
+      "historical O3 successor lineage and three-test conjunction",
+      "applicable package suites twice",
+      "race, vet, build, lint and diff gates",
+      "mutation discrimination M1 through M4",
+      "real compiled MCP stdio boundary using synthetic offline unknown tools"
+    ],
+    "not_verified": [
+      "behavioral model quality or agent uplift",
+      "paid or external experiment sessions",
+      "network-dependent connector behavior",
+      "strong process or filesystem isolation"
+    ],
+    "lint_note": "crystalline-lint exited 0 while reporting repository-wide V12 and V7 warnings; they are recorded as warnings, not silently upgraded to errors.",
+    "isolation_note": "The verifier ran in a shared working tree with inherited history. Hashes establish byte identity and lineage but cannot independently prove absence of prior cross-role visibility.",
+    "uplift_claim": "NOT_MADE"
+  },
+  "promotion": {
+    "local_temperature_pilot_implementation": "VERIFIED",
+    "historical_refinement_o3": "PROMOTED",
+    "external_behavioral_experiment": "NOT_AUTHORIZED_OR_EXECUTED_BY_THIS_RECEIPT"
+  },
+  "invalidation_rule": "Any byte change to the O2 contract seal, O2 contract/oracles/prompts, O3 lineage seal/invalidation/successor/authorship, the three O3 historical test/prompt pairs, either candidate file, mutation fixtures, or any gate result requires a successor verification scoped from the first affected phase.",
+  "self_hash_policy": "SHA-256 of canonical UTF-8 JSON with lexicographically sorted object keys, separators ',' and ':', ensure_ascii=false, after removing the top-level self_hash field.",
+  "self_hash": "ccddc9c779d5958358dc5f9ac324984b762096c2296dc24d43352e33544aa490"
+}

@@ -1,0 +1,250 @@
+{
+  "schema_version": "tekt.step0029.mcp-approval-calibration-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T06:23:52Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_CONTRACT_CALIBRATION_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "result": "CONTINUE_CONTRACT_ONLY_WITH_MANDATORY_FINAL_GATE",
+  "verdict": "READY_TO_CONTINUE_REMAINING_DISTINCT_CONTRACT_CELLS_ONLY",
+  "validation_and_test": "BLOCKED_PENDING_FINAL_CONTRACT_GATE",
+  "inputs": {
+    "cell_id": "274071ce5e0a72792e1ced63dd124b6050dc3a7f9fb3786eaf859c4088d6688d",
+    "cell_directory": "00_nucleo/benchmark/0029/sessions-r2/274071ce5e0a72792e1ced63dd124b6050dc3a7f9fb3786eaf859c4088d6688d",
+    "execution_queue_r2_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f",
+    "randomization_plan_r2_sha256": "0fbbe7496c8c93ee27600ea1b327a9330e586313095dc246f25fdf68bfa04012",
+    "prompt_contract_r2_sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c",
+    "engineering_investigation_schema_r2_file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "engineering_investigation_schema_r2_canonical_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df",
+    "execution_isolation_profiles_r3_sha256": "0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04",
+    "execution_seal_r3_sha256": "c1a02793ad723282d4712ea61ecd7efd98607cd3e41699bee50567360b203481",
+    "corpus_public_sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "corpus_registry_sha256": "ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee",
+    "invocation_sha256": "ff45f417a6562668c04c1630bcd4e68d33fb5516ef8988bd3ade04b0479bec41",
+    "prompt_bytes_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048",
+    "output_sha256": "244e6cf242f8c2df40cf18c0de9544356ac74a7cbe1a874de14cc5b829675596",
+    "events_sha256": "ee9131b4e204a82640384b5f09ece030ace62f7f9346fb558ad9df71f27f69bf",
+    "stderr_sha256": "ff1989d6add691df474c86005dfbf337a854286471ed4a05b7bb717d6a92455a",
+    "dispatch_receipt_sha256": "c16061381303c32ebc25bd53607494ab6a2965435d3e8730889b2183fe30228f",
+    "dispatch_receipt_amendment_r1_sha256": "557e859b09a7f65d705864e80b317ef676bf1091a078fdbdba3d5b499c26d2da",
+    "supporting_cell_767_original_receipt_sha256": "8a478ad8a54d2bd60ae584fecd188f7d421069680a4363c4eafd7dab2fb9c5f4",
+    "supporting_cell_767_receipt_amendment_r1_sha256": "ddafb0699d7a33f24681a777c8806bff08aa2b3269f3f7fac0b213831343f2ed",
+    "execution_state_r2_pre_amendment_sha256": "781c6d86029407b965f366a444040a4d181ce31134e558795c8af0105c3dcd02",
+    "execution_state_r2_active_sha256": "6a1157a5cb031b514679cf7ca956318d051def181b5f967d0ab0f03e0293dae9"
+  },
+  "executed_by_verifier": [
+    {
+      "command": "Python 3 strict duplicate-key JSON audit of 12 JSON inputs and 6 events.jsonl records, with SHA-256 recomputation",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 queue/order/identity and R3 execution-seal cross-check",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 byte-exact prompt reconstruction from prompt-contract-r2.json, compact EXP29-C01 and treatment instruction",
+      "result": "PASS"
+    },
+    {
+      "command": "Python jsonschema 4.10.3 Draft7 recursive validation of output.json against engineering-investigation.schema-r2.json",
+      "result": "PASS",
+      "schema_violations": 0
+    },
+    {
+      "command": "Python 3 event lifecycle and canonical request/response SHA-256 audit for bateia_recommend",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 receipt/state, usage, elapsed-time, behavioral-session and next-cell reconciliation",
+      "result": "PASS_WITH_CALIBRATION_FINDING"
+    },
+    {
+      "command": "Python 3 append-only amendment audit for cells 274071 and 767295, including original-receipt immutability, Unicode counts, limits and active-state reanchoring",
+      "result": "PASS"
+    }
+  ],
+  "sealed_identity_audit": {
+    "revised_plan_root_sha256": "622b59c348265fd3974989bfdab31b82ac89dedd72a1a554ab3fce114dcba114",
+    "root_matches_queue_plan_receipt_and_state": true,
+    "queue_membership_unique": true,
+    "pair_id": "81249a38003f981835fcfd311cf63751fb6f3124a3593b89ce719a15ea2451b1",
+    "case_id": "EXP29-C01",
+    "profile_id": "SOL-low",
+    "resolved_model_id": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "split": "CONTRACT",
+    "arm": "AGENT_WITH_BATEIA",
+    "identity_matches_queue_invocation_and_receipt": true,
+    "execution_profile": "R3",
+    "mcp_default_tools_approval_mode": "approve",
+    "bateia_tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "tool_surface_matches_r3_profile_and_invocation": true,
+    "r3_execution_seal_matches_receipt": true
+  },
+  "prompt_audit": {
+    "case_canonical_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+    "case_hash_matches_corpus_registry": true,
+    "construction": "base_instruction + LF LF + treatment_instruction + LF LF + compact insertion-ordered EXP29-C01 JSON + LF",
+    "byte_exact_reconstruction": true,
+    "prompt_bytes_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048",
+    "matches_invocation_and_receipt": true
+  },
+  "output_audit": {
+    "strict_json": true,
+    "recursive_schema_valid": true,
+    "schema_violations": 0,
+    "output_bytes_match_final_agent_message": true,
+    "model_output_observed": {
+      "state": "KNOWN",
+      "value": true
+    },
+    "actual_utf8_decoded_unicode_characters": 14173,
+    "actual_utf8_bytes": 14663,
+    "max_output_utf8_characters": 20000,
+    "limit_passed": true,
+    "receipt_output_utf8_characters": 14663,
+    "receipt_counter_finding": "RECORDED_BYTE_COUNT_AS_CHARACTER_COUNT_RECONCILED_APPEND_ONLY",
+    "receipt_counter_effect_on_this_cell": "NO_LIMIT_OUTCOME_CHANGE_BECAUSE_BOTH_COUNTS_ARE_BELOW_20000",
+    "receipt_amendment_sha256": "557e859b09a7f65d705864e80b317ef676bf1091a078fdbdba3d5b499c26d2da",
+    "original_receipt_immutable_at_sha256": "c16061381303c32ebc25bd53607494ab6a2965435d3e8730889b2183fe30228f",
+    "amendment_effective_utf8_characters": 14173,
+    "amendment_limit_result": "PASS",
+    "run_status": "VALID_OUTPUT",
+    "behavioral_session_counted": true,
+    "retry_eligible": false,
+    "limits_exceeded": []
+  },
+  "mcp_event_audit": {
+    "server": "bateia",
+    "tool": "bateia_recommend",
+    "started_events": 1,
+    "completed_events": 1,
+    "started_status": "in_progress",
+    "completed_status": "completed",
+    "completed_error": null,
+    "receipt_status": "COMPLETED",
+    "request_sha256": "430ae8f44ba7c6ba7f1ab16fd92e0d4310110b750dcdbe4876d0f720aa810dd3",
+    "request_hash_recomputed_from_canonical_arguments": true,
+    "response_sha256": "d8ff7020ad0fc7c3aa7cc2e058a140b8c55de89bac9f586321a7375351674770",
+    "response_hash_recomputed_from_canonical_result": true,
+    "tool_result_status": "INCONCLUSIVE",
+    "tool_result_interpretation": "A Bateia result being inconclusive does not make the agent run invalid when the final output satisfies the public schema. Claims that remain unsupported stay Unknown.",
+    "approval_policy_calibration": "PASS_R3_MADE_THE_ALREADY_ALLOWLISTED_TOOL_CALLABLE"
+  },
+  "usage_and_time_audit": {
+    "started_at": "2026-09-03T03:10:45-03:00",
+    "finished_at": "2026-09-03T03:17:01-03:00",
+    "elapsed_milliseconds_recomputed": 376000,
+    "duration_milliseconds_receipt": 376000,
+    "input_tokens": 145511,
+    "cached_input_tokens": 115584,
+    "output_tokens": 3985,
+    "reasoning_tokens": 329,
+    "bateia_calls": 1,
+    "unchanged_status_polls": 0,
+    "infrastructure_retries": 0,
+    "usage_matches_turn_completed_event": true,
+    "wall_clock_budget_seconds": 900,
+    "wall_clock_budget_passed": true,
+    "bateia_call_budget": 25,
+    "bateia_call_budget_passed": true,
+    "unchanged_poll_budget": 12,
+    "unchanged_poll_budget_passed": true,
+    "infrastructure_retry_budget": 1,
+    "infrastructure_retry_budget_passed": true,
+    "monetary_cost": {
+      "state": "UNKNOWN",
+      "reason": "No frozen price table or per-session charge was exposed by the host."
+    }
+  },
+  "state_audit": {
+    "active_state_sha256": "6a1157a5cb031b514679cf7ca956318d051def181b5f967d0ab0f03e0293dae9",
+    "observed_pre_amendment_state_sha256": "781c6d86029407b965f366a444040a4d181ce31134e558795c8af0105c3dcd02",
+    "status": "READY_TO_CONTINUE_CONTRACT",
+    "phase": "CONTRACT",
+    "behavioral_sessions_dispatched": 4,
+    "behavioral_sessions_max": 108,
+    "contract_dispatched": 4,
+    "contract_valid": 3,
+    "contract_tool_unavailable": 1,
+    "receipt_directory_count": 4,
+    "receipt_status_counts_match_state": true,
+    "first_four_contract_cells_match_frozen_queue_order": true,
+    "last_receipt_matches_audited_cell": true,
+    "in_flight": null,
+    "next_cell_id": "678c224dc737f583de8e6b11958500d18ab46d11537dbc791256556fb4e28125",
+    "next_cell_is_distinct_remaining_contract_cell_in_queue_order": true,
+    "receipt_amendments": [
+      {
+        "cell_id": "767295c8dccaffae4227cc6238d42ccb3fec15a05236005f0e708321383b2942",
+        "sha256": "ddafb0699d7a33f24681a777c8806bff08aa2b3269f3f7fac0b213831343f2ed",
+        "effective_utf8_characters": 16983,
+        "utf8_bytes": 17505,
+        "limit": 20000,
+        "result": "PASS",
+        "original_receipt_immutable": true
+      },
+      {
+        "cell_id": "274071ce5e0a72792e1ced63dd124b6050dc3a7f9fb3786eaf859c4088d6688d",
+        "sha256": "557e859b09a7f65d705864e80b317ef676bf1091a078fdbdba3d5b499c26d2da",
+        "effective_utf8_characters": 14173,
+        "utf8_bytes": 14663,
+        "limit": 20000,
+        "result": "PASS",
+        "original_receipt_immutable": true
+      }
+    ],
+    "active_state_references_both_amendments": true,
+    "prior_c56e_tool_unavailable_preserved": true,
+    "prior_c56e_repeat_allowed": false,
+    "prior_c56e_itt_treatment": "UNKNOWN_REMAINS_IN_DENOMINATOR"
+  },
+  "contract_calibration_findings": [
+    {
+      "code": "UNICODE_CHARACTER_COUNTER_USES_BYTES",
+      "severity": "RESOLVED_BY_APPEND_ONLY_AMENDMENTS",
+      "evidence": "output.json decodes to 14173 Unicode characters and occupies 14663 UTF-8 bytes; dispatch-receipt.json records 14663 as output_utf8_characters.",
+      "current_cell_effect": "The 20000-character ceiling still passes without ambiguity.",
+      "resolution": "Amendment 557e859b09a7f65d705864e80b317ef676bf1091a078fdbdba3d5b499c26d2da records 14173 characters and 14663 bytes; supporting amendment ddafb0699d7a33f24681a777c8806bff08aa2b3269f3f7fac0b213831343f2ed records 16983 characters and 17505 bytes. Both remain PASS below 20000 and both original receipts retain their expected hashes.",
+      "remaining_condition": "Future receipts must count decoded Unicode characters directly; the final CONTRACT gate must verify the amendments and must not mutate or repeat either behavioral cell."
+    },
+    {
+      "code": "BATEIA_EVIDENCE_REFERENCE_NOT_MECHANICALLY_BOUND",
+      "severity": "OPEN_FINAL_CONTRACT_GATE_FINDING",
+      "evidence": "The BATEIA-REC-EXP29 evidence reference is marked VERIFIED but has an empty sha256 and a descriptive locator rather than a mechanically resolvable run_id/artifact binding; the synchronous MCP result exposes no run_id or artifact identifier.",
+      "current_cell_effect": "This does not invalidate the schema-valid output or completed MCP lifecycle, but it cannot count as proof that the B-reference integrity gate passed.",
+      "required_resolution": "The final CONTRACT gate must demonstrate a frozen, mechanically reproducible binding or preserve the claim as unresolved; it must not infer integrity from the VERIFIED label alone."
+    }
+  ],
+  "continuation_assessment": {
+    "acceptable": true,
+    "scope": "REMAINING_DISTINCT_CONTRACT_CELLS_ONLY",
+    "basis": [
+      "The R3 profile was sealed before this dispatch and the corrected approval mode permitted one completed bateia_recommend call.",
+      "The cell is a unique queue member, produced a schema-valid output within all operative budgets and is nonretryable.",
+      "The frozen state advances to the next distinct CONTRACT cell while preserving the earlier c56e UNKNOWN denominator entry."
+    ],
+    "mandatory_final_contract_gate_before_validation": [
+      "Dispatch exactly the remaining 14 CONTRACT cells once, in frozen queue order, with no repeat of any behavioral cell and no mutation of prompt, schema, queue, tool allowlist, profile or budget.",
+      "Account for all 18 CONTRACT cells across both arms and all nine exact profiles; preserve c56e as TOOL_UNAVAILABLE and UNKNOWN in the ITT denominator.",
+      "Show that future R3 treatment cells can call the allowlisted Bateia surface without another approval-policy failure and account for every call, poll, token, elapsed time and retry.",
+      "Verify future Unicode code-point counting and preserve the two append-only amendments and immutable original receipts; both reconciled outputs remain below 20000 characters.",
+      "Resolve or explicitly retain as unresolved every B evidence reference that lacks a mechanically verifiable binding; do not treat a model-supplied VERIFIED label as integrity evidence.",
+      "Run the explicit final CONTRACT gate and publish an independent receipt before authorizing any VALIDATION or TEST dispatch."
+    ],
+    "current_phase_boundary": "VALIDATION_AND_TEST_REMAIN_FAIL_CLOSED",
+    "does_not_demonstrate_uplift": true
+  },
+  "model_or_mcp_sessions_executed_by_verifier": 0,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "limitations": [
+    "The verifier audited captured bytes and frozen manifests but did not rerun the model, MCP server or external dispatch.",
+    "The shared workspace does not provide strong independent isolation attestation.",
+    "The MCP event stream exposes no per-tool timestamps, so only whole-session elapsed time is independently recomputable.",
+    "This focal receipt establishes R3 approval calibration and local artifact integrity only; it does not judge response quality or pass the final CONTRACT gate."
+  ],
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "446d6f979a88485b40a5563c9c100d9e457768c57a6c2611369e6a86717614ad",
+  "invalidation_rule": "Any byte change to the audited queue, plan, prompt contract, schema, R3 profile/seal, corpus, cell invocation/prompt/output/events/stderr/original receipt, either receipt amendment or the active execution state requires a successor calibration verification."
+}

@@ -1,0 +1,375 @@
+{
+  "schema_version": "bateia.step0029.blind-novelty-comparison.v2",
+  "comparison_id": "EXP29-C01-slot-2",
+  "created_at": "2026-09-03",
+  "author": {
+    "task_identity": "/root/avaliador_cego_r2",
+    "role": "blind_novelty_evaluator_slot_2",
+    "authority": "comparison_only"
+  },
+  "status": "FINAL_BLIND_COMPARISON",
+  "inputs": {
+    "candidate_p": {
+      "label": "CANDIDATE_P",
+      "artifact": "00_nucleo/benchmark/0029/blind-r2/slot-2-a-inventory.json",
+      "sha256": "347600e4110f3e10f5618e8aead763e76347c17b1d876aba46c9dde55736edeb",
+      "frozen_before_candidate_q": true
+    },
+    "candidate_q": {
+      "label": "CANDIDATE_Q",
+      "artifact": "00_nucleo/benchmark/0029/sessions-temperature-r2/fdcd60fe99435df25e57f37b4d4e762f20533f325d91d4991ecea03467ee2bf3/output.json",
+      "sha256": "f48f31d8ac92ef17abbef7b612848ee53e29d4c930a74842df2cc4297213eb77"
+    },
+    "contract": {
+      "artifact": "00_nucleo/benchmark/0029/temperature-pilot-contract-r2.json",
+      "sha256": "b0a7a1b21f3b6c4fa0b88d166bbc978d9f70e1028a7fec1b0d223e47334c5a47"
+    }
+  },
+  "rubric_application": {
+    "frozen_inventory_used_without_revision": true,
+    "required_tests": [
+      "is_target_item_type",
+      "absent_from_frozen_inventory",
+      "materially_distinct_not_paraphrase",
+      "mechanically_resolvable_evidence_support",
+      "no_unsupported_extrapolation"
+    ],
+    "all_tests_required": true,
+    "ambiguous_policy": "UNKNOWN_NOT_COUNTED_AS_NOVEL",
+    "cross_category_matching_applied": true,
+    "candidate_q_confirmed_novel_item_count": 0,
+    "candidate_q_potentially_novel_but_unknown_count": 1
+  },
+  "materially_new_items_in_candidate_q": {
+    "alternatives": [],
+    "mechanisms": [],
+    "improvement_hypotheses": [],
+    "potentially_new_but_not_counted": [
+      {
+        "id": "Q-POTENTIAL-01",
+        "category": "alternative",
+        "candidate_q_text": "Candidatos encontrados pelo Bateia",
+        "candidate_q_location": "alternatives[2]",
+        "material_distinctness": "UNKNOWN",
+        "reason": "A saída não identifica nomes, arquiteturas ou mecanismos próprios dos candidatos; um conjunto anônimo com cobertura 0/4 não é alternativa concreta materialmente comparável.",
+        "evidence_refs": [
+          "BATEIA-01"
+        ],
+        "mechanically_resolvable_support": "UNKNOWN",
+        "support_reason": "O hash da execução é declarado, mas o artefato subjacente não está na allowlist; o locator e as contagens são alegações internas de CANDIDATE_Q, não evidência inspecionável.",
+        "target_item_type_test": "FAILS_CONCRETE_ALTERNATIVE_REQUIREMENT",
+        "novelty_result": "UNKNOWN_NOT_COUNTED_AS_NOVEL"
+      }
+    ]
+  },
+  "rejected_paraphrases": {
+    "alternatives": [
+      {
+        "candidate_q_item": "Fila convencional com workers fixos, retries e dead-letter queue",
+        "matched_candidate_p_items": [
+          "ALT-01",
+          "UNIT-01",
+          "UNIT-02"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Correspondência direta do baseline congelado, com as mesmas lacunas de backpressure, durabilidade, idempotência, observabilidade e dados."
+      },
+      {
+        "candidate_q_item": "Implementação própria baseada em fila limitada e armazenamento durável",
+        "matched_candidate_p_items": [
+          "ALT-02",
+          "ALT-03",
+          "ALT-04",
+          "UNIT-03",
+          "UNIT-07",
+          "UNIT-18"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "É a alternativa de pipeline próprio já congelada, composta pelos mesmos mecanismos de fila limitada, persistência, deduplicação e estados operacionais."
+      }
+    ],
+    "mechanisms": [
+      {
+        "candidate_q_item": "Fila limitada com backpressure",
+        "matched_candidate_p_items": [
+          "ALT-02",
+          "MEC-01",
+          "HYP-01",
+          "UNIT-03",
+          "UNIT-04",
+          "UNIT-05",
+          "UNIT-06"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Limite de fila que reduz ou bloqueia admissão é o mecanismo literal congelado."
+      },
+      {
+        "candidate_q_item": "Estado durável por item",
+        "matched_candidate_p_items": [
+          "ALT-03",
+          "HYP-02",
+          "UNIT-07",
+          "UNIT-08",
+          "UNIT-09",
+          "UNIT-12",
+          "UNIT-13"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Persistir estado e transições antes de confirmar e retomar após reinício já está coberto pela persistência transacional e fronteiras de confirmação."
+      },
+      {
+        "candidate_q_item": "Idempotência e deduplicação",
+        "matched_candidate_p_items": [
+          "ALT-03",
+          "HYP-02",
+          "UNIT-10",
+          "UNIT-11",
+          "UNIT-12"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Identidade estável, chave por efeito, deduplicação de reenvios/retries e efeito lógico único foram congelados."
+      },
+      {
+        "candidate_q_item": "Estados operacionais e dead-letter/intervenção",
+        "matched_candidate_p_items": [
+          "ALT-01",
+          "HYP-03",
+          "UNIT-02",
+          "UNIT-13",
+          "UNIT-14",
+          "UNIT-15",
+          "UNIT-16",
+          "UNIT-17"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Estados, tentativas, falhas permanentes, intervenção, métricas, trilha e limites de dados já estão inventariados, inclusive entre categorias."
+      }
+    ],
+    "improvement_hypotheses": [
+      {
+        "candidate_q_item": "Admitir novos anexos somente conforme capacidade de consumo",
+        "matched_candidate_p_items": [
+          "HYP-01",
+          "MEC-01",
+          "UNIT-03",
+          "UNIT-04",
+          "UNIT-05",
+          "UNIT-06"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "É a mesma hipótese causal de backpressure, memória limitada e saturação observável."
+      },
+      {
+        "candidate_q_item": "Máquina de estados persistida com chave de idempotência",
+        "matched_candidate_p_items": [
+          "HYP-02",
+          "ALT-03",
+          "UNIT-07",
+          "UNIT-08",
+          "UNIT-09",
+          "UNIT-10",
+          "UNIT-11",
+          "UNIT-12"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "Persistência transacional, retomada e idempotência por efeito são correspondência direta."
+      },
+      {
+        "candidate_q_item": "Separar falhas transitórias de falhas de intervenção com telemetria",
+        "matched_candidate_p_items": [
+          "HYP-03",
+          "UNIT-13",
+          "UNIT-14",
+          "UNIT-15",
+          "UNIT-16",
+          "UNIT-17"
+        ],
+        "result": "NOT_NOVEL",
+        "reason": "A distinção entre pendência, retry, falha permanente, indisponibilidade e intervenção já está explicitamente congelada."
+      }
+    ],
+    "non_novel_validation_details": [
+      "Os quatro alvos de validação de Q correspondem um a um a VAL-01 até VAL-04 de P.",
+      "Crashes antes e depois do efeito, fila de intervenção e inspeção de privacidade são métodos de teste já inventariados, não novos itens causais.",
+      "Riscos de confirmação antes da persistência, acúmulo além da capacidade e dados em DLQ são instâncias das lacunas congeladas."
+    ]
+  },
+  "mechanically_resolvable_evidence": {
+    "candidate_p": {
+      "status": "RESOLVABLE_WITHIN_FROZEN_INVENTORY",
+      "references": [
+        "CASE_INPUT"
+      ],
+      "scope": "Requisitos, restrições, baseline, classe BOUNDED_QUEUE_BACKPRESSURE e ausência de evidência operacional.",
+      "boundary": "P não trata as propriedades arquiteturais como demonstradas."
+    },
+    "candidate_q": {
+      "status": "PARTIAL",
+      "references": [
+        {
+          "reference_id": "CASE-01",
+          "source_type": "CASE_INPUT",
+          "locator": "bateia_supported_mechanism_classes",
+          "mechanically_resolvable": true,
+          "scope": "Somente a classe BOUNDED_QUEUE_BACKPRESSURE indicada pelo caso."
+        },
+        {
+          "reference_id": "CASE-02",
+          "source_type": "CASE_INPUT",
+          "locator": "conventional_baseline",
+          "mechanically_resolvable": true,
+          "scope": "Somente o baseline convencional."
+        },
+        {
+          "reference_id": "BATEIA-01",
+          "source_type": "BATEIA_RUN",
+          "locator": "recomendação para EXP29-C01; status INCONCLUSIVE; 26 candidatos, 4 avaliados; cobertura 0/4",
+          "sha256": "f5adf12706bb71292bdc38595eab04ae29b4671433d234636f3f5198658d246d",
+          "underlying_artifact_in_allowlist": false,
+          "mechanically_resolvable": false,
+          "result": "UNKNOWN"
+        }
+      ],
+      "interpretation": "As referências ao caso são resolvíveis e sustentam somente baseline e classe. A busca externa, suas contagens e sua conclusão não são verificáveis pela allowlist, mesmo com hash declarado."
+    }
+  },
+  "evidence_question_comparison": [
+    {
+      "question_id": "EQ-01",
+      "topic": "limite de admissão sob consumidores lentos",
+      "candidate_p": "DIRECT_CASE_SUPPORTED_CLASS_WITH_IMPLEMENTATION_BOUNDARY",
+      "candidate_q": "DIRECT_CASE_SUPPORTED_CLASS_WITH_IMPLEMENTATION_BOUNDARY",
+      "delta": "SEMANTIC_TIE",
+      "preferred": "TIE",
+      "reason": "Ambos descrevem capacidade limitada e pressão ao produtor sem alegar implementação demonstrada."
+    },
+    {
+      "question_id": "EQ-02",
+      "topic": "trabalho aceito sobrevive sem duplicar efeitos",
+      "candidate_p": "HYPOTHETICAL_TRANSACTIONAL_STATE_AND_IDEMPOTENCY_WITH_BOUNDARIES",
+      "candidate_q": "HYPOTHETICAL_DURABLE_STATE_AND_IDEMPOTENCY_WITH_EMPTY_DIRECT_REFS",
+      "delta": "NO_MATERIAL_UPLIFT",
+      "preferred": "CANDIDATE_P",
+      "reason": "A arquitetura é equivalente; P explicita melhor armazenamento, fronteiras de confirmação/processamento/efeito e ausência de demonstração."
+    },
+    {
+      "question_id": "EQ-03",
+      "topic": "separar propriedade demonstrada de hipótese",
+      "candidate_p": "DIRECT_WITH_CASE_BOUNDARY",
+      "candidate_q": "DIRECT_CASE_BOUNDARY_PLUS_UNRESOLVABLE_EXTERNAL_SEARCH",
+      "delta": "UNVERIFIABLE_NEGATIVE_SEARCH_CLAIM",
+      "preferred": "CANDIDATE_P",
+      "reason": "Q preserva inconclusividade, mas não oferece acesso mecanicamente resolvível à execução externa."
+    }
+  ],
+  "counterevidence_and_unknowns_comparison": {
+    "candidate_p": {
+      "strengths": [
+        "cinco contraevidências públicas e oito alvos de refutação específicos",
+        "dez unknowns cobrindo confirmação, capacidade, dados, operação e recuperação",
+        "distingue claramente classe declarada de propriedade implementada"
+      ],
+      "weaknesses": [
+        "não possui evidência de componente concreto"
+      ]
+    },
+    "candidate_q": {
+      "strengths": [
+        "preserva recuperação e idempotência como não demonstradas",
+        "explicita confirmação antes da persistência como risco",
+        "mantém privacidade, custo e licença como unknowns"
+      ],
+      "weaknesses": [
+        "contraevidência sobre candidatos depende de busca externa não resolvível",
+        "mecanismos duráveis, idempotentes e operacionais têm listas de evidência vazias",
+        "unknowns são menos completos quanto a política de admissão, métricas/intervenção e existência de recuperação independente"
+      ]
+    },
+    "new_counterevidence_or_unknowns_in_q": [],
+    "paraphrased_or_more_specific_in_q": [
+      "confirmação antes da persistência corresponde às fronteiras de confirmação congeladas",
+      "identidade correta e limites de deduplicação correspondem à estratégia por anexo já desconhecida",
+      "comportamento downstream corresponde às fronteiras e efeitos externos já inventariados",
+      "licença e manutenção correspondem a custo, licença e esforço operacional congelados"
+    ],
+    "preferred": "CANDIDATE_P"
+  },
+  "actionability_comparison": {
+    "candidate_p": {
+      "decision": "INVESTIGATE_WITH_EXPLICIT_ADAPT_AND_CONDITIONAL_BUILD_OPTIONS",
+      "validation_targets": 4,
+      "notable_strength": "Quatro testes focais com critérios de sucesso/falha e alternativas ADAPT, INVESTIGATE e BUILD separadas."
+    },
+    "candidate_q": {
+      "decision": "UNKNOWN_PENDING_VALIDATION",
+      "validation_targets": 4,
+      "notable_strength": "Quatro testes focais equivalentes, com dependências explícitas.",
+      "notable_gap": "Agrupa candidatos externos sem identidade e reduz a decisão a UNKNOWN apesar de haver caminhos de investigação concretos."
+    },
+    "delta": "NO_NEW_ACTIONABLE_PATH",
+    "preferred": "CANDIDATE_P",
+    "reason": "Os planos são equivalentes, mas P discrimina melhor adaptação, investigação e construção; Q não materializa candidato reutilizável."
+  },
+  "criterion_verdicts": [
+    {
+      "criterion": "confirmed_material_novelty",
+      "winner": "TIE",
+      "reason": "Q contém zero itens novos confirmados; o grupo anônimo de candidatos é UNKNOWN e não conta."
+    },
+    {
+      "criterion": "mechanically_resolvable_evidence_support",
+      "winner": "CANDIDATE_P",
+      "reason": "P usa somente CASE_INPUT com fronteira explícita; Q acrescenta busca externa não resolvível e deixa três mecanismos sem referências."
+    },
+    {
+      "criterion": "evidence_question_coverage",
+      "winner": "CANDIDATE_P",
+      "reason": "A primeira pergunta empata; P cobre as demais com limites mais completos e sem depender de evidência externa inacessível."
+    },
+    {
+      "criterion": "counterevidence_and_unknown_preservation",
+      "winner": "CANDIDATE_P",
+      "reason": "P é mais abrangente em confirmação, intervenção, capacidade, dados e recuperação independente."
+    },
+    {
+      "criterion": "actionability",
+      "winner": "CANDIDATE_P",
+      "reason": "Os mesmos quatro testes são propostos, mas P preserva melhor os caminhos decisórios e condições."
+    }
+  ],
+  "overall_verdict": {
+    "winner": "CANDIDATE_P",
+    "novelty_uplift": "TIE_NO_CONFIRMED_NEW_ITEMS",
+    "reason": "CANDIDATE_Q não adiciona alternativa, mecanismo ou hipótese materialmente nova com suporte resolvível. CANDIDATE_P vence no conjunto por limites epistêmicos, cobertura de unknowns, evidência pública e caminhos decisórios mais completos.",
+    "unknown_does_not_default_to_success": true
+  },
+  "confidence": {
+    "level": "HIGH",
+    "score": 0.94,
+    "basis": [
+      "correspondência direta de todas as alternativas concretas, mecanismos e hipóteses Q com unidades congeladas P",
+      "quatro planos de validação semanticamente equivalentes",
+      "único possível delta é grupo não identificado apoiado por artefato externo ausente"
+    ]
+  },
+  "limitations": [
+    "BATEIA-01 não foi lido e permanece UNKNOWN; seu hash identifica uma alegação, mas não prova seu conteúdo.",
+    "O veredito cobre apenas o fragmento observável nas duas entradas e no contrato conhecido.",
+    "Não há veredito sobre implementação, desempenho, licença, segurança ou equivalência funcional geral.",
+    "O inventário P herda sobreleitura pública anterior de casos de validação, não material para cegamento de braço ou perfil, mas incompatível com alegação de isolamento perfeito."
+  ],
+  "attestation": {
+    "candidate_labels_used_exclusively": [
+      "CANDIDATE_P",
+      "CANDIDATE_Q"
+    ],
+    "arm_inference": "NOT_PERFORMED",
+    "profile_inference": "NOT_PERFORMED",
+    "forbidden_artifacts_read": [],
+    "revelations_read": false,
+    "external_model_executed": false,
+    "external_mcp_executed": false,
+    "comparison_inputs_only": true,
+    "isolation_claim": "BLIND_TO_ARM_AND_PROFILE_WITH_INHERITED_NON_MATERIAL_PUBLIC_CORPUS_DEVIATION"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": "tekt.step0029.oracle-cases.v1",
+  "suite_id": "step0029-positive-opaque-r1",
+  "authority": "AUTOR_DOS_ORACULOS",
+  "candidate_visibility": "NOT_READ",
+  "negative_cases_owned_elsewhere": true,
+  "positive_cases": [
+    {
+      "id": "P01_EXACT_FACTORIAL_PLAN",
+      "operation": "BuildPlan+ValidatePlan",
+      "fixture": "6 frozen descriptors (1 CONTRACT, 2 VALIDATION, 3 TEST), exact 9-profile product and both arms",
+      "expected": {"violations": 0, "cells": 108, "pairs": 54, "split_cells": {"CONTRACT": 18, "VALIDATION": 36, "TEST": 54}, "cells_per_case": 18, "cells_per_pair": 2}
+    },
+    {
+      "id": "P02_PROFILE_IDENTITY",
+      "operation": "BuildPlan",
+      "fixture": "LUNA|TERRA|SOL x low|medium|high with exact resolved model IDs",
+      "expected": "Each case contains exactly one A and one B cell for each immutable profile identity; no fallback or substitution."
+    },
+    {
+      "id": "P03_TREATMENT_ONLY_DIFFERENCE",
+      "operation": "BuildPlan+ValidatePlan",
+      "fixture": "one valid pair",
+      "expected": "Base prompt, case, profile and budget are equal; only the literal treatment instruction and ten-tool allowlist alter B."
+    },
+    {
+      "id": "P04_INFRA_RETRY_BEFORE_OUTPUT",
+      "operation": "ClassifyAttempt+EvaluateRetry",
+      "fixture": "confirmed INFRA_FAILURE, ModelOutputObserved=KNOWN(false), no previous retry, original preserved",
+      "expected": {"status": "INFRA_FAILURE", "retry": "ALLOW", "max_retries": 1}
+    },
+    {
+      "id": "P05_SAFE_DETERMINISTIC_RECEIPT",
+      "operation": "BuildRunReceipt",
+      "fixture": "valid cell with one complete attempt, observed usage and hashed tool call",
+      "expected": "All attempts and causal hashes are present; equal input produces byte-identical receipt/hash; no prompt, credential, chain-of-thought or raw tool body appears."
+    },
+    {
+      "id": "P06_DETERMINISTIC_GLOBAL_ALIASING",
+      "operation": "Anonymize",
+      "fixture": "valid output containing repeated run/artifact/hash references and a frozen symmetric neutral-marker policy",
+      "expected": "Repeated identifiers share one opaque alias across projections; identity metadata disappears; substantive spelling and field order are not repaired; rerun is byte-identical."
+    },
+    {
+      "id": "P07_EXACT_SCORE",
+      "operation": "Score",
+      "fixture": "3 independent judges x 10 dimensions, all ratings integer 3",
+      "expected": {"ratings": 30, "exact_score": 75, "rounded_before_comparison": false}
+    },
+    {
+      "id": "P08_PAIRED_ANALYSIS",
+      "operation": "Analyze",
+      "fixture": "27 TEST pairs with same case/profile within each pair; A=50 and B=75",
+      "expected": {"wins": 27, "ties": 0, "losses": 0, "median_uplift": 25, "denominator": 27, "mode": "INTENTION_TO_TREAT"}
+    },
+    {
+      "id": "P09_DEMONSTRATED_GATE_BOUNDARY",
+      "operation": "EvaluateGates",
+      "fixture": "all integrity/refinement/budget gates true; valid B=25; wins=18,ties=0; median=10; all strata medians=0; agreement=0.67",
+      "expected": {"verdict": "BATEIA_AGENT_UPLIFT_DEMONSTRATED", "inclusive_thresholds": true}
+    }
+  ],
+  "opaque_cases": [
+    {
+      "id": "O01_USAGE_NOT_EXPOSED",
+      "operation": "BuildRunReceipt+Analyze",
+      "fixture": "input/output/reasoning tokens and duration are Observation UNKNOWN with public reason",
+      "expected": "Unknown remains explicit, is omitted only from the unavailable efficiency metric and the cell remains in its analysis denominator."
+    },
+    {
+      "id": "O02_RUNTIME_DEFAULT_NOT_EXPOSED",
+      "operation": "BuildPlan",
+      "fixture": "runtime default field supplied as UNKNOWN_RUNTIME_DEFAULT",
+      "expected": "The harness preserves the sentinel and never infers a default from family, model name or effort."
+    },
+    {
+      "id": "O03_FIRST_OUTPUT_UNKNOWN",
+      "operation": "EvaluateRetry",
+      "fixture": "confirmed infrastructure failure with ModelOutputObserved=UNKNOWN(reason)",
+      "expected": {"retry": "DENY", "unknown_promoted_to_false": false}
+    },
+    {
+      "id": "O04_BATEIA_RUN_INCONCLUSIVE",
+      "operation": "ClassifyAttempt+Analyze",
+      "fixture": "schema-valid investigation whose dependent evidence observation is UNKNOWN because the Bateia run was inconclusive",
+      "expected": "RunStatus is VALID_OUTPUT; the dependent claim stays UNKNOWN; neither becomes success/fact nor is the cell removed."
+    },
+    {
+      "id": "O05_INFRA_WITHOUT_VALID_ATTEMPT",
+      "operation": "Analyze+EvaluateGates",
+      "fixture": "dispatched TEST cell ends INFRA_FAILURE without valid retry result",
+      "expected": "Quality remains UNKNOWN, cell remains in denominator and confirmatory verdict is INCONCLUSIVE_EXPERIMENT rather than policy score zero."
+    }
+  ],
+  "determinism": {
+    "repeat_same_input": "byte-identical outputs, hashes, violations, scores and decisions",
+    "violation_order": ["Code", "Path", "Message"],
+    "external_io": "FORBIDDEN"
+  }
+}

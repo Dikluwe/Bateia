@@ -1,0 +1,30 @@
+{
+  "schema_version": "tekt.step0029.candidate-verification-receipt.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:23:08Z",
+  "executor": "/root/verificador_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "candidate_files": [
+    {"path":"04_wiring/step0029_experiment/harness.go","sha256":"788f1d90bb635856d1a75f23696f68142d42e8a70184ee84e3d88469d263bdf8"},
+    {"path":"04_wiring/step0029_experiment/types.go","sha256":"90bb66e4bea2aafaec93e0daa869bc3b7b2ed595f8c65b3cfe42ea41885fc165"}
+  ],
+  "candidate_root_algorithm": "SHA256 over lexicographically sorted path + NUL + file_sha256_hex + LF records",
+  "candidate_root_sha256": "7c10330c11f5c98dcf3f0ade780ae0f42cddb8e37879ec592ce4bf6c6f029dea",
+  "prompt_hashes": {
+    "harness":"77271fc1b51b52d61e861a206e9efc32aaabee26c5250c3531194121b9d87111",
+    "types":"389390b606a60b8ef3cfb5e4e1a2ff1e79b5c99fe0df180f576f0800b2bd0093"
+  },
+  "test_hashes": {
+    "oracle":"d377ddb3c8ad4aa008e05938f3893595588d274074f02e9ed086ceda8564fb7a",
+    "adversarial":"ee1ee904c71d7e9f7c9ea73a1b86792802fce42f976f56dccf1ebd9cf40bcf06"
+  },
+  "static_audit": {
+    "exported_entrypoints": ["BuildPlan","ValidatePlan","ClassifyAttempt","EvaluateRetry","BuildRunReceipt","Anonymize","Score","Analyze","EvaluateGates"],
+    "forbidden_effect_entrypoints_found": 0,
+    "network_process_filesystem_clock_random_imports_found": 0,
+    "production_wiring_imported": false,
+    "crystalline_lint": "EXIT_0_WITH_V12_WARNINGS"
+  },
+  "limitations": ["Project lint reports L4 business-logic warnings for the benchmark harness; clean architecture compliance is not certified."],
+  "verdict": "LOCAL_CANDIDATE_EXECUTABLE_WITH_DOCUMENTED_ARCHITECTURAL_WARNINGS"
+}

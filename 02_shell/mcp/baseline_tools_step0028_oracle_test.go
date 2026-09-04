@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/baseline_tools_step0028_oracle_test.md
  * @layer L2
- * @updated 2026-09-02
+ * @updated 2026-09-03
  */
 
 package mcp
@@ -31,7 +31,7 @@ func TestStep0028OracleFrozenBasalNineCapture(t *testing.T) {
 		SHA256 string   `json:"sha256"`
 		Names  []string `json:"names"`
 	}
-	fixture, err := os.ReadFile(filepath.Join("..", "..", "00_nucleo", "benchmark", "0028", "oracle", "protected", "fixtures", "basal-tools-0027.json"))
+	fixture, err := os.ReadFile(filepath.Join("..", "..", "00_nucleo", "benchmark", "0031", "basal-tools-successor.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

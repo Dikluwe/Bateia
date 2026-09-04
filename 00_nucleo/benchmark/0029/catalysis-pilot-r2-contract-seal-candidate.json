@@ -1,0 +1,80 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-contract-seal-candidate.v2",
+  "created_at": "2026-09-03",
+  "issuer": "/root/oraculo_metodo_r2",
+  "status": "CANDIDATE_NOT_SEALED",
+  "verdict": "READY_FOR_INDEPENDENT_FOCAL_SUCCESSOR_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "causal_chain": {
+    "intent_sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca",
+    "r1_methodology_verification_sha256": "efd24649613b38a8530e5e0b417d35b95bae6250bb3c17f69d8cfac4c1482c5b",
+    "r1_to_r2_invalidation": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r1-to-r2-invalidation.json",
+      "sha256": "d3f150702f07aa84b387a731daa539a29027cd8d280e477515979578626bf5ad"
+    }
+  },
+  "preserved_baseline": {
+    "commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "case_id": "EXP29-V02",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "schema_r2_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "control_prompt_sha256": "d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8",
+    "treatment_prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56"
+  },
+  "transport_sources": {
+    "client_request_sha256": "1024db9d23b156e04b020a5d101982841dab158b84ecc9ecec399ab119ac9a1f",
+    "protocol_v2_sha256": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "bateia_binary_sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+  },
+  "candidate_artifacts": {
+    "web_event_schema_witness": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-web-event-schema-witness.json",
+      "sha256": "a028ea36778ee2c630070d5c2b37fb22ce249c9daa8f2b82cfbb51657c348c56"
+    },
+    "execution_profile": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-execution-profile.json",
+      "sha256": "7d110bc41f779444c189e6ce518f64387bcde93df111e55f8be13630be1db5fc"
+    },
+    "methodology": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-methodology.json",
+      "sha256": "6923548cdbf7a20648fa60db2dbeac5c89ad2c3ab129bc4a321b7896d25cb73b"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-contract.json",
+      "sha256": "1e0a351888c4e71ce50061071a9600c355414847266c30d418d0edb14b391108"
+    },
+    "adversarial_cases": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-adversarial-cases.json",
+      "sha256": "39db0fa53aea70e2deac34bf37abd723aac441f66bfc7c8f8cff2387430dae10"
+    },
+    "oracle_authorship": {
+      "path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-oracle-authorship.json",
+      "sha256": "12c51da08c88e869324cab07a38721a8268e7111e45f6dae20642114cea1e6c0"
+    }
+  },
+  "r1_discriminatory_history": {
+    "mutation_score": 1.0,
+    "scope": "R1 suite only; does not seal R2 additions."
+  },
+  "r2_mutation_gate": {
+    "valid_mutants": 15,
+    "required_rejections": 15,
+    "required_score": 1.0,
+    "actual_score": null,
+    "status": "NOT_EXECUTED"
+  },
+  "runtime_fail_closed_boundary": "If Codex CLI JSONL does not expose the exact publicly witnessed web id/action/query-or-url fields at an accepted path, classify transport observability Unknown, invalidate the arm for pair completion and stop without replacement.",
+  "seal_blockers": [
+    "independent verifier has not rerun affected feasibility and positive/opaque boundary cases",
+    "R2 fifteen-mutant suite and repetition/reordering gates have not run",
+    "execution-profile serialization and runtime web JSONL compatibility have not been independently verified",
+    "no final execution authorization exists"
+  ],
+  "immutability_rule": "Any byte change to a bound input or candidate artifact invalidates this candidate and requires a new verification chain.",
+  "prohibitions": [
+    "Do not treat this candidate as a sealed contract or execution authorization.",
+    "Do not execute model, native web or MCP from this artifact.",
+    "Do not read or infer session outputs.",
+    "Do not preselect a winner or alter the preserved winner policy."
+  ]
+}

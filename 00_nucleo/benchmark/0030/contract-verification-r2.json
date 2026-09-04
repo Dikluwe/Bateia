@@ -1,0 +1,196 @@
+{
+  "schema_version": "bateia.step0030.contract-verification.r2.v1",
+  "created_at": "2026-09-03",
+  "verifier": "/root/verificador_contrato_0030",
+  "role": "independent_contract_verifier",
+  "protocol": "TEKT_FULL_PROTOCOL_STEP0030_CATALYSIS",
+  "verdict": "APROVADO",
+  "seal_authorized": true,
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "claim_boundary": "This receipt approves the pre-implementation R2 contract and its recorded observable fragment only. It does not approve an implementation, satisfy runtime preflight, dispatch behavioral sessions, judge outputs or establish general Bateia uplift.",
+  "r2_input_hashes": {
+    "r1-to-r2-invalidation.json": "e2ef9257074514857951f8fbc220c7c5cfc3e71cd7cf6fd99368e6a6448bf75b",
+    "authority-manifest-r2.json": "09cc4603a8c8220789495f314ea64e659cf5fed8d211e9dd3d14ad27e7c94488",
+    "randomization-plan-r2.json": "89c1de4c946962abc662c3e3ca80b41150677e9c3ddbbe48dd662bb9ea6cfb9c",
+    "experiment-manifest-r2.json": "d5d159181e3f94a95d7c866bd15543b37ac4de04a6995bc8077a7f2f9219c341",
+    "execution-profile-r2.json": "b57ed396e499a2017fcea2cdb39f12a20beebaa42252b4037f0f494650c909b5",
+    "contract-candidate-r2.json": "46c1db519cd60d408af975690d710064b06bc4099c30e19cb8cf99744c9a569d",
+    "contract-authorship-r2.json": "c65ed270dea5d04fe26b2ce00214f3236afd14105f09928fc8cf483c835724bb"
+  },
+  "preserved_r1_hashes": {
+    "contract-verification-r1.json": "7d89e19f6a89d15e492b55bd17a663206aa7548d644da56ce04bbf5ada2c2829",
+    "compact-output-schema.json": "395bee1fab86d2f84318664293f79f1f06ad2556d54a34ef50236fc0e254ad95",
+    "output-bound-proof.json": "dbc6a5766ece9ce767af9fcd60794cf5df7c4e2bbd881e533539356252ee069b",
+    "web-event-decoder-contract.json": "8a11f29cc3443009e06ce1b359c97ad9ccb257c3ac3f224c03169689ec1c9206",
+    "pair-dispatch-contract.json": "b4c742d32ac0219013be0c48cef7f4f4adee6a13ddacdcde4b74283c916787b1",
+    "prompt-control.txt": "e829365177d7bf9ba60dce8dc900fb64dc1273d021eeddc7ee6076246958a86b",
+    "prompt-treatment.txt": "17f654629700affbed15e0380c18b4fd2c26891c11a20d2c5549e5fee2aea22a",
+    "rubric.json": "068b4b5d07a89eb5dc95e12ad46782d1a7fbad4d4acbef932b57c93089aa35a4",
+    "catalysis-trace-rubric.json": "be4267262777544d257a9c2dca1a1e950f031495bb834ee489b8d35cd54df6ad",
+    "positive-opaque-fixtures.json": "0cd9d62182928650615ff073c1e1fdbc7bd6854e502958fb35743d9d985ffa41",
+    "adversarial-mutations.json": "095e21fda17bf368459965708b93287f8c386195934b2218aea387f6ac40ef70",
+    "oracle-authorship.json": "6874448d48bf8e3e4e419fd4d05985713d5c3bafb30b58f97baf3b4e4337d599"
+  },
+  "protected_r3_hashes": {
+    "catalysis-pilot-r3-results.json": "3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524",
+    "catalysis-pilot-r3-final-verification.json": "7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2",
+    "sessions-catalysis-r3/treatment/events.jsonl": "f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73",
+    "sessions-catalysis-r3/treatment/output.json": "42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8",
+    "engineering-investigation.schema-r2.json": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+  },
+  "r1_failure_remediation": [
+    {
+      "r1_reason_code": "CONTRACT_AUTHORSHIP_SCHEMA_PATH_MISSING",
+      "status": "PASS",
+      "r2_path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+    },
+    {
+      "r1_reason_code": "ORACLE_AUTHORITY_BINDING_MISMATCH",
+      "status": "PASS",
+      "manifest_executor": "/root/adversario_0030",
+      "observed_oracle_author": "/root/adversario_0030"
+    },
+    {
+      "r1_reason_code": "VERIFIER_AUTHORITY_BINDING_MISMATCH",
+      "status": "PASS",
+      "manifest_executor": "/root/verificador_contrato_0030",
+      "executing_verifier": "/root/verificador_contrato_0030"
+    },
+    {
+      "r1_reason_code": "RANDOMIZATION_PLAN_PATH_MISSING",
+      "status": "PASS",
+      "r2_path": "00_nucleo/benchmark/0030/randomization-plan-r2.json",
+      "sha256": "89c1de4c946962abc662c3e3ca80b41150677e9c3ddbbe48dd662bb9ea6cfb9c",
+      "independent_order_keys_verified": 6,
+      "semantic_match_to_r1_embedded_mapping": true
+    }
+  ],
+  "no_regression_gate": {
+    "status": "PASS",
+    "preserved_contract_artifacts_matching": 8,
+    "preserved_oracle_artifacts_matching": 3,
+    "r1_verification_receipt_matching": true,
+    "estimand_cases_budgets_prompts_rubrics_decoder_dispatch_and_unknown_policy_unchanged": true
+  },
+  "output_bound_gate": {
+    "status": "PASS",
+    "method": "Independent recursive evaluation of bounded strings, enums, arrays and closed required objects under the declared canonical UTF-8 recurrence.",
+    "computed_canonical_maximum_bytes": 47353,
+    "hard_serialized_bytes_max": 65536,
+    "margin_bytes": 18183,
+    "inequality": "47353 <= 65536",
+    "top_level_property_bounds_bytes": {
+      "problem_restatement": 1442,
+      "conventional_baseline": 1207,
+      "alternatives": 4689,
+      "mechanisms": 5901,
+      "improvement_hypotheses": 6821,
+      "reuse_build_decision": 1202,
+      "evidence_references": 9165,
+      "counter_evidence": 1810,
+      "risks": 2413,
+      "unknowns": 2413,
+      "validation_plan": 10078
+    }
+  },
+  "protected_r3_gate": {
+    "status": "PASS",
+    "events_records": 12,
+    "events_bytes": 85114,
+    "web_events": 6,
+    "encoding": "DUAL_ID_CODEX_0_149",
+    "machines": [
+      {"start_sequence": 5, "finish_sequence": 6, "ids": ["item_1", "exec-c37f624f-6f68-42f4-a1ad-062b2ad66980"]},
+      {"start_sequence": 7, "finish_sequence": 8, "ids": ["item_2", "exec-14ddd14a-a4b7-4540-ac4a-214590e95745"]},
+      {"start_sequence": 9, "finish_sequence": 10, "ids": ["item_3", "exec-9b4ef73e-c8e5-4036-bd3f-61ee8ec7a886"]}
+    ],
+    "output_unicode_characters": 22578,
+    "output_utf8_bytes": 23267,
+    "historical_r2_schema_validation_errors": 0,
+    "historical_classification": "VALID_SCHEMA_EDITORIAL_TARGET_EXCEEDED",
+    "successor_compact_schema_violations": 120,
+    "successor_classification": "INVALID_COMPACT_SCHEMA",
+    "repair_or_reclassification_performed": false
+  },
+  "discriminatory_gate": {
+    "status": "PASS",
+    "canonical_outcome_vector_sha256": "7dc445e35a479535a5172b6a297630e4d8b6d8529b85e9524e0be759bdea1bf8",
+    "positive_results": [
+      {"id": "P01_COMPLETE_PAIR", "outcome": "Preserved", "reason_code": "PAIR_COMPLETE_PRESERVED"},
+      {"id": "P02_R3_DUAL_ID", "outcome": "Preserved", "reason_code": "R3_DUAL_ID_DECODED"}
+    ],
+    "opaque_results": [
+      {"id": "O01_UNKNOWN_ENCODING", "outcome": "Unknown", "reason_code": "WEB_EVENT_ENCODING_OPAQUE"},
+      {"id": "O02_UNKNOWN_COST", "outcome": "Unknown", "reason_code": "COST_UNKNOWN"},
+      {"id": "O03_UNKNOWN_CAUSAL_LINK", "outcome": "Unknown", "reason_code": "CAUSAL_LINK_UNKNOWN"}
+    ],
+    "mutant_results": [
+      {"id": "M01_COMPLETE_PAIR_FALSE_REJECTION", "outcome": "KILLED", "reference_observable": "Preserved", "reason_code": "PAIR_COMPLETE_MUST_BE_PRESERVED"},
+      {"id": "M02_CONTROL_BATEIA_LEAK", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "CONTROL_BATEIA_FORBIDDEN"},
+      {"id": "M03_TREATMENT_BATEIA_AFTER_WEB", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "TREATMENT_BATEIA_NOT_COMPLETED_BEFORE_WEB"},
+      {"id": "M04_WEB_CALL_COUNT_FOUR", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "WEB_CALL_COUNT_OUT_OF_RANGE"},
+      {"id": "M05_PAIR_MODEL_MISMATCH", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "PAIR_SHARED_CONFIGURATION_MISMATCH"},
+      {"id": "M06_LAST_WINS_DECODER", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "DUPLICATE_ID_COLLAPSED"},
+      {"id": "M07_R3_DUAL_ID_MARKED_OPAQUE", "outcome": "KILLED", "reference_observable": "Preserved", "reason_code": "R3_DUAL_ID_MUST_DECODE"},
+      {"id": "M08_UNKNOWN_ENCODING_ACCEPTED", "outcome": "KILLED", "reference_observable": "Unknown", "reason_code": "WEB_EVENT_ENCODING_MUST_REMAIN_UNKNOWN"},
+      {"id": "M09_COMPLETION_ID_MISMATCH", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "WEB_LIFECYCLE_ID_VECTOR_MISMATCH"},
+      {"id": "M10_CANCEL_SECOND_ARM", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "ITT_SECOND_ARM_CANCELLED"},
+      {"id": "M11_BEHAVIORAL_RETRY", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "BEHAVIORAL_RETRY_FORBIDDEN"},
+      {"id": "M12_EDITORIAL_EXCESS_INVALIDATED", "outcome": "KILLED", "reference_observable": "Preserved", "reason_code": "EDITORIAL_EXCESS_MUST_NOT_INVALIDATE"},
+      {"id": "M13_HARD_CAP_ACCEPTED", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "HARD_OUTPUT_CAP_EXCEEDED"},
+      {"id": "M14_INCONCLUSIVE_AUTO_LOSS", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "INCONCLUSIVE_AUTO_OUTCOME_FORBIDDEN"},
+      {"id": "M15_BLIND_TRACE_LEAK", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "BLIND_INPUT_LEAK"},
+      {"id": "M16_CAUSAL_CREDIT_WITHOUT_PATH", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "CATALYSIS_OBSERVABLE_PATH_MISSING"},
+      {"id": "M17_VOLUME_AS_GAIN", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "VOLUME_IS_NOT_GAIN"},
+      {"id": "M18_SESSION_23_DISPATCH", "outcome": "KILLED", "reference_observable": "Violated", "reason_code": "SESSION_23_NOT_AUTHORIZED"},
+      {"id": "M19_UNKNOWN_IMPUTED_SUCCESS", "outcome": "KILLED", "reference_observable": "Unknown", "reason_code": "UNKNOWN_MUST_BE_PRESERVED"}
+    ],
+    "runs": [
+      {"order": "declared", "repetition": 1, "positives_preserved": 2, "opaques_unknown": 3, "mutants_killed": 19, "mutation_score": 1.0},
+      {"order": "declared", "repetition": 2, "positives_preserved": 2, "opaques_unknown": 3, "mutants_killed": 19, "mutation_score": 1.0},
+      {"order": "reverse", "repetition": 1, "positives_preserved": 2, "opaques_unknown": 3, "mutants_killed": 19, "mutation_score": 1.0},
+      {"order": "reverse", "repetition": 2, "positives_preserved": 2, "opaques_unknown": 3, "mutants_killed": 19, "mutation_score": 1.0}
+    ],
+    "order_normalized_vectors_identical": true,
+    "valid_mutants": 19,
+    "mutants_killed": 19,
+    "survivors": [],
+    "mutation_score": 1.0,
+    "unknown_execution_outcomes": ["O01_UNKNOWN_ENCODING", "O02_UNKNOWN_COST", "O03_UNKNOWN_CAUSAL_LINK"],
+    "unknown_only_satisfies_opaque_fixtures": true,
+    "opaque_reference_note": "M08 and M19 are killed because their mutated behavior imputes success; their embedded reference observable remains Unknown, while the mutation execution outcome is KILLED."
+  },
+  "cost_and_revision": {
+    "r2_contract_revisions_since_r1": 1,
+    "full_corpus_runs": 4,
+    "behavioral_sessions": 0,
+    "model_calls": 0,
+    "web_calls": 0,
+    "mcp_tool_calls": 0,
+    "newly_corrected_r1_causes": 4,
+    "regressions": 0
+  },
+  "authorization": {
+    "implementation_materialization": "AUTHORIZED_ONLY_AGAINST_THE_R2_SEAL",
+    "behavioral_dispatch": "CONDITIONED_ON_AN_INDEPENDENT_GLOBAL_PREFLIGHT_PASS",
+    "preflight_failure": "FAIL_CLOSED_ZERO_BEHAVIORAL_SESSIONS",
+    "model_web_or_mcp_execution_authorized_by_this_receipt": false
+  },
+  "forbidden_access_attestation": {
+    "candidate_implementation_read_or_written": false,
+    "contract_or_oracle_input_modified": false,
+    "model_sessions_executed": false,
+    "native_web_executed": false,
+    "mcp_or_tool_calls_executed": false,
+    "protected_r3_fixture_modified": false
+  },
+  "reproduction": {
+    "hashes": "sha256sum over every path listed in r2_input_hashes, preserved_r1_hashes and protected_r3_hashes",
+    "randomization": "sha256(UTF8(seed_commitment)||NUL||UTF8(case_id)||NUL||UTF8(arm_id)) for all six cells, sorted ascending by order_key then case_id then arm_id",
+    "bound": "Recursive evaluation using S(n)=2+6*n, A(k,e)=2+k*e+max(k-1,0), maximum serialized enum member and the declared closed-object recurrence",
+    "r3": "Draft 2020-12 validation against both historical and compact schemas plus duplicate-preserving object-pair scan of all 12 JSONL records",
+    "corpus": "Apply the frozen observable rules to each positive, opaque and one-change mutant; execute two declared-order and two reverse-order passes and compare order-normalized vectors"
+  },
+  "invalidation_rule": "Any change to the Step, intent, R2 authority or contract inputs, preserved R1 contract/oracle bytes, protected R3 bytes, randomization mapping, Unknown policy, expected classifications or execution order invalidates this receipt and the dependent R2 seal."
+}

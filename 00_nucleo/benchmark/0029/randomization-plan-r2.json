@@ -1,0 +1,47 @@
+{
+  "schema_version": "bateia.step0029.randomization-plan.v2",
+  "step": "0029",
+  "status": "REVISED_PLANNED_NOT_DISPATCHED",
+  "created_at": "2026-09-03T00:32:57-03:00",
+  "executor": "/root",
+  "predecessor_plan_sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+  "predecessor_failure_verification_sha256": "b055ad56c8622011383a35cabb6c1e5f47c7ad7bda28ab89c9f8469b4c942815",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "algorithm": "SHA256(seed || NUL || experiment_id || NUL || split || NUL || case_id || NUL || profile_id || NUL || arm), ascending; cell_id breaks ties; root_sha256 is SHA256 of encoding/json canonical cells",
+  "frozen_inputs": {
+    "experiment_id": "bateia-agent-uplift-0029-v1",
+    "contract_sha256": "48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7",
+    "baseline_certificate_sha256": "7b1098c57c6425a2adb2fb6d0d15fea9917502d201e3fb46ae0dfe5dc5ba6506",
+    "agent_profile_snapshot_sha256": "e01c2b8010f177ea6f57a3af7a4255623f9f3b8f917cf7a053112ed50a11876b",
+    "corpus_registry_sha256": "ec20bdcaf87c4d1280e67e7f2352fe582a43064493a64791910a7f11591cf5ee",
+    "seed_file_sha256": "979eafc7876f14bf0fc81e78bb0cd79415f89ae956fb23793fb462de9e686cbb",
+    "seed_commitment_sha256": "979eafc7876f14bf0fc81e78bb0cd79415f89ae956fb23793fb462de9e686cbb",
+    "randomization_seed": "step0029|bateia-agent-uplift|2026-09-02|v1",
+    "prompt_contract_sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c",
+    "output_schema_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df",
+    "tool_allowlists_file_sha256": "58d79667ffb2e1b005015ece63f13fc95d1e7ea21b26ae1f081955eabb53b5db",
+    "general_tool_allowlist_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "bateia_tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "bateia_build_sha256": "8abaaf70817cbc30421cde9957b403d70b02934cece74746e837a2b152afb7d3",
+    "replay_snapshot_sha256": "9832465ef89cf86f251ce7e1dc5e0d67d763589903505d804d5c2d769e4bdc1f",
+    "budget": {"wall_clock_seconds":900,"max_bateia_calls":25,"max_unchanged_status_polls":12,"max_output_utf8_characters":20000,"max_infrastructure_retries":1},
+    "seed_committed_before_outputs": true,
+    "design_sealed_before_test": true,
+    "test_reopening_allowed": false
+  },
+  "plan": {
+    "root_sha256": "622b59c348265fd3974989bfdab31b82ac89dedd72a1a554ab3fce114dcba114",
+    "execution_queue_sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f",
+    "cells": 108,
+    "pairs": 54,
+    "split_cells": {"CONTRACT":18,"VALIDATION":36,"TEST":54},
+    "arms": {"AGENT_ALONE":54,"AGENT_WITH_BATEIA":54},
+    "phase_order": ["CONTRACT","VALIDATION","TEST"]
+  },
+  "execution": {"contract_dispatched":0,"contract_total":18,"behavioral_sessions":0,"behavioral_sessions_max":108,"status":"AUTHORIZED_REVISED_PLAN"},
+  "limitations": [
+    "The original plan and its two pre-output failed attempts remain preserved as superseded evidence.",
+    "No behavioral model output existed before this revision; the full 108-session behavioral cap remains available.",
+    "The randomization seed and within-split order are unchanged; only schema-dependent cell and plan hashes changed."
+  ]
+}

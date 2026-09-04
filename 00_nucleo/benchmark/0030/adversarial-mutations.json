@@ -1,0 +1,147 @@
+{
+  "schema_version": "bateia.step0030.adversarial-mutations.v1",
+  "created_at": "2026-09-03",
+  "author": "/root/adversario_0030",
+  "contract_sha256": "a1b0ae928064c38a1663149e19c6d25ef9da6ee4e6c9dea9f2043f44f45681d1",
+  "mutation_policy": {
+    "one_change_per_mutant": true,
+    "required_score": 1.0,
+    "orders": ["declared", "reverse"],
+    "survivor_blocks_seal": true
+  },
+  "mutants": [
+    {
+      "id": "M01_COMPLETE_PAIR_FALSE_REJECTION",
+      "discriminatory_obligation": "preserva um par completo com controle web e tratamento Bateia+web",
+      "single_change": "Reject an otherwise compliant pair solely because treatment used the permitted Bateia tool.",
+      "expected_observable": "Preserved",
+      "expected_reason_code": "PAIR_COMPLETE_MUST_BE_PRESERVED"
+    },
+    {
+      "id": "M02_CONTROL_BATEIA_LEAK",
+      "discriminatory_obligation": "rejeita controle com qualquer MCP ou artifact Bateia",
+      "single_change": "Add one bateia_recommend MCP call to the control arm.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "CONTROL_BATEIA_FORBIDDEN"
+    },
+    {
+      "id": "M03_TREATMENT_BATEIA_AFTER_WEB",
+      "discriminatory_obligation": "rejeita tratamento sem uma recomendação concluída antes da primeira web",
+      "single_change": "Move the completed bateia_recommend event to after the first native web start.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "TREATMENT_BATEIA_NOT_COMPLETED_BEFORE_WEB"
+    },
+    {
+      "id": "M04_WEB_CALL_COUNT_FOUR",
+      "discriminatory_obligation": "rejeita 0 ou mais de 3 chamadas web em qualquer braço",
+      "single_change": "Increase one arm from three to four matched native web machines.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "WEB_CALL_COUNT_OUT_OF_RANGE"
+    },
+    {
+      "id": "M05_PAIR_MODEL_MISMATCH",
+      "discriminatory_obligation": "rejeita diferença de modelo, esforço, caso, schema ou budget dentro do par",
+      "single_change": "Change only the treatment model from gpt-5.6-sol to gpt-5.6-terra.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "PAIR_SHARED_CONFIGURATION_MISMATCH"
+    },
+    {
+      "id": "M06_LAST_WINS_DECODER",
+      "discriminatory_obligation": "rejeita parser JSON convencional que colapse chaves item.id duplicadas",
+      "single_change": "Deserialize each event into a last-wins map before counting item.id occurrences.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "DUPLICATE_ID_COLLAPSED"
+    },
+    {
+      "id": "M07_R3_DUAL_ID_MARKED_OPAQUE",
+      "discriminatory_obligation": "recupera corretamente o formato DUAL_ID_CODEX_0_149 da fixture R3",
+      "single_change": "Classify the protected R3 two-ID order as OPAQUE.",
+      "expected_observable": "Preserved",
+      "expected_reason_code": "R3_DUAL_ID_MUST_DECODE"
+    },
+    {
+      "id": "M08_UNKNOWN_ENCODING_ACCEPTED",
+      "discriminatory_obligation": "classifica formato de ID não congelado como Unknown, não como sucesso",
+      "single_change": "Treat an item.id value with prefix call- as a normalized successful web identity.",
+      "expected_observable": "Unknown",
+      "expected_reason_code": "WEB_EVENT_ENCODING_MUST_REMAIN_UNKNOWN"
+    },
+    {
+      "id": "M09_COMPLETION_ID_MISMATCH",
+      "discriminatory_obligation": "rejeita pareamento start/completion com IDs ou ordem divergentes",
+      "single_change": "Change only the completion exec UUID while retaining the start IDs.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "WEB_LIFECYCLE_ID_VECTOR_MISMATCH"
+    },
+    {
+      "id": "M10_CANCEL_SECOND_ARM",
+      "discriminatory_obligation": "rejeita cancelar o segundo braço por falha comportamental do primeiro",
+      "single_change": "Mark the second committed arm cancelled after an invalid JSON result in the first arm.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "ITT_SECOND_ARM_CANCELLED"
+    },
+    {
+      "id": "M11_BEHAVIORAL_RETRY",
+      "discriminatory_obligation": "rejeita retry ou substituição de resposta ruim",
+      "single_change": "Dispatch one replacement attempt after an editorially poor terminal response.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "BEHAVIORAL_RETRY_FORBIDDEN"
+    },
+    {
+      "id": "M12_EDITORIAL_EXCESS_INVALIDATED",
+      "discriminatory_obligation": "preserva output válido acima de 18.000 como excesso editorial",
+      "single_change": "Convert a schema-valid 22578-character output below the hard byte cap into structural INVALID.",
+      "expected_observable": "Preserved",
+      "expected_reason_code": "EDITORIAL_EXCESS_MUST_NOT_INVALIDATE"
+    },
+    {
+      "id": "M13_HARD_CAP_ACCEPTED",
+      "discriminatory_obligation": "rejeita output acima do teto rígido demonstrado pelo schema",
+      "single_change": "Accept an original raw output of 65537 UTF-8 bytes as structurally valid.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "HARD_OUTPUT_CAP_EXCEEDED"
+    },
+    {
+      "id": "M14_INCONCLUSIVE_AUTO_LOSS",
+      "discriminatory_obligation": "rejeita converter INCONCLUSIVE em derrota ou vitória automática",
+      "single_change": "Assign automatic loss and zero score solely from final answer state INCONCLUSIVE.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "INCONCLUSIVE_AUTO_OUTCOME_FORBIDDEN"
+    },
+    {
+      "id": "M15_BLIND_TRACE_LEAK",
+      "discriminatory_obligation": "rejeita dar ao julgador cego tool trace, braço, ordem ou identidade",
+      "single_change": "Reveal the treatment arm label to the blind judge before its receipt freezes.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "BLIND_INPUT_LEAK"
+    },
+    {
+      "id": "M16_CAUSAL_CREDIT_WITHOUT_PATH",
+      "discriminatory_obligation": "rejeita atribuir catálise sem elo observável direção→web→resultado",
+      "single_change": "Credit CONFIRMED_BY_WEB when the later web action has no resolvable locator linking the direction to the output claim.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "CATALYSIS_OBSERVABLE_PATH_MISSING"
+    },
+    {
+      "id": "M17_VOLUME_AS_GAIN",
+      "discriminatory_obligation": "rejeita promover quantidade de busca, texto ou candidatos a ganho",
+      "single_change": "Declare treatment uplift solely because it used more web queries.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "VOLUME_IS_NOT_GAIN"
+    },
+    {
+      "id": "M18_SESSION_23_DISPATCH",
+      "discriminatory_obligation": "rejeita executar sessão 23 sem novo estado de contagem compatível",
+      "single_change": "Authorize a twenty-third global session while the frozen state remains 22/108 with no successor authorization.",
+      "expected_observable": "Violated",
+      "expected_reason_code": "SESSION_23_NOT_AUTHORIZED"
+    },
+    {
+      "id": "M19_UNKNOWN_IMPUTED_SUCCESS",
+      "discriminatory_obligation": "preserva Unknown em telemetria, custo ou ligação causal opaca",
+      "single_change": "Impute Preserved and catalytic success when an opaque causal link is Unknown.",
+      "expected_observable": "Unknown",
+      "expected_reason_code": "UNKNOWN_MUST_BE_PRESERVED"
+    }
+  ]
+}

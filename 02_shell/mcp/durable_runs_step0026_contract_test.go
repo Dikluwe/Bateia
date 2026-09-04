@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_contract_test.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 package mcp
 
@@ -113,7 +113,7 @@ func TestStep0026ToolsListAddsExactlyFourAndPreservesStep0025Deeply(t *testing.T
 	if !reflect.DeepEqual(startProperties["idempotency_key"], wantKey) {
 		t.Fatalf("idempotency key schema = %#v", startProperties["idempotency_key"])
 	}
-	if got := start["required"]; !reflect.DeepEqual(got, []interface{}{"idempotency_key", "idea", "policy", "target", "search"}) && !reflect.DeepEqual(got, []string{"idempotency_key", "idea", "policy", "target", "search"}) {
+	if got := start["required"]; !reflect.DeepEqual(got, []interface{}{"idempotency_key", "idea"}) && !reflect.DeepEqual(got, []string{"idempotency_key", "idea"}) {
 		t.Fatalf("start required = %#v", got)
 	}
 

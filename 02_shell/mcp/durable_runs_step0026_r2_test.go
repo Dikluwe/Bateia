@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/durable_runs_step0026_r2_test.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 package mcp
 
@@ -27,10 +27,13 @@ const step0026LegacyBenchmarkTool = `{"name":"bateia_benchmark","description":"E
 func TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute(t *testing.T) {
 	for path, want := range map[string]string{
 		"../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
-		"recommendation_step0025_contract_test.go":        "cc88dfe582c5e61688468c89b94a173e0f23aea4d0e4105ba2ea6749c595dea6",
+		"recommendation_step0025_contract_test.go":        "b5cfd661a9d0c8fc1206ee1446d4cc94413ed0c8baf1df6072c3493bef85bcb5",
 		"server_test.go": "f7d15d6e29b66c6591e91d832e5c0e1c155641ca345a150610470133a3dd098d",
-		"../../00_nucleo/prompts/02_shell/mcp/server.md":                                "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e",
-		"../../00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md": "04bfd375118c94df889ebed6aaf01bc105e2df806b0e30b93c6b506682335767",
+		"../../00_nucleo/prompts/02_shell/mcp/server.md":                                "b5075f7cbb40a86a15d90ff690b410e4a47a8b3d806c5def3794dd8c4b76f564",
+		"../../00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md": "e668446a26161ca8931d773467629c38263171aa460120def8f4a3d818626eff",
+		"../../00_nucleo/benchmark/0029/historical-hash-invalidation-o2-to-o3.json":     "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
+		"../../00_nucleo/benchmark/0029/historical-hash-successor-o3.json":              "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
+		"../../00_nucleo/benchmark/0031/historical-contract-supersession.json":          "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
 	} {
 		data, err := os.ReadFile(path)
 		if err != nil {
@@ -38,7 +41,7 @@ func TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute(t *t
 		}
 		digest := sha256.Sum256(data)
 		if got := hex.EncodeToString(digest[:]); got != want {
-			t.Fatalf("immutable Step 0025 artifact changed: %s got=%s want=%s", path, got, want)
+			t.Fatalf("historical lineage input changed: %s got=%s want=%s", path, got, want)
 		}
 	}
 

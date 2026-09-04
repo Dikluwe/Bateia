@@ -1,0 +1,236 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-implementation-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T11:26:04Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_POST_IMPLEMENTATION_FOCAL_AND_PACKAGE_GATES",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "result": "FAIL_CLOSED",
+  "verdict": "FAIL_CLOSED_HISTORICAL_REFINEMENT_HASH_GATES",
+  "candidate_focal_semantics": "PASS",
+  "package_gate": "FAIL",
+  "behavioral_pilot_dispatch_authorization": "BLOCKED",
+  "inputs": {
+    "contract_seal": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-contract-seal-r1.json",
+      "sha256": "bc8b01c6687b15c82b3020b3d0fea50d25a5381731915168a6b88f51c75b41c0",
+      "self_hash": "cf840d37ccf3341bef278786f5b1c76867422fde4522038c0d701feeefbc4748"
+    },
+    "candidate": {
+      "02_shell/mcp/server.go": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+      "04_wiring/main.go": "ec577457e08e3423aec1967c9fed50cc406fee51386236c24ec4d4f6519cda8e"
+    },
+    "protected": {
+      "temperature_pilot_spec_r1": "fa02c8cbdb93251bd1cc9d98b9f59f1e59c7889d08c0f8cc09c680951b1dc650",
+      "temperature_pilot_manifest_r1": "cb87ce8dc84ccbcf710912b62c9ca94bc97372f6ab5bbf9e944c1b9b6be3fbf8",
+      "temperature_pilot_contract_r1": "1371f6c1f145d8b71728ecc2716b73653d2a334590f290b4922bbb5924eb519a",
+      "l2_oracle": "b9d65fb25309f6b5bd8f63ebd97c731c914a643cb09f22fe22ce20ca50c0e599",
+      "l4_oracle": "9666406fe4f5422a616d507450b00995542c31bd037b23a8b33a9517de122bcf",
+      "l2_oracle_prompt": "4fe3d3251325edc3397adb54843871e25c5bc8a348ccf75d5a2890387d5c30a4",
+      "l4_oracle_prompt": "8c1a38082ecd555d4b05adf55b03c920d977bf5c07f182007ff0161073da3546",
+      "oracle_authorship_o2": "592978f5cfda057076c7947fa23088d38b51f733ce07c2227939c4ae7c018903",
+      "o1_to_o2_invalidation": "501f2d832d82f4b8aa680d6a09946448d9566e5843ceaf9fe847dd19dcb11ff1",
+      "l2_production_prompt": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+      "l4_production_prompt": "c3b9f7499bec9a6a0acf49a336b2870c3d44d9863cdbb6994454a12934776175",
+      "step0029_contract": "48f0f3ff313caf2cd1c17f0dacb3a0143bf7908928e6922d3838d25e4f1118e7",
+      "call_budget_failure_verification": "2b22880b4245c912a1c40803d41135381e640f4b1c53290c403295b165d34ad8"
+    }
+  },
+  "seal_and_immutability_audit": {
+    "seal_hash_matches_authorized_input": true,
+    "seal_self_hash_valid": true,
+    "candidate_hashes_match_authorized_inputs": true,
+    "protected_files_checked": 13,
+    "protected_hash_mismatches": 0,
+    "candidate_touched_temperature_pilot_contract": false,
+    "candidate_touched_independent_oracles": false,
+    "candidate_touched_oracle_prompts": false,
+    "candidate_touched_frozen_production_prompts": false,
+    "result": "PASS"
+  },
+  "candidate_semantic_audit": {
+    "l2": {
+      "legacy_nil_budget_unlimited": true,
+      "nonpositive_construction_fails_closed": true,
+      "tools_call_consumed_before_callback": true,
+      "n_plus_one_rejected_before_callback": true,
+      "exhaustion_code": -32010,
+      "exhaustion_message": "Bateia tool call budget exhausted",
+      "non_call_methods_do_not_consume_or_reset": true,
+      "counter_is_per_tool_call_budget_instance": true,
+      "server_attaches_fresh_process_local_budget_before_serve": true
+    },
+    "l4": {
+      "uses_os_lookup_env": true,
+      "environment_variable": "BATEIA_MCP_MAX_TOOL_CALLS",
+      "absent_maps_to_unlimited": true,
+      "canonical_positive_decimal_only": true,
+      "invalid_or_overflow_configuration_fails": true,
+      "parse_and_budget_errors_checked_before_server_construction_and_serve": true,
+      "parsed_budget_attached_before_serve": true
+    },
+    "scope_limit": "Sequential stdio only, as sealed; concurrent Dispatch is not claimed."
+  },
+  "executed_gates": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-cache go test -count=1 -run '^(TestToolCallBudget|TestParseMCPMaxToolCalls)' ./02_shell/mcp ./04_wiring",
+      "result": "PASS",
+      "exit_code": 0,
+      "scope": "Independent O2 focal oracles against candidate"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-cache go test -count=1 ./02_shell/mcp ./04_wiring",
+      "result": "FAIL",
+      "exit_code": 1,
+      "scope": "Complete applicable package suites",
+      "package_results": {
+        "bateia/02_shell/mcp": "FAIL",
+        "bateia/04_wiring": "PASS"
+      }
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-race-cache go test -race -count=1 -run '^(TestToolCallBudget|TestParseMCPMaxToolCalls)' ./02_shell/mcp ./04_wiring",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-cache go vet ./02_shell/mcp ./04_wiring",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-cache go build ./02_shell/mcp ./04_wiring",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-temperature-pilot-impl-verifier-r1-cache go build -o /tmp/bateia-temperature-pilot-impl-verifier-r1/bateia ./04_wiring",
+      "result": "PASS",
+      "exit_code": 0,
+      "binary_sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+    },
+    {
+      "command": "crystalline-lint .",
+      "result": "PASS_WITH_WARNINGS",
+      "exit_code": 0,
+      "detail": "Only reported V12 composition/test declarations and historical V7 orphan-prompt warnings; no blocking lint error."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "exit_code": 0
+    }
+  ],
+  "package_gate_failures": [
+    {
+      "test": "TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute",
+      "reason": "Immutable Step 0025 prompt anchor mismatch",
+      "observed_sha256": "480a1f5d40233c380c0adac53574727230ec9d091e108139311f00f5da701a34",
+      "expected_sha256": "82fbdf503a125a50da615fb85534440200593bebfca43b86ec5e7629be839f1e"
+    },
+    {
+      "test": "TestStep0026R3PredecessorServerHashesRemainCertified",
+      "reason": "Certified predecessor server.go anchor mismatch",
+      "observed_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+      "expected_sha256": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"
+    },
+    {
+      "test": "TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact",
+      "reason": "Certified basal server.go surface changed",
+      "observed_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5"
+    }
+  ],
+  "complete_suite_repetition_policy": {
+    "second_complete_run_executed": false,
+    "reason": "The first complete package run failed deterministically on three protected hash anchors. Under focal-first calibration, repeating the same unchanged failing corpus adds no discriminating evidence.",
+    "full_repository_suite_executed": false,
+    "reason_full_repository": "The applicable package suite already reproduced the blocking L2 failures; expanding to ./... would repeat the same public cause without a changed slice."
+  },
+  "mutation_gate": {
+    "method": "Re-execution of the sealed exact L2/L4 oracles against verifier-authored deterministic mutation fixtures in /tmp; no candidate source was mutated.",
+    "contractual": {
+      "M1_OFF_BY_ONE": "KILLED",
+      "M2_COUNTER_PER_TOOL_OR_METHOD": "KILLED",
+      "M3_PACKAGE_GLOBAL_COUNTER": "KILLED",
+      "killed": 3,
+      "total": 3,
+      "score": 1.0,
+      "result": "PASS"
+    },
+    "extended_l2_l4": {
+      "M4_PERMISSIVE_CONFIGURATION": "KILLED",
+      "killed": 4,
+      "total": 4,
+      "score": 1.0,
+      "result": "PASS"
+    },
+    "candidate_reference_controls": "PASS"
+  },
+  "offline_mcp_preflight": {
+    "executed": true,
+    "behavioral_model_session": false,
+    "codex_session": false,
+    "network_dependent_tool_invocation": false,
+    "working_directory": "/tmp/bateia-temperature-pilot-impl-verifier-r1/preflight-empty",
+    "environment": {
+      "BATEIA_MCP_MAX_TOOL_CALLS": "3",
+      "BATEIA_RUN_ROOT": "/tmp/bateia-temperature-pilot-impl-verifier-r1/runs"
+    },
+    "command": "/tmp/bateia-temperature-pilot-impl-verifier-r1/bateia mcp",
+    "synthetic_sequence": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call offline_unknown_1",
+      "tools/call offline_unknown_2",
+      "tools/call offline_unknown_3",
+      "tools/call offline_unknown_4"
+    ],
+    "observations": {
+      "initialize_succeeded": true,
+      "tools_list_succeeded": true,
+      "non_call_methods_consumed_budget": false,
+      "calls_1_through_3": "FORWARDED_AND_RETURNED_MINUS_32601_UNKNOWN_TOOL",
+      "call_4": {
+        "code": -32010,
+        "message": "Bateia tool call budget exhausted"
+      },
+      "call_4_crossed_handler_boundary": false,
+      "process_exit_code": 0,
+      "durable_runs_created": 0,
+      "run_root_files": [
+        "cursor.key"
+      ]
+    },
+    "result": "PASS_EXACT_THREE_FORWARDINGS_FOURTH_BLOCKED_PRE_HANDLER"
+  },
+  "verdict_basis": {
+    "focal_contract_satisfied": true,
+    "mutation_score_satisfied": true,
+    "race_vet_build_lint_diff_satisfied": true,
+    "real_offline_mcp_preflight_satisfied": true,
+    "historical_refinement_gates_satisfied": false,
+    "conclusion": "The candidate demonstrates the sealed focal call-budget behavior but is not integration-ready because the complete L2 suite rejects its prompt and server hashes against protected Step 0025-0027 anchors."
+  },
+  "required_resolution_before_successor_verification": [
+    "Do not dispatch any behavioral temperature-pilot cell under this failed verification.",
+    "Preserve the sealed O2 contract, oracle tests and prompts; do not weaken or rewrite them to fit the candidate.",
+    "Use the appropriate independent refinement authority to reconcile the new prompt/server lineage with the protected 0025-0027 guarantees, or redesign the candidate so those guarantees remain valid.",
+    "Publish explicit invalidation/successor evidence rather than silently replacing historical certified hashes.",
+    "After the lineage issue changes, rerun the three failing historical tests first; only if they pass, repeat the complete applicable package suite and final gates."
+  ],
+  "model_or_codex_behavioral_sessions_executed_by_verifier": 0,
+  "mcp_preflight_processes_executed_by_verifier": 1,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "limitations": [
+    "The shared workspace does not provide strong independent isolation attestation.",
+    "The MCP preflight used only synthetic unknown-tool calls and proves the forwarding guard boundary, not successful business-handler execution or network behavior.",
+    "The preflight server startup created only its local cursor.key and emitted a nonfatal local cache fallback warning; no durable run artifact was produced.",
+    "Mutation score 1.0 establishes oracle discrimination for the focal deterministic boundary, not general correctness or behavioral uplift.",
+    "The complete package gate failure takes precedence over all passing focal gates."
+  ],
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "9ff285d8163183532599cd07be8dcb53cb2efc12a617ed19a4cc13853380b26a",
+  "invalidation_rule": "Any byte change to the seal, protected inputs, either candidate file, mutation fixtures or gate outputs requires a successor verification; only a changed refinement slice justifies rerunning the complete suite."
+}

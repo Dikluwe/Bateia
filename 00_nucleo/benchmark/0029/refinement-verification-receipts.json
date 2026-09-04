@@ -1,0 +1,16 @@
+{
+  "schema_version": "tekt.step0029.refinement-verification-receipts.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:23:08Z",
+  "executor": "/root/verificador_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "receipts": [
+    {"predecessor_step":"0025","predecessor_receipt_sha256":"f8817c211b77d911ce87e040110a4cfb48bc4e83ea1fad43ca3d7e955b185562","result":"PRESERVED","evidence":"unchanged certified predecessor hash; Step 0028 candidate-tag suite passed; Step 0029 adds no MCP tool"},
+    {"predecessor_step":"0026","predecessor_receipt_sha256":"ebe445c385c21e27cceefac85e0f2d274eda759cd47020e02bddc4be5eed3d6a","result":"PRESERVED","evidence":"unchanged certified predecessor hash; isolated legacy R5 rerun passed; Step 0029 does not alter durable runtime"},
+    {"predecessor_step":"0027","predecessor_receipt_sha256":"ba1bbbc55f993769b26674768b045897795a83bca9f89dce922a94b3030bf197","result":"PRESERVED","evidence":"unchanged certified predecessor hash; Step 0028 candidate-tag suite passed; Step 0029 does not alter connector registry or market runtime"},
+    {"predecessor_step":"0028","predecessor_certificate_sha256":"7b1098c57c6425a2adb2fb6d0d15fea9917502d201e3fb46ae0dfe5dc5ba6506","required_verdict":"MECHANISM_IMPROVEMENT_SYNTHESIS_READY","result":"PRESERVED","evidence":"certificate hash and verdict verified; protected candidate-tag packages 01_core/domain, 01_core/usecase, 02_shell/mcp and 04_wiring passed"}
+  ],
+  "command": "env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -tags step0028_candidate -count=1 ./01_core/domain ./01_core/usecase ./02_shell/mcp ./04_wiring",
+  "command_result": "PASS",
+  "scope": "Preservation under the additive local Step 0029 harness; no new external provider/model execution and no claim of general equivalence."
+}

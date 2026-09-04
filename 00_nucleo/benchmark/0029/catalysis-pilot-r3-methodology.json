@@ -1,0 +1,95 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-methodology.v3",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_OPERATIONAL_REFINEMENT",
+  "status": "CANDIDATE_PRE_EXECUTION",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "causal_predecessor": {
+    "r2_verification_sha256": "3d041c4c502331f138fade630644bbe5f3ca38bde8329859411d959bb575446c",
+    "invalidation_path": "00_nucleo/benchmark/0029/catalysis-pilot-r2-to-r3-invalidation.json"
+  },
+  "preserved_bindings": {
+    "intent_sha256": "dd9f7bf2b3d378ee9f0be392489b3d99ca1778751b69a4c5c5afec2ffc2977ca",
+    "estimand_case_model_order_budgets_and_winner_policy": "UNCHANGED",
+    "case_id": "EXP29-V02",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "execution_order": [
+      "IA_INTERNET_BATEIA",
+      "IA_INTERNET"
+    ],
+    "sessions_exactly_and_cap": 2,
+    "global_before": 15,
+    "global_after_complete": 17,
+    "global_cap": 108,
+    "control_prompt_sha256": "d669863dd1d2dc5ca5ed843c3f8f2f468f3a6d32786055b482b38a19fd36eea8",
+    "treatment_prompt_sha256": "0a79c3c5451913c843464cb03a90b4b1a0a650819bf70185c0aafd4ca2b52b56",
+    "web_witness_sha256": "a028ea36778ee2c630070d5c2b37fb22ce249c9daa8f2b82cfbb51657c348c56",
+    "normalization_and_rubric": "UNCHANGED_FROM_R2"
+  },
+  "operational_profile": {
+    "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-execution-profile.json",
+    "sha256": "fde727959a400213d4480244876e7a3647a401df1b91377e40b84d8ba1cdf20c",
+    "binding": "Each actual invocation must equal the frozen per-arm resolved_argv byte-for-byte by JSON array equality and use the frozen non-secret environment and redirections."
+  },
+  "preflight_barrier": {
+    "before_first_model": true,
+    "checks": [
+      "auth-only CODEX_HOME contains exactly regular auth.json mode 0600",
+      "auth.json SHA-256 recorded only in restricted preflight receipt",
+      "working directory exists and has zero entries",
+      "Codex and Bateia binary identities match",
+      "both resolved argv arrays and external redirections are saved",
+      "all twelve --disable pairs are present exactly once per arm",
+      "control has zero MCP config",
+      "treatment has exactly the six frozen Bateia config overrides",
+      "JSON-RPC initialize and tools/list advertise bateia_recommend without any tools/call"
+    ],
+    "failure": "FAIL_CLOSED_ZERO_BEHAVIORAL_SESSIONS",
+    "success": "Immutable PASS receipt required before treatment dispatch."
+  },
+  "execution_invariants": {
+    "treatment_first": true,
+    "single_global_in_flight": true,
+    "cadence_seconds_between_starts": 120,
+    "timeout_seconds": 900,
+    "web_calls_each_arm": "1..3",
+    "treatment_bateia_recommend_calls": 1,
+    "output_unicode_characters_max": 18000,
+    "schema_r2_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "retry_or_replacement": false,
+    "hard_stop_on_violation": true
+  },
+  "blind_evaluation": {
+    "mapping_seal_sha256": "cbde00b41491bb05ee8c394abbd51335cb22f9c63f3387ec0845ed16dabf6111",
+    "mapping_content_disclosed_here": false,
+    "content_independent_and_pre_frozen": true,
+    "evaluator_inputs_before_receipt": [
+      "byte-identical opaque copies CANDIDATE_LEFT and CANDIDATE_RIGHT",
+      "blind output-comparison contract projection",
+      "frozen quality rubric"
+    ],
+    "evaluator_forbidden_before_receipt": [
+      "mapping seal",
+      "treatment/control directories",
+      "invocation files",
+      "events JSONL",
+      "stderr logs",
+      "execution order",
+      "tool traces and call counts"
+    ],
+    "reveal": "Only after the blind comparison receipt bytes and SHA-256 are frozen."
+  },
+  "post_reveal_audit": "Preserve R2: catalysis requires an observable Bateia direction followed by later web research and a useful supported confirmation, rejection or narrowing; INCONCLUSIVE is neutral and no winner is forced.",
+  "unknown_policy": "Preserve R2 fail-closed Unknown. A preflight Unknown is a preflight failure and yields zero sessions; optional absent runtime timestamps or web response payload remain Unknown without invention.",
+  "behavioral_sessions_existing": 0,
+  "not_authorized": [
+    "model execution",
+    "web execution",
+    "bateia_recommend execution",
+    "session output access",
+    "final verification or certificate"
+  ]
+}

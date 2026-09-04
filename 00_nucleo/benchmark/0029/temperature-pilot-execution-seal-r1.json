@@ -1,0 +1,31 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-execution-seal.v1",
+  "created_at": "2026-09-03T08:45:50-03:00",
+  "status": "SEALED_READY_TO_DISPATCH",
+  "inputs": {
+    "temperature-pilot-spec-r1.json": "fa02c8cbdb93251bd1cc9d98b9f59f1e59c7889d08c0f8cc09c680951b1dc650",
+    "temperature-pilot-manifest-r1.json": "cb87ce8dc84ccbcf710912b62c9ca94bc97372f6ab5bbf9e944c1b9b6be3fbf8",
+    "temperature-pilot-contract-r1.json": "1371f6c1f145d8b71728ecc2716b73653d2a334590f290b4922bbb5924eb519a",
+    "temperature-pilot-contract-seal-r1.json": "bc8b01c6687b15c82b3020b3d0fea50d25a5381731915168a6b88f51c75b41c0",
+    "temperature-pilot-implementation-verification-r2.json": "924559ec5b5ecbf9fc9b223f5fcc1ace065ee45f2182fff3920c51e3ba02db80",
+    "temperature-pilot-prompt-contract-r1.json": "857886c7c19b446458a7ad62b6b3ec536d481c5e5ddbba035ce0ea1418a15ff8",
+    "temperature-pilot-isolation-profile-r1.json": "fbafe23334de34beb0eaa40c43f722e9f6d6263f5f0b1ba07d44f6cfc403e21b",
+    "temperature-pilot-queue-r1.json": "99f09656871c305fd2ad646805967017c5d43c6f1b7719655a94d86c049b33e7",
+    "engineering-investigation.schema-r2.json": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "02_shell/mcp/server.go": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+    "04_wiring/main.go": "ec577457e08e3423aec1967c9fed50cc406fee51386236c24ec4d4f6519cda8e",
+    "/tmp/bateia-temperature-pilot-r1": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+  },
+  "authorization": {
+    "new_sessions_max": 6,
+    "pairs_max": 3,
+    "global_sessions_max": 108,
+    "maximum_global_after_pilot": 13,
+    "treatment_mcp_attempts_max": 3,
+    "treatment_bateia_forwarded_calls_max": 3,
+    "cadence_seconds": 120
+  },
+  "dispatch_rule": "Execute exactly queue sequences 1 through 6 once; never repeat after any model output; stop on hash drift, fourth MCP attempt, invalid output, unavailable required MCP or non-retryable infrastructure failure.",
+  "comparison_rule": "Blind A/B inside each pair; exploratory novelty only; do not claim confirmatory uplift.",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

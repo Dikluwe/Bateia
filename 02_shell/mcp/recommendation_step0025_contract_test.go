@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 package mcp
 
@@ -83,10 +83,10 @@ const step0025ExactToolJSON = `{
     "type":"object","additionalProperties":false,
     "properties":{
       "idea":{"type":"object","additionalProperties":false,"properties":{"problem":{"type":"string","minLength":1},"users":{"type":"array","items":{"type":"string"}},"capabilities":{"type":"array","minItems":1,"items":{"type":"string","minLength":1}},"constraints":{"type":"array","items":{"type":"string"}},"non_goals":{"type":"array","items":{"type":"string"}},"preferred_stack":{"type":"array","items":{"type":"string"}}},"required":["problem","capabilities"]},
-      "policy":{"type":"object","additionalProperties":false,"properties":{"schema_version":{"type":"string","const":"1"},"allowed_licenses":{"type":"array","items":{"type":"string","minLength":1}},"require_local":{"type":"boolean"},"allow_archived":{"type":"boolean"},"max_components":{"type":"integer","minimum":2},"extend_min_coverage":{"type":"number","exclusiveMinimum":0,"maximum":1},"integration_min_value":{"type":"number","exclusiveMinimum":0,"maximum":1}},"required":["schema_version","allowed_licenses","require_local","allow_archived","max_components","extend_min_coverage","integration_min_value"]},
-      "target":{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string"}}},
-      "search":{"type":"object","additionalProperties":false,"properties":{"strategy":{"type":"string","enum":["literal","lexical"]},"language":{"type":"string"},"locales":{"type":"array","uniqueItems":true,"items":{"type":"string","enum":["pt-BR","en-US","es-ES","fr-FR","de-DE","ja-JP","ko-KR","ru-RU","ar-SA","hi-IN"]}},"max_per_query":{"type":"integer","minimum":1,"maximum":25},"max_candidates":{"type":"integer","minimum":1,"maximum":20}},"required":["strategy","locales","max_per_query","max_candidates"]}
-    },"required":["idea","policy","target","search"]
+      "policy":{"type":"object","additionalProperties":false,"properties":{"schema_version":{"type":"string","const":"1","default":"1"},"allowed_licenses":{"type":"array","items":{"type":"string","minLength":1},"default":["0BSD","Apache-2.0","BSD-2-Clause","BSD-3-Clause","BSL-1.0","ISC","MIT","Unlicense","Zlib"]},"require_local":{"type":"boolean","default":false},"allow_archived":{"type":"boolean","default":false},"max_components":{"type":"integer","minimum":2,"default":5},"extend_min_coverage":{"type":"number","exclusiveMinimum":0,"maximum":1,"default":0.5},"integration_min_value":{"type":"number","exclusiveMinimum":0,"maximum":1,"default":0.5}},"required":[]},
+      "target":{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string","description":"Quando omitido, usa idea.problem como default"}},"required":[]},
+      "search":{"type":"object","additionalProperties":false,"properties":{"strategy":{"type":"string","enum":["literal","lexical"],"default":"lexical"},"language":{"type":"string","default":""},"locales":{"type":"array","uniqueItems":true,"items":{"type":"string","enum":["pt-BR","en-US","es-ES","fr-FR","de-DE","ja-JP","ko-KR","ru-RU","ar-SA","hi-IN"]},"default":["pt-BR","en-US"]},"max_per_query":{"type":"integer","minimum":1,"maximum":25,"default":5},"max_candidates":{"type":"integer","minimum":1,"maximum":20,"default":8}},"required":[]}
+    },"required":["idea"]
   }
 }`
 
@@ -184,14 +184,11 @@ func TestStep0025RecommendUsesInjectedServiceOnceAndPreservesItsProjection(t *te
 func TestStep0025InvalidArgumentsNeverReachServiceAndCannotAcquireBehavior(t *testing.T) {
 	base := step0025MCPRequest()
 	cases := map[string]string{
-		"missing-problem":        strings.Replace(base, `"problem":"reduzir desperdício alimentar doméstico",`, "", 1),
-		"missing-capabilities":   strings.Replace(base, `,"capabilities":["inventário","previsão de consumo"]`, "", 1),
-		"missing-policy-version": strings.Replace(base, `"schema_version":"1",`, "", 1),
-		"missing-max-per-query":  strings.Replace(base, `,"max_per_query":5`, "", 1),
-		"missing-max-candidates": strings.Replace(base, `,"max_candidates":5`, "", 1),
-		"bad-limit":              strings.Replace(base, `"max_per_query":5`, `"max_per_query":26`, 1),
-		"unsupported-locale":     strings.Replace(base, `"ja-JP"`, `"pt-PT"`, 1),
-		"unknown-strategy":       strings.Replace(base, `"lexical"`, `"neural"`, 1),
+		"missing-problem":      strings.Replace(base, `"problem":"reduzir desperdício alimentar doméstico",`, "", 1),
+		"missing-capabilities": strings.Replace(base, `,"capabilities":["inventário","previsão de consumo"]`, "", 1),
+		"bad-limit":            strings.Replace(base, `"max_per_query":5`, `"max_per_query":26`, 1),
+		"unsupported-locale":   strings.Replace(base, `"ja-JP"`, `"pt-PT"`, 1),
+		"unknown-strategy":     strings.Replace(base, `"lexical"`, `"neural"`, 1),
 	}
 	for _, field := range []string{"output_directory", "replay_directory", "local_path", "local_paths", "path", "directory", "command", "url", "token", "header", "headers", "cookie", "mode", "resume", "run_id", "provider"} {
 		cases["prohibited-"+field] = strings.TrimSuffix(base, "}") + `,"` + field + `":"STEP0025_PROHIBITED"}`

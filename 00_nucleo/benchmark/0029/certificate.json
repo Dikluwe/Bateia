@@ -1,0 +1,60 @@
+{
+  "schema_version": "tekt.step0029.certificate.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:23:08Z",
+  "executor": "/root/verificador_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "PASS_WITH_LIMITATIONS",
+  "verdict": "HARNESS_LOCAL_READY_WITH_ARCHITECTURAL_WARNINGS_EXTERNAL_EXPERIMENT_PENDING",
+  "product_verdict": "NOT_EVALUATED",
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "sealed_chain": {
+    "active_manifest_sha256": "639f7e5c7d1e4431bbeb9082edbd71caa85f8742bbfd0ec5dd943c77e8264456",
+    "active_input_seal_sha256": "bae46a813d04e52cc71fd08be0ab82005ed307dceff3e1b03c88b6d4353679e3",
+    "post_gate_seal_sha256": "b45259ad04e6d0deb3c3c01724c856931377b434434ab0c0e3d60131b6ec470d",
+    "candidate_root_sha256": "7c10330c11f5c98dcf3f0ade780ae0f42cddb8e37879ec592ce4bf6c6f029dea",
+    "randomization_root_sha256": "5215fc6764efea3f5b1a079c854c5a0b0837546f44aed4b9a1093eb13b4f2bf3"
+  },
+  "receipts": {
+    "randomization_plan_sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+    "experiment_manifest_sha256": "1d6dd6cfb8b02142ba1a6e17dba68d5ba35f5b98567b2d2fbcfdce0cf0974eac",
+    "discriminatory_verification_receipt_sha256": "f72de83ba876c6f313e6d7fa083a8f37e3383550b5e13caa8c0998ae9ff08b91",
+    "candidate_verification_receipt_sha256": "9cc250b76725b372e8c3e2f3ebe848fab20467cd316f792a237a9e80c4285127",
+    "refinement_verification_receipts_sha256": "4284abfc96b069278883d575e075e8b0287c171eed2d4f8f6b41fcf46bcf8194",
+    "verification_receipt_sha256": "a22e60d194531c88d3cf0391053fe672e3b83a2a5a9f0eb72da0a097d63c9baa"
+  },
+  "local_gates": {
+    "focal_suite_twice":"PASS",
+    "race":"PASS",
+    "mutation_score":"25/25 = 1.0",
+    "positive_controls":"9/9 PRESERVED",
+    "opaque_controls":"5/5 UNKNOWN",
+    "go_vet":"PASS",
+    "go_build":"PASS",
+    "json_and_hash_chain":"PASS",
+    "randomization_plan":"PASS",
+    "refinements_0025_0028":"PRESERVED",
+    "crystalline_lint":"EXIT_0_WITH_WARNINGS",
+    "architecture":"PASS_WITH_WARNINGS_NOT_CLEAN"
+  },
+  "external_experiment": {
+    "contract_smoke_dispatched": 0,
+    "contract_smoke_total": 18,
+    "behavioral_sessions_executed": 0,
+    "behavioral_sessions_max": 108,
+    "status": "BLOCKED_BY_EXPLICIT_BUDGET_AUTHORIZATION",
+    "judging": "PENDING",
+    "uplift_analysis": "PENDING"
+  },
+  "scope": "Certifies only the exact deterministic local Step 0029 harness, frozen input chain, discriminatory power, compact BuildPlan projection and predecessor refinements recorded by hash.",
+  "limitations": [
+    "No strong isolation attestation is made for the shared workspace and inherited context.",
+    "No external/paid model session, real CONTRACT smoke, TEST run, judging, cost measurement or causal uplift analysis was authorized.",
+    "The project linter exits zero but reports V12 warnings for logic under L4, including this benchmark harness; clean architectural compliance is not certified.",
+    "One verifier broad-suite attempt observed a transient legacy Step 0026 R5 M28 failure; its immediate isolated rerun passed, while the complete repository pass is coordinator-reported.",
+    "The replay input binds the Step 0028 replay receipt hash and is not a new Step 0029 replay capture."
+  ],
+  "report_path": "00_nucleo/laudos/0029-medir-ganho-da-ia-usando-bateia.md",
+  "invalidation_rule": "Any change to a sealed input, candidate, suite, predecessor, receipt or randomization hash invalidates this certificate; executing sessions under other inputs requires a new certificate."
+}

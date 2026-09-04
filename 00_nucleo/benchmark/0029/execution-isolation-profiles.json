@@ -1,0 +1,52 @@
+{
+  "schema_version": "bateia.step0029.execution-isolation-profiles.v1",
+  "step": "0029",
+  "scope": "PER_CODEX_EXEC_INVOCATION",
+  "global_config_mutated": false,
+  "common": {
+    "fresh_session": true,
+    "ephemeral": true,
+    "ignore_user_config": true,
+    "working_directory": "/tmp/bateia-step0029-empty",
+    "sandbox": "read-only",
+    "approval_policy": "never",
+    "shell_tool": false,
+    "web_search": "disabled",
+    "output_schema": "00_nucleo/benchmark/0029/engineering-investigation.schema.json",
+    "human_follow_up_allowed": false
+  },
+  "arm_a": {
+    "id": "AGENT_ALONE",
+    "mcp_servers": [],
+    "bateia_enabled": false,
+    "bateia_tools": []
+  },
+  "arm_b": {
+    "id": "AGENT_WITH_BATEIA",
+    "mcp_servers": ["bateia"],
+    "bateia_enabled": true,
+    "server": {
+      "transport": "stdio",
+      "command": "go",
+      "args": ["run", "./04_wiring", "mcp"],
+      "cwd": "/repos/Antigravity/Bateia",
+      "required": true,
+      "per_session_run_root": true
+    },
+    "enabled_tools": [
+      "bateia_search",
+      "bateia_benchmark",
+      "bateia_recommend",
+      "bateia_start_recommendation",
+      "bateia_get_run",
+      "bateia_get_artifact",
+      "bateia_cancel_run",
+      "bateia_list_connectors",
+      "bateia_start_market_discovery",
+      "bateia_start_improvement_synthesis"
+    ]
+  },
+  "dispatch_order": "CONTRACT_THEN_VALIDATION_THEN_TEST; WITHIN_SPLIT_ASCENDING_ORDER_KEY_THEN_CELL_ID",
+  "cadence_seconds": 120,
+  "behavioral_session_cap": 108
+}

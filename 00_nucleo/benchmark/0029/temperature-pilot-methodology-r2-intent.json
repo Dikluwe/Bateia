@@ -1,0 +1,69 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-methodology-intent.v2",
+  "created_at": "2026-09-03T09:09:02-03:00",
+  "author": "/root",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_METHODOLOGY_REFINEMENT",
+  "user_correction": "O sucesso operacional é obter resultados pareados comparáveis; limitar chamadas ou sessões sem completar pares não satisfaz o objetivo.",
+  "objective": "Produzir exatamente três comparações A/B exploratórias válidas, com o mesmo caso, modelo, esforço e instruções compartilhadas dentro de cada par; parar imediatamente após a terceira.",
+  "preserved_history": {
+    "global_behavioral_sessions_counted": 11,
+    "global_cap": 108,
+    "valid_unpaired_controls": [
+      {
+        "profile": "TERRA-high",
+        "cell_id": "be54278da25935556ebb242ee77482f5bccd472f93af57f95633da0688b398c8",
+        "receipt_sha256": "0427665c8dc9b6006bf2c26d4bfb22fb2444b4d8562ac26e65db3ca0c14330e1"
+      },
+      {
+        "profile": "LUNA-low",
+        "cell_id": "21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f",
+        "receipt_sha256": "8f127d5889833753fc264a9fb1657cf790f907cbeb98476cfac4d5189ccbb5a4"
+      }
+    ],
+    "invalid_sol_cell_receipt_sha256": "d01e237ae09ca3818e707ce41b8b33e9ac93a500f8d195649fcb786c0f0a544c",
+    "r1_state_sha256": "bac1d97d2b9d686ed615abb8cdc58661d628c93e586cbbcb1a5e294bd0f14bd7"
+  },
+  "primary_plan": [
+    "Complete TERRA-high by executing only its B arm.",
+    "Complete LUNA-low by executing only its B arm.",
+    "Execute a fresh SOL-high A arm and then its matching B arm. Both receive the same shared compactness instruction; only B receives the Bateia treatment instruction."
+  ],
+  "additional_behavioral_sessions_expected": 4,
+  "contingency": {
+    "preselected_replacement_profile": "SOL-medium",
+    "maximum_replacement_sessions": 2,
+    "activation": "Only if a planned pair cannot become valid; never based on semantic content or apparent treatment benefit."
+  },
+  "additional_behavioral_sessions_hard_cap": 6,
+  "maximum_global_after_success_or_contingency": 17,
+  "pair_first_execution": true,
+  "cadence_seconds_between_starts": 120,
+  "treatment": {
+    "enabled_tools": ["bateia_recommend"],
+    "mcp_attempts_max": 3,
+    "bateia_forwarded_calls_max": 3,
+    "fourth_attempt": "INVALID_OUTPUT_AND_STOP_CURRENT_PAIR"
+  },
+  "terminal_monitor_contract": {
+    "yield_is_terminal": false,
+    "timeout_of_a_poll_is_terminal": false,
+    "session_id_must_be_preserved": true,
+    "completion_requires": "exit_code returned by polling the same process session, or independently proven terminal process absence with captured exit status",
+    "retry_requires": "terminal non-success or terminal timeout plus zero observed agent_message",
+    "overlap_for_same_cell": "PROHIBITED"
+  },
+  "output_policy": {
+    "schema_required": true,
+    "max_unicode_characters": 20000,
+    "sol_shared_instruction": "Seja conciso e mantenha o objeto JSON completo abaixo de 18.000 caracteres.",
+    "invalid_or_missing": "UNKNOWN/INVALID; never zero and never silently salvaged after duplicate execution"
+  },
+  "evaluation": {
+    "blinded_before_judgment": true,
+    "primary": "Materially new alternatives, mechanisms or hypotheses in one member of the pair, absent from the other, with resolvable support.",
+    "secondary": ["evidence-question coverage", "counterevidence and unknown quality", "actionability without unsupported extrapolation"],
+    "prohibited_claim": "No confirmatory uplift or generalization beyond the three completed pairs."
+  },
+  "old_automation": {"id": "passo-29-contract", "status": "PAUSED"},
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

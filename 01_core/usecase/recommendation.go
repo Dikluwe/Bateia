@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/recommendation.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 
 package usecase
@@ -25,6 +25,37 @@ type RecommendationService struct {
 type RecommendationExecution struct {
 	Run            domain.IdeaRunResult
 	Recommendation domain.RecommendationResult
+}
+
+const RecommendationDefaultsProfileV1 = "BATEIA_RECOMMEND_DEFAULTS_V1"
+
+// DefaultRecommendationPolicyV1 returns a fresh permissive acceptance policy.
+// Its allowlist is not evidence of any candidate's license.
+func DefaultRecommendationPolicyV1() domain.ReuseDecisionPolicy {
+	return domain.ReuseDecisionPolicy{
+		SchemaVersion: "1",
+		AllowedLicenses: []string{
+			"0BSD", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "BSL-1.0",
+			"ISC", "MIT", "Unlicense", "Zlib",
+		},
+		RequireLocal:        false,
+		AllowArchived:       false,
+		MaxComponents:       5,
+		ExtendMinCoverage:   0.5,
+		IntegrationMinValue: 0.5,
+	}
+}
+
+// DefaultRecommendationSearchV1 returns a fresh search profile for each call.
+func DefaultRecommendationSearchV1() domain.RecommendationSearch {
+	return domain.RecommendationSearch{
+		Strategy: "lexical", Language: "", Locales: []string{"pt-BR", "en-US"},
+		MaxPerQuery: 5, MaxCandidates: 8,
+	}
+}
+
+func DefaultRecommendationTargetV1(problem string) domain.SoftwareAlternativeTarget {
+	return domain.SoftwareAlternativeTarget{Name: normalizeIdeaText(problem)}
 }
 
 func NewRecommendationService(semantic SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider) *RecommendationService {

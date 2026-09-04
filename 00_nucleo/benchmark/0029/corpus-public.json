@@ -1,0 +1,197 @@
+{
+  "schema_version": "tekt.step0029.corpus-public.v1",
+  "corpus_id": "step0029-agent-uplift-corpus-v1",
+  "language": "pt-BR",
+  "frozen_before_test": true,
+  "case_count": 3,
+  "split_counts": {
+    "CONTRACT": 1,
+    "VALIDATION": 2
+  },
+  "cases": [
+    {
+      "id": "EXP29-C01",
+      "split": "CONTRACT",
+      "family": "durable-processing",
+      "provenance": "SYNTHETIC_REQUIREMENTS_SCENARIO",
+      "title": "Triagem resiliente de anexos clínicos",
+      "problem": "Uma rede regional de clínicas recebe picos de anexos digitalizados, perde trabalho quando processos reiniciam e não consegue explicar por que alguns documentos ficam sem classificação.",
+      "users": [
+        "equipes de recepção clínica",
+        "operadores de conformidade",
+        "equipe de plataforma"
+      ],
+      "desired_capabilities": [
+        "aceitar picos sem crescimento ilimitado de memória",
+        "retomar trabalho após interrupções sem duplicar efeitos",
+        "expor progresso, falhas e itens que exigem intervenção",
+        "preservar dados sensíveis dentro do limite operacional definido"
+      ],
+      "constraints": [
+        "a fonte pode reenviar o mesmo anexo",
+        "classificadores podem ficar lentos ou indisponíveis",
+        "a equipe opera com orçamento e capacidade finitos",
+        "a proposta não pode depender de acesso a dados clínicos reais"
+      ],
+      "conventional_baseline": "Fila de tarefas com pool fixo de workers, retries exponenciais e dead-letter queue.",
+      "bateia_supported_mechanism_classes": [
+        "BOUNDED_QUEUE_BACKPRESSURE"
+      ],
+      "evidence_questions": [
+        "Que mecanismo limita admissão quando consumidores ficam lentos?",
+        "Como o trabalho aceito sobrevive a reinício sem duplicar efeitos?",
+        "Que evidência separa uma propriedade demonstrada de uma hipótese de integração?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "inconclusive_is_valid_when": [
+        "não houver evidência de recuperação independente",
+        "o custo operacional ou a licença permanecerem desconhecidos",
+        "o mecanismo observado não cobrir idempotência de efeitos"
+      ],
+      "locale_signals": [
+        "pt-BR"
+      ],
+      "market_context": "rede de saúde regional no Brasil",
+      "repository_basis": {
+        "kind": "NONE",
+        "observable_gaps": []
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    },
+    {
+      "id": "EXP29-V01",
+      "split": "VALIDATION",
+      "family": "local-first-ledger",
+      "provenance": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+      "title": "Vistorias de água em regiões com conectividade intermitente",
+      "problem": "Técnicos de uma companhia de saneamento coletam medições e fotos em campo. O aplicativo perde alterações quando dois dispositivos voltam a ficar online em ordens diferentes, e supervisores precisam auditar o histórico sem apagar correções legítimas.",
+      "users": [
+        "técnicos de campo",
+        "supervisores de manutenção",
+        "auditores operacionais"
+      ],
+      "desired_capabilities": [
+        "registrar trabalho por horas sem conexão",
+        "retomar sincronização após falhas parciais",
+        "preservar histórico e autoria das correções",
+        "explicitar conflitos sem escolher silenciosamente um vencedor"
+      ],
+      "constraints": [
+        "dispositivos têm armazenamento e bateria limitados",
+        "relógios locais não são confiáveis",
+        "anexos grandes podem chegar depois dos registros textuais",
+        "o backend legado não expõe transações distribuídas"
+      ],
+      "conventional_baseline": "Banco local mutável sincronizado por timestamp com uma API central e política de última escrita vence.",
+      "bateia_supported_mechanism_classes": [
+        "APPEND_ONLY_LOG_RECOVERY"
+      ],
+      "evidence_questions": [
+        "Que mecanismo preserva operações locais e permite recuperação determinística?",
+        "Como conflitos e anexos incompletos permanecem observáveis?",
+        "Quais garantias vistas no repositório ainda não têm teste independente?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "inconclusive_is_valid_when": [
+        "o snapshot não demonstrar recuperação após corrupção parcial",
+        "a semântica de conflito não puder ser inferida com segurança",
+        "a licença do alvo não autorizar a forma de reutilização proposta"
+      ],
+      "locale_signals": [
+        "pt-BR",
+        "vocabulário operacional de saneamento brasileiro"
+      ],
+      "market_context": "operações de saneamento em municípios brasileiros",
+      "repository_basis": {
+        "kind": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+        "snapshot_id": "repo-fixture-local-ledger-01",
+        "immutable_ref": "sha256:ef23fb02bd74e30c1c5e049d7db3721b0f6ee24bc9c4af0a92bd0f688f31959b",
+        "observable_gaps": [
+          "não há teste de truncamento no meio de uma entrada",
+          "não há fixture com relógios divergentes",
+          "o arquivo de licença não está presente no snapshot"
+        ]
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    },
+    {
+      "id": "EXP29-V02",
+      "split": "VALIDATION",
+      "family": "extensible-platform",
+      "provenance": "SYNTHETIC_REQUIREMENTS_SCENARIO_WITH_FOREIGN_MARKET_SIGNALS",
+      "title": "Portal extensível de requerimentos municipais",
+      "problem": "Municípios japoneses pequenos precisam publicar formulários digitais que variam por região e mudam com frequência. A equipe central não consegue incorporar todas as regras locais sem criar acoplamento, e os municípios exigem operação e dados sob seu próprio controle.",
+      "users": [
+        "servidores municipais",
+        "residentes que preenchem requerimentos",
+        "equipe central de plataforma"
+      ],
+      "desired_capabilities": [
+        "adicionar fluxos regionais sem alterar o núcleo para cada município",
+        "validar extensões antes de ativá-las",
+        "isolar falhas e permissões de integrações locais",
+        "suportar conteúdo e mensagens em japonês"
+      ],
+      "constraints": [
+        "alguns municípios não permitem processamento fora de sua região",
+        "a equipe mantenedora é pequena",
+        "extensões podem ser produzidas por fornecedores locais",
+        "não há candidato conhecido que satisfaça simultaneamente governança, idioma e implantação"
+      ],
+      "conventional_baseline": "Núcleo único com interface de plugins e adaptadores por integração municipal.",
+      "bateia_supported_mechanism_classes": [
+        "PORT_ADAPTER_ISOLATION"
+      ],
+      "evidence_questions": [
+        "Que fronteiras reduzem o acoplamento entre núcleo e integrações?",
+        "Que evidência existe de isolamento de falha e de permissão?",
+        "As lacunas de idioma, governança e implantação tornam adaptação mais arriscada que construção focal?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "build_from_scratch_is_defensible": true,
+      "build_rationale": "Uma implementação focal pode ser defensável se os mecanismos forem adaptáveis, mas nenhum produto ou repositório admissível provar as restrições combinadas de soberania regional, governança e idioma.",
+      "inconclusive_is_valid_when": [
+        "a evidência demonstrar somente separação de produto, não isolamento arquitetural",
+        "não for possível verificar limites de permissão",
+        "custos de manter uma plataforma própria permanecerem desconhecidos"
+      ],
+      "locale_signals": [
+        "ja-JP",
+        "terminologia de requerimentos municipais japoneses"
+      ],
+      "market_context": "governos municipais de pequeno porte no Japão",
+      "repository_basis": {
+        "kind": "NONE",
+        "observable_gaps": []
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    }
+  ]
+}

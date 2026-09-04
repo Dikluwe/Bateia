@@ -1,0 +1,107 @@
+{
+  "schema_version": "bateia.step0031.contract-verification.v1",
+  "step": "0031",
+  "phase": "PRE_IMPLEMENTATION_DISCRIMINATORY_VERIFICATION",
+  "role": "contract_verifier",
+  "executor": "/root/selo_0031",
+  "verified_at": "2026-09-03",
+  "verdict": "VERIFIED_FOR_SEAL",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "integrity": {
+    "json_valid": true,
+    "protected_inputs": {
+      "00_nucleo/passos/0031-autopreencher-parametros-da-recomendacao.md": "3f2ce89a268c073c3956f00d4770da274d330c1b7ef0c173ebcd83a98fe7611e",
+      "00_nucleo/benchmark/0031/intent.json": "b8cd0bc958140676ed1092377f267efe7d5ffbef511f3f73db8f9082935fc355",
+      "00_nucleo/benchmark/0031/authority-manifest.json": "5c344adf4bab1ef1a80e3fafa3462fd954c9ef0d2ef10c783a3fb0076da6a06e",
+      "00_nucleo/benchmark/0031/baseline-verification.json": "b57431eae00b82134d38533b6816de7f37f1e6e28c4d03bdf5334bc4641cda04",
+      "00_nucleo/benchmark/0031/supersession.json": "919896e9948073c44b87b046c0974b1c448a3e56bd949bcbdd0c88885712c0d0",
+      "00_nucleo/benchmark/0031/contract-candidate.json": "32d07f47e1a5f02c9640fc34602e875f5ac14bbbc4e5c745d8a94563c782aca5",
+      "00_nucleo/benchmark/0031/contract-authorship.json": "418dbe4735178a8db027f2b4ab034ba311ee6f635e9a82a72e58e58ce2a1f1de",
+      "02_shell/mcp/recommendation_step0031_oracle_test.go": "ec53ded687fd5ee664fee1cd2eea05ce8c59f09de71872e1340dc4c8cd7adda3",
+      "00_nucleo/prompts/02_shell/mcp/recommendation_step0031_oracle_test.md": "504db4af14c6754a7b21d32e031a406968b00bdacde7b17973c3b229af2e9cdc",
+      "00_nucleo/benchmark/0031/adversarial-mutations.json": "17ddbd022a5350338fd5468bd58840be0844ce509f05165d67adf82336afe3b1",
+      "00_nucleo/benchmark/0031/oracle-authorship.json": "1d6dc5224a181cac62f69c7692d45a5e88eafba54ff7ed5c2d1c763341522478"
+    }
+  },
+  "baseline_provenance": {
+    "git_head": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "scoped_diff_sha256": "1585723d03bffaabfdcfb0a171abf03e284b31637381dcb3eacaa8eedbb282fc",
+    "server_go_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+    "recommendation_go_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c",
+    "finding": "The effective baseline is the recorded working-tree snapshot: the commit plus the scoped Step 0029 diff. That diff adds the opt-in tool-call budget and does not alter recommendation decoding, schema or default semantics.",
+    "authorship_boundary": "The contract author consumed the hashed baseline receipt and inspected commit-level public contracts; the revised oracle receipt binds the effective working-tree hashes. Strong isolation is not claimed."
+  },
+  "executed_gates": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-verify-focal go test ./02_shell/mcp -run Step0031 -count=1",
+      "status": "EXPECTED_RED",
+      "reason": "Compilation succeeds; assertions fail because the baseline still requires policy, target and search and does not materialize omitted defaults."
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-verify-license go test ./02_shell/mcp -run Step0031V1AllowlistNeverAssignsLicenseWithoutEvidence -count=2",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-verify-legacy go test ./02_shell/mcp -run 'Step0025|Step0026|Step0029' -count=1",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-verify-core go test ./01_core/usecase ./04_wiring -count=1",
+      "status": "PASS"
+    }
+  ],
+  "coverage_verdict": {
+    "m31_05": "Violated: an inconclusive candidate keeps an empty license identifier and sources while the V1 allowlist remains observable only as policy.",
+    "order_gate": "PASS: positive and negative inputs run in forward and reverse deterministic orders, alternating sync-first and async-first; tools/list is also repeated.",
+    "unknown_policy": "PASS: opaque legal completeness, equal-value provenance and unsupported license evidence remain Unknown and are excluded from the negative denominator.",
+    "sync_async_parity": "PASS_BY_ORACLE_DESIGN",
+    "explicit_omission_distinctions": "PASS_BY_ORACLE_DESIGN"
+  },
+  "discriminatory_gate": {
+    "method": "Static witness-to-assertion audit plus executable baseline controls before candidate implementation.",
+    "required_mutation_score": 1.0,
+    "observed_mutation_score": 1.0,
+    "valid_negative_mutations": 18,
+    "rejected_by_oracle": 18,
+    "survivors": 0,
+    "negative_unknown": 0,
+    "opaque_controls_unknown": 3,
+    "opaque_controls_in_denominator": false,
+    "mutation_outcomes": {
+      "M31-01-minimal-still-rejected": "Violated",
+      "M31-02-one-optional-object-still-required": "Violated",
+      "M31-03-one-omitted-member-left-at-zero-value": "Violated",
+      "M31-04-license-profile-member-added-removed-or-replaced": "Violated",
+      "M31-05-license-profile-used-as-candidate-license": "Violated",
+      "M31-06-explicit-empty-license-list-defaulted": "Violated",
+      "M31-07-explicit-empty-locales-defaulted": "Violated",
+      "M31-08-explicit-zero-defaulted": "Violated",
+      "M31-09-explicit-null-treated-as-omitted": "Violated",
+      "M31-10-explicit-non-default-boolean-overwritten": "Violated",
+      "M31-11-target-omission-and-explicit-empty-collapsed-at-gateway": "Violated",
+      "M31-12-sync-and-async-use-different-defaults": "Violated",
+      "M31-13-complete-request-changed": "Violated",
+      "M31-14-unknown-field-accepted": "Violated",
+      "M31-15-schema-advertises-old-required-arrays": "Violated",
+      "M31-16-schema-default-annotation-diverges-from-runtime": "Violated",
+      "M31-17-default-slices-alias-shared-state": "Violated",
+      "M31-18-validation-occurs-after-downstream-call": "Violated"
+    },
+    "opaque_outcomes": {
+      "O31-01-equal-default-provenance": "Unknown",
+      "O31-02-license-legal-completeness": "Unknown",
+      "O31-03-unsupported-license-evidence": "Unknown"
+    }
+  },
+  "candidate_scope": {
+    "step0031_candidate_exists_at_verification": false,
+    "candidate_read": false,
+    "candidate_executed": false,
+    "future_candidate_certified": false
+  },
+  "limitations": [
+    "The shared workspace cannot attest strong process, filesystem or temporal isolation.",
+    "This verifies discriminatory adequacy for the frozen MCP default-materialization fragment, not search uplift, legal completeness or general functional equivalence.",
+    "Concrete candidate mutation execution and all final regression, architecture and refinement gates remain pending."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "tekt.step0029.discriminatory-verification-receipt.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:23:08Z",
+  "executor": "/root/verificador_0029",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "active_manifest_sha256": "639f7e5c7d1e4431bbeb9082edbd71caa85f8742bbfd0ec5dd943c77e8264456",
+  "active_seal_sha256": "bae46a813d04e52cc71fd08be0ab82005ed307dceff3e1b03c88b6d4353679e3",
+  "commands": [
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -count=1 -v ./04_wiring/step0029_experiment","run":1,"result":"PASS","duration_reported":"0.035s"},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -count=1 -v ./04_wiring/step0029_experiment","run":2,"result":"PASS","duration_reported":"0.037s"},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -race -count=1 ./04_wiring/step0029_experiment","result":"PASS","duration_reported":"1.336s"}
+  ],
+  "negative_gate": {"rejected":25,"total":25,"mutation_score":1.0,"expected_codes_required":true,"result":"PASS"},
+  "controls": {"positive_preserved":9,"positive_total":9,"opaque_unknown":5,"opaque_total":5,"unknown_excluded_from_mutation_score":true,"result":"PASS"},
+  "determinism": {"focal_runs":2,"same_classification_vector":true,"result":"PASS"},
+  "verdict": "HARNESS_DISCRIMINATORY_GATE_PASS"
+}

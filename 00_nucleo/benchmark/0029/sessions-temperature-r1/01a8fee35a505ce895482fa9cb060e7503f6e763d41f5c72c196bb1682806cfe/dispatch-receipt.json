@@ -1,0 +1,54 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-dispatch-receipt.v1",
+  "execution_seal_sha256": "384cfd66ed5a9cf83210e245c9ab33fb93d54df928fcebc434e15ebfb7349245",
+  "cell_id": "01a8fee35a505ce895482fa9cb060e7503f6e763d41f5c72c196bb1682806cfe",
+  "source_cell_id": "d2015bba2d4cd03f9200b970e32f6d7e4a1184070a8a40ba290dd802af73a06b",
+  "pair_id": "45fff492752d82ac0be44e01b37cba80a78266f0f09e2ed0c64fe969d5831d13",
+  "sequence": 3,
+  "arm": "AGENT_ALONE",
+  "profile_id": "SOL-high",
+  "started_at": "2026-09-03T08:51:45-03:00",
+  "finished_at": "2026-09-03T08:56:33-03:00",
+  "status": "INVALID_OUTPUT",
+  "behavioral_sessions_counted": 2,
+  "model_outputs_observed": 2,
+  "mcp_attempts": 0,
+  "bateia_forwarded_calls": 0,
+  "limits_exceeded": ["FIRST_ATTEMPT_MAX_OUTPUT_UTF8_CHARACTERS", "ONE_BEHAVIORAL_SESSION_PER_CELL"],
+  "incident": {
+    "reason_codes": ["MONITOR_YIELD_MISCLASSIFIED_AS_PROCESS_COMPLETION", "DUPLICATE_CELL_DISPATCH", "FIRST_ATTEMPT_OUTPUT_LIMIT_EXCEEDED"],
+    "description": "The first process was still running after the monitor yielded. A retry was incorrectly started before polling the original process session to terminal completion. Both processes later produced model output; the second overwrote output.json while both event streams remain preserved.",
+    "retry_eligible": false,
+    "pilot_must_stop": true
+  },
+  "attempts": [
+    {
+      "attempt": 0,
+      "thread_id": "01a0671c-c38e-78a1-a161-2d0272002792",
+      "output_schema_valid": true,
+      "output_unicode_characters": 20079,
+      "output_utf8_bytes": 20706,
+      "output_text_sha256": "7a8bacef8f058a7a00f7dedeef83291dc1846bcfef91296136eaa513c0a98de9",
+      "events_sha256": "23fc0c791e35828f261d8914820d013b7650e3b304a5992c9b30b754173039ab",
+      "stderr_sha256": "ff1989d6add691df474c86005dfbf337a854286471ed4a05b7bb717d6a92455a",
+      "usage": {"input_tokens": 8684, "output_tokens": 5267, "reasoning_tokens": 1022}
+    },
+    {
+      "attempt": 1,
+      "thread_id": "01a0671e-cad7-7701-9498-3244dc70426e",
+      "output_schema_valid": true,
+      "output_unicode_characters": 17909,
+      "output_utf8_bytes": 18499,
+      "output_text_sha256": "620b0e4fbd5b9f2c9feb7f5f891752c02b58a828d2dc7828306979be7f7fcfde",
+      "events_sha256": "df9f4f303f51a0715948853ff8efe90b76f5ea743ddba1d5c05618aad456c2c3",
+      "stderr_sha256": "ff1989d6add691df474c86005dfbf337a854286471ed4a05b7bb717d6a92455a",
+      "usage": {"input_tokens": 8684, "output_tokens": 4102, "reasoning_tokens": 302}
+    }
+  ],
+  "hashes": {
+    "invocation_after_incident_annotation": "b682042d83a150d6658be62ed8e963348002d1751a5ab63a9819f63def85addc",
+    "prompt": "b61bef6bc9eb7817c56dd9feffb45d33615a43ac8dfc521f5e5ee77c6d178fa2",
+    "surviving_output_json": "620b0e4fbd5b9f2c9feb7f5f891752c02b58a828d2dc7828306979be7f7fcfde"
+  },
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

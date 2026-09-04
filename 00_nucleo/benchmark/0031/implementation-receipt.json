@@ -1,0 +1,67 @@
+{
+  "schema_version": "bateia.step0031.implementation-receipt.v1",
+  "created_at": "2026-09-03",
+  "implementer": "/root",
+  "sealed_contract_sha256": "3599dd9f3d27bbd1a51ba2011d8ac4139fbd4c070aa30b05f5dbce919cae8679",
+  "implementation": {
+    "01_core/usecase/recommendation.go": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+    "02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42",
+    "02_shell/mcp/durable_runs.go": "436989b07761406908297d733e8c07cb890c12aae92613cc541a232d8e1ec29e"
+  },
+  "prompt_mirrors": {
+    "00_nucleo/prompts/01_core/usecase/recommendation.md": "99e4bd18974e12d8f746bfd2d2dcff4ce515696395019798a83dfcde0b6fc766",
+    "00_nucleo/prompts/02_shell/mcp/server.md": "b5075f7cbb40a86a15d90ff690b410e4a47a8b3d806c5def3794dd8c4b76f564",
+    "00_nucleo/prompts/02_shell/mcp/durable_runs.md": "80b0d731d45300eb409d884f5be04e14aae71ebe21d866a456440264d71b43dc"
+  },
+  "protected_oracle": {
+    "02_shell/mcp/recommendation_step0031_oracle_test.go": "ec53ded687fd5ee664fee1cd2eea05ce8c59f09de71872e1340dc4c8cd7adda3",
+    "00_nucleo/benchmark/0031/adversarial-mutations.json": "17ddbd022a5350338fd5468bd58840be0844ce509f05165d67adf82336afe3b1"
+  },
+  "historical_refinement": {
+    "00_nucleo/benchmark/0031/historical-contract-supersession.json": "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
+    "00_nucleo/benchmark/0031/basal-tools-successor.json": "900dbb4e78b9e4a20e3d8d66661a9b8590aec4d80d202737a1e3c47684b33104"
+  },
+  "behavior": [
+    "idea.problem and idea.capabilities remain required",
+    "omitted policy, target and search members receive BATEIA_RECOMMEND_DEFAULTS_V1",
+    "explicit empty lists, false, zero and empty strings are preserved before validation",
+    "explicit null, unknown fields and invalid values fail before downstream ports",
+    "sync and async paths share one materializer",
+    "the default license allowlist never becomes candidate-license evidence"
+  ],
+  "verification": [
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go test ./02_shell/mcp -run Step0031 -count=1",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go test ./01_core/usecase ./02_shell/mcp ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go build -o /tmp/bateia-step0031-build ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "command": "crystalline-lint .",
+      "status": "PASS_WITH_PREEXISTING_WARNINGS"
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go test ./...",
+      "status": "BASELINE_EQUIVALENT_FAILURES",
+      "failures": [
+        "03_infra/github, 03_infra/sourcegraph and 03_infra/web could not bind httptest sockets inside the sandbox",
+        "04_wiring/r4_gate reproduced the frozen Step 0026 retrocompatibility survivor"
+      ]
+    },
+    {
+      "command": "env GOCACHE=/tmp/bateia-step0031-go-cache go test ./03_infra/github ./03_infra/sourcegraph ./03_infra/web outside sandbox",
+      "status": "PASS"
+    }
+  ],
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO"
+}

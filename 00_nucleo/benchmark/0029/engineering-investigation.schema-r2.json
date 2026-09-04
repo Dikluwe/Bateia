@@ -1,0 +1,102 @@
+{
+  "name": "EngineeringInvestigation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "problem_restatement",
+    "conventional_baseline",
+    "alternatives",
+    "mechanisms",
+    "improvement_hypotheses",
+    "reuse_build_decision",
+    "evidence_references",
+    "counter_evidence",
+    "risks",
+    "unknowns",
+    "validation_plan"
+  ],
+  "properties": {
+    "problem_restatement": {"type": "string"},
+    "conventional_baseline": {"type": "array", "items": {"type": "string"}},
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "decision", "fit", "gaps", "evidence_refs"],
+        "properties": {
+          "name": {"type": "string"},
+          "decision": {"type": "string", "enum": ["REUSE", "ADAPT", "INVESTIGATE", "BUILD", "UNKNOWN"]},
+          "fit": {"type": "string"},
+          "gaps": {"type": "array", "items": {"type": "string"}},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "mechanisms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "operation", "contribution", "limitations", "evidence_refs"],
+        "properties": {
+          "name": {"type": "string"},
+          "operation": {"type": "string"},
+          "contribution": {"type": "string"},
+          "limitations": {"type": "array", "items": {"type": "string"}},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "improvement_hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["hypothesis", "expected_effect", "assumptions", "counterevidence_to_seek", "evidence_refs"],
+        "properties": {
+          "hypothesis": {"type": "string"},
+          "expected_effect": {"type": "string"},
+          "assumptions": {"type": "array", "items": {"type": "string"}},
+          "counterevidence_to_seek": {"type": "array", "items": {"type": "string"}},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "reuse_build_decision": {"type": "string"},
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reference_id", "source_type", "locator", "sha256", "supports", "verification_status"],
+        "properties": {
+          "reference_id": {"type": "string"},
+          "source_type": {"type": "string", "enum": ["BATEIA_RUN", "BATEIA_ARTIFACT", "CASE_INPUT", "PUBLIC_CLAIM", "UNKNOWN"]},
+          "locator": {"type": "string"},
+          "sha256": {"type": "string"},
+          "supports": {"type": "array", "items": {"type": "string"}},
+          "verification_status": {"type": "string", "enum": ["VERIFIED", "UNVERIFIED", "UNKNOWN"]}
+        }
+      }
+    },
+    "counter_evidence": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "unknowns": {"type": "array", "items": {"type": "string"}},
+    "validation_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "method", "success_criterion", "failure_criterion", "dependencies"],
+        "properties": {
+          "target": {"type": "string"},
+          "method": {"type": "string"},
+          "success_criterion": {"type": "string"},
+          "failure_criterion": {"type": "string"},
+          "dependencies": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "tekt.step0031.certificate.v1",
+  "step": "0031",
+  "created_at": "2026-09-03",
+  "executor": "/root/verificador_final_0031",
+  "status": "PASS",
+  "verdict": "MCP_DEFAULT_MATERIALIZATION_CERTIFIED",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "sealed_chain": {
+    "authority_manifest_sha256": "5c344adf4bab1ef1a80e3fafa3462fd954c9ef0d2ef10c783a3fb0076da6a06e",
+    "contract_candidate_sha256": "32d07f47e1a5f02c9640fc34602e875f5ac14bbbc4e5c745d8a94563c782aca5",
+    "oracle_sha256": "ec53ded687fd5ee664fee1cd2eea05ce8c59f09de71872e1340dc4c8cd7adda3",
+    "contract_verification_sha256": "95b5819d14c2f101a4fc6d68fd7b78a446fb467ab8dd20a3fcadcb77a1521afe",
+    "contract_seal_sha256": "3599dd9f3d27bbd1a51ba2011d8ac4139fbd4c070aa30b05f5dbce919cae8679",
+    "implementation_receipt_sha256": "e85e8211dbaadc10b09fa5e10ef3a685c634573989b83f27f903af001f7191f0",
+    "final_verification_sha256": "5e7be5a0087f4b1a34f612dc58a113e1bb7225d4b5995a1290f65b291a0b5577"
+  },
+  "certified_fragment": {
+    "profile": "BATEIA_RECOMMEND_DEFAULTS_V1",
+    "minimum_input": [
+      "idea.problem",
+      "idea.capabilities"
+    ],
+    "optional_objects": [
+      "policy",
+      "target",
+      "search"
+    ],
+    "sync_async_parity": "PASS",
+    "omitted_vs_explicit_semantics": "PASS",
+    "strict_invalid_and_unknown_rejection": "PASS",
+    "candidate_license_anti_assignment": "PASS",
+    "historical_refinement": "PASS"
+  },
+  "gates": {
+    "protected_oracle_twice": "PASS",
+    "focal_packages": "PASS",
+    "build": "PASS",
+    "git_diff_check": "PASS",
+    "crystalline_lint": "EXIT_0_WITH_PREEXISTING_WARNINGS",
+    "mutation_score": 1.0,
+    "mutations_rejected": "18/18",
+    "opaque_controls": "3/3 UNKNOWN"
+  },
+  "global_suite": {
+    "repeated_by_final_verifier": false,
+    "receipt_result": "BASELINE_EQUIVALENT_FAILURES",
+    "known_conditions": [
+      "Step 0026 R4 retrocompatibility survivor",
+      "sandbox loopback socket restrictions in three infrastructure packages"
+    ],
+    "treated_as_success": false
+  },
+  "scope": "Certifies only the exact Step 0031 server-side default-materialization and MCP schema refinement recorded by the sealed contract and candidate hashes.",
+  "does_not_certify": [
+    "general functional equivalence",
+    "search or recommendation quality uplift",
+    "legal completeness or compatibility of the license allowlist",
+    "license evidence for any candidate",
+    "flat Step 0030 payload inference",
+    "strong execution isolation"
+  ],
+  "invalidation_rule": "Any byte change to a sealed input, protected oracle, candidate implementation, prompt mirror, historical refinement artifact, implementation receipt or final verification invalidates this certificate."
+}

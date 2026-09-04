@@ -1,0 +1,136 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-methodology.v2",
+  "created_at": "2026-09-03",
+  "author": "/root/oraculo_metodo_r2",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_METHODOLOGY_REFINEMENT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "authority_scope": "METHODOLOGY_CONTRACT_AND_ORACLE_ONLY",
+  "objective": "Obter exatamente três pares A/B válidos e comparáveis; nenhum conjunto incompleto ou célula isolada constitui sucesso.",
+  "frozen_inputs": {
+    "intent": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-methodology-r2-intent.json",
+      "sha256": "fbccbb27aa931b781387dabb668902d2ed12d2142be6821028a3445c672166cb"
+    },
+    "spec_r1_sha256": "fa02c8cbdb93251bd1cc9d98b9f59f1e59c7889d08c0f8cc09c680951b1dc650",
+    "prompt_contract_r1_sha256": "857886c7c19b446458a7ad62b6b3ec536d481c5e5ddbba035ce0ea1418a15ff8",
+    "isolation_profile_r1_sha256": "fbafe23334de34beb0eaa40c43f722e9f6d6263f5f0b1ba07d44f6cfc403e21b",
+    "queue_r1_sha256": "99f09656871c305fd2ad646805967017c5d43c6f1b7719655a94d86c049b33e7",
+    "execution_state_r1_sha256": "bac1d97d2b9d686ed615abb8cdc58661d628c93e586cbbcb1a5e294bd0f14bd7"
+  },
+  "historical_classification": {
+    "preserved_valid_controls": [
+      {
+        "slot": 1,
+        "profile": "TERRA-high",
+        "arm": "AGENT_ALONE",
+        "cell_id": "be54278da25935556ebb242ee77482f5bccd472f93af57f95633da0688b398c8",
+        "receipt_sha256": "0427665c8dc9b6006bf2c26d4bfb22fb2444b4d8562ac26e65db3ca0c14330e1"
+      },
+      {
+        "slot": 2,
+        "profile": "LUNA-low",
+        "arm": "AGENT_ALONE",
+        "cell_id": "21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f",
+        "receipt_sha256": "8f127d5889833753fc264a9fb1657cf790f907cbeb98476cfac4d5189ccbb5a4"
+      }
+    ],
+    "excluded_invalid_cell": {
+      "profile": "SOL-high",
+      "cell_id": "01a8fee35a505ce895482fa9cb060e7503f6e763d41f5c72c196bb1682806cfe",
+      "receipt_sha256": "d01e237ae09ca3818e707ce41b8b33e9ac93a500f8d195649fcb786c0f0a544c",
+      "rule": "Nenhuma das duas saídas duplicadas pode ser reutilizada, escolhida ou salva post hoc."
+    }
+  },
+  "ordered_pair_slots": [
+    {
+      "slot": 1,
+      "primary_profile": "TERRA-high",
+      "plan": "preserved_A_then_new_B"
+    },
+    {
+      "slot": 2,
+      "primary_profile": "LUNA-low",
+      "plan": "preserved_A_then_new_B"
+    },
+    {
+      "slot": 3,
+      "primary_profile": "SOL-high",
+      "plan": "fresh_A_then_fresh_B"
+    }
+  ],
+  "scheduler": {
+    "pair_first": true,
+    "rule": "Um slot deve terminar como par válido ou ser substituído no próprio slot antes de iniciar o slot seguinte.",
+    "single_global_in_flight_process": true,
+    "cadence_seconds_between_process_starts": 120,
+    "stop_success": "Imediatamente quando o terceiro slot produzir o terceiro par válido.",
+    "stop_inconclusive": "Imediatamente quando um slot não puder produzir par válido sem violar orçamento, quando o fallback falhar ou quando um segundo slot exigir substituição."
+  },
+  "fallback": {
+    "profile": "SOL-medium",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "pre_frozen": true,
+    "maximum_sessions": 2,
+    "shape": "fresh_A_then_fresh_B",
+    "maximum_activations": 1,
+    "activation": "Somente após falha operacional ou invalidade terminal que impeça o par primário; jamais por conteúdo, qualidade aparente ou benefício observado.",
+    "replacement_scope": "Substitui o par inteiro do slot, inclusive quando existia controle A preservado."
+  },
+  "budgets": {
+    "global_behavioral_sessions_before_r2": 11,
+    "primary_additional_sessions_expected": 4,
+    "fallback_additional_sessions_max": 2,
+    "additional_behavioral_sessions_hard_cap": 6,
+    "global_behavioral_sessions_hard_cap": 17,
+    "reservation_rule": "Antes de cada início, reservar uma unidade contra ambos os tetos; liberar a reserva somente se o processo terminar com exit_code e nenhum agent_message tiver sido observado.",
+    "never_exceed": true
+  },
+  "monitor_state_machine": {
+    "states": [
+      "NOT_STARTED",
+      "RUNNING_WITH_SESSION_ID",
+      "TERMINAL_WITH_EXIT_CODE",
+      "UNKNOWN_MONITOR_STATE"
+    ],
+    "yield": "NON_TERMINAL",
+    "poll_timeout": "NON_TERMINAL",
+    "terminal_evidence": "Somente exit_code obtido ao acompanhar a mesma session_id.",
+    "session_id": "Obrigatoriamente persistida antes de qualquer yield e reutilizada em todos os polls.",
+    "lost_session_id": "UNKNOWN_MONITOR_STATE; bloquear qualquer novo início e nunca inferir término.",
+    "retry": "Permitido no máximo pelo limite de infraestrutura somente após exit_code terminal não bem-sucedido e zero agent_message observado; qualquer agent_message torna a célula comportamental e não repetível.",
+    "overlap": "Proibido globalmente e, por consequência, para a mesma célula.",
+    "duplicate_output": "Se ocorrer sobreposição ou duplicata, todas as saídas da célula permanecem evidência forense, a célula é INVALID_OUTPUT e nenhuma saída é promovida a output canônico ou escolhida post hoc."
+  },
+  "treatment_boundary": {
+    "arm_a_enabled_tools": [],
+    "arm_b_enabled_tools": [
+      "bateia_recommend"
+    ],
+    "arm_b_mcp_attempts_max": 3,
+    "arm_b_bateia_forwarded_calls_max": 3,
+    "fourth_attempt": "INVALID_OUTPUT_AND_STOP_CURRENT_PAIR",
+    "other_tool_or_mcp": "INVALID_OUTPUT"
+  },
+  "evaluation": {
+    "scope": "EXPLORATORY_ONLY",
+    "rubric_freeze_before_each_B": true,
+    "procedure": "Um avaliador sem rótulo de braço ou perfil recebe apenas a saída A anonimizada, congela inventário e rubrica de novidade e registra seu hash antes de autorizar B. Após B, recebe os dois objetos com rótulos aleatórios e julga; A/B só é revelado depois do recibo.",
+    "primary": "Alternativas, mecanismos ou hipóteses materialmente novas em B, ausentes em A e com suporte mecanicamente resolvível.",
+    "secondary": [
+      "cobertura de perguntas de evidência",
+      "qualidade de contraevidência e Unknown",
+      "acionabilidade sem extrapolação não sustentada"
+    ],
+    "prohibited_claim": "Não estimar uplift confirmatório nem generalizar além dos três pares."
+  },
+  "unknown_policy": "Unknown nunca é zero, sucesso, output válido por default ou autorização de retry. Ambiguidade de identidade, estado de processo sem exit_code, schema opaco, suporte irresolvível ou budget esgotado permanece Unknown e fecha o gate correspondente sem completar par.",
+  "not_authorized": [
+    "implementar runner ou servidor",
+    "executar modelo",
+    "executar MCP",
+    "ler output.json ou agent_message",
+    "executar gates finais",
+    "emitir certificado final"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "tekt.contract-seal.v1",
+  "step": "0031",
+  "revision": "R2",
+  "phase": "PRE_CANDIDATE_DISCRIMINATORY_SEAL",
+  "verdict": "SEALED_FOR_CANDIDATE_MATERIALIZATION",
+  "created_at": "2026-09-03",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "baseline": {
+    "git_head": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "scoped_diff_sha256": "1585723d03bffaabfdcfb0a171abf03e284b31637381dcb3eacaa8eedbb282fc",
+    "server_go_sha256": "71aace806e1a1e8fb2aad30918dab6fc31f3f3b876aa4abb33bd4d9b963280a5",
+    "recommendation_go_sha256": "6055e0b7b125516044698d7dfd6fcd04ae75b0f0c6a9b0c34c1b89dc6fd7f79c"
+  },
+  "verification": {
+    "path": "00_nucleo/benchmark/0031/contract-verification.json",
+    "sha256": "95b5819d14c2f101a4fc6d68fd7b78a446fb467ab8dd20a3fcadcb77a1521afe"
+  },
+  "sealed_inputs": {
+    "00_nucleo/passos/0031-autopreencher-parametros-da-recomendacao.md": "3f2ce89a268c073c3956f00d4770da274d330c1b7ef0c173ebcd83a98fe7611e",
+    "00_nucleo/benchmark/0031/intent.json": "b8cd0bc958140676ed1092377f267efe7d5ffbef511f3f73db8f9082935fc355",
+    "00_nucleo/benchmark/0031/authority-manifest.json": "5c344adf4bab1ef1a80e3fafa3462fd954c9ef0d2ef10c783a3fb0076da6a06e",
+    "00_nucleo/benchmark/0031/baseline-verification.json": "b57431eae00b82134d38533b6816de7f37f1e6e28c4d03bdf5334bc4641cda04",
+    "00_nucleo/benchmark/0031/supersession.json": "919896e9948073c44b87b046c0974b1c448a3e56bd949bcbdd0c88885712c0d0",
+    "00_nucleo/benchmark/0031/contract-candidate.json": "32d07f47e1a5f02c9640fc34602e875f5ac14bbbc4e5c745d8a94563c782aca5",
+    "00_nucleo/benchmark/0031/contract-authorship.json": "418dbe4735178a8db027f2b4ab034ba311ee6f635e9a82a72e58e58ce2a1f1de",
+    "02_shell/mcp/recommendation_step0031_oracle_test.go": "ec53ded687fd5ee664fee1cd2eea05ce8c59f09de71872e1340dc4c8cd7adda3",
+    "00_nucleo/prompts/02_shell/mcp/recommendation_step0031_oracle_test.md": "504db4af14c6754a7b21d32e031a406968b00bdacde7b17973c3b229af2e9cdc",
+    "00_nucleo/benchmark/0031/adversarial-mutations.json": "17ddbd022a5350338fd5468bd58840be0844ce509f05165d67adf82336afe3b1",
+    "00_nucleo/benchmark/0031/oracle-authorship.json": "1d6dc5224a181cac62f69c7692d45a5e88eafba54ff7ed5c2d1c763341522478",
+    "00_nucleo/benchmark/0031/contract-verification.json": "95b5819d14c2f101a4fc6d68fd7b78a446fb467ab8dd20a3fcadcb77a1521afe"
+  },
+  "discriminatory_gate": {
+    "required_mutation_score": 1.0,
+    "observed_mutation_score": 1.0,
+    "valid_negative_mutations": 18,
+    "violated_negative_mutations": 18,
+    "survivors": 0,
+    "negative_unknown": 0,
+    "opaque_cases_unknown": 3,
+    "opaque_cases_in_denominator": false,
+    "m31_05": "VIOLATED",
+    "deterministic_order_gate": "PASS"
+  },
+  "scope": "The exact frozen Step 0031 MCP schema and server-side default-materialization fragment for synchronous and durable recommendation gateways. The seal authorizes later candidate implementation but does not certify it.",
+  "limitations": [
+    "Shared-workspace execution cannot attest strong process, filesystem or temporal isolation.",
+    "The seal does not claim search-result uplift, legal completeness, flat-payload support or general functional equivalence.",
+    "Final candidate, concrete mutation, regression, architecture and refinement gates remain pending."
+  ],
+  "invalidation_rule": "Any byte change to a sealed input, the effective baseline identity, contract, oracle, mutation catalog, verification receipt or Unknown policy invalidates this seal from the first affected phase."
+}

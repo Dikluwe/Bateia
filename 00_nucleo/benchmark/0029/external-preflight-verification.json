@@ -1,0 +1,95 @@
+{
+  "schema_version": "tekt.step0029.external-preflight-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:54:09Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "verdict": "PREFLIGHT_RECEIPT_INTERNALLY_CONSISTENT_BLOCKED_BEFORE_SMOKE_CONDITIONAL_ON_UNATTESTED_TOOL_REGISTRY_OBSERVATION",
+  "inputs": {
+    "execution_authorization": {
+      "path": "00_nucleo/benchmark/0029/execution-authorization.json",
+      "sha256": "508ca757597fb2d61cd4d3b67dadc7fe1383541b895c3f5cabecf3821953756b",
+      "json": "PASS"
+    },
+    "external_preflight_receipt": {
+      "path": "00_nucleo/benchmark/0029/external-preflight-receipt.json",
+      "sha256": "1f171408b7cb0396ab3144fb4dbb77a0d90629068eaef5dff0db60f4d0c17d7d",
+      "json": "PASS"
+    },
+    "randomization_plan": {
+      "path": "00_nucleo/benchmark/0029/randomization-plan.json",
+      "sha256": "5e2917f6b4f55dec4abae8681dacab9b51d7609991787bd5d9f72294ffcef62d",
+      "json": "PASS"
+    },
+    "post_gate_seal": {
+      "path": "00_nucleo/benchmark/0029/seal.json",
+      "sha256": "b45259ad04e6d0deb3c3c01724c856931377b434434ab0c0e3d60131b6ec470d",
+      "json": "PASS"
+    },
+    "tool_allowlists": {
+      "path": "00_nucleo/benchmark/0029/tool-allowlists.json",
+      "sha256": "58d79667ffb2e1b005015ece63f13fc95d1e7ea21b26ae1f081955eabb53b5db",
+      "json": "PASS"
+    }
+  },
+  "hash_checks": {
+    "receipt_authorization_matches_file": true,
+    "authorization_and_receipt_plan_hash_match_file": true,
+    "authorization_seal_hash_matches_file": true,
+    "required_tool_surface_hash_matches_plan": true,
+    "required_tool_surface_hash_matches_canonical_allowlist": true,
+    "required_tool_surface_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "internal_mismatches": 0
+  },
+  "authorization_consistency": {
+    "status": "AUTHORIZED_UNDER_FROZEN_PLAN_CAP",
+    "behavioral_sessions_max": 108,
+    "contract_sessions_max": 18,
+    "plan_cells": 108,
+    "plan_contract_cells": 18,
+    "budget_matches_plan": true,
+    "sessions_dispatched_at_authorization": 0,
+    "source_message_hashes_binding": "NOT_INDEPENDENTLY_VERIFIABLE_FROM_REPOSITORY_ARTIFACTS"
+  },
+  "tool_surface_consistency": {
+    "required": 10,
+    "required_tools_match_frozen_order": true,
+    "required_tools_match_tool_allowlists": true,
+    "arm_a_bateia_access": false,
+    "arm_b_bateia_access": true,
+    "receipt_observed_available": 0,
+    "receipt_observed_tools": [],
+    "registry_observation": "COORDINATOR_REPORTED_NOT_INDEPENDENTLY_VERIFIED",
+    "registry_observation_attested_by_verifier": false
+  },
+  "gate_reasoning": {
+    "premise": "The frozen treatment requires the exact ten-tool Bateia MCP surface in arm B while arm A remains without Bateia.",
+    "reported_observation": "The coordinator receipt records 0 of 10 required Bateia tools in the active clean-session registry.",
+    "consequence_if_observation_is_accurate": "An arm-B CONTRACT cell cannot receive the frozen treatment, so dispatching it would produce TOOL_UNAVAILABLE or an invalid treatment; dispatching only arm A would break the paired smoke design.",
+    "spec_basis": [
+      "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md:141",
+      "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md:243",
+      "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md:245",
+      "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md:246",
+      "00_nucleo/passos/0029-medir-ganho-da-ia-usando-bateia.md:291",
+      "00_nucleo/benchmark/0029/contract.md:171",
+      "00_nucleo/benchmark/0029/contract.md:195"
+    ],
+    "contract_smoke_status": "BLOCKED_BEFORE_CONTRACT_SMOKE",
+    "contract_sessions_dispatched": 0,
+    "behavioral_sessions_dispatched": 0,
+    "advance_to_validation_or_test": false,
+    "fallback_to_cli_or_shell": "FORBIDDEN"
+  },
+  "limitations": [
+    "This verifier could not inspect the coordinator's active Codex tool registry directly; 0/10 is verified only as a faithfully recorded claim, not as an independently reproduced environment observation.",
+    "The two source_messages_sha256 values in the authorization cannot be rebound to message bytes from repository artifacts alone.",
+    "Hash consistency proves artifact identity and linkage, not strong process, filesystem, capability or conversational isolation.",
+    "No session was created or dispatched and no external, paid, model or Bateia call was executed by this verification."
+  ],
+  "required_next_gate": "Independently observe the exact certified ten-tool surface in clean treatment sessions under the same frozen hashes; only then may the 18-cell CONTRACT smoke begin.",
+  "product_verdict": "NOT_EVALUATED",
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "invalidation_rule": "Any change to the authorization, preflight receipt, plan, seal, tool allowlist, active registry observation or session count requires a new preflight verification."
+}

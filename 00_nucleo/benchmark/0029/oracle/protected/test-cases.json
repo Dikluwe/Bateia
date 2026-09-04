@@ -1,0 +1,201 @@
+{
+  "schema_version": "tekt.step0029.protected-test-cases.v1",
+  "corpus_id": "step0029-agent-uplift-corpus-v1",
+  "visibility": "PROTECTED_UNTIL_SEAL",
+  "frozen_before_test": true,
+  "case_count": 3,
+  "cases": [
+    {
+      "id": "EXP29-T01",
+      "split": "TEST",
+      "family": "artifact-integrity",
+      "provenance": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+      "title": "Cadeia auditável de artefatos para diagnóstico laboratorial",
+      "problem": "Uma rede de laboratórios distribui modelos e tabelas de referência entre unidades. Equipes locais relatam resultados diferentes após atualizações com o mesmo rótulo de versão, e a auditoria precisa determinar exatamente qual conteúdo produziu cada resultado.",
+      "users": [
+        "engenheiros de plataforma laboratorial",
+        "responsáveis por qualidade",
+        "operadores das unidades"
+      ],
+      "desired_capabilities": [
+        "identificar conteúdo imutavelmente entre ambientes",
+        "detectar troca ou corrupção antes da ativação",
+        "reproduzir a composição usada por uma execução histórica",
+        "distinguir proveniência demonstrada de metadados declarados"
+      ],
+      "constraints": [
+        "unidades podem ficar desconectadas durante a atualização",
+        "rótulos humanos podem ser reutilizados por engano",
+        "alguns componentes são grandes e chegam em partes",
+        "a análise não pode usar dados reais de pacientes"
+      ],
+      "conventional_baseline": "Registro central de versões com checksums publicados e cache por unidade.",
+      "bateia_supported_mechanism_classes": [
+        "CONTENT_ADDRESSED_STORAGE"
+      ],
+      "evidence_questions": [
+        "Que mecanismo vincula identidade ao conteúdo e valida antes de promover estado?",
+        "A composição completa é reproduzível ou apenas componentes isolados são verificáveis?",
+        "Quais alegações dependem de documentação sem testemunho independente?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "inconclusive_is_valid_when": [
+        "o snapshot provar hashing de arquivos mas não da composição",
+        "a validação ocorrer somente depois da ativação",
+        "não houver evidência independente de replay"
+      ],
+      "locale_signals": [
+        "pt-BR"
+      ],
+      "market_context": "rede laboratorial regional no Brasil",
+      "repository_basis": {
+        "kind": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+        "snapshot_id": "repo-fixture-artifact-chain-01",
+        "immutable_ref": "sha256:406a55fbc8789a998d6a31ae449c8c49b1ac8e93e80e1e3096376dca89795e84",
+        "observable_gaps": [
+          "não há prova de composição atômica entre modelo e tabela",
+          "não há teste com chunk corrompido durante retomada",
+          "a documentação de retenção não possui testemunho executável"
+        ]
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    },
+    {
+      "id": "EXP29-T02",
+      "split": "TEST",
+      "family": "durable-processing",
+      "provenance": "SYNTHETIC_REQUIREMENTS_SCENARIO_WITH_FOREIGN_MARKET_SIGNALS",
+      "title": "Alertas agrícolas sob rajadas de fontes heterogêneas",
+      "problem": "Cooperativas de países andinos recebem boletins de preço, clima e logística em espanhol, inclusive por conexões instáveis. Rajadas atrasam alertas importantes, reenvios geram notificações duplicadas e fontes conflitantes não ficam visíveis ao agrônomo.",
+      "users": [
+        "agricultores cooperados",
+        "agrônomos regionais",
+        "operadores de dados"
+      ],
+      "desired_capabilities": [
+        "absorver rajadas sem crescimento ilimitado",
+        "priorizar alertas urgentes sem eliminar rastreabilidade",
+        "retomar ingestão sem duplicar notificações",
+        "preservar conflito e incerteza entre fontes"
+      ],
+      "constraints": [
+        "fontes entregam formatos e frequências diferentes",
+        "conectividade regional é intermitente",
+        "a equipe de operação não mantém infraestrutura complexa",
+        "a solução deve explicar atraso e descarte ao usuário"
+      ],
+      "conventional_baseline": "Fila central com consumidores paralelos, deduplicação por identificador da fonte e retries exponenciais.",
+      "bateia_supported_mechanism_classes": [
+        "BOUNDED_QUEUE_BACKPRESSURE"
+      ],
+      "evidence_questions": [
+        "Como a admissão reage a consumidores lentos e prioridades concorrentes?",
+        "Que limite existe entre deduplicação de entrega e idempotência do efeito?",
+        "Como conflito de fontes e descarte permanecem observáveis?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "inconclusive_is_valid_when": [
+        "o mecanismo limitar memória mas não preservar itens aceitos",
+        "a evidência de prioridade não cobrir starvation",
+        "a semântica de duplicidade das fontes permanecer desconhecida"
+      ],
+      "locale_signals": [
+        "es-BO",
+        "es-PE",
+        "vocabulário agrícola andino"
+      ],
+      "market_context": "cooperativas agrícolas na Bolívia e no Peru",
+      "repository_basis": {
+        "kind": "NONE",
+        "observable_gaps": []
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    },
+    {
+      "id": "EXP29-T03",
+      "split": "TEST",
+      "family": "extensible-platform",
+      "provenance": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+      "title": "Integrações locais para distribuição emergencial",
+      "problem": "Equipes de resposta a enchentes registram estoque e entregas em postos temporários. Cada região precisa integrar leitores, impressoras e cadastros distintos, mas falhas de uma integração hoje interrompem todo o posto e alterações locais tornam atualizações centrais imprevisíveis.",
+      "users": [
+        "voluntários em postos de distribuição",
+        "coordenadores regionais",
+        "equipe mantenedora central"
+      ],
+      "desired_capabilities": [
+        "operar funções essenciais mesmo quando uma integração falhar",
+        "incorporar dispositivos e cadastros regionais com mudança localizada",
+        "limitar permissões e efeitos de extensões",
+        "atualizar o núcleo sem apagar adaptações auditáveis"
+      ],
+      "constraints": [
+        "postos operam com hardware heterogêneo e conectividade incerta",
+        "extensões são produzidas sob forte pressão de tempo",
+        "dados pessoais não podem atravessar limites regionais sem autorização",
+        "o snapshot disponível cobre somente parte dos adaptadores"
+      ],
+      "conventional_baseline": "Aplicação central com drivers embutidos e branches regionais mantidos separadamente.",
+      "bateia_supported_mechanism_classes": [
+        "PORT_ADAPTER_ISOLATION",
+        "APPEND_ONLY_LOG_RECOVERY"
+      ],
+      "evidence_questions": [
+        "Que fronteira observável impede falha de adaptador de comprometer o núcleo?",
+        "Como mudanças offline e migrações de extensão podem ser auditadas e recuperadas?",
+        "É mais defensável adaptar mecanismos isolados ou construir um núcleo mínimo para as restrições locais?"
+      ],
+      "decision_space": [
+        "REUSE",
+        "ADAPT",
+        "INVESTIGATE",
+        "BUILD"
+      ],
+      "build_from_scratch_is_defensible": true,
+      "build_rationale": "Construir um núcleo mínimo é defensável caso os mecanismos observados sejam reutilizáveis apenas como padrões e os candidatos não comprovem isolamento, soberania regional e operação offline em conjunto.",
+      "inconclusive_is_valid_when": [
+        "implementação e teste dos adaptadores não estiverem vinculados ao mesmo snapshot",
+        "a evidência mostrar apenas extensibilidade, sem isolamento de falha",
+        "o custo de manter extensões regionais não for observável"
+      ],
+      "locale_signals": [
+        "pt-BR",
+        "terminologia de defesa civil brasileira"
+      ],
+      "market_context": "operações temporárias de resposta a enchentes no Brasil",
+      "repository_basis": {
+        "kind": "AUTHORIZED_SYNTHETIC_REPOSITORY_SNAPSHOT",
+        "snapshot_id": "repo-fixture-relief-ports-01",
+        "immutable_ref": "sha256:56ab2daab8d94d6d149a6d21bd8edf927ca934785bdd15839118d1b26ba1c806",
+        "observable_gaps": [
+          "dois adaptadores não possuem teste de falha",
+          "não há witness de migração entre versões de extensão",
+          "o comportamento com log parcialmente persistido não está documentado"
+        ]
+      },
+      "safety": {
+        "data_class": "SYNTHETIC_ONLY",
+        "external_actions_allowed": false,
+        "software_execution_allowed": false
+      }
+    }
+  ]
+}

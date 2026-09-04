@@ -1,0 +1,66 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-preflight-receipt.r3.v1",
+  "completed_at": "2026-09-03T19:46:18Z",
+  "status": "PASS",
+  "behavioral_sessions_before": 15,
+  "behavioral_sessions_started": 0,
+  "native_web_calls": 0,
+  "bateia_recommend_calls": 0,
+  "contract_seal": {
+    "path": "00_nucleo/benchmark/0029/catalysis-pilot-r3-contract-seal.json",
+    "sha256": "0e046c0a6fec8af6d6af630c8b75e271233c02839f87c8d64ac8d2606ed8880d"
+  },
+  "auth_only_codex_home": {
+    "path": "/tmp/codex-catalysis-pilot-auth-home",
+    "directory_mode": "0700",
+    "entries_exactly": ["auth.json"],
+    "auth_json_type": "regular_file",
+    "auth_json_mode": "0600",
+    "auth_json_sha256": "adbe27ace932fe2b91890197b357460651314d4a6b5567021d59eaf8822aa7cb",
+    "auth_bytes_logged": false
+  },
+  "working_directory": {
+    "path": "/tmp/bateia-catalysis-pilot-empty",
+    "entries": 0,
+    "status": "EMPTY"
+  },
+  "binaries": {
+    "codex": {
+      "path": "/usr/bin/codex",
+      "version": "codex-cli 0.149.0",
+      "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477"
+    },
+    "bateia": {
+      "path": "/tmp/bateia-temperature-pilot-r1",
+      "sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b"
+    }
+  },
+  "invocations": {
+    "control": {
+      "path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/control/invocation.json",
+      "sha256": "30ff8fafcc1110b002da912ead2a1150363f8dbdf1e897eb557c3fbf840bd4dc",
+      "resolved_argv_exact_profile_match": true,
+      "mcp_config_pairs": 0,
+      "disable_pairs": 12,
+      "search_precedes_exec": true
+    },
+    "treatment": {
+      "path": "00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/invocation.json",
+      "sha256": "4423e1ae74e6d3a7f1ad314d2d9d28059bca1559ba78205998cbc869b7cc9138",
+      "resolved_argv_exact_profile_match": true,
+      "mcp_config_pairs": 6,
+      "disable_pairs": 12,
+      "search_precedes_exec": true
+    }
+  },
+  "mcp_capability_preflight": {
+    "operations_exactly": ["initialize", "notifications/initialized", "tools/list", "stdin_eof_shutdown"],
+    "tools_call_sent": false,
+    "tool_count": 10,
+    "advertised_tool_names_sha256": "88f213a5a7a7a5153c3909b179e9da8eb6777933dce0522db06d082bb23f12ea",
+    "bateia_recommend_advertised": true,
+    "transcript_sha256": "d92d46b3a8d8c8a9e2dbcf13fc285ecb5ea50e9e34a2c2491272b8beab9c04d1",
+    "stderr_sha256": "49ec2dfd79fde16aff9b7218583d847e7b4b2f750f46b4cbc3c8bcf65c1108eb"
+  },
+  "authorization": "Exactly two sealed behavioral sessions may now start, treatment first, with no retry or replacement."
+}

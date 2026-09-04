@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/server.md
  * @layer L2
- * @updated 2026-08-03
+ * @updated 2026-09-03
  */
 
 package mcp
@@ -37,17 +37,49 @@ type JSONRPCResponse struct {
 	Error   *RPCError   `json:"error,omitempty"`
 }
 
-type RPCError struct {
+type JSONRPCError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
+type RPCError = JSONRPCError
+
+type ToolCallBudget struct {
+	maxForwardedCalls *int
+	forwardedCalls    int
+}
+
+func NewToolCallBudget(maxForwardedCalls *int) (*ToolCallBudget, error) {
+	if maxForwardedCalls == nil {
+		return &ToolCallBudget{}, nil
+	}
+	if *maxForwardedCalls <= 0 {
+		return nil, fmt.Errorf("tool call budget must be positive")
+	}
+	limit := *maxForwardedCalls
+	return &ToolCallBudget{maxForwardedCalls: &limit}, nil
+}
+
+func (b *ToolCallBudget) Dispatch(method string, decodeAndForward func() *JSONRPCError) *JSONRPCError {
+	if method != "tools/call" {
+		return decodeAndForward()
+	}
+	if b != nil && b.maxForwardedCalls != nil {
+		if b.forwardedCalls >= *b.maxForwardedCalls {
+			return &JSONRPCError{Code: -32010, Message: "Bateia tool call budget exhausted"}
+		}
+		b.forwardedCalls++
+	}
+	return decodeAndForward()
+}
+
 // MCPServer lida com a comunicação JSON-RPC via stdio.
 type MCPServer struct {
-	funnel      *usecase.SearchFunnel
-	recommender RecommendationRecommender
-	reader      io.Reader
-	writer      io.Writer
+	funnel         *usecase.SearchFunnel
+	recommender    RecommendationRecommender
+	reader         io.Reader
+	writer         io.Writer
+	toolCallBudget *ToolCallBudget
 }
 
 type RecommendationRecommender interface {
@@ -60,6 +92,16 @@ func NewMCPServer(funnel *usecase.SearchFunnel, reader io.Reader, writer io.Writ
 		server.recommender = recommenders[0]
 	}
 	return server
+}
+
+func (s *MCPServer) WithToolCallBudget(budget *ToolCallBudget) *MCPServer {
+	if budget == nil || budget.maxForwardedCalls == nil {
+		s.toolCallBudget = nil
+		return s
+	}
+	limit := *budget.maxForwardedCalls
+	s.toolCallBudget = &ToolCallBudget{maxForwardedCalls: &limit}
+	return s
 }
 
 func (s *MCPServer) Serve(ctx context.Context) error {
@@ -83,6 +125,20 @@ func (s *MCPServer) Serve(ctx context.Context) error {
 }
 
 func (s *MCPServer) handleRequest(ctx context.Context, req JSONRPCRequest) {
+	if s.toolCallBudget != nil {
+		budgetErr := s.toolCallBudget.Dispatch(req.Method, func() *JSONRPCError {
+			s.handleForwardedRequest(ctx, req)
+			return nil
+		})
+		if budgetErr != nil {
+			s.sendError(req.ID, budgetErr.Code, budgetErr.Message)
+		}
+		return
+	}
+	s.handleForwardedRequest(ctx, req)
+}
+
+func (s *MCPServer) handleForwardedRequest(ctx context.Context, req JSONRPCRequest) {
 	switch req.Method {
 	case "initialize":
 		res := map[string]interface{}{
@@ -267,12 +323,12 @@ type recommendationPolicyArguments struct {
 }
 
 type recommendationTargetArguments struct {
-	Name string `json:"name"`
+	Name *string `json:"name"`
 }
 
 type recommendationSearchArguments struct {
 	Strategy      *string   `json:"strategy"`
-	Language      string    `json:"language,omitempty"`
+	Language      *string   `json:"language"`
 	Locales       *[]string `json:"locales"`
 	MaxPerQuery   *int      `json:"max_per_query"`
 	MaxCandidates *int      `json:"max_candidates"`
@@ -286,6 +342,9 @@ type recommendationArguments struct {
 }
 
 func decodeRecommendationArguments(raw json.RawMessage) (domain.RecommendationRequest, error) {
+	if err := rejectRecommendationNulls(raw); err != nil {
+		return domain.RecommendationRequest{}, err
+	}
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.DisallowUnknownFields()
 	var input recommendationArguments
@@ -295,29 +354,98 @@ func decodeRecommendationArguments(raw json.RawMessage) (domain.RecommendationRe
 	if decoder.Decode(&struct{}{}) != io.EOF {
 		return domain.RecommendationRequest{}, fmt.Errorf("arguments devem conter um único objeto JSON")
 	}
-	if input.Idea == nil || input.Policy == nil || input.Target == nil || input.Search == nil ||
-		input.Policy.SchemaVersion == nil || input.Policy.AllowedLicenses == nil || input.Policy.RequireLocal == nil || input.Policy.AllowArchived == nil || input.Policy.MaxComponents == nil || input.Policy.ExtendMinCoverage == nil || input.Policy.IntegrationMinValue == nil ||
-		input.Search.Strategy == nil || input.Search.Locales == nil || input.Search.MaxPerQuery == nil || input.Search.MaxCandidates == nil {
+	if input.Idea == nil {
 		return domain.RecommendationRequest{}, fmt.Errorf("campos obrigatórios ausentes")
 	}
+	return materializeRecommendationArguments(input), nil
+}
+
+func materializeRecommendationArguments(input recommendationArguments) domain.RecommendationRequest {
 	request := domain.RecommendationRequest{
 		Idea: domain.IdeaSpec{
 			Problem: input.Idea.Problem, Users: input.Idea.Users, Capabilities: input.Idea.Capabilities,
 			Constraints: input.Idea.Constraints, NonGoals: input.Idea.NonGoals, PreferredStack: input.Idea.PreferredStack,
 		},
-		Policy: domain.ReuseDecisionPolicy{
-			SchemaVersion: *input.Policy.SchemaVersion, AllowedLicenses: *input.Policy.AllowedLicenses,
-			RequireLocal: *input.Policy.RequireLocal, AllowArchived: *input.Policy.AllowArchived,
-			MaxComponents: *input.Policy.MaxComponents, ExtendMinCoverage: *input.Policy.ExtendMinCoverage,
-			IntegrationMinValue: *input.Policy.IntegrationMinValue,
-		},
-		Target: domain.SoftwareAlternativeTarget{Name: input.Target.Name},
-		Search: domain.RecommendationSearch{
-			Strategy: *input.Search.Strategy, Language: input.Search.Language, Locales: *input.Search.Locales,
-			MaxPerQuery: *input.Search.MaxPerQuery, MaxCandidates: *input.Search.MaxCandidates,
-		},
+		Policy: usecase.DefaultRecommendationPolicyV1(),
+		Target: usecase.DefaultRecommendationTargetV1(input.Idea.Problem),
+		Search: usecase.DefaultRecommendationSearchV1(),
 	}
-	return request, nil
+	if input.Policy != nil {
+		if input.Policy.SchemaVersion != nil {
+			request.Policy.SchemaVersion = *input.Policy.SchemaVersion
+		}
+		if input.Policy.AllowedLicenses != nil {
+			request.Policy.AllowedLicenses = append([]string{}, (*input.Policy.AllowedLicenses)...)
+		}
+		if input.Policy.RequireLocal != nil {
+			request.Policy.RequireLocal = *input.Policy.RequireLocal
+		}
+		if input.Policy.AllowArchived != nil {
+			request.Policy.AllowArchived = *input.Policy.AllowArchived
+		}
+		if input.Policy.MaxComponents != nil {
+			request.Policy.MaxComponents = *input.Policy.MaxComponents
+		}
+		if input.Policy.ExtendMinCoverage != nil {
+			request.Policy.ExtendMinCoverage = *input.Policy.ExtendMinCoverage
+		}
+		if input.Policy.IntegrationMinValue != nil {
+			request.Policy.IntegrationMinValue = *input.Policy.IntegrationMinValue
+		}
+	}
+	if input.Target != nil && input.Target.Name != nil {
+		request.Target.Name = *input.Target.Name
+	}
+	if input.Search != nil {
+		if input.Search.Strategy != nil {
+			request.Search.Strategy = *input.Search.Strategy
+		}
+		if input.Search.Language != nil {
+			request.Search.Language = *input.Search.Language
+		}
+		if input.Search.Locales != nil {
+			request.Search.Locales = append([]string{}, (*input.Search.Locales)...)
+		}
+		if input.Search.MaxPerQuery != nil {
+			request.Search.MaxPerQuery = *input.Search.MaxPerQuery
+		}
+		if input.Search.MaxCandidates != nil {
+			request.Search.MaxCandidates = *input.Search.MaxCandidates
+		}
+	}
+	return request
+}
+
+func rejectRecommendationNulls(raw json.RawMessage) error {
+	var value interface{}
+	if err := json.Unmarshal(raw, &value); err != nil {
+		return err
+	}
+	if recommendationContainsNull(value) {
+		return fmt.Errorf("null não é omissão")
+	}
+	return nil
+}
+
+func recommendationContainsNull(value interface{}) bool {
+	if value == nil {
+		return true
+	}
+	switch typed := value.(type) {
+	case []interface{}:
+		for _, item := range typed {
+			if recommendationContainsNull(item) {
+				return true
+			}
+		}
+	case map[string]interface{}:
+		for _, item := range typed {
+			if recommendationContainsNull(item) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (s *MCPServer) handleRecommendation(ctx context.Context, id interface{}, rawArguments json.RawMessage) {
@@ -351,6 +479,8 @@ func recommendationTool() map[string]interface{} {
 	stringArray := func() map[string]interface{} {
 		return map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}}
 	}
+	policyDefaults := usecase.DefaultRecommendationPolicyV1()
+	searchDefaults := usecase.DefaultRecommendationSearchV1()
 	return map[string]interface{}{
 		"name":        "bateia_recommend",
 		"description": "Transforma uma ideia em decisão de reúso e alternativas de software com evidências rastreáveis",
@@ -369,27 +499,27 @@ func recommendationTool() map[string]interface{} {
 				"policy": map[string]interface{}{
 					"type": "object", "additionalProperties": false,
 					"properties": map[string]interface{}{
-						"schema_version":   map[string]interface{}{"type": "string", "const": "1"},
-						"allowed_licenses": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string", "minLength": 1}},
-						"require_local":    map[string]interface{}{"type": "boolean"}, "allow_archived": map[string]interface{}{"type": "boolean"},
-						"max_components":        map[string]interface{}{"type": "integer", "minimum": 2},
-						"extend_min_coverage":   map[string]interface{}{"type": "number", "exclusiveMinimum": 0, "maximum": 1},
-						"integration_min_value": map[string]interface{}{"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+						"schema_version":   map[string]interface{}{"type": "string", "const": "1", "default": policyDefaults.SchemaVersion},
+						"allowed_licenses": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string", "minLength": 1}, "default": policyDefaults.AllowedLicenses},
+						"require_local":    map[string]interface{}{"type": "boolean", "default": policyDefaults.RequireLocal}, "allow_archived": map[string]interface{}{"type": "boolean", "default": policyDefaults.AllowArchived},
+						"max_components":        map[string]interface{}{"type": "integer", "minimum": 2, "default": policyDefaults.MaxComponents},
+						"extend_min_coverage":   map[string]interface{}{"type": "number", "exclusiveMinimum": 0, "maximum": 1, "default": policyDefaults.ExtendMinCoverage},
+						"integration_min_value": map[string]interface{}{"type": "number", "exclusiveMinimum": 0, "maximum": 1, "default": policyDefaults.IntegrationMinValue},
 					},
-					"required": []string{"schema_version", "allowed_licenses", "require_local", "allow_archived", "max_components", "extend_min_coverage", "integration_min_value"},
+					"required": []string{},
 				},
-				"target": map[string]interface{}{"type": "object", "additionalProperties": false, "properties": map[string]interface{}{"name": map[string]interface{}{"type": "string"}}},
+				"target": map[string]interface{}{"type": "object", "additionalProperties": false, "properties": map[string]interface{}{"name": map[string]interface{}{"type": "string", "description": "Quando omitido, usa idea.problem como default"}}, "required": []string{}},
 				"search": map[string]interface{}{
 					"type": "object", "additionalProperties": false,
 					"properties": map[string]interface{}{
-						"strategy": map[string]interface{}{"type": "string", "enum": []string{"literal", "lexical"}}, "language": map[string]interface{}{"type": "string"},
-						"locales":       map[string]interface{}{"type": "array", "uniqueItems": true, "items": map[string]interface{}{"type": "string", "enum": []string{"pt-BR", "en-US", "es-ES", "fr-FR", "de-DE", "ja-JP", "ko-KR", "ru-RU", "ar-SA", "hi-IN"}}},
-						"max_per_query": map[string]interface{}{"type": "integer", "minimum": 1, "maximum": 25}, "max_candidates": map[string]interface{}{"type": "integer", "minimum": 1, "maximum": 20},
+						"strategy": map[string]interface{}{"type": "string", "enum": []string{"literal", "lexical"}, "default": searchDefaults.Strategy}, "language": map[string]interface{}{"type": "string", "default": searchDefaults.Language},
+						"locales":       map[string]interface{}{"type": "array", "uniqueItems": true, "items": map[string]interface{}{"type": "string", "enum": []string{"pt-BR", "en-US", "es-ES", "fr-FR", "de-DE", "ja-JP", "ko-KR", "ru-RU", "ar-SA", "hi-IN"}}, "default": searchDefaults.Locales},
+						"max_per_query": map[string]interface{}{"type": "integer", "minimum": 1, "maximum": 25, "default": searchDefaults.MaxPerQuery}, "max_candidates": map[string]interface{}{"type": "integer", "minimum": 1, "maximum": 20, "default": searchDefaults.MaxCandidates},
 					},
-					"required": []string{"strategy", "locales", "max_per_query", "max_candidates"},
+					"required": []string{},
 				},
 			},
-			"required": []string{"idea", "policy", "target", "search"},
+			"required": []string{"idea"},
 		},
 	}
 }

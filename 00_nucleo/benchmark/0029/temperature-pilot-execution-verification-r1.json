@@ -1,0 +1,167 @@
+{
+  "schema_version": "tekt.step0029.temperature-pilot-execution-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T12:05:43Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FOCAL_INCIDENT_AND_RECEIPT_AUDIT",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "verdict": "VERIFIED_STOPPED_FAIL_CLOSED_DUPLICATE_CELL",
+  "scope": "Identity, hashes, JSON/schema validity, event cardinality, counters and stop state only; output content quality was not judged.",
+  "inputs": {
+    "execution_seal": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-execution-seal-r1.json",
+      "sha256": "384cfd66ed5a9cf83210e245c9ab33fb93d54df928fcebc434e15ebfb7349245"
+    },
+    "queue": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-queue-r1.json",
+      "sha256": "99f09656871c305fd2ad646805967017c5d43c6f1b7719655a94d86c049b33e7"
+    },
+    "isolation_profile": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-isolation-profile-r1.json",
+      "sha256": "fbafe23334de34beb0eaa40c43f722e9f6d6263f5f0b1ba07d44f6cfc403e21b"
+    },
+    "execution_state": {
+      "path": "00_nucleo/benchmark/0029/temperature-pilot-execution-state-r1.json",
+      "sha256": "bac1d97d2b9d686ed615abb8cdc58661d628c93e586cbbcb1a5e294bd0f14bd7"
+    },
+    "output_schema": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8"
+    }
+  },
+  "sequence_audit": [
+    {
+      "sequence": 1,
+      "cell_id": "be54278da25935556ebb242ee77482f5bccd472f93af57f95633da0688b398c8",
+      "status": "VALID_OUTPUT",
+      "agent_messages": 1,
+      "schema_valid_outputs": 1,
+      "unicode_characters": 10944,
+      "mcp_attempts": 0,
+      "bateia_forwarded_calls": 0,
+      "receipt_sha256": "0427665c8dc9b6006bf2c26d4bfb22fb2444b4d8562ac26e65db3ca0c14330e1",
+      "events_sha256": "59e2b74f2f2ce9cebc38037c70e675ab538eb68970cbc0db8ce35dc8b5006d68",
+      "output_sha256": "e4711e5315ac1c8d186649f6a65d7743684312a8dbcf0bc8d7397a5555349b21",
+      "result": "PASS"
+    },
+    {
+      "sequence": 2,
+      "cell_id": "21b01a314da91a38f67b9cc80ca8512c189b992ce32e63a8320abb646344877f",
+      "status": "VALID_OUTPUT",
+      "agent_messages": 1,
+      "schema_valid_outputs": 1,
+      "unicode_characters": 9299,
+      "mcp_attempts": 0,
+      "bateia_forwarded_calls": 0,
+      "receipt_sha256": "8f127d5889833753fc264a9fb1657cf790f907cbeb98476cfac4d5189ccbb5a4",
+      "events_sha256": "08fc442ba7dd335bfa44ae89f52193d11d324b1a72312e256bbfb29818914c05",
+      "output_sha256": "8e25857af63d45cc2f672aa7b0f5688d232432e2667c9551b2439f940883b735",
+      "result": "PASS"
+    },
+    {
+      "sequence": 3,
+      "cell_id": "01a8fee35a505ce895482fa9cb060e7503f6e763d41f5c72c196bb1682806cfe",
+      "status": "INVALID_OUTPUT",
+      "behavioral_sessions_counted": 2,
+      "agent_messages": 2,
+      "schema_valid_outputs": 2,
+      "attempts": [
+        {
+          "attempt": 0,
+          "events_file": "events.jsonl",
+          "events_sha256": "23fc0c791e35828f261d8914820d013b7650e3b304a5992c9b30b754173039ab",
+          "output_unicode_characters": 20079,
+          "output_utf8_bytes": 20706,
+          "output_text_sha256": "7a8bacef8f058a7a00f7dedeef83291dc1846bcfef91296136eaa513c0a98de9",
+          "schema_valid": true,
+          "within_20000_character_limit": false
+        },
+        {
+          "attempt": 1,
+          "events_file": "events-retry1.jsonl",
+          "events_sha256": "df9f4f303f51a0715948853ff8efe90b76f5ea743ddba1d5c05618aad456c2c3",
+          "output_unicode_characters": 17909,
+          "output_utf8_bytes": 18499,
+          "output_text_sha256": "620b0e4fbd5b9f2c9feb7f5f891752c02b58a828d2dc7828306979be7f7fcfde",
+          "schema_valid": true,
+          "within_20000_character_limit": true
+        }
+      ],
+      "surviving_output_json_sha256": "620b0e4fbd5b9f2c9feb7f5f891752c02b58a828d2dc7828306979be7f7fcfde",
+      "surviving_output_equals_attempt": 1,
+      "first_output_preserved_in_events": true,
+      "output_json_overwritten_by_second_attempt": true,
+      "mcp_attempts": 0,
+      "bateia_forwarded_calls": 0,
+      "receipt_sha256": "d01e237ae09ca3818e707ce41b8b33e9ac93a500f8d195649fcb786c0f0a544c",
+      "result": "DUPLICATE_CELL_AND_FIRST_OUTPUT_LIMIT_CONFIRMED"
+    }
+  ],
+  "absence_audit": {
+    "sequence_4_cell_id": "69955d2330b58f85503ed08f304cf61a178ff910c874699b4b3b6c85bcb61ea6",
+    "sequence_5_cell_id": "f72d9128ce0d3957e2cc5f6ddbd6a2b491043dc852d114a546941e86dfcb2aa9",
+    "sequence_6_cell_id": "f7befcd3103036a16e54a1c3e66ebcae885f9e3750a0b30d92fa6e1fb2b1aefb",
+    "session_directories_present": 0,
+    "result": "PASS_ABSENT"
+  },
+  "counter_reconciliation": {
+    "new_behavioral_sessions": 4,
+    "prior_behavioral_sessions": 7,
+    "global_behavioral_sessions": 11,
+    "global_cap": 108,
+    "arithmetic_check": "4 + 7 = 11",
+    "mcp_attempts": 0,
+    "bateia_forwarded_calls": 0,
+    "result": "PASS"
+  },
+  "state_and_automation": {
+    "execution_state_status": "STOPPED_FAIL_CLOSED_DUPLICATE_CELL",
+    "next_sequence": null,
+    "dispatched_cells": 3,
+    "valid_outputs": 2,
+    "invalid_outputs": 1,
+    "old_automation_id": "passo-29-contract",
+    "old_automation_status_in_execution_state": "PAUSED",
+    "automation_toml_path": "/home/dikluwe/.codex/automations/passo-29-contract/automation.toml",
+    "automation_toml_observed_status": "PAUSED",
+    "result": "PASS_FAIL_CLOSED_STATE_AND_PAUSE_CONFIRMED"
+  },
+  "hash_and_format_audit": {
+    "dispatch_receipt_file_hashes_match": true,
+    "receipt_referenced_invocation_output_event_and_stderr_hashes_match": true,
+    "sequence_3_attempt_event_and_output_text_hashes_match": true,
+    "all_json_documents_parsed_strictly": true,
+    "all_jsonl_lines_parsed_strictly": true,
+    "schema_validator": "python jsonschema 4.10.3 against engineering-investigation.schema-r2.json",
+    "schema_valid_outputs": 4,
+    "schema_invalid_outputs": 0,
+    "result": "PASS"
+  },
+  "incident_assessment": {
+    "cause_codes_confirmed": [
+      "MONITOR_YIELD_MISCLASSIFIED_AS_PROCESS_COMPLETION",
+      "DUPLICATE_CELL_DISPATCH",
+      "FIRST_ATTEMPT_OUTPUT_LIMIT_EXCEEDED"
+    ],
+    "retry_eligible": false,
+    "pilot_must_stop": true,
+    "content_quality_judged": false,
+    "assessment": "The evidence supports a fail-closed stop: sequence 3 consumed two behavioral sessions and produced two schema-valid model outputs for one cell; the first exceeded the frozen character limit and the second replaced output.json. No later queue cell was dispatched."
+  },
+  "limitations": [
+    "The shared filesystem and inherited context do not support strong isolation attestation.",
+    "Schema validity and receipt consistency do not imply content quality or scientific validity.",
+    "No model, MCP server, network connector, or behavioral session was started by this verification."
+  ],
+  "commands": [
+    "sha256sum over temperature-pilot control files and all sessions-temperature-r1 files",
+    "Python strict JSON/JSONL parse, SHA-256 cross-check, nested agent_message cardinality and jsonschema validation",
+    "filesystem existence audit for queue sequences 1 through 6",
+    "rg read-only audit of /home/dikluwe/.codex/automations/passo-29-contract/automation.toml",
+    "git diff --check"
+  ],
+  "invalidation_rule": "Any byte change to the execution seal, queue, isolation profile, execution state, schema, invocations, event streams, outputs, stderr logs or dispatch receipts requires a successor incident verification.",
+  "self_hash_policy": "SHA-256 of canonical UTF-8 JSON with lexicographically sorted object keys, separators ',' and ':', ensure_ascii=false, after removing the top-level self_hash field.",
+  "self_hash": "PENDING"
+}

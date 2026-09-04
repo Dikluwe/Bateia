@@ -1,0 +1,98 @@
+{
+  "schema_version": "tekt.step0030.certificate.v1",
+  "step": "0030",
+  "created_at_utc": "2026-09-03T21:57:24Z",
+  "executor": "/root/verificador_final_0030",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "status": "PASS_WITH_METHODOLOGICAL_FAILURE",
+  "verdict": "HARNESS_EXECUTION_CERTIFIED_ESTIMAND_NOT_IDENTIFIED",
+  "harness_execution_verdict": "PASS",
+  "estimand_validity_verdict": "FAIL_TREATMENT_NOT_DELIVERED",
+  "product_verdict": "BATEIA_CATALYSIS_NOT_ESTIMABLE",
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "CONTROL_SUPERIORITY_DEMONSTRATED": false,
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "sealed_chain": {
+    "contract_seal_r2_sha256": "01147b3cf441d90c895f98eacfae95e2feb560d1541a0b256a05afd08e27fcc4",
+    "implementation_receipt_sha256": "6f6312e1d69a16a7f50b294eadca8c06bec50e487683d01014e524e7d48f45f3",
+    "preflight_verification_sha256": "5089ea809b6d659e78abb1f6d60da8c24e633c621c00f8721ca1ef9b1f9c34af",
+    "execution_receipt_sha256": "f26322ee4c62b51e81950b6adc2cc84845f34b2039deafde7edb0d02ba54c925",
+    "blind_mapping_commitment_sha256": "14a52b3530844e2faaf459e0f255fda60ba4f5df0930e0fe5cccf4ad7955df0c",
+    "blind_quality_receipt_sha256": "d307f9e0504ecfa29697e42079aa901bc4550f2d423d7133fb192115251431f8",
+    "blind_mapping_reveal_sha256": "9186bd7e1fbc88fd68a3841aec82967a90dbb0b589cd37666907207856f6f53f"
+  },
+  "final_artifacts": {
+    "post_reveal_verification": {
+      "path": "00_nucleo/benchmark/0030/post-reveal-verification.json",
+      "sha256": "9e0e4fb8c33bbdb1c9af6d3b97c99a127b4fdc93c74eb4d58c91b70c0472ee0d"
+    },
+    "results": {
+      "path": "00_nucleo/benchmark/0030/results.json",
+      "sha256": "259e3bb420dc16b1f792fddf2d32709ccc1f3cac8edb79eb96e5f9f4b5f82ed8"
+    },
+    "report": {
+      "path": "00_nucleo/laudos/0030-corrigir-teste-de-catalise-da-busca.md",
+      "sha256": "3a744af91e30c66d2bdfd7e43c8d2f86b5be713230e9d6c02817b0c981b80f6c"
+    }
+  },
+  "execution_certificate": {
+    "sealed_order_preserved": true,
+    "sessions_started": 6,
+    "sessions_terminal": 6,
+    "retries": 0,
+    "replacements": 0,
+    "minimum_start_interval_seconds": 121,
+    "minimum_required_seconds": 120,
+    "single_global_in_flight": true,
+    "global_count_after": "22/108",
+    "structurally_valid_outputs": "6/6",
+    "last_message_byte_equal": "6/6",
+    "native_web_calls": "control=7,treatment=7",
+    "duplicate_aware_decoder": "14/14 DUAL_ID_CODEX_0_149 machines"
+  },
+  "treatment_delivery": {
+    "bateia_recommend_started": 3,
+    "bateia_recommend_completed_successfully": 0,
+    "terminal_failed_invalid_params": 3,
+    "protocol_adherence": "0/3",
+    "material_directions_emitted": 0,
+    "observable_catalysis_paths": 0,
+    "verdict": "METHODOLOGICAL_AND_ADHERENCE_FAILURE"
+  },
+  "blind_evaluation": {
+    "receipt_frozen_before_reveal": true,
+    "mapping_commitment_verified": true,
+    "opaque_copies_match_source_outputs": true,
+    "control_labelled_pair_wins": 2,
+    "treatment_labelled_pair_wins": 1,
+    "control_score_sum_descriptive": 64,
+    "treatment_score_sum_descriptive": 63,
+    "treatment_minus_control_descriptive_sum": -1,
+    "causal_interpretation": "FORBIDDEN_WITHOUT_OBSERVABLE_BATEIA_DIRECTION_WEB_OUTPUT_LINK"
+  },
+  "local_gates": {
+    "sealed_and_session_hashes": "PASS_ZERO_MISMATCH",
+    "focal_l1_l4_packages": "PASS",
+    "step0029_package": "PASS",
+    "go_build_04_wiring_recursive": "PASS",
+    "git_diff_check": "PASS",
+    "crystalline_lint": "EXIT_0_WITH_PREEXISTING_WARNINGS",
+    "global_suite": "BASELINE_SEMANTIC_FAILURE_REPRODUCED_PLUS_SANDBOX_LOOPBACK_BLOCKS",
+    "new_step0030_failure": false
+  },
+  "execution_vs_estimand": {
+    "harness": "The six-session queue, capture, duplicate-aware decoding, structural validation, blinding and reveal were executed and are reproducible for the recorded artifacts.",
+    "estimand": "The intended contrast requires a successfully completed Bateia recommendation before native web. All three such calls failed, so the effect of successful Bateia-assisted research is not identified.",
+    "winner_policy": "Treatment failure remains in the ITT record as adherence evidence but is not an automatic control win. Blind quality differences remain descriptive outputs, not Bateia catalysis."
+  },
+  "scope": "Certifies only the exact Step 0030 sealed inputs, L1-L4 candidate, six recorded sessions, blind receipt, mapping reveal and post-reveal audit. It certifies execution of the harness, not validity of the intended catalysis estimand or general product uplift.",
+  "limitations": [
+    "Shared workspace, inherited context and filesystem prevent strong isolation attestation; hashes identify bytes and order but do not prove capability isolation.",
+    "Filesystem birth times and the reveal hash commitment support blind ordering without an external timestamp authority.",
+    "All treatment Bateia calls failed with MCP Invalid params and emitted no material direction.",
+    "Three exploratory calibration pairs cannot support confirmatory or population-level inference.",
+    "Currency cost is unavailable, so gain per unit cost remains Unknown.",
+    "The global suite retains the frozen Step 0026 R4 failure; sandbox loopback restrictions additionally block three httptest packages in this verifier environment."
+  ],
+  "invalidation_rule": "Any byte change to the R2 seal or its hashed inputs, candidate implementation, preflight, session artifacts, commitment, blind copies, blind receipt, reveal, results or report invalidates this certificate."
+}

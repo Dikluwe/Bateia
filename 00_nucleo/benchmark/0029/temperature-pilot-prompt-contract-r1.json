@@ -1,0 +1,22 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-prompt-contract.v1",
+  "language": "pt-BR",
+  "case_id": "EXP29-C01",
+  "base_instruction": "Investigue a ideia de software fornecida e devolva somente um objeto JSON válido conforme o schema EngineeringInvestigation. Não execute ações externas, não peça esclarecimentos e preserve como Unknown tudo que não puder sustentar.",
+  "treatment_instruction": "Use o Bateia para investigar alternativas, mecanismos e hipóteses antes de concluir. Você dispõe de no máximo 3 chamadas e somente de bateia_recommend. Não repita uma chamada; depois conclua.",
+  "rendering": {
+    "arm_a": "base_instruction + LF LF + canonical_case_json + LF",
+    "arm_b": "base_instruction + LF LF + treatment_instruction + LF LF + canonical_case_json + LF",
+    "canonical_case_sha256": "f27f71cdd16817da5bb285f9344379b276b938ae90209d0b3300eb92b07e5c4c",
+    "arm_a_prompt_bytes_sha256": "b61bef6bc9eb7817c56dd9feffb45d33615a43ac8dfc521f5e5ee77c6d178fa2",
+    "arm_b_prompt_bytes_sha256": "b3597a5beee889632a0e90671b6ad05dd4f93030036c322e3bfa8e71d47df825"
+  },
+  "output_schema": {
+    "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "canonical_schema_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df"
+  },
+  "zero_shot": true,
+  "follow_up_allowed": false,
+  "bateia_tutorial_included": false
+}

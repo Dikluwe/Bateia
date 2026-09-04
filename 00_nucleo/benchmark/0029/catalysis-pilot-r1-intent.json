@@ -1,0 +1,91 @@
+{
+  "schema_version": "bateia.step0029.catalysis-pilot-intent.v1",
+  "created_at": "2026-09-03",
+  "author": "/root",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_AB_CATALYSIS_PILOT",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "objective": "Medir exploratoriamente o efeito incremental do Bateia como catalisador quando a IA de ambos os braços também pode pesquisar diretamente na internet.",
+  "estimand": "Delta de qualidade, novidade sustentada, direcionamento e eficiência entre IA+internet e IA+internet+Bateia sob o mesmo caso, modelo, esforço, limite de pesquisas web, tempo e schema.",
+  "frozen_inputs": {
+    "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+    "corpus_path": "00_nucleo/benchmark/0029/corpus-public.json",
+    "corpus_sha256": "0f953d0b2fef283d5c12750364fcd78ac799627d8876b4fccb2f6093436a8d96",
+    "case_id": "EXP29-V02",
+    "case_sha256": "d255a221071198e85764c75ead41cc21b4cb8047169bbb9c91f5c55cfddc81a0",
+    "schema_path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+    "schema_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "order_seed_sha256": "b98fbedbae1a06c68307b507a3c3d094c72b2ee651d02c1a97e287b84a4650c5",
+    "execution_order_rule": "Odd first hexadecimal nibble executes treatment first; even executes control first.",
+    "execution_order": ["IA_INTERNET_BATEIA", "IA_INTERNET"]
+  },
+  "arms": {
+    "control": {
+      "id": "IA_INTERNET",
+      "native_web_search": true,
+      "native_web_search_calls_min": 1,
+      "native_web_search_calls_max": 3,
+      "bateia_tools": [],
+      "instruction_delta": "Pesquise diretamente na internet quando isso puder reduzir incerteza e conclua com evidências rastreáveis."
+    },
+    "treatment": {
+      "id": "IA_INTERNET_BATEIA",
+      "native_web_search": true,
+      "native_web_search_calls_min": 1,
+      "native_web_search_calls_max": 3,
+      "bateia_tools": ["bateia_recommend"],
+      "bateia_calls_exactly": 1,
+      "required_order": "Call bateia_recommend before the first native web search, then use native web search to confirm, reject or deepen the directions returned by Bateia.",
+      "instruction_delta": "Use uma consulta ao Bateia como orientação inicial; depois pesquise diretamente na internet para verificar, rejeitar ou aprofundar suas direções."
+    }
+  },
+  "common_execution": {
+    "fresh_ephemeral_session": true,
+    "same_case_model_effort_base_instruction_and_schema": true,
+    "sandbox": "read-only",
+    "human_follow_up": false,
+    "shell_tool": false,
+    "other_mcp_or_apps": false,
+    "maximum_unicode_characters": 18000,
+    "timeout_seconds": 900,
+    "cadence_seconds_between_process_starts": 120,
+    "single_global_in_flight": true,
+    "live_web_temporal_window": "Execute starts in the same local experiment window; live web is not claimed byte-identical.",
+    "evidence_rule": "A public-web claim must carry a direct locator. A Bateia result remains INCONCLUSIVE when its own evidence is empty, but INCONCLUSIVE is not an automatic loss if it safely redirects, narrows or terminates downstream web research."
+  },
+  "budgets": {
+    "new_behavioral_sessions_exactly": 2,
+    "new_behavioral_sessions_hard_cap": 2,
+    "global_behavioral_sessions_before": 15,
+    "global_behavioral_sessions_after_if_complete": 17,
+    "original_global_cap": 108,
+    "fallback_sessions": 0,
+    "retry_after_any_agent_message": false
+  },
+  "evaluation": {
+    "blind_labels": true,
+    "arm_and_tool_trace_hidden_until_comparison_receipt": true,
+    "primary_dimensions": [
+      "final engineering decision utility",
+      "decision-relevant findings with resolvable public support",
+      "novel supported alternatives mechanisms or hypotheses",
+      "claim-evidence calibration"
+    ],
+    "catalysis_dimensions_after_reveal": [
+      "Bateia direction visibly changed or focused a later web query",
+      "Bateia-seeded direction was confirmed or rejected by public web evidence",
+      "useful supported findings per native web call",
+      "dead-end or redundant search rate",
+      "total retrieval overhead including Bateia expansion and candidate assessment"
+    ],
+    "inconclusive_policy": "NEUTRAL_SAFE_ABSTENTION_UNLESS_IT_CAUSES_AVOIDABLE_MISS_OR_UNSUPPORTED_CLAIM",
+    "winner_policy": "Declare treatment uplift only when the blinded final-output comparison favors treatment and the post-reveal trace establishes at least one concrete catalytic path. Otherwise report tie, no demonstrated catalysis or harm as observed.",
+    "scope": "ONE_PAIR_EXPLORATORY_ONLY_NO_GENERALIZATION"
+  },
+  "stop_conditions": [
+    "Stop after exactly one valid pair.",
+    "Stop without replacement on invalid output, budget breach, missing terminal exit code, overlap or infrastructure failure after a behavioral message.",
+    "Do not alter prompts, rubric or case after the first session starts."
+  ]
+}

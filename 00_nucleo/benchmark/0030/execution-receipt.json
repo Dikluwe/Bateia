@@ -1,0 +1,71 @@
+{
+  "schema_version": "bateia.step0030.execution-receipt.v1",
+  "created_at_utc": "2026-09-03T21:47:34Z",
+  "dispatcher": "/root",
+  "attestation_ceiling": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "preflight": {"path": "00_nucleo/benchmark/0030/preflight-verification.json", "sha256": "5089ea809b6d659e78abb1f6d60da8c24e633c621c00f8721ca1ef9b1f9c34af", "verdict": "PASS"},
+  "queue": {"committed_cells": 6, "started_cells": 6, "terminal_cells": 6, "retries": 0, "replacements": 0, "single_global_in_flight": true},
+  "budget": {"global_before": 16, "sessions_started": 6, "global_after": 22, "global_cap": 108},
+  "start_evidence": {
+    "source": "filesystem birth time of externally redirected events.jsonl, created immediately before process exec",
+    "epoch_seconds": [1788471174, 1788471299, 1788471450, 1788471571, 1788471700, 1788471831],
+    "interval_seconds": [125, 151, 121, 129, 131],
+    "minimum_required_seconds": 120,
+    "verdict": "PRESERVED"
+  },
+  "sessions": [
+    {
+      "sequence": 1, "case_id": "EXP29-V02", "arm_id": "IA_INTERNET", "process": "EXIT_0", "duration_upper_evidence_seconds": 91,
+      "output": {"sha256": "8f786ea1947d8d5366f2b89b84dd844c570c4625a3c4a7c46bc0b1156d5f47ff", "bytes": 6836, "unicode_characters": 6657, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "26e68a22f9fc5ab093693225bda6b2d9878d329fcfaa921ef995cd496d739210", "bytes": 10454, "records": 11, "web_calls": 3, "bateia_started": 0, "bateia_completed_successfully": 0},
+      "stderr": {"sha256": "95c5ab1822fb05f1190079a4506d3a6dd7008403a9e2a28ac91991b99f8e7d30", "bytes": 192},
+      "tool_adherence": "PRESERVED", "input_tokens": 95930, "cached_input_tokens": 59008, "output_tokens": 4033, "reasoning_output_tokens": 2069
+    },
+    {
+      "sequence": 2, "case_id": "EXP29-V01", "arm_id": "IA_INTERNET_BATEIA", "process": "EXIT_0", "duration_upper_evidence_seconds": 106,
+      "output": {"sha256": "1d466157cbb562a007dea7e8fe17aac6b7975075e06791fdf00b85d5ceb62db5", "bytes": 6341, "unicode_characters": 6145, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "d0712e9f2388f860c9000f77bccaa4d85a452105f21e1cc6acd4a7190371f535", "bytes": 11471, "records": 10, "web_calls": 2, "bateia_started": 1, "bateia_completed_successfully": 0, "bateia_terminal_status": "failed", "bateia_error_class": "MCP_INVALID_PARAMS"},
+      "stderr": {"sha256": "d30ea0ef90ce085d9f259f4d7888ff64b0da1e6f2e23ba9b678a57fcfcb82ccb", "bytes": 393},
+      "tool_adherence": "VIOLATED", "tool_violation": "TREATMENT_BATEIA_NOT_COMPLETED_BEFORE_WEB", "input_tokens": 92622, "cached_input_tokens": 60800, "output_tokens": 4622, "reasoning_output_tokens": 2392
+    },
+    {
+      "sequence": 3, "case_id": "EXP29-C01", "arm_id": "IA_INTERNET_BATEIA", "process": "EXIT_0", "duration_upper_evidence_seconds": 93,
+      "output": {"sha256": "f53ef24f7ee3f607f39a6b027ab95c694509682b9a22b53718769c95ed711317", "bytes": 5094, "unicode_characters": 4997, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "1fa0c86918953fd2d64a247f89f73fd30522251b8a9de41fb15ef5d885b819a1", "bytes": 11568, "records": 10, "web_calls": 2, "bateia_started": 1, "bateia_completed_successfully": 0, "bateia_terminal_status": "failed", "bateia_error_class": "MCP_INVALID_PARAMS"},
+      "stderr": {"sha256": "8d88bfea61d889d4423ab87dadbdab17e3ed98c2aaf3450a5f3e092ae2a4918c", "bytes": 393},
+      "tool_adherence": "VIOLATED", "tool_violation": "TREATMENT_BATEIA_NOT_COMPLETED_BEFORE_WEB", "input_tokens": 78756, "cached_input_tokens": 47232, "output_tokens": 4209, "reasoning_output_tokens": 2225
+    },
+    {
+      "sequence": 4, "case_id": "EXP29-C01", "arm_id": "IA_INTERNET", "process": "EXIT_0", "duration_upper_evidence_seconds": 80,
+      "output": {"sha256": "2a157538b8143e4cef0cf64ed5c4f0cccb84510ca1a90742d35ffac95cc8ce30", "bytes": 7312, "unicode_characters": 7154, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "a7f0893cea08124dccf5252ca423bf0d7fc7b75cde3d30806e2951fd91955e49", "bytes": 10221, "records": 10, "web_calls": 3, "bateia_started": 0, "bateia_completed_successfully": 0},
+      "stderr": {"sha256": "95c5ab1822fb05f1190079a4506d3a6dd7008403a9e2a28ac91991b99f8e7d30", "bytes": 192},
+      "tool_adherence": "PRESERVED", "input_tokens": 89486, "cached_input_tokens": 55680, "output_tokens": 3499, "reasoning_output_tokens": 1552
+    },
+    {
+      "sequence": 5, "case_id": "EXP29-V01", "arm_id": "IA_INTERNET", "process": "EXIT_0", "duration_upper_evidence_seconds": 63,
+      "output": {"sha256": "460fed361dd130918d850d1f9d70714e0535308fdd3150f9f9da9de1f33e2ec5", "bytes": 5086, "unicode_characters": 4973, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "72944a900637d9ca1a90e14241e864f925467e7e3471429f83f85d25cf598e6b", "bytes": 6398, "records": 6, "web_calls": 1, "bateia_started": 0, "bateia_completed_successfully": 0},
+      "stderr": {"sha256": "95c5ab1822fb05f1190079a4506d3a6dd7008403a9e2a28ac91991b99f8e7d30", "bytes": 192},
+      "tool_adherence": "PRESERVED", "input_tokens": 31016, "cached_input_tokens": 11264, "output_tokens": 3005, "reasoning_output_tokens": 1742
+    },
+    {
+      "sequence": 6, "case_id": "EXP29-V02", "arm_id": "IA_INTERNET_BATEIA", "process": "EXIT_0", "duration_upper_evidence_seconds": 92,
+      "output": {"sha256": "49b9fcb7668aad9127d967c2e60edbdf53917163d15bc97f4a03dcaaeeb0afd2", "bytes": 6992, "unicode_characters": 6827, "single_json_object": true, "schema_errors": 0, "last_message_byte_equal": true, "structural": "VALID", "editorial": "TARGET_MET"},
+      "events": {"sha256": "f450960a2604d7493f585419039e7e3f087db50b8b292ef4b44abe8c7cfd53fe", "bytes": 11947, "records": 13, "web_calls": 3, "bateia_started": 1, "bateia_completed_successfully": 0, "bateia_terminal_status": "failed", "bateia_error_class": "MCP_INVALID_PARAMS"},
+      "stderr": {"sha256": "ea4fcac7ddcdeac742195e8b553c1e8f6d4de0535d26da6f90d4ca681c589951", "bytes": 393},
+      "tool_adherence": "VIOLATED", "tool_violation": "TREATMENT_BATEIA_NOT_COMPLETED_BEFORE_WEB", "input_tokens": 113528, "cached_input_tokens": 75264, "output_tokens": 3878, "reasoning_output_tokens": 1806
+    }
+  ],
+  "aggregate": {
+    "structurally_valid_outputs": 6,
+    "editorial_target_met": 6,
+    "control_protocol_preserved": 3,
+    "treatment_protocol_preserved": 0,
+    "treatment_mcp_invalid_params": 3,
+    "native_web_calls_control": 7,
+    "native_web_calls_treatment": 7,
+    "blind_mapping_commitment_sha256": "14a52b3530844e2faaf459e0f255fda60ba4f5df0930e0fe5cccf4ad7955df0c"
+  },
+  "interpretation_boundary": "Failed treatment MCP calls are protocol violations and provide zero observable Bateia catalysis. They are not automatic control wins and do not invalidate the independently judgeable outputs."
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "tekt.step0029.verification-receipt.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T02:23:08Z",
+  "executor": "/root/verificador_0029",
+  "status": "PASS_WITH_LIMITATIONS",
+  "verdict": "HARNESS_LOCAL_READY_WITH_ARCHITECTURAL_WARNINGS_EXTERNAL_EXPERIMENT_PENDING",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "baseline_commit": "6aae9ea29b65bb942d14aff2fb6d659668f01bd5",
+  "go_version": "go1.26.5 linux/amd64",
+  "executed_by_verifier": [
+    {"command":"parse all 00_nucleo/benchmark/0029 JSON with Python standard json","result":"PASS","files":28},
+    {"command":"verify base frozen hashes plus R1-R5 successor/invalidation/seal chain","result":"PASS","unchanged_frozen_inputs":15,"expected_superseded_oracle_input":1,"successor_links":4,"mismatches":0},
+    {"command":"go run temporary independent BuildPlan reproducer, then delete it","result":"PASS","root_sha256":"5215fc6764efea3f5b1a079c854c5a0b0837546f44aed4b9a1093eb13b4f2bf3","cells":108,"pairs":54,"validate_plan_violations":0},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -count=1 -v ./04_wiring/step0029_experiment","result":"PASS","runs":2},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -race -count=1 ./04_wiring/step0029_experiment","result":"PASS"},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go vet ./...","result":"PASS"},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go build ./...","result":"PASS"},
+    {"command":"crystalline-lint .","result":"PASS_WITH_WARNINGS","exit_code":0},
+    {"command":"git diff --check and git diff --cached --check","result":"PASS"},
+    {"command":"env GOCACHE=/tmp/bateia-step0029-verifier-cache go test -tags step0028_candidate -count=1 ./01_core/domain ./01_core/usecase ./02_shell/mcp ./04_wiring","result":"PASS"},
+    {"command":"isolated rerun of TestStep0026R5RealSubstituteMutationGateThreeByThree","result":"PASS"}
+  ],
+  "diagnostic_not_counted_as_pass": [
+    {"command":"sandboxed go test -count=1 ./...","result":"ENVIRONMENT_BLOCKED","detail":"httptest loopback listen denied by sandbox"},
+    {"command":"authorized go test -count=1 ./...","result":"TRANSIENT_LEGACY_GATE_FAILURE","detail":"legacy Step 0026 R5 case M28 survived once; immediate isolated rerun passed"}
+  ],
+  "coordinator_reported_evidence": [
+    {"command":"env GOCACHE=/tmp/bateia-step0029-cache go test -count=1 ./...","result":"PASS","provenance":"COORDINATOR_REPORTED_NOT_EXECUTED_BY_THIS_VERIFIER"},
+    {"command":"go vet, build, crystalline-lint exit 0 and git diff --check","result":"PASS_OR_PASS_WITH_WARNINGS","provenance":"COORDINATOR_REPORTED_CORROBORATION"}
+  ],
+  "gates": {
+    "focal_twice":"PASS","race":"PASS","vet":"PASS","build":"PASS","strict_json":"PASS","sealed_hashes":"PASS","mutation_score_1_0":"PASS","positive_controls":"PASS","opaque_unknown":"PASS","refinements_0025_0028":"PRESERVED","architecture":"PASS_WITH_WARNINGS_NOT_CLEAN","external_budget":"BLOCKED_BY_EXPLICIT_BUDGET_AUTHORIZATION"
+  },
+  "external_execution": {"sessions":0,"maximum":108,"contract_smoke":"0/18","status":"PENDING_EXPLICIT_AUTHORIZATION"},
+  "forbidden_claims": {"BATEIA_AGENT_UPLIFT_DEMONSTRATED":false,"general_functional_equivalence":false,"strong_isolation":false},
+  "limitations": [
+    "Shared workspace and inherited context do not support strong isolation attestation.",
+    "No paid/external agent session, judge session, behavioral output, cost observation or uplift analysis was authorized.",
+    "Crystalline lint exits 0 but reports V12 L4-logic warnings, including the Step 0029 benchmark package.",
+    "The full-repository pass is coordinator-reported; this verifier's broad run hit one transient legacy R5 failure that passed in immediate isolation."
+  ]
+}

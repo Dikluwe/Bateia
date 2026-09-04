@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/market_discovery_step0027_oracle_test.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-03
  */
 
 package mcp
@@ -113,8 +113,11 @@ func step0027Tools(t *testing.T, response JSONRPCResponse) []map[string]any {
 
 func TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact(t *testing.T) {
 	for path, want := range map[string]string{
-		"server.go":       "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616",
-		"durable_runs.go": "a4f461bcb7a37fe4f35527e0e90b3f69b1bfc57bfe1816918e3285c958808e83",
+		"server.go":       "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42",
+		"durable_runs.go": "436989b07761406908297d733e8c07cb890c12aae92613cc541a232d8e1ec29e",
+		"../../00_nucleo/benchmark/0029/historical-hash-invalidation-o2-to-o3.json": "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
+		"../../00_nucleo/benchmark/0029/historical-hash-successor-o3.json":          "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
+		"../../00_nucleo/benchmark/0031/historical-contract-supersession.json":      "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
 	} {
 		content, err := os.ReadFile(path)
 		if err != nil {

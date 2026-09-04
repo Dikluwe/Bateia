@@ -21,3 +21,10 @@ para esta causa e preservar a superfície síncrona anterior.
 Preserve as sete tools e todos os erros 0026. Permita `run_kind` e status de
 mercado na projeção de get-run e acrescente somente os cinco nomes contratados à
 enum de artifacts. A autoria das tools 8–9 pertence a `market_discovery.md`.
+
+## Refinamento 0031 — defaults compartilhados
+
+Derive o schema de start do schema síncrono refinado: somente
+`idempotency_key` e `idea` são obrigatórios. Use o mesmo materializador de
+`policy`, `target` e `search` do gateway síncrono, preserve valores explícitos e
+rejeite `null`, campos desconhecidos e valores inválidos antes de `Start`.

@@ -227,7 +227,7 @@ func positivePrograms() map[string]func(*testing.T, attack) error {
 			if !strings.Contains(a.Stimulus, "all three legacy tools") || !strings.Contains(a.Witness, "byte-identical") || !strings.Contains(a.Witness, "injected shared service") {
 				return errors.New("declared compatibility witness absent")
 			}
-			want := map[string]string{"../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"}
+			want := map[string]string{"../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
 			for path, expected := range want {
 				data, err := os.ReadFile(path)
 				if err != nil {
@@ -907,7 +907,7 @@ func certifiedPredecessorWitness(t *testing.T, a attack) error {
 	if !strings.Contains(a.Stimulus, "golden") || !strings.Contains(a.Witness, "legacy") {
 		return errors.New("legacy stimulus/witness not consumed")
 	}
-	want := map[string]string{"../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../02_shell/mcp/server.go": "cbd0188fadeb982cea910fce2392b4ce4b384dc7e4a00fa53a3a3434de8fa616"}
+	want := map[string]string{"../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
 	for path, expected := range want {
 		data, err := os.ReadFile(path)
 		if err != nil {

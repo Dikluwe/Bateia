@@ -1,0 +1,43 @@
+{
+  "schema_version": "bateia.step0029.temperature-pilot-isolation-profile.v1",
+  "scope": "PER_CODEX_EXEC_INVOCATION",
+  "common": {
+    "fresh_session": true,
+    "ephemeral": true,
+    "ignore_user_config": true,
+    "codex_home": "/tmp/codex-step0029-home",
+    "working_directory": "/tmp/bateia-step0029-empty",
+    "sandbox": "read-only",
+    "approval_policy": "never",
+    "web_search": "disabled",
+    "human_follow_up_allowed": false,
+    "disabled_features": ["apps", "browser_use", "browser_use_external", "computer_use", "image_generation", "in_app_browser", "multi_agent", "plugins", "remote_plugin", "shell_tool", "skill_search", "tool_suggest"]
+  },
+  "arm_a": {
+    "mcp_servers": [],
+    "enabled_tools": []
+  },
+  "arm_b": {
+    "mcp_servers": ["bateia"],
+    "enabled_tools": ["bateia_recommend"],
+    "default_tools_approval_mode": "approve",
+    "server": {
+      "command": "/tmp/bateia-temperature-pilot-r1",
+      "args": ["mcp"],
+      "cwd": "/repos/Antigravity/Bateia",
+      "binary_sha256": "f8a9c6438e603ec98b03e58f3850d038d741da5b0729d0d7dc9f7577cc3cf95b",
+      "environment": {
+        "BATEIA_MCP_MAX_TOOL_CALLS": "3",
+        "BATEIA_RUN_ROOT": "PER_CELL_UNIQUE"
+      }
+    }
+  },
+  "limits": {
+    "cadence_seconds_between_session_starts": 120,
+    "wall_clock_seconds": 900,
+    "max_output_utf8_characters": 20000,
+    "max_infrastructure_retries": 1,
+    "max_mcp_attempts_arm_b": 3,
+    "max_bateia_forwarded_calls_arm_b": 3
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": "tekt.step0029.mcp-approval-verification.v1",
+  "step": "0029",
+  "created_at": "2026-09-03T06:00:26Z",
+  "executor": "/root/verificador_0029",
+  "role": "INDEPENDENT_VERIFIER",
+  "regime": "TEKT_FULL_PROTOCOL_FOCAL_EXECUTION_PROFILE_VERIFICATION",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FORTE_DE_ISOLAMENTO",
+  "result": "READY_CONTRACT_ONLY",
+  "verdict": "READY_CONTRACT_ONLY_AFTER_R3_RESEAL_NO_REPEAT_ITT_UNKNOWN_CARRIED",
+  "current_dispatch_readiness": "BLOCKED_PENDING_EXECUTION_SEAL_R3",
+  "inputs": {
+    "execution_state_r2": {
+      "path": "00_nucleo/benchmark/0029/execution-state-r2.json",
+      "sha256": "fedf0fb3c610ec0c49f9988a791006bca8ae869fb9f437a09c73317290a9a431"
+    },
+    "mcp_approval_refinement_r1": {
+      "path": "00_nucleo/benchmark/0029/mcp-approval-refinement-r1.json",
+      "sha256": "cf9645b0ead628472b780df0f576fb4ce7df5df7d235720612f648f60628925f"
+    },
+    "execution_isolation_profiles_r3": {
+      "path": "00_nucleo/benchmark/0029/execution-isolation-profiles-r3.json",
+      "sha256": "0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04"
+    },
+    "execution_isolation_profiles_r2_supporting": {
+      "path": "00_nucleo/benchmark/0029/execution-isolation-profiles-r2.json",
+      "sha256": "31e9b3260e63b12730005ed24a671482b0425372914eb76d39ca00048fb344b0"
+    },
+    "execution_queue_r2_supporting": {
+      "path": "00_nucleo/benchmark/0029/execution-queue-r2.json",
+      "sha256": "0c79bb9b5f19f39c77a25bd4b330a4accb8822208cd96bfed0186cbd40fd1c8f"
+    },
+    "engineering_investigation_schema_r2_supporting": {
+      "path": "00_nucleo/benchmark/0029/engineering-investigation.schema-r2.json",
+      "file_sha256": "7b16306c0188d627d06392edf4438f087c26264e801980f3649570bbe16ab7d8",
+      "canonical_sha256": "345226f7ccb51aebc0895ea94e335a8c624b0830df3cd766624c509b9a2239df"
+    },
+    "prompt_contract_r2_supporting": {
+      "path": "00_nucleo/benchmark/0029/prompt-contract-r2.json",
+      "sha256": "204fcd66d878657a8a61a8933707dd15912be6fab70af14b9d859759aada179c"
+    },
+    "execution_seal_r2_supporting": {
+      "path": "00_nucleo/benchmark/0029/execution-seal-r2.json",
+      "sha256": "43a96babc0b2563cb5cec099dfad25040b8ecc69e7930dff4ce1ee3068d10bbf"
+    },
+    "cell_c56e": {
+      "cell_id": "c56e37b398670377758536839e52e007eb57b1c4a3d0f0aa66b4d749b228869e",
+      "directory": "00_nucleo/benchmark/0029/sessions-r2/c56e37b398670377758536839e52e007eb57b1c4a3d0f0aa66b4d749b228869e",
+      "invocation_sha256": "9405169b2838d6d396efe0a34ebef4645c71407e150e76f7dd9e1f2fd733262e",
+      "prompt_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048",
+      "output_sha256": "704566d7c6e8374004881408379447713858dba24c823a3cd9bd0705e1faf871",
+      "events_sha256": "68706d915864fd51464e279a43b015dc6887e1ea491f8ff1cfd02658ceecf898",
+      "stderr_sha256": "ff1989d6add691df474c86005dfbf337a854286471ed4a05b7bb717d6a92455a",
+      "dispatch_receipt_sha256": "1d8cd41230a915c84d5242fbcc7ba3bfb132919eae20a1c9a69c4b7490952c70"
+    }
+  },
+  "executed_by_verifier": [
+    {
+      "command": "Python 3 strict JSON and SHA-256 audit of state, refinement, R2/R3 profiles, queue, schema, prompt contract, corpus, execution seal, invocation, output, dispatch receipt, events JSONL, prompt and stderr",
+      "result": "PASS",
+      "strict_json_files": 12,
+      "strict_jsonl_rows": 7,
+      "hash_mismatches": 0
+    },
+    {
+      "command": "Python 3 recursive validation of output.json against engineering-investigation.schema-r2.json",
+      "result": "PASS",
+      "schema_violations": 0,
+      "utf8_characters": 4625
+    },
+    {
+      "command": "Python 3 reconstruction of prompt.txt from prompt-contract-r2.json treatment instruction plus canonical EXP29-C01",
+      "result": "PASS",
+      "prompt_sha256": "ca1981b1b69bb5782857dd73ab73754afb2469ba1ad0bcdc58f353fd234a3048"
+    },
+    {
+      "command": "Python 3 event-to-receipt audit of agent messages, MCP call, request/response canonical hashes, status, retry, usage and ITT state",
+      "result": "PASS"
+    },
+    {
+      "command": "Python 3 exact structural diff execution-isolation-profiles-r2.json to execution-isolation-profiles-r3.json",
+      "result": "PASS",
+      "semantic_change": "arm_b.server.default_tools_approval_mode=approve",
+      "metadata_changes": [
+        "schema_version v2 to v3",
+        "supersedes_sha256 added"
+      ],
+      "other_changes": 0
+    },
+    {
+      "command": "codex --version",
+      "result": "PASS",
+      "version": "codex-cli 0.149.0"
+    },
+    {
+      "command": "codex -c 'mcp_servers.bateia.command=\"true\"' -c 'mcp_servers.bateia.default_tools_approval_mode=\"approve\"' mcp get bateia --json",
+      "result": "PASS_CONFIG_ACCEPTED_NO_SERVER_STARTED"
+    },
+    {
+      "command": "codex -c 'mcp_servers.bateia.command=\"true\"' -c 'mcp_servers.bateia.default_tools_approval_mode=\"definitely-invalid\"' mcp get bateia --json",
+      "result": "EXPECTED_REJECTION",
+      "diagnostic": "unknown variant; expected one of auto, prompt, writes, approve"
+    },
+    {
+      "command": "git diff --check && git diff --cached --check",
+      "result": "PASS"
+    }
+  ],
+  "diagnostics_not_counted_as_gate_failure": [
+    {
+      "command": "codex --strict-config ... mcp get bateia --json",
+      "result": "UNSUPPORTED_COMBINATION",
+      "detail": "The installed CLI reports that --strict-config is not supported for codex mcp. The subsequent valid/invalid override probes were read-only and did not start an MCP server."
+    },
+    {
+      "command": "Official URL open/search through the documentation fetcher",
+      "result": "NO_TEXT_RETURNED",
+      "detail": "The official key was therefore corroborated with the installed official Codex CLI parser and its explicit accepted-value diagnostic."
+    }
+  ],
+  "cell_audit": {
+    "cell_id": "c56e37b398670377758536839e52e007eb57b1c4a3d0f0aa66b4d749b228869e",
+    "queue_membership": true,
+    "pair_id": "f7413acec935bcab9f851618a9231d13efe9f2ee1b2c493ee56f5c9f45199bc6",
+    "case_id": "EXP29-C01",
+    "profile_id": "TERRA-low",
+    "split": "CONTRACT",
+    "arm": "AGENT_WITH_BATEIA",
+    "invocation_matches_queue_identity": true,
+    "prompt_exactly_reconstructed": true,
+    "output_schema_valid": true,
+    "output_bytes_match_final_agent_message": true,
+    "agent_messages_observed": 2,
+    "model_output_observed": {
+      "state": "KNOWN",
+      "value": true
+    },
+    "tool_calls": [
+      {
+        "sequence": 1,
+        "server": "bateia",
+        "tool": "bateia_recommend",
+        "event_status": "failed",
+        "receipt_status": "FAILED_APPROVAL_POLICY_NEVER",
+        "error": "MCP tool call requires approval, but approval policy is never",
+        "request_sha256": "28c8ca8e38783f5ad381d09eea485242557c735ea925850f1777f12d6824042e",
+        "request_hash_recomputed": true,
+        "response_sha256": "554ead599db5938bff0210e503c82c2a69e3ffc93fd27af0585bfc383706b64d",
+        "response_hash_recomputed": true
+      }
+    ],
+    "run_status": "TOOL_UNAVAILABLE",
+    "run_status_consistent_with_contract": true,
+    "behavioral_session_counted": true,
+    "retry_eligible": false,
+    "retry_denial_basis": "Model output was observed before and after the failed tool call; only confirmed INFRA_FAILURE with KNOWN(false) output may be retried.",
+    "infrastructure_retries": 0,
+    "bateia_calls_counted": 1,
+    "limits_exceeded": [],
+    "itt_treatment": "UNKNOWN_REMAINS_IN_DENOMINATOR_NEVER_ZERO_NEVER_EXCLUDED"
+  },
+  "state_audit": {
+    "status": "CONTRACT_CALIBRATION_REQUIRED",
+    "phase": "CONTRACT",
+    "behavioral_sessions_dispatched": 2,
+    "behavioral_sessions_max": 108,
+    "contract_dispatched": 2,
+    "contract_valid": 1,
+    "contract_tool_unavailable": 1,
+    "next_cell_id": null,
+    "in_flight": null,
+    "cell_repeat_allowed": false,
+    "last_receipt_matches_c56e": true,
+    "current_fail_closed_pause": "PASS"
+  },
+  "profile_refinement_audit": {
+    "official_config_reference": "https://developers.openai.com/codex/config-reference#mcp_servers-id-default_tools_approval_mode",
+    "official_key": "mcp_servers.<id>.default_tools_approval_mode",
+    "official_allowed_values": [
+      "auto",
+      "prompt",
+      "writes",
+      "approve"
+    ],
+    "approve_value_accepted_by_installed_official_cli": true,
+    "old_profile_sha256": "31e9b3260e63b12730005ed24a671482b0425372914eb76d39ca00048fb344b0",
+    "new_profile_sha256": "0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04",
+    "profile_successor_hashes_match_refinement": true,
+    "only_future_semantic_change": "mcp_servers.bateia.default_tools_approval_mode=approve",
+    "manifest_representation": "arm_b.server.default_tools_approval_mode=approve",
+    "scope": "FUTURE_AGENT_WITH_BATEIA_CELLS_ONLY",
+    "global_approval_policy_remains": "never",
+    "arm_a_unchanged": true,
+    "arm_b_server_command_unchanged": true,
+    "arm_b_enabled_tools_unchanged": true,
+    "tool_allowlist_unchanged": true,
+    "execution_queue_unchanged": true,
+    "schema_r2_unchanged": true,
+    "prompt_contract_r2_unchanged": true,
+    "cell_budget_unchanged": true,
+    "execution_seal_r3_present": false
+  },
+  "continuation_assessment": {
+    "acceptable": true,
+    "scope": "REMAINING_CONTRACT_CELLS_ONLY_AS_BOUNDED_SMOKE_AND_CALIBRATION",
+    "rationale": [
+      "CONTRACT is the designated smoke phase for matrix and instrumentation and the execution stopped before VALIDATION when treated-session Bateia access failed.",
+      "The observed c56e cell is behavioral, is not retryable, remains preserved, and is carried as UNKNOWN in the intention-to-treat denominator.",
+      "The proposed correction changes only the MCP approval default required to make the already allowlisted Bateia tools callable; it does not change treatment instruction, tool surface, queue, schema, case, model profile, budget or randomization.",
+      "Continuing distinct remaining CONTRACT cells can test whether the corrected instrumentation delivers the frozen treatment without reopening c56e."
+    ],
+    "mandatory_preconditions_before_next_dispatch": [
+      "Publish a successor execution seal binding execution-isolation-profiles-r3.json at SHA-256 0f399344803623a962ea1cd58df4db0177a1071f186625bba258b3696cbe7c04.",
+      "Select a distinct remaining CONTRACT cell from the unchanged queue; never dispatch c56e37b398670377758536839e52e007eb57b1c4a3d0f0aa66b4d749b228869e again.",
+      "Preserve the c56e TOOL_UNAVAILABLE receipt as one behavioral session and UNKNOWN ITT denominator entry.",
+      "Require a later treatment CONTRACT cell to complete at least one Bateia call successfully before considering phase progression.",
+      "Keep VALIDATION and TEST blocked until the final CONTRACT gate explicitly accepts the recorded instrumentation deviation and verifies all remaining smoke obligations."
+    ],
+    "prohibited_interpretations": [
+      "The c56e cell cannot be reclassified as INFRA_FAILURE or VALID_OUTPUT.",
+      "The c56e cell cannot be removed, replaced, scored as zero or excluded from the denominator.",
+      "The R3 profile does not retroactively apply to c56e.",
+      "This verification does not pass the CONTRACT gate, authorize VALIDATION, or demonstrate uplift."
+    ],
+    "fail_closed_triggers": [
+      "Any next dispatch before an R3 execution seal exists.",
+      "Any repeat of c56e or any mutation of its output, events or receipt.",
+      "Any additional change to allowlist, queue, schema, prompt, case, agent profile, randomization or budget.",
+      "Any attempt to advance beyond CONTRACT without a successful treated Bateia call and explicit CONTRACT gate acceptance."
+    ],
+    "confirmatory_limitation": "Under contract.md, TOOL_UNAVAILABLE remains UNKNOWN in ITT and can make confirmatory inference inconclusive. Continuing CONTRACT is acceptable for bounded calibration, not evidence that the eventual experiment is conclusive."
+  },
+  "model_or_mcp_sessions_executed_by_verifier": 0,
+  "BATEIA_AGENT_UPLIFT_DEMONSTRATED": false,
+  "limitations": [
+    "The workspace and inherited context do not provide strong isolation attestation.",
+    "Runtime isolation is inferred from captured invocation/events and frozen profiles; the verifier did not rerun the session or MCP server.",
+    "The official documentation URL returned no text through the documentation fetcher; key and accepted values were independently checked against installed official codex-cli 0.149.0 without starting a server.",
+    "No execution-seal-r3.json existed at verification time, so the next behavioral dispatch remains blocked.",
+    "This receipt evaluates execution-profile correction and CONTRACT-only continuation; it does not evaluate quality, scores, judges or uplift."
+  ],
+  "self_hash_policy": "SHA-256 of RFC8259 UTF-8 JSON canonicalized with lexicographically sorted object keys, no insignificant whitespace and unescaped Unicode, after removing the top-level self_hash field.",
+  "self_hash": "3b047b09f79864e46ebd0d6d68ca1d4d1018f7781bd3608c6ccd193a9d9abc8c",
+  "invalidation_rule": "Any byte change to the audited state, refinement, R2/R3 profiles, queue, schema, prompt, seal or c56e invocation/output/events/receipt requires a new MCP approval verification."
+}

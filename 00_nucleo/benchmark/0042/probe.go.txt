@@ -1,0 +1,47 @@
+package main
+import (
+ "context"
+ "crypto/sha256"
+ "encoding/hex"
+ "encoding/json"
+ "fmt"
+ "os"
+ "path/filepath"
+ "strings"
+ "bateia/01_core/domain"
+ "bateia/01_core/parser"
+ "bateia/01_core/usecase"
+ "bateia/03_infra/local"
+)
+func hash(s string)string{h:=sha256.Sum256([]byte(s));return hex.EncodeToString(h[:])}
+func main(){
+ ctx:=context.Background();out:=map[string]any{};ref:=domain.CommitRef{Owner:"fixture",Repo:"candidate",Commit:strings.Repeat("a",40)}
+ out["negative_non_goal_screening"]=usecase.ExtractScreeningSignals(domain.DiscoverySnapshot{Idea:domain.IdeaSpec{NonGoals:[]string{"upload code"}}},domain.DiscoveredCandidate{Repository:domain.RepositoryCandidate{Description:"This tool does not upload code."}},usecase.DefaultScreeningModel())
+ for name,content:=range map[string]string{"negative_offline":"This tool cannot run locally.","negative_upload":"This tool never uploads your code to a cloud service.","positive_offline":"This tool can run locally."} {
+  b:=domain.EvidenceBundle{SchemaVersion:"1",Repository:ref,Complete:true,TreeComplete:true,Items:[]domain.CollectedEvidence{{Kind:domain.EvidenceDocumentation,Ref:ref,Path:"README.md",Content:content,ContentHash:hash(content)}}}
+  report,err:=usecase.AssessEvidence(domain.IdeaSpec{Capabilities:[]string{"asynchronous event processing"}},domain.ScreeningReport{},[]domain.EvidenceBundle{b},usecase.DefaultEvidenceRules());if err!=nil{panic(err)}
+  out[name]=report.Assessments[0].Operation
+ }
+ a:=domain.CandidateAssessment{Repository:ref,Capabilities:[]domain.CapabilityEvidence{{Capability:"export",Status:domain.EvidenceProven}},ProblemAlignment:domain.CapabilityEvidence{Status:domain.EvidenceProven},License:domain.LicenseAssessment{Status:domain.EvidenceProven,Identifier:"MIT"},Maintenance:domain.MaintenanceAssessment{Status:domain.EvidenceProven},Operation:domain.OperationAssessment{LocalStatus:domain.EvidenceProven}}
+ decision,err:=usecase.DecideReuse(domain.ReuseDecisionRequest{Idea:domain.IdeaSpec{Capabilities:[]string{"export"}},Assessments:[]domain.CandidateAssessment{a},Policy:domain.ReuseDecisionPolicy{SchemaVersion:"1",AllowedLicenses:[]string{"MIT"},MaxComponents:2,ExtendMinCoverage:.6,IntegrationMinValue:.3}});if err!=nil{panic(err)}
+ out["decision_from_sourceless_assessment"]=decision
+ content:="package graph\ntype DependencyGraph struct{}"
+ b:=domain.EvidenceBundle{SchemaVersion:"1",Repository:ref,Complete:true,TreeComplete:true,Items:[]domain.CollectedEvidence{{Kind:domain.EvidenceFile,Ref:ref,Path:"graph.go",Content:content,ContentHash:hash(content)}}}
+ report,err:=usecase.AssessEvidence(domain.IdeaSpec{Capabilities:[]string{"dependency graph"}},domain.ScreeningReport{},[]domain.EvidenceBundle{b},usecase.DefaultEvidenceRules());if err!=nil{panic(err)}
+ catalog,err:=os.ReadFile("04_wiring/mechanism-rules.json");if err!=nil{panic(err)}
+ mech,err:=usecase.NewDeterministicMechanismExtractor().ExtractMechanisms(ctx,domain.MechanismExtractionInput{Bundle:b,Assessments:report.Assessments,RuleCatalogJSON:catalog,RuleCatalogSHA256:hash(string(catalog))});if err!=nil{panic(err)}
+ out["real_assessment_to_mechanism"]=map[string]any{"assessment":report,"mechanisms":mech}
+ out["complexity"]=map[string]int{"plain":parser.CalculateCyclomaticComplexity("func f() {}"),"comment_only_difference":parser.CalculateCyclomaticComplexity("func f() {} // if for while switch case")}
+ m1,_:=parser.ParseCsProj(ref,"<Project/>");m2,_:=parser.ParseCsProj(ref,"<Project/>");out["parser_clock_changes_result"]=!m1.ConsultadoEm.Equal(m2.ConsultadoEm)
+ tmp,err:=os.MkdirTemp("/tmp","bateia-0042-boundary-");if err!=nil{panic(err)};defer os.RemoveAll(tmp)
+ root:=filepath.Join(tmp,"root");outside:=filepath.Join(tmp,"outside");os.MkdirAll(root,0755);os.MkdirAll(outside,0755)
+ os.WriteFile(filepath.Join(outside,"go.mod"),[]byte("module fixture.example/outside\n\ngo 1.25\n"),0644)
+ os.WriteFile(filepath.Join(outside,"marker.go"),[]byte("package marker // synthetic boundary marker"),0644)
+ os.Symlink(filepath.Join(outside,"go.mod"),filepath.Join(root,"go.mod"));os.Symlink(outside,filepath.Join(root,"linked"))
+ candidate:=domain.RepositoryCandidate{Owner:ref.Owner,Repo:ref.Repo,CommitID:ref.Commit,URL:"file://"+root}
+ manifest,err:=local.NewClient().FetchManifest(ctx,candidate);if err!=nil{panic(err)}
+ files,err:=local.NewClient().ExtractRepoFiles(ctx,candidate,[]string{"go.mod","linked/marker.go"});if err!=nil{panic(err)}
+ paths:=[]string{};for _,f:=range files.Files{paths=append(paths,f.Path)}
+ out["local_symlink_boundary"]=map[string]any{"manifest_module":manifest.ModuleName,"extracted_paths":paths,"scope":"temporary synthetic marker only"}
+ encoded,_:=json.MarshalIndent(out,"","  ");fmt.Println(string(encoded))
+}

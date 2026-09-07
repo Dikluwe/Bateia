@@ -1,0 +1,3 @@
+# Regressões públicas do passo 0040
+
+Verificar que eco Go, nomes e teste de eco não comprovam processamento assíncrono; fontes úteis continuam presentes com confiança limitada. Licença deve exigir documento raiz mesmo se item recebido já vier classificado como license. Menções negadas e positivas de não objetivo permanecem inconclusivas sem prova comportamental. Linhas devem corresponder ao trecho; intervalo desconhecido é omitido. Código C++ de produção deve preceder artefatos temporários/gerados de múltiplas linguagens; alvo explícito permanece permitido. Condição de manutenção desconhecida gera ação específica e não uma falsa lacuna funcional.

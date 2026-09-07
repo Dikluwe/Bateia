@@ -21,3 +21,7 @@ evidência negativa.
 - Snapshot v1 migra sem fabricar evidência.
 - Ausência leva a auditoria; conflito pode bloquear avanço.
 - Folds nunca misturam a mesma ideia.
+
+## Passo 0040
+
+Queries são rastreabilidade da busca, não conteúdo do candidato. Cobertura preliminar e não objetivos usam descrição e snippets retornados; nunca os termos consultados. A cobertura permanece sinal lexical preliminar, não comprovação.

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_test.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -45,14 +45,14 @@ func TestWeakSignalNeverBecomesAbsence(t *testing.T) {
 	}
 }
 
-func TestImplementedSymbolAndRelatedTestCanProve(t *testing.T) {
+func TestImplementedSymbolAndRelatedTestRemainPartial(t *testing.T) {
 	b := testBundle(true,
 		domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "graph.go", Content: "type DependencyGraph struct { Nodes []string }"},
 		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "graph_test.go", Content: "func TestDependencyGraph(t *testing.T) {}"},
 	)
 	got := assessCapability("dependency graph", b, findRule("dependency graph", DefaultEvidenceRules()))
-	if got.Status != domain.EvidenceProven {
-		t.Fatalf("status = %s, esperado PROVEN", got.Status)
+	if got.Status != domain.EvidencePartial {
+		t.Fatalf("status = %s, esperado PARTIAL", got.Status)
 	}
 	if len(got.Sources) == 0 || got.Sources[0].Ref.Commit == "" {
 		t.Fatal("fonte não rastreável")
@@ -409,7 +409,7 @@ func TestNegativeEvidenceMustBeContextual(t *testing.T) {
 	}
 }
 
-func TestSymbolPreservesNameLineAndDrivesReusableComponent(t *testing.T) {
+func TestSymbolPreservesNameLineWithoutPromotingReusableComponent(t *testing.T) {
 	ref := domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc123"}
 	b := testBundle(true,
 		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "dependency graph"},
@@ -423,10 +423,15 @@ func TestSymbolPreservesNameLineAndDrivesReusableComponent(t *testing.T) {
 	if a.ScreeningDecision.Decision != "ADVANCE" {
 		t.Fatal("decisão da peneira perdida após SHA")
 	}
-	if len(a.ReusableParts) != 1 || a.ReusableParts[0].Path != "src/graph.go" || a.ReusableParts[0].Symbols[0] != "DependencyGraph" {
+	if len(a.ReusableParts) != 0 {
 		t.Fatalf("componente inesperado: %+v", a.ReusableParts)
 	}
-	s := a.ReusableParts[0].Evidence[0]
+	var s domain.EvidenceSource
+	for _, source := range a.Capabilities[0].Sources {
+		if source.Kind == domain.EvidenceSymbol {
+			s = source
+		}
+	}
 	if s.Line != 3 || s.Symbol != "DependencyGraph" {
 		t.Fatalf("localização inesperada: %+v", s)
 	}
@@ -485,7 +490,7 @@ func TestCalibratedStructuralPatternsRequireRelatedDeclaration(t *testing.T) {
 		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Reports blast radius for a code change."},
 		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "conformance_test.go", Content: "func TestNoSpilloverWhenTheChangeStaysInScope(t *testing.T) {}"},
 	)
-	if got := assessCapability("blast radius", positive, rule); got.Status != domain.EvidenceProven {
+	if got := assessCapability("blast radius", positive, rule); got.Status != domain.EvidencePartial {
 		t.Fatalf("positivo = %s", got.Status)
 	}
 	negative := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "network_test.go", Content: "func TestNetworkSpilloverBucket(t *testing.T) {}"})
@@ -500,7 +505,7 @@ func TestCalibratedRecipeAndEventPatternsRejectMentions(t *testing.T) {
 		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Imports recipes from Tandoor."},
 		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "tandoor_test.go", Content: "func TestTandoorImport(t *testing.T) {}"},
 	)
-	if got := assessCapability("recipe import", recipe, recipeRule); got.Status != domain.EvidenceProven {
+	if got := assessCapability("recipe import", recipe, recipeRule); got.Status != domain.EvidencePartial {
 		t.Fatalf("recipe = %s", got.Status)
 	}
 	mention := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "widgets.go", Content: `var label = "Tandoor import"`})
@@ -512,7 +517,7 @@ func TestCalibratedRecipeAndEventPatternsRejectMentions(t *testing.T) {
 		domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "Event-driven architecture with asynchronous events."},
 		domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "event_dispatcher.go", Content: "type EventDispatcher struct{}"},
 	)
-	if got := assessCapability("asynchronous event processing", event, eventRule); got.Status != domain.EvidenceProven {
+	if got := assessCapability("asynchronous event processing", event, eventRule); got.Status != domain.EvidencePartial {
 		t.Fatalf("event = %s", got.Status)
 	}
 }
@@ -521,7 +526,7 @@ func TestRecipeOrganizationSymbolsAreSpecific(t *testing.T) {
 	rule := findRule("recipe organization", DefaultEvidenceRules())
 	for _, declaration := range []string{"class MelaRecipes(Integration):", "class RepositoryRecipes(BaseRepository):", "class RecipeController:"} {
 		bundle := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "recipes.py", Content: declaration})
-		if got := assessCapability("recipe organization", bundle, rule); got.Status != domain.EvidenceProven {
+		if got := assessCapability("recipe organization", bundle, rule); got.Status != domain.EvidencePartial {
 			t.Fatalf("%q = %s", declaration, got.Status)
 		}
 	}

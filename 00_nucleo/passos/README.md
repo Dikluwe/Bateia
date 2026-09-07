@@ -58,3 +58,5 @@ Cada passo deve declarar:
 - [0038 — Protótipo Clang AST + CFG](0038-prototipo-clang-ast-cfg.md)
 
 - [0039 — Analisar a jornada principal de reúso](0039-analisar-jornada-principal-de-reuso.md)
+
+- [0040 — Corrigir autoridade da evidência](0040-corrigir-autoridade-da-evidencia.md)

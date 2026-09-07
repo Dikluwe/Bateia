@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -86,7 +86,14 @@ func DecideReuse(req domain.ReuseDecisionRequest) (domain.ReuseDecisionReport, e
 	if anyAmbiguous {
 		report.Decision = domain.DecisionUnknown
 		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-INCONCLUSIVE-001", Effect: "block", Message: "evidência obrigatória ou gate eliminatório permanece inconclusivo"}}
-		report.Gaps = append([]string(nil), capabilities...)
+		covered := map[string]bool{}
+		for _, candidate := range candidates {
+			for capability := range candidate.covered {
+				covered[capability] = true
+			}
+			report.Reasons = append(report.Reasons, unresolvedCandidateReasons(candidate, req.Policy)...)
+		}
+		report.Gaps = uncoveredGaps(capabilities, covered)
 		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
 		return report, nil
 	}
@@ -100,6 +107,41 @@ func DecideReuse(req domain.ReuseDecisionRequest) (domain.ReuseDecisionReport, e
 	report.Gaps = append([]string(nil), capabilities...)
 	report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), false)
 	return report, nil
+}
+
+// Unknown adoption gates are evidence gaps, not missing project capabilities.
+func unresolvedCandidateReasons(c decisionCandidate, policy domain.ReuseDecisionPolicy) []domain.DecisionReason {
+	var out []domain.DecisionReason
+	add := func(message string, evidence []domain.EvidenceSource) {
+		out = append(out, domain.DecisionReason{RuleID: "DEC-EVIDENCE-0040", Effect: "verify", Candidate: c.key, Message: message, Evidence: evidence})
+	}
+	if c.a.License.Status == domain.EvidenceInconclusive {
+		add("licença não verificada: localizar documento de licença com autoridade no projeto", c.a.License.Sources)
+	}
+	if c.a.Maintenance.Status == domain.EvidenceInconclusive {
+		add("manutenção não verificada: obter metadados datados de atividade e arquivamento", c.a.Maintenance.Sources)
+	}
+	if policy.RequireLocal && c.a.Operation.LocalStatus == domain.EvidenceInconclusive {
+		add("operação local não verificada: examinar requisitos e instruções de execução", c.a.Operation.Sources)
+	}
+	for _, capability := range c.a.Capabilities {
+		if capability.Status == domain.EvidencePartial || capability.Status == domain.EvidenceInconclusive {
+			add("capacidade não comprovada: "+capability.Capability+"; "+capability.Explanation, capability.Sources)
+		}
+	}
+	for _, constraint := range c.a.Constraints {
+		if constraint.Evidence.Status == domain.EvidenceInconclusive {
+			add("restrição não verificada: "+constraint.Constraint+"; "+constraint.Evidence.Explanation, constraint.Evidence.Sources)
+		}
+	}
+	if c.a.ProblemAlignment.Status == domain.EvidenceInconclusive {
+		add("relação com a intenção não verificada: "+c.a.ProblemAlignment.Explanation, c.a.ProblemAlignment.Sources)
+	}
+	for _, failure := range c.a.Failures {
+		add("resolver falha de coleta em "+failure.Stage+": "+failure.Message, nil)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Message < out[j].Message })
+	return out
 }
 
 func validateDecisionRequest(req domain.ReuseDecisionRequest) error {

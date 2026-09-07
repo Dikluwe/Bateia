@@ -12,3 +12,7 @@ Verificar de forma determinística o comportamento público do contrato relacion
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/01_core/usecase/evidence.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.
+
+## Contrato 0040
+
+Correspondências lexicais, declarações e testes vazios são evidência parcial, não comprovação comportamental. As expectativas anteriores de PROVEN e componentes derivados apenas desses sinais foram substituídas. Preservar verificações de fontes, localização, determinismo, licença e rejeição; identidade de execução muda com a versão de regras.

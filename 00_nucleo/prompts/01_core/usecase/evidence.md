@@ -16,3 +16,9 @@ Rejeitar catálogos v2 com identidade, termos ou padrões genéricos/duplicados,
 proveniência ausente ou hash divergente. Quando a regra exigir independência,
 uma única fonte forte não produz `PROVEN`; conteúdo duplicado conta uma vez e
 documentação isolada permanece abaixo de `PROVEN`.
+
+## Passo 0040
+
+Aplicar o contrato de autoridade, sinais lexicais sem comprovação comportamental, procedência local, seleção de produção, negação conservadora e lacunas acionáveis de `00_nucleo/passos/0040-corrigir-autoridade-da-evidencia.md`. Preservar determinismo e ausência de I/O no núcleo.
+
+Limites de quantidade/profundidade devem registrar SKIPPED_BUDGET e Complete=false para arquivos elegíveis omitidos. Arquivo encontrado não equivale a arquivo examinado.

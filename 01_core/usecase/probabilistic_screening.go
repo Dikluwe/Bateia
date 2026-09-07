@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/probabilistic_screening.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -162,15 +162,22 @@ func ExtractScreeningSignals(snapshot domain.DiscoverySnapshot, candidate domain
 	}
 	signals.DescriptionAlignment = tokenOverlap(ideaText(snapshot.Idea), candidate.Repository.Description)
 	signals.OriginConvergence = len(candidate.Origins)
+	// Queries describe the search, not the candidate. Use only returned content.
+	observed := candidate.Repository.Description
+	for _, origin := range candidate.Origins {
+		for _, evidence := range origin.Evidence {
+			observed += " " + evidence.Snippet
+		}
+	}
 	covered := 0
 	for _, capability := range snapshot.Idea.Capabilities {
-		if tokenOverlap(capability, candidate.Repository.Description+" "+strings.Join(candidate.Queries, " ")) > 0 {
+		if tokenOverlap(capability, observed) > 0 {
 			covered++
 		}
 	}
 	signals.CapabilityCoverage = ratio(covered, len(snapshot.Idea.Capabilities))
 	for _, nonGoal := range snapshot.Idea.NonGoals {
-		if containsPhrase(candidate.Repository.Description+" "+strings.Join(candidate.Queries, " "), nonGoal) {
+		if containsPhrase(observed, nonGoal) {
 			signals.NonGoalConflict += ratio(1, len(snapshot.Idea.NonGoals))
 		}
 	}

@@ -21,3 +21,5 @@ Exemplo de relatório compilado:
 ## Diagnósticos de produto
 
 - [0039 — Análise da jornada principal de reúso](analise-jornada-principal-0039.md)
+
+- [0040 — Correções da jornada principal](correcoes-jornada-principal-0040.md)

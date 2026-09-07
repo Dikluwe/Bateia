@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/competitive_autophagy_test.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 package usecase
 
@@ -40,22 +40,20 @@ func autophagyRequest(internal, competitors []domain.EvidenceBundle) domain.Comp
 	}
 }
 
-func TestAutophagyKeepsExistingAndOnlyFeedsProvenGapToKatamari(t *testing.T) {
+func TestAutophagyKeepsLexicalMatchesPartial(t *testing.T) {
 	internal := autophagyBundle("local", "bateia", "target1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
 	external := autophagyBundle("oss", "impact", "c1", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
 	result, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{internal}, []domain.EvidenceBundle{external}))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(result.Autophagy.Existing, []string{"dependency graph"}) || !reflect.DeepEqual(result.Autophagy.Gaps, []string{"blast radius"}) {
+	if !reflect.DeepEqual(result.Autophagy.Partial, []string{"dependency graph"}) || !reflect.DeepEqual(result.Autophagy.Gaps, []string{"blast radius"}) {
 		t.Fatalf("unexpected autofagia: %#v", result.Autophagy)
 	}
-	if len(result.Katamari.Components) != 1 || !reflect.DeepEqual(result.Katamari.CoveredGaps, []string{"blast radius"}) {
+	if len(result.Katamari.Components) != 0 || len(result.Katamari.CoveredGaps) != 0 {
 		t.Fatalf("unexpected Katamari: %#v", result.Katamari)
 	}
-	if result.Katamari.Components[0].Capabilities[0] == "dependency graph" {
-		t.Fatal("Katamari absorbed an existing internal capability")
-	}
+
 }
 
 func TestIncompleteInternalEvidenceIsUnknownNotGap(t *testing.T) {
@@ -72,7 +70,7 @@ func TestIncompleteInternalEvidenceIsUnknownNotGap(t *testing.T) {
 	}
 }
 
-func TestDuplicateInternalImplementationsRequireConsolidation(t *testing.T) {
+func TestDuplicateLexicalDeclarationsDoNotRequireConsolidation(t *testing.T) {
 	a := autophagyBundle("local", "one", "a1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
 	b := autophagyBundle("local", "two", "b1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
 	r, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{a, b}, nil))
@@ -84,14 +82,14 @@ func TestDuplicateInternalImplementationsRequireConsolidation(t *testing.T) {
 	}
 	found := false
 	for _, f := range r.Autophagy.Findings {
-		found = found || (f.Capability == "dependency graph" && f.Disposition == domain.InternalConsolidate)
+		found = found || (f.Capability == "dependency graph" && f.Status == domain.EvidencePartial)
 	}
 	if !found {
 		t.Fatalf("duplicate not detected: %#v", r.Autophagy.Findings)
 	}
 }
 
-func TestKatamariUsesFewestProjectsAndRejectsForbiddenLicense(t *testing.T) {
+func TestKatamariRejectsUnverifiedComponentsAndForbiddenLicense(t *testing.T) {
 	internal := autophagyBundle("local", "bateia", "target1", "", true, "MIT License\nPermission is hereby granted, free of charge")
 	graph := autophagyBundle("oss", "graph", "g1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
 	impact := autophagyBundle("oss", "impact", "i1", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
@@ -101,7 +99,7 @@ func TestKatamariUsesFewestProjectsAndRejectsForbiddenLicense(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(r.Katamari.Components) != 1 || r.Katamari.Components[0].Repository.Repo != "both" {
+	if len(r.Katamari.Components) != 0 {
 		t.Fatalf("did not select minimum project set: %#v", r.Katamari.Components)
 	}
 	rejected := false

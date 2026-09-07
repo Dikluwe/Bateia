@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend_test.md
  * @layer L2
- * @updated 2026-08-31
+ * @updated 2026-09-07
  */
 package cli
 
@@ -95,7 +95,7 @@ func TestIdeaRecommendM20RendersUnknownLicenseWarningDeterministically(t *testin
 	if !found {
 		t.Fatalf("RecipeSage did not migrate to alternatives: %+v", first.report)
 	}
-	if first.report.TopChoice == nil || !strings.EqualFold(first.report.TopChoice.Owner+"/"+first.report.TopChoice.Repo, "norish-recipes/norish") {
+	if first.report.TopChoice != nil {
 		t.Fatalf("unexpected top choice: %+v", first.report.TopChoice)
 	}
 	for _, line := range strings.Split(string(first.markdown), "\n") {
@@ -1035,7 +1035,7 @@ func TestIdeaRecommendM21RegionalCLIReplayAndDeterminism(t *testing.T) {
 
 func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	const (
-		wantRunID        = "3266417accb32860"
+		wantRunID        = "4dbe6d1bec49f5c0"
 		wantEvidenceHash = "275fca39660f176c03c7ab744b744ea6c7a4f8ace07973dff60ec7986ac8b723"
 		wantBundleHash   = "27f663cb5d3887f049502c5a7850df77debc8d28571f9b5bdaff61d3a4c4a30e"
 	)

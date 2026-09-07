@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -44,7 +44,7 @@ func DefaultEvidenceRules() domain.CapabilityRuleCatalog {
 		independentRule("candidate-comparison", []string{"comparar candidatos por criterios", "criteria based candidate comparison", "compare software candidates"}, []string{"candidatecomparison", "comparisonmatrix", "compare candidates", "criteria matrix"}),
 		independentRule("human-review-escalation", []string{"escalonar duvida para revisao humana", "human review escalation", "escalate uncertain judgment"}, []string{"humanreviewescalation", "reviewqueue", "escalate uncertainty", "mandatory review"}),
 	}
-	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "2", Version: "2026-08-31.1", Rules: rules}
+	catalog := domain.CapabilityRuleCatalog{SchemaVersion: "2", Version: "2026-09-07.0040", Rules: rules}
 	catalog.Hash = ruleCatalogHash(catalog)
 	return catalog
 }
@@ -333,22 +333,25 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			if depth := pathDepth(node.Path); depth > bundle.DepthReached {
 				bundle.DepthReached = depth
 			}
-			if node.Type != "file" || pathDepth(node.Path) > plan.Budget.TreeDepth || ignoredEvidencePath(node.Path) {
+			if node.Type != "file" || (ignoredEvidencePath(node.Path) && !explicitEvidenceDirectory(node.Path, plan.Targets)) {
 				continue
 			}
 			kind := classifyEvidencePath(node.Path)
 			if kind == domain.EvidenceFile && !isCodePath(node.Path) {
 				continue
 			}
-			if withinKindBudget(paths, kinds, kind, plan.Budget) {
-				if _, exists := targetByPath[node.Path]; exists {
-					continue
-				}
-				target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
-				paths = append(paths, node.Path)
-				kinds[node.Path] = kind
-				targetByPath[node.Path] = target
+			if _, exists := targetByPath[node.Path]; exists {
+				continue
 			}
+			target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
+			if pathDepth(node.Path) > plan.Budget.TreeDepth || !withinKindBudget(paths, kinds, kind, plan.Budget) {
+				bundle.Complete = false
+				bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: target, Status: domain.TargetSkippedBudget, Message: "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"})
+				continue
+			}
+			paths = append(paths, node.Path)
+			kinds[node.Path] = kind
+			targetByPath[node.Path] = target
 		}
 	}
 	if err := ctx.Err(); err != nil {
@@ -411,14 +414,53 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 func prioritizeEvidenceTree(tree []domain.DirectoryNode, targets []domain.ExtractionTarget) []domain.DirectoryNode {
 	out := append([]domain.DirectoryNode(nil), tree...)
 	sort.SliceStable(out, func(i, j int) bool {
-		iRelevant := len(capabilitiesForPath(out[i].Path, targets)) > 0
-		jRelevant := len(capabilitiesForPath(out[j].Path, targets)) > 0
-		if iRelevant != jRelevant {
-			return iRelevant
+		iScore := evidencePathPriority(out[i].Path, targets)
+		jScore := evidencePathPriority(out[j].Path, targets)
+		if iScore != jScore {
+			return iScore > jScore
 		}
 		return out[i].Path < out[j].Path
 	})
 	return out
+}
+
+// Path priority is a collection heuristic, never evidence of implemented behavior.
+func evidencePathPriority(path string, targets []domain.ExtractionTarget) int {
+	p := strings.ToLower(slashPath(path))
+	score := 0
+	if isCodePath(p) && classifyEvidencePath(p) == domain.EvidenceFile {
+		score += 20
+	}
+	score += 5 * len(capabilitiesForPath(p, targets))
+	for _, segment := range strings.Split(p, "/") {
+		switch segment {
+		case "tmp", "temp", "generated", "dist", "build", "benchmark", "benchmarks", "fixtures", "prompts", "vendor", "node_modules":
+			if !explicitEvidenceDirectory(p, targets) {
+				score -= 100
+			}
+		}
+	}
+	return score
+}
+
+func explicitEvidenceDirectory(path string, targets []domain.ExtractionTarget) bool {
+	directory := pathpkg.Dir(strings.ToLower(slashPath(path)))
+	for _, target := range targets {
+		if slashPath(target.Path) == slashPath(path) {
+			return true
+		}
+		for _, segment := range strings.Split(directory, "/") {
+			switch segment {
+			case "tmp", "temp", "generated", "dist", "build", "benchmark", "benchmarks", "fixtures", "prompts", "vendor", "node_modules", "translations":
+				for _, capability := range target.Capabilities {
+					if phraseMatch(normalizeEvidenceText(capability), segment) {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
 }
 
 func capabilitiesForPath(path string, targets []domain.ExtractionTarget) []string {
@@ -455,7 +497,7 @@ func classifyEvidencePath(path string) domain.EvidenceKind {
 	if strings.HasPrefix(base, "readme") || strings.Contains(p, "/docs/") {
 		return domain.EvidenceDocumentation
 	}
-	if strings.HasPrefix(base, "license") || strings.HasPrefix(base, "copying") {
+	if authoritativeLicensePath(p) {
 		return domain.EvidenceLicense
 	}
 	if base == "go.mod" || base == "package.json" || base == "cargo.toml" || base == "pyproject.toml" {
@@ -643,16 +685,14 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 	if !bundleConclusive(bundle) {
 		return capabilityResult(capability, domain.EvidenceInconclusive, sources, maxStrength(sources), "coleta incompleta ou com falha; ausência não pode ser concluída")
 	}
-	max, combined, independent := evidenceScores(sources)
-	proven := max >= 0.85 || (max >= 0.65 && independent >= 2 && combined >= 0.90)
-	if rule.RequiresIndependent {
-		proven = max >= 0.65 && independent >= 2 && combined >= 0.90
-	}
-	if proven {
-		return capabilityResult(capability, domain.EvidenceProven, sources, combined, "capacidade comprovada por evidência concreta e rastreável")
+	// These sources locate declarations, not verified behavior. Independent lexical
+	// matches cannot promote a capability to PROVEN, regardless of their sum.
+	_, combined, _ := evidenceScores(sources)
+	if combined > .65 {
+		combined = .65
 	}
 	if combined >= 0.50 {
-		return capabilityResult(capability, domain.EvidencePartial, sources, combined, "há evidência concreta, mas insuficiente para comprovação")
+		return capabilityResult(capability, domain.EvidencePartial, sources, combined, "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)")
 	}
 	if len(sources) > 0 {
 		return capabilityResult(capability, domain.EvidenceInconclusive, sources, combined, "sinais fracos impedem concluir presença ou ausência")
@@ -774,7 +814,16 @@ func truncateSnippet(value string) string {
 }
 
 func sourceFromItem(item domain.CollectedEvidence, kind domain.EvidenceKind, rule string, strength float64, snippet string) domain.EvidenceSource {
-	return domain.EvidenceSource{Kind: kind, Ref: item.Ref, Path: item.Path, Line: 1, Snippet: snippet, RuleID: rule, ContentHash: item.ContentHash, Strength: strength}
+	line := 0
+	if snippet != "" {
+		for index, text := range strings.Split(item.Content, "\n") {
+			if truncateSnippet(text) == snippet {
+				line = index + 1
+				break
+			}
+		}
+	}
+	return domain.EvidenceSource{Kind: kind, Ref: item.Ref, Path: item.Path, Line: line, Snippet: snippet, RuleID: rule, ContentHash: item.ContentHash, Strength: strength}
 }
 func strengthFor(kind domain.EvidenceKind, path string) float64 {
 	if ignoredEvidencePath(path) {
@@ -782,11 +831,11 @@ func strengthFor(kind domain.EvidenceKind, path string) float64 {
 	}
 	switch kind {
 	case domain.EvidenceTest, domain.EvidenceTestImplementation:
-		return 1
+		return .6
 	case domain.EvidenceSymbol:
-		return .9
+		return .6
 	case domain.EvidenceExample:
-		return .85
+		return .5
 	case domain.EvidenceManifest:
 		return .7
 	case domain.EvidenceDocumentation:
@@ -919,22 +968,41 @@ func assessConstraint(c string, b domain.EvidenceBundle) domain.CapabilityEviden
 func assessNonGoal(nonGoal string, b domain.EvidenceBundle) domain.CapabilityEvidence {
 	var sources []domain.EvidenceSource
 	for _, item := range b.Items {
-		if matchesAny(normalizeEvidenceText(item.Content), []string{nonGoal}) {
-			sources = append(sources, sourceFromItem(item, item.Kind, "non-goal-conflict", supportingStrength(item.Kind, item.Path), firstLine(item.Content, []string{nonGoal})))
+		for _, line := range strings.Split(item.Content, "\n") {
+			if !phraseMatch(normalizeEvidenceText(line), normalizeEvidenceText(nonGoal)) {
+				continue
+			}
+			// A mention (including a negated one) is not proof of prohibited behavior.
+			sources = append(sources, sourceFromItem(item, item.Kind, "non-goal-mention", supportingStrength(item.Kind, item.Path), truncateSnippet(line)))
 		}
 	}
 	sources = dedupeSources(sources)
 	if len(sources) > 0 {
-		return capabilityResult(nonGoal, domain.EvidenceConflict, sources, maxStrength(sources), "evidência explícita coincide com um non-goal")
+		return capabilityResult(nonGoal, domain.EvidenceInconclusive, sources, maxStrength(sources), "menção ao não objetivo, possivelmente negada; verificar comportamento antes de concluir conflito")
 	}
 	if !bundleConclusive(b) {
 		return capabilityResult(nonGoal, domain.EvidenceInconclusive, nil, 0, "coleta incompleta")
 	}
 	return capabilityResult(nonGoal, domain.EvidenceAbsent, nil, 0, "non-goal não observado no escopo coletado")
 }
+
+// Only root license documents establish repository-wide authority. Nested licenses
+// need a scope model before they can be used for the whole project's adoption gate.
+func authoritativeLicensePath(path string) bool {
+	p := strings.ToLower(slashPath(path))
+	if strings.Contains(p, "/") {
+		return false
+	}
+	switch p {
+	case "license", "license.txt", "license.md", "license.rst", "copying", "copying.txt", "copying.md":
+		return true
+	}
+	return false
+}
+
 func assessLicense(b domain.EvidenceBundle) domain.LicenseAssessment {
 	for _, i := range b.Items {
-		if i.Kind != domain.EvidenceLicense {
+		if i.Kind != domain.EvidenceLicense || !authoritativeLicensePath(i.Path) {
 			continue
 		}
 		n := strings.ToLower(i.Content)

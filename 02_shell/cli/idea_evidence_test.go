@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_evidence_test.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package cli
@@ -62,11 +62,11 @@ func TestEvidencePlanAndAssessOffline(t *testing.T) {
 	if err := json.Unmarshal(assessOut.Bytes(), &report); err != nil {
 		t.Fatal(err)
 	}
-	if len(report.Assessments) != 1 || report.Assessments[0].Capabilities[0].Status != domain.EvidenceProven {
+	if len(report.Assessments) != 1 || report.Assessments[0].Capabilities[0].Status != domain.EvidencePartial {
 		t.Fatalf("assessment inesperado: %+v", report)
 	}
 	assessmentPath := writeEvidenceFixture(t, "assessment.json", report)
-	judgmentsPath := writeEvidenceFixture(t, "judgments.json", []domain.EvidenceJudgment{{Repository: "org/repo", Capability: "dependency graph", Expected: domain.EvidenceProven}})
+	judgmentsPath := writeEvidenceFixture(t, "judgments.json", []domain.EvidenceJudgment{{Repository: "org/repo", Capability: "dependency graph", Expected: domain.EvidencePartial}})
 	var metricsOut bytes.Buffer
 	if err := RunIdeaCommand([]string{"evidence", "evaluate", "--assessment", assessmentPath, "--evidence", bundlePath, "--judgments", judgmentsPath}, &metricsOut); err != nil {
 		t.Fatal(err)
@@ -75,7 +75,7 @@ func TestEvidencePlanAndAssessOffline(t *testing.T) {
 	if err := json.Unmarshal(metricsOut.Bytes(), &metrics); err != nil {
 		t.Fatal(err)
 	}
-	if metrics.EvidencePrecision == nil || *metrics.EvidencePrecision != 1 {
+	if metrics.EvidencePrecision != nil || metrics.ProvenCount != 0 {
 		t.Fatalf("métricas inesperadas: %+v", metrics)
 	}
 }

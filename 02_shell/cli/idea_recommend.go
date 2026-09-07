@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-07
  */
 package cli
 
@@ -566,7 +566,7 @@ func localCandidatesExcluding(idea domain.IdeaSpec, paths []string, excludedPath
 		base := strings.ToLower(filepath.Base(abs))
 		pathHash := hashBytes([]byte(abs))
 		repo := base + "-" + pathHash[:8]
-		out = append(out, domain.RepositoryCandidate{Owner: "local", Repo: repo, URL: "file://" + abs, Description: idea.Problem + " " + strings.Join(idea.Capabilities, " "), CommitID: h})
+		out = append(out, domain.RepositoryCandidate{Owner: "local", Repo: repo, URL: "file://" + abs, CommitID: h})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Repo < out[j].Repo })
 	return out, nil
@@ -638,9 +638,9 @@ func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport) error {
 	fmt.Fprintln(&b, "## Razões")
 	fmt.Fprintln(&b)
 	for _, x := range r.Reasons {
-		fmt.Fprintf(&b, "- `%s`: %s\n", x.RuleID, x.Message)
+		fmt.Fprintf(&b, "- `%s` %s: %s\n", x.RuleID, x.Candidate, x.Message)
 	}
-	fmt.Fprintln(&b, "\n## Lacunas")
+	fmt.Fprintln(&b, "\n## Capacidades ainda não comprovadas")
 	fmt.Fprintln(&b)
 	for _, x := range r.Gaps {
 		fmt.Fprintf(&b, "- %s\n", x)

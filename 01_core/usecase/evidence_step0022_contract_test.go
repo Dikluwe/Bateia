@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_step0022_contract_test.md
  * @layer L1
- * @updated 2026-08-31
+ * @updated 2026-09-07
  */
 package usecase
 
@@ -52,7 +52,7 @@ func TestStep0022CatalogRejectsCrossRuleDuplicatesAndGenericPatterns(t *testing.
 	}
 }
 
-func TestStep0022IndependentRuleNeedsCodeAndIndependentTest(t *testing.T) {
+func TestStep0040IndependentLexicalSourcesRemainPartial(t *testing.T) {
 	rule := findRule("compare software candidates", DefaultEvidenceRules())
 	one := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "comparison.go", Content: "type CandidateComparison struct{}"})
 	if got := assessCapability("compare software candidates", one, rule); got.Status == domain.EvidenceProven {
@@ -63,8 +63,8 @@ func TestStep0022IndependentRuleNeedsCodeAndIndependentTest(t *testing.T) {
 		domain.CollectedEvidence{Kind: domain.EvidenceFile, Path: "comparison.go", Content: "type CandidateComparison struct{}"},
 		domain.CollectedEvidence{Kind: domain.EvidenceTest, Path: "comparison_test.go", Content: "func TestCandidateComparison(t *testing.T) {}"},
 	)
-	if got := assessCapability("compare software candidates", two, rule); got.Status != domain.EvidenceProven {
-		t.Fatalf("fontes independentes não produziram PROVEN: %#v", got)
+	if got := assessCapability("compare software candidates", two, rule); got.Status != domain.EvidencePartial {
+		t.Fatalf("fontes lexicais deveriam permanecer PARTIAL: %#v", got)
 	}
 }
 

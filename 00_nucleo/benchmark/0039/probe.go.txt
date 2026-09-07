@@ -1,0 +1,17 @@
+// Open diagnostic harness for step 0039. No network provider or product modifications.
+package main
+import("bateia/01_core/domain";"bateia/01_core/usecase";"bateia/02_shell/mcp";"context";"bytes";"encoding/json";"errors";"os";"fmt")
+type probe struct{fail bool; Requests []domain.DiscoveryRequest}
+func(p *probe) Discover(ctx context.Context,r domain.DiscoveryRequest)(domain.ProviderDiscovery,error){p.Requests=append(p.Requests,r);v:=domain.ProviderDiscovery{Provider:"controlled-0039",Attempts:[]domain.ProviderAttempt{{Query:r.Query,Status:"success",ResultCount:0}}};if p.fail {v.Attempts[0].Status="error";v.Attempts[0].ErrorClass="controlled";v.Attempts[0].Error="controlled failure";return v,errors.New("controlled failure")};return v,nil}
+type unusedContent struct{}
+func(unusedContent) FetchManifest(context.Context,domain.RepositoryCandidate)(*domain.Manifest,error){panic("unexpected content call")}
+func(unusedContent) FetchTree(context.Context,domain.RepositoryCandidate)([]domain.DirectoryNode,error){panic("unexpected content call")}
+func(unusedContent) ExtractRepoFiles(context.Context,domain.RepositoryCandidate,[]string)(*domain.ExtractedRepository,error){panic("unexpected content call")}
+func(unusedContent) FetchRepoMetadata(context.Context,domain.RepositoryCandidate)(domain.RepositoryCandidate,error){panic("unexpected content call")}
+func save(name string,x any){b,e:=json.MarshalIndent(x,"","  ");if e!=nil{panic(e)};if e=os.WriteFile("/tmp/bateia-0039/"+name,b,0644);e!=nil{panic(e)}}
+func main(){var policy domain.ReuseDecisionPolicy;b,_:=os.ReadFile("/tmp/bateia-0039/policy.json");json.Unmarshal(b,&policy)
+ for _,fail:=range []bool{false,true}{name:="empty";if fail{name="failed"};p:=&probe{fail:fail};svc:=usecase.NewRecommendationService(nil,p,unusedContent{});search:=usecase.DefaultRecommendationSearchV1();search.Strategy="literal";req:=domain.RecommendationRequest{Idea:domain.IdeaSpec{Problem:"Exportar notas Markdown",Capabilities:[]string{"exportar notas para Markdown"}},Policy:policy,Target:domain.SoftwareAlternativeTarget{Name:"notes"},Search:search};exec,err:=svc.RecommendWithRun(context.Background(),req);if err!=nil{panic(err)};save(name+"-service.json",exec);if len(p.Requests)==0{panic("discovery was not reached")};save(name+"-requests.json",p.Requests)
+ input,_:=json.Marshal(map[string]any{"jsonrpc":"2.0","id":1,"method":"tools/call","params":map[string]any{"name":"bateia_recommend","arguments":req}});var out bytes.Buffer
+ server:=mcp.NewMCPServer(nil,bytes.NewReader(append(input,'\n')),&out,svc);if err=server.Serve(context.Background());err!=nil{panic(err)};os.WriteFile("/tmp/bateia-0039/"+name+"-mcp.json",out.Bytes(),0644);fmt.Println(name,exec.Recommendation.Decision.Decision)
+ }
+}

@@ -17,3 +17,7 @@ Cada relatório salvo nesta pasta segue o formato:
 
 Exemplo de relatório compilado:
 - `relatorio_fiber_tekt.md`
+
+## Diagnósticos de produto
+
+- [0039 — Análise da jornada principal de reúso](analise-jornada-principal-0039.md)

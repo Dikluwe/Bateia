@@ -1,8 +1,14 @@
 # 🔍 Bateia — Motor de Inteligência Arquitetural Multi-Linguagem
 
-**Bateia** é uma ferramenta CLI e plataforma de inteligência arquitetural projetada para buscar, triar e analisar repositórios de código open-source. Através de um funil de três estágios (**Descoberta → Triagem → Extração**), o Bateia extrai dependências, identifica padrões e gera relatórios com o **Descobrimento de Necessidades Ocultas** (insights de testes, banco de dados, observabilidade, devops e configuração).
+**Bateia existe para ajudar a decidir o que reutilizar antes de começar um software do zero.** A partir de uma ideia ou de um software conhecido, descobre alternativas, compara capacidades e restrições e reúne evidências para uma decisão de engenharia.
 
-O fluxo principal orientado a produto vai além da busca lexical: recebe uma `IdeaSpec`, reúne evidências rastreáveis e produz uma decisão entre `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`. O resultado é um dossiê reproduzível, não apenas uma lista de repositórios.
+A jornada principal recebe uma `IdeaSpec` e produz uma decisão entre `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`. O dossiê deve explicar o que cada candidato resolve, o que pode ser aproveitado, quais lacunas e bloqueios permanecem e por que uma alternativa é preferível às outras.
+
+O funil **Descoberta → Triagem → Extração**, os parsers de manifestos, os coletores de código e os adaptadores AST/CFG são meios de obter evidência para essa jornada. Um repositório analisado é um candidato ou corpus de validação; não define a identidade do Bateia. Evidências de dependências sugerem aspectos a investigar, sem comprovar automaticamente capacidades ou necessidades.
+
+A qualidade do produto deve ser avaliada pela utilidade e fundamentação das decisões em diferentes ideias, projetos e ecossistemas. Quantidade de arquivos, símbolos ou grafos extraídos e aprovação de testes de infraestrutura não substituem essa avaliação.
+
+Intenção de origem: [D-001 — Da ideia à decisão de reúso](00_nucleo/desejos/D-001-da-ideia-a-decisao-de-reuso.md) e [D-002 — Alternativas de software com evidência](00_nucleo/desejos/D-002-alternativas-de-software-com-evidencia.md).
 
 ## Da ideia à decisão de reúso
 

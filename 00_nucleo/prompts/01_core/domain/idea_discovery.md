@@ -18,3 +18,7 @@ Modele política de deadline total e por tentativa, estados `COMPLETE`, `PARTIAL
 e `FAILED`, causas de término, receipts seguros e eventos de progresso. Campos
 novos do snapshot devem ser opcionais para preservar replays legados. Timeout,
 cancelamento, falha, vazio e `NOT_STARTED` nunca podem ser equivalentes.
+
+## Contrato 0043 — consultas ligadas à intenção
+
+Antes da chamada ao provedor, cada expansão recebe RequirementIDs derivados dos Covers da IdeaSpec original, com IDs estáveis por conteúdo e tipo. Enviar os IDs na DiscoveryRequest e preservá-los na expansão do snapshot. Sem vínculo válido não fabricar associação: lista vazia exige investigação. Estes IDs descrevem a pergunta, não evidência do candidato.

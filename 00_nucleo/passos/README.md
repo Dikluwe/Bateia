@@ -60,3 +60,9 @@ Cada passo deve declarar:
 - [0039 — Analisar a jornada principal de reúso](0039-analisar-jornada-principal-de-reuso.md)
 
 - [0040 — Corrigir autoridade da evidência](0040-corrigir-autoridade-da-evidencia.md)
+
+- [0041 — Reestruturar autofagia e Katamari](0041-reestruturar-autofagia-e-katamari.md)
+
+- [0042 — Auditar promessas e limites do projeto](0042-auditar-promessas-e-limites-do-projeto.md)
+
+- [0043 — Delimitar promessas e planejar buscas verificáveis](0043-delimitar-promessas-e-planejar-buscas-verificaveis.md) — [Execução A–F e ensaio G; utilidade externa não avaliada](../relatorios/execucao-promessas-buscas-0043.md)

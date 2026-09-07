@@ -1,0 +1,186 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/independent_step0043_test.md
+ * @layer L1
+ * @updated 2026-09-07
+ */
+package usecase_test
+
+import (
+	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
+	"context"
+	"crypto/sha256"
+	"fmt"
+	"reflect"
+	"strings"
+	"testing"
+)
+
+func step0043Hash(s string) string { return fmt.Sprintf("%x", sha256.Sum256([]byte(s))) }
+func step0043Bundle(text string) domain.EvidenceBundle {
+	ref := domain.CommitRef{Owner: "fixture", Repo: "candidate", Commit: strings.Repeat("a", 40)}
+	return domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: true, TreeComplete: true, Items: []domain.CollectedEvidence{{Kind: domain.EvidenceDocumentation, Ref: ref, Path: "README.md", Content: text, ContentHash: step0043Hash(text)}}}
+}
+func step0043Assess(t *testing.T, idea domain.IdeaSpec, bundle domain.EvidenceBundle) domain.AssessmentReport {
+	t.Helper()
+	screening := domain.ScreeningReport{SchemaVersion: "1", Decisions: []domain.ScreeningDecision{{Repository: "fixture/candidate", Decision: "ADVANCE"}}}
+	result, err := usecase.AssessEvidence(idea, screening, []domain.EvidenceBundle{bundle}, usecase.DefaultEvidenceRules())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Assessments) != 1 {
+		t.Fatalf("expected real assessment, got %d", len(result.Assessments))
+	}
+	again, err := usecase.AssessEvidence(idea, screening, []domain.EvidenceBundle{bundle}, usecase.DefaultEvidenceRules())
+	if err != nil || !reflect.DeepEqual(result, again) {
+		t.Fatal("assessment is not deterministic")
+	}
+	return result
+}
+func TestStep0043READMEPolarityAndDeclarationCeiling(t *testing.T) {
+	for _, text := range []string{"This tool cannot run locally.", "This tool runs locally without external services."} {
+		t.Run(text, func(t *testing.T) {
+			report := step0043Assess(t, domain.IdeaSpec{Problem: "local analysis", Capabilities: []string{"local analysis"}}, step0043Bundle(text))
+			if report.Assessments[0].Operation.LocalStatus == domain.EvidenceProven {
+				t.Fatalf("documentation promoted to execution proof: %+v", report.Assessments[0].Operation)
+			}
+		})
+	}
+	report := step0043Assess(t, domain.IdeaSpec{Problem: "private analysis", Capabilities: []string{"code analysis"}, Constraints: []string{"never uploads code to the cloud"}}, step0043Bundle("This tool never uploads code to the cloud."))
+	for _, constraint := range report.Assessments[0].Constraints {
+		if constraint.Evidence.Status == domain.EvidenceConflict {
+			t.Fatalf("negated upload misread as conflict: %+v", constraint)
+		}
+	}
+}
+func TestStep0043SourcelessReuseDoesNotAuthorize(t *testing.T) {
+	idea := domain.IdeaSpec{Problem: "bounded work processing", Capabilities: []string{"bounded queue"}}
+	favorable := domain.CandidateAssessment{Repository: domain.CommitRef{Owner: "fixture", Repo: "candidate", Commit: strings.Repeat("a", 40)}, ProblemAlignment: domain.CapabilityEvidence{Status: domain.EvidenceProven, Confidence: 1}, Capabilities: []domain.CapabilityEvidence{{Capability: "bounded queue", Status: domain.EvidenceProven, Confidence: 1}}, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT"}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven}}
+	for _, assessments := range [][]domain.CandidateAssessment{{favorable}, {{Repository: favorable.Repository}}, nil} {
+		req := domain.ReuseDecisionRequest{Idea: idea, Assessments: assessments, Policy: usecase.DefaultRecommendationPolicyV1()}
+		got, err := usecase.DecideReuse(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.Decision == domain.DecisionFork {
+			t.Fatalf("FORK without admissible evidence: %+v", got)
+		}
+		for _, alternative := range got.Alternatives {
+			if alternative.Coverage >= 1 {
+				t.Fatalf("full coverage without source: %+v", alternative)
+			}
+		}
+		again, err := usecase.DecideReuse(req)
+		if err != nil || !reflect.DeepEqual(got, again) {
+			t.Fatal("decision is not deterministic")
+		}
+	}
+}
+func TestStep0043RealAssessmentMechanismHashAndUnknown(t *testing.T) {
+	idea := domain.IdeaSpec{Problem: "static analysis", Capabilities: []string{"static analysis"}}
+	bundle := step0043Bundle("This tool provides static analysis and runs locally.")
+	report := step0043Assess(t, idea, bundle)
+	sourceCount := 0
+	for _, assessment := range report.Assessments {
+		sourceCount += len(assessment.ProblemAlignment.Sources)
+		for _, capability := range assessment.Capabilities {
+			sourceCount += len(capability.Sources)
+		}
+	}
+	if sourceCount == 0 {
+		t.Fatal("real producer fixture produced no sources; hash contract would be vacuous")
+	}
+	input := domain.MechanismExtractionInput{Bundle: bundle, Assessments: report.Assessments, RuleCatalogJSON: []byte(step0043MechanismCatalog), RuleCatalogSHA256: step0043Hash(step0043MechanismCatalog)}
+	extractor := usecase.NewDeterministicMechanismExtractor()
+	got, err := extractor.ExtractMechanisms(context.Background(), input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, gap := range got.Gaps {
+		if strings.Contains(gap.Code, "HASH_MISMATCH") {
+			t.Fatalf("valid producer SHA256 rejected: %+v", gap)
+		}
+	}
+	again, err := extractor.ExtractMechanisms(context.Background(), input)
+	if err != nil || !reflect.DeepEqual(got, again) {
+		t.Fatal("mechanism extraction is not deterministic")
+	}
+	input.Assessments = nil
+	unknown, err := extractor.ExtractMechanisms(context.Background(), input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(unknown.Mechanisms) != 0 {
+		t.Fatalf("mechanisms invented without assessments: %+v", unknown)
+	}
+}
+
+// Public catalog copied before test execution; no filesystem I/O in L1.
+const step0043MechanismCatalog = `{"schema_version":"tekt.mechanism-rules.v3","catalog_id":"bateia-step0028-initial","catalog_version":3,"closed_world":true,"unknown_classification":"MECHANISM_CLASS_UNKNOWN","canonicalization":{"text":"Unicode NFC, reject C0/C1 and DEL, trim and collapse Unicode whitespace","sets":"deduplicate by exact normalized UTF-8 bytes and sort ascending by those bytes","witness_identity":"assessment repository and status, EvidenceSource kind/ref/path/symbol/line/rule_id/content_hash, plus the bound CollectedEvidence kind/ref/path/content_hash","hash":"sha256 over compact JSON with fixed struct field order and no trailing newline"},"source_contract":{"evaluated_container":"CandidateAssessment","evaluated_source":"EvidenceSource nested under CapabilityEvidence","rule_identity_field":"EvidenceSource.RuleID","bundle_item":"CollectedEvidence","exact_join_fields":["kind","ref","path","content_hash"],"content_use":"hash verification only","infer_rule_from_content":false},"rules":[{"id":"MR-APPEND-ONLY-LOG-V1","version":1,"mechanism_class":"APPEND_ONLY_LOG_RECOVERY","name":"append-only log with explicit recovery","purpose":"preserve an ordered history that can reconstruct confirmed state after interruption","strategy":"append immutable records and rebuild state by deterministic replay with explicit integrity handling","accepted_evidence_rules":[{"rule_id":"append-only-write","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"deterministic-log-replay","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"append-only-recovery-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"append-only-record-schema","role":"INDEPENDENT","witness_kind":"SCHEMA"},{"rule_id":"append-only-integrity-config","role":"INDEPENDENT","witness_kind":"CONFIGURATION"},{"rule_id":"append-only-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},{"rule_id":"mutable-in-place-primary-store","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},{"rule_id":"replay-order-unstable","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}],"minimum_witnesses":{"partial":1,"proven_implementation":1,"proven_independent":1,"distinct_content_hashes":2},"fillable_fields":["purpose","trigger","strategy","data_flow","state_model","failure_model","boundaries","preconditions","tradeoffs"],"language_limits":["go","java","python","rust","typescript"],"ecosystem_limits":["repository-backed source bundle"],"status_max":"PROVEN"},{"id":"MR-BOUNDED-QUEUE-V1","version":1,"mechanism_class":"BOUNDED_QUEUE_BACKPRESSURE","name":"bounded queue with backpressure","purpose":"bound admitted work and make overload behavior explicit","strategy":"reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable","accepted_evidence_rules":[{"rule_id":"bounded-queue-capacity","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"queue-reserve-before-commit","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"queue-capacity-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"queue-backpressure-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"queue-limit-config","role":"INDEPENDENT","witness_kind":"CONFIGURATION"},{"rule_id":"bounded-queue-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},{"rule_id":"unbounded-queue","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},{"rule_id":"admit-before-capacity-check","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}],"minimum_witnesses":{"partial":1,"proven_implementation":1,"proven_independent":1,"distinct_content_hashes":2},"fillable_fields":["purpose","trigger","strategy","data_flow","state_model","failure_model","boundaries","preconditions","tradeoffs"],"language_limits":["go","java","python","rust","typescript"],"ecosystem_limits":["repository-backed source bundle"],"status_max":"PROVEN"},{"id":"MR-CONTENT-ADDRESS-V1","version":1,"mechanism_class":"CONTENT_ADDRESSED_STORAGE","name":"content-addressed storage","purpose":"bind stored or cached values to immutable content identity","strategy":"derive identity from canonical content bytes and verify that identity when reading or publishing","accepted_evidence_rules":[{"rule_id":"content-hash-key","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"content-hash-verify","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"content-address-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"integrity-mismatch-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"content-address-schema","role":"INDEPENDENT","witness_kind":"SCHEMA"},{"rule_id":"content-address-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},{"rule_id":"mutable-location-only-key","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},{"rule_id":"unverified-content-read","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}],"minimum_witnesses":{"partial":1,"proven_implementation":1,"proven_independent":1,"distinct_content_hashes":2},"fillable_fields":["purpose","trigger","strategy","data_flow","state_model","failure_model","boundaries","preconditions","tradeoffs"],"language_limits":["go","java","python","rust","typescript"],"ecosystem_limits":["repository-backed source bundle"],"status_max":"PROVEN"},{"id":"MR-ADAPTER-BOUNDARY-V1","version":1,"mechanism_class":"PORT_ADAPTER_ISOLATION","name":"port and adapter isolation","purpose":"keep policy independent from external providers and transports","strategy":"express the required capability as an inward-facing port and inject provider-specific adapters at composition","accepted_evidence_rules":[{"rule_id":"inward-port-interface","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"adapter-implements-port","role":"IMPLEMENTATION","witness_kind":"IMPLEMENTATION"},{"rule_id":"adapter-substitution-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"dependency-boundary-test","role":"INDEPENDENT","witness_kind":"TEST"},{"rule_id":"adapter-registry-manifest","role":"INDEPENDENT","witness_kind":"MANIFEST"},{"rule_id":"adapter-boundary-architecture-documentation","role":"DOCUMENTARY","witness_kind":"DOCUMENTATION","status_max":"PARTIAL"},{"rule_id":"domain-imports-adapter","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"},{"rule_id":"policy-selects-concrete-provider","role":"CONFLICT","witness_kind":"COUNTEREVIDENCE"}],"minimum_witnesses":{"partial":1,"proven_implementation":1,"proven_independent":1,"distinct_content_hashes":2},"fillable_fields":["purpose","trigger","strategy","data_flow","state_model","failure_model","boundaries","preconditions","tradeoffs"],"language_limits":["go","java","python","rust","typescript"],"ecosystem_limits":["repository-backed source bundle"],"status_max":"PROVEN"}]}`
+
+func TestStep0043InvestigationStableRequirementsAndUnknownActions(t *testing.T) {
+	idea := domain.IdeaSpec{Problem: "queue processing", Capabilities: []string{"bounded queue", "replay"}, Constraints: []string{"offline"}, NonGoals: []string{"cloud upload"}}
+	snapshot := domain.DiscoverySnapshot{Idea: idea}
+	first := usecase.BuildInvestigationPlan(idea, snapshot, nil)
+	if first.StopReason != "NO_CANDIDATES_IN_SCOPE" {
+		t.Fatalf("zero candidates lost bounded stop reason: %s", first.StopReason)
+	}
+	if first.Scope == "" || first.TelemetryLabel == "" {
+		t.Fatal("missing scope or telemetry limit")
+	}
+	if len(first.Requirements) < 4 {
+		t.Fatalf("requirements omitted: %+v", first.Requirements)
+	}
+	ids := map[string]string{}
+	for _, req := range first.Requirements {
+		if req.ID == "" || req.Question == "" || req.Acceptance == "" {
+			t.Fatalf("unverifiable requirement: %+v", req)
+		}
+		ids[req.Kind+"|"+req.Text] = req.ID
+	}
+	idea.Capabilities = []string{"replay", "bounded queue"}
+	reordered := usecase.BuildInvestigationPlan(idea, snapshot, nil)
+	for _, req := range reordered.Requirements {
+		if ids[req.Kind+"|"+req.Text] != req.ID {
+			t.Fatalf("permutation changed ID: %+v", req)
+		}
+	}
+	assessment := domain.CandidateAssessment{Repository: domain.CommitRef{Owner: "fixture", Repo: "candidate", Commit: strings.Repeat("a", 40)}, Capabilities: []domain.CapabilityEvidence{{Capability: "bounded queue", Status: domain.EvidenceProven, Confidence: 1}}}
+	snapshot.Candidates = []domain.DiscoveredCandidate{{Repository: domain.RepositoryCandidate{Owner: "fixture", Repo: "candidate", CommitID: strings.Repeat("a", 40)}}}
+	plan := usecase.BuildInvestigationPlan(idea, snapshot, []domain.CandidateAssessment{assessment})
+	if len(plan.Actions) == 0 {
+		t.Fatal("unknown candidate has no investigation actions")
+	}
+	for _, action := range plan.Actions {
+		if len(action.Evidence) == 0 && action.Classification == "OBSERVED" && action.Status == "PROVEN" {
+			t.Fatalf("sourceless fact: %+v", action)
+		}
+		if action.NextAction == "" || action.Acceptance == "" {
+			t.Fatalf("action lacks next experiment/acceptance: %+v", action)
+		}
+	}
+	if !reflect.DeepEqual(plan, usecase.BuildInvestigationPlan(idea, snapshot, []domain.CandidateAssessment{assessment})) {
+		t.Fatal("plan not deterministic")
+	}
+}
+func TestStep0043InvestigationPreservesEffectiveFallback(t *testing.T) {
+	idea := domain.IdeaSpec{Problem: "transparency rendering", Capabilities: []string{"OpenGL OIT"}}
+	snapshot := domain.DiscoverySnapshot{Idea: idea, PerExpansion: []domain.ExpansionDiscovery{{Expansion: domain.SearchExpansion{ID: "q1", Query: "OpenGL OIT implementation", Covers: []string{"OpenGL OIT"}}, Provider: domain.ProviderDiscovery{Provider: "fixture", Attempts: []domain.ProviderAttempt{{Query: "OpenGL OIT implementation", Error: "rate limited"}, {Query: "rendering", ResultCount: 1}}}}}}
+	plan := usecase.BuildInvestigationPlan(idea, snapshot, nil)
+	if len(plan.Searches) != 2 {
+		t.Fatalf("attempt coverage: %+v", plan.Searches)
+	}
+	found := false
+	for _, search := range plan.Searches {
+		if search.EffectiveQuery == "rendering" {
+			found = true
+			if search.OriginalQuery != "OpenGL OIT implementation" || search.Relaxation == "" {
+				t.Fatalf("silent fallback: %+v", search)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("effective fallback missing")
+	}
+}

@@ -9,12 +9,16 @@ package local
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
+	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
+	"syscall"
 	"time"
 
 	"bateia/01_core/domain"
@@ -65,12 +69,97 @@ func safePath(root, relative string) (string, error) {
 	return path, nil
 }
 
+// readLocalFile bounds the read itself, and validates the opened descriptor.
+// Root.OpenFile enforces confinement during path resolution, including symlink races.
+const maxLocalFileSize = 2 * 1024 * 1024
+
+// resolveRootAlias translates absolute internal symlinks into relative names.
+// Every metadata lookup stays rooted; the resulting name is still opened with
+// Root.OpenFile, so this translation is not the security boundary.
+func resolveRootAlias(root *os.Root, name string) (string, error) {
+	for hops := 0; hops < 40; hops++ {
+		if !filepath.IsLocal(name) {
+			return "", fmt.Errorf("alias fora da worktree: %s", name)
+		}
+		parts := strings.Split(filepath.Clean(name), string(filepath.Separator))
+		prefix := ""
+		replaced := false
+		for i, part := range parts {
+			prefix = filepath.Join(prefix, part)
+			info, err := root.Lstat(prefix)
+			if err != nil {
+				return "", err
+			}
+			if info.Mode()&os.ModeSymlink == 0 {
+				continue
+			}
+			target, err := root.Readlink(prefix)
+			if err != nil {
+				return "", err
+			}
+			if filepath.IsAbs(target) {
+				target, err = filepath.Rel(root.Name(), target)
+				if err != nil {
+					return "", err
+				}
+			} else {
+				target = filepath.Join(filepath.Dir(prefix), target)
+			}
+			if !filepath.IsLocal(target) {
+				return "", fmt.Errorf("alias fora da worktree: %s", prefix)
+			}
+			name = filepath.Join(append([]string{target}, parts[i+1:]...)...)
+			replaced = true
+			break
+		}
+		if !replaced {
+			return name, nil
+		}
+	}
+	return "", fmt.Errorf("limite de resolução de aliases locais excedido")
+}
+
+func readLocalFile(root *os.Root, name string) ([]byte, error) {
+	f, err := root.OpenFile(name, os.O_RDONLY|syscall.O_NONBLOCK, 0)
+	if err != nil {
+		resolved, resolveErr := resolveRootAlias(root, name)
+		if resolveErr != nil {
+			return nil, resolveErr
+		}
+		f, err = root.OpenFile(resolved, os.O_RDONLY|syscall.O_NONBLOCK, 0)
+		if err != nil {
+			return nil, err
+		}
+	}
+	defer f.Close()
+	info, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if !info.Mode().IsRegular() || info.Size() > maxLocalFileSize {
+		return nil, fmt.Errorf("arquivo local não regular ou acima de %d bytes: %s", maxLocalFileSize, name)
+	}
+	data, err := io.ReadAll(io.LimitReader(f, maxLocalFileSize+1))
+	if err != nil {
+		return nil, err
+	}
+	if len(data) > maxLocalFileSize {
+		return nil, fmt.Errorf("arquivo local excedeu limite durante leitura: %s", name)
+	}
+	return data, nil
+}
+
 func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryCandidate) (*domain.Manifest, error) {
 	root, err := candidateRoot(candidate)
 	if err != nil {
 		return nil, err
 	}
-	entries, err := os.ReadDir(root)
+	scoped, err := os.OpenRoot(root)
+	if err != nil {
+		return nil, err
+	}
+	defer scoped.Close()
+	entries, err := fs.ReadDir(scoped.FS(), ".")
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +174,10 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 	}
 	sort.Strings(manifests)
 	for _, name := range manifests {
-		data, readErr := os.ReadFile(filepath.Join(root, name))
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		data, readErr := readLocalFile(scoped, name)
 		if readErr != nil {
 			continue
 		}
@@ -93,7 +185,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		if parseErr != nil {
 			continue
 		}
-		if readme, readErr := os.ReadFile(filepath.Join(root, "README.md")); readErr == nil {
+		if readme, readErr := readLocalFile(scoped, "README.md"); readErr == nil {
 			manifest.Content = readme
 			manifest.ContentPath = "README.md"
 		}
@@ -107,25 +199,26 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 	if err != nil {
 		return nil, err
 	}
+	scoped, err := os.OpenRoot(root)
+	if err != nil {
+		return nil, err
+	}
+	defer scoped.Close()
 	nodes := make([]domain.DirectoryNode, 0, 512)
-	err = filepath.WalkDir(root, func(path string, entry os.DirEntry, walkErr error) error {
+	err = fs.WalkDir(scoped.FS(), ".", func(path string, entry os.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return nil
 		}
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
-		if path == root {
+		if path == "." {
 			return nil
 		}
 		if entry.IsDir() && ignoredDirectories[entry.Name()] {
-			return filepath.SkipDir
+			return fs.SkipDir
 		}
-		relative, relErr := filepath.Rel(root, path)
-		if relErr != nil {
-			return nil
-		}
-		node := domain.DirectoryNode{Path: filepath.ToSlash(relative), Type: "file"}
+		node := domain.DirectoryNode{Path: path, Type: "file"}
 		if entry.IsDir() {
 			node.Type = "dir"
 		} else if info, infoErr := entry.Info(); infoErr == nil {
@@ -133,7 +226,7 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 		}
 		nodes = append(nodes, node)
 		if len(nodes) >= 20_000 {
-			return filepath.SkipAll
+			return fs.SkipAll
 		}
 		return nil
 	})
@@ -145,6 +238,11 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 	if err != nil {
 		return nil, err
 	}
+	scoped, err := os.OpenRoot(root)
+	if err != nil {
+		return nil, err
+	}
+	defer scoped.Close()
 	extracted := &domain.ExtractedRepository{
 		Ref:       domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID},
 		Candidate: candidate, Files: make([]domain.ExtractedFile, 0), ConsultadoEm: time.Now().UTC(),
@@ -155,28 +253,36 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 		extracted.BaseCommit = strings.TrimSpace(string(base))
 	}
 	seen := make(map[string]bool)
+	var hashes []string
 	for _, relative := range paths {
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
 		}
-		path, pathErr := safePath(root, relative)
-		if pathErr != nil || seen[path] {
+		_, pathErr := safePath(root, relative)
+		name := filepath.Clean(relative)
+		if pathErr != nil || seen[name] {
 			continue
 		}
-		seen[path] = true
-		info, statErr := os.Lstat(path)
-		if statErr != nil || !info.Mode().IsRegular() || info.Size() > 2*1024*1024 {
-			continue
-		}
-		data, readErr := os.ReadFile(path)
+		seen[name] = true
+		data, readErr := readLocalFile(scoped, name)
 		if readErr != nil {
 			continue
 		}
-		extracted.Files = append(extracted.Files, domain.ExtractedFile{Path: filepath.ToSlash(relative), Content: string(data), Size: info.Size()})
+		normalized := filepath.ToSlash(name)
+		hash := fmt.Sprintf("%x", sha256.Sum256(data))
+		evidence := domain.FileEvidence{SHA256: hash, State: "content_inspected", Method: "leitura local confinada; sem verificação semântica"}
+		if len(data) > 0 {
+			evidence.FirstLine = 1
+			evidence.LastLine = strings.Count(strings.TrimSuffix(string(data), "\n"), "\n") + 1
+		}
+		extracted.Files = append(extracted.Files, domain.ExtractedFile{Path: normalized, Content: string(data), Size: int64(len(data)), Evidence: evidence})
+		hashes = append(hashes, normalized+"\x00"+hash)
 	}
 	if len(extracted.Files) == 0 {
 		return nil, fmt.Errorf("nenhum arquivo local solicitado pôde ser extraído")
 	}
+	sort.Strings(hashes)
+	extracted.SnapshotHash = fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(hashes, "\n"))))
 	return extracted, nil
 }
 

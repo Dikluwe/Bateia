@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/idea_spec.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package domain
@@ -26,6 +26,7 @@ const (
 )
 
 type SearchExpansion struct {
+	RequirementIDs  []string                 `json:"requirement_ids,omitempty"`
 	ID              string                   `json:"id"`
 	Facet           ExpansionFacet           `json:"facet"`
 	Query           string                   `json:"query"`

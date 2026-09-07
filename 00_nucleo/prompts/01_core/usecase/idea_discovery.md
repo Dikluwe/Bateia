@@ -24,3 +24,7 @@ Execute expansões sob uma política limitada, propague attempt timeout ao prove
 e devolva snapshot parcial junto com erro de deadline/cancelamento. Preserve
 candidatos e attempts concluídos, marque expansões não iniciadas, ordene a saída
 pela ordem do plano e não deixe workers ativos após o retorno.
+
+## Contrato 0043 — consultas ligadas à intenção
+
+Antes da chamada ao provedor, cada expansão recebe RequirementIDs derivados dos Covers da IdeaSpec original, com IDs estáveis por conteúdo e tipo. Enviar os IDs na DiscoveryRequest e preservá-los na expansão do snapshot. Sem vínculo válido não fabricar associação: lista vazia exige investigação. Estes IDs descrevem a pergunta, não evidência do candidato.

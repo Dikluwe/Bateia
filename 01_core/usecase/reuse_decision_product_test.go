@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision_product_test.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -15,18 +15,22 @@ import (
 
 func productCandidate(repo string, caps []string, proven map[string]bool, parts []domain.ReusableComponent) domain.CandidateAssessment {
 	src := decisionSource(repo, "product-review")
-	a := domain.CandidateAssessment{Repository: src.Ref, ProblemAlignment: domain.CapabilityEvidence{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{src}}, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT", Sources: []domain.EvidenceSource{src}}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: []domain.EvidenceSource{src}}, ReusableParts: parts}
+	a := domain.CandidateAssessment{Repository: src.Ref, ProblemAlignment: domain.CapabilityEvidence{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{src}}, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT", Sources: []domain.EvidenceSource{decisionSource(repo, "license")}}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{decisionSource(repo, "maintenance")}}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: []domain.EvidenceSource{src}}, ReusableParts: parts}
 	for _, cap := range caps {
 		status := domain.EvidenceAbsent
 		if proven[cap] {
 			status = domain.EvidenceProven
 		}
-		a.Capabilities = append(a.Capabilities, domain.CapabilityEvidence{Capability: cap, Status: status, Sources: []domain.EvidenceSource{src}})
+		a.Capabilities = append(a.Capabilities, domain.CapabilityEvidence{Capability: cap, Status: status, Sources: []domain.EvidenceSource{decisionSource(repo, "product-"+cap)}})
 	}
 	return a
 }
 func productPart(repo, name string, caps ...string) domain.ReusableComponent {
-	return domain.ReusableComponent{Name: name, Kind: "package", Path: name, Capabilities: caps, Evidence: []domain.EvidenceSource{decisionSource(repo, "component")}}
+	sources := []domain.EvidenceSource{}
+	for _, capability := range caps {
+		sources = append(sources, decisionSource(repo, "product-"+capability))
+	}
+	return domain.ReusableComponent{Name: name, Kind: "package", Path: name, Capabilities: caps, Evidence: sources}
 }
 
 func TestReuseDecisionProductReplayFiveDistinctIdeas(t *testing.T) {

@@ -16,3 +16,6 @@ Verificar de forma determinística o comportamento público do contrato relacion
 ## Contrato 0040
 
 Correspondências lexicais, declarações e testes vazios são evidência parcial, não comprovação comportamental. As expectativas anteriores de PROVEN e componentes derivados apenas desses sinais foram substituídas. Preservar verificações de fontes, localização, determinismo, licença e rejeição; identidade de execução muda com a versão de regras.
+
+## Correção contratual 0043
+O caso de README declarando execução local exige PARTIAL (declaração), não PROVEN (execução). Renomear o teste para tornar explícito esse limite; preservar demais casos.

@@ -1,0 +1,4 @@
+# Protocolo público sintético G 0043
+Criado antes dos testes e da execução. Autoridade: testador independente, spec0043 e contrato público. Congelar 00_nucleo/benchmark/0043/synthetic-g-protocol.json e arquivo teste antes de executar.
+
+Executar nove casos: rendering, recipe, async × README declarativo, candidato irrelevante, busca registrada sem candidatos. A capacidade em cada domínio pede comportamento executável. Todos carecem de demonstração/implementação: zero falsa comprovação, nove abstenções corretas e nove planos acionáveis no sentido estritamente mecânico (lacuna representada por status não comprovado, requisito, próxima ação e aceitação). Chamar os três produtores/consumidores reais; nenhuma fonte sintética privilegiada. Repetir para determinismo. Nenhum I/O nos testes L1. Log JSON com denominadores fixos. Não interpretar aprovação como utilidade humana nem generalização externa.

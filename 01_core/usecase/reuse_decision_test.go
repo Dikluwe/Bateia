@@ -2,13 +2,15 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision_test.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package usecase
 
 import (
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -19,13 +21,26 @@ func decisionPolicy() domain.ReuseDecisionPolicy {
 	return domain.ReuseDecisionPolicy{SchemaVersion: "1", AllowedLicenses: []string{"MIT"}, RequireLocal: true, MaxComponents: 3, ExtendMinCoverage: .6, IntegrationMinValue: .3}
 }
 func decisionSource(repo, rule string) domain.EvidenceSource {
-	return domain.EvidenceSource{Kind: domain.EvidenceFile, Ref: domain.CommitRef{Owner: "o", Repo: repo, Commit: "abc"}, Path: "main.go", RuleID: rule, Strength: 1}
+	kind, path, snippet := domain.EvidenceSymbol, "main.go", "func Execute() { return } // "+rule
+	if rule == "license" {
+		kind, path, snippet = domain.EvidenceLicense, "LICENSE", "MIT License"
+	}
+	if rule == "maintenance" {
+		kind, path, snippet = domain.EvidenceRepository, "@repository-metadata", `{"archived":false,"updated_at":"2026-09-01T00:00:00Z"}`
+	}
+	return domain.EvidenceSource{Kind: kind, Ref: domain.CommitRef{Owner: "o", Repo: repo, Commit: "abc"}, Path: path, RuleID: rule, Line: 1, Snippet: snippet, ContentHash: fmt.Sprintf("%x", sha256.Sum256([]byte(snippet))), Strength: 1}
 }
 func decisionAssessment(repo string, statuses ...domain.EvidenceStatus) domain.CandidateAssessment {
-	a := domain.CandidateAssessment{Repository: domain.CommitRef{Owner: "o", Repo: repo, Commit: "abc"}, ProblemAlignment: domain.CapabilityEvidence{Status: domain.EvidenceProven}, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT", Sources: []domain.EvidenceSource{decisionSource(repo, "license")}}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: []domain.EvidenceSource{decisionSource(repo, "local")}}}
-	for i, s := range statuses {
-		cap := []string{"core", "export", "sync"}[i]
-		a.Capabilities = append(a.Capabilities, domain.CapabilityEvidence{Capability: cap, Status: s, Sources: []domain.EvidenceSource{decisionSource(repo, "cap-"+cap)}})
+	a := domain.CandidateAssessment{Repository: domain.CommitRef{Owner: "o", Repo: repo, Commit: "abc"}, ProblemAlignment: domain.CapabilityEvidence{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{decisionSource(repo, "alignment")}}, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT", Sources: []domain.EvidenceSource{decisionSource(repo, "license")}}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{decisionSource(repo, "maintenance")}}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: []domain.EvidenceSource{decisionSource(repo, "local")}}}
+	for i, status := range statuses {
+		capability := []string{"core", "export", "sync"}[i]
+		source := decisionSource(repo, "cap-"+capability)
+		test := source
+		test.Kind = domain.EvidenceTestImplementation
+		test.Path = "main_test.go"
+		test.Snippet = "func TestExecute() { Execute() } // " + capability
+		test.ContentHash = fmt.Sprintf("%x", sha256.Sum256([]byte(test.Snippet)))
+		a.Capabilities = append(a.Capabilities, domain.CapabilityEvidence{Capability: capability, Status: status, Sources: []domain.EvidenceSource{source, test}})
 	}
 	return a
 }
@@ -71,7 +86,7 @@ func TestDecideReuseEmptyCorpusIsInconclusive(t *testing.T) {
 }
 func TestDecideReuseExtend(t *testing.T) {
 	a := decisionAssessment("extend", domain.EvidenceProven, domain.EvidenceProven, domain.EvidenceAbsent)
-	a.ReusableParts = []domain.ReusableComponent{{Name: "engine", Kind: "package", Path: "engine", Capabilities: []string{"core", "export"}, Evidence: []domain.EvidenceSource{decisionSource("extend", "component")}}}
+	a.ReusableParts = []domain.ReusableComponent{{Name: "engine", Kind: "package", Path: "engine", Capabilities: []string{"core", "export"}, Evidence: []domain.EvidenceSource{decisionSource("extend", "cap-core"), decisionSource("extend", "cap-export")}}}
 	r, _ := DecideReuse(decisionRequest(a))
 	if r.Decision != domain.DecisionExtend {
 		t.Fatalf("got %s", r.Decision)
@@ -79,10 +94,10 @@ func TestDecideReuseExtend(t *testing.T) {
 }
 func TestDecideReuseCompose(t *testing.T) {
 	a := decisionAssessment("a", domain.EvidenceProven, domain.EvidenceAbsent, domain.EvidenceAbsent)
-	a.ReusableParts = []domain.ReusableComponent{{Name: "core", Kind: "package", Path: "core", Capabilities: []string{"core"}, Evidence: []domain.EvidenceSource{decisionSource("a", "component")}}}
+	a.ReusableParts = []domain.ReusableComponent{{Name: "core", Kind: "package", Path: "core", Capabilities: []string{"core"}, Evidence: []domain.EvidenceSource{decisionSource("a", "cap-core")}}}
 	b := decisionAssessment("b", domain.EvidenceAbsent, domain.EvidenceProven, domain.EvidenceProven)
 	b.ProblemAlignment.Status = domain.EvidencePartial
-	b.ReusableParts = []domain.ReusableComponent{{Name: "io", Kind: "package", Path: "io", Capabilities: []string{"export", "sync"}, Evidence: []domain.EvidenceSource{decisionSource("b", "component")}}}
+	b.ReusableParts = []domain.ReusableComponent{{Name: "io", Kind: "package", Path: "io", Capabilities: []string{"export", "sync"}, Evidence: []domain.EvidenceSource{decisionSource("b", "cap-export"), decisionSource("b", "cap-sync")}}}
 	r, _ := DecideReuse(decisionRequest(b, a))
 	if r.Decision != domain.DecisionCompose || len(r.Components) != 2 {
 		t.Fatalf("got %#v", r)
@@ -91,7 +106,7 @@ func TestDecideReuseCompose(t *testing.T) {
 func TestDecideReuseIntegrate(t *testing.T) {
 	a := decisionAssessment("lib", domain.EvidenceProven, domain.EvidenceAbsent, domain.EvidenceAbsent)
 	a.ProblemAlignment.Status = domain.EvidencePartial
-	a.ReusableParts = []domain.ReusableComponent{{Name: "parser", Kind: "library", Path: "parser", Capabilities: []string{"core"}, Evidence: []domain.EvidenceSource{decisionSource("lib", "component")}}}
+	a.ReusableParts = []domain.ReusableComponent{{Name: "parser", Kind: "library", Path: "parser", Capabilities: []string{"core"}, Evidence: []domain.EvidenceSource{decisionSource("lib", "cap-core")}}}
 	r, _ := DecideReuse(decisionRequest(a))
 	if r.Decision != domain.DecisionIntegrate {
 		t.Fatalf("got %s", r.Decision)

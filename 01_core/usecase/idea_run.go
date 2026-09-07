@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_run.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-07
  */
 package usecase
 
@@ -178,6 +178,8 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	if err != nil {
 		return result, err
 	}
+	investigation := BuildInvestigationPlan(req.Idea, result.Discovery, result.Assessment.Assessments)
+	result.Decision.Investigation = &investigation
 	durations["decide"] = time.Since(started).Milliseconds()
 	return result, nil
 }

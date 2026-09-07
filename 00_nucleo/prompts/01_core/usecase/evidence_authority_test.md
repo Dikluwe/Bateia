@@ -1,0 +1,2 @@
+# Autoridade independente 0043
+Testar API pública sem ler implementação. Sanitização é pura, idempotente e não muda input/nested slices. Status PROVEN sem fontes perde autoridade. Uma fonte symbol vinculada com ref/path/linha/snippet/regra/hash64 é admissível para implementação estática delimitada; documentação isolada não satisfaz pedido de implementação. Fonte com ref divergente não é admissível. Testemunho válido preserva decisão positiva, não exige comprovação universal.

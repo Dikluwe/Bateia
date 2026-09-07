@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/competitive_autophagy.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 package usecase
 
@@ -16,10 +16,10 @@ import (
 // RunCompetitiveAutophagy assesses frozen internal and external bytes and then
 // enumerates the smallest admissible composition. It performs no I/O.
 func RunCompetitiveAutophagy(req domain.CompetitiveAutophagyRequest) (domain.CompetitiveAutophagyResult, error) {
-	if req.SchemaVersion != "1" || req.Target.Identity.Owner == "" || req.Target.Identity.Repo == "" || req.Target.Commit == "" || strings.EqualFold(req.Target.Commit, "HEAD") {
+	if req.SchemaVersion != "1" || !competitiveRefValid(domain.CommitRef{Owner: req.Target.Identity.Owner, Repo: req.Target.Identity.Repo, Commit: req.Target.Commit}) {
 		return domain.CompetitiveAutophagyResult{}, fmt.Errorf("autofagia exige schema 1 e alvo em commit imutável")
 	}
-	if req.KatamariPolicy.SchemaVersion != "1" || req.KatamariPolicy.MaxProjects <= 0 || req.KatamariPolicy.MaxComponents <= 0 {
+	if req.KatamariPolicy.SchemaVersion != "1" || req.KatamariPolicy.MaxProjects <= 0 || req.KatamariPolicy.MaxComponents <= 0 || !competitiveOperationSupported(req.KatamariPolicy.RequiredOperation) {
 		return domain.CompetitiveAutophagyResult{}, fmt.Errorf("política Katamari inválida")
 	}
 	internal, err := AssessEvidence(req.Idea, domain.ScreeningReport{}, req.Internal, req.Rules)
@@ -40,7 +40,7 @@ func RunCompetitiveAutophagy(req domain.CompetitiveAutophagyRequest) (domain.Com
 
 func AnalyzeAutophagy(idea domain.IdeaSpec, target domain.ResolvedRepository, bundles []domain.EvidenceBundle, rules domain.CapabilityRuleCatalog) (domain.AutophagyReport, error) {
 	req := domain.CompetitiveAutophagyRequest{SchemaVersion: "1", Idea: idea, Target: target, Internal: bundles, Rules: rules}
-	if target.Identity.Owner == "" || target.Identity.Repo == "" || target.Commit == "" || strings.EqualFold(target.Commit, "HEAD") {
+	if !competitiveRefValid(domain.CommitRef{Owner: target.Identity.Owner, Repo: target.Identity.Repo, Commit: target.Commit}) {
 		return domain.AutophagyReport{}, fmt.Errorf("autofagia exige alvo em commit imutável")
 	}
 	assessment, err := AssessEvidence(idea, domain.ScreeningReport{}, bundles, rules)
@@ -51,7 +51,7 @@ func AnalyzeAutophagy(idea domain.IdeaSpec, target domain.ResolvedRepository, bu
 }
 
 func ProposeKatamari(autophagy domain.AutophagyReport, assessments domain.AssessmentReport, policy domain.KatamariPolicy, reusePolicy domain.ReuseDecisionPolicy) (domain.KatamariProposal, error) {
-	if policy.SchemaVersion != "1" || policy.MaxProjects <= 0 || policy.MaxComponents <= 0 {
+	if policy.SchemaVersion != "1" || policy.MaxProjects <= 0 || policy.MaxComponents <= 0 || !competitiveOperationSupported(policy.RequiredOperation) {
 		return domain.KatamariProposal{}, fmt.Errorf("política Katamari inválida")
 	}
 	req := domain.CompetitiveAutophagyRequest{KatamariPolicy: policy, ReusePolicy: reusePolicy}
@@ -59,12 +59,13 @@ func ProposeKatamari(autophagy domain.AutophagyReport, assessments domain.Assess
 }
 
 func buildAutophagyReport(req domain.CompetitiveAutophagyRequest, report domain.AssessmentReport) domain.AutophagyReport {
-	out := domain.AutophagyReport{SchemaVersion: "1", Target: req.Target, Findings: []domain.InternalCapabilityFinding{}, Existing: []string{}, Partial: []string{}, Gaps: []string{}, Unknown: []string{}}
-	for _, capability := range req.Idea.Capabilities {
+	out := domain.AutophagyReport{SchemaVersion: "2", Target: req.Target, Findings: []domain.InternalCapabilityFinding{}, Existing: []string{}, Partial: []string{}, Gaps: []string{}, Unknown: []string{}}
+	for _, capability := range competitiveCapabilities(req.Idea.Capabilities) {
 		finding := aggregateInternalCapability(capability, report.Assessments)
 		out.Findings = append(out.Findings, finding)
+		out.Options = append(out.Options, internalEvolutionOption(finding))
 		switch finding.Disposition {
-		case domain.InternalKeep, domain.InternalConsolidate:
+		case domain.InternalKeep, domain.InternalReviewOverlap:
 			out.Existing = append(out.Existing, capability)
 		case domain.InternalGap:
 			out.Gaps = append(out.Gaps, capability)
@@ -76,8 +77,13 @@ func buildAutophagyReport(req domain.CompetitiveAutophagyRequest, report domain.
 			}
 		}
 	}
+	for _, a := range report.Assessments {
+		out.Scope = append(out.Scope, a.Repository)
+	}
+	out.Scope = uniqueCompetitiveRefs(out.Scope)
+	out.Options = sortEvolutionOptions(out.Options)
 	sortAutophagyReport(&out)
-	out.InputHash = recoveryHash(struct {
+	out.InputHash = competitiveHash(struct {
 		Idea     domain.IdeaSpec
 		Target   domain.ResolvedRepository
 		Internal []domain.EvidenceBundle
@@ -87,48 +93,86 @@ func buildAutophagyReport(req domain.CompetitiveAutophagyRequest, report domain.
 }
 
 func aggregateInternalCapability(capability string, assessments []domain.CandidateAssessment) domain.InternalCapabilityFinding {
-	f := domain.InternalCapabilityFinding{Capability: capability, Sources: []domain.EvidenceSource{}, RuleIDs: []string{}}
-	proven, absent, opaque := 0, 0, 0
+	f := domain.InternalCapabilityFinding{Capability: capability, Sources: []domain.EvidenceSource{}, RuleIDs: []string{}, NextChecks: []string{}}
+	proven, absent, opaque, partial, conflict := 0, 0, 0, false, false
+	seen := map[string]bool{}
 	for _, a := range assessments {
+		key := competitiveHash(a)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		matched := false
+		seenEvidence := map[string]bool{}
+		states := map[domain.EvidenceStatus]bool{}
 		for _, e := range a.Capabilities {
 			if normalizeEvidenceText(e.Capability) != normalizeEvidenceText(capability) {
 				continue
 			}
+			matched = true
+			ek := competitiveHash(e)
+			if seenEvidence[ek] {
+				continue
+			}
+			seenEvidence[ek] = true
+			states[e.Status] = true
 			f.Sources = append(f.Sources, e.Sources...)
-			for _, s := range e.Sources {
-				if s.RuleID != "" {
-					f.RuleIDs = append(f.RuleIDs, s.RuleID)
+			for _, source := range e.Sources {
+				if source.RuleID != "" {
+					f.RuleIDs = append(f.RuleIDs, source.RuleID)
 				}
 			}
 			switch e.Status {
 			case domain.EvidenceProven:
-				proven++
+				if competitiveSourcesValid(a.Repository, e.Sources, true) {
+					proven++
+				} else {
+					opaque++
+				}
 			case domain.EvidenceAbsent:
 				absent++
+			case domain.EvidenceConflict:
+				conflict = true
+				opaque++
 			default:
 				opaque++
-				if f.Status != domain.EvidenceConflict {
-					f.Status = e.Status
-				}
+				partial = partial || e.Status == domain.EvidencePartial
 			}
 		}
-	}
-	f.RuleIDs = uniqueSorted(f.RuleIDs)
-	sort.Slice(f.Sources, func(i, j int) bool { return evidenceSourceKey(f.Sources[i]) < evidenceSourceKey(f.Sources[j]) })
-	switch {
-	case proven > 1:
-		f.Status, f.Disposition, f.Rationale = domain.EvidenceProven, domain.InternalConsolidate, "capacidade comprovada em mais de uma implementação interna"
-	case proven == 1:
-		f.Status, f.Disposition, f.Rationale = domain.EvidenceProven, domain.InternalKeep, "capacidade interna comprovada"
-	case opaque > 0 || len(assessments) == 0:
-		if f.Status == "" {
-			f.Status = domain.EvidenceInconclusive
+		if !matched || len(a.Failures) > 0 || len(states) > 1 {
+			opaque++
 		}
-		f.Disposition, f.Rationale = domain.InternalUnknown, "evidência interna parcial, conflitante ou opaca"
+	}
+	f.Sources = canonicalEvidenceSources(f.Sources)
+	f.RuleIDs = uniqueSorted(f.RuleIDs)
+	switch {
+	case conflict:
+		f.Status, f.Disposition, f.Rationale = domain.EvidenceConflict, domain.InternalUnknown, "avaliações internas em conflito; não decidir manutenção ou consolidação"
+	case opaque > 0 || len(assessments) == 0:
+		f.Status = domain.EvidenceInconclusive
+		if partial {
+			f.Status = domain.EvidencePartial
+		}
+		f.Disposition, f.Rationale = domain.InternalUnknown, "evidência interna parcial ou incompleta; completar internamente é hipótese a verificar"
+	case proven > 1:
+		f.Status, f.Disposition, f.Rationale = domain.EvidenceProven, domain.InternalReviewOverlap, "múltiplas avaliações rastreáveis; equivalência e sobreposição ainda não demonstradas"
+	case proven == 1:
+		f.Status, f.Disposition, f.Rationale = domain.EvidenceProven, domain.InternalKeep, "capacidade declarada comprovada com fontes; verificar adequação aos requisitos atuais"
 	case absent > 0:
-		f.Status, f.Disposition, f.Rationale = domain.EvidenceAbsent, domain.InternalGap, "ausência sustentada pela coleta interna completa"
+		f.Status, f.Disposition, f.Rationale = domain.EvidenceAbsent, domain.InternalGap, "não observada no escopo interno avaliado; comparar construção e reúso"
+		f.CoverageComplete = true
 	default:
-		f.Status, f.Disposition, f.Rationale = domain.EvidenceInconclusive, domain.InternalUnknown, "capacidade sem avaliação interna correspondente"
+		f.Status, f.Disposition, f.Rationale = domain.EvidenceInconclusive, domain.InternalUnknown, "capacidade sem avaliação correspondente"
+	}
+	switch f.Disposition {
+	case domain.InternalReviewOverlap:
+		f.NextChecks = []string{"comparar contratos, usuários e chamadas das implementações antes de consolidar"}
+	case domain.InternalKeep:
+		f.NextChecks = []string{"confirmar requisitos atuais antes de decidir manter ou substituir"}
+	case domain.InternalGap:
+		f.NextChecks = []string{"confirmar escopo da ausência e estimar uma implementação interna delimitada"}
+	default:
+		f.NextChecks = []string{"localizar implementação e teste de aceitação da capacidade", "resolver fontes conflitantes ou cobertura insuficiente antes de decidir"}
 	}
 	return f
 }
@@ -139,104 +183,138 @@ type katamariCandidate struct {
 }
 
 func buildKatamari(req domain.CompetitiveAutophagyRequest, auto domain.AutophagyReport, report domain.AssessmentReport) (domain.KatamariProposal, error) {
-	out := domain.KatamariProposal{SchemaVersion: "1", Components: []domain.KatamariComponent{}, CoveredGaps: []string{}, UncoveredGaps: append([]string(nil), auto.Gaps...), Rejected: []domain.DecisionAlternative{}, Minimal: true}
+	originalAuto := auto
+	auto, warnings := validatedAutophagy(auto)
+	out := domain.KatamariProposal{SchemaVersion: "2", Status: "INCONCLUSIVE", Components: []domain.KatamariComponent{}, CoveredGaps: []string{}, UncoveredGaps: append([]string{}, auto.Gaps...), Rejected: []domain.DecisionAlternative{}, Options: append([]domain.EvolutionOption{}, auto.Options...), Warnings: warnings}
+	out.Warnings = append(out.Warnings, "qualificação confere rastreabilidade declarada; não reexecuta comprovação de comportamento nem valida integração")
+	out.MinimalityScope = "cobertura declarada dos gaps validados; depois menos projetos, menos redundância e identidade; somente candidatos elegíveis fornecidos; custo de integração não estimado"
 	candidates := []katamariCandidate{}
+	byRef := map[string]map[string]domain.CandidateAssessment{}
 	for _, a := range report.Assessments {
+		key := a.Repository.Key()
+		if byRef[key] == nil {
+			byRef[key] = map[string]domain.CandidateAssessment{}
+		}
+		byRef[key][competitiveHash(a)] = a
+	}
+	refs := make([]string, 0, len(byRef))
+	for key := range byRef {
+		refs = append(refs, key)
+	}
+	sort.Strings(refs)
+	for _, ref := range refs {
+		if len(byRef[ref]) > 1 {
+			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionUnknown, Candidate: ref, Message: "avaliações divergentes da mesma revisão; reconciliar antes de escolher"})
+			continue
+		}
+		var a domain.CandidateAssessment
+		for _, value := range byRef[ref] {
+			a = canonicalAssessment([]domain.CandidateAssessment{value})
+		}
+		blocks, checks := competitiveGates(a, req.KatamariPolicy, req.ReusePolicy)
+		if len(blocks) > 0 {
+			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionUnknown, Candidate: ref, Message: strings.Join(blocks, "; ")})
+			continue
+		}
+		out.Options = append(out.Options, relevantEvolutionOptions(auto, a, checks)...)
 		candidate, reason := admissibleKatamariCandidate(req, auto.Gaps, a)
 		if reason != "" {
-			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionUnknown, Candidate: a.Repository.Key(), Message: reason})
+			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionUnknown, Candidate: ref, Message: reason})
 			continue
 		}
 		if len(candidate.covered) == 0 {
-			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionReference, Candidate: a.Repository.Key(), Message: "nenhuma lacuna interna comprovada é coberta"})
+			out.Rejected = append(out.Rejected, domain.DecisionAlternative{Decision: domain.DecisionReference, Candidate: ref, Message: "nenhuma lacuna interna verificada é coberta; avaliar somente como oportunidade"})
 			continue
 		}
 		candidates = append(candidates, candidate)
 	}
+	out.EligibleCandidates = len(candidates)
 	if len(candidates) > 20 {
-		return out, fmt.Errorf("enumeração Katamari limitada a 20 candidatos, recebeu %d", len(candidates))
+		return out, fmt.Errorf("enumeração Katamari limitada a 20 candidatos únicos, recebeu %d", len(candidates))
 	}
-	sort.Slice(candidates, func(i, j int) bool {
-		return candidates[i].component.Repository.Key() < candidates[j].component.Repository.Key()
-	})
 	best := selectKatamariSubset(candidates, auto.Gaps, req.KatamariPolicy)
+	covered := map[string]bool{}
 	for _, index := range best {
 		out.Components = append(out.Components, candidates[index].component)
-	}
-	covered := map[string]bool{}
-	for _, i := range best {
-		for gap := range candidates[i].covered {
+		for gap := range candidates[index].covered {
 			covered[gap] = true
 		}
 	}
 	out.CoveredGaps, out.UncoveredGaps = partitionGaps(auto.Gaps, covered)
-	out.Feasible = len(out.Components) > 0
-	sort.Slice(out.Rejected, func(i, j int) bool { return out.Rejected[i].Candidate < out.Rejected[j].Candidate })
-	out.InputHash = recoveryHash(struct {
-		Autophagy domain.AutophagyReport
-		External  domain.AssessmentReport
-		Policy    domain.KatamariPolicy
-		Reuse     domain.ReuseDecisionPolicy
-	}{auto, report, req.KatamariPolicy, req.ReusePolicy})
+	out.CoverageComplete = len(auto.Gaps) > 0 && len(out.UncoveredGaps) == 0
+	out.Minimal = len(out.Components) > 0
+	// No compatibility or integration execution was supplied to this selector.
+	// Feasible is retained for old consumers, and must never authorize adoption.
+	out.Feasible = false
+	switch {
+	case out.CoverageComplete:
+		out.Status = "COVERED_AWAITING_VALIDATION"
+	case len(out.Components) > 0:
+		out.Status = "PARTIAL_COVERAGE"
+	case len(auto.Gaps) == 0 && len(auto.Unknown) == 0 && len(auto.Partial) == 0 && len(auto.Existing) > 0:
+		out.Status = "NO_CHANGE_REQUIRED"
+	case len(out.Options) > 0:
+		out.Status = "INVESTIGATE"
+	}
+	out.Options = sortEvolutionOptions(out.Options)
+	out.InputHash = competitiveHash(struct {
+		Version  string
+		Auto     domain.AutophagyReport
+		External domain.AssessmentReport
+		Policy   domain.KatamariPolicy
+		Reuse    domain.ReuseDecisionPolicy
+	}{"0041", originalAuto, report, req.KatamariPolicy, req.ReusePolicy})
 	return out, nil
 }
 
 func admissibleKatamariCandidate(req domain.CompetitiveAutophagyRequest, gaps []string, a domain.CandidateAssessment) (katamariCandidate, string) {
-	c := katamariCandidate{component: domain.KatamariComponent{Repository: a.Repository, Decision: domain.DecisionIntegrate, Sources: []domain.EvidenceSource{}, Risks: []string{}}, covered: map[string]bool{}}
-	if req.KatamariPolicy.RequireImmutableRef && (a.Repository.Commit == "" || strings.EqualFold(a.Repository.Commit, "HEAD")) {
-		return c, "revisão não imutável"
+	c := katamariCandidate{component: domain.KatamariComponent{Repository: a.Repository, Decision: domain.DecisionUnknown, Sources: []domain.EvidenceSource{}, Risks: []string{"compatibilidade e integração ainda não verificadas"}, CostStatus: "NOT_ESTIMATED", IntegrationStatus: "NOT_VERIFIED", NextChecks: integrationChecks()}, covered: map[string]bool{}}
+	blocks, checks := competitiveGates(a, req.KatamariPolicy, req.ReusePolicy)
+	if len(blocks) > 0 {
+		return c, strings.Join(blocks, "; ")
 	}
-	if len(a.Failures) > 0 && !req.KatamariPolicy.AllowUnknown {
-		return c, "coleta competitiva possui falhas"
-	}
-	if !licenseAllowed(a.License, req.KatamariPolicy.AllowedLicenses) {
-		return c, "licença ausente, opaca ou não permitida"
-	}
-	if req.ReusePolicy.RequireLocal || strings.EqualFold(req.KatamariPolicy.RequiredOperation, "local") {
-		if a.Operation.LocalStatus != domain.EvidenceProven {
-			return c, "operação local não comprovada"
-		}
-	}
-	if a.Maintenance.Archived && !req.ReusePolicy.AllowArchived {
-		return c, "repositório arquivado proibido pela política"
+	if len(checks) > 0 {
+		return c, strings.Join(checks, "; ")
 	}
 	gapSet := normalizedSet(gaps)
 	for _, e := range a.Capabilities {
 		key := normalizeEvidenceText(e.Capability)
 		if e.Status == domain.EvidenceProven && gapSet[key] {
+			if !competitiveSourcesValid(a.Repository, e.Sources, true) {
+				return c, "capacidade declarada PROVEN sem fontes de implementação rastreáveis: " + e.Capability
+			}
 			c.covered[key] = true
 			c.component.Capabilities = append(c.component.Capabilities, e.Capability)
 			c.component.Sources = append(c.component.Sources, e.Sources...)
 		}
 	}
 	c.component.Capabilities = uniqueSorted(c.component.Capabilities)
-	sort.Slice(c.component.Sources, func(i, j int) bool {
-		return evidenceSourceKey(c.component.Sources[i]) < evidenceSourceKey(c.component.Sources[j])
-	})
-	c.component.Cost = 100 + 10*len(c.component.Capabilities)
-	if a.Maintenance.Archived {
-		c.component.Cost += 50
-		c.component.Risks = append(c.component.Risks, "archived")
-	}
+	c.component.Sources = canonicalEvidenceSources(c.component.Sources)
 	return c, ""
 }
 
 func selectKatamariSubset(candidates []katamariCandidate, gaps []string, policy domain.KatamariPolicy) []int {
 	best := []int{}
-	bestCoverage, bestCost, bestRedundancy, bestKey := -1, 0, 0, ""
+	bestCoverage, bestRedundancy, bestKey := -1, 0, ""
 	for mask := 1; mask < (1 << len(candidates)); mask++ {
-		indices, cost, occurrences := []int{}, 0, map[string]int{}
+		indices, occurrences := []int{}, map[string]int{}
+		projects := map[string]bool{}
+		duplicateProject := false
 		for i := range candidates {
 			if mask&(1<<i) == 0 {
 				continue
 			}
+			project := strings.ToLower(candidates[i].component.Repository.Owner + "/" + candidates[i].component.Repository.Repo)
+			if projects[project] {
+				duplicateProject = true
+			}
+			projects[project] = true
 			indices = append(indices, i)
-			cost += candidates[i].component.Cost
 			for g := range candidates[i].covered {
 				occurrences[g]++
 			}
 		}
-		if len(indices) > policy.MaxProjects || len(indices) > policy.MaxComponents {
+		if duplicateProject || len(projects) > policy.MaxProjects || len(indices) > policy.MaxComponents {
 			continue
 		}
 		coverage, redundancy := 0, 0
@@ -251,9 +329,9 @@ func selectKatamariSubset(candidates []katamariCandidate, gaps []string, policy 
 			keyParts = append(keyParts, candidates[i].component.Repository.Key())
 		}
 		key := strings.Join(keyParts, ",")
-		better := coverage > bestCoverage || (coverage == bestCoverage && (len(best) == 0 || len(indices) < len(best))) || (coverage == bestCoverage && len(indices) == len(best) && (cost < bestCost || (cost == bestCost && (redundancy < bestRedundancy || (redundancy == bestRedundancy && key < bestKey)))))
+		better := coverage > bestCoverage || (coverage == bestCoverage && (len(best) == 0 || len(indices) < len(best))) || (coverage == bestCoverage && len(indices) == len(best) && (redundancy < bestRedundancy || (redundancy == bestRedundancy && key < bestKey)))
 		if better {
-			best, bestCoverage, bestCost, bestRedundancy, bestKey = append([]int(nil), indices...), coverage, cost, redundancy, key
+			best, bestCoverage, bestRedundancy, bestKey = append([]int(nil), indices...), coverage, redundancy, key
 		}
 	}
 	return best

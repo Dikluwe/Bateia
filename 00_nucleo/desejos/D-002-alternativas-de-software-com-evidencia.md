@@ -69,3 +69,7 @@ alvo. `top_choice` nunca aponta para `REFERENCE` ou para `excluded`.
 5. Reordenar os mesmos inputs não muda a saída.
 6. O dossiê de `idea recommend` inclui `alternatives.json` e
    `alternatives.md` sem criar um segundo motor de descoberta.
+
+## Delimitação operacional — 2026-09-07
+
+O [plano 0043](../passos/0043-delimitar-promessas-e-planejar-buscas-verificaveis.md) delimita as promessas deste desejo. Documentação sustenta declarações; manifestos indicam dependências; código e testes sustentam conclusões somente no escopo examinado. Capacidade não encontrada permanece não verificada, salvo evidência específica de ausência. Nenhum resultado de busca prova inexistência global de alternativas. Cobertura funcional não garante substituição ou integração, e esforço permanece estimativa até haver avaliação correspondente. O plano preserva a intenção acima; a [execução 0043](../relatorios/execucao-promessas-buscas-0043.md) registra as correções, os ensaios e a validação externa ainda pendente.

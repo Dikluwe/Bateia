@@ -7,3 +7,6 @@ falhas ou prova opaca. Ordene por fit, cobertura, alinhamento, estrelas e
 identidade. Estrelas só desempatam evidência equivalente. Produza primeira
 escolha apenas entre RECOMMENDED e PARTIAL elegíveis. A saída não muda quando os
 inputs são reordenados.
+
+## Revisão 0043 — autoridade e ligação
+Aplicar o contrato comum de evidence_authority antes de autorizar capacidade ou operação. Evidência lexical/documental não ganha PROVEN. Negação deve conservar polaridade. Na extração de mecanismos aceitar SHA-256 hexadecimal produzido pela avaliação e formato prefixado legado, verificando conteúdo e projeções de tipo file→symbol e test→test_implementation. Preservar IDs reais: catálogo sem regra compatível retorna lacuna explícita, nunca traduz nomes em prova.

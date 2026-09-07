@@ -29,7 +29,13 @@ type decisionCandidate struct {
 	useful    bool
 }
 
-func DecideReuse(req domain.ReuseDecisionRequest) (domain.ReuseDecisionReport, error) {
+func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionReport, err error) {
+	defer func() {
+		if err == nil {
+			plan := BuildInvestigationPlan(req.Idea, domain.DiscoverySnapshot{}, req.Assessments)
+			result.Investigation = &plan
+		}
+	}()
 	if err := validateDecisionRequest(req); err != nil {
 		return domain.ReuseDecisionReport{}, err
 	}
@@ -121,7 +127,7 @@ func unresolvedCandidateReasons(c decisionCandidate, policy domain.ReuseDecision
 	if c.a.Maintenance.Status == domain.EvidenceInconclusive {
 		add("manutenção não verificada: obter metadados datados de atividade e arquivamento", c.a.Maintenance.Sources)
 	}
-	if policy.RequireLocal && c.a.Operation.LocalStatus == domain.EvidenceInconclusive {
+	if policy.RequireLocal && (c.a.Operation.LocalStatus == domain.EvidenceInconclusive || c.a.Operation.LocalStatus == domain.EvidencePartial) {
 		add("operação local não verificada: examinar requisitos e instruções de execução", c.a.Operation.Sources)
 	}
 	for _, capability := range c.a.Capabilities {
@@ -161,6 +167,7 @@ func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
 }
 
 func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.ReuseDecisionPolicy) decisionCandidate {
+	a = SanitizeAssessmentEvidence(a)
 	c := decisionCandidate{a: a, key: a.Repository.Key(), covered: map[string]bool{}}
 	byCap := map[string]domain.CapabilityEvidence{}
 	for _, e := range a.Capabilities {
@@ -207,7 +214,7 @@ func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.Reus
 		c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-MAINTENANCE-001", Effect: "block", Candidate: c.key, Evidence: a.Maintenance.Sources, Message: "repositório arquivado não permitido"})
 	}
 	if p.RequireLocal && a.Operation.LocalStatus != domain.EvidenceProven {
-		if a.Operation.LocalStatus == domain.EvidenceInconclusive {
+		if a.Operation.LocalStatus == domain.EvidenceInconclusive || a.Operation.LocalStatus == domain.EvidencePartial {
 			c.ambiguous = true
 		} else {
 			c.blockers = append(c.blockers, domain.DecisionReason{RuleID: "GATE-OPERATION-001", Effect: "block", Candidate: c.key, Evidence: a.Operation.Sources, Message: "operação local obrigatória não foi comprovada"})
@@ -300,7 +307,7 @@ func composeCandidates(cs []decisionCandidate, caps []string, max int) ([]domain
 
 func assessEffort(d domain.ReuseDecision, n, gaps int, amb bool) domain.EffortAssessment {
 	if amb {
-		return domain.EffortAssessment{Level: domain.EffortUnknown, Factors: []domain.EffortFactor{{Factor: "evidence", Effect: "unknown", Evidence: "coleta ou gate inconclusivo"}}}
+		return domain.EffortAssessment{Method: "heuristic_component_gap_count", Limitations: "Não mede custo nem viabilidade; requer ensaio de integração", Level: domain.EffortUnknown, Factors: []domain.EffortFactor{{Factor: "evidence", Effect: "unknown", Evidence: "coleta ou gate inconclusivo"}}}
 	}
 	level := domain.EffortLow
 	if n > 1 || gaps > 0 {
@@ -309,7 +316,7 @@ func assessEffort(d domain.ReuseDecision, n, gaps int, amb bool) domain.EffortAs
 	if d == domain.DecisionBuild || gaps > 2 {
 		level = domain.EffortHigh
 	}
-	return domain.EffortAssessment{Level: level, Factors: []domain.EffortFactor{{Factor: "components", Effect: fmt.Sprintf("%d", n), Evidence: "componentes verificáveis selecionados"}, {Factor: "functional_gaps", Effect: fmt.Sprintf("%d", gaps), Evidence: "matriz de capacidades"}}}
+	return domain.EffortAssessment{Method: "heuristic_component_gap_count", Limitations: "Não mede custo nem viabilidade; requer ensaio de integração", Level: level, Factors: []domain.EffortFactor{{Factor: "components", Effect: fmt.Sprintf("%d", n), Evidence: "componentes verificáveis selecionados"}, {Factor: "functional_gaps", Effect: fmt.Sprintf("%d", gaps), Evidence: "matriz de capacidades"}}}
 }
 func firstCandidate(cs []decisionCandidate, p func(decisionCandidate) bool) *decisionCandidate {
 	for i := range cs {

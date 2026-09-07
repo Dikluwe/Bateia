@@ -604,7 +604,7 @@ func validateEvidenceBundle(bundle domain.EvidenceBundle) error {
 		if item.Ref != bundle.Repository {
 			return fmt.Errorf("fonte %s não pertence ao commit do bundle", item.Path)
 		}
-		if item.ContentHash == "" || item.ContentHash != contentHash(item.Content) {
+		if digest, ok := evidenceDigest(item.ContentHash); !ok || digest != contentHash(item.Content) {
 			return fmt.Errorf("hash de conteúdo inválido em %s", item.Path)
 		}
 	}
@@ -651,6 +651,7 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		norm := normalizeEvidenceText(item.Content + " " + item.Path)
 		if explicitNegativeMatch(item.Content, *rule) {
 			negative = true
+			sources = append(sources, sourceFromItem(item, item.Kind, rule.ID, .5, firstLine(item.Content, rule.CapabilityTerms)))
 		}
 		for _, group := range rule.StrongEvidence {
 			if strongKindMatches(item, group, norm) {
@@ -707,6 +708,9 @@ func explicitNegativeMatch(content string, rule domain.CapabilityRule) bool {
 	}
 	for _, line := range strings.Split(content, "\n") {
 		normalized := normalizeEvidenceText(line)
+		if matchesAny(normalized, patterns) && negativeLocalOperation(normalized) {
+			return true
+		}
 		for _, negative := range rule.NegativeEvidence {
 			if phraseMatch(normalized, negative) && matchesAny(normalized, patterns) {
 				return true
@@ -1147,10 +1151,20 @@ func canonicalMaintenanceSources(sources []domain.EvidenceSource) []domain.Evide
 func assessOperation(b domain.EvidenceBundle) domain.OperationAssessment {
 	var sources []domain.EvidenceSource
 	var localSources []domain.EvidenceSource
+	var negativeLocalSources []domain.EvidenceSource
 	requirementSet := map[string]bool{}
 	for _, item := range b.Items {
 		for lineNumber, raw := range strings.Split(item.Content, "\n") {
 			line := normalizeEvidenceText(raw)
+			if negativeLocalOperation(line) {
+				source := sourceFromItem(item, item.Kind, "local-operation-negative", .5, truncateSnippet(raw))
+				source.Line = lineNumber + 1
+				negativeLocalSources = append(negativeLocalSources, source)
+			} else if matchesAny(line, []string{"run locally", "local execution", "works offline", "offline mode"}) {
+				source := sourceFromItem(item, item.Kind, "local-operation", .5, truncateSnippet(raw))
+				source.Line = lineNumber + 1
+				localSources = append(localSources, source)
+			}
 			if matchesExternalCodeTransfer(line) {
 				source := sourceFromItem(item, item.Kind, "external-code-upload", .7, truncateSnippet(raw))
 				source.Line = lineNumber + 1
@@ -1167,9 +1181,10 @@ func assessOperation(b domain.EvidenceBundle) domain.OperationAssessment {
 		if item.Kind == domain.EvidenceManifest {
 			requirementSet["runtime declarado em manifesto"] = true
 		}
-		if strings.Contains(normalized, "run locally") || strings.Contains(normalized, "local execution") || strings.Contains(normalized, "works offline") || strings.Contains(normalized, "offline mode") {
-			localSources = append(localSources, sourceFromItem(item, item.Kind, "local-operation", strengthFor(item.Kind, item.Path), firstLine(item.Content, []string{"run locally", "local execution", "offline"})))
-		}
+
+	}
+	if len(negativeLocalSources) > 0 {
+		return domain.OperationAssessment{LocalStatus: domain.EvidenceConflict, Sources: dedupeSources(negativeLocalSources), Requirements: sortedRequirements(requirementSet)}
 	}
 	if len(sources) > 0 {
 		requirementSet["serviço externo ou envio de código"] = true
@@ -1179,7 +1194,7 @@ func assessOperation(b domain.EvidenceBundle) domain.OperationAssessment {
 		return domain.OperationAssessment{LocalStatus: domain.EvidenceInconclusive}
 	}
 	if len(localSources) > 0 {
-		return domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: dedupeSources(localSources), Requirements: sortedRequirements(requirementSet)}
+		return domain.OperationAssessment{LocalStatus: domain.EvidencePartial, Sources: dedupeSources(localSources), Requirements: sortedRequirements(requirementSet)}
 	}
 	return domain.OperationAssessment{LocalStatus: domain.EvidenceInconclusive, Requirements: sortedRequirements(requirementSet)}
 }
@@ -1197,7 +1212,7 @@ func matchesExternalCodeTransfer(line string) bool {
 	transfer := strings.Contains(line, "upload") || strings.Contains(line, "send code") || strings.Contains(line, "sends code")
 	code := strings.Contains(line, "repository") || strings.Contains(line, "source code") || strings.Contains(line, "codebase") || strings.Contains(line, "your code")
 	destination := strings.Contains(line, " api") || strings.Contains(line, "cloud") || strings.Contains(line, "server") || strings.Contains(line, "service")
-	return transfer && code && destination
+	return transfer && code && destination && !negatedExternalTransfer(line)
 }
 
 func EvaluateEvidenceMetrics(report domain.AssessmentReport, bundles []domain.EvidenceBundle, judgments []domain.EvidenceJudgment) domain.EvidenceMetrics {

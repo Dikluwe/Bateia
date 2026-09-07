@@ -33,23 +33,25 @@ Para pesquisa remota, use `--mode live`; para reproduzir uma decisão sem rede, 
 
 ## 🏛️ **Arquitetura Tekt (Five-Layer Lattice v1.4)**
 
-O Bateia é construído sobre os princípios da **Arquitetura Cristalina / Tekt**, garantindo separação rígida de responsabilidades e pureza de domínio:
+O Bateia é construído sobre os princípios da **Arquitetura Cristalina / Tekt**, com separação de responsabilidades como regra de projeto. A tabela descreve a intenção das camadas; lint e testes verificam aspectos específicos, sem garantir pureza funcional de todo o núcleo:
 
 | Camada | Diretório | Responsabilidade | Restrições |
 |--------|-----------|------------------|------------|
-| **$L_0$** | `00_nucleo/prompts/` | Especificações e Prompts perenes | Fonte imutável da verdade. Não é código. |
-| **$L_1$** | `01_core/` | Domínio Puro, Parsers e Insights | **Zero I/O**, zero chamadas HTTP ou leituras de disco. |
+| **$L_0$** | `00_nucleo/prompts/` | Especificações e prompts versionados | Contratos sujeitos a revisão. Não é código. |
+| **$L_1$** | `01_core/` | Domínio, parsers e casos de uso | Sem adaptadores concretos; orquestração por interfaces. Há consultas ao relógio em parsers, portanto nem todas as funções são puras. |
 | **$L_2$** | `02_shell/` | CLI e Gerador de Relatórios | Conhece apenas $L_1$. Formatadores de saída. |
 | **$L_3$** | `03_infra/` | Adaptadores de Infraestrutura | I/O, GitHub API, Sourcegraph e Cache em disco. |
 | **$L_4$** | `04_wiring/` | Ponto de entrada (`main.go`) | Composição sem lógica de negócio. |
 
 ---
 
-## 🌍 **Ecossistemas e Manifestos Suportados**
+## 🌍 **Cobertura de leitura de manifestos**
 
-O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manifestos nativos sem acoplamento de infraestrutura:
+O dispatcher em $L_1$ reconhece os formatos abaixo. Esta tabela descreve leitura de manifestos e identificação heurística de dependências, com limitações por parser; não comprova análise semântica completa desses ecossistemas. A coleta local de manifesto usa o primeiro manifesto reconhecido na raiz, sem inventariar todo monorepo.
 
-| Ecossistema | Flag `-lang` | Manifesto Alvo | Ferramentas & Insights Rastreáveis |
+Há análise AST de Go e um adaptador opcional Clang para C/C++, condicionado à configuração de compilação e a limites de coleta. Eles não dão cobertura equivalente às demais linguagens nem comprovam comportamento em execução:
+
+| Ecossistema | Flag `-lang` | Manifesto Alvo | Exemplos de dependências reconhecidas |
 |-------------|--------------|----------------|------------------------------------|
 | 🐹 **Go** | `go` | `go.mod` | Testify, Pgx, Goose, Viper, Zap, Testcontainers |
 | 🟦 **TypeScript / Node** | `typescript`, `ts`, `node` | `package.json` | Jest, Vitest, Prisma, NestJS, Express, Fastify, ESLint |
@@ -98,9 +100,9 @@ O Bateia utiliza o **Dispatcher Pattern** genérico em $L_1$ para parsear manife
 
 ---
 
-## 📊 **Seção 3: Descobrimento de Necessidades Ocultas**
+## 📊 **Dependências observadas e hipóteses de investigação**
 
-Em todos os relatórios gerados, o Bateia analisa o ecossistema dos repositórios extraídos e compila métricas de 5 categorias essenciais:
+O relatório do funil pode agrupar dependências e arquivos encontrados nas categorias abaixo. A presença de uma biblioteca não demonstra sua utilização, qualidade arquitetural ou necessidade para a ideia do usuário. Sem candidatos ou evidência, essas categorias não são observações do ecossistema:
 
 1. 🧪 **Estratégia de Testes**: Frameworks de testes unitários, integração e mocks.
 2. ⚙️ **Configuração e Ambiente**: Gerenciadores de variáveis de ambiente e arquivos de configuração.
@@ -117,7 +119,7 @@ Em todos os relatórios gerados, o Bateia analisa o ecossistema dos repositório
 
 ### **Compilação**
 ```bash
-go build -o bateia ./04_wiring/main.go
+go build -o bateia ./04_wiring
 ```
 
 ### **Exemplos de Uso**
@@ -171,9 +173,9 @@ O modo local não depende do GitHub e ignora diretórios gerados ou volumosos co
 
 ---
 
-## 🧪 **Garantia de Qualidade Tekt**
+## 🧪 **Verificações de desenvolvimento**
 
-O projeto mantém **100% de aprovação nos testes** e conformidade rigorosa com a trava de arquitetura:
+Execute as verificações para a revisão em uso. Resultados são específicos do checkout e dos casos exercitados; aprovação não demonstra precisão de descoberta, utilidade das decisões ou ausência de defeitos. O [passo 0041](00_nucleo/relatorios/autofagia-katamari-0041.md) registra a validação daquela alteração.
 
 ```bash
 # Executar suíte completa de testes unitários
@@ -182,3 +184,11 @@ go test ./...
 # Validar conformidade arquitetural Tekt
 crystalline-lint .
 ```
+
+## Limites conhecidos da decisão
+
+A [execução 0043](00_nucleo/relatorios/execucao-promessas-buscas-0043.md) corrigiu os contraexemplos de autoridade, negação, vínculo de mecanismos e leitura local registrados no diagnóstico 0042. Essas correções têm escopo declarado: admissão de fontes não é prova de comportamento, e o catálogo pode não possuir detector para uma pergunta. Estimativas de esforço e complexidade são identificadas como heurísticas; não medem integração ou desempenho dos projetos.
+
+Autofagia e Katamari produzem inventários e propostas para investigação. A implementação de planejamento não demonstra integração executável. Toda conclusão precisa distinguir declaração documental, indício estático e comportamento verificado.
+
+O [plano de promessas e buscas verificáveis — 0043](00_nucleo/passos/0043-delimitar-promessas-e-planejar-buscas-verificaveis.md) organiza as próximas correções: conter leituras locais, uniformizar autoridade de evidência, vincular buscas a requisitos e produzir planos de reúso com condições de validação. A implementação e os limites da validação estão no relatório de execução 0043; a avaliação de utilidade com usuários permanece pendente.

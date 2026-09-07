@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/idea_discovery.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package domain
@@ -10,6 +10,7 @@ package domain
 import "time"
 
 type DiscoveryRequest struct {
+	RequirementIDs     []string      `json:"requirement_ids,omitempty"`
 	ExpansionID        string        `json:"expansion_id"`
 	Query              string        `json:"query"`
 	Discriminators     []string      `json:"discriminators,omitempty"`

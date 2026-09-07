@@ -447,9 +447,9 @@ func TestLicenseDetectionAvoidsMITSubstring(t *testing.T) {
 	}
 }
 
-func TestExplicitLocalOperationCanBeProven(t *testing.T) {
+func TestExplicitLocalOperationDocumentationRemainsPartial(t *testing.T) {
 	b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Path: "README.md", Content: "The CLI can run locally and works offline."})
-	if got := assessOperation(b); got.LocalStatus != domain.EvidenceProven {
+	if got := assessOperation(b); got.LocalStatus != domain.EvidencePartial {
 		t.Fatalf("status = %s", got.LocalStatus)
 	}
 }

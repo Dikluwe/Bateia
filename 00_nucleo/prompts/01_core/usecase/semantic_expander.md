@@ -21,3 +21,6 @@ num corpus versionado sem realizar I/O em L1.
 - Expansões sem proveniência são rejeitadas.
 - Literal e lexical podem ser comparados pelo mesmo avaliador.
 - Duas avaliações equivalentes produzem JSON idêntico.
+
+## 0043
+Copiar RequirementIDs ao clonar expansões para preservar isolamento de slices da entrada.

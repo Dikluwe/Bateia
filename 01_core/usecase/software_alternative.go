@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/software_alternative.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -59,6 +59,7 @@ func RankSoftwareAlternatives(target domain.SoftwareAlternativeTarget, idea doma
 		}
 	}
 	for _, assessment := range assessments {
+		assessment = SanitizeAssessmentEvidence(assessment)
 		key := alternativeRepositoryKey(assessment.Repository.Owner, assessment.Repository.Repo)
 		group := ensureAlternativeGroup(groups, key)
 		group.assessments = append(group.assessments, assessment)

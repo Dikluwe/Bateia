@@ -19,3 +19,7 @@ descoberta: `IdeaSpec`, `ExpansionFacet`, `SearchExpansion` e `ExpansionPlan`.
 - A forma pública é coberta por testes de serialização.
 - `NonGoals` e `PreferredStack` não são confundidos com capacidades.
 - Os tipos podem ser consumidos por L1 e L2 sem importar infraestrutura.
+
+## Contrato 0043 — consultas ligadas à intenção
+
+Antes da chamada ao provedor, cada expansão recebe RequirementIDs derivados dos Covers da IdeaSpec original, com IDs estáveis por conteúdo e tipo. Enviar os IDs na DiscoveryRequest e preservá-los na expansão do snapshot. Sem vínculo válido não fabricar associação: lista vazia exige investigação. Estes IDs descrevem a pergunta, não evidência do candidato.

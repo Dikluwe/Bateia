@@ -2,12 +2,14 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/software_alternative_test.md
  * @layer L1
- * @updated 2026-08-31
+ * @updated 2026-09-07
  */
 package usecase
 
 import (
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"math"
 	"reflect"
 	"strings"
@@ -63,6 +65,15 @@ func alternativeTestCandidate(owner, repo, commit string, stars int) domain.Repo
 	}
 }
 
+func alternativeTestSource(ref domain.CommitRef, kind domain.EvidenceKind, path, rule, snippet string) domain.EvidenceSource {
+	source := decisionSource(ref.Repo, rule)
+	source.Ref = ref
+	source.Kind = kind
+	source.Path = path
+	source.Snippet = snippet
+	source.ContentHash = fmt.Sprintf("%x", sha256.Sum256([]byte(snippet)))
+	return source
+}
 func alternativeTestAssessment(owner, repo, commit string, statuses ...domain.EvidenceStatus) domain.CandidateAssessment {
 	ref := domain.CommitRef{Owner: owner, Repo: repo, Commit: commit}
 	if len(statuses) == 0 {
@@ -70,24 +81,11 @@ func alternativeTestAssessment(owner, repo, commit string, statuses ...domain.Ev
 	}
 	capabilities := []domain.CapabilityEvidence{}
 	names := []string{"dependency graph", "impact analysis"}
-	for index, status := range statuses {
-		name := names[index%len(names)]
-		capabilities = append(capabilities, domain.CapabilityEvidence{
-			Capability: name,
-			Status:     status,
-			Sources: []domain.EvidenceSource{{
-				Kind: domain.EvidenceFile, Ref: ref, Path: name + ".go", RuleID: "CAP-001", Strength: 1,
-			}},
-		})
+	for i, status := range statuses {
+		name := names[i%len(names)]
+		capabilities = append(capabilities, domain.CapabilityEvidence{Capability: name, Status: status, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceSymbol, name+".go", "CAP-001", "func Analyze() {} // "+name)}})
 	}
-	return domain.CandidateAssessment{
-		Repository:       ref,
-		ProblemAlignment: domain.CapabilityEvidence{Capability: "analyze dependency impact", Status: domain.EvidenceProven},
-		Capabilities:     capabilities,
-		License:          domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT"},
-		Maintenance:      domain.MaintenanceAssessment{Status: domain.EvidenceProven},
-		Operation:        domain.OperationAssessment{LocalStatus: domain.EvidenceProven},
-	}
+	return domain.CandidateAssessment{Repository: ref, ProblemAlignment: domain.CapabilityEvidence{Capability: "analyze dependency impact", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceSymbol, "analysis.go", "alignment", "func AnalyzeDependencyImpact() {}")}}, Capabilities: capabilities, License: domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "MIT", Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceLicense, "LICENSE", "license", "MIT License")}}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceRepository, "@repository-metadata", "maintenance", `{"archived":false}`)}}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceProven, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceSymbol, "main.go", "local", "func RunLocally() {}")}}}
 }
 
 func (input *alternativeTestInput) add(candidate domain.RepositoryCandidate, assessment domain.CandidateAssessment) {
@@ -622,7 +620,7 @@ func testM20WarningCanonical(t *testing.T) {
 func testM20OutsideAllowlistBlocked(t *testing.T) {
 	input := newAlternativeTestInput(t)
 	assessment := alternativeTestAssessment("org", "gpl", "abc123")
-	assessment.License = domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "GPL-3.0"}
+	assessment.License = domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: "GPL-3.0", Sources: []domain.EvidenceSource{alternativeTestSource(assessment.Repository, domain.EvidenceLicense, "LICENSE", "license", "GNU GENERAL PUBLIC LICENSE Version 3")}}
 	input.add(alternativeTestCandidate("org", "gpl", "abc123", 100), assessment)
 	report := rankAlternativeTestInput(t, input)
 	requireAlternativeFit(t, report, "org/gpl", domain.AlternativeBlocked, true)
@@ -872,9 +870,9 @@ func alternativeM17Input(t *testing.T, reordered, duplicate bool) alternativeTes
 	assessment := alternativeTestAssessment("org", "matrix", "abc123")
 	ref := assessment.Repository
 	assessment.Capabilities = []domain.CapabilityEvidence{
-		{Capability: "dependency graph", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{{Kind: domain.EvidenceFile, Ref: ref, Path: "graph.go", RuleID: "CAP-GRAPH", Strength: 1}}},
-		{Capability: "unrequested feature", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{{Kind: domain.EvidenceFile, Ref: ref, Path: "extra.go", RuleID: "CAP-EXTRA", Strength: 1}}},
-		{Capability: "impact analysis", Status: domain.EvidencePartial, Sources: []domain.EvidenceSource{{Kind: domain.EvidenceDocumentation, Ref: ref, Path: "impact.go", RuleID: "CAP-IMPACT", Strength: .4}}},
+		{Capability: "dependency graph", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceSymbol, "graph.go", "CAP-GRAPH", "func BuildGraph() {}")}},
+		{Capability: "unrequested feature", Status: domain.EvidenceProven, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceSymbol, "extra.go", "CAP-EXTRA", "func ExtraFeature() {}")}},
+		{Capability: "impact analysis", Status: domain.EvidencePartial, Sources: []domain.EvidenceSource{alternativeTestSource(ref, domain.EvidenceDocumentation, "impact.go", "CAP-IMPACT", "This tool provides impact analysis.")}},
 	}
 	if duplicate {
 		assessment.Capabilities = append(assessment.Capabilities, assessment.Capabilities[0])

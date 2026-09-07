@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_discovery.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -60,6 +60,11 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 		defer cancel()
 	}
 
+	plan = clonePlan(plan)
+	requirements := investigationRequirements(plan.Idea)
+	for i := range plan.Expansions {
+		plan.Expansions[i].RequirementIDs = expansionRequirements(plan.Idea, plan.Expansions[i], requirements)
+	}
 	outcomes := make([]discoveryOutcome, len(plan.Expansions))
 	for index, expansion := range plan.Expansions {
 		if strings.TrimSpace(expansion.ID) == "" || strings.TrimSpace(expansion.Query) == "" {
@@ -89,7 +94,7 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 			if ctx.Err() != nil {
 				return
 			}
-			request := domain.DiscoveryRequest{ExpansionID: currentExpansion.ID, Query: currentExpansion.Query, Discriminators: append([]string(nil), currentExpansion.Discriminators...), RepositoryScope: currentExpansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
+			request := domain.DiscoveryRequest{RequirementIDs: append([]string(nil), currentExpansion.RequirementIDs...), ExpansionID: currentExpansion.ID, Query: currentExpansion.Query, Discriminators: append([]string(nil), currentExpansion.Discriminators...), RepositoryScope: currentExpansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
 			if currentExpansion.Regional != nil {
 				request.SearchLocale = currentExpansion.Regional.Locale
 				request.RegionalProposalID = currentExpansion.Regional.ProposalID

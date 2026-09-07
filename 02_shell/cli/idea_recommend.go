@@ -111,7 +111,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if len(normalizedSearchLocales) > 0 {
 		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
 	}
-	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": usecase.DefaultEvidenceRules().Version, "decision": "1", "alternatives": "1"}
+	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": usecase.DefaultEvidenceRules().Version, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
 	var previous domain.IdeaRunManifest
 	canReuseEvidence := false
 	if *resume {
@@ -521,7 +521,7 @@ func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, ev
 	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash {
 		return false
 	}
-	for _, key := range []string{"expansion", "screening", "evidence"} {
+	for _, key := range []string{"expansion", "screening", "evidence", "analyzer"} {
 		if previous.RuleVersions[key] != ruleVersions[key] {
 			return false
 		}
@@ -645,6 +645,16 @@ func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport) error {
 	for _, x := range r.Gaps {
 		fmt.Fprintf(&b, "- %s\n", x)
 	}
+	if r.Investigation != nil {
+		fmt.Fprintf(&b, "\n## Plano de investigação\n\n%s\n\nEncerramento: `%s`. %s\n\n", markdownCell(r.Investigation.Scope), r.Investigation.StopReason, markdownCell(r.Investigation.TelemetryLabel))
+		for _, action := range r.Investigation.Actions {
+			fmt.Fprintf(&b, "- **%s** (`%s`) — %s/%s. Lacuna: %s Próxima ação: %s Aceitação: %s\n", markdownCell(action.Question), action.RequirementID, action.Classification, action.Status, markdownCell(action.Gap), markdownCell(action.NextAction), markdownCell(action.Acceptance))
+			for _, evidence := range action.Evidence {
+				fmt.Fprintf(&b, "  - Fonte: `%s` em `%s:%d` (%s).\n", evidence.Ref.Key(), markdownCell(evidence.Path), evidence.Line, evidence.Kind)
+			}
+		}
+	}
+	fmt.Fprintf(&b, "\nEsforço: %s. Método: %s. %s\n", r.Effort.Level, markdownCell(r.Effort.Method), markdownCell(r.Effort.Limitations))
 	fmt.Fprintln(&b, "\n## Evidências\n\nConsulte [assessment-report.json](assessment-report.json) e [evidence/bundles.json](evidence/bundles.json).")
 	return writeAtomic(path, []byte(b.String()), 0644)
 }

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_decide_test.md
  * @layer L2
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package cli
@@ -43,7 +43,7 @@ func TestRunIdeaDecideIsOfflineAndWritesReport(t *testing.T) {
 	if err := json.Unmarshal(out.Bytes(), &got); err != nil {
 		t.Fatal(err)
 	}
-	if got.Decision != domain.DecisionFork || got.PolicyHash == "" {
+	if got.Decision != domain.DecisionUnknown || got.PolicyHash == "" {
 		t.Fatalf("got %#v", got)
 	}
 }

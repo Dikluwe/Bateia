@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/reuse_decision.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package domain
@@ -77,11 +77,14 @@ type EffortFactor struct {
 }
 
 type EffortAssessment struct {
-	Level   IntegrationEffort `json:"level"`
-	Factors []EffortFactor    `json:"factors"`
+	Method      string            `json:"method,omitempty"`
+	Limitations string            `json:"limitations,omitempty"`
+	Level       IntegrationEffort `json:"level"`
+	Factors     []EffortFactor    `json:"factors"`
 }
 
 type ReuseDecisionReport struct {
+	Investigation *InvestigationPlan     `json:"investigation_plan,omitempty"`
 	SchemaVersion string                 `json:"schema_version"`
 	Policy        ReuseDecisionPolicy    `json:"policy"`
 	PolicyHash    string                 `json:"policy_hash"`

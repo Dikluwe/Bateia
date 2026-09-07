@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/mechanism_extraction.md
  * @layer L1
- * @updated 2026-09-02
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -175,8 +175,12 @@ func (DeterministicMechanismExtractor) ExtractMechanisms(ctx context.Context, in
 					result.Gaps = append(result.Gaps, mechanismGap("RULE_NOT_IN_MECHANISM_CATALOG", repository, source.RuleID, source.ContentHash, domain.MechanismInconclusive))
 					continue
 				}
-				if !compatibleMechanismWitness(mapped.entry, source.Kind) {
+				if !compatibleMechanismWitness(mapped.entry, source.Kind) || (mapped.entry.Role == "IMPLEMENTATION" && !isCodePath(source.Path)) {
 					result.Gaps = append(result.Gaps, mechanismGap("INCOMPATIBLE_WITNESS_KIND", repository, source.RuleID, source.ContentHash, domain.MechanismInconclusive))
+					continue
+				}
+				if code := mechanismSourceLocationGap(input.Bundle, source); code != "" {
+					result.Gaps = append(result.Gaps, mechanismGap(code, repository, source.RuleID, source.ContentHash, domain.MechanismInconclusive))
 					continue
 				}
 				key := repository.Repository + "@" + repository.Commit + "#" + mapped.rule.ID
@@ -185,7 +189,8 @@ func (DeterministicMechanismExtractor) ExtractMechanisms(ctx context.Context, in
 					group = &mechanismGroup{rule: mapped.rule, source: repository, positive: []domain.MechanismWitness{}, counter: []domain.MechanismWitness{}, roles: map[string]int{}, ceiling: domain.MechanismProven}
 					groups[key] = group
 				}
-				witness := domain.MechanismWitness{Repository: repository.Repository, Commit: repository.Commit, Path: source.Path, Symbol: source.Symbol, Line: source.Line, SourceKind: source.Kind, Kind: domain.MechanismWitnessKind(mapped.entry.WitnessKind), AssessmentStatus: container.Status, RuleID: source.RuleID, ContentHash: source.ContentHash}
+				digest, _ := evidenceDigest(source.ContentHash)
+				witness := domain.MechanismWitness{Repository: repository.Repository, Commit: repository.Commit, Path: source.Path, Symbol: source.Symbol, Line: source.Line, SourceKind: source.Kind, Kind: domain.MechanismWitnessKind(mapped.entry.WitnessKind), AssessmentStatus: container.Status, RuleID: source.RuleID, ContentHash: "sha256:" + digest}
 				applyMechanismWitness(group, witness, mapped.entry, container.Status, &result)
 			}
 		}
@@ -204,6 +209,9 @@ func (DeterministicMechanismExtractor) ExtractMechanisms(ctx context.Context, in
 			continue
 		}
 		result.Mechanisms = append(result.Mechanisms, mechanism)
+	}
+	if len(result.Mechanisms) == 0 && len(result.Gaps) == 0 {
+		result.Gaps = append(result.Gaps, mechanismGap("NO_COMPATIBLE_EVIDENCE_OBSERVED", repository, "", "", domain.MechanismInconclusive))
 	}
 	sort.Slice(result.Mechanisms, func(i, j int) bool { return result.Mechanisms[i].ID < result.Mechanisms[j].ID })
 	sortMechanismGaps(result.Gaps)
@@ -274,23 +282,92 @@ func validMechanismPath(path string) bool {
 	return normalizeMechanismText(path) == path
 }
 
+// A collected file can produce a located symbol; a test can produce a test
+// implementation. These projections retain the original content identity.
+func mechanismCollectedKindMatches(collected, evaluated domain.EvidenceKind) bool {
+	return collected == evaluated || (evaluated == domain.EvidenceSymbol && (collected == domain.EvidenceFile || collected == domain.EvidenceExample)) || (evaluated == domain.EvidenceTestImplementation && collected == domain.EvidenceTest)
+}
+
 func mechanismBundleBinding(bundle domain.EvidenceBundle, source domain.EvidenceSource) (int, bool) {
 	count := 0
-	hashOK := true
+	sourceDigest, sourceOK := evidenceDigest(source.ContentHash)
+	hashOK := sourceOK
 	for _, item := range bundle.Items {
-		digest := sha256.Sum256([]byte(item.Content))
-		computed := "sha256:" + hex.EncodeToString(digest[:])
-		if item.ContentHash != computed {
-			if item.Kind == source.Kind && item.Ref == source.Ref && item.Path == source.Path && item.ContentHash == source.ContentHash {
-				hashOK = false
-			}
+		if !mechanismCollectedKindMatches(item.Kind, source.Kind) || item.Ref != source.Ref || item.Path != source.Path {
 			continue
 		}
-		if item.Kind == source.Kind && item.Ref == source.Ref && item.Path == source.Path && item.ContentHash == source.ContentHash {
-			count++
+		itemDigest, itemOK := evidenceDigest(item.ContentHash)
+		if !itemOK || itemDigest != contentHash(item.Content) || itemDigest != sourceDigest {
+			hashOK = false
+			continue
 		}
+		if source.Line > 0 && source.Line > len(strings.Split(item.Content, "\n")) {
+			continue
+		}
+		count++
 	}
-	return count, hashOK && contentHashPattern.MatchString(source.ContentHash)
+	return count, hashOK
+}
+
+// This verifies the reported lexical location, not the behavior or resolution of
+// a symbol. Unsupported locations remain explicit gaps.
+func mechanismSourceLocationGap(bundle domain.EvidenceBundle, source domain.EvidenceSource) string {
+	if source.Line <= 0 || strings.TrimSpace(source.Snippet) == "" {
+		return "EVIDENCE_LOCATION_UNVERIFIED"
+	}
+	digest, _ := evidenceDigest(source.ContentHash)
+	for _, item := range bundle.Items {
+		itemDigest, _ := evidenceDigest(item.ContentHash)
+		if item.Ref != source.Ref || item.Path != source.Path || itemDigest != digest || !mechanismCollectedKindMatches(item.Kind, source.Kind) {
+			continue
+		}
+		lines := strings.Split(item.Content, "\n")
+		if source.Line > len(lines) {
+			return "EVIDENCE_LOCATION_MISMATCH"
+		}
+		snippet := strings.Join(strings.Fields(source.Snippet), " ")
+		remaining := strings.Join(strings.Fields(strings.Join(lines[source.Line-1:], "\n")), " ")
+		lineText := strings.Join(strings.Fields(lines[source.Line-1]), " ")
+		if !strings.Contains(lineText, snippet) && !strings.HasPrefix(remaining, snippet) {
+			return "EVIDENCE_SNIPPET_MISMATCH"
+		}
+		if source.Symbol != "" {
+			// Identifier boundaries avoid accepting a short unrelated identifier merely
+			// because its bytes occur inside a longer name.
+			found := false
+			offset := 0
+			for offset <= len(snippet) {
+				at := strings.Index(snippet[offset:], source.Symbol)
+				if at < 0 {
+					break
+				}
+				at += offset
+				end := at + len(source.Symbol)
+				leftOK := at == 0
+				if !leftOK {
+					r, _ := utf8.DecodeLastRuneInString(snippet[:at])
+					leftOK = !(unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_')
+				}
+				rightOK := end == len(snippet)
+				if !rightOK {
+					r, _ := utf8.DecodeRuneInString(snippet[end:])
+					rightOK = !(unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_')
+				}
+				if leftOK && rightOK {
+					found = true
+					break
+				}
+				offset = at + 1
+			}
+			if !found {
+				return "EVIDENCE_SYMBOL_UNVERIFIED"
+			}
+		} else if source.Kind == domain.EvidenceSymbol {
+			return "EVIDENCE_SYMBOL_UNVERIFIED"
+		}
+		return ""
+	}
+	return "EVIDENCE_LOCATION_UNVERIFIED"
 }
 
 func compatibleMechanismWitness(entry mechanismAcceptedRule, kind domain.EvidenceKind) bool {
@@ -304,7 +381,7 @@ func compatibleMechanismWitness(entry mechanismAcceptedRule, kind domain.Evidenc
 	}
 	switch entry.WitnessKind {
 	case string(domain.WitnessTest):
-		return kind == domain.EvidenceTest
+		return kind == domain.EvidenceTest || kind == domain.EvidenceTestImplementation
 	case string(domain.WitnessExample):
 		return kind == domain.EvidenceExample
 	case string(domain.WitnessManifest):

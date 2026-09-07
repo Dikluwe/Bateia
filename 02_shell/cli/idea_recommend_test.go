@@ -8,6 +8,7 @@ package cli
 
 import (
 	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
 	"bytes"
 	"context"
 	"crypto/sha256"
@@ -1035,7 +1036,7 @@ func TestIdeaRecommendM21RegionalCLIReplayAndDeterminism(t *testing.T) {
 
 func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	const (
-		wantRunID        = "4dbe6d1bec49f5c0"
+		legacyRunID      = "4dbe6d1bec49f5c0"
 		wantEvidenceHash = "275fca39660f176c03c7ab744b744ea6c7a4f8ace07973dff60ec7986ac8b723"
 		wantBundleHash   = "27f663cb5d3887f049502c5a7850df77debc8d28571f9b5bdaff61d3a4c4a30e"
 	)
@@ -1058,8 +1059,23 @@ func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	if err := readJSONFile(filepath.Join(out, "run.json"), &manifest); err != nil {
 		t.Fatal(err)
 	}
-	if manifest.RunID != wantRunID || manifest.InputHashes["evidence"] != wantEvidenceHash {
-		t.Fatalf("zero-locale legacy identity changed: run=%q evidence=%q", manifest.RunID, manifest.InputHashes["evidence"])
+	wantVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": usecase.DefaultEvidenceRules().Version, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
+	if !reflect.DeepEqual(manifest.RuleVersions, wantVersions) {
+		t.Fatalf("run version contract: got %+v want %+v", manifest.RuleVersions, wantVersions)
+	}
+	identity := struct {
+		EvidenceHash string            `json:"evidence_hash"`
+		PolicyHash   string            `json:"policy_hash"`
+		TargetHash   string            `json:"target_hash"`
+		RuleVersions map[string]string `json:"rule_versions"`
+	}{manifest.InputHashes["evidence"], manifest.InputHashes["policy"], manifest.InputHashes["target"], wantVersions}
+	identityBytes, err := json.Marshal(identity)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantRunID := fmt.Sprintf("%x", sha256.Sum256(identityBytes))[:16]
+	if manifest.RunID != wantRunID || manifest.RunID == legacyRunID || manifest.InputHashes["evidence"] != wantEvidenceHash {
+		t.Fatalf("versioned run identity or unchanged evidence violated: run=%q expected=%q evidence=%q", manifest.RunID, wantRunID, manifest.InputHashes["evidence"])
 	}
 	if _, ok := manifest.InputHashes["search_locales"]; ok {
 		t.Fatalf("zero-locale legacy identity gained search_locales: %+v", manifest.InputHashes)
@@ -1070,6 +1086,24 @@ func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	}
 	if got := fmt.Sprintf("%x", sha256.Sum256(bundles)); got != wantBundleHash {
 		t.Fatalf("zero-locale evidence bytes changed: %s", got)
+	}
+
+	repeatedOut := filepath.Join(t.TempDir(), "repeat")
+	repeatedArgs := append([]string(nil), args...)
+	for i, arg := range repeatedArgs {
+		if arg == "--output" {
+			repeatedArgs[i+1] = repeatedOut
+		}
+	}
+	if err := RunIdeaRecommendCommand(repeatedArgs, &bytes.Buffer{}, nil, nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	var repeated domain.IdeaRunManifest
+	if err := readJSONFile(filepath.Join(repeatedOut, "run.json"), &repeated); err != nil {
+		t.Fatal(err)
+	}
+	if repeated.RunID != manifest.RunID || !reflect.DeepEqual(repeated.InputHashes, manifest.InputHashes) {
+		t.Fatal("identical replay changed versioned identity")
 	}
 }
 

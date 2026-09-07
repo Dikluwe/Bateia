@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/semantic_expander.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -49,6 +49,7 @@ func clonePlan(plan domain.ExpansionPlan) domain.ExpansionPlan {
 	for index, expansion := range plan.Expansions {
 		cloned.Expansions[index] = expansion
 		cloned.Expansions[index].Covers = cloneStrings(expansion.Covers)
+		cloned.Expansions[index].RequirementIDs = cloneStrings(expansion.RequirementIDs)
 		cloned.Expansions[index].Derivation = cloneDerivation(expansion.Derivation)
 		cloned.Expansions[index].Regional = cloneRegionalProvenance(expansion.Regional)
 	}
@@ -60,6 +61,7 @@ func clonePlan(plan domain.ExpansionPlan) domain.ExpansionPlan {
 		regional.Proposals = append([]domain.SearchExpansion(nil), plan.Regional.Proposals...)
 		for index := range regional.Proposals {
 			regional.Proposals[index].Covers = cloneStrings(regional.Proposals[index].Covers)
+			regional.Proposals[index].RequirementIDs = cloneStrings(regional.Proposals[index].RequirementIDs)
 			regional.Proposals[index].Derivation = cloneDerivation(regional.Proposals[index].Derivation)
 			regional.Proposals[index].Regional = cloneRegionalProvenance(regional.Proposals[index].Regional)
 		}

@@ -1,0 +1,75 @@
+{
+  "stage": "0043",
+  "role": "independent tester A/B and public planner API",
+  "frozen_before_execution": true,
+  "isolation": "DECLARED_CONTEXT_ONLY; shared filesystem, physical isolation not attested",
+  "allowed_context": [
+    ".agents/AGENTS.md",
+    "frozen step0043 spec",
+    "public domain types and interfaces",
+    "exported function signatures",
+    "public 04_wiring/mechanism-rules.json",
+    "parent declared investigation API"
+  ],
+  "prohibited_context": [
+    "candidate implementation bodies",
+    "candidate diffs",
+    "historical tests",
+    "protected oracle corpus"
+  ],
+  "permissions": {
+    "tests": "own *_step0043_test.go only",
+    "production_edits": false,
+    "L1_IO": false
+  },
+  "files": {
+    "01_core/usecase/independent_step0043_test.go": "e5d365adba9b3ed1ec37588f4a0abc436df95ce5966ba2e4e2890eb26196f331",
+    "03_infra/local/independent_step0043_test.go": "834eb9dd29e8d7a03afc68d0e719904eca411cb639a494f016287659998625c3",
+    "00_nucleo/prompts/01_core/usecase/independent_step0043_test.md": "02f16dd71dc0b820f2690158166adb73539bd29d02921a612f7a632bb5a4c42e",
+    "00_nucleo/prompts/03_infra/local/independent_step0043_test.md": "3f897d9c6d3c478699bd1ad858cce46be98e978d549979e1d1a37970f1c5d93c"
+  },
+  "execution_attempts": [
+    {
+      "command": "go test ./03_infra/local ./01_core/usecase -run TestStep0043 -count=1",
+      "result": "blocked: default GOCACHE read-only"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-step0043-test-cache go test ./03_infra/local ./01_core/usecase -run TestStep0043 -count=1",
+      "result": "local positive internal symlink returned 1 of 2 requested files; usecase build blocked by in-progress production missing hex and BuildInvestigationPlan"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-step0043-test-cache go test ./01_core/usecase ./02_shell/cli ./03_infra/local ./01_core/parser ./01_core/domain",
+      "result": "usecase/local/parser/domain PASS; CLI TestIdeaRecommendM21ZeroLocaleGoldenIdentity golden changed; not edited or inspected",
+      "log": "independent-public-suite-final.log"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-step0043-test-cache go test ./01_core/usecase ./02_shell/cli ./03_infra/local ./01_core/parser ./01_core/domain",
+      "result": "PASS all five public packages; new independent absence and CLI version identity checks included",
+      "log": "independent-public-suite-verified.log"
+    }
+  ],
+  "revisions": [
+    {
+      "reason": "Invalid real-producer fixture used unsupported capability phrase and yielded no sources. Replace with public default static-analysis rule terms; all assertions unchanged.",
+      "old_test_sha256": "65e5d757b669c7bac627eb9eae4e9ebf9c64ddc95d0fc8b6ea2999eeb665fdf8",
+      "new_test_sha256": "82e397b8d90157e7a737fa34dc9fabf545316f854b8ce7dcdfe984ca0bb85beb",
+      "archived_previous": "00_nucleo/benchmark/0043/independent-tests-v1.go.txt",
+      "frozen_before_rerun": true
+    },
+    {
+      "reason": "Closed public catalog artifact requires exact distributed raw bytes; compact JSON was invalid artifact despite equivalent fields. Assertions unchanged.",
+      "old_test_sha256": "82e397b8d90157e7a737fa34dc9fabf545316f854b8ce7dcdfe984ca0bb85beb",
+      "new_test_sha256": "e5d365adba9b3ed1ec37588f4a0abc436df95ce5966ba2e4e2890eb26196f331",
+      "archived_previous": "00_nucleo/benchmark/0043/independent-tests-v2.go.txt",
+      "public_catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+      "frozen_before_rerun": true
+    }
+  ],
+  "allowed_context_extensions": [
+    "Public DefaultEvidenceRules() output via separate temporary program",
+    "Explicitly authorized ordinary tests reuse_decision_test.go, software_alternative_test.go, evidence_test.go (specific operation test), reuse_decision_product_test.go, 02_shell/cli/idea_decide_test.go; migration only",
+    "Public investigation/evidence authority signatures and domain types; original authority still excludes implementation bodies/diffs and protected oracles",
+    "Explicitly authorized TestIdeaRecommendM21ZeroLocaleGoldenIdentity plus imports and owner prompt; sed window also displayed adjacent ordinary locale test tail, no protected oracle content or candidate production read."
+  ],
+  "current_hashes_verified": true
+}

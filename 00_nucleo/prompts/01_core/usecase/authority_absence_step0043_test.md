@@ -1,0 +1,2 @@
+# Ausência sem fonte 0043
+Novo caso independente antes de executar: status ABSENT sem fontes não autoriza ausência conclusiva nem BUILD, mesmo licença/manutenção/alinhamento com testemunhos válidos. Sanitização conserva entrada original e muda ABSENT sem fonte para INCONCLUSIVE. Controle positivo: ABSENT com fonte symbol apontando implementação que retorna unsupported conserva ausência delimitada. Não altera testes congelados prévios.

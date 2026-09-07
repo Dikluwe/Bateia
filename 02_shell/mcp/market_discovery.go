@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/market_discovery.md
  * @layer L2
- * @updated 2026-09-01
+ * @updated 2026-09-06
  */
 
 package mcp
@@ -190,6 +190,17 @@ func marketArtifactRequested(raw json.RawMessage) bool {
 }
 
 func marketToolsList() (map[string]interface{}, error) {
+	return marketToolsListWithRegistry(nil)
+}
+
+func (r *marketInterceptReader) marketToolsList() (map[string]interface{}, error) {
+	if r == nil {
+		return marketToolsList()
+	}
+	return marketToolsListWithRegistry(r.registry)
+}
+
+func marketToolsListWithRegistry(registry *usecase.DiscoveryConnectorRegistry) (map[string]interface{}, error) {
 	result, err := durableToolsList()
 	if err != nil {
 		return nil, err
@@ -216,6 +227,41 @@ func marketToolsList() (map[string]interface{}, error) {
 	return map[string]interface{}{"tools": tools}, nil
 }
 
+func schemaForRegistry(registry *usecase.DiscoveryConnectorRegistry) map[string]interface{} {
+	if registry == nil {
+		return marketStartSchema()
+	}
+	caps := registry.Capabilities()
+	if len(caps) == 3 {
+		ids := []string{caps[0].ID, caps[1].ID, caps[2].ID}
+		hasApple, hasGH, hasSG := false, false, false
+		for _, id := range ids {
+			if id == "apple-itunes-search-software" {
+				hasApple = true
+			} else if id == "github-repository-catalog" {
+				hasGH = true
+			} else if id == "sourcegraph-repository-catalog" {
+				hasSG = true
+			}
+		}
+		if hasApple && hasGH && hasSG {
+			return marketStartSchema()
+		}
+	}
+	ids := make([]string, 0, len(caps))
+	for _, c := range caps {
+		ids = append(ids, c.ID)
+	}
+	maxConnectors := len(ids)
+	if maxConnectors < 3 {
+		maxConnectors = 3
+	}
+	if maxConnectors > 10 {
+		maxConnectors = 10
+	}
+	return buildMarketStartSchemaWithConnectors(ids, maxConnectors)
+}
+
 func emptyObjectSchema() map[string]interface{} {
 	return map[string]interface{}{"type": "object", "additionalProperties": false, "properties": map[string]interface{}{}}
 }
@@ -238,7 +284,7 @@ func marketStartSchema() map[string]interface{} {
 	proposal := map[string]interface{}{
 		"type": "object", "additionalProperties": false,
 		"properties": map[string]interface{}{
-			"locale": map[string]interface{}{"type": "string", "enum": marketLocaleValues()},
+			"locale": map[string]interface{}{"type": "string", "pattern": `^[a-z]{2,3}(-[A-Z]{2})?$`, "minLength": float64(2), "maxLength": float64(6)},
 			"query":  marketTextSchema(256), "source_text": marketTextSchema(512),
 			"derivation": map[string]interface{}{"type": "string", "const": "EXTERNAL_AGENT_PROPOSAL"}, "rationale": marketTextSchema(512),
 		}, "required": []string{"locale", "query", "source_text", "derivation", "rationale"},
@@ -249,11 +295,29 @@ func marketStartSchema() map[string]interface{} {
 			"idempotency_key": map[string]interface{}{"type": "string", "minLength": float64(1), "maxLength": float64(128), "pattern": `^[\u0020-\u002E\u0030-\u005B\u005D-\u007E]+$`},
 			"idea":            idea,
 			"query_proposals": map[string]interface{}{"type": "array", "minItems": float64(1), "maxItems": float64(20), "items": proposal},
-			"markets":         map[string]interface{}{"type": "array", "minItems": float64(1), "maxItems": float64(10), "uniqueItems": true, "items": map[string]interface{}{"type": "string", "enum": marketCountryValues()}},
+			"markets":         map[string]interface{}{"type": "array", "minItems": float64(1), "maxItems": float64(50), "uniqueItems": true, "items": map[string]interface{}{"type": "string", "pattern": `^[A-Z]{2}$`, "minLength": float64(2), "maxLength": float64(2)}},
 			"connector_ids":   map[string]interface{}{"type": "array", "minItems": float64(1), "maxItems": float64(3), "uniqueItems": true, "items": map[string]interface{}{"type": "string", "enum": []string{"apple-itunes-search-software", "github-repository-catalog", "sourcegraph-repository-catalog"}}},
 			"budget":          map[string]interface{}{"type": "object", "additionalProperties": false, "properties": map[string]interface{}{"max_queries": integerRange(1, 20), "max_results_per_query": integerRange(1, 10), "max_total_candidates": integerRange(1, 100)}, "required": []string{"max_queries", "max_results_per_query", "max_total_candidates"}},
 		}, "required": []string{"idempotency_key", "idea", "query_proposals", "markets", "connector_ids", "budget"},
 	}
+}
+
+
+
+func buildMarketStartSchemaWithConnectors(connectorIDs []string, maxConnectors int) map[string]interface{} {
+	schema := marketStartSchema()
+	props := schema["properties"].(map[string]interface{})
+	props["connector_ids"] = map[string]interface{}{
+		"type":        "array",
+		"minItems":    float64(1),
+		"maxItems":    float64(maxConnectors),
+		"uniqueItems": true,
+		"items": map[string]interface{}{
+			"type": "string",
+			"enum": connectorIDs,
+		},
+	}
+	return schema
 }
 
 func marketTextSchema(max int) map[string]interface{} {
@@ -262,12 +326,7 @@ func marketTextSchema(max int) map[string]interface{} {
 func integerRange(min, max int) map[string]interface{} {
 	return map[string]interface{}{"type": "integer", "minimum": float64(min), "maximum": float64(max)}
 }
-func marketLocaleValues() []string {
-	return []string{"ar-SA", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "ja-JP", "ko-KR", "pt-BR", "ru-RU"}
-}
-func marketCountryValues() []string {
-	return []string{"BR", "DE", "ES", "FR", "IN", "JP", "KR", "RU", "SA", "US"}
-}
+
 
 func (r *marketInterceptReader) handleMarket(ctx context.Context, id interface{}, name string, arguments json.RawMessage) {
 	if name == "bateia_list_connectors" {

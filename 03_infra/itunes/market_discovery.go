@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/itunes/market_discovery.md
  * @layer L3
- * @updated 2026-09-01
+ * @updated 2026-09-06
  */
 
 package itunes
@@ -46,8 +46,17 @@ func NewMarketDiscoveryConnector(client *http.Client) (domain.MarketDiscoveryCon
 
 func (c *MarketDiscoveryConnector) Capabilities() domain.DiscoveryConnectorCapabilities {
 	return domain.DiscoveryConnectorCapabilities{ID: connectorID, Version: connectorVersion, Kind: domain.ConnectorApplicationCatalog,
-		QueryLocales: []string{"ar-SA", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "ja-JP", "ko-KR", "pt-BR", "ru-RU"},
-		Markets:      []string{"BR", "DE", "ES", "FR", "IN", "JP", "KR", "RU", "SA", "US"}, SupportsMarketFilter: true,
+		QueryLocales: []string{
+			"ar-EG", "ar-SA", "de-DE", "el-GR", "en-GB", "en-US", "en-ZA", "es-ES", "es-MX",
+			"fr-FR", "hi-IN", "it-IT", "ja-JP", "kk-KZ", "ko-KR", "mn-MN", "nl-NL", "pl-PL",
+			"pt-BR", "pt-PT", "ru-RU", "sv-SE", "th-TH", "tr-TR", "vi-VN", "zh-CN",
+		},
+		Markets: []string{
+			"AE", "AR", "AU", "BR", "CA", "CH", "CL", "CN", "CO", "DE", "EG", "ES", "FR",
+			"GB", "GR", "ID", "IE", "IL", "IN", "IT", "JP", "KR", "KZ", "MN", "MX", "MY",
+			"NG", "NL", "NZ", "PE", "PH", "PL", "PT", "RO", "RU", "SA", "SE", "SG", "TH",
+			"TR", "UA", "US", "VN", "ZA",
+		}, SupportsMarketFilter: true,
 		IdentityLevels: []string{"canonical_url", "provider_product_id"}, EvidenceSurfaces: []string{"name", "provider_declared_language_codes", "publisher", "storefront_observation", "summary"}, Replayable: true, PublicOnly: true}
 }
 
@@ -89,19 +98,34 @@ func (c *MarketDiscoveryConnector) Discover(ctx context.Context, request domain.
 	return projection, nil
 }
 
+// itunesValidISO3166Alpha2 valida código de país ISO 3166-1 alpha-2: 2 letras maiúsculas.
+// Duplicada de L1 (usecase) pois L3 não pode importar L1 — Lei da Gravidade.
+func itunesValidISO3166Alpha2(code string) bool {
+	if len(code) != 2 {
+		return false
+	}
+	return code[0] >= 'A' && code[0] <= 'Z' && code[1] >= 'A' && code[1] <= 'Z'
+}
+
+// itunesValidBCP47Locale valida tag BCP-47 no subconjunto "xx" ou "xx-YY".
+// Duplicada de L1 (usecase) pois L3 não pode importar L1 — Lei da Gravidade.
+func itunesValidBCP47Locale(tag string) bool {
+	if len(tag) == 2 {
+		return tag[0] >= 'a' && tag[0] <= 'z' && tag[1] >= 'a' && tag[1] <= 'z'
+	}
+	if len(tag) == 5 {
+		return tag[2] == '-' &&
+			tag[0] >= 'a' && tag[0] <= 'z' && tag[1] >= 'a' && tag[1] <= 'z' &&
+			tag[3] >= 'A' && tag[3] <= 'Z' && tag[4] >= 'A' && tag[4] <= 'Z'
+	}
+	return false
+}
+
 func validRequest(request domain.MarketDiscoveryRequest) bool {
 	if request.QueryID == "" || request.QueryLocale == "" || strings.TrimSpace(request.Query) == "" || request.Market == "" || request.Limit < 1 || request.Limit > 10 {
 		return false
 	}
-	allowedLocale := false
-	for _, value := range []string{"ar-SA", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "ja-JP", "ko-KR", "pt-BR", "ru-RU"} {
-		allowedLocale = allowedLocale || request.QueryLocale == value
-	}
-	allowedMarket := false
-	for _, value := range []string{"BR", "DE", "ES", "FR", "IN", "JP", "KR", "RU", "SA", "US"} {
-		allowedMarket = allowedMarket || request.Market == value
-	}
-	if !allowedLocale || !allowedMarket || len([]rune(request.Query)) > 256 {
+	if !itunesValidBCP47Locale(request.QueryLocale) || !itunesValidISO3166Alpha2(request.Market) || len([]rune(request.Query)) > 256 {
 		return false
 	}
 	for _, r := range request.Query {
@@ -259,3 +283,20 @@ func strictJSON(data []byte) bool {
 	decoder.UseNumber()
 	return decoder.Decode(&value) == nil && decoder.Decode(&struct{}{}) == io.EOF
 }
+
+// NewMarketDiscoveryConnectorWithRoundTripper cria um conector iTunes usando um http.RoundTripper customizado.
+// Destinado exclusivamente a testes de integração em L4 — não deve ser usada em produção.
+func NewMarketDiscoveryConnectorWithRoundTripper(_ *http.Client, roundTripper func(*http.Request) (*http.Response, error)) (domain.MarketDiscoveryConnector, error) {
+	client := &http.Client{
+		Timeout:   15 * time.Second,
+		Transport: roundTripperFunc(roundTripper),
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return errors.New("redirect forbidden")
+		},
+	}
+	return &MarketDiscoveryConnector{client: client}, nil
+}
+
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }

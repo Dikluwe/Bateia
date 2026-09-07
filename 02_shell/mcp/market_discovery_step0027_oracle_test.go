@@ -181,13 +181,22 @@ func TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact(t *t
 		t.Fatalf("tool 9 top-level schema changed: %#v", schema)
 	}
 	properties := schema["properties"].(map[string]any)
-	locales := properties["query_proposals"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)["locale"].(map[string]any)["enum"]
-	markets := properties["markets"].(map[string]any)["items"].(map[string]any)["enum"]
+	// Passo 0033: locales e markets migraram de enum fechado para pattern aberto (ISO 3166-1 / BCP-47)
+	localeSchema := properties["query_proposals"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)["locale"].(map[string]any)
+	marketsItemsSchema := properties["markets"].(map[string]any)["items"].(map[string]any)
+	marketsSchema := properties["markets"].(map[string]any)
 	connectors := properties["connector_ids"].(map[string]any)["items"].(map[string]any)["enum"]
-	if !reflect.DeepEqual(locales, []any{"ar-SA", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "ja-JP", "ko-KR", "pt-BR", "ru-RU"}) ||
-		!reflect.DeepEqual(markets, []any{"BR", "DE", "ES", "FR", "IN", "JP", "KR", "RU", "SA", "US"}) ||
-		!reflect.DeepEqual(connectors, []any{"apple-itunes-search-software", "github-repository-catalog", "sourcegraph-repository-catalog"}) {
-		t.Fatalf("tool 9 frozen enums changed: locales=%v markets=%v connectors=%v", locales, markets, connectors)
+	if localeSchema["pattern"] != `^[a-z]{2,3}(-[A-Z]{2})?$` || localeSchema["enum"] != nil {
+		t.Fatalf("tool 9 locale schema deve usar pattern BCP-47, não enum: %v", localeSchema)
+	}
+	if marketsItemsSchema["pattern"] != `^[A-Z]{2}$` || marketsItemsSchema["enum"] != nil {
+		t.Fatalf("tool 9 markets schema deve usar pattern ISO 3166-1, não enum: %v", marketsItemsSchema)
+	}
+	if marketsSchema["maxItems"] != float64(50) {
+		t.Fatalf("tool 9 markets maxItems deve ser 50 (global), obtido: %v", marketsSchema["maxItems"])
+	}
+	if !reflect.DeepEqual(connectors, []any{"apple-itunes-search-software", "github-repository-catalog", "sourcegraph-repository-catalog"}) {
+		t.Fatalf("tool 9 connectors enum mudou: %v", connectors)
 	}
 	if connector.discoverCalls != 0 || starter.calls != 0 {
 		t.Fatalf("tools/list had effects: discover=%d start=%d", connector.discoverCalls, starter.calls)

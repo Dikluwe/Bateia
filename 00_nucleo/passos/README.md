@@ -43,6 +43,9 @@ Cada passo deve declarar:
 | [0026](0026-persistir-execucoes-mcp-e-consultar-por-run-id.md) | Persistir execuções MCP, acompanhar estado e ler artefatos seguros por `run_id` | `IMPLEMENTADO` |
 | [0027](0027-generalizar-descoberta-multilingue-e-multifuente.md) | Descobrir produtos em múltiplos idiomas, mercados e fontes com proveniência | `IMPLEMENTADO` |
 | [0028](0028-extrair-mecanismos-e-formular-hipoteses-de-melhoria.md) | Extrair mecanismos comprovados e formular hipóteses de melhoria rastreáveis | `IMPLEMENTADO` |
-| [0029](0029-medir-ganho-da-ia-usando-bateia.md) | Medir em Luna, Terra e Sol se usar o Bateia melhora decisões de engenharia | `PLANEJADO` |
-| [0030](0030-corrigir-teste-de-catalise-da-busca.md) | Corrigir pareamento, limites de saída e telemetria do teste IA+web versus IA+Bateia+web | `PLANEJADO` |
+| [0029](0029-medir-ganho-da-ia-usando-bateia.md) | Medir em Luna, Terra e Sol se usar o Bateia melhora decisões de engenharia | `IMPLEMENTADO` |
+| [0030](0030-corrigir-teste-de-catalise-da-busca.md) | Corrigir pareamento, limites de saída e telemetria do teste IA+web versus IA+Bateia+web | `IMPLEMENTADO` |
 | [0031](0031-autopreencher-parametros-da-recomendacao.md) | Autopreencher política, alvo e busca omitidos nas ferramentas MCP de recomendação | `IMPLEMENTADO` |
+| [0032](0032-executar-teste-end-to-end-de-validacao-do-bateia.md) | Executar teste end-to-end de validação do Bateia na CLI e servidor MCP | `IMPLEMENTADO` |
+| [0033](0033-expandir-descoberta-global-federada-de-mercados-e-locales.md) | Expandir descoberta global federada de mercados e locales no catálogo e MCP | `IMPLEMENTADO` |
+| [0034](0034-integrar-conectores-android-e-forjas-federadas-de-codigo.md) | Integrar conectores Android (Play Store & F-Droid) e forjas federadas (Gitee, Codeberg, GitLab) | `IMPLEMENTADO` |

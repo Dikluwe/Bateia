@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/market_discovery.md
  * @layer L4
- * @updated 2026-09-01
+ * @updated 2026-09-06
  */
 
 package main
@@ -14,7 +14,10 @@ import (
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/mcp"
+	"bateia/03_infra/fdroid"
+	"bateia/03_infra/forge"
 	"bateia/03_infra/itunes"
+	"bateia/03_infra/playstore"
 	"bateia/03_infra/runstore"
 )
 
@@ -34,6 +37,43 @@ func defaultMarketDiscoveryConnectors() ([]domain.MarketDiscoveryConnector, erro
 	return []domain.MarketDiscoveryConnector{apple, repository("github-repository-catalog"), repository("sourcegraph-repository-catalog")}, nil
 }
 
+func federatedMarketDiscoveryConnectors() ([]domain.MarketDiscoveryConnector, error) {
+	apple, err := itunes.NewMarketDiscoveryConnector(nil)
+	if err != nil {
+		return nil, err
+	}
+	play, err := playstore.NewMarketDiscoveryConnector(nil)
+	if err != nil {
+		return nil, err
+	}
+	fd, err := fdroid.NewMarketDiscoveryConnector(nil)
+	if err != nil {
+		return nil, err
+	}
+	locales := []string{"ar-SA", "de-DE", "en-US", "es-ES", "fr-FR", "hi-IN", "ja-JP", "ko-KR", "pt-BR", "ru-RU"}
+	repository := func(id string) domain.MarketDiscoveryConnector {
+		return usecase.CapabilityOnlyConnector{Capability: domain.DiscoveryConnectorCapabilities{
+			ID: id, Version: "baseline-21c48e357180", Kind: domain.ConnectorRepositoryCatalog,
+			QueryLocales: append([]string{}, locales...), Markets: []string{}, SupportsMarketFilter: false,
+			IdentityLevels: []string{"commit", "owner_repo"}, EvidenceSurfaces: []string{"code_occurrence", "immutable_commit", "repository_identity"}, Replayable: true, PublicOnly: true,
+		}}
+	}
+	gitee := forge.NewGiteeConnector(nil)
+	codeberg := forge.NewCodebergConnector(nil)
+	gitlab := forge.NewGitLabConnector(nil)
+
+	return []domain.MarketDiscoveryConnector{
+		apple,
+		play,
+		fd,
+		repository("github-repository-catalog"),
+		repository("sourcegraph-repository-catalog"),
+		gitee,
+		codeberg,
+		gitlab,
+	}, nil
+}
+
 func NewMarketDiscoveryMCPServer(
 	funnel *usecase.SearchFunnel,
 	recommendationExecutor domain.ObservableRecommendationExecutor,
@@ -47,7 +87,7 @@ func NewMarketDiscoveryMCPServer(
 	writer io.Writer,
 ) (*mcp.MCPServer, func(context.Context) error, error) {
 	registry, err := usecase.NewDiscoveryConnectorRegistry(connectors)
-	if err != nil || len(registry.Capabilities()) != 3 {
+	if err != nil || len(registry.Capabilities()) < 3 {
 		return nil, nil, domain.ErrInvalidRunInput
 	}
 	service, queue, store, err := newDurableComponents(recommendationExecutor, root, cursorSecret, limits, workers, capacity)

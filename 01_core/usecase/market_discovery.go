@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/market_discovery.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-06
  */
 
 package usecase
@@ -21,8 +21,30 @@ import (
 	"bateia/01_core/domain"
 )
 
-var marketLocales = map[string]bool{"ar-SA": true, "de-DE": true, "en-US": true, "es-ES": true, "fr-FR": true, "hi-IN": true, "ja-JP": true, "ko-KR": true, "pt-BR": true, "ru-RU": true}
-var marketCountries = map[string]bool{"BR": true, "DE": true, "ES": true, "FR": true, "IN": true, "JP": true, "KR": true, "RU": true, "SA": true, "US": true}
+// validISO3166Alpha2 valida um código de país conforme ISO 3166-1 alpha-2: exatamente 2 letras maiúsculas.
+// Validação estrutural pura — zero I/O, zero rede. Não implica que o país tenha storefront ativo.
+func validISO3166Alpha2(code string) bool {
+	if len(code) != 2 {
+		return false
+	}
+	return code[0] >= 'A' && code[0] <= 'Z' && code[1] >= 'A' && code[1] <= 'Z'
+}
+
+// validBCP47Locale valida uma tag de idioma/locale conforme BCP-47 (RFC 5646) no subconjunto
+// "xx" (2 letras minúsculas de idioma) ou "xx-YY" (2 letras de idioma + 2 letras maiúsculas de região).
+// Exemplos válidos: "en-US", "it-IT", "kk-KZ", "mn-MN". Inválidos: "en_US", "BR", "brBR".
+// Validação estrutural pura — zero I/O, zero rede.
+func validBCP47Locale(tag string) bool {
+	if len(tag) == 2 {
+		return tag[0] >= 'a' && tag[0] <= 'z' && tag[1] >= 'a' && tag[1] <= 'z'
+	}
+	if len(tag) == 5 {
+		return tag[2] == '-' &&
+			tag[0] >= 'a' && tag[0] <= 'z' && tag[1] >= 'a' && tag[1] <= 'z' &&
+			tag[3] >= 'A' && tag[3] <= 'Z' && tag[4] >= 'A' && tag[4] <= 'Z'
+	}
+	return false
+}
 
 type DiscoveryConnectorRegistry struct {
 	connectors map[string]domain.MarketDiscoveryConnector
@@ -78,10 +100,10 @@ func canonicalCapabilities(value domain.DiscoveryConnectorCapabilities) (domain.
 		return domain.DiscoveryConnectorCapabilities{}, domain.ErrInvalidRunInput
 	}
 	var err error
-	if value.QueryLocales, err = canonicalValidatedSet(value.QueryLocales, marketLocales); err != nil || len(value.QueryLocales) == 0 {
+	if value.QueryLocales, err = canonicalValidatedSetBCP47(value.QueryLocales); err != nil || len(value.QueryLocales) == 0 {
 		return domain.DiscoveryConnectorCapabilities{}, domain.ErrInvalidRunInput
 	}
-	if value.Markets, err = canonicalValidatedSet(value.Markets, marketCountries); err != nil {
+	if value.Markets, err = canonicalValidatedSetISO3166(value.Markets); err != nil {
 		return domain.DiscoveryConnectorCapabilities{}, domain.ErrInvalidRunInput
 	}
 	if value.SupportsMarketFilter && len(value.Markets) == 0 {
@@ -98,11 +120,27 @@ func canonicalCapabilities(value domain.DiscoveryConnectorCapabilities) (domain.
 	return value, nil
 }
 
-func canonicalValidatedSet(values []string, allowed map[string]bool) ([]string, error) {
+// canonicalValidatedSetISO3166 deduplica e valida um conjunto de códigos de país ISO 3166-1 alpha-2.
+func canonicalValidatedSetISO3166(values []string) ([]string, error) {
 	seen := map[string]bool{}
 	out := make([]string, 0, len(values))
 	for _, value := range values {
-		if !allowed[value] || seen[value] {
+		if !validISO3166Alpha2(value) || seen[value] {
+			return nil, domain.ErrInvalidRunInput
+		}
+		seen[value] = true
+		out = append(out, value)
+	}
+	sort.Strings(out)
+	return out, nil
+}
+
+// canonicalValidatedSetBCP47 deduplica e valida um conjunto de tags de locale BCP-47.
+func canonicalValidatedSetBCP47(values []string) ([]string, error) {
+	seen := map[string]bool{}
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if !validBCP47Locale(value) || seen[value] {
 			return nil, domain.ErrInvalidRunInput
 		}
 		seen[value] = true
@@ -153,14 +191,14 @@ func ValidateMarketDiscoveryStartRequest(request domain.MarketDiscoveryStartRequ
 
 func normalizeMarketDiscoveryStartRequest(request domain.MarketDiscoveryStartRequest) (domain.MarketDiscoveryStartRequest, error) {
 	request.Idea = normalizeIdea(request.Idea)
-	if request.Idea.Problem == "" || len(request.Idea.Problem) > 1000 || len(request.Idea.Capabilities) < 1 || len(request.Idea.Capabilities) > 20 || len(request.QueryProposals) < 1 || len(request.QueryProposals) > 20 || len(request.Markets) < 1 || len(request.Markets) > 10 || len(request.ConnectorIDs) < 1 || len(request.ConnectorIDs) > 3 {
+	if request.Idea.Problem == "" || len(request.Idea.Problem) > 1000 || len(request.Idea.Capabilities) < 1 || len(request.Idea.Capabilities) > 20 || len(request.QueryProposals) < 1 || len(request.QueryProposals) > 20 || len(request.Markets) < 1 || len(request.Markets) > 50 || len(request.ConnectorIDs) < 1 || len(request.ConnectorIDs) > 10 {
 		return domain.MarketDiscoveryStartRequest{}, domain.ErrInvalidRunInput
 	}
 	if !validIdeaSlices(request.Idea) || request.Budget.MaxQueries < 1 || request.Budget.MaxQueries > 20 || request.Budget.MaxResultsPerQuery < 1 || request.Budget.MaxResultsPerQuery > 10 || request.Budget.MaxTotalCandidates < 1 || request.Budget.MaxTotalCandidates > 100 {
 		return domain.MarketDiscoveryStartRequest{}, domain.ErrInvalidRunInput
 	}
 	var err error
-	request.Markets, err = canonicalValidatedSet(request.Markets, marketCountries)
+	request.Markets, err = canonicalValidatedSetISO3166(request.Markets)
 	if err != nil {
 		return domain.MarketDiscoveryStartRequest{}, err
 	}
@@ -174,7 +212,7 @@ func normalizeMarketDiscoveryStartRequest(request domain.MarketDiscoveryStartReq
 		proposal.Query = strings.TrimSpace(proposal.Query)
 		proposal.SourceText = strings.TrimSpace(proposal.SourceText)
 		proposal.Rationale = strings.TrimSpace(proposal.Rationale)
-		if !marketLocales[proposal.Locale] || proposal.Derivation != domain.QueryExternalAgent || !safeSemanticText(proposal.Query, 256) || !safeSemanticText(proposal.SourceText, 512) || !safeSemanticText(proposal.Rationale, 512) {
+		if !validBCP47Locale(proposal.Locale) || proposal.Derivation != domain.QueryExternalAgent || !safeSemanticText(proposal.Query, 256) || !safeSemanticText(proposal.SourceText, 512) || !safeSemanticText(proposal.Rationale, 512) {
 			return domain.MarketDiscoveryStartRequest{}, domain.ErrInvalidRunInput
 		}
 		proposal.DerivationStatus = domain.QueryDerivationUnverified
@@ -813,3 +851,11 @@ func interfacesFromGaps(values []domain.MarketGap) []any {
 }
 
 var _ = fmt.Sprintf
+
+// ExportedValidISO3166Alpha2 expõe validISO3166Alpha2 para testes em L4.
+// Uso exclusivo em testes de integração — não deve ser chamada em código de produção de outras camadas.
+func ExportedValidISO3166Alpha2(code string) bool { return validISO3166Alpha2(code) }
+
+// ExportedValidBCP47Locale expõe validBCP47Locale para testes em L4.
+// Uso exclusivo em testes de integração — não deve ser chamada em código de produção de outras camadas.
+func ExportedValidBCP47Locale(tag string) bool { return validBCP47Locale(tag) }

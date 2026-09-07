@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/market_discovery.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-09-06
  */
 
 package domain
@@ -133,6 +133,24 @@ type ProductIdentity struct {
 	CanonicalURL string `json:"canonical_url,omitempty"`
 }
 
+type FOSSLinkage struct {
+	UpstreamURL  string               `json:"upstream_url"`
+	LicenseSPDX  string               `json:"license_spdx,omitempty"`
+	IssueTracker string               `json:"issue_tracker,omitempty"`
+	Status       RepositoryLinkStatus `json:"status"`
+}
+
+const (
+	ConnectorAppleItunes     = "apple-itunes-search-software"
+	ConnectorGooglePlay      = "google-play-store-apps"
+	ConnectorFDroid          = "fdroid-foss-apps"
+	ConnectorGiteeCatalog    = "gitee-repository-catalog"
+	ConnectorCodebergCatalog = "codeberg-repository-catalog"
+	ConnectorGitLabCatalog   = "gitlab-repository-catalog"
+	ConnectorGitHubCatalog   = "github-repository-catalog"
+	ConnectorSourcegraph     = "sourcegraph-repository-catalog"
+)
+
 type ProductRepositoryLink struct {
 	OwnerRepo string               `json:"owner_repo"`
 	Commit    string               `json:"commit"`
@@ -169,6 +187,7 @@ type ProductCandidate struct {
 	Origins            []MarketCandidateOrigin `json:"origins"`
 	Resolution         IdentityResolution      `json:"resolution"`
 	Witnesses          []IdentityWitness       `json:"witnesses"`
+	FOSSLink           *FOSSLinkage            `json:"foss_link,omitempty"`
 }
 
 type MarketDiscoveryAttempt struct {

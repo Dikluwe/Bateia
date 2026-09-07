@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/ontology_matcher.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -15,6 +15,7 @@ import (
 	"unicode"
 
 	"bateia/01_core/domain"
+	"bateia/01_core/parser"
 )
 
 // ExtractOntologyFromRepo analisa o repositório extraído e constrói o perfil ontológico.
@@ -50,25 +51,25 @@ func ExtractOntologyFromRepo(repo domain.ExtractedRepository) domain.ProjectOnto
 			packages = append(packages, pkgName)
 
 			// Capacidades baseadas nas dependências conhecidas
-			if strings.Contains(pkgName, "test") || strings.Contains(pkgName, "check") || strings.Contains(pkgName, "assert") {
+			if parser.DependencyIdentityMatch(pkgName, "testify") || parser.DependencyIdentityMatch(pkgName, "test") || parser.DependencyIdentityMatch(pkgName, "check") || parser.DependencyIdentityMatch(pkgName, "assert") {
 				capabilitiesMap["testing"] = true
 			}
-			if strings.Contains(pkgName, "zap") || strings.Contains(pkgName, "log") || strings.Contains(pkgName, "otel") || strings.Contains(pkgName, "prometheus") {
+			if parser.DependencyIdentityMatch(pkgName, "zap") || parser.DependencyIdentityMatch(pkgName, "log") || parser.DependencyIdentityMatch(pkgName, "otel") || parser.DependencyIdentityMatch(pkgName, "prometheus") {
 				capabilitiesMap["observability"] = true
 			}
-			if strings.Contains(pkgName, "pgx") || strings.Contains(pkgName, "sql") || strings.Contains(pkgName, "orm") || strings.Contains(pkgName, "gorm") || strings.Contains(pkgName, "prisma") {
+			if parser.DependencyIdentityMatch(pkgName, "pgx") || parser.DependencyIdentityMatch(pkgName, "sql") || parser.DependencyIdentityMatch(pkgName, "orm") || parser.DependencyIdentityMatch(pkgName, "gorm") || parser.DependencyIdentityMatch(pkgName, "prisma") {
 				capabilitiesMap["database"] = true
 			}
-			if strings.Contains(pkgName, "redis") || strings.Contains(pkgName, "cache") || strings.Contains(pkgName, "memcached") {
+			if parser.DependencyIdentityMatch(pkgName, "redis") || parser.DependencyIdentityMatch(pkgName, "cache") || parser.DependencyIdentityMatch(pkgName, "memcached") {
 				capabilitiesMap["caching"] = true
 			}
-			if strings.Contains(pkgName, "grpc") || strings.Contains(pkgName, "proto") || strings.Contains(pkgName, "graphql") {
+			if parser.DependencyIdentityMatch(pkgName, "grpc") || parser.DependencyIdentityMatch(pkgName, "proto") || parser.DependencyIdentityMatch(pkgName, "graphql") {
 				capabilitiesMap["polyglot_rpc"] = true
 			}
-			if strings.Contains(pkgName, "mcp") || strings.Contains(pkgName, "modelcontextprotocol") || strings.Contains(pkgName, "ai") {
+			if parser.DependencyIdentityMatch(pkgName, "mcp") || parser.DependencyIdentityMatch(pkgName, "modelcontextprotocol") || parser.DependencyIdentityMatch(pkgName, "ai") {
 				capabilitiesMap["ai_context_protocol"] = true
 			}
-			if strings.Contains(pkgName, "treesitter") || strings.Contains(pkgName, "gotreesitter") || strings.Contains(pkgName, "ast") {
+			if parser.DependencyIdentityMatch(pkgName, "treesitter") || parser.DependencyIdentityMatch(pkgName, "gotreesitter") || parser.DependencyIdentityMatch(pkgName, "ast") {
 				capabilitiesMap["ast_codegraph"] = true
 			}
 		}
@@ -135,7 +136,7 @@ func ExtractOntologyFromIdea(ideaText string) domain.ProjectOntology {
 		Ref:                domain.CommitRef{Owner: "user", Repo: "idea-target"},
 		ProblemDomain:      deriveProblemDomain(keywords),
 		IntentKeywords:     keywords,
-		Capabilities:       []string{"testing", "observability", "database", "caching", "devops_ci"},
+		Capabilities:       nil, // Capabilities are unknown unless supported by observed evidence.
 		ArchitecturalStyle: "Target Vision",
 	}
 }
@@ -177,19 +178,41 @@ func CalculateIdeaSimilarity(target, candidate domain.ProjectOntology) domain.Id
 
 	label := "Divergent"
 	if overall >= 80 {
-		label = "Identical / Core Twin Idea"
+		label = "High Heuristic Similarity (unverified)"
 	} else if overall >= 60 {
 		label = "High Similarity"
 	} else if overall >= 40 {
 		label = "Moderate Overlap"
 	}
 
+	// Missing dimensions are unknown, not evidence of incompatibility.
+	if len(target.IntentKeywords) == 0 || len(candidate.IntentKeywords) == 0 || len(target.EcosystemPackages) == 0 || len(candidate.EcosystemPackages) == 0 || len(target.Capabilities) == 0 || len(candidate.Capabilities) == 0 || target.ArchitecturalStyle == "Target Vision" || target.ArchitecturalStyle == "" || candidate.ArchitecturalStyle == "Standard Layout" || candidate.ArchitecturalStyle == "" {
+		overall = -1
+		label = "Indeterminate (insufficient evidence)"
+	}
+	status, reason := "heuristic", "Comparação lexical de metadados; não mede adequação da implementação."
+	if overall < 0 {
+		status, reason = "insufficient", "Dimensões ausentes: -1 indica não avaliado, não incompatibilidade; consultar query_evidence separadamente."
+	}
+	if len(target.IntentKeywords) == 0 || len(candidate.IntentKeywords) == 0 {
+		v1Score = -1
+	}
+	if len(target.EcosystemPackages) == 0 || len(candidate.EcosystemPackages) == 0 {
+		v2Score = -1
+	}
+	if len(target.Capabilities) == 0 || len(candidate.Capabilities) == 0 {
+		v4Score = -1
+	}
+	if target.ArchitecturalStyle == "Target Vision" || target.ArchitecturalStyle == "" || candidate.ArchitecturalStyle == "Standard Layout" || candidate.ArchitecturalStyle == "" {
+		v3Score = -1
+	}
 	candidateRepoName := candidate.Ref.Key()
 	if candidateRepoName == "" || candidateRepoName == "/" {
 		candidateRepoName = candidate.ProblemDomain
 	}
 
 	return domain.IdeaSimilarityResult{
+		EvaluationStatus: status, EvaluationReason: reason,
 		TargetRef:       target.Ref,
 		CandidateRef:    candidate.Ref,
 		CandidateRepo:   candidateRepoName,
@@ -245,13 +268,13 @@ func MineOntologicalImprovements(target domain.ProjectOntology, results []domain
 			title := fmt.Sprintf("Adotar '%s' para fortalecer a infraestrutura", pkg)
 			pkgLower := strings.ToLower(pkg)
 
-			if strings.Contains(pkgLower, "test") || strings.Contains(pkgLower, "check") {
+			if parser.DependencyIdentityMatch(pkgLower, "test") || parser.DependencyIdentityMatch(pkgLower, "check") {
 				category = "Testing"
 				title = fmt.Sprintf("Integrar '%s' para automação de testes", pkg)
-			} else if strings.Contains(pkgLower, "zap") || strings.Contains(pkgLower, "log") || strings.Contains(pkgLower, "otel") {
+			} else if parser.DependencyIdentityMatch(pkgLower, "zap") || parser.DependencyIdentityMatch(pkgLower, "log") || parser.DependencyIdentityMatch(pkgLower, "otel") {
 				category = "Observability"
 				title = fmt.Sprintf("Implementar observabilidade e logging estruturado com '%s'", pkg)
-			} else if strings.Contains(pkgLower, "sql") || strings.Contains(pkgLower, "pgx") || strings.Contains(pkgLower, "orm") {
+			} else if parser.DependencyIdentityMatch(pkgLower, "sql") || parser.DependencyIdentityMatch(pkgLower, "pgx") || parser.DependencyIdentityMatch(pkgLower, "orm") {
 				category = "Database"
 				title = fmt.Sprintf("Padronizar camada de persistência com '%s'", pkg)
 			}
@@ -312,7 +335,7 @@ func deriveProblemDomain(keywords []string) string {
 	if strings.Contains(kwStr, "web") || strings.Contains(kwStr, "http") || strings.Contains(kwStr, "api") {
 		return "Web Service & API"
 	}
-	return capitalizeFirst(keywords[0]) + " System"
+	return "Não determinado"
 }
 
 func capitalizeFirst(s string) string {

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client.md
  * @layer L3
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package sourcegraph
@@ -159,12 +159,18 @@ func shortQuery(query string) string {
 		}
 	}
 	if len(result) == 0 {
-		return words[0]
+		return strings.Join(words, " ")
 	}
 	return strings.Join(result, " ")
 }
 
 func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter) ([]domain.RepositoryCandidate, error) {
+	candidates, _, err := c.SearchCandidatesWithTrace(ctx, filter)
+	return candidates, err
+}
+
+func (c *Client) SearchCandidatesWithTrace(ctx context.Context, filter domain.QueryFilter) ([]domain.RepositoryCandidate, []domain.SearchAttempt, error) {
+	var attempts []domain.SearchAttempt
 	// Traduzir nome da linguagem para o formato aceito pelo Sourcegraph
 	sgLang := filter.Language
 	if mapped, ok := sgLangName[strings.ToLower(filter.Language)]; ok {
@@ -186,22 +192,36 @@ func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter
 
 	var lastErr error
 	requestSucceeded := false
-	for _, qStr := range queriesToTry {
+	for index, qStr := range queriesToTry {
 		candidates, err := c.executeSGQuery(ctx, qStr, filter.MaxResults)
+		attempt := domain.SearchAttempt{OriginalQuery: filter.Query, Provider: "Sourcegraph", Query: qStr, Candidates: len(candidates)}
+		if index == 1 {
+			attempt.Relaxation = "consulta reduzida aos dois primeiros termos"
+		}
+		if index == 2 {
+			attempt.Relaxation = "consulta reduzida; filtro de linguagem removido"
+		}
+		if err != nil {
+			attempt.Error = err.Error()
+		}
+		attempts = append(attempts, attempt)
 		if err != nil {
 			lastErr = err
 			continue
 		}
 		requestSucceeded = true
 		if len(candidates) > 0 {
-			return candidates, nil
+			for i := range candidates {
+				candidates[i].SearchAttempts = append([]domain.SearchAttempt(nil), attempts...)
+			}
+			return candidates, attempts, nil
 		}
 	}
 
 	if !requestSucceeded && lastErr != nil {
-		return nil, fmt.Errorf("todas as consultas ao Sourcegraph falharam: %w", lastErr)
+		return nil, attempts, fmt.Errorf("todas as consultas ao Sourcegraph falharam: %w", lastErr)
 	}
-	return []domain.RepositoryCandidate{}, nil
+	return []domain.RepositoryCandidate{}, attempts, nil
 }
 
 func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults int) ([]domain.RepositoryCandidate, error) {

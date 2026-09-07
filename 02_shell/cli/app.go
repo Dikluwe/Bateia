@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-08-31
+ * @updated 2026-09-07
  */
 
 package cli
@@ -233,7 +233,23 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 	} else if fmtLower == "html" || strings.HasSuffix(outLower, ".html") {
 		reportContent = report.GenerateHTMLReport(searchReport)
 	} else {
-		reportContent = report.GenerateMarkdownReport(searchReport)
+		// Keep full compiler receipts available without repeating them in the main answer.
+		audit, auditErr := report.ExportJSONReport(searchReport)
+		if auditErr != nil {
+			return auditErr
+		}
+		auditPath := *outputFlag + ".evidence.json"
+		if err := os.MkdirAll(filepath.Dir(auditPath), 0755); err != nil {
+			return err
+		}
+		if err := os.WriteFile(auditPath, audit, 0644); err != nil {
+			return err
+		}
+		auditAbs, err := filepath.Abs(auditPath)
+		if err != nil {
+			return err
+		}
+		reportContent = report.GenerateMarkdownReport(searchReport) + "\n[Dados integrais e recibos de compilação](<" + auditAbs + ">)\n"
 	}
 
 	_ = os.MkdirAll(filepath.Dir(*outputFlag), 0755)

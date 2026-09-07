@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client.md
  * @layer L3
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package github
@@ -186,6 +186,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			readmeContent, _ := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, "README.md")
 			if readmeContent != "" {
 				manifest.Content = []byte(readmeContent)
+				manifest.ContentPath = "README.md"
 			}
 		}
 
@@ -442,7 +443,20 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 		}
 	}
 
-	targetFiles := []string{"go.mod", "README.md", "main.go"}
+	// Pin the fallback clone to the requested revision before reading evidence.
+	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
+		checkout := exec.CommandContext(ctx, "git", "checkout", "--detach", candidate.CommitID)
+		checkout.Dir = tempDir
+		if err := checkout.Run(); err != nil {
+			return nil, fmt.Errorf("clone não contém commit solicitado: %w", err)
+		}
+	}
+	resolve := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
+	resolve.Dir = tempDir
+	if base, err := resolve.Output(); err == nil {
+		extracted.Ref.Commit = strings.TrimSpace(string(base))
+	}
+	targetFiles := paths
 	for _, tf := range targetFiles {
 		filePath := filepath.Join(tempDir, tf)
 		if data, err := os.ReadFile(filePath); err == nil {

@@ -1,0 +1,422 @@
+diff --git a/00_nucleo/prompts/entities/parsed-file.md b/00_nucleo/prompts/entities/parsed-file.md
+index dae154f..0e3c455 100644
+--- a/00_nucleo/prompts/entities/parsed-file.md
++++ b/00_nucleo/prompts/entities/parsed-file.md
+@@ -1,5 +1,5 @@
+ # Prompt: representação canônica ParsedFile
+-Hash do Código: 51d04dde
++Hash do Código: 1ab83893
+ 
+ Owner exclusivo: `01_core/entities/parsed_file.rs`.
+ 
+@@ -13,3 +13,5 @@ reclassifica o papel por AST, conteúdo ou cobertura.
+ 
+ Testes de transporte preservam campos, ordem, multiplicidade e localização; a API pública
+ não expõe tipos de parser nem executa acesso externo.
++
++Revisão 2026-09-07: WiringConfig transporta harness_files como paths exatos para isenção somente V12.
+diff --git a/00_nucleo/prompts/infra/config.md b/00_nucleo/prompts/infra/config.md
+index 862109a..59eb627 100644
+--- a/00_nucleo/prompts/infra/config.md
++++ b/00_nucleo/prompts/infra/config.md
+@@ -1,5 +1,5 @@
+ # Prompt: carregamento estrito de configuração
+-Hash do Código: 6686bac6
++Hash do Código: 0725f6bb
+ 
+ Owner exclusivo: `03_infra/config.rs`.
+ 
+@@ -10,3 +10,5 @@ tipos consumíveis pelo wiring. Chave/tipo inválido é erro, nunca fallback sil
+ 
+ Config mínima aplica defaults documentados; chave desconhecida, colisão e tipo inválido
+ falham, enquanto projeções por regra preservam o valor declarado.
++
++Revisão 2026-09-07: wiring_exceptions.harness_files é mapa path relativo exato → justificativa. Não há glob/prefixo; justificativa vazia não autoriza isenção.
+diff --git a/00_nucleo/prompts/linter-core.md b/00_nucleo/prompts/linter-core.md
+index 3526256..0d92565 100644
+--- a/00_nucleo/prompts/linter-core.md
++++ b/00_nucleo/prompts/linter-core.md
+@@ -1,5 +1,5 @@
+ # Prompt: composição do linter
+-Hash do Código: 3d891254
++Hash do Código: e322c25b
+ 
+ Owner exclusivo: `04_wiring/main.rs`.
+ 
+@@ -13,3 +13,5 @@ obtém inventário L3, aplica plano L1, publica via adapter e apresenta pelo she
+ 
+ O binário compõe todas as portas/adapters, ordena saída independentemente de Rayon e mantém
+ erro de infraestrutura distinto de violação; testes CLI e auto-lint cobrem o pipeline.
++
++Revisão 2026-09-07: projetar harness_files justificados como paths exatos enraizados, exclusivamente para V12.
+diff --git a/00_nucleo/prompts/parsers/go.md b/00_nucleo/prompts/parsers/go.md
+index ec70617..0dfdba4 100644
+--- a/00_nucleo/prompts/parsers/go.md
++++ b/00_nucleo/prompts/parsers/go.md
+@@ -1,5 +1,5 @@
+ # Prompt: parser Go para IR canônica
+-Hash do Código: 84f19573
++Hash do Código: cfb03ecd
+ 
+ Owner exclusivo: `03_infra/go_parser.rs`.
+ 
+@@ -10,3 +10,6 @@ Falha de parse permanece erro observável, não IR parcial silenciosa.
+ 
+ Fixtures Go preservam imports, declarações, decisões e localizações; erro sintático não
+ produz `ParsedFile` parcial nem expõe tipos do parser.
++
++## Revisão 2026-09-07 (Bateia 0035)
++Função livre Go não é impl: preservar métodos como Impl e distinguir Struct, Interface e TypeAlias, inclusive nomes privados. V12 é estrutural: não comprova ausência de lógica de negócio no corpo de funções livres. Sintaxe inválida deve falhar.
+diff --git a/00_nucleo/prompts/rules/wiring-logic-leak.md b/00_nucleo/prompts/rules/wiring-logic-leak.md
+index bf3f2fe..e6e4a6d 100644
+--- a/00_nucleo/prompts/rules/wiring-logic-leak.md
++++ b/00_nucleo/prompts/rules/wiring-logic-leak.md
+@@ -1,5 +1,5 @@
+ # Prompt: Rule V12 - Wiring Logic Leak (wiring-logic-leak)
+-Hash do Código: 02e13507
++Hash do Código: c3a9bc9e
+ 
+ **Camada**: L1 (Core — Rules)
+ **Regra**: V12
+@@ -199,3 +199,6 @@ Então retorna vec![]
+ |------|--------|-------------------|
+ | 2026-03-16 | Criação inicial (ADR-0007) | wiring_logic_leak.rs |
+ | 2026-03-16 | Materialização: check() com is_forbidden/declaration_kind_str, 8 testes; módulo registado em rules/mod.rs; EnabledChecks v10/v11/v12 em cli.rs; WiringExceptionsConfig em config.rs; run_checks/run_pipeline actualizados em main.rs; V10/V11 V12 wired; crystalline.toml actualizado | wiring_logic_leak.rs, cli.rs, config.rs, main.rs, crystalline.toml |
++
++## Revisão 2026-09-07 (Bateia 0035)
++Arquivos Go cujo nome termina exatamente em _test.go são verificação, não composição de produção: apenas V12 os isenta; imports, tokens e linhagem continuam verificados. Harnesses podem ser declarados individualmente em wiring_exceptions.harness_files com justificativa não vazia, com paths exatos resolvidos contra raiz; não são exclusões do walker. V12 mantém métodos e interfaces/aliases privados em produção. Funções livres não equivalem a impl.
+diff --git a/01_core/entities/parsed_file.rs b/01_core/entities/parsed_file.rs
+index 8ef22f7..0d10bc0 100644
+--- a/01_core/entities/parsed_file.rs
++++ b/01_core/entities/parsed_file.rs
+@@ -1,6 +1,6 @@
+ //! Crystalline Lineage
+ //! @prompt 00_nucleo/prompts/entities/parsed-file.md
+-//! @prompt-hash 64ca7e92
++//! @prompt-hash 74715c36
+ //! @layer L1
+ //! @updated 2026-06-09
+ 
+@@ -150,12 +150,15 @@ pub struct WiringConfig {
+     /// enum_item, impl_item sem trait, interface_declaration e
+     /// type_alias_declaration são sempre proibidos.
+     pub allow_adapter_structs: bool,
++    /// Exact harness paths; only V12 is exempted.
++    pub harness_files: Vec<std::path::PathBuf>,
+ }
+ 
+ impl Default for WiringConfig {
+     fn default() -> Self {
+         Self {
+             allow_adapter_structs: true,
++            harness_files: vec![],
+         }
+     }
+ }
+@@ -833,6 +836,7 @@ mod tests {
+     fn wiring_config_can_disable_adapter_structs() {
+         let cfg = WiringConfig {
+             allow_adapter_structs: false,
++            harness_files: vec![],
+         };
+         assert!(!cfg.allow_adapter_structs);
+     }
+diff --git a/01_core/rules/wiring_logic_leak.rs b/01_core/rules/wiring_logic_leak.rs
+index ea7e4f3..51f6e1c 100644
+--- a/01_core/rules/wiring_logic_leak.rs
++++ b/01_core/rules/wiring_logic_leak.rs
+@@ -1,6 +1,6 @@
+ //! Crystalline Lineage
+ //! @prompt 00_nucleo/prompts/rules/wiring-logic-leak.md
+-//! @prompt-hash 013d74d0
++//! @prompt-hash 8c51c44e
+ //! @layer L1
+ //! @updated 2026-03-16
+ 
+@@ -21,7 +21,14 @@ use crate::entities::violation::{Location, Violation, ViolationLevel};
+ /// Warning — não bloqueia CI por padrão (configurável via [rules]).
+ /// Aplica-se apenas a arquivos com `layer == L4`.
+ pub fn check<'a, T: HasWiringPurity<'a>>(file: &T, config: &WiringConfig) -> Vec<Violation<'a>> {
+-    if *file.layer() != Layer::L4 {
++    if *file.layer() != Layer::L4
++        || file
++            .path()
++            .file_name()
++            .and_then(|name| name.to_str())
++            .is_some_and(|name| name.ends_with("_test.go"))
++        || config.harness_files.iter().any(|path| path == file.path())
++    {
+         return vec![];
+     }
+ 
+@@ -111,11 +118,13 @@ mod tests {
+     fn allow_structs() -> WiringConfig {
+         WiringConfig {
+             allow_adapter_structs: true,
++            harness_files: vec![],
+         }
+     }
+     fn deny_structs() -> WiringConfig {
+         WiringConfig {
+             allow_adapter_structs: false,
++            harness_files: vec![],
+         }
+     }
+ 
+@@ -229,4 +238,27 @@ mod tests {
+         assert_eq!(violations.len(), 1);
+         assert!(violations[0].message.contains("Config"));
+     }
++
++    #[test]
++    fn step0035_go_tests_are_not_production_composition() {
++        let mut file = l4_file(vec![decl(DeclarationKind::Impl, "fixture", 3)]);
++        file.path = Path::new("04_wiring/main_test.go");
++        assert!(check(&file, &deny_structs()).is_empty());
++        file.path = Path::new("04_wiring/main_test.go.production.go");
++        assert_eq!(check(&file, &deny_structs()).len(), 1);
++    }
++
++    #[test]
++    fn step0035_harness_exemption_is_exact_and_does_not_mutate_declarations() {
++        let mut file = l4_file(vec![decl(DeclarationKind::Interface, "Gate", 3)]);
++        file.path = Path::new("04_wiring/gate.go");
++        let mut config = deny_structs();
++        config.harness_files.push(file.path.to_path_buf());
++        assert!(check(&file, &config).is_empty());
++        assert_eq!(file.declarations.len(), 1);
++        file.path = Path::new("04_wiring/gate.go/production.go");
++        assert_eq!(check(&file, &config).len(), 1);
++        file.path = Path::new("04_wiring/other/gate.go");
++        assert_eq!(check(&file, &config).len(), 1);
++    }
+ }
+diff --git a/03_infra/config.rs b/03_infra/config.rs
+index 35f901b..63fecff 100644
+--- a/03_infra/config.rs
++++ b/03_infra/config.rs
+@@ -1,6 +1,6 @@
+ //! Crystalline Lineage
+ //! @prompt 00_nucleo/prompts/infra/config.md
+-//! @prompt-hash 81b2ce55
++//! @prompt-hash 78c937a4
+ //! @layer L3
+ //! @updated 2026-06-09
+ 
+@@ -53,6 +53,9 @@ pub struct WiringExceptionsConfig {
+     /// `true` (padrão): structs de adapter são permitidas em L4.
+     /// `false`: structs em L4 também disparam V12.
+     pub allow_adapter_structs: Option<bool>,
++    /// Exact project-relative harness paths with nonempty justification.
++    #[serde(default)]
++    pub harness_files: HashMap<String, String>,
+ }
+ 
+ /// Configuração para V21 — lida de `[v21]`, `[v21.context_vars]`, etc.
+@@ -294,6 +297,22 @@ pub struct N16SummaryConfig {
+ }
+ 
+ impl CrystallineConfig {
++    /// Resolve exact, explicitly justified harness entries. Invalid entries never exempt.
++    pub fn wiring_harness_paths(&self, root: &Path) -> Vec<std::path::PathBuf> {
++        self.wiring_exceptions
++            .harness_files
++            .iter()
++            .filter(|(path, reason)| {
++                !reason.trim().is_empty()
++                    && !Path::new(path).is_absolute()
++                    && Path::new(path)
++                        .components()
++                        .all(|part| matches!(part, Component::Normal(_)))
++            })
++            .map(|(path, _)| root.join(path))
++            .collect()
++    }
++
+     pub fn load(path: &Path) -> Result<Self, String> {
+         let content = std::fs::read_to_string(path)
+             .map_err(|e| format!("Cannot read {}: {}", path.display(), e))?;
+@@ -833,3 +852,27 @@ sinks = ["draw"]
+         assert!(alias.validate_layers().is_ok());
+     }
+ }
++
++#[cfg(test)]
++mod step0035_tests {
++    use super::*;
++    #[test]
++    fn step0035_harness_requires_exact_relative_path_and_reason() {
++        let mut config = CrystallineConfig::default();
++        for (path, reason) in [
++            ("04_wiring/gate.go", "independent gate"),
++            ("/absolute.go", "gate"),
++            ("../escape.go", "gate"),
++            ("04_wiring/no_reason.go", " "),
++        ] {
++            config
++                .wiring_exceptions
++                .harness_files
++                .insert(path.into(), reason.into());
++        }
++        assert_eq!(
++            config.wiring_harness_paths(Path::new("/repo")),
++            vec![Path::new("/repo/04_wiring/gate.go").to_path_buf()]
++        );
++    }
++}
+diff --git a/03_infra/go_parser.rs b/03_infra/go_parser.rs
+index f85f351..ac62e9d 100644
+--- a/03_infra/go_parser.rs
++++ b/03_infra/go_parser.rs
+@@ -1,6 +1,6 @@
+ //! Crystalline Lineage
+ //! @prompt 00_nucleo/prompts/parsers/go.md
+-//! @prompt-hash 1d922266
++//! @prompt-hash 7693fe91
+ //! @layer L3
+ //! @updated 2026-08-11
+ 
+@@ -227,32 +227,41 @@ fn collect_nodes<'a>(
+             "import_declaration" => {
+                 extract_imports(child, source, imports);
+             }
++            // Free functions compose dependencies; they are not Go methods or Rust impls.
+             "function_declaration" | "method_declaration" => {
++                if child.kind() == "function_declaration" {
++                    continue;
++                }
+                 if let Some(name_node) = child.child_by_field_name("name") {
+                     if let Ok(name) = name_node.utf8_text(source) {
+-                        if name.chars().next().map_or(false, |c| c.is_uppercase()) {
+-                            declarations.push(Declaration {
+-                                name,
+-                                kind: DeclarationKind::Impl,
+-                                line: child.start_position().row + 1,
+-                            });
+-                        }
++                        declarations.push(Declaration {
++                            name,
++                            kind: DeclarationKind::Impl,
++                            line: child.start_position().row + 1,
++                        });
+                     }
+                 }
+             }
+             "type_declaration" => {
+                 let mut type_cursor = child.walk();
+-                for type_child in child.children(&mut type_cursor) {
+-                    if type_child.kind() == "type_spec" {
++                for type_child in child.named_children(&mut type_cursor) {
++                    if matches!(type_child.kind(), "type_spec" | "type_alias") {
+                         if let Some(name_node) = type_child.child_by_field_name("name") {
+                             if let Ok(name) = name_node.utf8_text(source) {
+-                                if name.chars().next().map_or(false, |c| c.is_uppercase()) {
+-                                    declarations.push(Declaration {
+-                                        name,
+-                                        kind: DeclarationKind::Struct,
+-                                        line: type_child.start_position().row + 1,
+-                                    });
+-                                }
++                                let kind = if type_child.kind() == "type_alias" {
++                                    DeclarationKind::TypeAlias
++                                } else {
++                                    match type_child.child_by_field_name("type").map(|t| t.kind()) {
++                                        Some("struct_type") => DeclarationKind::Struct,
++                                        Some("interface_type") => DeclarationKind::Interface,
++                                        _ => DeclarationKind::TypeAlias,
++                                    }
++                                };
++                                declarations.push(Declaration {
++                                    name,
++                                    kind,
++                                    line: type_child.start_position().row + 1,
++                                });
+                             }
+                         }
+                     }
+@@ -360,3 +369,38 @@ fn collect_call_tokens<'a>(node: Node, source: &'a [u8], tokens: &mut Vec<Token<
+         collect_call_tokens(child, source, tokens);
+     }
+ }
++
++#[cfg(test)]
++mod step0035_tests {
++    use super::*;
++    #[test]
++    fn step0035_free_function_is_not_impl() {
++        let src = b"package p; func NewServer() {}";
++        let mut engine = TsParserEngine::new();
++        engine
++            .set_language(&tree_sitter_go::LANGUAGE.into())
++            .unwrap();
++        let tree = engine.parse(src, None).unwrap();
++        let mut imports = vec![];
++        let mut declarations = vec![];
++        collect_nodes(tree.root_node(), src, &mut imports, &mut declarations);
++        assert!(declarations.is_empty());
++    }
++    #[test]
++    fn step0035_private_method_interface_and_alias_are_preserved() {
++        let src = b"package p; type service struct{}; type port interface{ Run() }; type alias = int; func (s service) run() {}";
++        let mut engine = TsParserEngine::new();
++        engine
++            .set_language(&tree_sitter_go::LANGUAGE.into())
++            .unwrap();
++        let tree = engine.parse(src, None).unwrap();
++        let mut imports = vec![];
++        let mut declarations = vec![];
++        collect_nodes(tree.root_node(), src, &mut imports, &mut declarations);
++        assert_eq!(declarations.len(), 4);
++        assert_eq!(declarations[0].kind, DeclarationKind::Struct);
++        assert_eq!(declarations[1].kind, DeclarationKind::Interface);
++        assert_eq!(declarations[2].kind, DeclarationKind::TypeAlias);
++        assert_eq!(declarations[3].kind, DeclarationKind::Impl);
++    }
++}
+diff --git a/04_wiring/main.rs b/04_wiring/main.rs
+index 5ba9505..c5e96a0 100644
+--- a/04_wiring/main.rs
++++ b/04_wiring/main.rs
+@@ -1,6 +1,6 @@
+ //! Crystalline Lineage
+ //! @prompt 00_nucleo/prompts/linter-core.md
+-//! @prompt-hash 4797620c
++//! @prompt-hash a4c4c6a4
+ //! @layer L4
+ //! @updated 2026-08-24
+ 
+@@ -542,6 +542,7 @@ fn main() {
+     ];
+ 
+     let wiring_config = WiringConfig {
++        harness_files: config.wiring_harness_paths(&cli.path),
+         allow_adapter_structs: config
+             .wiring_exceptions
+             .allow_adapter_structs
+diff --git a/tests/declaration_state_classifiers_assessment.rs b/tests/declaration_state_classifiers_assessment.rs
+index ba3676e..60e52c7 100644
+--- a/tests/declaration_state_classifiers_assessment.rs
++++ b/tests/declaration_state_classifiers_assessment.rs
+@@ -66,6 +66,7 @@ fn v12_matches_seven_layers_six_kinds_and_both_config_states() {
+                     &fixture,
+                     &WiringConfig {
+                         allow_adapter_structs,
++                        harness_files: vec![],
+                     },
+                 );
+                 let always_forbidden = matches!(
+@@ -169,12 +170,14 @@ fn v12_config_toggle_is_isolated_to_struct_class_and_does_not_mutate_input() {
+         &fixture,
+         &WiringConfig {
+             allow_adapter_structs: true,
++            harness_files: vec![],
+         },
+     );
+     let strict = wiring_logic_leak::check(
+         &fixture,
+         &WiringConfig {
+             allow_adapter_structs: false,
++            harness_files: vec![],
+         },
+     );
+     assert_eq!(permissive.len(), 4);

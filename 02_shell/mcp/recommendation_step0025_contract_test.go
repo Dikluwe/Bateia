@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md
  * @layer L2
- * @updated 2026-09-03
+ * @updated 2026-09-07
  */
 package mcp
 
@@ -341,8 +341,6 @@ func step0025ServeLegacy(t *testing.T, lines ...string) []JSONRPCResponse {
 	return responses
 }
 
-const step0025BaselineSearchSuccess = "{\"jsonrpc\":\"2.0\",\"id\":40,\"result\":{\"content\":[{\"text\":\"# Relatório de Análise Arquitetural — Bateia\\n\\n**Query de Busca**: `legacy success`  \\n**Linguagem**: `go`  \\n**Gerado em**: 2026-09-01 17:04:00 UTC  \\n\\n## Resumo do Funil de Redução\\n\\n| Estágio | Quantidade | Observação |\\n| :--- | :--- | :--- |\\n| **1. Descoberta (Topo)** | 0 candidatos | Fonte: Sourcegraph (sem consumo de Search API) |\\n| **2. Triagem (Meio)** | 0 aprovados | Leitura de manifestos e estrutura (0 descartados) |\\n| **3. Extração (Fundo)** | 0 entregues | Extração idempotente e cacheados por `repo@commit` |\\n\\n---\\n\\n## 1. Soluções Exatas Encontradas (Com Rastreabilidade `repo@commit`)\\n\\n\\u003e Nenhuma solução encontrada para os critérios informados. Considere alargar os termos da query ou remover filtros restritivos.\\n\\n## 2. Ideias Alternativas \\u0026 Abordagens Encontradas\\n\\nAgrupamento das técnicas identificadas nos repositórios analisados:\\n\\n\\n## 3. Descobrimento de Necessidades Ocultas\\n\\nAnálise do ecossistema técnico e padrões arquiteturais presentes nos repositórios extraídos:\\n\\n- Presença frequente de `go.mod`, arquivos em `cmd/` e `internal/` para separação limpa de domínios.\\n\",\"type\":\"text\"}]}}"
-
 func step0025CanonicalizeLegacyGeneratedAt(t *testing.T, encoded []byte) string {
 	t.Helper()
 	const marker = `**Gerado em**: `
@@ -360,15 +358,15 @@ func step0025CanonicalizeLegacyGeneratedAt(t *testing.T, encoded []byte) string 
 	return value[:start] + baselineValue + value[start+end:]
 }
 
-func TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes(t *testing.T) {
+func TestStep0025LegacySuccessfulSearchUsesEvidenceContract(t *testing.T) {
 	searchCall := `{"jsonrpc":"2.0","id":40,"method":"tools/call","params":{"name":"bateia_search","arguments":{"query":"legacy success"}}}`
 	searchActual := step0025ServeLegacy(t, searchCall)
 	if len(searchActual) != 1 {
 		t.Fatalf("resposta search ausente: %#v", searchActual)
 	}
 	gotSearch := step0025CanonicalizeLegacyGeneratedAt(t, mustStep0025JSON(t, searchActual[0]))
-	if step0025BaselineSearchSuccess != string(gotSearch) {
-		t.Fatalf("bateia_search divergiu da baseline byte-exata:\nwant %s\ngot  %s", step0025BaselineSearchSuccess, gotSearch)
+	if strings.Contains(gotSearch, "Soluções Exatas Encontradas") || strings.Contains(gotSearch, "Presença frequente") || !strings.Contains(gotSearch, "Candidatos Encontrados") || !strings.Contains(gotSearch, "Não avaliado") {
+		t.Fatalf("contrato de evidência ausente: %s", gotSearch)
 	}
 }
 

@@ -12,3 +12,7 @@ Verificar de forma determinística o comportamento público do contrato relacion
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/01_core/usecase/funnel.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.
+
+## Passo 0035
+
+Verificar injeção da porta semântica local e preservação de cobertura insuficiente/saúde não avaliada mesmo com resolução estática parcial.

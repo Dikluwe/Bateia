@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/arch_linter.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-07
  */
 
 package parser
@@ -16,6 +16,9 @@ import (
 
 // CalculateHealthScore calcula a nota consolidada de saúde arquitetural (0 a 100%).
 func CalculateHealthScore(violations []domain.ArchViolation) int {
+	if len(violations) == 0 {
+		return -1
+	} // No findings do not establish health.
 	score := 100
 	for _, v := range violations {
 		switch v.Severity {
@@ -44,7 +47,13 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 	lang := strings.ToLower(manifest.Language)
 
 	// 1. Verificar acoplamento excessivo de dependências
-	if len(manifest.Dependencies) > 35 {
+	directCount := 0
+	for _, dep := range manifest.Dependencies {
+		if !dep.Indirect {
+			directCount++
+		}
+	}
+	if directCount > 35 {
 		snippet := "[dependencies] // > 35 dependências diretas"
 		suggestion := "Divida as responsabilidades em múltiplos módulos/crates acoplados por interfaces genéricas."
 		if lang == "rust" {
@@ -73,13 +82,13 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 		isORM := false
 		switch lang {
 		case "rust":
-			isORM = strings.Contains(lowerDep, "diesel") || strings.Contains(lowerDep, "sqlx") || strings.Contains(lowerDep, "sea-orm") || strings.Contains(lowerDep, "rusqlite")
+			isORM = DependencyIdentityMatch(lowerDep, "diesel") || DependencyIdentityMatch(lowerDep, "sqlx") || DependencyIdentityMatch(lowerDep, "sea-orm") || DependencyIdentityMatch(lowerDep, "rusqlite")
 		case "python":
-			isORM = strings.Contains(lowerDep, "sqlalchemy") || strings.Contains(lowerDep, "django") || strings.Contains(lowerDep, "tortoise") || strings.Contains(lowerDep, "peewee")
+			isORM = DependencyIdentityMatch(lowerDep, "sqlalchemy") || DependencyIdentityMatch(lowerDep, "django") || DependencyIdentityMatch(lowerDep, "tortoise") || DependencyIdentityMatch(lowerDep, "peewee")
 		case "typescript", "javascript":
-			isORM = strings.Contains(lowerDep, "prisma") || strings.Contains(lowerDep, "typeorm") || strings.Contains(lowerDep, "sequelize") || strings.Contains(lowerDep, "drizzle")
-		default: // go
-			isORM = strings.Contains(lowerDep, "gorm") || strings.Contains(lowerDep, "ent") || strings.Contains(lowerDep, "prisma") || strings.Contains(lowerDep, "sqlx")
+			isORM = DependencyIdentityMatch(lowerDep, "prisma") || DependencyIdentityMatch(lowerDep, "typeorm") || DependencyIdentityMatch(lowerDep, "sequelize") || DependencyIdentityMatch(lowerDep, "drizzle")
+		case "go":
+			isORM = DependencyIdentityMatch(lowerDep, "gorm") || DependencyIdentityMatch(lowerDep, "entgo.io/ent") || DependencyIdentityMatch(lowerDep, "prisma") || DependencyIdentityMatch(lowerDep, "sqlx")
 		}
 
 		if isORM {
@@ -102,10 +111,10 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 				violations = append(violations, domain.ArchViolation{
 					Rule:        "MISSING_INFRASTRUCTURE_ISOLATION",
 					Severity:    "MEDIUM",
-					Message:     fmt.Sprintf("Dependência de ORM/Banco (%s) sem isolamento de camada de infraestrutura/repositório detectada.", dep.Name),
+					Message:     fmt.Sprintf("Hipótese: dependência de ORM/Banco (%s) declarada; árvore não mostra diretório convencional. Isolamento real não verificado.", dep.Name),
 					Target:      dep.Name,
-					Line:        10,
-					CodeSnippet: dep.Name + " // Acesso direto ao ORM/Banco",
+					Line:        0,
+					CodeSnippet: "",
 					Suggestion:  suggestion,
 				})
 			}
@@ -129,8 +138,11 @@ func EvaluateArchViolations(manifest *domain.Manifest, tree []domain.DirectoryNo
 
 		// 3. Ausência de Suíte de Testes
 		if !hasTests {
-			snippet := "// Ausência de pasta tests/ ou arquivos *_test.go"
-			suggestion := "Adicione arquivos de testes (*_test.go) para garantir cobertura de regressão."
+			snippet := ""
+			suggestion := "Verifique testes e o sistema de build da linguagem; a árvore observada pode estar incompleta."
+			if lang == "go" {
+				suggestion = "Verifique arquivos *_test.go e execute go test."
+			}
 			if lang == "rust" {
 				snippet = "// Ausência de pasta tests/ ou módulos #[cfg(test)]"
 				suggestion = "Crie uma pasta tests/ ou adicione suítes de teste com cargo test."

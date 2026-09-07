@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-09-03
+ * @updated 2026-09-07
  */
 
 package main
@@ -22,6 +22,7 @@ import (
 	"bateia/02_shell/cli"
 	"bateia/02_shell/mcp"
 	"bateia/03_infra/cache"
+	"bateia/03_infra/clang"
 	"bateia/03_infra/content"
 	"bateia/03_infra/envfile"
 	"bateia/03_infra/github"
@@ -164,7 +165,7 @@ func main() {
 	}
 
 	// L4: Injetar adaptadores L3 nas abstrações/interfaces de L1 (Núcleo)
-	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithProgressReporter(cli.LogProgressReporter{})
+	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithProgressReporter(cli.LogProgressReporter{}).WithSemanticProvider(clang.NewClient("clang").WithFlowTool(os.Getenv("BATEIA_CLANG_FLOW_TOOL")))
 	recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, contentProvider)
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "mcp") {
 		rawToolCallLimit, toolCallLimitPresent := os.LookupEnv("BATEIA_MCP_MAX_TOOL_CALLS")

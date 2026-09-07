@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/local/client.md
  * @layer L3
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package local
@@ -95,6 +95,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		}
 		if readme, readErr := os.ReadFile(filepath.Join(root, "README.md")); readErr == nil {
 			manifest.Content = readme
+			manifest.ContentPath = "README.md"
 		}
 		return manifest, nil
 	}
@@ -148,6 +149,11 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 		Ref:       domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID},
 		Candidate: candidate, Files: make([]domain.ExtractedFile, 0), ConsultadoEm: time.Now().UTC(),
 	}
+	cmd := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
+	cmd.Dir = root
+	if base, err := cmd.Output(); err == nil {
+		extracted.BaseCommit = strings.TrimSpace(string(base))
+	}
 	seen := make(map[string]bool)
 	for _, relative := range paths {
 		if ctx.Err() != nil {
@@ -180,7 +186,7 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 		return candidate, err
 	}
 	candidate.Description = "Worktree local em " + root
-	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") {
+	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") || candidate.CommitID == "WORKTREE" {
 		cmd := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
 		cmd.Dir = root
 		output, resolveErr := cmd.Output()

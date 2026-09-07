@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/funnel.md
  * @layer L1
- * @updated 2026-08-04
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -23,11 +23,18 @@ import (
 
 // SearchFunnel UseCase que implementa a orquestração do funil de redução de 3 estágios em L1.
 type SearchFunnel struct {
+	semantic domain.SemanticProvider
 	searcher domain.SearchProvider
 	fetcher  domain.ContentProvider
 	store    domain.CacheStore
 	reporter domain.ProgressReporter
 	mu       sync.Mutex
+}
+
+// WithSemanticProvider injects bounded static analysis without adding I/O to the core.
+func (f *SearchFunnel) WithSemanticProvider(provider domain.SemanticProvider) *SearchFunnel {
+	f.semantic = provider
+	return f
 }
 
 // WithProgressReporter configura um observador de progresso e mantém o núcleo sem I/O direto.
@@ -106,6 +113,7 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 		var topCandidates, triagedCount, discardedCount int
 		var failures []domain.ExecutionFailure
 		var warnings []domain.OperationalWarning
+		var attempts []domain.SearchAttempt
 		var discoveryMs, triageMs, extractionMs int64
 		var cacheHits, cacheMisses int
 		visited := make(map[string]bool)
@@ -125,6 +133,7 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 				discardedCount += subReport.DiscardedCount
 				failures = append(failures, subReport.Failures...)
 				warnings = append(warnings, subReport.Warnings...)
+				attempts = append(attempts, subReport.SearchAttempts...)
 				if subReport.Telemetry != nil {
 					discoveryMs += subReport.Telemetry.DiscoveryDurationMs
 					triageMs += subReport.Telemetry.TriageDurationMs
@@ -145,16 +154,18 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 		}
 
 		finalReport := &domain.SearchReport{
-			Query:          filter,
-			GeneratedAt:    time.Now().UTC(),
-			TopCandidates:  topCandidates,
-			TriagedCount:   triagedCount,
-			ExtractedCount: len(mergedResults),
-			DiscardedCount: discardedCount,
-			Results:        mergedResults,
-			Telemetry:      telemetry,
-			Failures:       failures,
-			Warnings:       warnings,
+			Query:           filter,
+			GeneratedAt:     time.Now().UTC(),
+			AnalyzerVersion: parser.EvidenceVersion,
+			TopCandidates:   topCandidates,
+			TriagedCount:    triagedCount,
+			ExtractedCount:  len(mergedResults),
+			DiscardedCount:  discardedCount,
+			Results:         mergedResults,
+			Telemetry:       telemetry,
+			Failures:        failures,
+			Warnings:        warnings,
+			SearchAttempts:  attempts,
 		}
 
 		insights := parser.ExtractArchitecturalInsights(finalReport.Results)
@@ -197,13 +208,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	telemetry := &domain.FunnelTelemetry{}
 
 	report := &domain.SearchReport{
-		Query:       filter,
-		GeneratedAt: time.Now().UTC(),
-		Results:     make([]domain.ExtractedRepository, 0),
-		Telemetry:   telemetry,
+		Query:           filter,
+		GeneratedAt:     time.Now().UTC(),
+		AnalyzerVersion: parser.EvidenceVersion,
+		Results:         make([]domain.ExtractedRepository, 0),
+		Telemetry:       telemetry,
 	}
 
-	queryKey := fmt.Sprintf("%s_%s_%d", filter.Query, filter.Language, filter.MaxResults)
+	queryKey := fmt.Sprintf("%s_%s_%s_%d", parser.EvidenceVersion, filter.Query, filter.Language, filter.MaxResults)
 
 	// ==========================================
 	// Estágio 1: Descoberta (Topo do Funil)
@@ -244,7 +256,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		if !hit || len(candidates) == 0 {
 			telemetry.CacheMisses++
 			f.progress("discovery", "cache vazio; consultando provedor")
-			candidates, err = f.searcher.SearchCandidates(ctx, filter)
+			if traced, ok := f.searcher.(interface {
+				SearchCandidatesWithTrace(context.Context, domain.QueryFilter) ([]domain.RepositoryCandidate, []domain.SearchAttempt, error)
+			}); ok {
+				candidates, report.SearchAttempts, err = traced.SearchCandidatesWithTrace(ctx, filter)
+			} else {
+				candidates, err = f.searcher.SearchCandidates(ctx, filter)
+				report.SearchAttempts = append(report.SearchAttempts, domain.SearchAttempt{OriginalQuery: filter.Query, Provider: "não informado", Relaxation: "provedor sem rastreio; consulta enviada não verificada", Candidates: len(candidates)})
+			}
 			if err != nil {
 				return nil, fmt.Errorf("falha no estágio 1 (Descoberta): %w", err)
 			}
@@ -253,6 +272,11 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			}
 		} else {
 			telemetry.CacheHits++
+			if len(candidates) > 0 && len(candidates[0].SearchAttempts) > 0 {
+				report.SearchAttempts = append(report.SearchAttempts, candidates[0].SearchAttempts...)
+			} else {
+				report.SearchAttempts = append(report.SearchAttempts, domain.SearchAttempt{OriginalQuery: filter.Query, Provider: "cache", Relaxation: "consulta histórica ao provedor não registrada", Candidates: len(candidates)})
+			}
 			f.progress("discovery", "cache hit para %q (%d candidatos)", filter.Query, len(candidates))
 		}
 	}
@@ -399,56 +423,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			Commit: tRepo.Candidate.CommitID,
 		}
 
-		// Tentar extração via cache imutável (repo@commit)
+		// Selection depends on the query; legacy commit-only extraction cache is unsafe.
 		var extracted *domain.ExtractedRepository
-		var hitE bool
-		if filter.LocalPath == "" {
-			var cacheErr error
-			extracted, hitE, cacheErr = f.store.GetExtracted(ref)
-			if cacheErr != nil {
-				f.cacheWarning(report, "extraction", "get_extracted", ref.Key(), cacheErr)
-				hitE = false
-			}
-		}
-		if hitE {
-			f.recordCache(telemetry, true)
-			extracted.Candidate = tRepo.Candidate
-			if extracted.Manifest != nil && extracted.Manifest.Content != nil {
-				rel := parser.EvaluateRelevance(filter.Query, extracted.Manifest, tRepo.Candidate, tRepo.Tree)
-				extracted.RelevanceScore = rel.Score
-				extracted.RelevanceLabel = rel.Label
-				extracted.RelevanceReason = rel.Reason
-			} else {
-				extracted.RelevanceScore = tRepo.RelevanceScore
-				extracted.RelevanceLabel = tRepo.RelevanceLabel
-				extracted.RelevanceReason = tRepo.RelevanceReason
-			}
-			f.progress("extraction", "cache hit para %s (score %d)", ref.Key(), extracted.RelevanceScore)
-		} else {
+		{
 			if filter.LocalPath == "" {
 				f.recordCache(telemetry, false)
 			}
 			f.progress("extraction", "baixando conteúdo de %s (score %d)", ref.Key(), tRepo.RelevanceScore)
-			targetPaths := []string{"go.mod", "README.md", "package.json", "Cargo.toml"}
-
-			// Selecionar dinamicamente os 3 primeiros arquivos de código fonte da árvore
-			codeCount := 0
-			for _, node := range tRepo.Tree {
-				if node.Type == "file" || node.Type == "blob" {
-					ext := strings.ToLower(pathpkg.Ext(strings.ReplaceAll(node.Path, "\\", "/")))
-					if (ext == ".go" || ext == ".rs" || ext == ".ts" || ext == ".py" || ext == ".java") && !strings.Contains(node.Path, "_test.go") {
-						targetPaths = append(targetPaths, node.Path)
-						codeCount++
-						if codeCount >= 3 {
-							break
-						}
-					}
-				}
-			}
-
-			if codeCount == 0 {
-				targetPaths = append(targetPaths, "gin.go", "main.go", "app.go", "lib.rs", "index.ts", "cmd/main.go", "types.go", "domain.go", "server.go", "client.go", "01_core/domain/types.go", "01_core/parser/ast.go")
-			}
+			targetPaths := parser.SelectEvidenceFiles(filter.Query, tRepo.Tree, 12)
 
 			downloaded, extractErr := f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, targetPaths)
 			if extractErr != nil {
@@ -460,17 +442,13 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			}
 			extracted = downloaded
 			extracted.Candidate = tRepo.Candidate
-			if tRepo.Manifest != nil {
-				extracted.Manifest = tRepo.Manifest
-			} else {
-				// Tentar recuperar manifesto a partir dos arquivos extraídos (ex: go.mod)
-				for _, f := range extracted.Files {
-					if f.Path == "go.mod" || f.Path == "package.json" || f.Path == "Cargo.toml" {
-						m, errM := parser.ParseManifest(f.Path, ref, f.Content)
-						if errM == nil {
-							extracted.Manifest = m
-							break
-						}
+			// Reparse the bytes actually extracted so hashes identify analysis inputs.
+			extracted.Manifest = nil
+			for _, file := range extracted.Files {
+				if parser.DetectManifestType(file.Path) != "" {
+					if m, err := parser.ParseManifest(file.Path, extracted.Ref, file.Content); err == nil {
+						extracted.Manifest = m
+						break
 					}
 				}
 			}
@@ -480,6 +458,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				for _, f := range extracted.Files {
 					if strings.EqualFold(f.Path, "README.md") {
 						extracted.Manifest.Content = []byte(f.Content)
+						extracted.Manifest.ContentPath = f.Path
 						break
 					}
 				}
@@ -493,10 +472,9 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				extracted.RelevanceReason = tRepo.RelevanceReason
 			}
 
-			if filter.LocalPath == "" {
-				f.cacheWarning(report, "extraction", "save_extracted", ref.Key(), f.store.SaveExtracted(ref, extracted))
-			}
 		}
+
+		parser.AnnotateEvidence(extracted, filter.Query, parser.SelectEvidenceFiles(filter.Query, tRepo.Tree, 12))
 
 		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)
 		var allRepoSymbols []domain.ASTSymbol
@@ -508,8 +486,68 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			}
 		}
 		extracted.Symbols = allRepoSymbols
+		semantic := domain.SemanticReport{Status: "not_evaluated", Reason: "Análise Clang requer provedor e checkout local com compile_commands.json."}
+		if f.semantic != nil && filter.LocalPath != "" {
+			f.progress("semantic", "analisando unidades C/C++ de %s", ref.Key())
+			var semanticErr error
+			semantic, semanticErr = f.semantic.Analyze(ctx, domain.SemanticRequest{Root: filter.LocalPath, Query: filter.Query, Paths: nil})
+			if semanticErr != nil {
+				semantic.Status = "partial"
+				semantic.Reason = semanticErr.Error()
+			}
+		}
+
+		// Feed compiler-selected units back into textual extraction through the content port.
+		var semanticPaths []string
+		known := map[string]bool{}
+		for _, file := range extracted.Files {
+			known[file.Path] = true
+		}
+		root := strings.TrimSuffix(strings.TrimPrefix(extracted.Candidate.URL, "file://"), "/")
+		for _, unit := range semantic.Units {
+			p := strings.TrimPrefix(unit.Path, root+"/")
+			if unit.Status == "complete" && p != unit.Path && !known[p] {
+				semanticPaths = append(semanticPaths, p)
+				known[p] = true
+			}
+		}
+		if len(semanticPaths) > 0 {
+			extra, err := f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, semanticPaths)
+			if err == nil && extra != nil {
+				extracted.Files = append(extracted.Files, extra.Files...)
+			} else {
+				semantic.Reason += "; conteúdo das unidades não recuperado"
+			}
+			requested := append(append([]string(nil), extracted.Coverage.RequestedFiles...), semanticPaths...)
+			parser.AnnotateEvidence(extracted, filter.Query, requested)
+		}
+		for i := range extracted.Files {
+			file := &extracted.Files[i]
+			for u := range semantic.Units {
+				unit := &semantic.Units[u]
+				for _, input := range unit.Inputs {
+					normalizedRoot := strings.TrimSuffix(strings.TrimPrefix(extracted.Candidate.URL, "file://"), "/")
+					inputPath := strings.TrimPrefix(strings.ReplaceAll(input.Path, "\\", "/"), normalizedRoot+"/")
+					if inputPath == file.Path && file.Evidence.SHA256 != input.SHA256 {
+						unit.Status = "partial"
+						semantic.Status = "partial"
+						unit.Diagnostics += "; bytes divergem da extração inicial"
+					} else if inputPath == file.Path && unit.Status == "complete" {
+						file.Evidence.State = "static_analyzed"
+						file.Evidence.Method += "; Clang com contexto de compilação"
+					}
+				}
+			}
+		}
+		extracted.Semantic = &semantic
+		extracted.QueryEvidence = parser.BuildQueryEvidence(filter.Query, &semantic, extracted.Files, root)
+		if len(semantic.Units) > 0 {
+			extracted.Coverage.SupportedLanguages = append(extracted.Coverage.SupportedLanguages, "C/C++ (Clang; configuração explícita)")
+			extracted.Coverage.ChecksRun = append(extracted.Coverage.ChecksRun, "tentativa Clang: "+semantic.Status)
+		}
+
 		extracted.ArchViolations = parser.EvaluateArchViolations(extracted.Manifest, tRepo.Tree)
-		extracted.HealthScore = parser.CalculateHealthScore(extracted.ArchViolations)
+		extracted.HealthScore = -1 // No validated architectural coverage metric.
 		extracted.SecurityAdvisories = parser.EvaluateSecurityAdvisories(extracted.Manifest)
 
 		f.mu.Lock()
@@ -560,6 +598,14 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 				continue
 			}
 			if childReport != nil {
+				for i := range childReport.Results {
+					res := &childReport.Results[i]
+					rel := parser.EvaluateRelevance(filter.Query, res.Manifest, res.Candidate, nil)
+					res.RelevanceScore, res.RelevanceLabel, res.RelevanceReason = rel.Score, rel.Label, rel.Reason
+					parser.AnnotateEvidence(res, filter.Query, res.Coverage.RequestedFiles)
+					res.QueryEvidence = parser.BuildQueryEvidence(filter.Query, res.Semantic, res.Files, strings.TrimSuffix(strings.TrimPrefix(res.Candidate.URL, "file://"), "/"))
+				}
+				report.SearchAttempts = append(report.SearchAttempts, childReport.SearchAttempts...)
 				report.Results = append(report.Results, childReport.Results...)
 				report.TriagedCount += childReport.TriagedCount
 				report.DiscardedCount += childReport.DiscardedCount

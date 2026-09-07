@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/interfaces.md
  * @layer L1
- * @updated 2026-07-25
+ * @updated 2026-09-07
  */
 
 package domain
@@ -45,4 +45,9 @@ type CacheStore interface {
 // ProgressReporter recebe eventos operacionais sem acoplar o núcleo a log, terminal ou arquivo.
 type ProgressReporter interface {
 	ReportProgress(event ProgressEvent)
+}
+
+// SemanticProvider performs bounded static analysis outside the pure core.
+type SemanticProvider interface {
+	Analyze(context.Context, SemanticRequest) (SemanticReport, error)
 }

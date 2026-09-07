@@ -49,3 +49,10 @@ Cada passo deve declarar:
 | [0032](0032-executar-teste-end-to-end-de-validacao-do-bateia.md) | Executar teste end-to-end de validação do Bateia na CLI e servidor MCP | `IMPLEMENTADO` |
 | [0033](0033-expandir-descoberta-global-federada-de-mercados-e-locales.md) | Expandir descoberta global federada de mercados e locales no catálogo e MCP | `IMPLEMENTADO` |
 | [0034](0034-integrar-conectores-android-e-forjas-federadas-de-codigo.md) | Integrar conectores Android (Play Store & F-Droid) e forjas federadas (Gitee, Codeberg, GitLab) | `IMPLEMENTADO` |
+| [0035](0035-corrigir-lint-e-analisar-c-cpp-com-clang.md) | Corrigir precisão do lint e integrar análise estática C/C++ com Clang e cobertura explícita | `IMPLEMENTADO` |
+
+- [0036 — Projetar evidências da consulta](0036-projetar-evidencias-da-consulta.md)
+
+- [0037 — Resposta fundamentada por mecanismo](0037-resposta-fundamentada-por-mecanismo.md)
+
+- [0038 — Protótipo Clang AST + CFG](0038-prototipo-clang-ast-cfg.md)

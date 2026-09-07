@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/types.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-07
  */
 
 package domain
@@ -28,17 +28,18 @@ func (c CommitRef) Key() string {
 
 // RepositoryCandidate é um candidato retornado no topo do funil (Descoberta).
 type RepositoryCandidate struct {
-	Owner         string    `json:"owner"`
-	Repo          string    `json:"repo"`
-	URL           string    `json:"url"`
-	Description   string    `json:"description"`
-	Stars         int       `json:"stars"`
-	CommitID      string    `json:"commit_id"`
-	ConsultadoEm  time.Time `json:"consultado_em"`
-	Stale         bool      `json:"stale"`
-	Archived      bool      `json:"archived,omitempty"`
-	DefaultBranch string    `json:"default_branch,omitempty"`
-	UpdatedAt     time.Time `json:"updated_at,omitempty"`
+	SearchAttempts []SearchAttempt `json:"search_attempts,omitempty"`
+	Owner          string          `json:"owner"`
+	Repo           string          `json:"repo"`
+	URL            string          `json:"url"`
+	Description    string          `json:"description"`
+	Stars          int             `json:"stars"`
+	CommitID       string          `json:"commit_id"`
+	ConsultadoEm   time.Time       `json:"consultado_em"`
+	Stale          bool            `json:"stale"`
+	Archived       bool            `json:"archived,omitempty"`
+	DefaultBranch  string          `json:"default_branch,omitempty"`
+	UpdatedAt      time.Time       `json:"updated_at,omitempty"`
 }
 
 // Dependency representa uma dependência declarada em manifesto.
@@ -57,6 +58,7 @@ type Manifest struct {
 	GoVersion    string       `json:"go_version,omitempty"`
 	Dependencies []Dependency `json:"dependencies"`
 	ConsultadoEm time.Time    `json:"consultado_em"`
+	ContentPath  string       `json:"content_path,omitempty"`
 	Content      []byte       `json:"content,omitempty"`
 }
 
@@ -101,10 +103,11 @@ type ASTSymbol struct {
 
 // ExtractedFile representa o conteúdo lido do repositório final.
 type ExtractedFile struct {
-	Path    string      `json:"path"`
-	Content string      `json:"content"`
-	Size    int64       `json:"size"`
-	Symbols []ASTSymbol `json:"symbols,omitempty"`
+	Evidence FileEvidence `json:"evidence"`
+	Path     string       `json:"path"`
+	Content  string       `json:"content"`
+	Size     int64        `json:"size"`
+	Symbols  []ASTSymbol  `json:"symbols,omitempty"`
 }
 
 // ArchViolation representa uma violação de arquitetura ou acoplamento.
@@ -145,6 +148,11 @@ type ExtractedRepository struct {
 	RelevanceScore     int                 `json:"relevance_score"`
 	RelevanceLabel     string              `json:"relevance_label"`
 	RelevanceReason    string              `json:"relevance_reason"`
+	QueryEvidence      *QueryEvidence      `json:"query_evidence,omitempty"`
+	Semantic           *SemanticReport     `json:"semantic,omitempty"`
+	Coverage           AnalysisCoverage    `json:"coverage"`
+	BaseCommit         string              `json:"base_commit,omitempty"`
+	SnapshotHash       string              `json:"snapshot_hash,omitempty"`
 	HealthScore        int                 `json:"health_score"`
 }
 
@@ -223,6 +231,8 @@ type OperationalWarning struct {
 
 // SearchReport é o relatório compilado final entregue ao usuário.
 type SearchReport struct {
+	AnalyzerVersion      string                      `json:"analyzer_version"`
+	SearchAttempts       []SearchAttempt             `json:"search_attempts"`
 	Query                QueryFilter                 `json:"query"`
 	GeneratedAt          time.Time                   `json:"generated_at"`
 	TopCandidates        int                         `json:"top_candidates"`
@@ -295,10 +305,12 @@ type SimilarityVector struct {
 
 // IdeaSimilarityResult representa o resultado da comparação entre a ontologia alvo e um repositório candidato.
 type IdeaSimilarityResult struct {
+	EvaluationStatus    string           `json:"evaluation_status"`
+	EvaluationReason    string           `json:"evaluation_reason,omitempty"`
 	TargetRef           CommitRef        `json:"target_ref"`
 	CandidateRef        CommitRef        `json:"candidate_ref"`
 	CandidateRepo       string           `json:"candidate_repo"`
-	OverallScore        int              `json:"overall_score"`    // Score total ponderado (0-100%)
+	OverallScore        int              `json:"overall_score"`    // Score total ponderado (0-100%); -1 quando dimensões necessárias estão ausentes
 	SimilarityLabel     string           `json:"similarity_label"` // "Identical Idea", "High Similarity", "Moderate", "Divergent"
 	Vectors             SimilarityVector `json:"vectors"`
 	CommonKeywords      []string         `json:"common_keywords,omitempty"`
@@ -313,4 +325,152 @@ type ImprovementRecommendation struct {
 	AdoptionRate int      `json:"adoption_rate"` // % de adoção entre projetos parecidos (> 60% similaridade)
 	SuggestedBy  []string `json:"suggested_by"`  // Repositórios de referência que já adotam
 	Reasoning    string   `json:"reasoning"`     // Motivação baseada na ontologia
+}
+
+// SearchAttempt records the actual provider query, including unsuccessful fallbacks.
+type SearchAttempt struct {
+	OriginalQuery string `json:"original_query"`
+	Provider      string `json:"provider"`
+	Query         string `json:"query"`
+	Relaxation    string `json:"relaxation,omitempty"`
+	Candidates    int    `json:"candidates"`
+	Error         string `json:"error,omitempty"`
+}
+
+// FileEvidence describes bytes actually inspected, never semantic proof of a solution.
+type FileEvidence struct {
+	SHA256       string   `json:"sha256"`
+	FirstLine    int      `json:"first_line"`
+	LastLine     int      `json:"last_line"`
+	State        string   `json:"state"`
+	Method       string   `json:"method"`
+	MatchedTerms []string `json:"matched_terms,omitempty"`
+	MatchLines   []int    `json:"match_lines,omitempty"`
+}
+
+type AnalysisCoverage struct {
+	Status             string   `json:"status"`
+	Reason             string   `json:"reason"`
+	RequestedFiles     []string `json:"requested_files"`
+	MissingFiles       []string `json:"missing_files,omitempty"`
+	ChecksRun          []string `json:"checks_run"`
+	ChecksNotRun       []string `json:"checks_not_run"`
+	SupportedLanguages []string `json:"supported_languages"`
+}
+
+// SemanticRequest selects local compilation units; it never authorizes project commands.
+type SemanticRequest struct {
+	Root  string   `json:"root"`
+	Query string   `json:"query"`
+	Paths []string `json:"paths"`
+}
+type SemanticInput struct {
+	Path   string `json:"path"`
+	SHA256 string `json:"sha256"`
+}
+type SemanticSymbol struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Kind       string `json:"kind"`
+	File       string `json:"file"`
+	Type       string `json:"type"`
+	Line       int    `json:"line"`
+	EndLine    int    `json:"end_line"`
+	Definition bool   `json:"definition"`
+}
+type SemanticCall struct {
+	CallerID string `json:"caller_id,omitempty"`
+	CalleeID string `json:"callee_id,omitempty"`
+	Caller   string `json:"caller"`
+	Callee   string `json:"callee"`
+	File     string `json:"file"`
+	Line     int    `json:"line"`
+}
+type SemanticUnit struct {
+	Flow        *StaticFlow      `json:"flow,omitempty"`
+	Path        string           `json:"path"`
+	Status      string           `json:"status"`
+	Diagnostics string           `json:"diagnostics"`
+	Arguments   []string         `json:"arguments"`
+	Symbols     []SemanticSymbol `json:"symbols"`
+	Calls       []SemanticCall   `json:"calls"`
+	Inputs      []SemanticInput  `json:"inputs"`
+}
+type SemanticReport struct {
+	Status            string         `json:"status"`
+	Reason            string         `json:"reason"`
+	Analyzer          string         `json:"analyzer"`
+	Version           string         `json:"version"`
+	Units             []SemanticUnit `json:"units"`
+	ConfigurationHash string         `json:"configuration_hash,omitempty"`
+	TotalUnits        int            `json:"total_units"`
+	SelectedUnits     int            `json:"selected_units"`
+	MaxUnits          int            `json:"max_units"`
+	TimeoutSeconds    int            `json:"timeout_seconds"`
+	MaxOutputBytes    int            `json:"max_output_bytes"`
+}
+
+// QueryEvidence separates observed compiler facts from heuristic selection.
+type QueryEvidence struct {
+	Context       string                   `json:"context,omitempty"`
+	ContextSHA256 string                   `json:"context_sha256,omitempty"`
+	Status        string                   `json:"status"`
+	Reason        string                   `json:"reason"`
+	Definitions   []ImplementationEvidence `json:"definitions"`
+	Calls         []SemanticCall           `json:"calls"`
+}
+type ImplementationEvidence struct {
+	Excerpts         []EvidenceExcerpt `json:"excerpts,omitempty"`
+	Symbol           SemanticSymbol    `json:"symbol"`
+	SHA256           string            `json:"sha256"`
+	MatchedTerms     []string          `json:"matched_terms,omitempty"`
+	Selection        string            `json:"selection"`
+	Snippet          string            `json:"snippet"`
+	SnippetFirstLine int               `json:"snippet_first_line"`
+	SnippetLastLine  int               `json:"snippet_last_line"`
+}
+
+type EvidenceExcerpt struct {
+	Role      string `json:"role"`
+	FirstLine int    `json:"first_line"`
+	LastLine  int    `json:"last_line"`
+	Content   string `json:"content"`
+}
+
+// StaticFlow is a bounded compiler observation, not a path feasibility verdict.
+type StaticFlow struct {
+	Schema                   string         `json:"schema"`
+	Version                  string         `json:"version"`
+	Status                   string         `json:"status"`
+	Reason                   string         `json:"reason,omitempty"`
+	Scope                    string         `json:"scope"`
+	ToolSHA256               string         `json:"tool_sha256,omitempty"`
+	Arguments                []string       `json:"arguments,omitempty"`
+	PruneTriviallyFalseEdges bool           `json:"prune_trivially_false_edges"`
+	Functions                []FlowFunction `json:"functions"`
+	Skipped                  []FlowLocation `json:"skipped"`
+}
+type FlowLocation struct {
+	SpellingFile string `json:"spelling_file,omitempty"`
+	SpellingLine int    `json:"spelling_line,omitempty"`
+	File         string `json:"file"`
+	Line         int    `json:"line"`
+	EndLine      int    `json:"end_line"`
+	Kind         string `json:"kind,omitempty"`
+	Callee       string `json:"callee,omitempty"`
+	Resolution   string `json:"resolution,omitempty"`
+}
+type FlowFunction struct {
+	FlowLocation
+	Name   string      `json:"name"`
+	Status string      `json:"status"`
+	Entry  int         `json:"entry"`
+	Exit   int         `json:"exit"`
+	Blocks []FlowBlock `json:"blocks"`
+}
+type FlowBlock struct {
+	ID         int            `json:"id"`
+	Successors []*int         `json:"successors"`
+	Statements []FlowLocation `json:"statements"`
+	Terminator *FlowLocation  `json:"terminator,omitempty"`
 }

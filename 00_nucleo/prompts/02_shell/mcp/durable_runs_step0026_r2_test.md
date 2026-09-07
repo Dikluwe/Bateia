@@ -25,3 +25,7 @@ autoriza regenerar expected bytes nem remover qualquer propriedade legada.
 Vincule os novos hashes do schema/prompt síncrono ao artefato
 `historical-contract-supersession.json`. Continue exigindo execução real das três
 tools, os byte-goldens e toda a superfície durável não substituída.
+
+## Revisão 2026-09-07
+
+O contrato de apresentação da busca foi sucedido explicitamente pelo pedido de evidência proporcional. Vincular os hashes sucessores ao registro `00_nucleo/relatorios/evidence-contract-supersession.json`; preservar certificados históricos e testes de schemas, roteamento e benchmark. Esta revisão não herda atestação histórica.

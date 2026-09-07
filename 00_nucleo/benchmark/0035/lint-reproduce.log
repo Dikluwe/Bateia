@@ -1,0 +1,1551 @@
+   Compiling crystalline-lint v0.2.0 (/tmp/bateia-0035-linter-reproduce.b1kf1I)
+warning: function `print_tree` is never used
+    --> 03_infra/ts_parser.rs:1692:8
+     |
+1692 |     fn print_tree(node: Node, source: &[u8], depth: usize) {
+     |        ^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `crystalline-lint` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.62s
+     Running unittests lib.rs (/tmp/bateia-0035-linter/target/debug/deps/crystalline_lint-c92a86ee80a5f45a)
+
+running 662 tests
+test contracts::citation_freshness::tests::default_resolver_is_total_and_fail_closed_without_io ... ok
+test contracts::citation_freshness::tests::closed_modalities_and_reasons_preserve_identity ... ok
+test contracts::file_provider::tests::file_provider_no_disk_access_in_tests ... ok
+test contracts::file_provider::tests::source_file_has_adjacent_test_false ... ok
+test contracts::file_provider::tests::file_provider_returns_correct_count ... ok
+test contracts::file_provider::tests::source_file_clone_and_eq ... ok
+test contracts::file_provider::tests::source_file_has_adjacent_test_true ... ok
+test contracts::file_provider::tests::source_file_layer_l1 ... ok
+test contracts::language_parser::tests::mock_parser_returns_err_for_invalid_source ... ok
+test contracts::language_parser::tests::mock_parser_returns_ok_for_valid_source ... ok
+test contracts::parse_error::tests::empty_source_clone_and_eq ... ok
+test contracts::parse_error::tests::syntax_error_clone_and_eq ... ok
+test contracts::parse_error::tests::syntax_error_location ... ok
+test contracts::parse_error::tests::variants_are_distinct ... ok
+test contracts::parse_error::tests::unsupported_language_debug_readable ... ok
+test contracts::prompt_provider::tests::is_empty_true_for_empty_set ... ok
+test contracts::prompt_provider::tests::contains_returns_false_for_missing_prompt ... ok
+test contracts::prompt_provider::tests::contains_returns_true_for_known_prompt ... ok
+test contracts::prompt_provider::tests::len_matches_entry_count ... ok
+test contracts::prompt_provider::tests::mock_provider_no_disk_access ... ok
+test contracts::prompt_provider::tests::scan_error_nucleounreadable_is_debug ... ok
+test contracts::prompt_reader::tests::exists_returns_false_when_absent ... ok
+test contracts::prompt_reader::tests::exists_returns_true_when_present ... ok
+test contracts::prompt_reader::tests::read_hash_returns_eight_char_hex ... ok
+test contracts::prompt_reader::tests::read_hash_returns_none_when_file_missing ... ok
+test contracts::prompt_reader::tests::resolution_reads_hash_only_for_present_prompt ... ok
+test contracts::prompt_reader::tests::v5_uses_mock_without_disk_access ... ok
+test entities::config_init::tests::destination_precedence_does_not_consult_topology ... ok
+test entities::hash_pair::tests::pair_preserves_paths_hashes_and_payloads ... ok
+test entities::config_init::tests::topology_is_total_deterministic_and_fail_closed ... ok
+test entities::hash_pair::tests::snapshot_preserves_bytes_clone_and_equality ... ok
+test entities::l1_allowed_external::tests::std_is_always_exempt ... ok
+test entities::l1_allowed_external::tests::listed_package_legacy_is_allowed_for_any_item ... ok
+test entities::l1_allowed_external::tests::type_level_whitelist_allows_only_listed_items ... ok
+test entities::l1_allowed_external::tests::unlisted_package_is_not_allowed ... ok
+test entities::layer::tests::all_languages_debug ... ok
+test entities::layer::tests::all_layers_debug ... ok
+test entities::layer::tests::language_clone_and_eq ... ok
+test entities::layer::tests::language_unknown_is_distinct ... ok
+test entities::layer::tests::layer_clone_and_eq ... ok
+test entities::layer::tests::layer_unknown_is_distinct ... ok
+test entities::parsed_file::tests::declaration_clone_and_eq ... ok
+test entities::parsed_file::tests::declaration_kind_variants_are_distinct ... ok
+test entities::parsed_file::tests::declaration_name_is_borrowed_from_source ... ok
+test entities::parsed_file::tests::declarations_field_accepts_multiple_kinds ... ok
+test entities::parsed_file::tests::declared_traits_accepts_static_str_slices ... ok
+test entities::parsed_file::tests::declared_traits_empty_by_default ... ok
+test entities::parsed_file::tests::has_prompt_refs_returns_layer_refs_and_path ... ok
+test entities::parsed_file::tests::has_wiring_purity_empty_declarations_for_non_l4 ... ok
+test entities::parsed_file::tests::has_wiring_purity_returns_layer_and_declarations ... ok
+test entities::parsed_file::tests::implemented_traits_distinct_from_declared ... ok
+test entities::parsed_file::tests::import_kind_variants_are_distinct ... ok
+test entities::parsed_file::tests::import_named_kind ... ok
+test entities::parsed_file::tests::import_unknown_layer_for_external_crate ... ok
+test entities::parsed_file::tests::interface_delta_describe_uses_kind_str ... ok
+test entities::parsed_file::tests::module_decl_clone_and_eq ... ok
+test entities::parsed_file::tests::module_decl_fields_accessible ... ok
+test entities::parsed_file::tests::module_decls_field_empty_by_default ... ok
+test entities::parsed_file::tests::parsed_file_clone_and_eq ... ok
+test entities::parsed_file::tests::parsed_file_with_imports_and_tokens ... ok
+test entities::parsed_file::tests::prompt_header_hash_comparison ... ok
+test entities::parsed_file::tests::prompt_header_no_drift_when_hashes_match ... ok
+test entities::parsed_file::tests::prompt_refs_empty_by_default ... ok
+test entities::parsed_file::tests::token_call_expression ... ok
+test entities::parsed_file::tests::type_kind_str_covers_all_variants ... ok
+test entities::parsed_file::tests::wiring_config_can_disable_adapter_structs ... ok
+test entities::parsed_file::tests::wiring_config_default_allows_adapter_structs ... ok
+test entities::project_index::tests::alien_files_are_a_canonical_set_across_partitions ... ok
+test entities::project_index::tests::declared_traits_from_multiple_locals_are_unioned ... ok
+test entities::project_index::tests::empty_local_does_not_change_index ... ok
+test entities::project_index::tests::from_parse_error_does_not_contribute ... ok
+test entities::project_index::tests::from_parsed_transports_blanket_impl_traits ... ok
+test entities::project_index::tests::from_parsed_transports_declared_traits ... ok
+test entities::project_index::tests::from_parsed_transports_implemented_traits ... ok
+test entities::project_index::tests::from_parsed_with_header_adds_prompt ... ok
+test entities::project_index::tests::from_source_error_does_not_contribute ... ok
+test entities::project_index::tests::merge_accumulates_trait_sets_from_both_sides ... ok
+test entities::project_index::tests::merge_is_commutative ... ok
+test entities::project_index::tests::merge_is_commutative_for_traits ... ok
+test entities::project_index::tests::merge_local_accumulates_blanket_impl_traits ... ok
+test entities::project_index::tests::merge_local_accumulates_declared_traits ... ok
+test entities::project_index::tests::merge_local_accumulates_implemented_traits ... ok
+test entities::project_index::tests::merge_propagates_blanket_impl_traits ... ok
+test entities::project_index::tests::merge_two_locals_with_distinct_prompts ... ok
+test entities::project_index::tests::unknown_layer_adds_alien_to_index ... ok
+test entities::refinement::tests::capture_policy_distinguishes_missing_ambiguous_and_many ... ok
+test entities::refinement::tests::missing_observable_is_unknown ... ok
+test entities::refinement::tests::relation_order_does_not_change_result ... ok
+test entities::refinement::tests::required_field_is_preserved ... ok
+test entities::refinement::tests::violation_wins_over_unknown_without_erasing_it ... ok
+test entities::refinement_seal::tests::negative_rejects_violation_with_inconclusive_results ... ok
+test entities::refinement_seal::tests::verdict_names_are_the_stable_public_vocabulary ... ok
+test entities::rule_traits::tests::decision_arm_terms_are_idiomatic ... ok
+test entities::rule_traits::tests::mock_v12_empty_declarations_for_non_l4 ... ok
+test entities::rule_traits::tests::mock_v12_implements_has_wiring_purity ... ok
+test entities::rule_traits::tests::mock_v15_implements_has_prompt_refs ... ok
+test entities::rule_traits::tests::mock_v16_implements_has_decision_arms ... ok
+test entities::rule_traits::tests::mock_v1_implements_has_prompt_filesystem ... ok
+test entities::rule_traits::tests::mock_v21_implements_has_constants ... ok
+test entities::rule_traits::tests::mock_v2_implements_has_coverage ... ok
+test entities::rule_traits::tests::mock_v3_implements_has_imports ... ok
+test entities::rule_traits::tests::mock_v4_implements_has_tokens ... ok
+test entities::rule_traits::tests::mock_v5_implements_has_hashes ... ok
+test entities::rule_traits::tests::mock_v6_implements_has_public_interface ... ok
+test entities::rule_traits::tests::mock_v9_implements_has_pub_leak ... ok
+test entities::rule_traits::tests::source_terms_are_idiomatic ... ok
+test entities::violation::tests::all_rule_ids_representable ... ok
+test entities::violation::tests::fatal_level_is_distinct ... ok
+test entities::violation::tests::location_eq ... ok
+test entities::violation::tests::violation_clone_and_eq ... ok
+test entities::violation::tests::violation_debug_is_readable ... ok
+test entities::violation::tests::violation_level_ordering ... ok
+test entities::violation::tests::violation_levels_are_distinct ... ok
+test infra::config::step0035_tests::step0035_harness_requires_exact_relative_path_and_reason ... ok
+test infra::config::tests::default_config_resolves_entities_to_l1 ... ok
+test infra::config::tests::default_config_resolves_infra_to_l3 ... ok
+test infra::config::tests::default_config_resolves_shell_to_l2 ... ok
+test infra::config::tests::duplicate_semantic_ids_are_rejected ... ok
+test infra::config::tests::excluded_files_defaults_to_empty ... ok
+test infra::config::tests::l1_allowed_external_defaults_to_empty ... ok
+test infra::config::tests::l1_allowed_for_language_returns_empty_for_missing_key ... ok
+test infra::config::tests::level_for_returns_configured_level_when_declared ... ok
+test infra::config::tests::level_for_returns_default_when_rules_empty ... ok
+test infra::config::tests::l1_allowed_for_language_parses_legacy_format ... ok
+test infra::config::tests::l1_allowed_for_language_parses_type_level_format ... ok
+test infra::config::tests::level_for_returns_info_when_configured ... ok
+test infra::config::tests::level_for_unknown_rule_returns_default ... ok
+test infra::config::tests::layers_reject_unknown_alias_collision_invalid_paths_and_duplicates ... ok
+test infra::config::tests::n16_summary_config_default_is_5 ... ok
+test infra::config::tests::n16_summary_config_parses_min_sample_size ... ok
+test infra::config::tests::unknown_module_resolves_to_unknown ... ok
+test infra::config_init::tests::io_error_projection_is_total_and_context_sensitive ... ok
+test infra::config::tests::v21_config_parses_custom_scope_and_trivial ... ok
+test infra::config::tests::wildcard_exceptions_and_rule_languages_parse ... ok
+test infra::config::tests::semantic_contracts_parse_and_validate ... ok
+test infra::crate_registry::tests::empty_registry_has_no_members ... ok
+test infra::crate_registry::tests::direct_members_reject_normalized_dependency_and_rename_conflicts ... ok
+test infra::crate_registry::tests::identical_members_deduplicate_but_conflicts_fail ... ok
+test infra::crate_registry::tests::member_layer_resolves_first_party_by_name ... ok
+test infra::config_init::tests::temporary_name_collision_never_removes_the_preexisting_entry ... ok
+test infra::crate_registry::tests::member_layer_unknown_for_non_member ... ok
+test infra::crate_registry::tests::absent_root_manifest_is_not_cargo_but_invalid_manifest_is_error ... ok
+test infra::config_init::tests::non_utf8_unrelated_entry_is_preserved_without_lossy_collision ... ok
+test infra::crate_registry::tests::owner_of_longest_prefix_wins_for_nested_member ... ok
+test infra::crate_registry::tests::normalized_dependency_collision_is_structural_error ... ok
+test infra::crate_registry::tests::owner_of_matches_containing_member ... ok
+test infra::crate_registry::tests::owner_of_none_when_outside_all_members ... ok
+test infra::crate_registry::tests::normalized_dependency_duplicates_with_same_meaning_deduplicate ... ok
+test infra::crate_registry::tests::parse_manifest_extracts_name_normalized ... ok
+test infra::crate_registry::tests::parse_manifest_workspace_only_has_no_name ... ok
+test infra::crate_registry::tests::parse_manifest_unions_deps_and_dev_deps_normalized ... ok
+test infra::go_parser::step0035_tests::step0035_free_function_is_not_impl ... ok
+test infra::hash_writer::tests::parse_header_empty_hash_when_no_hash_line ... ok
+test infra::hash_writer::tests::parse_header_extracts_prompt_path_and_hash ... ok
+test infra::go_parser::step0035_tests::step0035_private_method_interface_and_alias_are_preserved ... ok
+test infra::hash_writer::tests::parse_header_returns_none_without_prompt_line ... ok
+test infra::hash_writer::tests::parse_header_stops_at_non_doc_comment ... ok
+test infra::git_refinement::tests::self_contained_preflight_rejects_git_directory_symlink ... ok
+test infra::hash_writer::tests::replace_hash_line_no_trailing_newline_when_absent ... ok
+test infra::hash_writer::tests::replace_hash_line_only_changes_hash_value ... ok
+test infra::hash_writer::tests::replace_hash_line_preserves_trailing_newline ... ok
+test infra::hash_writer::tests::read_header_returns_none_for_missing_file ... ok
+test infra::hash_writer::tests::replace_hash_line_returns_none_when_no_hash_line ... ok
+test infra::git_refinement::tests::self_contained_preflight_distinguishes_empty_and_nonempty_alternates ... ok
+test infra::hash_writer::tests::read_header_from_disk ... ok
+test infra::hash_writer::tests::replace_hash_line_substitutes_correctly ... ok
+test infra::hash_writer::tests::write_hash_is_atomic_original_intact_when_no_hash_line ... ok
+test infra::prompt_io::tests::body_decoy_is_preserved_as_ordinary_bytes ... ok
+test infra::prompt_io::tests::byte_filter_preserves_crlf_and_rejects_duplicate_metadata ... ok
+test infra::hash_writer::tests::write_prompt_meta_rejects_absent_meta_despite_body_substring_decoy ... ok
+test infra::prompt_io::tests::metadata_in_body_fence_is_not_canonical ... ok
+test infra::prompt_io::tests::current_directory_root_remains_valid ... ok
+test infra::prompt_io::tests::source_metadata_after_header_is_not_replaced ... ok
+test infra::prompt_reader::tests::cache_prevents_multiple_reads ... ok
+test infra::prompt_reader::tests::cache_stabilizes_missing_result ... ok
+test infra::prompt_io::tests::confined_file_rejects_symlink ... ok
+test infra::prompt_reader::tests::exists_returns_false_when_absent ... ok
+test infra::prompt_io::tests::confined_file_rejects_symlink_root ... ok
+test infra::config_init::tests::concurrent_publish_never_replaces_the_winner ... ok
+test infra::prompt_reader::tests::missing_ancestor_is_infrastructure_not_missing ... ok
+test infra::prompt_reader::tests::different_content_produces_different_hash ... ok
+test infra::prompt_reader::tests::exists_returns_true_when_present ... ok
+test infra::prompt_reader::tests::integrated_cache_freezes_present_before_filesystem_removal ... ok
+test infra::prompt_reader::tests::integrated_cache_never_diverges_after_filesystem_change ... ok
+test infra::prompt_io::tests::confined_file_rejects_symlink_in_root_ancestor ... ok
+test infra::hash_writer::tests::write_hash_leaves_no_temp_file_on_success ... ok
+test infra::hash_writer::tests::write_hash_never_replaces_body_metadata ... ok
+test infra::prompt_reader::tests::read_hash_returns_eight_hex_chars ... ok
+test infra::prompt_reader::tests::read_hash_returns_none_for_missing_file ... ok
+test infra::prompt_snapshot_reader::tests::extract_snapshot_json_extracts_correctly ... ok
+test infra::prompt_reader::tests::unsafe_missing_paths_are_infrastructure_not_missing ... ok
+test infra::prompt_reader::tests::missing_leaf_under_valid_root_is_missing ... ok
+test infra::prompt_reader::tests::symbolic_root_is_infrastructure_failure_never_missing ... ok
+test infra::prompt_snapshot_reader::tests::reads_valid_snapshot ... ok
+test infra::prompt_snapshot_reader::tests::snapshot_requires_one_section_and_ignores_tilde_fences ... ok
+test infra::hash_writer::tests::write_hash_preserves_bom_crlf_and_permissions ... ok
+test infra::prompt_snapshot_reader::tests::returns_none_when_file_missing ... ok
+test infra::prompt_reader::tests::symbolic_prompt_leaf_is_infrastructure_not_missing ... ok
+test infra::hash_writer::tests::write_prompt_meta_preserves_body_decoy ... ok
+test infra::prompt_reader::tests::missing_leaf_below_symbolic_ancestor_is_infrastructure ... ok
+test infra::prompt_walker::tests::scan_missing_nucleo_returns_error ... ok
+test infra::prompt_reader::tests::same_content_produces_same_hash ... ok
+test infra::prompt_snapshot_reader::tests::returns_none_when_no_snapshot_section ... ok
+test infra::prompt_snapshot_reader::tests::snapshot_rejects_duplicate_fenced_and_extra_fields ... ok
+test infra::prompt_snapshot_reader::tests::serialize_snapshot_contains_json_and_marker ... ok
+test infra::prompt_walker::tests::scan_excludes_orphan_exceptions ... ok
+test infra::hash_writer::tests::write_prompt_meta_preserves_crlf_exactly ... ok
+test infra::py_parser::tests::adjacent_test_file_gives_coverage ... ok
+test infra::py_parser::tests::adapter_class_not_in_declarations ... ok
+test infra::py_parser::tests::alias_resolves_to_correct_layer ... ok
+test infra::prompt_snapshot_reader::tests::returns_none_when_json_malformed ... ok
+test infra::hash_writer::tests::write_hash_updates_file_on_disk ... ok
+test infra::py_parser::tests::class_with_non_testcase_inheritance_does_not_give_coverage ... ok
+test infra::prompt_walker::tests::scan_nested_md_gets_relative_path ... ok
+test infra::py_parser::tests::class_without_inheritance_does_not_give_coverage ... ok
+test infra::py_parser::tests::class_with_contracts_base_adds_implemented_trait ... ok
+test infra::py_parser::tests::double_dot_no_module_gives_parent ... ok
+test infra::py_parser::tests::double_dot_with_module_gives_parent_join ... ok
+test infra::prompt_walker::tests::scan_rejects_symlinked_prompts_root ... ok
+test infra::py_parser::tests::empty_source_returns_error ... ok
+test infra::py_parser::tests::declaration_only_file_is_exempt_from_v2 ... ok
+test infra::prompt_walker::tests::scan_three_md_files_returns_three_entries ... ok
+test infra::prompt_walker::tests::scan_fails_closed_on_inaccessible_subdir ... ok
+test infra::py_parser::tests::file_with_implementation_is_not_declaration_only ... ok
+test infra::py_parser::tests::from_os_import_path_is_named_kind ... ok
+test infra::py_parser::tests::from_dot_import_utils_is_named_kind ... ok
+test infra::py_parser::tests::from_os_import_star_is_glob_kind ... ok
+test infra::py_parser::tests::from_typing_import_is_external ... ok
+test infra::prompt_walker::tests::scan_ignores_non_md_files ... ok
+test infra::py_parser::tests::header_all_fields_extracted ... ok
+test infra::py_parser::tests::header_stops_at_non_comment_line ... ok
+test infra::py_parser::tests::implemented_traits_empty_in_l1 ... ok
+test infra::py_parser::tests::import_lab_resolves_to_lab_layer ... ok
+test infra::py_parser::tests::import_numpy_as_np_is_alias_kind ... ok
+test infra::py_parser::tests::import_os_generates_token ... ok
+test infra::prompt_walker::tests::scan_result_is_immutable_after_construction ... ok
+test infra::py_parser::tests::import_os_is_direct_kind ... ok
+test infra::py_parser::tests::import_os_is_external ... ok
+test infra::prompt_walker::tests::scan_rejects_symlinked_project_root ... ok
+test infra::py_parser::tests::import_pathlib_generates_token ... ok
+test infra::py_parser::tests::import_target_subdir_is_none_for_l3 ... ok
+test infra::py_parser::tests::normalize_resolves_parent_dirs ... ok
+test infra::py_parser::tests::normalize_returns_none_for_escaping_root ... ok
+test infra::py_parser::tests::nested_test_class_does_not_give_coverage ... ok
+test infra::py_parser::tests::normalize_skips_cur_dir ... ok
+test infra::py_parser::tests::open_call_generates_token ... ok
+test infra::py_parser::tests::plain_class_has_class_kind ... ok
+test infra::py_parser::tests::plain_class_in_l4_generates_declaration ... ok
+test infra::py_parser::tests::private_function_not_in_interface ... ok
+test infra::py_parser::tests::private_protocol_not_in_declared_traits ... ok
+test infra::py_parser::tests::protocol_class_has_interface_kind ... ok
+test infra::py_parser::tests::protocol_class_not_in_declarations ... ok
+test infra::py_parser::tests::protocol_class_in_contracts_adds_declared_trait ... ok
+test infra::py_parser::tests::protocol_class_outside_contracts_not_in_declared_traits ... ok
+test infra::py_parser::tests::public_function_extracted ... ok
+test infra::py_parser::tests::intern_subdir_no_box_leak_smoke_test ... ok
+test infra::py_parser::tests::relative_import_resolves_to_correct_layer ... ok
+test infra::py_parser::tests::random_random_call_generates_token ... ok
+test infra::py_parser::tests::relative_import_target_subdir_extracted ... ok
+test infra::py_parser::tests::single_dot_no_module_gives_cur_dir ... ok
+test infra::py_parser::tests::single_dot_with_module_gives_module ... ok
+test infra::py_parser::tests::relative_import_with_escaping_dots_gives_unknown ... ok
+test infra::py_parser::tests::triple_dot_with_module ... ok
+test infra::py_parser::tests::syntax_error_reports_nonzero_line ... ok
+test infra::py_parser::tests::unsupported_language_returns_error ... ok
+test infra::py_parser::tests::unittest_calls_do_not_cover_a_production_module ... ok
+test infra::refinement_extractor::tests::serialization_is_byte_deterministic ... ok
+test infra::refinement_seal::tests::seal_serializes_nested_counts ... ok
+test infra::refinement_extractor::tests::rejects_parent_path ... ok
+test infra::refinement_seal::tests::manifest_requires_every_oracle_category ... ok
+test infra::refinement_snapshot::tests::smoke ... ok
+test infra::rs_parser::tests::adjacent_test_sets_coverage ... ok
+test infra::rs_parser::tests::bare_mod_produces_module_decl ... ok
+test infra::refinement_extractor::tests::rejects_symlink_escape ... ok
+test infra::rs_parser::tests::blanket_impl_empty_for_l1 ... ok
+test infra::refinement_seal::tests::semantic_manifest_hash_ignores_toml_and_oracle_order ... ok
+test infra::rs_parser::tests::case1_first_party_cross_crate_forbidden_resolves_target_layer ... ok
+test infra::rs_parser::tests::case2_first_party_cross_crate_allowed_resolves_l1 ... ok
+test infra::rs_parser::tests::blanket_impl_multi_bound_detected ... ok
+test infra::rs_parser::tests::blanket_impl_single_bound_detected ... ok
+test infra::rs_parser::tests::case3_declared_external_resolves_unknown ... ok
+test infra::rs_parser::tests::blanket_impl_where_clause_detected ... ok
+test infra::rs_parser::tests::case4_local_type_is_not_classified ... ok
+test infra::rs_parser::tests::case5_std_preserved_as_unknown ... ok
+test infra::rs_parser::tests::case6_intra_crate_preserved_via_module_layer ... ok
+test infra::rs_parser::tests::concrete_impl_not_in_blanket_traits ... ok
+test infra::rs_parser::tests::cfg_test_use_import_marked_test_origin ... ok
+test infra::rs_parser::tests::declarations_extracted_for_l3_too ... ok
+test infra::rs_parser::tests::cfg_test_inner_attribute_marks_test_origin ... ok
+test infra::rs_parser::tests::cfg_test_pathref_marked_test_origin ... ok
+test infra::rs_parser::tests::declarations_impl_with_trait_not_captured ... ok
+test infra::rs_parser::tests::empty_registry_does_not_skip_local_looking_imports ... ok
+test infra::rs_parser::tests::declared_traits_empty_for_l1_non_contracts_subdir ... ok
+test infra::rs_parser::tests::declared_traits_empty_for_l2 ... ok
+test infra::rs_parser::tests::external_crate_resolves_to_unknown ... ok
+test infra::rs_parser::tests::declarations_captures_struct_enum_impl_without_trait ... ok
+test infra::rs_parser::tests::extern_crate_maps_to_direct ... ok
+test infra::rs_parser::tests::declared_traits_extracted_for_l1_contracts ... ok
+test infra::rs_parser::tests::detects_cfg_test_as_coverage ... ok
+test infra::rs_parser::tests::extracts_immutable_str_static ... ok
+test infra::rs_parser::tests::extracts_static_mut ... ok
+test infra::rs_parser::tests::extract_citations_recognizes_real_world_conventions ... ok
+test infra::rs_parser::tests::extracts_mutex_static ... ok
+test infra::rs_parser::tests::implemented_traits_empty_for_l1 ... ok
+test infra::rs_parser::tests::implemented_traits_extracted_for_l2 ... ok
+test infra::rs_parser::tests::extracts_prompt_header ... ok
+test infra::rs_parser::tests::extract_constants_identifies_all_targets_and_citations ... ok
+test infra::rs_parser::tests::implemented_traits_strips_path_prefix ... ok
+test infra::rs_parser::tests::import_to_l1_has_target_subdir ... ok
+test infra::rs_parser::tests::mod_declaration_not_in_imports ... ok
+test infra::rs_parser::tests::inline_mod_block_not_in_module_decls ... ok
+test infra::rs_parser::tests::parses_valid_rust_source ... ok
+test infra::rs_parser::tests::parse_emits_cross_crate_member_import_with_target_layer ... ok
+test infra::rs_parser::tests::implemented_traits_extracted_for_l3 ... ok
+test infra::rs_parser::tests::parse_skips_local_type_import ... ok
+test infra::rs_parser::tests::pathref_deduped_against_use_of_same_crate ... ok
+test infra::rs_parser::tests::pathref_expression_collected_as_cross_crate ... ok
+test infra::rs_parser::tests::pathref_attribute_token_tree_collected_as_cross_crate ... ok
+test infra::rs_parser::tests::pathref_local_crate_path_creates_no_import ... ok
+test infra::rs_parser::tests::pathref_multiple_inline_refs_dedup_to_one_edge ... ok
+test infra::rs_parser::tests::pathref_super_path_creates_no_import ... ok
+test infra::git_refinement::tests::option_like_ref_is_not_treated_as_an_option ... ok
+test infra::rs_parser::tests::pathref_type_position_collected_as_cross_crate ... ok
+test infra::rs_parser::tests::pathref_std_path_creates_no_import ... ok
+test infra::rs_parser::tests::production_import_not_test_origin ... ok
+test infra::rs_parser::tests::prompt_refs_empty_without_header ... ok
+test infra::rs_parser::tests::prompt_refs_collects_all_prompt_lines_in_order ... ok
+test infra::rs_parser::tests::resolves_crate_import_layer ... ok
+test infra::rs_parser::tests::returns_empty_source_error ... ok
+test infra::rs_parser::tests::returns_unsupported_language_error ... ok
+test infra::rs_parser::tests::pub_mod_produces_module_decl ... ok
+test infra::rs_parser::tests::prompt_refs_ignores_prompt_outside_doc_header ... ok
+test infra::rs_parser::tests::prompt_refs_single_for_normal_header ... ok
+test infra::rs_parser::tests::extract_decision_exprs_classifies_all_forms ... ok
+test infra::rs_parser::tests::production_use_not_marked_when_cfg_test_sibling_mod_present ... ok
+test infra::rs_parser::tests::self_import_by_crate_name_is_intra_crate ... ok
+test infra::rs_parser::tests::self_import_unmapped_submodule_falls_back_to_owner_layer ... ok
+test infra::rs_parser::tests::trait_last_segment_simple_name ... ok
+test infra::rs_parser::tests::trait_last_segment_strips_generics ... ok
+test infra::rs_parser::tests::trait_last_segment_strips_prefix ... ok
+test infra::rs_parser::tests::trait_only_file_is_declaration_only ... ok
+test infra::rs_parser::tests::use_star_maps_to_glob ... ok
+test infra::rs_parser::tests::syntax_error_reports_nonzero_line ... ok
+test infra::rs_parser::tests::use_statement_without_as_or_braces_is_direct ... ok
+test infra::rs_parser::tests::use_with_as_maps_to_alias ... ok
+test infra::rs_parser::tests::v9_cross_crate_subdir_resolved_for_l1_member_submodule ... ok
+test infra::rs_parser::tests::use_with_braces_maps_to_named ... ok
+test infra::rs_parser::tests::v9_cross_crate_two_segment_import_has_no_subdir ... ok
+test infra::snapshot_writer::tests::appends_when_no_snapshot_and_no_historico ... ok
+test infra::snapshot_writer::tests::inserts_before_historico_when_no_snapshot ... ok
+test infra::rs_parser::tests::v9_intra_crate_subdir_preserved ... ok
+test infra::snapshot_writer::tests::replaces_existing_snapshot_section ... ok
+test infra::ts_parser::tests::adjacent_test_file_sets_coverage ... ok
+test infra::ts_parser::tests::alias_import_subdir_extracted ... ok
+test infra::ts_parser::tests::class_with_implements_not_in_declarations ... ok
+test infra::ts_parser::tests::class_without_implements_not_in_implemented_traits ... ok
+test infra::ts_parser::tests::class_without_implements_captured_in_declarations ... ok
+test infra::ts_parser::tests::declared_traits_empty_for_l1_non_contracts ... ok
+test infra::ts_parser::tests::declaration_only_file_is_exempt ... ok
+test infra::ts_parser::tests::date_now_produces_token ... ok
+test infra::ts_parser::tests::empty_source_returns_error ... ok
+test infra::rs_parser::tests::v25_extracts_duplicate_proxy_and_canonicalizer_reentry ... ok
+test infra::ts_parser::tests::describe_call_sets_test_coverage ... ok
+test infra::rs_parser::tests::v23_extracts_context_erasure_but_not_legitimate_resolution ... ok
+test infra::ts_parser::tests::declared_traits_extracted_from_l1_contracts ... ok
+test infra::ts_parser::tests::export_default_anonymous_function_captured_with_default_name ... ok
+test infra::ts_parser::tests::export_default_named_function_captured_in_interface ... ok
+test infra::ts_parser::tests::export_named_from_is_named ... ok
+test infra::rs_parser::tests::v24_distinguishes_lost_preserved_and_authorized_fields ... ok
+test infra::ts_parser::tests::export_default_anonymous_class_captured_with_default_name ... ok
+test infra::ts_parser::tests::export_star_from_is_glob ... ok
+test infra::ts_parser::tests::file_with_function_requires_test ... ok
+test infra::ts_parser::tests::forbidden_module_import_produces_token ... ok
+test infra::ts_parser::tests::header_stops_at_first_non_comment_line ... ok
+test infra::ts_parser::tests::implemented_traits_empty_for_l4 ... ok
+test infra::ts_parser::tests::implemented_traits_extracted_for_l3 ... ok
+test infra::ts_parser::tests::import_default_is_direct ... ok
+test infra::ts_parser::tests::import_lab_resolves_to_lab_layer ... ok
+test infra::ts_parser::tests::import_namespace_is_glob ... ok
+test infra::ts_parser::tests::import_npm_package_resolves_to_unknown ... ok
+test infra::snapshot_writer::tests::write_snapshot_round_trips ... ok
+test infra::ts_parser::tests::import_relative_resolves_to_correct_layer ... ok
+test infra::ts_parser::tests::import_renamed_binding_is_alias ... ok
+test infra::ts_parser::tests::import_subdir_extracted_for_l1 ... ok
+test infra::ts_parser::tests::import_with_alias_resolves_to_correct_layer ... ok
+test infra::ts_parser::tests::import_with_excessive_parent_dirs_resolves_to_unknown ... ok
+test infra::ts_parser::tests::normalize_resolves_parent_dirs ... ok
+test infra::ts_parser::tests::math_random_produces_token ... ok
+test infra::ts_parser::tests::normalize_returns_none_for_escaping_root ... ok
+test infra::ts_parser::tests::normalize_skips_cur_dir ... ok
+test infra::ts_parser::tests::parses_crystalline_header ... ok
+test infra::ts_parser::tests::unsupported_language_for_rust_file ... ok
+test infra::ts_parser::tests::syntax_error_reports_nonzero_line ... ok
+test infra::walker::tests::resolve_file_layer_returns_l1_for_core ... ok
+test infra::ts_parser::tests::intern_subdir_no_box_leak_smoke_test ... ok
+test infra::walker::tests::adjacent_test_false_when_no_test_file ... ok
+test infra::refinement_snapshot::tests::oversized_strings_precede_closed_schema_validation ... ok
+test infra::walker::tests::ts_spec_file_itself_returns_false ... ok
+test infra::walker::tests::walker_results_are_sorted_and_errors_remain_observable ... ok
+test infra::walker::tests::ts_test_file_itself_returns_false ... ok
+test infra::walker::tests::ts_adjacent_spec_ts_detected ... ok
+test infra::walker::tests::ts_no_adjacent_test_when_none_exists ... ok
+test infra::walker::tests::tsx_adjacent_test_tsx_detected ... ok
+test infra::walker::tests::walker_detects_adjacent_test ... ok
+test rules::alien_file::tests::empty_alien_files_returns_no_violations ... ok
+test infra::walker::tests::ts_adjacent_test_detected_for_test_ts ... ok
+test rules::alien_file::tests::multiple_alien_files_produce_one_violation_each ... ok
+test infra::walker::tests::excluded_files_prevents_specific_file ... ok
+test rules::alien_file::tests::unknown_layer_file_returns_v8_fatal ... ok
+test infra::walker::tests::excluded_files_does_not_affect_same_name_in_subdir ... ok
+test rules::alien_file::tests::violation_level_is_fatal_not_error ... ok
+test rules::alien_file::tests::violation_message_contains_path ... ok
+test rules::compound_guard::tests::v17_detects_compound_guard ... ok
+test rules::context_erasure::tests::reports_neutral_context_and_erasing_projection_only ... ok
+test rules::dangling_contract::tests::all_implemented_returns_empty ... ok
+test rules::dangling_contract::tests::blanket_impl_only_for_unrelated_trait_still_violations_others ... ok
+test rules::dangling_contract::tests::blanket_impl_satisfies_contract_no_violation ... ok
+test infra::walker::tests::tsx_adjacent_spec_tsx_detected ... ok
+test rules::dangling_contract::tests::both_concrete_and_blanket_no_violations ... ok
+test rules::dangling_contract::tests::dangling_traits_are_ordered_by_native_string_order ... ok
+test infra::walker::tests::walker_unknown_layer_not_dropped ... ok
+test rules::dangling_contract::tests::declared_with_impl_returns_no_violation ... ok
+test rules::dangling_contract::tests::declared_without_impl_returns_v11_error ... ok
+test infra::walker::tests::walker_finds_rs_files ... ok
+test rules::dangling_contract::tests::empty_declared_returns_no_violations ... ok
+test infra::walker::tests::walker_sets_layer_from_config ... ok
+test rules::dangling_contract::tests::extra_implemented_without_declaration_is_not_violation ... ok
+test rules::dangling_contract::tests::insertion_order_does_not_change_complete_violation_vector ... ok
+test infra::walker::tests::symlinks_are_neither_sources_nor_adjacent_tests ... ok
+test infra::walker::tests::walker_with_empty_excluded_does_not_skip_target ... ok
+test rules::dangling_contract::tests::level_warning_propagates_to_violation ... ok
+test infra::walker::tests::walker_skips_target_directory ... ok
+test rules::dangling_contract::tests::multiple_dangling_traits_produce_one_violation_each ... ok
+test rules::dangling_contract::tests::two_declared_one_missing_returns_one_violation ... ok
+test rules::dangling_contract::tests::violation_location_points_to_contracts_dir ... ok
+test rules::decision_ownership::tests::reports_all_three_ownership_modalities ... ok
+test rules::deep_pattern_nesting::tests::v20_exempts_tuple_table_context ... ok
+test rules::deep_pattern_nesting::tests::v20_reports_deep_pattern_nesting_as_info ... ok
+test infra::refinement_snapshot::tests::oversized_observable_discriminants_are_limits ... ok
+test rules::external_type_in_contract::tests::core_import_with_empty_whitelist_is_allowed ... ok
+test rules::external_type_in_contract::tests::l1_without_external_imports_returns_empty ... ok
+test rules::external_type_in_contract::tests::l3_file_with_external_import_is_ignored ... ok
+test rules::external_type_in_contract::tests::listed_external_in_l1_is_allowed ... ok
+test rules::external_type_in_contract::tests::package_name_extracts_first_segment ... ok
+test rules::external_type_in_contract::tests::serde_in_whitelist_is_allowed ... ok
+test rules::external_type_in_contract::tests::serde_with_empty_whitelist_triggers_v14 ... ok
+test rules::external_type_in_contract::tests::std_import_with_empty_whitelist_is_allowed ... ok
+test rules::external_type_in_contract::tests::tokio_not_in_whitelist_triggers_v14 ... ok
+test rules::external_type_in_contract::tests::two_unlisted_externals_produce_two_violations ... ok
+test rules::external_type_in_contract::tests::type_level_listed_item_from_allowed_crate_is_allowed ... ok
+test rules::external_type_in_contract::tests::type_level_named_import_allows_only_listed_items ... ok
+test rules::external_type_in_contract::tests::type_level_nested_path_matches_last_segment ... ok
+test rules::external_type_in_contract::tests::type_level_unlisted_item_from_allowed_crate_triggers_v14 ... ok
+test rules::external_type_in_contract::tests::unlisted_external_in_l1_triggers_v14 ... ok
+test rules::forbidden_import::tests::l1_importing_unknown_is_not_violation ... ok
+test rules::forbidden_import::tests::l2_importing_l3_is_violation ... ok
+test rules::forbidden_import::tests::l2_importing_l3_with_alias_kind_is_violation ... ok
+test rules::forbidden_import::tests::l2_importing_l3_with_glob_kind_is_violation ... ok
+test rules::forbidden_import::tests::l2_importing_l3_with_named_kind_is_violation ... ok
+test rules::forbidden_import::tests::l3_two_imports_only_one_forbidden ... ok
+test rules::forbidden_import::tests::l4_importing_l1_is_allowed ... ok
+test rules::forbidden_import::tests::l4_importing_lab_is_forbidden ... ok
+test rules::forbidden_import::tests::lab_has_no_import_restrictions ... ok
+test rules::forbidden_import::tests::test_origin_import_skipped_by_default_checked_when_on ... ok
+test rules::forbidden_import::tests::violation_message_contains_layers_and_path ... ok
+test rules::impure_core::tests::forbidden_symbol_in_l3_is_not_violation ... ok
+test rules::impure_core::tests::multiple_forbidden_tokens_each_produce_violation ... ok
+test rules::impure_core::tests::pure_function_call_in_l1_is_not_violation ... ok
+test rules::impure_core::tests::reqwest_in_l1_is_violation ... ok
+test rules::impure_core::tests::std_fs_read_in_l1_is_violation ... ok
+test rules::impure_core::tests::std_net_in_l1_is_violation ... ok
+test rules::impure_core::tests::system_time_now_in_l1_is_violation ... ok
+test rules::impure_core::tests::v4_flags_python_file_with_forbidden_symbol ... ok
+test rules::impure_core::tests::v4_flags_typescript_file_with_forbidden_symbol ... ok
+test rules::impure_core::tests::v4_python_open_in_l1_is_violation ... ok
+test rules::impure_core::tests::v4_python_subprocess_run_in_l1_is_violation ... ok
+test rules::impure_core::tests::v4_typescript_fs_symbol_in_l1_is_violation ... ok
+test rules::impure_core::tests::v4_typescript_math_random_in_l1_is_violation ... ok
+test rules::impure_core::tests::v4_unknown_language_returns_no_violations ... ok
+test rules::impure_core::tests::violation_message_contains_symbol ... ok
+test rules::mergeable_decision_arms::tests::emits_one_maximal_group_for_adjacent_equal_bodies ... ok
+test rules::mergeable_decision_arms::tests::guard_binding_macro_cfg_placeholder_and_unknown_are_fail_closed ... ok
+test rules::mergeable_decision_arms::tests::syntactically_compatible_bindings_remain_unknown_without_type_authority ... ok
+test rules::mergeable_decision_arms::tests::unequal_body_splits_groups_and_does_not_bridge_non_adjacent_arms ... ok
+test rules::multi_prompt_header::tests::message_lists_all_prompts_and_states_the_rule ... ok
+test rules::multi_prompt_header::tests::multi_prompt_in_l4_is_flagged ... ok
+test rules::multi_prompt_header::tests::multi_prompt_outside_l1_l4_passes ... ok
+test rules::multi_prompt_header::tests::no_prompt_header_passes ... ok
+test rules::multi_prompt_header::tests::single_prompt_header_passes ... ok
+test rules::mutable_state_core::tests::empty_statics_returns_empty ... ok
+test rules::multi_prompt_header::tests::three_prompt_headers_produce_single_violation ... ok
+test rules::mutable_state_core::tests::immutable_slice_static_is_allowed_even_with_mutex_in_name ... ok
+test rules::multi_prompt_header::tests::two_prompt_headers_in_l1_is_error ... ok
+test rules::multi_prompt_header::tests::violation_points_to_line_1 ... ok
+test rules::mutable_state_core::tests::immutable_str_static_is_allowed ... ok
+test rules::mutable_state_core::tests::mutable_static_in_l3_is_ignored ... ok
+test rules::mutable_state_core::tests::atomic_usize_triggers_v13 ... ok
+test rules::mutable_state_core::tests::mutex_static_triggers_v13 ... ok
+test rules::mutable_state_core::tests::once_lock_static_triggers_v13 ... ok
+test rules::mutable_state_core::tests::lazy_lock_static_triggers_v13 ... ok
+test rules::mutable_state_core::tests::static_mut_triggers_v13 ... ok
+test rules::mutable_state_core::tests::two_forbidden_statics_produce_two_violations ... ok
+test rules::or_pattern_alternatives::tests::v19_reports_or_alternatives_as_info ... ok
+test rules::orphan_prompt::tests::all_prompts_equal_referenced_returns_empty ... ok
+test rules::orphan_prompt::tests::empty_all_prompts_returns_no_violations ... ok
+test rules::orphan_prompt::tests::level_error_propagates_to_violation ... ok
+test rules::orphan_prompt::tests::orphan_prompt_not_referenced_returns_v7 ... ok
+test rules::orphan_prompt::tests::partial_orphans_returns_only_unreferenced ... ok
+test rules::orphan_prompt::tests::referenced_prompt_does_not_return_v7 ... ok
+test rules::orphan_prompt::tests::violation_location_path_is_prompt_path ... ok
+test rules::prompt_drift::tests::no_violation_when_current_hash_absent ... ok
+test rules::prompt_drift::tests::no_violation_when_declared_hash_absent ... ok
+test rules::prompt_drift::tests::no_violation_when_hashes_match ... ok
+test rules::prompt_drift::tests::no_violation_when_prompt_header_absent ... ok
+test rules::prompt_drift::tests::violation_message_contains_both_hashes ... ok
+test rules::prompt_drift::tests::violation_when_hashes_diverge ... ok
+test rules::prompt_header::tests::fatal_violation_when_header_absent_in_strict_dir ... ok
+test rules::prompt_header::tests::missing_prompt_path_is_preserved_literally ... ok
+test rules::prompt_header::tests::no_violation_when_header_present_and_file_exists ... ok
+test rules::prompt_header::tests::only_executable_layers_are_in_scope_for_all_header_states ... ok
+test rules::prompt_header::tests::violation_points_to_line_1 ... ok
+test rules::prompt_header::tests::violation_when_header_absent ... ok
+test rules::prompt_header::tests::violation_when_header_present_but_file_missing ... ok
+test rules::prompt_stale::tests::added_function_generates_v6 ... ok
+test rules::prompt_stale::tests::added_type_generates_v6 ... ok
+test rules::prompt_stale::tests::delta_describe_formats_correctly ... ok
+test rules::prompt_stale::tests::delta_groups_are_sorted_by_all_signature_fields ... ok
+test rules::prompt_stale::tests::delta_is_empty_when_no_changes ... ok
+test rules::prompt_stale::tests::identical_interface_returns_empty ... ok
+test rules::prompt_stale::tests::no_prompt_header_returns_empty ... ok
+test rules::prompt_stale::tests::no_snapshot_returns_empty ... ok
+test rules::prompt_stale::tests::one_extra_duplicate_produces_one_entry_per_family ... ok
+test rules::prompt_stale::tests::one_removed_duplicate_produces_one_entry_per_family ... ok
+test rules::prompt_stale::tests::removed_function_generates_v6 ... ok
+test rules::prompt_stale::tests::permutation_with_duplicate_multiplicity_has_empty_delta ... ok
+test rules::prompt_stale::tests::signature_change_generates_v6_with_both_entries ... ok
+test rules::provenance_inventory::tests::inventory_location_is_minimum_path_under_permutation ... ok
+test rules::provenance_inventory::tests::provenance_inventory_aggregates_multiple_files_per_module ... ok
+test rules::pub_leak::tests::external_crate_target_subdir_none_is_not_v9 ... ok
+test rules::pub_leak::tests::hostile_and_empty_subdirs_are_preserved_literally ... ok
+test rules::pub_leak::tests::l1_file_is_exempt_from_v9 ... ok
+test rules::pub_leak::tests::l2_importing_entities_port_returns_empty ... ok
+test rules::pub_leak::tests::l2_importing_internal_subdir_returns_v9 ... ok
+test rules::pub_leak::tests::l3_importing_contracts_port_returns_empty ... ok
+test rules::pub_leak::tests::l4_file_is_exempt_from_v9 ... ok
+test rules::pub_leak::tests::same_import_path_with_distinct_subdirs_has_distinct_evidence ... ok
+test rules::pub_leak::tests::violation_message_contains_import_path ... ok
+test rules::quarantine_leak::tests::l0_is_exempt ... ok
+test rules::quarantine_leak::tests::l1_importing_lab_is_fatal ... ok
+test rules::quarantine_leak::tests::l2_importing_l3_is_not_v10 ... ok
+test rules::quarantine_leak::tests::l2_importing_lab_is_fatal ... ok
+test rules::quarantine_leak::tests::l3_importing_lab_is_fatal ... ok
+test rules::quarantine_leak::tests::l4_importing_lab_is_fatal ... ok
+test rules::quarantine_leak::tests::lab_importing_production_is_exempt ... ok
+test rules::quarantine_leak::tests::multiple_lab_imports_produce_one_violation_each ... ok
+test rules::quarantine_leak::tests::non_lab_import_in_l2_is_not_violation ... ok
+test rules::quarantine_leak::tests::unknown_layer_is_exempt ... ok
+test rules::quarantine_leak::tests::unknown_target_layer_in_l1_is_not_violation ... ok
+test rules::quarantine_leak::tests::violation_message_contains_import_path ... ok
+test rules::range_pattern::tests::v18_detects_range_pattern_in_domain ... ok
+test rules::range_pattern::tests::v18_exempts_lexer_module ... ok
+test rules::semantic_field_loss::tests::reports_only_neutral_projection_destination ... ok
+test rules::test_file::tests::exempt_file_has_coverage_set_by_l3 ... ok
+test rules::test_file::tests::no_violation_for_non_l1_layers ... ok
+test rules::test_file::tests::no_violation_when_l1_with_coverage ... ok
+test rules::test_file::tests::violation_when_l1_without_coverage ... ok
+test rules::unsourced_constant::tests::compound_assignment_deep_field_triggers_v21 ... ok
+test rules::unsourced_constant::tests::data_table_is_exempt ... ok
+test rules::unsourced_constant::tests::format_syntax_module_is_exempt ... ok
+test rules::unsourced_constant::tests::hardcoded_scaling_in_geometric_sink_triggers_warning ... ok
+test rules::unsourced_constant::tests::isolated_literal_outside_scaling_does_not_trigger ... ok
+test rules::wildcard_saturation::tests::v16_detects_deny_class_wildcard_saturation ... ok
+test rules::wildcard_saturation::tests::v16_malformed_n16_tag_emits_warning_and_does_not_silence ... ok
+test rules::wildcard_saturation::tests::v16_obsolete_exception_emits_warning ... ok
+test rules::wildcard_saturation::tests::v16_reincorporation_is_exempt ... ok
+test rules::wildcard_saturation::tests::v16_valid_n16_tag_does_not_silence_violation ... ok
+test rules::wiring_logic_leak::tests::class_with_allow_structs_and_interface_both_in_l4 ... ok
+test rules::wiring_logic_leak::tests::class_without_implements_allowed_when_allow_adapter_structs_true ... ok
+test rules::wiring_logic_leak::tests::class_without_implements_forbidden_when_allow_adapter_structs_false ... ok
+test rules::wiring_logic_leak::tests::enum_always_forbidden_in_l4 ... ok
+test rules::wiring_logic_leak::tests::impl_without_trait_always_forbidden ... ok
+test rules::wiring_logic_leak::tests::interface_always_forbidden_in_l4 ... ok
+test rules::wiring_logic_leak::tests::l4_with_no_declarations_returns_empty ... ok
+test rules::wiring_logic_leak::tests::multiple_forbidden_declarations_each_produce_violation ... ok
+test rules::wiring_logic_leak::tests::non_l4_file_is_exempt ... ok
+test rules::wiring_logic_leak::tests::step0035_go_tests_are_not_production_composition ... ok
+test rules::wiring_logic_leak::tests::step0035_harness_exemption_is_exact_and_does_not_mutate_declarations ... ok
+test rules::wiring_logic_leak::tests::struct_allowed_when_allow_adapter_structs_true ... ok
+test rules::wiring_logic_leak::tests::struct_forbidden_when_allow_adapter_structs_false ... ok
+test rules::wiring_logic_leak::tests::type_alias_always_forbidden_in_l4 ... ok
+test rules::wiring_logic_leak::tests::violation_line_matches_declaration_line ... ok
+test shell::cli::tests::checks_all_activates_all_v1_to_v12 ... ok
+test shell::cli::tests::checks_all_activates_v15 ... ok
+test shell::cli::tests::checks_unknown_token_silently_ignored ... ok
+test shell::cli::tests::checks_v11_and_v12_together ... ok
+test shell::cli::tests::checks_v11_does_not_activate_v1_or_v2 ... ok
+test shell::cli::tests::checks_v12_does_not_activate_v1_or_v2 ... ok
+test shell::cli::tests::checks_v15_does_not_activate_v1_or_v5 ... ok
+test shell::cli::tests::checks_v21_activates_v21 ... ok
+test shell::cli::tests::checks_v22_activates_v22 ... ok
+test shell::cli::tests::checks_v27_is_opt_in_and_isolated ... ok
+test shell::cli::tests::checks_with_spaces_around_tokens ... ok
+test shell::cli::tests::dry_run_with_fix_hashes_is_ok ... ok
+test shell::cli::tests::dry_run_with_update_snapshot_is_ok ... ok
+test shell::cli::tests::dry_run_without_fix_hashes_is_error ... ok
+test shell::cli::tests::enabled_checks_no_drift_disables_v5 ... ok
+test shell::cli::tests::enabled_checks_subset ... ok
+test shell::cli::tests::fix_hashes_alone_is_ok ... ok
+test shell::cli::tests::fix_hashes_and_update_snapshot_is_error ... ok
+test shell::cli::tests::format_text_empty_is_clean ... ok
+test shell::cli::tests::cli_accepts_n16_summary_format ... ok
+test shell::cli::tests::format_text_includes_rule_id_and_path ... ok
+test shell::cli::tests::no_stale_disables_v6 ... ok
+test shell::cli::tests::n16_summary_requires_v16 ... ok
+test shell::cli::tests::should_fail_on_error ... ok
+test shell::cli::tests::semantic_checks_are_isolated ... ok
+test shell::cli::tests::should_fail_on_fatal_regardless_of_fail_on_setting ... ok
+test shell::cli::tests::should_fail_on_warning_when_fail_on_warning ... ok
+test shell::cli::tests::should_not_fail_on_info_even_when_fail_on_warning ... ok
+test shell::cli::tests::should_not_fail_on_warning_when_fail_on_error ... ok
+test shell::cli::tests::violations_have_total_deterministic_tie_breakers ... ok
+test shell::cli::tests::violations_sorted_fatal_first_then_path_then_line ... ok
+test shell::fix_hashes::tests::execute_does_not_write_on_dry_run ... ok
+test shell::cli::tests::format_sarif_empty_violations ... ok
+test shell::fix_hashes::tests::execute_records_write_error ... ok
+test shell::fix_hashes::tests::execute_skips_unfixable_entries ... ok
+test shell::fix_hashes::tests::execute_writes_back_code_hash_to_prompt ... ok
+test shell::fix_hashes::tests::format_plan_shows_nothing_to_fix_when_empty ... ok
+test shell::fix_hashes::tests::format_results_shows_zero_remaining ... ok
+test shell::fix_hashes::tests::plan_builds_entry_for_v5_violation ... ok
+test shell::fix_hashes::tests::plan_ignores_non_v5_violations ... ok
+test shell::cli::tests::sarif_v12_warning_level ... ok
+test shell::fix_hashes::tests::plan_marks_unfixable_when_prompt_missing ... ok
+test shell::cli::tests::format_sarif_is_valid_json ... ok
+test shell::fix_hashes::tests::plan_preserves_prompt_infrastructure_failure ... ok
+test shell::fix_hashes::tests::plan_reports_unreadable_header_instead_of_silencing ... ok
+test shell::cli::tests::sarif_v10_fatal_mapped_to_error ... ok
+test shell::n16_summary::tests::collect_n16_stats_deduplicates_overlapping_source_and_toml ... ok
+test shell::cli::tests::sarif_driver_rules_has_28_entries ... ok
+test shell::n16_summary::tests::extract_n16_module_name_maps_canonical_directories ... ok
+test shell::n16_summary::tests::extract_n16_tag_recognizes_greek_and_ascii_variants ... ok
+test shell::cli::tests::sarif_v7_warning_level ... ok
+test shell::n16_summary::tests::format_n16_summary_sorts_by_gamma_descending ... ok
+test shell::cli::tests::sarif_info_mapped_to_note ... ok
+test shell::n16_summary::tests::format_n16_summary_with_custom_min_sample_size ... ok
+test shell::cli::tests::sarif_v11_error_level ... ok
+test shell::path_encoding::tests::invalid_unix_bytes_are_lossless_in_human_and_machine_output ... ok
+test shell::path_encoding::tests::utf8_paths_remain_readable_and_percent_is_not_ambiguous ... ok
+test shell::cli::tests::sarif_v8_fatal_mapped_to_error ... ok
+test shell::refinement::tests::preserved_is_exit_zero ... ok
+test shell::refinement::tests::snapshot_success_is_stable ... ok
+test shell::update_snapshot::tests::execute_does_not_write_on_dry_run ... ok
+test shell::refinement::tests::unknown_is_exit_two_and_sarif_note ... ok
+test shell::update_snapshot::tests::execute_writes_when_not_dry_run ... ok
+test shell::update_snapshot::tests::format_plan_shows_nothing_when_empty ... ok
+test shell::update_snapshot::tests::format_results_shows_zero_remaining ... ok
+test shell::update_snapshot::tests::plan_builds_entry_for_v6_violation ... ok
+test shell::update_snapshot::tests::plan_ignores_non_v6_violations ... ok
+test shell::update_snapshot::tests::plan_reports_missing_parsed_file_instead_of_silencing ... ok
+test infra::git_refinement::tests::timeout_kills_a_blocked_process ... ok
+test infra::refinement_extractor::tests::extracts_one_many_absent_unknown_ambiguous_and_opaque ... ok
+test infra::prompt_reader::tests::hash_budget_is_exactly_ten_mebibytes ... ok
+
+test result: ok. 662 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+     Running unittests 04_wiring/main.rs (/tmp/bateia-0035-linter/target/debug/deps/crystalline_lint-f94a8fbe95775235)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/citation_freshness_adapter_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/citation_freshness_adapter_assessment-4af639197394d0b7)
+
+running 9 tests
+test lexical_escape_absolute_and_empty_paths_are_outside_root ... ok
+test existing_nonempty_lines_are_valid_including_unicode_crlf_and_final_line ... ok
+test invalid_utf8_and_budget_limits_fail_closed ... ok
+test invalid_roots_and_directories_are_unknown_with_exact_reason ... ok
+test missing_and_invalid_or_empty_lines_are_stale_with_exact_reason ... ok
+test resolution_is_deterministic_and_does_not_mutate_project_bytes ... ok
+test root_and_component_symlinks_are_rejected_even_when_they_point_inside ... ok
+test concurrent_removal_of_an_empty_target_remains_fail_closed ... ok
+test concurrent_directory_to_external_symlink_swap_never_becomes_valid ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/config_walker_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/config_walker_assessment-dc8bdea9ff73019a)
+
+running 6 tests
+test unreadable_eligible_source_is_an_error_and_does_not_hide_readable_files ... ok
+test adjacent_tests_require_regular_files_and_self_tests_are_not_coverage ... ok
+test enumeration_order_is_canonical_across_opposite_creation_orders ... ok
+test exclusions_are_component_and_exact_path_based_without_prefix_leakage ... ok
+test symlinks_never_escape_root_or_count_as_adjacent_test_coverage ... ok
+test ambiguous_or_unknown_layer_mappings_are_rejected_independent_of_toml_order ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/decision_metrics_v17_v20_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/decision_metrics_v17_v20_assessment-df6609fa66dc72fd)
+
+running 10 tests
+test every_rule_preserves_multi_expression_multi_arm_order_and_cardinality ... ok
+test language_and_empty_matrix ... ok
+test v17_truth_table ... ok
+test order_cardinality_and_isolation ... ok
+test v18_systematic_irrelevant_field_mutation_preserves_entire_diagnostic ... ok
+test v18_component_case_separator_attacks ... ok
+test v19_systematic_irrelevant_field_mutation_preserves_entire_diagnostic ... ok
+test v19_threshold_max_count ... ok
+test v20_systematic_irrelevant_field_mutation_preserves_entire_diagnostic ... ok
+test v20_threshold_max_and_table_oracle ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/declaration_state_classifiers_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/declaration_state_classifiers_assessment-dc23535e74a25711)
+
+running 6 tests
+test v12_config_toggle_is_isolated_to_struct_class_and_does_not_mutate_input ... ok
+test v12_matches_seven_layers_six_kinds_and_both_config_states ... ok
+test v12_preserves_order_multiplicity_path_line_kind_name_and_unicode_evidence ... ok
+test v13_nearby_immutable_types_are_exempt_and_mut_has_message_precedence ... ok
+test v13_matches_seven_layers_is_mut_and_all_publicly_identifiable_tokens ... ok
+test v13_preserves_order_multiplicity_path_line_name_evidence_and_is_deterministic ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fix_hashes_bijection_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/fix_hashes_bijection_assessment-e59712b5157d183c)
+
+running 9 tests
+test all_collisions_are_reported_in_deterministic_byte_order ... ok
+test dry_run_and_real_execution_share_the_exact_same_integral_plan ... ok
+test application_failure_rolls_back_every_applied_pair ... ok
+test missing_metadata_and_any_other_preflight_failure_block_all_writes ... ok
+test plan_deduplicates_only_the_exact_same_bijective_identity ... ok
+test p1179_false_closure_is_rejected_when_only_direct_v5_is_green ... ok
+test rollback_failure_is_fatal_and_never_reported_as_complete ... ok
+test second_pass_validates_both_bytes_of_every_pair ... ok
+test shared_prompt_blocks_the_entire_batch_before_first_write ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fix_hashes_execution_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/fix_hashes_execution_assessment-a413087e284f81c5)
+
+running 4 tests
+test code_failure_blocks_phase_two_but_does_not_block_later_entries ... ok
+test prompt_failure_is_exact_partial_write_and_duplicates_are_preserved ... ok
+test successful_execution_writes_code_then_prompt_and_reports_applied ... ok
+test unavailable_and_dry_run_each_produce_one_result_and_never_write ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fix_hashes_planning_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/fix_hashes_planning_assessment-544e5838b156491a)
+
+running 3 tests
+test filters_exact_v5_and_preserves_order_duplicates_and_hostile_paths ... ok
+test readable_header_computes_a_and_b_once_and_materializes_all_four_combinations ... ok
+test unreadable_header_calls_no_hash_calculation ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fix_hashes_presentation_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/fix_hashes_presentation_assessment-3f62ea2d16ecb2e4)
+
+running 6 tests
+test applied_is_observably_distinct_from_dry_run ... ok
+test dry_run_exposes_both_paths_and_all_three_hash_values_without_claiming_fixed ... ok
+test empty_and_skipped_result_counts_have_exact_boundary_behavior ... ok
+test every_unavailable_plan_state_is_distinguishable_and_exposes_its_payload ... ok
+test every_unavailable_result_state_is_distinguishable_and_exposes_its_payload ... ok
+test write_failures_expose_the_failed_phase_reason_and_both_hashes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/fixtures.rs (/tmp/bateia-0035-linter/target/debug/deps/fixtures-5696fa5838f53f1a)
+
+running 83 tests
+test error_message_arm::error_message_arm_is_exempt_from_v16 ... ok
+test ghost_variant::ghost_variant_mutation_preserves_v16_violation ... ok
+test non_regression_v16_to_v20_on_python ... ok
+test n16_summary_custom_min_sample_size_threshold ... ok
+test n16_summary_emits_small_sample_warning_for_synthetic_fixture ... ok
+test non_regression_v16_to_v20_on_typescript ... ok
+test non_regression_v21_and_v22_on_typescript ... ok
+test non_regression_v21_and_v22_on_python ... ok
+test v01b_fail_header_points_to_missing_prompt ... ok
+test v02_fail_l1_without_test ... ok
+test v02d_fail_cfg_test_only_in_comment ... ok
+test v03_pass_clean ... ok
+test v03c_fail_alias_use_resolves_crate ... ok
+test v02_pass_clean ... ok
+test semantic_fixture_all_rules_have_exact_multiplicity ... ok
+test v02b_pass_impl_without_function_exempt ... ok
+test v01_fail_missing_header ... ok
+test v01_pass_clean ... ok
+test v02c_fail_cfg_not_test_still_uncovered ... ok
+test v03_fail_cross_crate_l2_to_l4 ... ok
+test v03f_fail_pathref_type ... ok
+test v03d_fail_renamed_dep_resolves_crate ... ok
+test v03e_fail_pathref_expr ... ok
+test v04_java_fail_io_in_core ... ok
+test v04_pass_clean ... ok
+test v04_elixir_fail_io_in_core ... ok
+test v04_go_fail_io_in_core ... ok
+test v03h_pass_pathref_local ... ok
+test v03i_pass_pathref_std ... ok
+test v04b_fail_forbidden_macro_in_core ... ok
+test v05_fail_hash_drift ... ok
+test v04_fail_io_in_core ... ok
+test v03g_fail_pathref_attr ... ok
+test v05_pass_clean ... ok
+test v04_zig_fail_io_in_core ... ok
+test v05b_pass_correct_hash_no_drift ... ok
+test v06_fail_interface_stale ... ok
+test v07_fail_orphan_prompt ... ok
+test v07_pass_clean ... ok
+test v06c_fail_functions_delta ... ok
+test v08_pass_clean ... ok
+test v08_fail_alien_file ... ok
+test v06_pass_clean ... ok
+test v10_pass_clean ... ok
+test v10_fail_quarantine_leak ... ok
+test semantic_fixture_selection_is_isolated ... ok
+test v09_fail_intra_crate_nonport_subdir ... ok
+test v06b_pass_rich_interface_identical ... ok
+test v09_fail_cross_crate_nonport_subdir ... ok
+test v12c_fail_struct_when_adapter_disallowed ... ok
+test v12b_pass_generic_struct_in_wiring ... ok
+test v09_pass_clean ... ok
+test v12_fail_enum_in_wiring ... ok
+test v21_hardcoded_contextual_value_triggers_warning ... ok
+test v21_format_syntax_module_is_exempt ... ok
+test v11_pass_clean ... ok
+test v21_data_table_is_exempt ... ok
+test v21_isolated_literal_outside_scaling_does_not_trigger ... ok
+test v21_valid_ref_suppresses ... ok
+test v22_recognizes_real_world_citations_in_inventory ... ok
+test v12b_fail_generic_enum_in_wiring ... ok
+test v06d_fail_types_delta ... ok
+test v12_pass_clean ... ok
+test v21_stale_ref_triggers_stale_citation_warning ... ok
+test v13_pass_clean ... ok
+test v11_fail_dangling_contract ... ok
+test v22_provenance_inventory_aggregates_module_ratio ... ok
+test v14_pass_clean ... ok
+test v15_fail_multi_prompt_header ... ok
+test v14_fail_external_dep_in_core ... ok
+test v13_fail_mutable_static_in_core ... ok
+test v15_pass_clean ... ok
+test v14b_pass_allowed_external_in_core ... ok
+test v15b_pass_prompt_mentioned_in_plain_comment ... ok
+test vexcl_pass_violation_in_excluded_dir ... ok
+test vtest_default_pass_use ... ok
+test vmod_l4_fail_module_mapped_to_l4 ... ok
+test vtest_on_fail_use ... ok
+test vl0_pass_rust_file_in_l0 ... ok
+test vtest_pathref_default_pass ... ok
+test vnest_fail_violation_in_nested_subdir ... ok
+test vtest_prod_fail ... ok
+test vtest_pathref_on_fail ... ok
+
+test result: ok. 83 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/git_refinement_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_assessment-a798e329190ba0fc)
+
+running 6 tests
+test git_directory_symlink_to_external_repository_is_rejected ... ok
+test pathspec_magic_in_contract_file_is_rejected_as_input ... ok
+test repository_cannot_read_commits_from_external_alternate ... ok
+test success_and_error_preserve_every_preexisting_repository_byte ... ok
+test oversized_blob_is_observably_budget_exhausted_not_preserved ... ok
+test empty_alternates_is_allowed_but_external_git_environment_is_ignored ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+     Running tests/git_refinement_object_containment_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_object_containment_assessment-d4912e31cd8caff3)
+
+running 7 tests
+test requested_loose_object_symlink_to_external_bytes_fails_closed ... ok
+test requested_loose_object_fanout_symlink_fails_closed ... ok
+test concurrent_regular_to_symlink_swap_after_preflight_fails_closed ... ok
+test accessible_index_symlink_to_external_bytes_fails_closed ... ok
+test accessible_pack_symlink_to_external_bytes_fails_closed ... ok
+test regular_internal_loose_object_is_accepted ... ok
+test regular_internal_pack_and_index_are_accepted ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/git_refinement_productive_route_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_productive_route_assessment-210367e4c4b2a11f)
+
+running 3 tests
+test framing_failure_stops_before_extraction_and_comparison ... ok
+test productive_route_uses_one_controlled_transcript_and_oids_after_resolution ... ok
+test equal_source_bytes_have_the_same_observable_result ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+     Running tests/git_refinement_protocol_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_protocol_assessment-800e1c8c06e5cc88)
+
+running 7 tests
+test rejects_invalid_framing_without_publishing_content ... ok
+test maps_ref_failure_only_to_missing_ref ... ok
+test distinguishes_regular_missing_and_forbidden_object_kinds ... ok
+test supplies_exact_environment_and_literal_path_argv ... ok
+test applies_inclusive_blob_budget_without_waiting_for_payload ... ok
+test resolves_once_then_uses_only_the_opaque_oid ... ok
+test validates_duplicate_and_path_count_budgets_before_spawn ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+     Running tests/git_refinement_session_escape_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_session_escape_assessment-e7c0685b5e4446bf)
+
+running 4 tests
+test double_fork_intermediate_exit_does_not_release_leaf ... ignored, future sealed verification: deliberate session escape is outside local mode
+test escape_during_timeout_remains_bounded_and_contained ... ignored, future sealed verification: deliberate session escape is outside local mode
+test setsid_closes_pipes_but_remains_in_scope ... ignored, future sealed verification: deliberate session escape is outside local mode
+test setsid_keeps_pipes_open_after_leader_exits ... ignored, future sealed verification: deliberate session escape is outside local mode
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/git_refinement_stream_lifecycle_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_stream_lifecycle_assessment-d598b7aa50d1df7d)
+
+running 4 tests
+/bin/kill: /bin/kill: (8684)/bin/kill: (8681): No such process(8682): No such process
+: No such process
+
+/bin/kill: (8684): No such process
+/bin/kill: (8682): No such process
+/bin/kill: (8681): No such process
+test descendant_without_inherited_pipes_still_prevents_content_publication ... ok
+test oversized_header_with_open_pipe_is_budget_exhausted_before_deadline_and_reaped ... ok
+test leader_exit_with_descendant_holding_pipes_returns_bounded_and_reaps_containment ... ok
+/bin/kill: (8692): No such process
+/bin/kill: (8692): No such process
+test transcript_cap_with_open_pipe_is_invalid_framing_before_timeout ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+     Running tests/git_refinement_timeout_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_timeout_assessment-da1fc26475aa9b81)
+
+running 4 tests
+test closed_pipe_with_partial_stdout_is_invalid_framing ... ok
+test nonzero_status_is_process_failure_without_partial_publication ... ok
+test timeout_kills_and_reaps_a_hostile_descendant ... ok
+test timeout_returns_only_after_the_hostile_process_is_reaped ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.01s
+
+     Running tests/git_refinement_transient_object_race_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_transient_object_race_assessment-dec35676dde20114)
+
+running 6 tests
+test transient_fanout_symlink_is_rejected ... ignored, future sealed verification: active local filesystem adversary is outside local mode
+test transient_loose_object_symlink_is_rejected ... ignored, future sealed verification: active local filesystem adversary is outside local mode
+test transient_pack_and_index_symlinks_are_rejected ... ignored, future sealed verification: active local filesystem adversary is outside local mode
+test regular_internal_fanout_is_accepted ... ok
+test regular_internal_loose_object_is_accepted ... ok
+test regular_internal_pack_and_index_are_accepted ... ok
+
+test result: ok. 3 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/git_refinement_windows_job_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_windows_job_assessment-5506b518e47555fb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/git_refinement_windows_job_v2_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/git_refinement_windows_job_v2_assessment-2140d6040e714ad3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/hardcoded_contextual_value_v21_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/hardcoded_contextual_value_v21_assessment-7685d70f3f297cfe)
+
+running 9 tests
+test configured_identifiers_match_segments_not_substrings ... ok
+test language_matrix_and_empty_collection_are_silent ... ok
+test evidence_location_severity_order_and_multiplicity_are_preserved ... ok
+test filters_are_exact_and_lookalikes_are_not_exempt ... ok
+test resolver_is_only_called_for_eligible_refs ... ok
+test predicate_requires_product_of_three_axes ... ok
+test ref_states_and_reasons_are_observable_without_strict_promotion ... ok
+test spec_and_rationale_require_nonempty_payload ... ok
+test trivials_are_lexical_and_near_controls_visible ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/import_boundary_classifiers_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/import_boundary_classifiers_assessment-e53cb32109a8ad28)
+
+running 6 tests
+test v3_matches_the_complete_seven_by_seven_matrix ... ok
+test v3_preserves_order_multiplicity_path_line_layers_and_unicode_import_evidence ... ok
+test v3_test_guard_only_filters_test_origin_and_all_import_kinds_are_equivalent ... ok
+test v9_matches_origin_destination_subdir_and_ports_product ... ok
+test v9_guard_kinds_multiplicity_order_and_evidence_match_v3_guarantees ... ok
+test v9_port_membership_is_exact_for_case_unicode_normalization_and_prefixes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/infrastructure_error_projection_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/infrastructure_error_projection_assessment-6e7d17766bca74ea)
+
+running 7 tests
+test empty_source_is_exactly_one_owned_parse_warning_at_unavailable_position ... ok
+test four_modalities_do_not_silence_or_exchange_ids_levels_or_cardinality ... ok
+test syntax_error_is_exactly_one_owned_parse_error_with_preserved_position_and_message ... ok
+test syntax_error_preserves_an_empty_causal_message_exactly ... ok
+test unreadable_is_exactly_one_owned_fatal_v0_and_preserves_hostile_evidence ... ok
+test unreadable_preserves_an_empty_reason_exactly ... ok
+test unsupported_language_is_exactly_one_owned_parse_warning_at_unavailable_position ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/inventory_registry_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/inventory_registry_assessment-36ff3e3f742635cc)
+
+running 7 tests
+test from_members_rejects_internal_dependency_and_rename_collisions ... ok
+test inventory_is_permutation_invariant_and_applies_all_filters ... ok
+test owner_is_deepest_and_ties_are_permutation_invariant ... ok
+test registry_lookups_are_invariant_under_permutation_and_duplicates ... ok
+test each_normalized_collision_class_is_rejected ... ok
+test normalized_package_dependency_and_rename_collisions_are_order_invariant ... ok
+test present_but_invalid_workspace_manifest_is_an_infrastructure_error ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/lineage_header_classifiers_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/lineage_header_classifiers_assessment-f3bc27a609f976cc)
+
+running 6 tests
+test v15_layer_and_cardinality_truth_table_is_exact ... ok
+test v15_preserves_count_order_duplicates_unicode_path_position_and_evidence ... ok
+test v1_missing_lineage_and_missing_reference_are_distinct_and_preserve_literal_evidence ... ok
+test v1_and_v15_are_deterministic_and_preserve_distinct_unicode_representations ... ok
+test v1_seven_layers_by_three_states_truth_table_and_exemption_priority ... ok
+test v1_strict_directories_match_path_components_not_textual_prefixes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/low_risk_entities_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/low_risk_entities_assessment-a71cf13940ad3a0c)
+
+running 4 tests
+test duplicate_contributions_are_idempotent_in_all_four_sets ... ok
+test parsed_transport_and_error_identities_cover_every_index_field ... ok
+test public_variants_severity_order_and_violation_clone_are_complete ... ok
+test project_index_is_a_commutative_associative_monoid_across_all_fields ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mechanical_rule_classifiers_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/mechanical_rule_classifiers_assessment-30c1fad3c79de8ad)
+
+running 6 tests
+test textual_representations_remain_distinct_and_complete_across_classifiers ... ok
+test v10_preserves_multiset_evidence_under_input_permutation ... ok
+test v10_truth_table_depends_only_on_production_origin_and_lab_target ... ok
+test v2_truth_table_is_exact_and_preserves_public_location ... ok
+test v8_is_one_fatal_per_alien_in_received_identity_order_and_empty_is_identity ... ok
+test v11_is_exact_set_difference_with_injected_level_and_canonical_order ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/multiparser_composition_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/multiparser_composition_assessment-814f95b9bbd372a2)
+
+running 3 tests
+test each_supported_language_calls_only_its_port_and_propagates_exact_err ... ok
+test unknown_calls_no_port_and_returns_exact_unsupported_language ... ok
+test each_supported_language_calls_only_its_port_and_propagates_complete_ok ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/multiparser_routing_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/multiparser_routing_assessment-f30f65c74b085a68)
+
+running 3 tests
+test b1_maps_all_variants_and_ignores_every_other_source_field ... ok
+test b2_calls_only_the_selected_independent_spy_once_with_the_same_source_and_exact_err ... ok
+test b2_propagates_ok_and_unknown_is_exact_without_any_spy_call ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/n16_summary_collection_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/n16_summary_collection_assessment-1632ba10e78d899c)
+
+running 4 tests
+test collection_parses_last_colon_preserves_nominal_locations_and_source_wins ... ok
+test grouping_is_component_based_and_does_not_normalize_identity ... ok
+test token_grammar_requires_exactly_one_valid_non_overlapping_token ... ok
+test every_classified_occurrence_counts_once_and_input_orders_are_unobservable ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/n16_summary_presentation_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/n16_summary_presentation_assessment-c9c9a3750946eb82)
+
+running 6 tests
+test empty_report_has_headers_and_total_dash_but_no_small_sample_warning ... ok
+test hostile_names_and_extreme_but_non_overflowing_counts_remain_deterministic ... ok
+test orders_by_gamma_descending_then_module_name_by_utf8_bytes_only ... ok
+test renders_normative_columns_totals_zero_gamma_and_half_up_tenths ... ok
+test thresholds_zero_and_one_never_warn_for_emitted_modules ... ok
+test warns_every_small_module_including_zero_gamma_and_rounds_pp_half_up ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/normative_v13_tokens_retest_clean.rs (/tmp/bateia-0035-linter/target/debug/deps/normative_v13_tokens_retest_clean-c80f29be1d301a17)
+
+running 5 tests
+test static_mut_is_rejected_without_a_forbidden_token_and_mut_takes_precedence ... ok
+test immutable_near_misses_remain_allowed_without_normalization ... ok
+test v13_scope_is_exactly_l1_for_every_normative_token ... ok
+test violations_preserve_input_order_and_cardinality_including_duplicates ... ok
+test all_18_normative_tokens_are_rejected_nominally_in_l1 ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/normative_v14_blind_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/normative_v14_blind_assessment-52f47e59603accff)
+
+running 10 tests
+test empty_import_collection_is_allowed ... ok
+test deny_by_default_and_violation_shape_are_normative ... ok
+test intra_crate_qualifiers_are_exempt ... ok
+test only_unknown_targets_are_external_and_only_l1_is_in_scope ... ok
+test package_is_the_first_rust_segment_and_preserves_scoped_npm_name ... ok
+test preserves_import_order_and_one_violation_per_disallowed_import ... ok
+test test_origin_is_skipped_by_default_and_checked_when_enabled ... ok
+test root_grouped_import_preserves_each_authorized_item_identity ... ok
+test type_level_whitelist_allows_only_named_items ... ok
+test whitelist_and_rust_stdlib_exemptions_allow_imports ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/normative_v4_blind_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/normative_v4_blind_assessment-51a5816b7976b889)
+
+running 7 tests
+test borrowed_and_owned_symbols_are_treated_identically ... ok
+test unknown_language_has_no_forbidden_symbols ... ok
+test v4_is_scoped_exclusively_to_l1 ... ok
+test violations_preserve_token_order_multiplicity_and_exact_locations ... ok
+test near_misses_for_every_normative_entry_are_allowed ... ok
+test every_normative_entry_accepts_equality_and_both_delimited_prefix_forms ... ok
+test language_tables_are_isolated ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/nucleus_format_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_format_assessment-fd1a5423ebf3a110)
+
+running 4 tests
+test strict_minimum_parses ... ok
+test missing_unknown_version_kind_and_unknown_fields_fail_closed ... ok
+test malformed_utf8_nul_and_oversize_fail ... ok
+test identity_claim_and_text_limits_are_enforced ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/nucleus_graph_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_graph_assessment-339269f3c8d9048a)
+
+running 3 tests
+test dag_and_shared_consumption_are_valid ... ok
+test identities_remain_case_sensitive ... ok
+test missing_cycles_and_orphans_are_deterministic ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/nucleus_hash_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_hash_assessment-3677a7ef18693d1e)
+
+running 3 tests
+test dependency_order_is_canonical_and_changes_propagate ... ok
+test nucleus_hash_is_deterministic_and_transitive ... ok
+test prompt_without_nucleus_is_bit_identical_to_legacy ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/nucleus_toml_migration_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_toml_migration_assessment-8e6a22f03afb6ab5)
+
+running 5 tests
+test b1_only_canonical_toml_paths_are_valid_nucleus_references ... ok
+test b4_prompt_without_nucleus_and_transaction_gates_remain_independent ... ok
+test b2_dependencies_use_toml_identity_and_path_changes_effective_digest_only ... ok
+test b1_namespace_requires_schema_and_legacy_extension_is_observable ... ok
+test b3_production_code_cannot_own_a_toml_nucleus ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/nucleus_transaction_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_transaction_assessment-09902dc8a2f61b61)
+
+running 2 tests
+test dry_run_and_real_share_preflighted_plan ... ok
+test incomplete_preflight_writes_nothing ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/nucleus_wiring_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/nucleus_wiring_assessment-fe2af2db43d69c10)
+
+running 4 tests
+test direct_code_reference_to_toml_nucleus_is_rejected ... ok
+test one_nucleus_byte_invalidates_both_pins_and_both_code_hashes ... ok
+test shared_nucleus_does_not_break_prompt_bijection ... ok
+test fix_hashes_updates_pins_and_effective_hashes_in_one_transaction ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/p0119_cli_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/p0119_cli_assessment-00a4b70868323e37)
+
+running 12 tests
+test lint_without_config_remains_read_only ... ok
+test root_symlink_is_rejected_without_escape ... ok
+test missing_root_and_non_directory_root_use_closed_unsafe_reasons ... ok
+test unrelated_unicode_name_is_not_topology_evidence_or_ambiguity ... ok
+test present_valid_or_invalid_is_immutable_and_precedes_missing_topology ... ok
+test init_is_reserved_but_dot_slash_init_remains_a_lint_path ... ok
+test creation_order_and_absolute_or_relative_spelling_do_not_change_bytes ... ok
+test minimum_and_complete_goldens_are_literal_and_loader_accepted ... ok
+test unknown_missing_and_case_ambiguity_are_exact_and_never_write ... ok
+test destination_symlinks_and_special_types_are_unsafe_and_untouched ... ok
+test every_lint_flag_is_rejected_after_init_without_writing ... ok
+test every_optional_subset_emits_only_present_layers_in_fixed_order ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/p0119_cli_prefix_regression.rs (/tmp/bateia-0035-linter/target/debug/deps/p0119_cli_prefix_regression-53c5bc5ea172c191)
+
+running 1 test
+test lint_flags_before_init_are_rejected_without_writing ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/p0119_pure_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/p0119_pure_assessment-99653a165b7a3fff)
+
+running 1 test
+test present_refusal_does_not_require_topology ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/prompt_individualization_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/prompt_individualization_assessment-b9bc80561b7a794f)
+
+running 3 tests
+test b3_projected_graph_is_bijective_and_follows_the_frozen_lots ... ok
+test b2_every_split_is_authorized_by_its_semantic_classifier ... ok
+test b1_manifest_is_total_unique_and_hash_pinned ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/prompt_io_hash_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/prompt_io_hash_assessment-8a1d3a80a9d8a47d)
+
+running 6 tests
+test snapshot_requires_one_canonical_marker_and_closed_complete_schema ... ok
+test readers_confine_paths_and_exists_means_local_regular_file ... ok
+test prompt_walker_has_exact_deterministic_local_set_and_rejects_invalid_root ... ok
+test source_hash_is_byte_sensitive_except_for_one_canonical_header_meta_line ... ok
+test writers_validate_digest_and_preserve_unauthorized_bytes_mode_and_directory_state ... ok
+test prompt_reader_enforces_the_ten_mib_capture_limit ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.64s
+
+     Running tests/prompt_ownership_bijection_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/prompt_ownership_bijection_assessment-672f3c36f52afd93)
+
+running 8 tests
+test duplicate_identical_pair_does_not_increase_cardinality ... ok
+test empty_and_one_to_one_pairs_are_bijective ... ok
+test every_input_permutation_produces_identical_diagnostic_bytes ... ok
+test non_productive_layers_do_not_enter_ownership ... ok
+test one_code_with_two_prompts_preserves_local_v15 ... ok
+test textually_near_prompt_identities_remain_distinct_and_case_sensitive ... ok
+test hostile_paths_do_not_select_an_implicit_owner ... ok
+test two_three_and_many_codes_yield_one_global_v15_per_prompt ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/prompt_ownership_wiring_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/prompt_ownership_wiring_assessment-84ae1ed785a81feb)
+
+running 7 tests
+test missing_header_remains_v1_not_v15 ... ok
+test configured_exclusion_does_not_create_phantom_ownership ... ok
+test real_binary_reports_one_global_v15_with_sorted_complete_consumers ... ok
+test test_and_non_productive_origins_do_not_create_phantom_ownership ... ok
+test diagnosis_is_independent_of_creation_order ... ok
+test every_available_parser_publishes_a_canonical_prompt_header ... ok
+test every_available_parser_has_the_same_global_ownership_semantics ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/provenance_rules_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/provenance_rules_assessment-75ddad3eda039da4)
+
+running 6 tests
+test v5_emits_exactly_once_iff_both_hashes_exist_and_differ ... ok
+test v5_preserves_path_values_and_representation_without_normalizing ... ok
+test v6_is_invariant_to_permutations_of_the_same_interface ... ok
+test v6_detects_every_field_change_and_preserves_observable_multiplicity ... ok
+test v7_is_exact_deterministic_and_preserves_injected_level_and_path_representation ... ok
+test v6_delta_description_is_complete_and_deterministic_under_permutation ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/refinement_cli.rs (/tmp/bateia-0035-linter/target/debug/deps/refinement_cli-bd26ada6a382cb89)
+
+running 10 tests
+test violated_exits_one_with_witness ... ok
+test sarif_is_valid_and_uses_refinement_rule ... ok
+test preserved_exits_zero ... ok
+test unknown_exits_two ... ok
+test snapshot_is_deterministic_and_refines_against_itself ... ok
+test historical_oracles_accept_fix_and_reject_regression ... ok
+test refine_revisions_reads_commits_without_changing_worktree ... ok
+test refine_revisions_does_not_follow_symlinks_or_run_git_extensions ... ok
+test refine_revisions_reports_violated_unknown_and_input_errors ... ok
+test refine_revisions_rejects_path_and_blob_budget_exhaustion ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.42s
+
+     Running tests/refinement_contract_loader_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/refinement_contract_loader_assessment-5bbdc9069fb414b1)
+
+running 13 tests
+test from_bytes_treats_hostile_source_as_an_opaque_preserved_label ... ok
+test accepts_the_three_closed_variants_and_preserves_text_and_order ... ok
+test accepted_targets_must_be_nonempty_and_duplicate_free ... ok
+test rejects_empty_document_id_and_relation_list ... ok
+test rejects_duplicate_unknown_keys_and_unknown_tables ... ok
+test requires_nonempty_preserved_relation_strings ... ok
+test enforces_exact_case_sensitive_kinds_and_conditional_fields ... ok
+test regular_file_and_from_bytes_are_equivalent_for_value_and_error_class ... ok
+test rejects_structural_duplicates_and_conflicts ... ok
+test distinguishes_utf8_syntax_schema_and_limit_error_classes ... ok
+test toml_key_limit_is_inclusive ... ok
+test accepted_target_total_is_accumulated_across_relations ... ok
+test byte_string_relation_and_accepted_limits_are_inclusive ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+     Running tests/refinement_snapshot_loader_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/refinement_snapshot_loader_assessment-f054d9363610bacd)
+
+running 11 tests
+test errors_have_stable_classes_and_from_bytes_preserves_source_label ... ok
+test metadata_and_observable_keys_require_nonempty_trim_without_coercion ... ok
+test filesystem_loader_rejects_directories_and_symlink_components ... ok
+test property_order_does_not_change_the_loaded_value ... ok
+test observable_objects_are_closed_and_duplicate_safe ... ok
+test accepts_all_closed_states_reasons_and_preserves_textual_identity ... ok
+test root_is_closed_versioned_and_rejects_duplicate_top_level_fields ... ok
+test small_regular_file_matches_from_bytes_and_missing_path_is_io ... ok
+test practical_byte_string_and_cardinality_limits_fail_before_exhaustion ... ok
+test regular_file_byte_limit_is_inclusive ... ok
+test byte_string_key_and_cardinality_limits_are_inclusive ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/rust_source_constant_context_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/rust_source_constant_context_assessment-855e6beff67ffa54)
+
+running 3 tests
+test invalid_source_returns_syntax_error_without_partial_ir ... ok
+test whitespace_and_comments_do_not_create_or_reorder_occurrences ... ok
+test excludes_non_numeric_and_non_function_contexts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/rust_source_constant_identity_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/rust_source_constant_identity_assessment-f8c647997ed27740)
+
+running 3 tests
+test preserves_numeric_identity_suffix_sign_and_byte_columns ... ok
+test preserves_preorder_nesting_repetition_and_multiplicity ... ok
+test excludes_non_numeric_forms_even_when_nested_in_a_function ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/segregated_materialization_cli.rs (/tmp/bateia-0035-linter/target/debug/deps/segregated_materialization_cli-7b0b41aafe4e886e)
+
+running 16 tests
+test failed_seal_preserves_existing_destination_byte_for_byte ... ok
+test positive_violated_blocks ... ok
+test failure_leaves_no_partial_or_temporary_output ... ok
+test unknown_preserved_blocks ... ok
+test negative_preserved_blocks ... ok
+test negative_unknown_blocks ... ok
+test repeated_producers_block ... ok
+test missing_any_oracle_category_blocks ... ok
+test divergent_prompt_or_contract_hash_blocks ... ok
+test symbolic_or_mismatched_baseline_blocks ... ok
+test negative_with_witness_decoy_and_inconclusive_blocks ... ok
+test dirty_worktree_remains_byte_identical ... ok
+test valid_package_with_all_oracle_kinds_produces_seal ... ok
+test sealing_does_not_execute_checkout_hooks_filters_lfs_or_submodules ... ok
+test seal_language_never_claims_proven_isolation_or_independence ... ok
+test manifest_order_does_not_change_seal_bytes ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.64s
+
+     Running tests/self_complexity_ratchet_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/self_complexity_ratchet_assessment-230211659c9098a7)
+
+running 2 tests
+test identity_ignores_lines_and_presentation_whitespace ... ok
+test accepted_complexity_is_exact_and_has_no_actionable_regression ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+     Running tests/semantic_preservation_v23_v25_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/semantic_preservation_v23_v25_assessment-6e3e4bc3b13e47cc)
+
+running 5 tests
+test complete_seven_by_three_matrix_and_v25_modalities ... ok
+test every_public_level_is_preserved_exactly ... ok
+test evidence_order_multiplicity_permutation_unicode_empty_and_extremes ... ok
+test language_and_ignored_fields_are_integrally_inert ... ok
+test no_cross_activation_and_empty_is_total_for_all_rules ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/shell_presentation_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/shell_presentation_assessment-95caf451e107b041)
+
+running 4 tests
+test should_fail_matches_the_complete_table_and_set_laws ... ok
+test hostile_strings_round_trip_and_unix_paths_preserve_original_bytes ... ok
+test sarif_catalog_levels_positions_and_result_order_are_coherent ... ok
+test total_sort_is_independent_of_input_permutation_under_all_ties ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/update_snapshot_dry_run_presentation_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/update_snapshot_dry_run_presentation_assessment-41aca9579e561031)
+
+running 3 tests
+test dry_run_plan_makes_the_complete_ready_entry_observable ... ok
+test plan_presents_unreadable_causes_distinctly ... ok
+test dry_run_result_is_not_presented_as_a_completed_update ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/update_snapshot_execution_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/update_snapshot_execution_assessment-c82932d64ee65e85)
+
+running 2 tests
+test dry_run_preserves_every_entry_in_order_without_writing ... ok
+test real_execution_writes_each_ready_once_and_continues_after_exact_error ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/update_snapshot_planning_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/update_snapshot_planning_assessment-841fae9d83d408a3)
+
+running 3 tests
+test missing_parsed_and_missing_header_are_distinct_and_never_serialize ... ok
+test filters_exact_v6_and_preserves_occurrence_order_and_duplicates ... ok
+test path_matching_is_integral_hostile_and_uses_first_duplicate_parsed_file ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v1_absolute_path_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v1_absolute_path_assessment-ab5bde31037337db)
+
+running 6 tests
+test invalid_root_preempts_missing_header_v1 ... ok
+test identical_prompt_failures_are_deduplicated_across_consumers ... ok
+test truly_missing_prompt_remains_exactly_one_v1 ... ok
+test canonical_absolute_root_is_clean ... ok
+test symbolic_absolute_root_is_one_fatal_v0_and_zero_v1_in_text_and_sarif ... ok
+test relative_and_canonical_roots_have_the_same_clean_semantics ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/v27_mergeable_decision_arms_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v27_mergeable_decision_arms_assessment-bb3d1ff1f0c46921)
+
+running 4 tests
+test comments_and_formatting_are_inert_but_grouping_is_maximal_and_deterministic ... ok
+test parser_and_rule_accept_plain_guard_and_existing_or_pattern ... ok
+test does_not_bridge_arms_or_accept_macros_placeholders_empty_ranges_and_catchalls ... ok
+test parser_preserves_operators_arguments_control_tokens_and_binding_modes ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v2_concrete_parser_role_transport_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v2_concrete_parser_role_transport_assessment-7a8e31d17efa6de0)
+
+running 1 test
+test all_nine_concrete_parsers_transport_test_role_exactly ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v2_python_source_role_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v2_python_source_role_assessment-ecde287ed0eca741)
+
+running 3 tests
+test adjacent_test_covers_production_without_changing_its_role ... ok
+test pytest_call_in_production_is_not_coverage ... ok
+test both_python_test_name_forms_ignore_body_style_for_v2 ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v2_source_role_contract_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v2_source_role_contract_assessment-9c256ba372f70e3f)
+
+running 5 tests
+test production_l1_requires_coverage_exactly_once ... ok
+test production_l1_with_coverage_is_green ... ok
+test test_role_is_green_independently_of_coverage_boolean ... ok
+test unknown_role_is_not_reinterpreted_as_production_or_coverage ... ok
+test v2_remains_l1_only ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v2_test_artifact_classifier_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v2_test_artifact_classifier_assessment-4e5cf1b1bb6565da)
+
+running 4 tests
+test classification_is_independent_of_discovery_order ... ok
+test every_preserved_convention_has_a_positive_control ... ok
+test non_utf8_source_name_preserves_unknown_role ... ok
+test similar_names_case_mismatches_and_empty_stems_are_production ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/v2_walker_test_artifact_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/v2_walker_test_artifact_assessment-d988e9ed08a58f57)
+
+running 7 tests
+test accepted_non_utf8_source_name_becomes_explicit_source_error ... ok
+test directory_named_like_test_is_not_coverage_evidence ... ok
+test excluded_test_file_is_not_coverage_evidence ... ok
+test walker_marks_assert_only_python_test_by_path_and_covers_its_production ... ok
+test symlink_named_like_test_is_not_coverage_evidence ... ok
+test typescript_test_artifacts_ignore_nested_test_candidates ... ok
+test every_supported_adjacent_convention_covers_and_removal_restores_uncovered ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/walker_result_partition_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/walker_result_partition_assessment-0575409bd13eedea)
+
+running 2 tests
+test partitions_empty_only_ok_and_only_err_without_extra_iterator_observations ... ok
+test preserves_alternation_duplicates_hostile_unicode_and_items_after_errors ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/wildcard_saturation_v16_assessment.rs (/tmp/bateia-0035-linter/target/debug/deps/wildcard_saturation_v16_assessment-508f3aa144dd0a20)
+
+running 8 tests
+test candidate_counts_prefix_once_per_distinct_arm ... ok
+test active_exception_never_silences_principal_and_validates_justification ... ok
+test catchall_reincorporation_barriers_and_every_body_form ... ok
+test irrelevant_fields_unicode_and_extremes_do_not_change_v16 ... ok
+test exact_path_line_matching_and_stale_sort_are_deterministic ... ok
+test language_empty_and_all_seven_scrutinees_are_total ... ok
+test principal_preserves_evidence_location_order_and_occurrences ... ok
+test syntactic_catchall_keeps_exception_fresh_even_when_v16_exempt ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests crystalline_lint
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+PASS: six CLI fixtures; V12 production types/methods, exact harness scope, V1 and V3 retained
+✓ No violations found
+Validated binary: /tmp/bateia-0035-linter/target/debug/crystalline-lint

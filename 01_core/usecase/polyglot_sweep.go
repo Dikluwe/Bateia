@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/polyglot_sweep.md
  * @layer L1
- * @updated 2026-08-08
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -97,7 +97,6 @@ func FilterLanguages(languages []string, excludeInput string) []string {
 	return result
 }
 
-
 // CalculateLanguageDistribution compila a distribuição estatística de repositórios por ecossistema.
 func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResults []domain.IdeaSimilarityResult) []domain.LanguageDistribution {
 	if len(results) == 0 {
@@ -130,8 +129,9 @@ func CalculateLanguageDistribution(results []domain.ExtractedRepository, simResu
 
 		if _, exists := langStats[lang]; !exists {
 			langStats[lang] = &stats{
-				lang:        lang,
-				packagesMap: make(map[string]int),
+				lang:          lang,
+				topSimilarity: -1,
+				packagesMap:   make(map[string]int),
 			}
 		}
 

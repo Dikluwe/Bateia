@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/ontology_matcher_test.md
  * @layer L1
- * @updated 2026-08-08
+ * @updated 2026-09-07
  */
 
 package usecase_test
@@ -76,8 +76,8 @@ func TestCalculateIdeaSimilarity(t *testing.T) {
 
 	res := usecase.CalculateIdeaSimilarity(target, candidate)
 
-	if res.OverallScore < 0 || res.OverallScore > 100 {
-		t.Errorf("Score fora dos limites 0-100: %d", res.OverallScore)
+	if res.OverallScore != -1 || res.SimilarityLabel != "Indeterminate (insufficient evidence)" {
+		t.Errorf("Dimensões ausentes devem ser indeterminadas: %+v", res)
 	}
 
 	if res.Vectors.DomainIntentScore <= 0 {

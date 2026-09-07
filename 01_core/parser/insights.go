@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/insights.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-09-07
  */
 
 package parser
@@ -1132,6 +1132,36 @@ func ExtractArchitecturalInsights(results []domain.ExtractedRepository) domain.A
 		}
 	}
 
+	groups := map[string][]domain.ExtractedRepository{}
+	for _, repo := range results {
+		lang := ""
+		if repo.Manifest != nil {
+			lang = repo.Manifest.Language
+		}
+		groups[lang] = append(groups[lang], repo)
+	}
+	if len(groups) > 1 {
+		var combined domain.ArchitecturalInsights
+		keys := make([]string, 0, len(groups))
+		for lang := range groups {
+			keys = append(keys, lang)
+		}
+		sort.Strings(keys)
+		for _, lang := range keys {
+			ins := ExtractArchitecturalInsights(groups[lang])
+			combined.Testing = append(combined.Testing, ins.Testing...)
+			combined.Configuration = append(combined.Configuration, ins.Configuration...)
+			combined.Database = append(combined.Database, ins.Database...)
+			combined.Observability = append(combined.Observability, ins.Observability...)
+			combined.DevOps = append(combined.DevOps, ins.DevOps...)
+		}
+		combined.Testing = mergePatterns(combined.Testing, totalRepos)
+		combined.Configuration = mergePatterns(combined.Configuration, totalRepos)
+		combined.Database = mergePatterns(combined.Database, totalRepos)
+		combined.Observability = mergePatterns(combined.Observability, totalRepos)
+		return combined
+	}
+
 	// Detectar linguagem pré-dominante dos resultados
 	lang := "go"
 	for _, repo := range results {
@@ -1435,7 +1465,7 @@ func analyzeCategory(results []domain.ExtractedRepository, specs []toolSpec, tot
 
 			for _, dep := range repo.Manifest.Dependencies {
 				for _, pattern := range spec.Patterns {
-					if strings.Contains(strings.ToLower(dep.Name), strings.ToLower(pattern)) {
+					if DependencyIdentityMatch(dep.Name, pattern) {
 						if !repoMatched {
 							foundRepos = append(foundRepos, repoName)
 							repoMatched = true
@@ -1513,4 +1543,23 @@ func analyzeDevOps(results []domain.ExtractedRepository, specs []toolSpec) []dom
 	})
 
 	return matches
+}
+
+func mergePatterns(items []domain.PatternMatch, total int) []domain.PatternMatch {
+	merged := map[string]domain.PatternMatch{}
+	for _, item := range items {
+		m := merged[item.Name]
+		m.Name = item.Name
+		m.Count += item.Count
+		m.FoundIn = append(m.FoundIn, item.FoundIn...)
+		m.Versions = append(m.Versions, item.Versions...)
+		m.Percentage = float64(m.Count) * 100 / float64(total)
+		merged[item.Name] = m
+	}
+	out := make([]domain.PatternMatch, 0, len(merged))
+	for _, m := range merged {
+		out = append(out, m)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
 }

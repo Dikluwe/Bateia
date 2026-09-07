@@ -12,3 +12,6 @@ Verificar de forma determinística o comportamento público do contrato relacion
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/01_core/usecase/ontology_matcher.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.
+
+## Passo 0036
+Validar ausência de sobreafirmação: seleção e chamadas limitadas/determinísticas, hashes divergentes rejeitados, vetores incompletos indeterminados, enumeração com corpo distinguida de declaração.

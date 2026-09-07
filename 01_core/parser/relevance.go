@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/relevance.md
  * @layer L1
- * @updated 2026-08-04
+ * @updated 2026-09-07
  */
 
 package parser
@@ -21,7 +21,7 @@ const (
 	ScoreIndirectImport = 70
 	ScoreReadmeKeyword  = 65
 	ScoreStructural     = 50
-	ScoreGenericText    = 20
+	ScoreGenericText    = 0
 
 	LabelDirectImport   = "DIRECT_IMPORT_MATCH"
 	LabelModuleName     = "MODULE_NAME_MATCH"
@@ -39,7 +39,7 @@ type RelevanceResult struct {
 
 // EvaluateRelevance calcula a relevância do repositório em relação à query pesquisada.
 func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.RepositoryCandidate, tree []domain.DirectoryNode) RelevanceResult {
-	normQuery := NormalizeQuery(query)
+	normQuery := strings.ToLower(NormalizeQuery(query))
 	queryWords := strings.Fields(normQuery)
 
 	// 1. Check repository name match (ex: "Bateia" na query "Bateia Architectural Engine")
@@ -50,7 +50,7 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 				return RelevanceResult{
 					Score:  ScoreModuleName,
 					Label:  LabelModuleName,
-					Reason: fmt.Sprintf("Match exato com o nome do repositório: '%s'", cand.Repo),
+					Reason: fmt.Sprintf("Campo candidato.repo: '%s'; termo da consulta: '%s'", cand.Repo, w),
 				}
 			}
 		}
@@ -64,7 +64,7 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 					return RelevanceResult{
 						Score:  ScoreDirectImport,
 						Label:  LabelDirectImport,
-						Reason: fmt.Sprintf("Match exato de dependência direta no go.mod: '%s'", dep.Name),
+						Reason: fmt.Sprintf("Match exato de dependência direta no manifesto: '%s'", dep.Name),
 					}
 				}
 			}
@@ -72,12 +72,12 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 
 		// 3. Check module name
 		if manifest.ModuleName != "" {
-			normModule := NormalizeQuery(manifest.ModuleName)
-			if normModule == normQuery || path.Base(normModule) == normQuery || strings.EqualFold(manifest.ModuleName, cand.Repo) {
+			normModule := strings.ToLower(NormalizeQuery(manifest.ModuleName))
+			if normModule == normQuery || path.Base(normModule) == normQuery {
 				return RelevanceResult{
 					Score:  ScoreModuleName,
 					Label:  LabelModuleName,
-					Reason: fmt.Sprintf("Match com o nome do módulo: '%s'", manifest.ModuleName),
+					Reason: fmt.Sprintf("Campo manifesto.module_name: '%s'; consulta normalizada: '%s'", manifest.ModuleName, normQuery),
 				}
 			}
 		}
@@ -89,33 +89,20 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 					return RelevanceResult{
 						Score:  ScoreIndirectImport,
 						Label:  LabelIndirectImport,
-						Reason: fmt.Sprintf("Match de dependência indireta no go.mod: '%s'", dep.Name),
+						Reason: fmt.Sprintf("Match de dependência indireta no manifesto: '%s'", dep.Name),
 					}
 				}
 			}
 		}
 
-		// 5. README content keyword & prefix scoring (README Score Booster Multilíngue)
-		if manifest.Content != nil {
-			readmeLower := strings.ToLower(string(manifest.Content))
-			matchedWords := 0
-			for _, word := range queryWords {
-				wLower := strings.ToLower(word)
-				if len(wLower) >= 3 {
-					prefix := wLower
-					if len(prefix) > 5 {
-						prefix = prefix[:5] // Prefix matching para termos multilíngues (ex: archit/arquit, intel)
-					}
-					if strings.Contains(readmeLower, wLower) || strings.Contains(readmeLower, prefix) {
-						matchedWords++
-					}
-				}
-			}
-			if matchedWords > 0 {
+		// Content is legacy manifest data unless its source is explicitly README.
+		if manifest.ContentPath != "" && strings.EqualFold(path.Base(manifest.ContentPath), "README.md") {
+			matched := MatchingQueryTerms(query, string(manifest.Content))
+			if len(matched) > 0 {
 				return RelevanceResult{
-					Score:  ScoreReadmeKeyword,
+					Score:  ScoreReadmeKeyword * len(matched) / len(QueryTerms(query)),
 					Label:  LabelReadmeKeyword,
-					Reason: fmt.Sprintf("Match de %d/%d termos-chave/prefixos no README do repositório", matchedWords, len(queryWords)),
+					Reason: fmt.Sprintf("Campo %s; termos literais %q (%d/%d); indício textual, implementação não verificada", manifest.ContentPath, matched, len(matched), len(QueryTerms(query))),
 				}
 			}
 		}
@@ -125,7 +112,7 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 	for _, node := range tree {
 		parts := strings.Split(node.Path, "/")
 		for _, p := range parts {
-			if NormalizeQuery(p) == normQuery {
+			if strings.ToLower(NormalizeQuery(p)) == normQuery {
 				return RelevanceResult{
 					Score:  ScoreStructural,
 					Label:  LabelStructural,
@@ -139,7 +126,7 @@ func EvaluateRelevance(query string, manifest *domain.Manifest, cand domain.Repo
 	return RelevanceResult{
 		Score:  ScoreGenericText,
 		Label:  LabelGenericText,
-		Reason: "Correspondência genérica de texto na descoberta",
+		Reason: "Candidato descoberto; nenhum termo pertinente verificado nos campos avaliados",
 	}
 }
 

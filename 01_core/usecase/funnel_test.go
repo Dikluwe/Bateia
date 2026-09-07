@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/funnel_test.md
  * @layer L1
- * @updated 2026-07-25
+ * @updated 2026-09-07
  */
 
 package usecase
@@ -263,5 +263,25 @@ func TestSearchFunnelLimitsConcurrentTriageWorkers(t *testing.T) {
 	maximum := atomic.LoadInt32(&provider.maxActive)
 	if maximum < 2 || maximum > 4 {
 		t.Fatalf("concorrência esperada entre 2 e 4 workers, observada: %d", maximum)
+	}
+}
+
+// Local static analysis must be injected through the port and remain distinct from relevance.
+type semanticSpy0035 struct{ called bool }
+
+func (s *semanticSpy0035) Analyze(ctx context.Context, req domain.SemanticRequest) (domain.SemanticReport, error) {
+	s.called = true
+	return domain.SemanticReport{Status: "partial", Reason: "fixture: budget limitado", Units: []domain.SemanticUnit{{Path: "render.cpp", Status: "complete", Symbols: []domain.SemanticSymbol{{Name: "render", File: "render.cpp", Line: 2, EndLine: 4, Definition: true}}}}}, nil
+}
+func TestFunnelInjectsStaticAnalysisWithoutSolutionPromotion0035(t *testing.T) {
+	spy := &semanticSpy0035{}
+	f := NewSearchFunnel(&MockSearchProvider{}, &MockContentProvider{}, &MockCacheStore{}).WithSemanticProvider(spy)
+	result, err := f.Execute(context.Background(), domain.QueryFilter{Query: "transparency", Language: "cpp", MaxResults: 1, Depth: 1, LocalPath: "/fixture"})
+	if err != nil || !spy.called || len(result.Results) != 1 {
+		t.Fatalf("semantic port not invoked: %v %+v", err, result)
+	}
+	repo := result.Results[0]
+	if repo.Semantic == nil || repo.Semantic.Status != "partial" || repo.HealthScore != -1 || repo.Coverage.Status != "insufficient" {
+		t.Fatalf("static evidence promoted: %+v", repo)
 	}
 }

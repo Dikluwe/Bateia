@@ -1,0 +1,255 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/03_infra/sourcegraph/discovery_query_test.md
+ * @layer L3
+ * @updated 2026-09-08
+ */
+package sourcegraph_test
+
+import (
+	"bateia/01_core/domain"
+	"bateia/03_infra/sourcegraph"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"regexp"
+	"strings"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+func discovery0055Call(ctx context.Context, endpoint, port, query, scope string, budget int) ([]domain.RepositoryCandidate, []domain.SearchAttempt, []domain.ProviderCandidateMatch, error) {
+	client := sourcegraph.NewClientWithEndpoint("", endpoint)
+	if port == "direct" {
+		c, a, e := client.SearchCandidatesWithTrace(ctx, domain.QueryFilter{Query: query, Language: "go", MaxResults: 20})
+		return c, a, nil, e
+	}
+	d, e := client.Discover(ctx, domain.DiscoveryRequest{Query: query, Language: "go", RepositoryScope: scope, Discriminators: []string{"ignored discriminator"}, MaxResults: 20, MaxAttempts: budget})
+	a := make([]domain.SearchAttempt, len(d.Attempts))
+	for i, v := range d.Attempts {
+		a[i] = domain.SearchAttempt{Query: v.Query, Candidates: v.ResultCount, Error: v.Error, QueryPlan: v.QueryPlan, RawCandidates: v.RawCandidates, RejectedCandidates: v.RejectedCandidates}
+	}
+	return d.Candidates, a, d.Matches, e
+}
+func discovery0055File(repo, path string, previews ...string) map[string]interface{} {
+	lines := []map[string]interface{}{}
+	for i, p := range previews {
+		lines = append(lines, map[string]interface{}{"preview": p, "lineNumber": i})
+	}
+	return map[string]interface{}{"__typename": "FileMatch", "repository": map[string]interface{}{"name": "github.com/control/" + repo, "url": "/github.com/control/" + repo, "description": "marshal data"}, "file": map[string]interface{}{"path": path}, "lineMatches": lines}
+}
+
+func TestDiscovery0055HTTPAdmissionAndTrace(t *testing.T) {
+	for _, port := range []string{"direct", "discover"} {
+		t.Run(port, func(t *testing.T) {
+			const query = "Serializar dados mantendo ordem peculiar"
+			var calls atomic.Int32
+			queries := make(chan string, 4)
+			results := []map[string]interface{}{
+				{"__typename": "Repository", "name": "github.com/control/marshal-data", "description": "marshal data"},
+				discovery0055File("empty", "src/a.go"),
+				discovery0055File("no-path", "", "marshal data"),
+				discovery0055File("only-action", "src/a.go", "marshal values"),
+				discovery0055File("only-object", "src/a.go", "data values"),
+				discovery0055File("split", "src/a.go", "marshal values"), discovery0055File("split", "src/b.go", "data values"),
+				discovery0055File("same", "src/a.go", "MARSHAL values", "DATA values"),
+				discovery0055File("other-action", "same.go", "marshal"), discovery0055File("other-object", "same.go", "data"),
+				discovery0055File("tail", "src/a.go", strings.Repeat("x", 600)+" marshal data"),
+				discovery0055File("valid", "src/a.go", "Serializer handles dataset"),
+			}
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				var b struct {
+					Variables map[string]string `json:"variables"`
+				}
+				if e := json.NewDecoder(r.Body).Decode(&b); e != nil {
+					t.Error(e)
+				}
+				queries <- b.Variables["query"]
+				if calls.Add(1) == 1 {
+					_, _ = w.Write(mockSGResponse([]map[string]interface{}{}))
+				} else {
+					_, _ = w.Write(mockSGResponse(results))
+				}
+			}))
+			defer server.Close()
+			scope := ""
+			prefix := "lang:Go "
+			if port == "discover" {
+				scope = "control/a.b+c"
+				prefix = "repo:^" + regexp.QuoteMeta(scope) + "$ " + prefix
+			}
+			c, a, m, e := discovery0055Call(t.Context(), server.URL, port, query, scope, 8)
+			if e != nil || calls.Load() != 2 || len(a) != 2 {
+				t.Fatalf("err=%v calls=%d attempts=%+v", e, calls.Load(), a)
+			}
+			if q := <-queries; q != prefix+query {
+				t.Errorf("literal=%q want %q", q, prefix+query)
+			}
+			derived := <-queries
+			wantDerived := prefix + "patterntype:regexp (serializ|marshal) AND (data) count:200"
+			if derived != wantDerived {
+				t.Errorf("derived=%q want %q", derived, wantDerived)
+			}
+			if strings.Contains(derived, "content:") || strings.ContainsAny(derived, "\"`") {
+				t.Errorf("obsolete serialization %q", derived)
+			}
+
+			if strings.Contains(derived, "peculiar") || strings.Contains(derived, "ignored discriminator") {
+				t.Errorf("arbitrary term in derived %q", derived)
+			}
+			if len(c) != 2 {
+				t.Fatalf("admitted=%+v expected same and valid", c)
+			}
+			for _, v := range c {
+				if v.Repo != "same" && v.Repo != "valid" {
+					t.Errorf("false candidate admitted %+v", v)
+				}
+				if len(v.SearchAttempts) != 2 {
+					t.Errorf("missing candidate trace %+v", v)
+				}
+			}
+			if a[0].QueryPlan != nil || a[1].QueryPlan == nil || a[1].Candidates != 2 || a[1].RawCandidates <= 2 || a[1].RejectedCandidates <= 0 {
+				t.Fatalf("invalid trace %+v", a)
+			}
+			if a[1].QueryPlan.Original != query || a[1].QueryPlan.Status != "hypothesis" || a[1].QueryPlan.Version != "0055-v2" {
+				t.Errorf("plan=%+v", a[1].QueryPlan)
+			}
+			if port == "direct" && (a[1].OriginalQuery != query || a[1].Relaxation == "") {
+				t.Errorf("lost original/relaxation %+v", a[1])
+			}
+			if port == "direct" {
+				evidence := a[1].AdmissionEvidence
+				if len(evidence) != 2 {
+					t.Fatalf("missing admitted evidence: %+v", evidence)
+				}
+				for _, item := range evidence {
+					if item.EffectiveQuery != derived || item.AttemptIndex != 1 || len(item.Evidence) == 0 {
+						t.Errorf("incorrect admission trace %+v", item)
+					}
+					if !strings.HasSuffix(item.Repository, "/same") && !strings.HasSuffix(item.Repository, "/valid") {
+						t.Errorf("rejected repository in admission trace %+v", item)
+					}
+					for _, ev := range item.Evidence {
+						if ev.Path == "" || ev.Snippet == "" {
+							t.Errorf("empty admission bytes %+v", ev)
+						}
+					}
+				}
+			}
+			if port == "discover" {
+				if len(m) != 2 {
+					t.Fatalf("matches=%+v", m)
+				}
+				for _, v := range m {
+					if v.EffectiveQuery != derived || v.AttemptIndex != 1 || len(v.Evidence) == 0 {
+						t.Errorf("incorrect origin %+v", v)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestDiscovery0055HTTPStopsAndBudgets(t *testing.T) {
+	for _, port := range []string{"direct", "discover"} {
+		for _, mode := range []string{"empty", "literal-hit", "http", "graphql", "json", "empty-object", "null-data", "null-search", "null-results", "deadline", "cancel", "negation", "ambiguous"} {
+			t.Run(port+"/"+mode, func(t *testing.T) {
+				var calls atomic.Int32
+				ctx, cancel := context.WithCancel(t.Context())
+				defer cancel()
+				if mode == "deadline" {
+					var stop context.CancelFunc
+					ctx, stop = context.WithTimeout(ctx, 80*time.Millisecond)
+					defer stop()
+				}
+				handlerDone := make(chan struct{})
+				server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					_, _ = io.Copy(io.Discard, r.Body)
+					_ = r.Body.Close()
+					calls.Add(1)
+					switch mode {
+					case "http":
+						http.Error(w, "unavailable", 503)
+					case "graphql":
+						_, _ = w.Write([]byte(`{"errors":[{"message":"unavailable"}]}`))
+					case "json":
+						_, _ = w.Write([]byte(`invalid`))
+					case "empty-object":
+						_, _ = w.Write([]byte(`{}`))
+					case "null-data":
+						_, _ = w.Write([]byte(`{"data":null}`))
+					case "null-search":
+						_, _ = w.Write([]byte(`{"data":{"search":null}}`))
+					case "null-results":
+						_, _ = w.Write([]byte(`{"data":{"search":{"results":{"matchCount":0,"results":null}}}}`))
+					case "deadline":
+						select {
+						case <-r.Context().Done():
+						case <-handlerDone:
+						case <-time.After(time.Second):
+						}
+					case "cancel":
+						cancel()
+						select {
+						case <-r.Context().Done():
+						case <-handlerDone:
+						case <-time.After(time.Second):
+						}
+					case "literal-hit":
+						_, _ = w.Write(mockSGResponse([]map[string]interface{}{{"__typename": "Repository", "name": "github.com/control/legacy"}}))
+					default:
+						_, _ = w.Write(mockSGResponse([]map[string]interface{}{}))
+					}
+				}))
+				defer server.Close()
+				defer close(handlerDone)
+				query := "comprimir dados preservando ordem curiosa"
+				if mode == "negation" {
+					query = "comprimir dados sem perder ordem"
+				}
+				if mode == "ambiguous" {
+					query = "comprimir serializar dados"
+				}
+				c, a, _, err := discovery0055Call(ctx, server.URL, port, query, "", 2)
+				wantCalls := int32(1)
+				wantCount := 0
+				wantError := true
+				switch mode {
+				case "empty":
+					wantCalls = 2
+					wantError = false
+				case "negation", "ambiguous":
+					wantError = false
+				case "literal-hit":
+					wantCount = 1
+					wantError = false
+				}
+				if calls.Load() != wantCalls || len(a) != int(wantCalls) || len(c) != wantCount || (err != nil) != wantError {
+					t.Fatalf("calls=%d count=%d attempts=%+v err=%v", calls.Load(), len(c), a, err)
+				}
+			})
+		}
+	}
+	for _, budget := range []int{-1, 0, 1, 2, 9} {
+		t.Run(fmt.Sprintf("budget/%d", budget), func(t *testing.T) {
+			var calls atomic.Int32
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				calls.Add(1)
+				_, _ = w.Write(mockSGResponse([]map[string]interface{}{}))
+			}))
+			defer server.Close()
+			_, a, _, err := discovery0055Call(t.Context(), server.URL, "discover", "comprimir dados", "", budget)
+			want := 2
+			if budget == 1 {
+				want = 1
+			}
+			if err != nil || int(calls.Load()) != want || len(a) != want {
+				t.Fatalf("calls=%d attempts=%+v err=%v", calls.Load(), a, err)
+			}
+		})
+	}
+}

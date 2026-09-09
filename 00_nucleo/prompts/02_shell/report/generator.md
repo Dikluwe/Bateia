@@ -75,3 +75,45 @@ Aplicar o contrato de resposta por mecanismo em `00_nucleo/passos/0037-resposta-
 
 ## Passo 0038
 Usar apenas CFG do contexto selecionado e unidade completa. Intervalos ignorados não ancoram seleção lexical. Apresentar estado, localizações, limites e desconhecimento de viabilidade/polaridade.
+
+# 0044 — Recuperação antes da seleção
+Origem: 00_nucleo/passos/0044-recuperar-implementacoes-por-simbolos.md.
+L1 somente orquestra porta opcional, sem IO concreto. RetrieveImplementationEvidence usa budget finito padrão e reporta not_evaluated em provedor ausente. SelectImplementationPaths preserva manifesto/README e antepõe hits de caminhos relativos presentes na árvore, com limite de código. ValidateImplementationHits copia relatório, descarta fontes não extraídas ou hashes/intervalos divergentes e marca partial; não apaga identidade do índice.
+Funnel/analyze registra relatório; CollectEvidence busca requisitos e prioriza árvore antes do orçamento, sem promoção do status de capacidades. Provedores sem porta preservam contrato antigo. A seleção por conteúdo é distinta da análise de comportamento. Relatório mostra símbolos com linhas/hash e snippet dos bytes revalidados, no máximo20 linhas por hit/8hits apresentados, JSON retém todas as evidências.
+
+## Passo 0045 — Explicação funcional delimitada
+
+Ao apresentar recuperação, separar modo lexical de expansão por chamada direta estática. Mostrar referências chamadoras com caminho, símbolo, linha e hash, já validadas pela releitura. Não chamar relação sintática de comportamento demonstrado. A ausência de relações ou definições não demonstra inexistência da capacidade. Preservar limites de exibição e intervalos.
+
+Exibir no máximo três referências por hit, informando referências adicionais disponíveis no JSON.
+
+0046: antes de hits, exibir seção de indícios por requisito (máximo8 requisitos; máximo3 fontes por requisito; termos até12). Status evidence_located explicita correspondência lexical; not_verified não demonstra ausência. Listar termos correspondentes e sem correspondência, caminhos/linhas/hash das fontes e limitar exibição com quantidade restante no JSON. Não apresentar requisito como satisfeito. Nenhum uso de score para promoção. Não omitir limites de cobertura.
+
+0046: exportar WriteRequirementRetrieval para compartilhar a apresentação limitada entre analyze e decision.md local/replay.
+
+0047: quando houver TermWeights no hit, mostrar até cinco contribuições com termo, campo, df/N e Weight; declarar contribuição de ranking heurístico no corpus lido, não probabilidade. Restante no JSON. Sem pesosinventados para expansão direct_call semtermos. Referências/hashes e fonte de requisito seguem0046.
+
+0048: apresentação mostra interpretação por linha, modo e símbolos, até8 linhas/8 símbolos por linha, com total restante no JSON. Requisitos exibem até3 restrições (marcador, texto original, status not_verified) e aviso de que escopo/cumprimento não foram verificados. Renderização analyze inclui QueryInterpretation; decisão já usa projeção Requirements e deve mostrar Constraints também. Pesos para símbolos explícitos permanecem possíveis; nenhuma restrição vira ausência/satisfação. Preservar limites e hashes.
+
+0048: exportar WriteQueryInterpretation para reutilização da apresentação em decision.md.
+
+0048: antes do limite de oito linhas, apresentar resumo global de restrições: até três marcadores/textos originais/status e quantidade total, inclusive quando o requisito estiver fora das primeiras linhas exibidas. Assim truncamento visual não esconde a existência de negações; restante no JSON.
+
+0051: hits documentation exibem rótulo documental e somente trecho do grupo Doc (máximo20 linhas), mantendo localização da declaração e hash. Projeção separa DocumentationSources de Sources; até3 fontes documentais e contagem restante. Não afirmar implementação analisada pelo texto documental.
+
+0052: WriteQueryInterpretation exibe Expansions da consulta, até6 registros/linha e8 termos/registro, contagens omitidas, Source/RuleID/Kind/Status. Aviso hipótese lexical; tradução/alternativa técnica não provam pertinência ou capacidade.
+
+## Passo 0055 — Hipótese de consulta
+Ao exibir tentativa com QueryPlan, apresentar Status, Version, Reason, RuleIDs, ActionTerms, ObjectTerms, Unverified, RawCandidates e RejectedCandidates. Explicitar que admissão lexical é indício e não comprova solução ou restrições. Preservar OriginalQuery e Query efetiva.
+
+Adendo de evidência 0055: exibir AdmissionEvidence como indício lexical observado, com repositório, caminho e snippet retido. Nunca converter esse rastro em prova de solução.
+
+## Passo 0056
+Aplicar 00_nucleo/passos/0056-explicar-cobertura-e-perdas.md: report exibe cobertura desconhecida, motivos e limites sem inferir ausência de capacidade; checkpoint live discovery_query passa0056-v1.
+
+## Passo0057
+Exibir Behavior como observação sintática por função, com referência/hash/linhas e limitações, inclusive not_evaluated/zero fatos. Máximo10funções/8fatos, contagens omitidas e JSON integral. Não afirmar comportamento comprovado.
+
+
+## Passo 0061
+Chamar WriteActionAssessments junto às projeções existentes da busca de implementação.

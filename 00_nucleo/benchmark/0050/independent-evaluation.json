@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-09-08T12:09:46.734363+00:00",
+  "regime": "Tekt A/B sem atestacao de isolamento fisico",
+  "author": "B",
+  "verdict": "pass_bounded_contract_tests",
+  "command": "GOCACHE=/tmp/bateia-0048-cache go test ./03_infra/github -run TestStep0050 -count=1 -v",
+  "exit_code": 0,
+  "tests": 6,
+  "subtests": 21,
+  "frozen_inputs_unchanged": true,
+  "oracle_revisions_after_execution": 0,
+  "log": "independent-tests.log",
+  "log_sha256": "35328eeeeacc23a72f7c80fcfa58910b3d7d8dad05a360b43c1350dc67d70f8e",
+  "covered": [
+    "paridade exata hits/Examined local remoto; SHA256 independente; ordenacao",
+    "consulta funcional em caminho neutro",
+    "router local remoto e provedor legado",
+    "usecase selecao e releitura integra divergente ausente",
+    "identidade rejeitada antes de IO",
+    "SHA tamanho encoding base64 conteudo divergente e bytes descartados",
+    "arvore truncada JSON invalido campo ausente duplicata ambigua path inseguro symlink envelope grande",
+    "limites menores de arquivos e bytes e tetos remotos declarados",
+    "403 429 cancelamento previo e envelope blob excessivo"
+  ],
+  "limitations": [
+    "Workspace compartilhado; nao ha atestacao de isolamento fisico.",
+    "Sem teste publico real neste harness; integrador responsavel pelo ensaio.",
+    "Paridade local e remota usa ranking compartilhado e nao e oraculo independente de pertinencia.",
+    "Nao exercita cancelamento no meio de streaming, todas combinacoes de path inseguro ou limites exatos de base64/envelope.",
+    "Tetos totais de bytes e resultados sao verificados pelo budget declarado; fixture pequena nao satura 4 MiB ou 24 hits distintos.",
+    "Suite completa, lint e build sob responsabilidade do integrador."
+  ]
+}

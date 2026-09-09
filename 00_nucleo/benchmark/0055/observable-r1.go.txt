@@ -1,0 +1,207 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/03_infra/sourcegraph/observable_discovery.md
+ * @layer L3
+ * @updated 2026-09-08
+ */
+
+package sourcegraph
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"regexp"
+	"strings"
+	"time"
+
+	"bateia/01_core/domain"
+	"bateia/01_core/parser"
+)
+
+func sourcegraphLanguage(language string) string {
+	if mapped, ok := sgLangName[strings.ToLower(language)]; ok {
+		return mapped
+	}
+	if language == "" {
+		return ""
+	}
+	return strings.ToUpper(language[:1]) + language[1:]
+}
+
+// Discriminators remain compatible metadata; they never replace the user's query.
+func observableQueries(query, language string, discriminators []string, repositoryScope string) []string {
+	prefix := ""
+	if scope := strings.TrimSpace(repositoryScope); scope != "" {
+		prefix = "repo:^" + regexp.QuoteMeta(scope) + "$ "
+	}
+	if language = strings.TrimSpace(language); language != "" {
+		prefix += "lang:" + sourcegraphLanguage(language) + " "
+	}
+	return []string{prefix + query}
+}
+
+func (c *Client) safeError(err error) string {
+	if err == nil {
+		return ""
+	}
+	message := err.Error()
+	if c.apiToken != "" {
+		message = strings.ReplaceAll(message, c.apiToken, "[redacted]")
+	}
+	return message
+}
+
+// redactedProviderError preserves error identity while keeping credentials out of messages.
+type redactedProviderError struct {
+	message string
+	cause   error
+}
+
+func (e redactedProviderError) Error() string { return e.message }
+func (e redactedProviderError) Unwrap() error { return e.cause }
+
+func (c *Client) redactedError(err error) error {
+	if err == nil {
+		return nil
+	}
+	return redactedProviderError{message: c.safeError(err), cause: err}
+}
+
+// discoveryDerivedQuery interpolates only terms supplied by the finite catalog.
+func discoveryDerivedQuery(plan domain.DiscoveryQueryPlan, language, scope string) string {
+	expression := `patterntype:regexp (content:"(` + strings.Join(plan.ActionTerms, "|") + `)" AND content:"(` + strings.Join(plan.ObjectTerms, "|") + `)")`
+	return observableQueries(expression, language, nil, scope)[0]
+}
+
+func discoverySearchAttempts(original string, attempts []domain.ProviderAttempt, matches []domain.ProviderCandidateMatch) []domain.SearchAttempt {
+	if len(attempts) == 0 {
+		return nil
+	}
+	traces := make([]domain.SearchAttempt, 0, len(attempts))
+	for _, attempt := range attempts {
+		trace := domain.SearchAttempt{OriginalQuery: original, Provider: "Sourcegraph", Query: attempt.Query, Candidates: attempt.ResultCount, Error: attempt.Error, QueryPlan: attempt.QueryPlan, RawCandidates: attempt.RawCandidates, RejectedCandidates: attempt.RejectedCandidates}
+		if attempt.QueryPlan != nil {
+			for _, match := range matches {
+				if match.AttemptIndex == attempt.AttemptIndex {
+					trace.AdmissionEvidence = append(trace.AdmissionEvidence, match)
+				}
+			}
+			trace.Relaxation = "hipótese lexical de ação e objeto; implementação e restrições da consulta original não verificadas"
+		}
+		traces = append(traces, trace)
+	}
+	return traces
+}
+
+// admitDiscoveryCandidates never joins evidence from separate files or repositories.
+func admitDiscoveryCandidates(plan domain.DiscoveryQueryPlan, candidates []domain.RepositoryCandidate, matches []domain.ProviderCandidateMatch) ([]domain.RepositoryCandidate, []domain.ProviderCandidateMatch) {
+	admitted := make(map[string]bool)
+	retained := make([]domain.ProviderCandidateMatch, 0)
+	for _, match := range matches {
+		texts := make(map[string][]string)
+		for _, evidence := range match.Evidence {
+			if evidence.MatchType == "file" && strings.TrimSpace(evidence.Path) != "" && evidence.Snippet != "" {
+				texts[evidence.Path] = append(texts[evidence.Path], evidence.Snippet)
+			}
+		}
+		acceptedPaths := make(map[string]bool)
+		for path, snippets := range texts {
+			if parser.DiscoveryEvidenceMatches(plan, strings.Join(snippets, "\n")) {
+				acceptedPaths[path] = true
+			}
+		}
+		if len(acceptedPaths) == 0 {
+			continue
+		}
+		evidence := make([]domain.MatchEvidence, 0)
+		for _, item := range match.Evidence {
+			if item.MatchType == "file" && acceptedPaths[item.Path] {
+				evidence = append(evidence, item)
+			}
+		}
+		match.Evidence = evidence
+		retained = append(retained, match)
+		admitted[strings.ToLower(match.Repository)] = true
+	}
+	filtered := make([]domain.RepositoryCandidate, 0)
+	for _, candidate := range candidates {
+		if admitted[strings.ToLower(candidate.Owner+"/"+candidate.Repo)] {
+			filtered = append(filtered, candidate)
+		}
+	}
+	return filtered, retained
+}
+
+// Discover tries the intact query, then at most one lexical hypothesis after valid emptiness.
+func (c *Client) Discover(ctx context.Context, request domain.DiscoveryRequest) (domain.ProviderDiscovery, error) {
+	result := domain.ProviderDiscovery{Provider: "sourcegraph", Attempts: make([]domain.ProviderAttempt, 0, 2)}
+	if err := ctx.Err(); err != nil {
+		return result, err
+	}
+	if strings.TrimSpace(request.Query) == "" {
+		return result, fmt.Errorf("consulta Sourcegraph vazia")
+	}
+	plan := parser.PlanDiscoveryQuery(request.Query)
+	queries := observableQueries(request.Query, request.Language, request.Discriminators, request.RepositoryScope)
+	if plan.Status == "hypothesis" && (request.MaxAttempts <= 0 || request.MaxAttempts > 1) {
+		queries = append(queries, discoveryDerivedQuery(plan, request.Language, request.RepositoryScope))
+	}
+	for index, query := range queries {
+		if err := ctx.Err(); err != nil {
+			return result, c.redactedError(err)
+		}
+		attemptCtx := ctx
+		cancel := func() {}
+		if request.AttemptTimeout > 0 {
+			attemptCtx, cancel = context.WithTimeout(ctx, request.AttemptTimeout)
+		}
+		started := time.Now().UTC()
+		candidates, matches, err := c.executeSGQueryDetailed(attemptCtx, query, request.MaxResults)
+		if err == nil {
+			err = attemptCtx.Err()
+		}
+		attempt := domain.ProviderAttempt{Query: query, AttemptIndex: index, StartedAt: started}
+		if index > 0 {
+			attempt.QueryPlan = &plan
+			attempt.RawCandidates = len(candidates)
+			if err == nil {
+				candidates, matches = admitDiscoveryCandidates(plan, candidates, matches)
+			}
+			attempt.RejectedCandidates = attempt.RawCandidates - len(candidates)
+		}
+		if err == nil {
+			err = attemptCtx.Err()
+		}
+		attempt.Status = "SUCCEEDED"
+		if err == nil && len(candidates) == 0 {
+			attempt.Status = "EMPTY"
+		}
+		if err != nil {
+			attempt.Status, attempt.ErrorClass = "FAILED", "PROVIDER"
+			if errors.Is(err, context.DeadlineExceeded) || errors.Is(attemptCtx.Err(), context.DeadlineExceeded) {
+				attempt.Status, attempt.ErrorClass = "TIMED_OUT", "TIMEOUT"
+			}
+			if errors.Is(err, context.Canceled) || errors.Is(attemptCtx.Err(), context.Canceled) {
+				attempt.Status, attempt.ErrorClass = "CANCELLED", "CANCELLED"
+			}
+		}
+		attempt.ResultCount, attempt.Duration, attempt.Error = len(candidates), time.Since(started), c.safeError(err)
+		cancel()
+		result.Attempts = append(result.Attempts, attempt)
+		if err != nil {
+			return result, c.redactedError(err)
+		}
+		result.Candidates, result.Matches = candidates, matches
+		for i := range result.Matches {
+			result.Matches[i].AttemptIndex, result.Matches[i].EffectiveQuery = index, query
+		}
+		for i := range result.Candidates {
+			result.Candidates[i].SearchAttempts = discoverySearchAttempts(request.Query, result.Attempts, result.Matches)
+		}
+		if len(candidates) > 0 {
+			return result, nil
+		}
+	}
+	return result, nil
+}

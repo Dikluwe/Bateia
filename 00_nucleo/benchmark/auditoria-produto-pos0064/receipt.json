@@ -1,0 +1,20 @@
+{
+  "base_commit": "9056cd259e40d6360a06e6e21a157aa2e5b9eac7",
+  "analyzer_binary_sha256": "e7611a5bd6a7e7aac9739677910a0503856069c04435d829f2110446560ee79c",
+  "commands": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-auditoria-atual ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "/tmp/bateia-auditoria-atual idea recommend --idea 00_nucleo/benchmark/0012/experimento/bateia-idea.json --policy 00_nucleo/benchmark/0012/experimento/reuse-policy.json --target-name Bateia --target-repo Dikluwe/Bateia --mode local --local . --output /tmp/bateia-auditoria-atual-dossie",
+      "exit_code": 0
+    }
+  ],
+  "scope": "local self-analysis plus directed code/document reading; no public search or whole-project audit",
+  "decision": "INCONCLUSIVE",
+  "capabilities": 10,
+  "inconclusive_capabilities": 10,
+  "missing_detector": 9,
+  "investigation_actions": 24
+}

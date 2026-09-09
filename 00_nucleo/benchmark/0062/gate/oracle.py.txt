@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Independent predicates for frozen sort-preserve-v1 observations."""
+import argparse
+import collections
+import copy
+import json
+from pathlib import Path
+
+
+def evaluate(o):
+    if not o['completed']:
+        return 'unknown'
+    if o.get('failure', ''):
+        return 'counterexample'
+    before = o.get('input_before') or []
+    after = o.get('input_after') or []
+    result = o.get('output') or []
+    preserved = before == after
+    ordered = all(a <= b for a, b in zip(result, result[1:]))
+    same_bag = collections.Counter(before) == collections.Counter(result)
+    return 'supported_in_scope' if preserved and ordered and same_bag else 'counterexample'
+
+
+def aggregate(verdicts):
+    if 'counterexample' in verdicts:
+        return 'counterexample'
+    if not verdicts or 'unknown' in verdicts:
+        return 'unknown'
+    return 'supported_in_scope'
+
+
+def gate():
+    controls = json.loads(Path(__file__).with_name('observations.json').read_text())
+    rows = []
+    for c in controls:
+        original = copy.deepcopy(c['observation'])
+        actual = evaluate(c['observation'])
+        rows.append({'name': c['name'], 'class': c['class'], 'expected': c['expected'],
+                     'actual': actual, 'pass': actual == c['expected'] and original == c['observation']})
+    forward = [evaluate(c['observation']) for c in controls]
+    repeated = [evaluate(c['observation']) for c in controls]
+    reverse = [evaluate(c['observation']) for c in reversed(controls)][::-1]
+    aggregates = [([], 'unknown'), (['supported_in_scope'], 'supported_in_scope'),
+                  (['supported_in_scope', 'unknown'], 'unknown'),
+                  (['unknown', 'counterexample'], 'counterexample'),
+                  (['counterexample', 'supported_in_scope'], 'counterexample')]
+    stable = forward == repeated == reverse
+    aggregate_ok = all(aggregate(v) == e and aggregate(list(reversed(v))) == e for v, e in aggregates)
+    negatives = [r for r in rows if r['class'] == 'negative']
+    score = sum(r['pass'] for r in negatives) / len(negatives)
+    result = {'schema_version': 'effect-oracle-gate-v1', 'controls': rows,
+              'mutation_score': score, 'repeat_and_reorder': stable, 'aggregation': aggregate_ok,
+              'pass': all(r['pass'] for r in rows) and stable and aggregate_ok}
+    print(json.dumps(result, indent=2))
+    return 0 if result['pass'] else 1
+
+
+def report_check(path, expected):
+    report = json.loads(Path(path).read_text())
+    assert report['schema_version'] == 'effect-run-v1'
+    assert report['contract_id'] == 'sort-preserve-v1'
+    for key in ['reason', 'source_sha256', 'source_path', 'symbol', 'seed', 'limitations', 'execution', 'cases']:
+        assert key in report, key
+    actuals = []
+    for case in report['cases']:
+        actual = evaluate(case['observation'])
+        assert case['verdict']['status'] == actual, case
+        actuals.append(actual)
+    actual = aggregate(actuals)
+    assert report['status'] == actual, (report['status'], actual)
+    assert actual == expected, (actual, expected)
+    print(json.dumps({'report': str(path), 'status': actual, 'cases_checked': len(actuals), 'pass': True}))
+    return 0
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--report')
+    parser.add_argument('--expected', choices=['supported_in_scope', 'counterexample', 'unknown'])
+    args = parser.parse_args()
+    if args.report and not args.expected:
+        parser.error('--report requires --expected')
+    raise SystemExit(report_check(args.report, args.expected) if args.report else gate())

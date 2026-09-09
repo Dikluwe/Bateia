@@ -1,0 +1,128 @@
+{
+  "query": {
+    "query": "BM25 code search",
+    "language": "go",
+    "max_results": 3,
+    "must_have": null,
+    "depth": 1,
+    "direct_repos": null
+  },
+  "analyzer_version": "evidence-v8-requirement-retrieval",
+  "search_attempts": [
+    {
+      "original_query": "BM25 code search",
+      "provider": "Sourcegraph",
+      "query": "lang:Go BM25 code search",
+      "candidates": 0
+    },
+    {
+      "original_query": "BM25 code search",
+      "provider": "Sourcegraph",
+      "query": "lang:Go BM25 code",
+      "relaxation": "consulta reduzida aos dois primeiros termos",
+      "candidates": 2
+    }
+  ],
+  "candidates": [
+    {
+      "ref": {
+        "owner": "knowns-dev",
+        "repo": "knowns",
+        "commit": "c6ed4cb8548c266930910d3b24b7605fa2c21150"
+      },
+      "relevance_score": 43,
+      "relevance_reason": "Campo README.md; termos literais [\"code\" \"search\"] (2/3); indício textual, implementação não verificada",
+      "implementation_search": {
+        "requirements": [
+          {
+            "requirement": "BM25 code search",
+            "status": "not_verified",
+            "reason": "Nenhuma fonte lexical confirmada para este requisito no escopo; não demonstra ausência da capacidade. Recuperação parcial ou não avaliada; cobertura insuficiente para concluir ausência.",
+            "matched_terms": [],
+            "missing_terms": [
+              "bm25",
+              "search"
+            ],
+            "sources": []
+          }
+        ],
+        "status": "not_evaluated",
+        "method": "go_ast_functional_v2",
+        "reason": "provedor sem busca local de implementações",
+        "hits": [],
+        "examined": [],
+        "files_read": 0,
+        "bytes_read": 0,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "files": [
+        {
+          "path": "Makefile",
+          "sha256": "2611df4a26f1e5c0f12a909d426119fa8084a0446d7f02fbd1a7a12c5708a393"
+        },
+        {
+          "path": "README.md",
+          "sha256": "d6ab994d868cc7bf755b0703ef62234407342d68c516a7227c77c92f64dc4b5c"
+        },
+        {
+          "path": "go.mod",
+          "sha256": "d406624c40bb026f703849494f45d9daec7c5e09e750c99957f1cbd1bbd7e586"
+        }
+      ]
+    },
+    {
+      "ref": {
+        "owner": "vllm-project",
+        "repo": "semantic-router",
+        "commit": "ae058614112b5b91bd859234d99418f6b59a25b7"
+      },
+      "relevance_score": 0,
+      "relevance_reason": "Candidato descoberto; nenhum termo pertinente verificado nos campos avaliados",
+      "implementation_search": {
+        "requirements": [
+          {
+            "requirement": "BM25 code search",
+            "status": "not_verified",
+            "reason": "Nenhuma fonte lexical confirmada para este requisito no escopo; não demonstra ausência da capacidade. Recuperação parcial ou não avaliada; cobertura insuficiente para concluir ausência.",
+            "matched_terms": [],
+            "missing_terms": [
+              "bm25",
+              "search"
+            ],
+            "sources": []
+          }
+        ],
+        "status": "not_evaluated",
+        "method": "go_ast_functional_v2",
+        "reason": "provedor sem busca local de implementações",
+        "hits": [],
+        "examined": [],
+        "files_read": 0,
+        "bytes_read": 0,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "files": [
+        {
+          "path": "Makefile",
+          "sha256": "8695e06d3bf6d57d475024349ef28c725c1aa2881969d21faff3720738a427f9"
+        },
+        {
+          "path": "README.md",
+          "sha256": "5e4559002b2e167bd6e2c1a0f527cc50715bf6364d506910177d1251a4985ba9"
+        }
+      ]
+    }
+  ]
+}

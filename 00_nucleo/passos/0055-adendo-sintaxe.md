@@ -1,0 +1,5 @@
+# Revisão de contrato 0055 — Sintaxe validada no provedor
+
+A primeira coleta pública não encontrou alvos. Diagnóstico dirigido separado constatou: a forma content:"(intersect|intersection)" AND content:"(bit|bitset)" retornou vazio; a forma patterntype:regexp (intersect|intersection) AND (bit|bitset) encontrou o repositório conhecido. Os recibos ficam em benchmark/0055/query-syntax-*.json. O contrato inicial de serialização estava incorreto para o provedor observado.
+
+Substituir somente a emissão da expressão por `patterntype:regexp (a|b) AND (x|y)`, termos do mesmo catálogo, sem aspas/content. Manter filtros, admissão, planos e perguntas intactos. Versionar plano 0055-v2, EvidenceVersion nova e checkpoint discovery_query 0055-v2. Testes devem rejeitar serialização antiga, não só verificar presença de palavras. Preservar r0 e repetir uma vez com a versão corrigida em collected-r2; não escolher retrospectivamente a melhor rodada. Este adendo é escrito depois da observação; a primeira avaliação é falha do compilador e não sucesso. Sem alegação de contrato final congelado antes de todas as coletas.

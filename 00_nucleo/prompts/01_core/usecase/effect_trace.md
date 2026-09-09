@@ -1,0 +1,3 @@
+# Prompt: 01_core/usecase/effect_trace
+
+Implementar função pura EffectTraceFingerprint(domain.EffectTraceInputs) string segundo contrato congelado `00_nucleo/passos/0064-identificar-analisador-e-parametros.md`. Validar contrato sort-preserve-v1, hashes com 64 hex ASCII, identificador Go exportado, timeout execução (0,30s], build (0,60s], limites (0,1MiB]. Seed aceita todo uint64. Não mutar entrada. Invalidade retorna vazio. Canonicalizar hashes minúsculos, números decimais e juntar linhas effect-request-v1, contrato, hash analisador, hash fonte, símbolo, seed, timeout execução, timeout build, limite stdout, limite stderr, cada qual com LF final. Retornar SHA-256 hexadecimal minúsculo do UTF-8. Nenhum I/O, horário, caminho, hash esperado ou resultado participam.

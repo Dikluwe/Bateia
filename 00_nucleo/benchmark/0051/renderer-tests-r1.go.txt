@@ -1,0 +1,62 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/report/documentation_retrieval_test.md
+ * @layer L2
+ * @updated 2026-09-08
+ */
+package report_test
+
+import (
+	"fmt"
+	"strings"
+	"testing"
+
+	"bateia/01_core/domain"
+	"bateia/01_core/parser"
+	"bateia/01_core/usecase"
+	"bateia/02_shell/report"
+)
+
+func TestDocumentation0051MarkdownCommentAndLabel(t *testing.T) {
+	src := "package sample\n\n// Step locates violet lantern.\nfunc Step() int { return 72193 }\n"
+	files := []domain.ExtractedFile{{Path: "sample.go", Content: src, Size: int64(len(src))}}
+	r := usecase.ValidateImplementationRequirements("locate violet lantern", parser.RankGoImplementations("locate violet lantern", files, 10), files)
+	md := report.GenerateMarkdownReport(&domain.SearchReport{Query: domain.QueryFilter{Query: "locate violet lantern"}, Results: []domain.ExtractedRepository{{Ref: domain.CommitRef{Owner: "fixture", Repo: "docs", Commit: "fixed"}, Files: files, ImplementationSearch: &r}}})
+	if !strings.Contains(md, "// Step locates violet lantern.") {
+		t.Errorf("missing Doc excerpt: %s", md)
+	}
+	if !strings.Contains(strings.ToLower(md), "document") {
+		t.Errorf("missing documentary label: %s", md)
+	}
+	if strings.Contains(md, "return 72193") {
+		t.Errorf("body presented instead of documentary excerpt: %s", md)
+	}
+	var sb strings.Builder
+	report.WriteRequirementRetrieval(&sb, r.Requirements)
+	if !strings.Contains(strings.ToLower(sb.String()), "document") || !strings.Contains(sb.String(), "sample.go") {
+		t.Errorf("missing separated documentary projection: %s", sb.String())
+	}
+}
+
+func TestDocumentation0051MarkdownTwentyLineBound(t *testing.T) {
+	src := "package sample\n// Step locates violet lantern.\n"
+	for i := 2; i <= 25; i++ {
+		src += fmt.Sprintf("// DOCUMENTARY_ROW_%02d\n", i)
+	}
+	src += "func Step() {}\n"
+	files := []domain.ExtractedFile{{Path: "sample.go", Content: src, Size: int64(len(src))}}
+	r := parser.RankGoImplementations("locate violet lantern", files, 10)
+	md := report.GenerateMarkdownReport(&domain.SearchReport{Results: []domain.ExtractedRepository{{Ref: domain.CommitRef{Owner: "fixture", Repo: "docs", Commit: "fixed"}, Files: files, ImplementationSearch: &r}}})
+	count := 0
+	for i := 2; i <= 25; i++ {
+		if strings.Contains(md, fmt.Sprintf("// DOCUMENTARY_ROW_%02d", i)) {
+			count++
+		}
+	}
+	if count > 19 {
+		t.Fatalf("excerpt exceeds twenty Doc lines: %d numbered lines plus first", count)
+	}
+	if !strings.Contains(md, "// Step locates violet lantern.") {
+		t.Fatal("bounded excerpt omitted matching first line")
+	}
+}

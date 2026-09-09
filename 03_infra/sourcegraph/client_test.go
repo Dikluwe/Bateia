@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client_test.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package sourcegraph_test
@@ -20,6 +20,10 @@ import (
 
 // mockSGResponse gera uma resposta GraphQL do Sourcegraph simulada.
 func mockSGResponse(results []map[string]interface{}) []byte {
+	// A valid GraphQL empty result is an array; malformed envelopes use explicit JSON.
+	if results == nil {
+		results = []map[string]interface{}{}
+	}
 	resp := map[string]interface{}{
 		"data": map[string]interface{}{
 			"search": map[string]interface{}{
@@ -177,7 +181,8 @@ func TestClient_SearchCandidates_ServerError(t *testing.T) {
 	}
 }
 
-func TestSearchTraceRetainsAllRelaxations(t *testing.T) {
+// Step 0054 supersedes destructive fallback expectations; baseline hashes are in intent_preservation_test.md.
+func TestSearchTraceRetainsSingleOriginalQuery(t *testing.T) {
 	var queries []string
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var req struct {
@@ -196,7 +201,7 @@ func TestSearchTraceRetainsAllRelaxations(t *testing.T) {
 	defer server.Close()
 	original := "order independent transparency opengl"
 	candidates, attempts, err := sourcegraph.NewClientWithEndpoint("", server.URL).SearchCandidatesWithTrace(context.Background(), domain.QueryFilter{Query: original, Language: "cpp", MaxResults: 5})
-	if err != nil || len(candidates) != 1 || len(attempts) != 3 {
+	if err != nil || len(candidates) != 0 || len(attempts) != 1 || len(queries) != 1 {
 		t.Fatalf("%v %v %v", candidates, attempts, err)
 	}
 	for i, a := range attempts {
@@ -204,7 +209,7 @@ func TestSearchTraceRetainsAllRelaxations(t *testing.T) {
 			t.Fatalf("trace mismatch %+v", a)
 		}
 	}
-	if attempts[0].Query != "lang:C++ "+original || attempts[2].Query != "order independent" || attempts[2].Relaxation == "" {
-		t.Fatalf("hidden relaxation %+v", attempts)
+	if attempts[0].Query != "lang:C++ "+original || attempts[0].Relaxation != "" {
+		t.Fatalf("unexpected relaxation %+v", attempts)
 	}
 }

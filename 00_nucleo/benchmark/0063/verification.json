@@ -1,0 +1,63 @@
+{
+  "manifest_sha256": "49a59fbebbf029b3233074257b44fae13dfbf27a168d8ad35e0a3b119678cb78",
+  "status": "passed_in_scope_unattested",
+  "modified_baseline_files": [
+    "01_core/domain/effect_verification.go",
+    "02_shell/cli/effects.go",
+    "03_infra/effects/runner.go"
+  ],
+  "new_go_files": [
+    "03_infra/effects/source_binding_test.go",
+    "02_shell/cli/effect_binding_test.go"
+  ],
+  "binary_sha256": "f12ac4821e85c9b811dc3e95b3a44c655af6c1ab95a3929227e816ed69b3dab5",
+  "revision_count": 1,
+  "revisions": [
+    {
+      "cause": "incidental go: in //line filename rejected as compiler directive",
+      "failed_positive_controls_before": 3,
+      "failed_positive_controls_after": 0,
+      "contract_changed": false,
+      "tests_changed": false,
+      "evidence": "revisions/r0/receipt.json"
+    }
+  ],
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test -count=1 -run 'Test(SourceBinding63|EffectBinding63)' -timeout 180s ./03_infra/effects ./02_shell/cli",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test -timeout 180s ./...",
+      "exit_code": 0,
+      "note": "full suite, cached unchanged packages; new focused tests uncached"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0063 ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "public_cli_demo": {
+    "passed": 4,
+    "total": 4,
+    "same_symbol_fragment_despite_helper_change": true
+  },
+  "regression0062": {
+    "passed": 8,
+    "total": 8
+  },
+  "limits": [
+    "Shared filesystem; no physical isolation attestation.",
+    "Source identity only for supplied complete file; no repository or commit claim.",
+    "PATH stub alone cannot rule out subprocesses using absolute executable paths.",
+    "No general correctness or improved retrieval claim."
+  ]
+}

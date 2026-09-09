@@ -425,12 +425,13 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		// Selection depends on the query; legacy commit-only extraction cache is unsafe.
 		var extracted *domain.ExtractedRepository
+		implementationSearch := RetrieveImplementationEvidence(ctx, f.fetcher, tRepo.Candidate, filter.Query)
+		targetPaths := SelectImplementationPaths(filter.Query, tRepo.Tree, implementationSearch, 12)
 		{
 			if filter.LocalPath == "" {
 				f.recordCache(telemetry, false)
 			}
 			f.progress("extraction", "baixando conteúdo de %s (score %d)", ref.Key(), tRepo.RelevanceScore)
-			targetPaths := parser.SelectEvidenceFiles(filter.Query, tRepo.Tree, 12)
 
 			downloaded, extractErr := f.fetcher.ExtractRepoFiles(ctx, tRepo.Candidate, targetPaths)
 			if extractErr != nil {
@@ -474,7 +475,13 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		}
 
-		parser.AnnotateEvidence(extracted, filter.Query, parser.SelectEvidenceFiles(filter.Query, tRepo.Tree, 12))
+		parser.AnnotateEvidence(extracted, filter.Query, targetPaths)
+		implementationSearch = ValidateImplementationRequirements(filter.Query, implementationSearch, extracted.Files)
+		extracted.ImplementationSearch = &implementationSearch
+		if len(implementationSearch.Hits) > 0 {
+			extracted.Coverage.Reason = "Definições Go localizadas por AST e releitura de bytes; pertinência heurística e comportamento não verificado."
+			extracted.Coverage.ChecksRun = append(extracted.Coverage.ChecksRun, "recuperação Go por símbolos/conteúdo com identidade conferida")
+		}
 
 		// Executar Análise AST nos arquivos extraídos (seja HIT ou MISS)
 		var allRepoSymbols []domain.ASTSymbol

@@ -1,0 +1,3 @@
+# Prompt: 03_infra/effects/analyzer_identity
+
+Observar executável do próprio processo conforme `00_nucleo/passos/0064-identificar-analisador-e-parametros.md`. Hash SHA-256 por stream de /proc/self/exe no Linux, sem fallback pathname quando falhar; outras plataformas usam os.Executable. Sem comandos externos, cache global, leitura .git, dependências, rede ou ambiente. Runtime.Version fornece GoVersion; debug.ReadBuildInfo fornece Main.Path, Main.Version e vcs.revision/vcs.modified se presentes, preservando versão (devel) e booleano ausente null. Status recorded somente após hash completo; unknown com razão explícita e hash vazio em falha. Essa identidade é do analisador, nunca do candidato.

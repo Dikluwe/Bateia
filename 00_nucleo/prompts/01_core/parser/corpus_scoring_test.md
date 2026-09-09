@@ -1,0 +1,3 @@
+# Testes independentes0047 — Autor B
+
+Antes de ler produção candidata: verificar apenas API pública RankGoImplementations. Fixtures sintéticas iguais no campo comparado: termo raro deve contribuir mais que termo comum; função com mesmo identificador pertinente e muitos identificadores alheios não pode vencer função concisa por comprimento. Pesos numéricos finitos com 1 <= DF <= N, campos e termos identificáveis, saída determinística para reordenação/duplicação de arquivos. Identificador exato mantém prioridade. Comentários/literais não constituem pertinência AST. Nenhum valor mágico de fórmula. Controles0045 preservados cobrem chamadas e casos negativos anteriores. Testes puros sem I/O.

@@ -1,0 +1,55 @@
+{
+  "spec_sha256": "7a0eb66c6c0f7fd257af0fcab9fd0b5ae2aae86dab12c49477ed85ea2bf8e86c",
+  "production_sha256": {
+    "03_infra/github/implementation_search.go": "0bb6776eb0bbfdbc452ebc665fc3b3c2f60872da6708ba5a7c96ace4e48dcc07",
+    "03_infra/content/router.go": "450d9ca6175b84ab74efa09d2ce64f550cbe2b86d828ad65ee4832a7acace329",
+    "01_core/parser/evidence.go": "d45b90a18230c3d2591bae8d52fb92f84b3d0f7820b4384ab8e55cf9947db120",
+    "02_shell/cli/idea_recommend.go": "a29a849bda4bc1f20fd944330a09da7acb9593e430a0cb4cf3eb3e2a799f307d"
+  },
+  "ranking_unchanged": {
+    "01_core/parser/implementation_search.go": true,
+    "01_core/parser/corpus_scoring.go": true
+  },
+  "binary_sha256": "c52cdaf06a75c664f126525e223d01f5c3de2068b4926a105562105131c06586",
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0050 ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test ./...",
+      "exit_code": 0,
+      "log": "full-tests.log"
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0,
+      "log": "lint.log"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go run /tmp/bateia0050-live.go",
+      "exit_code": 0,
+      "output": "live-verification.json"
+    },
+    {
+      "command": "/tmp/bateia-0050 search -repos golang/snappy -query 'decode block corrupt' -lang go -max 1 -depth 1 -format json -output /tmp/bateia0050-cli.json",
+      "exit_code": 0,
+      "output": "cli-observations.json"
+    }
+  ],
+  "regime": "A/B executado sem atestação de isolamento físico",
+  "artifacts_sha256": {
+    "baseline.json": "d9ad67d3e7d4474385b79366265521a99a16303756873b5e09fb5c32696827a0",
+    "tests-freeze.json": "24023e068b3fd4ffe73085ce7260b88a97b6630bad26e420a58e570d63137ac4",
+    "live-verification.json": "c08e34fe1d03ec844950e13f6b6dd4c91de7711cffaf94daa1aaf3ba550c596c",
+    "live-runner.go.txt": "bcb681daa3614208ea83c76fb23fdfae6280dd559565b89fa7c0bab3450205ab",
+    "local-remote-comparison.json": "7dedc3137d9676afbcfadcde7efe81d159a5e128d13ac2789ee8148ec5bed6b4",
+    "independent-tests.log": "35328eeeeacc23a72f7c80fcfa58910b3d7d8dad05a360b43c1350dc67d70f8e",
+    "independent-evaluation.json": "248551f6bf574c45b55fba12a231ab93f1cf4d7b4574de794758e51cb89c70df",
+    "independent-evaluation.md": "005a6380be10fbe117eb341da7fb58d8a88704aaaf19ec867d020db05874fa4a",
+    "cli-observations.json": "a689d3fd3dc6b8da631bed2f004ad7149d17585f1ee0fb571f25b133ef0c460f",
+    "full-tests.log": "c7b7db3b59be1878efe5864eca0b81963fc689af0073e0f26537a45f74ceabfe",
+    "lint.log": "91a6d3da4ea876cf1389727cd10abe41cf117fa0295b588912b258b93118f0ac",
+    "cli.log": "c1b15b51946de8f31d0074562b54c798c88641e70fa014560c6b69fb8feea22a"
+  }
+}

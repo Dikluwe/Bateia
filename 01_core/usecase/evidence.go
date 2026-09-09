@@ -322,6 +322,7 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		kinds[target.Path] = target.Kind
 		targetByPath[target.Path] = target
 	}
+	implementationQuery := ""
 	tree, err := provider.FetchTree(ctx, plan.Candidate)
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "tree", Message: err.Error()})
@@ -329,6 +330,32 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.TreeComplete = false
 	} else {
 		tree = prioritizeEvidenceTree(tree, plan.Targets)
+		if _, ok := provider.(domain.ImplementationSearcher); ok {
+			requirements := []string{}
+			for _, target := range plan.Targets {
+				requirements = append(requirements, target.Capabilities...)
+			}
+			implementationQuery = strings.Join(uniqueNormalizedStrings(requirements), "\n")
+			retrieval := RetrieveImplementationEvidence(ctx, provider, plan.Candidate, implementationQuery)
+			bundle.ImplementationSearch = &retrieval
+			rank := map[string]int{}
+			for _, h := range retrieval.Hits {
+				if _, ok := rank[h.Path]; !ok {
+					rank[h.Path] = len(rank) + 1
+				}
+			}
+			sort.SliceStable(tree, func(i, j int) bool {
+				a, ao := rank[tree[i].Path]
+				b, bo := rank[tree[j].Path]
+				if ao != bo {
+					return ao
+				}
+				if ao && bo {
+					return a < b
+				}
+				return false
+			})
+		}
 		for _, node := range tree {
 			if depth := pathDepth(node.Path); depth > bundle.DepthReached {
 				bundle.DepthReached = depth
@@ -358,7 +385,9 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.Complete = false
 		return bundle, err
 	}
-	sort.Strings(paths)
+	if bundle.ImplementationSearch == nil {
+		sort.Strings(paths)
+	}
 	extracted, err := provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "content", Message: err.Error()})
@@ -404,6 +433,14 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			}
 		}
 		bundle.Targets = append(bundle.Targets, result)
+	}
+	if bundle.ImplementationSearch != nil {
+		readFiles := []domain.ExtractedFile{}
+		for _, item := range bundle.Items {
+			readFiles = append(readFiles, domain.ExtractedFile{Path: item.Path, Content: item.Content})
+		}
+		validated := ValidateImplementationRequirements(implementationQuery, *bundle.ImplementationSearch, readFiles)
+		bundle.ImplementationSearch = &validated
 	}
 	if bundle.BytesRead >= plan.Budget.TotalBytes {
 		bundle.Complete = false

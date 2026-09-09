@@ -1,0 +1,1008 @@
+[
+  {
+    "name": "snappy-decompress",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "Descomprimir um bloco e rejeitar dados corrompidos",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "snappy-compress",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "buffer",
+            "bytes",
+            "comprimir",
+            "destino",
+            "reutilizar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "documentation_sources": [
+            {
+              "path": "decode.go",
+              "symbol": "decodedLen",
+              "line": 32,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode_other.go",
+              "symbol": "decode",
+              "line": 14,
+              "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "NewWriter",
+              "line": 121,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitLiteral",
+              "line": 25,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitCopy",
+              "line": 50,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "requirement": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 2 de 6 termos associados aos canais localizados; requisito e comportamento não verificados. Fontes documentais separadas registram declarações do autor, não prova de implementação.",
+          "matched_terms": [
+            "buffer",
+            "bytes"
+          ],
+          "missing_terms": [
+            "bloco",
+            "comprimir",
+            "destino",
+            "reutilizar"
+          ],
+          "sources": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 112,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ]
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "bytes",
+              "field": "body",
+              "document_frequency": 1,
+              "corpus_documents": 64,
+              "weight": 4.851784126181635
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "encodeBlock",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=33 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 112,
+          "end_line": 238,
+          "score": 1340,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 220,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 222,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 226,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "hash",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 101,
+          "end_line": 103,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 219,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load64",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 14,
+          "end_line": 18,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 176,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 225,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load32",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 9,
+          "end_line": 12,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "documentation_line": 30,
+          "documentation_end_line": 31,
+          "retrieval": "documentation",
+          "path": "decode.go",
+          "symbol": "decodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 32,
+          "end_line": 43,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 9,
+          "documentation_end_line": 13,
+          "retrieval": "documentation",
+          "path": "decode_other.go",
+          "symbol": "decode",
+          "kind": "definition",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 14,
+          "end_line": 115,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 112,
+          "documentation_end_line": 120,
+          "retrieval": "documentation",
+          "path": "encode.go",
+          "symbol": "NewWriter",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 121,
+          "end_line": 126,
+          "score": 1,
+          "matched_terms": [
+            "buffer"
+          ]
+        },
+        {
+          "documentation_line": 20,
+          "documentation_end_line": 24,
+          "retrieval": "documentation",
+          "path": "encode_other.go",
+          "symbol": "emitLiteral",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 25,
+          "end_line": 42,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 44,
+          "documentation_end_line": 49,
+          "retrieval": "documentation",
+          "path": "encode_other.go",
+          "symbol": "emitCopy",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 50,
+          "end_line": 88,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "uuid-compare",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+    "query": "comparar dados",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "comparar dados",
+          "mode": "natural",
+          "terms": [
+            "comparar",
+            "dados"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "comparar dados",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "comparar",
+            "dados"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "snappy-negative",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "desserializar transação SQL",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "desserializar transação SQL",
+          "mode": "mixed",
+          "terms": [
+            "desserializar",
+            "sql",
+            "transação"
+          ],
+          "symbols": [
+            "SQL"
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "desserializar transação SQL",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "desserializar",
+            "sql",
+            "transação"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "snappy-negation",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "descomprimir sem alocar",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "descomprimir sem alocar",
+          "mode": "natural",
+          "terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "symbols": [],
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ],
+          "requirement": "descomprimir sem alocar",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+          "matched_terms": [],
+          "missing_terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "uuid-not-compression",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+    "query": "Descomprimir um bloco e rejeitar dados corrompidos",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  },
+  {
+    "name": "uuid-serialize",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+    "query": "serializar dados",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "serializar dados",
+          "mode": "natural",
+          "terms": [
+            "dados",
+            "serializar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "serializar dados",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "dados",
+            "serializar"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    }
+  }
+]

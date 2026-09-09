@@ -63,3 +63,6 @@ Então monta a struct QueryFilter e invoca o executor.
 
 ## Passo 0036
 Implementar o contrato de `00_nucleo/passos/0036-projetar-evidencias-da-consulta.md`: evidência estática vinculada a corpos/hashes, seleção limitada, ausência de dimensões indeterminada, recibos completos separados da projeção. Não inferir execução ou solução exata.
+
+## Passo 0062
+Adicionar somente ajuda para effects verify e seu recorte offline.

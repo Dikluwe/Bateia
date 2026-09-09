@@ -1,0 +1,159 @@
+{
+  "schema_version": "1",
+  "run_id": "978dac098c99a801",
+  "mode": "local",
+  "status": "INCONCLUSIVE",
+  "input_hashes": {
+    "evidence": "717ec12982c353f701dd4ca7b827f2d4a2a6cba614c33dfb6a58ab8f207da9de",
+    "idea": "254cbb3da3c2629bc41e3f8af941d27f59820d008cc3e6c433e9db4bd230a053",
+    "mode": "25bf8e1a2393f1108d37029b3df5593236c755742ec93465bbafa9b290bddcf6",
+    "policy": "12d9f367782d256a29897d2b8913933510399ea58026be0062b63a04a89b119e",
+    "target": "31f7a6935a76a99fc70102575de36bc67b0dfd01bfab7a83657ac17e40f32e8b"
+  },
+  "rule_versions": {
+    "alternatives": "0043",
+    "analyzer": "0043",
+    "decision": "0043",
+    "evidence": "2026-09-07.0040",
+    "expansion": "1",
+    "implementation_search": "0061",
+    "screening": "1"
+  },
+  "stages": [
+    {
+      "name": "expand",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "idea.json": "7a5f8683e7b89b0b626be5662e3aae3cd1d36507606449b91580ad5b7f8ddac4"
+      },
+      "outputs": [
+        {
+          "path": "expansion-plan.json",
+          "hash": "2c85951689ca5757761c3f044c7f6a01335365df628c34ab3690e40b034ca945"
+        }
+      ],
+      "counts": {
+        "items": 16
+      },
+      "duration_ms": 0
+    },
+    {
+      "name": "discover",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "expansion-plan.json": "2c85951689ca5757761c3f044c7f6a01335365df628c34ab3690e40b034ca945"
+      },
+      "outputs": [
+        {
+          "path": "discovery-snapshot.json",
+          "hash": "1bad489ab6ab5ddb69829f9fd8a4a8c6b7e60cd1392ff39ed627dc1c1ff3ca25"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 0
+    },
+    {
+      "name": "screen",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "discovery-snapshot.json": "1bad489ab6ab5ddb69829f9fd8a4a8c6b7e60cd1392ff39ed627dc1c1ff3ca25"
+      },
+      "outputs": [
+        {
+          "path": "screening-report.json",
+          "hash": "291d3c8f331788fa123c07c548954cca3a29b5b0b347aa9240d8ba0d7a4c691a"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 0
+    },
+    {
+      "name": "collect",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "screening-report.json": "291d3c8f331788fa123c07c548954cca3a29b5b0b347aa9240d8ba0d7a4c691a"
+      },
+      "outputs": [
+        {
+          "path": "evidence/bundles.json",
+          "hash": "27b058249d949d173c46bd89f49bd911c1df8da8f8944c5d4400c4f2a9c7bd03"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 2055
+    },
+    {
+      "name": "assess",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "evidence/bundles.json": "27b058249d949d173c46bd89f49bd911c1df8da8f8944c5d4400c4f2a9c7bd03"
+      },
+      "outputs": [
+        {
+          "path": "assessment-report.json",
+          "hash": "4635f6bfb6de55c12ad0b212092c4ca8bd44c6effa0169a4b7d69030964970c6"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 583
+    },
+    {
+      "name": "decide",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "assessment-report.json": "4635f6bfb6de55c12ad0b212092c4ca8bd44c6effa0169a4b7d69030964970c6",
+        "reuse-policy.json": "32e764b1b9bad1cad9e2f132887387667e37e90f91d7520d4e7964c5e2183704"
+      },
+      "outputs": [
+        {
+          "path": "reuse-decision.json",
+          "hash": "4550e2efe1a22fad5aa2adf1c73cd0966768b41df4118431ed6c9127419adcd2"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 1
+    },
+    {
+      "name": "alternatives",
+      "contract_version": "1",
+      "status": "COMPLETE",
+      "input_hashes": {
+        "assessment-report.json": "4635f6bfb6de55c12ad0b212092c4ca8bd44c6effa0169a4b7d69030964970c6",
+        "discovery-snapshot.json": "1bad489ab6ab5ddb69829f9fd8a4a8c6b7e60cd1392ff39ed627dc1c1ff3ca25",
+        "reuse-policy.json": "32e764b1b9bad1cad9e2f132887387667e37e90f91d7520d4e7964c5e2183704",
+        "target": "31f7a6935a76a99fc70102575de36bc67b0dfd01bfab7a83657ac17e40f32e8b"
+      },
+      "outputs": [
+        {
+          "path": "alternatives.json",
+          "hash": "bc54f2867c93981340bbdc818de7710661090d1082dc407d1bc7c6d24700f027"
+        },
+        {
+          "path": "alternatives.md",
+          "hash": "6224411c4f5eb61c45a50f6715ea8683f875d39ceb59a3a971b3be5065c9e872"
+        }
+      ],
+      "counts": {
+        "items": 1
+      },
+      "duration_ms": 0
+    }
+  ],
+  "decision_path": "reuse-decision.json"
+}

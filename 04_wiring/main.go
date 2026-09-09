@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package main
@@ -24,6 +24,7 @@ import (
 	"bateia/03_infra/cache"
 	"bateia/03_infra/clang"
 	"bateia/03_infra/content"
+	"bateia/03_infra/effects"
 	"bateia/03_infra/envfile"
 	"bateia/03_infra/github"
 	"bateia/03_infra/lexical"
@@ -62,6 +63,12 @@ func loadEnvFile(filepath string) {
 }
 
 func main() {
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "effects") {
+		if err := cli.RunEffectsCommand(os.Args[2:], os.Stdout, effects.NewRunner()); err != nil {
+			log.Fatalf("Erro na execução effects: %v", err)
+		}
+		return
+	}
 	// Comandos offline são despachados antes de .env, cache e clientes remotos.
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "benchmark") {
 		if err := cli.RunBenchmarkCommand(os.Args[2:], os.Stdout); err != nil {

@@ -1,0 +1,47 @@
+{
+  "spec_sha256": "fc244c806e0038bfc67955e2524f60578cc893843f2550bc0864eba5ae3e908e",
+  "production_sha256": {
+    "01_core/parser/implementation_search.go": "f063d89a0f9800ec1b1271361994e7290d581f6a2c105e7fe9185c1869db019c",
+    "01_core/parser/functional_retrieval.go": "3ebb39fdb2332dee61753c4372375725a7090d3665112c5ba5ce1891dc4c3551",
+    "01_core/domain/implementation_search.go": "e5dbd6bcbc4a4b1670fe646ae2371da5f9d7d69345991667f7afa6cf88758eb5",
+    "01_core/usecase/implementation_retrieval.go": "b6f5b9e07f763702d91a48d3695b34f927cb295df4bb704c1fe7da52435f874d",
+    "02_shell/report/generator.go": "b284d933bdf283234f8ea69ff31b6cc0479b7525fbdbe2a53a4174c986160db9",
+    "01_core/parser/evidence.go": "5da30ab724636507a09ac081b6fd70bb0d254869e8f9726f32bfb506a7fb3cd9",
+    "02_shell/cli/idea_recommend.go": "d4a9783a8c87894e9492ee8e35be332c20239e73a415c6adbcf1f3218e6e2a87",
+    "03_infra/local/implementation_search.go": "660d1468e2ba5973380319645bdd62b452db3bdd342317ca69058abf7bc77e02",
+    "03_infra/content/router.go": "01a48592baf9ff1ffc182eb8c45cdaee6f9a9d1d941eee644c419a5d2483baf7",
+    "01_core/parser/requirement_retrieval.go": "5ba8c1eb67be793f75640b9e861b3ba239a57ba5302a14318e82ae5a6963ffd9",
+    "01_core/usecase/requirement_retrieval.go": "e476ecc705692ea1786fcf6dc0ca0f701be36928dd743587bf35cc52a02ae5d9",
+    "01_core/usecase/evidence.go": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+    "01_core/usecase/funnel.go": "5e03b1e4b613eaf942e9f624a5490009dc2cc154ed430a4f3556053d4ab4daf0",
+    "01_core/parser/corpus_scoring.go": "f357776cc644fc2e8b5fac2de81d9b39c324b8fee8bfbcc7f41d0b4a6ef185dc",
+    "01_core/parser/query_interpretation.go": "c81faa084f041984c5eaf0153f1d8b31db3acff6c6b9280f6cc2100a75ab68ce"
+  },
+  "unchanged": {
+    "01_core/parser/corpus_scoring.go": true,
+    "01_core/parser/functional_retrieval.go": true
+  },
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0048 ./04_wiring",
+      "exit_code": 0,
+      "binary_sha256": "a3f83f1af76a199b21d8350251fe78b19219c587940b1eec48fd231e47426f5c"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test ./...",
+      "exit_code": 0,
+      "log": "full-tests.log",
+      "log_sha256": "ec4f4f92b2b9b80e97b09e083c19ca1c879848c7dbd41057707421cd16af3d12"
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0,
+      "log": "lint.log",
+      "log_sha256": "91a6d3da4ea876cf1389727cd10abe41cf117fa0295b588912b258b93118f0ac"
+    }
+  ],
+  "evaluation": "evaluation/final-comparison.json",
+  "cli": "cli-observations.json",
+  "regime": "Tekt A/B sem atestação de isolamento físico",
+  "scope": "Worktree não commitado; baseline identificada em contract-baseline.json e evaluation/baseline-integrity.json."
+}

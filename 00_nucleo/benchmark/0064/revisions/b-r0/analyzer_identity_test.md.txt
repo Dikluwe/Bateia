@@ -1,0 +1,5 @@
+# Testes independentes da identidade e trace 0064
+
+Papel B, regime A/B em filesystem compartilhado, sem atestação física. Entradas: contrato0064 congelado, contratos0062/0063 e API domain baseline. Não consultar produção candidata, testes legados, fixtures ou relatórios.
+
+Criar testes externos de effects.NewRunner().Verify. Fontes autônomas controladas definidas no próprio teste. Comparar identidade com SHA-256 independente do executável corrente (/proc/self/exe em Linux); conferir metadados runtime/debug quando disponíveis, horários UTC e fingerprint por serialização independente. Exercitar efeito supported, repetição em caminho diferente/expectativa diferente, mismatch unknown sem casos ou execução, rejeição de recorte unknown rastreável. Conferir parâmetros pedidos e limites efetivos. Não executar antes do congelamento dos artefatos.

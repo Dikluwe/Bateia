@@ -1,0 +1,82 @@
+{
+  "label": "candidate",
+  "promotion_passed": true,
+  "controls0045_nonregression": true,
+  "corpora": {
+    "real0046": {
+      "baseline": {
+        "positive_requirements": 6,
+        "negative_requirements": 3,
+        "negative_with_indications": 1,
+        "at_3": {
+          "macro_recall_labeled": 0.0,
+          "micro_precision_labeled": 0.0
+        },
+        "at_12": {
+          "macro_recall_labeled": 0.16666666666666666,
+          "micro_precision_labeled": 0.023255813953488372
+        }
+      },
+      "candidate": {
+        "positive_requirements": 6,
+        "negative_requirements": 3,
+        "negative_with_indications": 1,
+        "at_3": {
+          "macro_recall_labeled": 0.3333333333333333,
+          "micro_precision_labeled": 0.15384615384615385
+        },
+        "at_12": {
+          "macro_recall_labeled": 0.6666666666666666,
+          "micro_precision_labeled": 0.08888888888888889
+        }
+      },
+      "recall_delta": {
+        "3": 0.3333333333333333,
+        "12": 0.5
+      },
+      "no_recall_loss": true,
+      "recall_gain": true,
+      "no_negative_increase": true
+    },
+    "holdout": {
+      "baseline": {
+        "positive_requirements": 2,
+        "negative_requirements": 1,
+        "negative_with_indications": 1,
+        "at_3": {
+          "macro_recall_labeled": 1.0,
+          "micro_precision_labeled": 0.3333333333333333
+        },
+        "at_12": {
+          "macro_recall_labeled": 1.0,
+          "micro_precision_labeled": 0.10526315789473684
+        }
+      },
+      "candidate": {
+        "positive_requirements": 2,
+        "negative_requirements": 1,
+        "negative_with_indications": 1,
+        "at_3": {
+          "macro_recall_labeled": 1.0,
+          "micro_precision_labeled": 0.3333333333333333
+        },
+        "at_12": {
+          "macro_recall_labeled": 1.0,
+          "micro_precision_labeled": 0.1111111111111111
+        }
+      },
+      "recall_delta": {
+        "3": 0.0,
+        "12": 0.0
+      },
+      "no_recall_loss": true,
+      "recall_gain": false,
+      "no_negative_increase": true
+    }
+  },
+  "limitations": [
+    "Recall/precision are against frozen manually labeled paths; at_k means distinct paths among first 24 hits, not extraction execution.",
+    "Convenience corpus and tiny holdout do not establish generalization. Negative hits are indications, not verified capability.",
+    "A/B role separation, no physical independence attestation."
+  ]
+}

@@ -23,3 +23,61 @@ Anexar plano à decisão canônica e à apresentação CLI/MCP. Projetar texto p
 Identidade 0043: registrar versão do analisador/promessas e invalidar checkpoints de evidência sem essa versão; código de coleta e autoridade mudaram mesmo quando catálogo lexical não mudou.
 
 Legibilidade 0043: cada ação contém pergunta e lacuna explícita. Sem detector para o requisito, pedir especificação/verificação delimitada, sem fingir que mais coleta resolve ausência de analisador. Markdown mostra texto do requisito além do ID e fontes pertinentes quando presentes.
+
+## 0044
+Adicionar versão de recuperação implementation_search=0044 à identidade/retomada somente em modo local, que ganhou nova coleta opcional. Replay usa bundle congelado; provedores remotos sem porta preservam identidade.
+
+0045: versão implementation_search do checkpoint local passa a 0045; incompatibilidade impede retomada silenciosa do ranking anterior. Replay mantém evidência da origem.
+
+0046: checkpoint local implementation_search passa0046 pela adição de lacunas por requisito; replay conserva bundle.
+
+0046: decision.md também apresenta projeções dos bundles, após razões/capacidades/planos e antes links de evidência. Reutilizar renderizador L2 de requisitos; até cinco candidatos com identificação repo@commit. writeDecisionMarkdown aceita bundles opcionais para compatibilidade dos chamadores anteriores. Replay renderiza as projeções preservadas. Sem modificar decisão canônica.
+
+0047: se candidato for promovido, implementation_search0047 no checkpoint local; manter replay congelado e sem promoção de capacidades.
+
+0048: checkpoint local implementation_search0048; replay conserva interpretação e restrições congeladas.
+
+0048: decision.md também renderiza QueryInterpretation de cada bundle antes de Requirements, para expor modo e símbolos como analyze. Usar WriteQueryInterpretation do renderizador L2, mantendo limites de candidatos/linhas existentes.
+
+0050: checkpoint local implementation_search0050 e versão de evidência atualizada distinguem coleta com suporte remoto. Replay conserva artefatos da origem.
+
+0050: versionar implementation_search tanto em local como live para impedir retomada de checkpoint remoto anterior sem busca de implementação. Replay continua usando bundles congelados.
+
+0051: implementation_search0051 em local/live pela mudança de recuperação documental. Replay preserva bundles.
+
+0052: checkpoint implementation_search0052 em local/live para novo catálogo lexical; replay conserva bundles congelados.
+
+## Passo 0055 — Retomada
+Aplicar 00_nucleo/passos/0055-adendo-checkpoint.md: discovery_query 0055-v1 somente modo live; comparar chave na elegibilidade de checkpoint para impedir reuso de descoberta obsoleta.
+
+Revisão sintaxe 0055: a chave discovery_query live passa para 0055-v2; invalida retomada da primeira serialização.
+
+## Passo 0056
+Aplicar 00_nucleo/passos/0056-explicar-cobertura-e-perdas.md: report exibe cobertura desconhecida, motivos e limites sem inferir ausência de capacidade; checkpoint live discovery_query passa0056-v1.
+
+Correção de alinhamento0056: identificador exato de discovery_query no modo live é `live0056-v1`, como no contrato/teste congelado; a primeira implementação usava0056-v1 e falhou no gate. Não alterar testes ou resultados de busca.
+
+
+## Passo 0057
+Checkpoint implementation_search passa a 0057 em local/live. discovery_query permanece live0056-v1.
+
+
+## Adendo 0057 — Origem documental
+Checkpoint implementation_search passa a 0057-r1 em local/live; descoberta permanece intacta.
+
+## Passo 0058
+Checkpoint implementation_search passa a 0058 em local/live. Preservar
+discovery_query e a descoberta; replay conserva os bundles congelados.
+
+## Passo 0059
+Checkpoint implementation_search passa a 0059 em local/live. discovery_query permanece
+inalterado e replay conserva bundles congelados.
+
+## Passo 0060
+Checkpoint implementation_search passa a 0060 em local/live para a tradução
+lexical de caminho na consulta. discovery_query permanece inalterado e replay
+conserva bundles congelados.
+
+
+## Passo 0061
+Checkpoint implementation_search = 0061 local/live; descoberta inalterada. Apresentar WriteActionAssessments ao lado de requisitos no Markdown.

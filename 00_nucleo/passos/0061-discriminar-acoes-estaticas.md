@@ -1,0 +1,30 @@
+# Passo 0061 — Discriminar hipóteses de ação por candidato
+
+## Objetivo e limite
+Separar correspondência de objeto de indícios da ação solicitada. Primeira fronteira: iniciar versus interromper um ciclo de atividade. Nomes e chamadas AST são observações sintáticas; sua correspondência com a intenção é hipótese, nunca prova de comportamento. Não alterar recuperação, pontuação, orçamento ou status de satisfação.
+
+## Contrato congelado antes do candidato
+Adicionar ImplementationSearchReport.ActionAssessments (json action_assessments,omitempty), produzido por parser.AssessImplementationActions(query, report, files). Retorno []domain.RequirementActionAssessment, uma entrada por interpretação canônica da consulta.
+
+Tipos em domain/action_assessment.go:
+- RequirementActionAssessment: Query string, RequiredAction string, Status string, Reason string, Candidates []ActionCandidate; JSON snake_case.
+- ActionCandidate: Source ImplementationReference, EndLine int, Relation string, Reason string, Evidence []ActionEvidence.
+- ActionEvidence: Kind string, Action string, Term string, Line int, EndLine int, Snippet string.
+
+Consulta: somente Mode=natural e sem Constraints; reconhecimento por palavras inteiras normalizadas (acentos como discoveryNormalized), não substring. Família start: iniciar, comecar, start, subscribe. Família stop: parar, interromper, cancelar, cessar, stop, cancel, unsubscribe. Exatamente uma família => Status=hypothesis, RequiredAction=start/stop. Nenhuma, ambas, mixed/symbol ou negação => Status=not_evaluated, RequiredAction vazio, Candidates vazio, Reason explícito. Original Query preservada. Objeto e restrições não são validados.
+
+Candidatos: todos os hits, sem alterar report.Hits. Ordenar por path/line/symbol/hash para determinismo. Revalidar independentemente bytes completos (Size positivo deve coincidir), um único arquivo por path, hash, Go AST válido, função com corpo e símbolo/intervalo físico exatos usando PositionFor(...,false). Origem documentation, linguagem sem suporte, identidade ambígua/adulterada ou falta de bytes => Relation=unknown, Evidence vazio, Reason correspondente. Não herdar avaliações recebidas, sempre recalcular.
+
+Observações somente no nome da declaração e identificador chamado em ast.CallExpr (Ident ou SelectorExpr.Sel). Não inferir chamadas por literais, comentários, nomes de parâmetros, identificadores soltos ou corpo de FuncLit. Tokenizar CamelCase/acrônimos/snake_case com implementationWords. Vocabulário de indícios start: add, start, subscribe, register, watch; stop: remove, stop, unsubscribe, unregister, cancel, close, unwatch. Nome que contenha token not/never/without/no não produz indício. Não usar substring (restart não é start). Cada token reconhecido gera Evidence com Kind=declaration_name ou call_name, Action=start/stop, Term=token, intervalo e Snippet do identificador original exatamente nos bytes. Deduplicação por kind/action/term/posição, ordenação determinística; máximo32 evidências por candidato. Se ultrapassar, Relation=unknown e Reason orçamento, nunca classificar a partir do prefixo parcial.
+
+Relações: só indícios da ação pedida => aligned_hint; só da família oposta => opposed_hint; ambas => conflicting_hints; nenhum => unknown. Reason explica que rótulos/chamadas não comprovam execução, resolução de chamadas ou efeitos e que objeto/condições não foram verificados. Não declarar opposed_hint como prova de incompatibilidade. Nenhum status verified/satisfied. Não promover documentação.
+
+Integração: ValidateImplementationRequirements recalcula ActionAssessments a partir dos hits revalidados e bytes. JSON conserva lista completa. Markdown: nova função report.WriteActionAssessments(sb,*lista por valor*) com assinatura (sb *strings.Builder, assessments []domain.RequirementActionAssessment), chamada no gerador junto às projeções existentes. Mostrar ação, status, limites, relação por candidato, arquivo/hash/linha e evidências; no máximo12 candidatos e4 evidências por candidato no Markdown, informar remanescente no JSON. Escapar texto como formato seguro, sem renderizar snippets como instruções. Não mudar outras métricas/status. EvidenceVersion=evidence-v23-action-hints; checkpoint implementation_search=0061 local/live; descoberta inalterada.
+
+## Regime e arquivos
+Tekt A/B sem atestação física, ambiente compartilhado. Sem selo de refinamento. A: novos domain/action_assessment.go, parser/action_assessment.go, report/action_assessment.go; integração domain/implementation_search.go, usecase/requirement_retrieval.go, report/generator.go, parser/evidence.go, cli/idea_recommend.go e respectivos prompts antes do código. B: testes companheiros dos três módulos novos e prompts; contrato/tipos/testes legados permitidos, produção candidata/corpus/relatórios proibidos. A não lê testes/corpus/relatórios. Congelar antes de executar.
+
+Controles independentes: pares start/stop no mesmo objeto, nome enganoso com chamada oposta=>conflito; função neutra=>unknown; comentários/literais/lambda não sustentam ação; negação/ambiguidade; símbolos/mixed; adulteração hash/linhas/bytes/duplicados; //line físico; orçamento; JSON/Markdown e integração que descarta avaliação prévia. Nenhuma expectativa legada alterada. Integrador compara corpus0053 congelado para ausência de perda de recuperação e inspeciona a separação por ação. Essa comparação é calibração, não holdout. Não executar código de projetos ou rede.
+
+## Adendo r1 — Apresentação antes do corte
+Inspeção do Markdown revelou que os primeiros12 candidatos por caminho escondiam as duas funções públicas relevantes presentes no JSON. Somente no apresentador, ordenar uma cópia estável dos candidatos por relation: aligned_hint, conflicting_hints, opposed_hint, unknown (qualquer valor não reconhecido também por último), antes de cortar em12. Empates preservam ordem de entrada. Não mutar entrada ou JSON e não alterar rank de busca. A ajusta só report/action_assessment.go e seu prompt; B acrescenta controle de prioridade antes do corte e não mutação. Artefatos r0 preservados. Essa ordem é prioridade de leitura, não confiança semântica nem comprovação.

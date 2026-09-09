@@ -1,0 +1,118 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/parser/implementation_behavior.md
+ * @layer L1
+ * @updated 2026-09-08
+ */
+package parser
+
+import (
+	"bateia/01_core/domain"
+	"bytes"
+	"crypto/sha256"
+	"fmt"
+	"go/ast"
+	"go/format"
+	goparser "go/parser"
+	"go/token"
+	"strings"
+)
+
+// InspectImplementationBehavior validates identity independently of retrieval.
+// Its facts describe source syntax; no target code is executed.
+func InspectImplementationBehavior(report domain.ImplementationSearchReport, files []domain.ExtractedFile) []domain.ImplementationBehavior {
+	byPath := make(map[string][]domain.ExtractedFile)
+	for _, file := range files {
+		byPath[file.Path] = append(byPath[file.Path], file)
+	}
+	out := make([]domain.ImplementationBehavior, 0, len(report.Hits))
+	for _, hit := range report.Hits {
+		observation := domain.ImplementationBehavior{
+			Source:  domain.ImplementationReference{Path: hit.Path, Symbol: hit.Symbol, Line: hit.Line, SHA256: hit.SHA256},
+			EndLine: hit.EndLine, Status: "not_evaluated", Facts: []domain.BehaviorFact{}, Limitations: []string{},
+		}
+		observation.Reason = inspectBehaviorHit(hit, byPath[hit.Path], &observation)
+		out = append(out, observation)
+	}
+	return out
+}
+
+func inspectBehaviorHit(hit domain.ImplementationHit, files []domain.ExtractedFile, observation *domain.ImplementationBehavior) string {
+	if hit.Kind != "definition" {
+		return "Hit não é uma definição de função."
+	}
+	if !strings.HasSuffix(hit.Path, ".go") {
+		return "Linguagem não suportada; somente funções Go são inspecionadas."
+	}
+	if len(files) == 0 {
+		return "Arquivo ausente dos bytes extraídos."
+	}
+	if len(files) != 1 {
+		return "Arquivo duplicado: identidade ambígua nos bytes extraídos."
+	}
+	file := files[0]
+	if file.Size > 0 && file.Size != int64(len(file.Content)) {
+		return "Tamanho declarado diverge dos bytes extraídos."
+	}
+	if fmt.Sprintf("%x", sha256.Sum256([]byte(file.Content))) != hit.SHA256 {
+		return "SHA256 diverge dos bytes extraídos."
+	}
+	set := token.NewFileSet()
+	tree, err := goparser.ParseFile(set, file.Path, file.Content, goparser.AllErrors)
+	if err != nil {
+		return "Arquivo Go com erro de parsing; função não avaliada."
+	}
+	var matched *ast.FuncDecl
+	for _, decl := range tree.Decls {
+		fn, ok := decl.(*ast.FuncDecl)
+		if !ok || fn.Body == nil {
+			continue
+		}
+		// Retrieval represents methods by their simple names. The exact physical
+		// declaration range distinguishes identically named methods of other receivers.
+		if fn.Name.Name == hit.Symbol && set.PositionFor(fn.Pos(), false).Line == hit.Line && set.PositionFor(fn.End(), false).Line == hit.EndLine {
+			if matched != nil {
+				return "Declaração ambígua para o símbolo e intervalo informados."
+			}
+			matched = fn
+		}
+	}
+	if matched == nil {
+		return "Símbolo ou intervalo não corresponde a uma declaração de função completa."
+	}
+	observation.Status = "observed"
+	observation.Limitations = []string{
+		"Fluxo de controle e execução não verificados.",
+		"Aliases, chamadas e efeitos indiretos não verificados.",
+		"Ausência de escrita direta não prova preservação das entradas.",
+		"Relação com a intenção original não verificada.",
+	}
+	add := func(kind string, node ast.Node, target ast.Expr) {
+		start, end := set.PositionFor(node.Pos(), false), set.PositionFor(node.End(), false)
+		fact := domain.BehaviorFact{Kind: kind, Line: start.Line, EndLine: end.Line, Snippet: file.Content[start.Offset:end.Offset]}
+		if target != nil {
+			var text bytes.Buffer
+			// Parser-produced expressions are valid format.Node input.
+			if err := format.Node(&text, set, target); err == nil {
+				fact.Target = text.String()
+			}
+		}
+		observation.Facts = append(observation.Facts, fact)
+	}
+	ast.Inspect(matched.Body, func(node ast.Node) bool {
+		switch n := node.(type) {
+		case *ast.FuncLit:
+			return false
+		case *ast.AssignStmt:
+			for _, lhs := range n.Lhs {
+				add("assignment", n, lhs)
+			}
+		case *ast.IncDecStmt:
+			add("increment_decrement", n, n.X)
+		case *ast.ReturnStmt:
+			add("return", n, nil)
+		}
+		return true
+	})
+	return "Sintaxe observada no corpo da função; não comprova execução, efeito externo, imutabilidade ou equivalência."
+}

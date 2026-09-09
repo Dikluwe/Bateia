@@ -1,0 +1,60 @@
+{
+  "manifest_sha256": "6e579d6aa527d9261e0886daca2b204b8a0abe92a59305d90df2aace55ddde54",
+  "status": "passed_in_scope_unattested",
+  "modified_baseline_files": [
+    "01_core/domain/effect_verification.go",
+    "03_infra/effects/runner.go"
+  ],
+  "new_go_files": [
+    "01_core/usecase/effect_trace.go",
+    "01_core/usecase/effect_trace_test.go",
+    "03_infra/effects/analyzer_identity.go",
+    "03_infra/effects/analyzer_identity_test.go"
+  ],
+  "analyzer_binary_sha256": "e7611a5bd6a7e7aac9739677910a0503856069c04435d829f2110446560ee79c",
+  "production_revision_count": 0,
+  "test_revision_count": 1,
+  "test_revision_reason": "Remove unsupported empty-list requirement; contract preserves uncompleted planned cases. Original checks preserved in revisions/b-r0.",
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test -count=1 -run TestTrace64 -timeout 180s ./01_core/usecase ./03_infra/effects",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test -timeout 180s ./...",
+      "exit_code": 0,
+      "note": "Includes cached unchanged packages; focused new tests uncached."
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0064 ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "demo": {
+    "passed": 4,
+    "total": 4
+  },
+  "regression0063": {
+    "passed": 4,
+    "total": 4
+  },
+  "regression0062": {
+    "passed": 8,
+    "total": 8
+  },
+  "limits": [
+    "Shared filesystem; no physical isolation attestation.",
+    "Fingerprint identifies effective request, not authenticity or whole receipt.",
+    "Analyzer VCS is not candidate repository identity.",
+    "No general correctness or retrieval improvement claim.",
+    "Identity-unavailable and wall-clock reversal paths audited, not forced in this environment."
+  ]
+}

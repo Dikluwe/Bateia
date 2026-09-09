@@ -1,0 +1,83 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/report/action_assessment_test.md
+ * @layer L2
+ * @updated 2026-09-08
+ */
+package report_test
+
+import (
+	"bateia/01_core/domain"
+	"bateia/02_shell/report"
+	"encoding/json"
+	"fmt"
+	"strings"
+	"testing"
+)
+
+func TestAction61MarkdownBoundsIntegrationAndJSON(t *testing.T) {
+	a := domain.RequirementActionAssessment{Query: "start cycle", RequiredAction: "start", Status: "hypothesis", Reason: "ACTION_LIMIT_SYNTAX_ONLY"}
+	for i := 0; i < 14; i++ {
+		c := domain.ActionCandidate{Source: domain.ImplementationReference{Path: fmt.Sprintf("action_file_%02d.go", i), Symbol: fmt.Sprintf("ActionSymbol%02d", i), SHA256: fmt.Sprintf("action_hash_%02d", i), Line: 17}, EndLine: 19, Relation: "aligned_hint", Reason: "ACTION_CANDIDATE_LIMIT"}
+		for j := 0; j < 6; j++ {
+			c.Evidence = append(c.Evidence, domain.ActionEvidence{Kind: "call_name", Action: "start", Term: "start", Line: 18, EndLine: 18, Snippet: fmt.Sprintf("ActionEvidence%02dX%02d", i, j)})
+		}
+		a.Candidates = append(a.Candidates, c)
+	}
+	var sb strings.Builder
+	report.WriteActionAssessments(&sb, []domain.RequirementActionAssessment{a})
+	direct := sb.String()
+	r := domain.ImplementationSearchReport{ActionAssessments: []domain.RequirementActionAssessment{a}}
+	md := report.GenerateMarkdownReport(&domain.SearchReport{Results: []domain.ExtractedRepository{{ImplementationSearch: &r}}})
+	for _, out := range []string{direct, md} {
+		for _, token := range []string{"start", "hypothesis", "aligned_hint", "ACTION_LIMIT_SYNTAX_ONLY", "ACTION_CANDIDATE_LIMIT", "17", "18", "JSON"} {
+			if !strings.Contains(out, token) {
+				t.Errorf("missing %s in %s", token, out)
+			}
+		}
+		for i := 0; i < 14; i++ {
+			for _, token := range []string{fmt.Sprintf("ActionSymbol%02d", i), fmt.Sprintf("action_file_%02d.go", i), fmt.Sprintf("action_hash_%02d", i)} {
+				if strings.Contains(out, token) != (i < 12) {
+					t.Errorf("candidate limit for %s", token)
+				}
+			}
+			for j := 0; j < 6; j++ {
+				token := fmt.Sprintf("ActionEvidence%02dX%02d", i, j)
+				if strings.Contains(out, token) != (i < 12 && j < 4) {
+					t.Errorf("evidence limit for %s", token)
+				}
+			}
+		}
+		if !strings.Contains(out, "2") {
+			t.Error("missing omitted count")
+		}
+	}
+	b, err := json.Marshal(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restored domain.ImplementationSearchReport
+	if err = json.Unmarshal(b, &restored); err != nil {
+		t.Fatal(err)
+	}
+	if len(restored.ActionAssessments) != 1 || len(restored.ActionAssessments[0].Candidates) != 14 {
+		t.Fatal("JSON candidate truncation")
+	}
+	for _, c := range restored.ActionAssessments[0].Candidates {
+		if len(c.Evidence) != 6 {
+			t.Fatal("JSON evidence truncation")
+		}
+	}
+}
+func TestAction61MarkdownEscapesUntrustedTextAndShowsNotEvaluated(t *testing.T) {
+	a := domain.RequirementActionAssessment{Query: "<script>alert(1)</script>\n# forged heading", Status: "not_evaluated", Reason: "ACTION_UNSUPPORTED_REASON"}
+	var sb strings.Builder
+	report.WriteActionAssessments(&sb, []domain.RequirementActionAssessment{a})
+	out := sb.String()
+	if !strings.Contains(out, "not_evaluated") || !strings.Contains(out, "ACTION_UNSUPPORTED_REASON") {
+		t.Fatalf("empty assessment hidden: %s", out)
+	}
+	if strings.Contains(out, "<script>") || strings.Contains(out, "\n# forged heading") {
+		t.Fatalf("untrusted query rendered as markup: %s", out)
+	}
+}

@@ -1,0 +1,22 @@
+from pathlib import Path
+import hashlib,json,subprocess,sys,time
+root=Path('/repos/Antigravity/Bateia');p=root/'00_nucleo/benchmark/0063';out=Path('/repos/Antigravity/Bateia/00_nucleo/benchmark/0064/regression0063');out.mkdir(exist_ok=False)
+work=Path('/tmp/bateia0063-demo');work.mkdir(exist_ok=True);source=work/'candidate.go';binary=Path(sys.argv[1]);sha=lambda b:hashlib.sha256(b).hexdigest()
+a=(p/'reference.go.txt').read_bytes();b=(p/'helper-mutated.go.txt').read_bytes();rows=[];reports={}
+for name,data,expected,status,binding in [('reference',a,sha(a),'supported_in_scope','matched'),('stale',b,sha(a),'unknown','mismatch'),('updated',b,sha(b),'counterexample','matched'),('unbound',b,None,'counterexample','not_requested')]:
+ source.write_bytes(data);dest=out/(name+'.json');argv=[str(binary),'effects','verify','--source',str(source),'--symbol','Transform','--seed','1','--timeout','1s','--output',str(dest)]
+ if expected is not None:argv+=['--expect-sha256',expected]
+ start=time.monotonic();r=subprocess.run(argv,capture_output=True,text=True,timeout=90)
+ row={'name':name,'argv':argv,'exit_code':r.returncode,'stdout':r.stdout,'stderr':r.stderr,'tool_telemetry_seconds':time.monotonic()-start,'expected_status':status,'expected_binding':binding,'source_sha256':sha(data),'binary_sha256':sha(binary.read_bytes())}
+ if dest.exists():
+  v=json.loads(dest.read_text());reports[name]=v;bind=v['source_binding'];checks={'status':v['status']==status,'binding':bind['status']==binding,'actual_hash':bind['actual_sha256']==sha(data)==v['source_sha256']==v['execution']['source_sha256'],'expected_hash':bind['expected_sha256']==(expected or ''),'compiled_snapshot':v['execution']['source_content'].encode()==data}
+  if name=='stale':checks.update({'no_completed_cases':not any(c['observation']['completed'] for c in v['cases']),'no_build':not any(k in v['execution'] for k in ['build_argv','wrapper_content','binary_sha256']),'reason':v['reason']==v['execution']['stop_reason']=='source_identity_mismatch','no_declaration':bind['declaration'] is None})
+  else:
+   d=bind['declaration'];fragment=data[d['start_byte']:d['end_byte']];checks.update({'declaration_bytes':fragment==d['content'].encode(),'declaration_hash':sha(fragment)==d['sha256'],'start_line':data[:d['start_byte']].count(b'\n')+1==d['start_line'],'end_line':data[:d['end_byte']-1].count(b'\n')+1==d['end_line']})
+   oracle=subprocess.run(['python3','/tmp/bateia0062-gate/oracle.py','--report',str(dest),'--expected',status],capture_output=True,text=True);checks['independent_effect_oracle']=oracle.returncode==0;row['oracle_stdout']=oracle.stdout;row['oracle_stderr']=oracle.stderr
+  row['checks']=checks;row['passed']=r.returncode==0 and all(checks.values());row['receipt_sha256']=sha(dest.read_bytes())
+ else:row['passed']=False
+ rows.append(row);(out/'verification.json').write_text(json.dumps(rows,indent=2)+'\n');print(name,row['passed'],flush=True)
+assert all(r['passed'] for r in rows)
+assert reports['reference']['source_binding']['declaration']==reports['updated']['source_binding']['declaration']
+(out/'helper-change.json').write_text(json.dumps({'same_selected_declaration':True,'file_hash_changed':sha(a)!=sha(b),'before':'supported_in_scope','stale_identity':'unknown','after':'counterexample'},indent=2)+'\n')

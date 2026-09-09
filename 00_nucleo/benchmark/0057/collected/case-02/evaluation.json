@@ -1,0 +1,145 @@
+{
+  "channels": {
+    "direct_call": [],
+    "documentation": [
+      {
+        "documentation_end_line": 6,
+        "documentation_line": 5,
+        "end_line": 32,
+        "kind": "definition",
+        "line": 7,
+        "matched_terms": [
+          "receive"
+        ],
+        "path": "cmd/fsnotify/watch.go",
+        "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+        "retrieval": "documentation",
+        "score": 1,
+        "sha256": "677fc109753b114a789b318621d2df507e756ff2c775b13ff59ff1c75edf2886",
+        "symbol": "watch"
+      }
+    ],
+    "lexical": [],
+    "other": []
+  },
+  "coverage": [
+    {
+      "checks_not_run": [
+        "execução de testes e benchmarks",
+        "validação semântica da solução",
+        "AST de linguagens sem provedor; Clang reportado separadamente",
+        "isolamento arquitetural por fluxo de chamadas"
+      ],
+      "checks_run": [
+        "busca lexical no conteúdo extraído",
+        "heurísticas sobre manifesto e árvore parcial",
+        "recuperação Go por símbolos/conteúdo com identidade conferida"
+      ],
+      "reason": "Definições Go localizadas por AST e releitura de bytes; pertinência heurística e comportamento não verificado.",
+      "requested_files": [
+        "README.md",
+        "go.mod",
+        "cmd/fsnotify/watch.go",
+        "backend_kqueue.go",
+        "internal/debug_kqueue.go",
+        "backend_kqueue_test.go",
+        "test/kqueue.c"
+      ],
+      "status": "insufficient",
+      "supported_languages": [
+        "go (AST)",
+        "rust (símbolos heurísticos)"
+      ]
+    }
+  ],
+  "discovery": {
+    "expected_repo_top10": null,
+    "reason": "discovery not requested",
+    "status": "not_evaluated"
+  },
+  "errors": [],
+  "explicit_satisfaction_claims": [],
+  "final_hit_count": 1,
+  "final_requirements": [
+    {
+      "documentation_sources": [
+        {
+          "line": 7,
+          "path": "cmd/fsnotify/watch.go",
+          "sha256": "677fc109753b114a789b318621d2df507e756ff2c775b13ff59ff1c75edf2886",
+          "symbol": "watch"
+        }
+      ],
+      "matched_terms": [
+        "receive"
+      ],
+      "missing_terms": [
+        "caminho",
+        "estava",
+        "já",
+        "monitorado",
+        "mudanças",
+        "notificações",
+        "parar",
+        "receber",
+        "sendo"
+      ],
+      "reason": "Indício documental: 1 de 10 termos em comentários Doc; declaração do autor, sem fonte lexical de código; requisito e comportamento não verificados.",
+      "requirement": "Como parar de receber notificações de mudanças de um caminho que já estava sendo monitorado?",
+      "sources": [],
+      "status": "documentation_located"
+    }
+  ],
+  "id": "fsnotify-p2",
+  "inventory_valid": true,
+  "negative_indications": null,
+  "paths": [
+    {
+      "file_extracted": false,
+      "file_found": true,
+      "path": "fsnotify.go",
+      "path_top12": false,
+      "path_top3": false
+    }
+  ],
+  "polarity": "positive",
+  "project_id": "fsnotify",
+  "query": "Como parar de receber notificações de mudanças de um caminho que já estava sendo monitorado?",
+  "raw_distinct_paths": [
+    "cmd/fsnotify/watch.go"
+  ],
+  "raw_hit_count": 1,
+  "raw_requirements": [],
+  "raw_search": {
+    "budget": {
+      "max_bytes": 33554432,
+      "max_file_bytes": 524288,
+      "max_files": 2048,
+      "max_results": 24
+    },
+    "bytes_read": 119014,
+    "files_read": 30,
+    "issues": null,
+    "limited": false,
+    "method": "go_ast_query_v1",
+    "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+    "status": "complete"
+  },
+  "status": "evaluated",
+  "targets": [
+    {
+      "body_available": false,
+      "channels": [],
+      "file_extracted": false,
+      "file_found": true,
+      "path": "fsnotify.go",
+      "path_top12": false,
+      "path_top3": false,
+      "symbol": "Remove",
+      "symbol_confirmed": false,
+      "symbol_recovered": false
+    }
+  ],
+  "undue_conclusions": null,
+  "verified_behavior": "not_evaluated"
+}

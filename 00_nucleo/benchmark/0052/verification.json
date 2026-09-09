@@ -1,0 +1,64 @@
+{
+  "spec_sha256": "754f9d973b017badf32fa68219d82a97c250a99a2dae03a3260abe171317ae7f",
+  "adendum_sha256": "1162a96314196fd7460a8963699b3e02f145c64d02df3675e6aa4b7a5864d9dc",
+  "production_sha256": {
+    "01_core/domain/implementation_search.go": "a436485d865a624b94eb0c062940e930fbe7b54d130c02f64a90b27f460894f9",
+    "01_core/parser/query_interpretation.go": "28e65b69e92414aca5626d3b086a4846802f04c5640027fb2b5e4e971cbbec0f",
+    "01_core/parser/implementation_search.go": "7b6732f1f3fdc80bf24349b8a4fe85ef3b87eabc40d94cde856343e6d938ac20",
+    "01_core/parser/requirement_retrieval.go": "c433eed89a22f644b8149181d35db1b1be1f7eff9c5d16b2fa758e8f9428623b",
+    "02_shell/report/generator.go": "b829cf34e445feeba3993ef325147106b809e40c4df739ad58ea40c59123209b",
+    "01_core/parser/evidence.go": "bc800a024d70d74939138e55dc973ff4d3e9c9b8743963022aca7a52c734ce66",
+    "02_shell/cli/idea_recommend.go": "7e685e4f80ef17fec318b5f6334d82f09348e74076e9832051372f919dbb0c42"
+  },
+  "corpus_scoring_unchanged": true,
+  "baseline_binary_sha256": "1d9f559785cad39748604f2082ab1d26e690846fd5bcfdee90882241b0b218b5",
+  "candidate_binary_sha256": "8f0a53b4ba8e72b8b7a1153b80246da22227efac27b4c317538fe642b03c0d96",
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0052 ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test ./...",
+      "exit_code": 0,
+      "log": "full-tests.log"
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0,
+      "log": "lint.log"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go run /tmp/bateia0052-live.go",
+      "exit_code": 0,
+      "output": "remote-verification.json"
+    }
+  ],
+  "regime": "A/B sem atestação de isolamento físico",
+  "artifacts_sha256": {
+    "baseline.json": "34884190e82dbe21b10ac1dd4d838a1e6c5b4f04344bfcd516fdf2f1a88de454",
+    "cli-before.json": "9e3b3aad1be958d1ac30e4d5e41d0cc4060f12c07a5d39318101fe5ce953b214",
+    "tests-freeze.json": "d051799455f0cc77ae23c7a7d588289b4c7d71fa5ab5ceaf7454a1ab0834dddc",
+    "cli-comparison.json": "3b870be1cdea9ba5a6c9f258a6643c21e2b74e4203e6b6c1081429cc8de8be82",
+    "tests-initial.log": "8cef0b195f793739ab253183552f3fe086061b48c4d8a1db1337acdc8e04ae44",
+    "tests-freeze-initial.json": "cf0b6510713f90222bc5f25286351ad301774c6a9eb222549199ca4db84f2a8e",
+    "tests-B1.log": "e17e8ff83277ade6d8ea39fe1daa4f5f9530b53a44d1e2fa4d5ea8facb057a75",
+    "tests-verdict.md": "512fd7ef4eabb979faec1c7239405c31a2f9a699c67b283a734c1c43c983c8d6",
+    "candidate-r1.json": "826191ef9e035f97ae73674953a4becd28596d08577c377e2fa5ebf7ed749565",
+    "query_interpretation-r1.go.txt": "3769a32e77d92d3a7aefb1067acff1c41fc31ce8c603404525eddeaa275d3a13",
+    "implementation_search-r1.go.txt": "a436485d865a624b94eb0c062940e930fbe7b54d130c02f64a90b27f460894f9",
+    "cli-comparison-r1.json": "3b870be1cdea9ba5a6c9f258a6643c21e2b74e4203e6b6c1081429cc8de8be82",
+    "contract-r2.sha256": "c8abaecd2dbec6ef68e86991e556ab2cbeae829c2a015d48f6f50dbd429ef5a9",
+    "tests-freeze-r2.json": "490ed464075d4a43e2a036f8d905fdacd19f438d7d255b376068922f44f4db9e",
+    "query_expansion_B1.go.txt": "55934cfe2e06df2b44c0dab913753a2b580834d1fa47aa4f3f486fb9c8f58f72",
+    "query_expansion_initial.go.txt": "886295226450e0765502cc4d4fda6a74c685f20e090edd7fa27d41a8a1e43cd6",
+    "cli-comparison-r2.json": "8aaf1eb17de7cce27d093ee3a5954af7871923fd0b8d02de7b0cba9a5ba656d9",
+    "tests-r2.log": "34d99180223cb197c6a9aaa442e53b8646a86b17547fe2e9bfc166f85bac51f0",
+    "remote-verification.json": "3e480b981ae40e455ebfe56a702c77f255674d19dfe332523488982bca51373a",
+    "remote-runner.go.txt": "dc8ae19ea6c41574cd88813d18642924dbbddd4e5ed7a8bfb30290d3849d4d66",
+    "snappy.md": "7088c4b360eba9e7952362eddbb88760685b84ba931f1576fcb5a82d3997c4f9",
+    "replay.json": "43c70058435c5b10b2c9493861c9b4a0b7efc9da8ffe743257e92f36f88d90e2",
+    "full-tests.log": "6858283b1f6614bda791632972da30f8efcaf6c6bac6e375486a3c729f09fc3b",
+    "lint.log": "91a6d3da4ea876cf1389727cd10abe41cf117fa0295b588912b258b93118f0ac"
+  }
+}

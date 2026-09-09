@@ -66,3 +66,35 @@ Cada passo deve declarar:
 - [0042 — Auditar promessas e limites do projeto](0042-auditar-promessas-e-limites-do-projeto.md)
 
 - [0043 — Delimitar promessas e planejar buscas verificáveis](0043-delimitar-promessas-e-planejar-buscas-verificaveis.md) — [Execução A–F e ensaio G; utilidade externa não avaliada](../relatorios/execucao-promessas-buscas-0043.md)
+
+- [0044 — Recuperar implementações por símbolos](0044-recuperar-implementacoes-por-simbolos.md) — [Execução e limites](../relatorios/recuperacao-implementacoes-0044.md)
+
+- [0045 — Recuperação por perguntas funcionais](0045-recuperar-perguntas-funcionais.md) — [Execução e limites](../relatorios/recuperacao-funcional-0045.md)
+
+- [0046 — Projetos reais e lacunas por requisito](0046-validar-recuperacao-em-projetos-reais.md) — [Execução: sem ganho demonstrado de recall](../relatorios/recuperacao-real-0046.md)
+
+- [0047 — Ponderar termos pelo corpus](0047-ponderar-termos-pelo-corpus.md) — [Execução e ganho delimitado](../relatorios/ranking-corpus-0047.md)
+
+- [0048 — Distinguir consulta natural e símbolos](0048-distinguir-consulta-e-simbolos.md) — [Execução e restrições não verificadas](../relatorios/consulta-simbolos-0048.md)
+
+- [0050 — Recuperar implementações remotas](0050-recuperar-implementacoes-remotas.md) — [Execução pública e limites](../relatorios/recuperacao-remota-0050.md)
+
+- [0051 — Recuperar documentação de declarações](0051-recuperar-documentacao-de-declaracoes.md) — [Execução e limites](../relatorios/documentacao-declaracoes-0051.md)
+
+- [0052 — Expansão lexical com proveniência](0052-expandir-vocabulario-com-proveniencia.md), com [adendo de admissão por ação](0052-adendo-admissao-por-acao.md).
+
+- [0053 — Avaliação por estágio em perguntas novas](0053-avaliar-jornada-em-perguntas-novas.md) — [Resultados e próximo gargalo](../relatorios/avaliacao-jornada-0053.md)
+
+- [0054 — Preservar intenção na descoberta](0054-preservar-intencao-na-descoberta.md) — Remover fallback destrutivo e medir no corpus congelado.
+
+- [0055 — Consultas de código como hipóteses rastreáveis](0055-planejar-consultas-de-codigo.md).
+
+- [0056 — Cobertura observada e perdas na admissão](0056-explicar-cobertura-e-perdas.md).
+
+- [0057 — Observações de comportamento por função](0057-observar-comportamento-por-funcao.md).
+
+- [0062 — Verificar efeito executado](0062-verificar-efeito-executado.md) — [Piloto e limites](../relatorios/efeitos-executados-0062.md).
+
+- [0063 — Vincular fonte ao efeito](0063-vincular-fonte-ao-efeito.md) — [Execução e rastreabilidade](../relatorios/vinculo-fonte-efeito-0063.md).
+
+- [0064 — Identificar analisador e parâmetros](0064-identificar-analisador-e-parametros.md) — [Recibos e limites](../relatorios/rastreabilidade-analisador-0064.md).

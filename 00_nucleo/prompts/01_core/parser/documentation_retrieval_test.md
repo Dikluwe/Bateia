@@ -1,0 +1,3 @@
+# Testes independentes do canal documental — 0051
+Autor B, regime A/B sem atestação física. Entradas: contrato 0051, AGENTS, skill Tekt, tipos domain e assinaturas públicas; sem corpos candidatos ou testes anteriores.
+Exemplos originais: violet lantern, Step neutra, método Apply com frase negativa. Observar exclusivamente APIs públicas parser/usecase. Testar elegibilidade AST, intervalos/hash/JSON, fontes excluídas, preservação código/exato, slots/empate, separação da projeção e adulterações de grupo Doc/hash/declaração. Nenhuma I/O no núcleo. Congelar antes da execução e não ajustar expectativas à candidata.

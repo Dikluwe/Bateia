@@ -164,16 +164,17 @@ type CollectedEvidence struct {
 }
 
 type EvidenceBundle struct {
-	SchemaVersion string                   `json:"schema_version"`
-	Repository    CommitRef                `json:"repository"`
-	Plan          EvidenceExtractionPlan   `json:"plan"`
-	Items         []CollectedEvidence      `json:"items"`
-	Failures      []ExecutionFailure       `json:"failures,omitempty"`
-	Complete      bool                     `json:"complete"`
-	BytesRead     int64                    `json:"bytes_read"`
-	Targets       []CollectionTargetResult `json:"target_results"`
-	TreeComplete  bool                     `json:"tree_complete"`
-	DepthReached  int                      `json:"depth_reached"`
+	ImplementationSearch *ImplementationSearchReport `json:"implementation_search,omitempty"`
+	SchemaVersion        string                      `json:"schema_version"`
+	Repository           CommitRef                   `json:"repository"`
+	Plan                 EvidenceExtractionPlan      `json:"plan"`
+	Items                []CollectedEvidence         `json:"items"`
+	Failures             []ExecutionFailure          `json:"failures,omitempty"`
+	Complete             bool                        `json:"complete"`
+	BytesRead            int64                       `json:"bytes_read"`
+	Targets              []CollectionTargetResult    `json:"target_results"`
+	TreeComplete         bool                        `json:"tree_complete"`
+	DepthReached         int                         `json:"depth_reached"`
 }
 
 type CapabilityPattern struct {

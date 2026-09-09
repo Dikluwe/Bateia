@@ -1,0 +1,32 @@
+{
+  "spec_hash_preserved": true,
+  "checks": {
+    "go test ./...": 0,
+    "crystalline-lint .": 0,
+    "go build ./04_wiring": 0,
+    "git diff --check": 0
+  },
+  "production_sha256": {
+    "01_core/parser/implementation_search.go": "e20165ab138ca02a2b6c906293ee44e9f513bf762f33102cbb4e2234e470903a",
+    "01_core/parser/functional_retrieval.go": "3ebb39fdb2332dee61753c4372375725a7090d3665112c5ba5ce1891dc4c3551",
+    "01_core/domain/implementation_search.go": "d52cea085850fcd067c99d51289a0d571611a9ae1fe02c1eeb91aab69213ac92",
+    "01_core/usecase/implementation_retrieval.go": "b6f5b9e07f763702d91a48d3695b34f927cb295df4bb704c1fe7da52435f874d",
+    "02_shell/report/generator.go": "b0c04872f3095aec4c19cdff4031bf5a0877b0e5510cedb425244625bcddbdc5",
+    "01_core/parser/evidence.go": "1d9ca8b50294cc92c39aba9e232fd38cca26d01332b09aa58f560eaeb01c585d",
+    "02_shell/cli/idea_recommend.go": "0b0c8c4769c019f1177b204bdfd12d759d37346a20faf5cb48bd141d53b7cfef",
+    "03_infra/local/implementation_search.go": "6c3d407b72e8b7215479cba3397ae38dede064f8964c04edc4fd2b4c4393c7c4",
+    "03_infra/content/router.go": "211a0e016bb69ab91f9a604f3ae946baa16c952bcf87cc52aa2c45ac815f73b2",
+    "01_core/parser/requirement_retrieval.go": "798712a3e63df4aacffe6471426346158ef1b5ae0517dea5e44204e2af33d1c2",
+    "01_core/usecase/requirement_retrieval.go": "3ea7762cfbb55d2375523ff320c2375532650005649021a0b39650df22c9959d",
+    "01_core/usecase/evidence.go": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+    "01_core/usecase/funnel.go": "5e03b1e4b613eaf942e9f624a5490009dc2cc154ed430a4f3556053d4ab4daf0",
+    "01_core/parser/corpus_scoring.go": "f357776cc644fc2e8b5fac2de81d9b39c324b8fee8bfbcc7f41d0b4a6ef185dc"
+  },
+  "commands": [
+    "/tmp/bateia-0046 search -query \"BM25 code search\" -lang go -max 3 -format json -output /tmp/bateia-0047-ideas/public-search-network.json",
+    "/tmp/bateia-0046 analyze -path /home/dikluwe/go/pkg/mod/github.com/blevesearch/bleve/v2@v2.6.0 -query \"BM25 idf scoring terms query\" -format json -output /tmp/bateia-0047-ideas/bleve.json",
+    "/tmp/bateia-0047 analyze -path . -query SanitizeAssessmentEvidence -format json -output /tmp/bateia-0047-final/symbol.json",
+    "/tmp/bateia-0047 idea recommend --idea 00_nucleo/benchmark/0012/experimento/bateia-idea.json --policy 00_nucleo/benchmark/0012/experimento/reuse-policy.json --mode local --local . --output /tmp/bateia-0047-final/recommend",
+    "/tmp/bateia-0047 idea recommend --idea 00_nucleo/benchmark/0012/experimento/bateia-idea.json --policy 00_nucleo/benchmark/0012/experimento/reuse-policy.json --mode replay --replay /tmp/bateia-0047-final/recommend --output /tmp/bateia-0047-final/replay"
+  ]
+}

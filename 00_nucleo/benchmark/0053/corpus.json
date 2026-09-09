@@ -1,0 +1,922 @@
+{
+  "projects": [
+    {
+      "id": "fsnotify",
+      "local_path": "/home/dikluwe/go/pkg/mod/github.com/fsnotify/fsnotify@v1.9.0",
+      "repo": "fsnotify/fsnotify",
+      "version": "v1.9.0",
+      "license": "BSD-3-Clause",
+      "provenance": "{\"license_file\": \"LICENSE\", \"license_sha256\": \"2dfbe6d2b5eb18b55148f3805d88648a09e0d17e38428123259afb08c8996e37\", \"metadata\": {\"/home/dikluwe/go/pkg/mod/cache/download/github.com/fsnotify/fsnotify/@v/v1.9.0.info\": {\"content\": {\"Origin\": {\"Hash\": \"ae0e7923765f64fb8061396db7edebb558cf6093\", \"Ref\": \"refs/tags/v1.9.0\", \"URL\": \"https://github.com/fsnotify/fsnotify\", \"VCS\": \"git\"}, \"Time\": \"2025-04-04T15:13:49Z\", \"Version\": \"v1.9.0\"}, \"sha256\": \"5c1c5e0814ee40dfdca882a0e6314b88ff0e1902261e118d2178710b23e52466\"}, \"/home/dikluwe/go/pkg/mod/cache/download/github.com/fsnotify/fsnotify/@v/v1.9.0.mod\": {\"content\": \"module github.com/fsnotify/fsnotify\\n\\ngo 1.17\\n\\nrequire golang.org/x/sys v0.13.0\\n\\nretract (\\n\\tv1.5.3 // Published an incorrect branch accidentally https://github.com/fsnotify/fsnotify/issues/445\\n\\tv1.5.0 // Contains symlink regression https://github.com/fsnotify/fsnotify/pull/394\\n)\\n\", \"sha256\": \"da3713c5c57d252d25520de0e6b397b033858b3aff5dddf21164abe3297c9ff9\"}}, \"module\": \"github.com/fsnotify/fsnotify\", \"snapshot_scope\": \"todos os arquivos regulares recursivos; symlinks não seguidos nem incluídos; arquivos somente lidos, nenhum código do projeto executado\", \"source\": \"cache local de módulos Go; amostra de conveniência, não representativa\", \"version_note\": \"Versão identificada por caminho e metadados locais; origem Git somente quando presente em .info, sem inferir commit ausente.\"}",
+      "files": [
+        {
+          "path": ".cirrus.yml",
+          "sha256": "2f1766123cb761152067df5105780164a9efafb66f7d77d156e9f73e353512c8"
+        },
+        {
+          "path": ".github/FUNDING.yml",
+          "sha256": "11695bc7fd9f300a5238ec4f7db42d9a8bc7f71d85574f09d10c821f4ab39668"
+        },
+        {
+          "path": ".github/ISSUE_TEMPLATE/bug.yml",
+          "sha256": "514b30a51681ced2a0ebe0f16fad8bc2756ad1622da6e2411175f5c863eca975"
+        },
+        {
+          "path": ".github/ISSUE_TEMPLATE/other.md",
+          "sha256": "77b40d77ae7b373064b1caa552b0efdf57a21e67bb41c58a9fa7b53d170cd960"
+        },
+        {
+          "path": ".github/workflows/staticcheck.yml",
+          "sha256": "037969de0f5b2b0b0f595bdfe1824f01c7ae31621ae2920bbdb48b852dd8418a"
+        },
+        {
+          "path": ".github/workflows/test.yml",
+          "sha256": "3c5563e5a284c60f79cb269cd1fc9fefbc13ef1902c8eb9e7d088ba2a6990836"
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "7034ec798dc9168a19de7fa58dc9085146ab9fd17c33febf010699ad084f27a7"
+        },
+        {
+          "path": ".mailmap",
+          "sha256": "0e25329d9f08af16f4dcfc1b4a2352a4ae571628db659439e83a8899b57e5d7c"
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha256": "d6de3d10dec0bb911342f8988f5858ccf9ccacbccc4e8a1e810e28235d4a3ccc"
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha256": "d10e41d0ac5aab8a330344efeff0d92aeb47ec2e1817eb6b780a526ce31a4342"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "2dfbe6d2b5eb18b55148f3805d88648a09e0d17e38428123259afb08c8996e37"
+        },
+        {
+          "path": "README.md",
+          "sha256": "6c6a4b8b802def1be8f2a0bca4517d8596a9b979ec3d199f44dd8346856d3785"
+        },
+        {
+          "path": "backend_fen.go",
+          "sha256": "ed58662fd737356b055a776a4dadee1dc80ff48beda94ab6c3484b416b6ea5e8"
+        },
+        {
+          "path": "backend_fen_test.go",
+          "sha256": "0aedb9560b68e37854cc948205ececf4ef665584bd8415150006f0022180b9d1"
+        },
+        {
+          "path": "backend_inotify.go",
+          "sha256": "cf073b95e3ab072a0c2beed5ff972481a79ffea340fd7cafcf064a5667782e1c"
+        },
+        {
+          "path": "backend_inotify_test.go",
+          "sha256": "5ee927b436c35268a33a71131c56c9578d287b6338ba624ece995b07ec45461c"
+        },
+        {
+          "path": "backend_kqueue.go",
+          "sha256": "75c4ebaa6ee92c5637c23ec49249461850b627a4b8f0d37907b17b74835fc8ac"
+        },
+        {
+          "path": "backend_kqueue_test.go",
+          "sha256": "5a28ffc4beca9a5612dd5a2f8e0a6fd4cdc8ed3697a5ee3e7907893eece28787"
+        },
+        {
+          "path": "backend_other.go",
+          "sha256": "98a6f1b6e8a961948d2d163cf6d859e75e3a7fbd4ea86e929e6746b9d8e5f81a"
+        },
+        {
+          "path": "backend_windows.go",
+          "sha256": "750aa64aa42d366b59af209b02089e08a0795281bc2a95dd160c8775094ebf36"
+        },
+        {
+          "path": "backend_windows_test.go",
+          "sha256": "9a54521aec1a68873be0e8fce31560e335a15618969c1ad5070e8756f3b101db"
+        },
+        {
+          "path": "cmd/fsnotify/closewrite.go",
+          "sha256": "509d467f217df33266e44738315a0cd4055c5c8529f8e8d1cf3b3138224cd92a"
+        },
+        {
+          "path": "cmd/fsnotify/dedup.go",
+          "sha256": "242fb3861b85be63d27e08b64285d39c7a6ba22d109d9ab2c652c239c67b17f5"
+        },
+        {
+          "path": "cmd/fsnotify/file.go",
+          "sha256": "7ff7f13248c864090296c22aaec551e2e578a38fec92d7dd21f9833c699c6421"
+        },
+        {
+          "path": "cmd/fsnotify/main.go",
+          "sha256": "dd5d64257c2bb7e3a5c2e06837d8c9828867246134c90b241c4e007188dff307"
+        },
+        {
+          "path": "cmd/fsnotify/watch.go",
+          "sha256": "677fc109753b114a789b318621d2df507e756ff2c775b13ff59ff1c75edf2886"
+        },
+        {
+          "path": "fsnotify.go",
+          "sha256": "c721c84f2a2c6734ec0e82c0c9f4133ba3f62761457b52cc2a26aaf511e2c78a"
+        },
+        {
+          "path": "fsnotify_test.go",
+          "sha256": "1b44f6213291463d61e92b46147a2541632db85d1c1c9219d6659318d2d55518"
+        },
+        {
+          "path": "go.mod",
+          "sha256": "da3713c5c57d252d25520de0e6b397b033858b3aff5dddf21164abe3297c9ff9"
+        },
+        {
+          "path": "go.sum",
+          "sha256": "72abc4d3c327a7e175202cf15a75d03eeac1be4aefcb449452af3362a7c11202"
+        },
+        {
+          "path": "helpers_test.go",
+          "sha256": "cb5ad3be7bdcc2214e3be5534e786a776b75f6744a44677c82b89281d8c62b9d"
+        },
+        {
+          "path": "internal/darwin.go",
+          "sha256": "ff421898a2a8a4e59856264648b0a4caaa1e691edb4c5f5cbb7662a390d70e92"
+        },
+        {
+          "path": "internal/debug_darwin.go",
+          "sha256": "0650c8ef6f9ef667778bfd2f2a7d8ee0d2cc65a76317b6fe8d55fa97dc8cdba0"
+        },
+        {
+          "path": "internal/debug_dragonfly.go",
+          "sha256": "d673ad89602bc02aeb7c891597595a85ca5fabfd99dc85ba3fa17cb65b5ebc1e"
+        },
+        {
+          "path": "internal/debug_freebsd.go",
+          "sha256": "48995e576c6499bc725744ff1e4ba7786f86fdcafc80471d1b44a095944f1ea8"
+        },
+        {
+          "path": "internal/debug_kqueue.go",
+          "sha256": "7ebf2d7e3704d01d643651ce35f1eba0189ba2be7cf0ce12330bb3c409dd1b1d"
+        },
+        {
+          "path": "internal/debug_linux.go",
+          "sha256": "0ce1024a12a1ddff9a04f7da012b4a2af190bb96c7a5f6d46b9e607f4c6618e5"
+        },
+        {
+          "path": "internal/debug_netbsd.go",
+          "sha256": "dae8a547c668abd2d6fc2008bc69fcd70185642793925c9848c52f462219bab6"
+        },
+        {
+          "path": "internal/debug_openbsd.go",
+          "sha256": "b8dc618d0b95ab44d309726fe835c6a1f702dc9b5e424434bcab943a83e91ba6"
+        },
+        {
+          "path": "internal/debug_solaris.go",
+          "sha256": "0c4ac2eebe3945ea5c3c1a1a0bebc59b32638b242af04a480a0c6113c2c7a002"
+        },
+        {
+          "path": "internal/debug_windows.go",
+          "sha256": "9b2a56096dc7f6a7824da8973650e75e37e8af22cb5bcb326d8b31c6aaf5b9de"
+        },
+        {
+          "path": "internal/freebsd.go",
+          "sha256": "2117e84734953367f93f21a9382bb1690bafb6c88148424f6ef0a84238b8991b"
+        },
+        {
+          "path": "internal/internal.go",
+          "sha256": "302c2af770de165e816672367fd17a47be05c84b174ce97f2afdc4adbc1d609a"
+        },
+        {
+          "path": "internal/unix.go",
+          "sha256": "0f680a5a4338197518b56fd66b64ffa16c7e61826674d9c474935885c1f2e04b"
+        },
+        {
+          "path": "internal/unix2.go",
+          "sha256": "b7da5309c0b93ccb5e4bacd52bd4f9794b9f28f78a6e938351ea77731b9c0495"
+        },
+        {
+          "path": "internal/windows.go",
+          "sha256": "0c4b9298c37bfef592276bcc0a9e2bc2914c32d48b4ac84a6215cc334b209ad0"
+        },
+        {
+          "path": "internal/ztest/diff.go",
+          "sha256": "1d519057d156dee021dbc93a0c07fd11656983fb7b4e5002a5dd505d3b6cd959"
+        },
+        {
+          "path": "internal/ztest/diff_test.go",
+          "sha256": "0ea5fa250e761ee7c7c1aef594b8fda9aadf95878f2a656ba9fb625adbd4a420"
+        },
+        {
+          "path": "shared.go",
+          "sha256": "61f8d8b304077329f8c0bf843fbbffff05b9a0e856ac92d6861b137e30815192"
+        },
+        {
+          "path": "staticcheck.conf",
+          "sha256": "265063155dfbf6bce103ff33d4038b111076ddc1cf445ea94464f9652c56305b"
+        },
+        {
+          "path": "system_bsd.go",
+          "sha256": "71909136347ab1f0d3f193b22e5ccadca9ddc6c14fde704ca3e63d00b91f42e4"
+        },
+        {
+          "path": "system_darwin.go",
+          "sha256": "910e412c7f03abe4b6099c8287deab0d2e491e8540b7dd4cbd4f8d668fd6e276"
+        },
+        {
+          "path": "test/kqueue.c",
+          "sha256": "2ed750393e64966ee3f1e33f240572885beb8cfe162c9d94f99b0d4c03bcde50"
+        },
+        {
+          "path": "testdata/watch-dir/bug-277",
+          "sha256": "dad0cf323e33266107ee868b802ab3371184f7aa532e793dba6d9ffde0ac221f"
+        },
+        {
+          "path": "testdata/watch-dir/create-cyclic-symlink",
+          "sha256": "2af2675666cfa34169c0d542bbfb83db23f318933c5c04d4b9f61ea44365d0c8"
+        },
+        {
+          "path": "testdata/watch-dir/create-dev",
+          "sha256": "0e8907249135f7fce6b45203e1b69018ea17639a019c162422f71fb0a80b4f69"
+        },
+        {
+          "path": "testdata/watch-dir/create-dir",
+          "sha256": "978f39278e84b6e50450a3c1d9965d70d05faf74a283150deb71d0076fb0d38e"
+        },
+        {
+          "path": "testdata/watch-dir/create-empty-file",
+          "sha256": "2935eb301780078398ed68f2e4ae711d64b6452a4b70b96adab14b15a85c46bf"
+        },
+        {
+          "path": "testdata/watch-dir/create-fifo",
+          "sha256": "cd0a8e76826a1fc1c3db14354b3c76d5fc519588f885875cf2aceaa178612ac7"
+        },
+        {
+          "path": "testdata/watch-dir/create-file-in-subdir",
+          "sha256": "abb94379816a2571a42bf41da135a86d4853a19c401b92ade00e719ca00cd989"
+        },
+        {
+          "path": "testdata/watch-dir/create-file-with-data",
+          "sha256": "0c08fbe414b8d59e3f8a4d9450faeba386281a68f3e33e7509b7669c043ee1f9"
+        },
+        {
+          "path": "testdata/watch-dir/create-unresolvable-symlink",
+          "sha256": "60ad7ae050f02909548ee9c8c77c2d0faf3a1b6825bfb7f50010f163c62a3a51"
+        },
+        {
+          "path": "testdata/watch-dir/dir-only",
+          "sha256": "f90ebb93863ba0771d304cce11923f0cbec997fac528afa863bfbfd8200c165c"
+        },
+        {
+          "path": "testdata/watch-dir/make-file-unreadable",
+          "sha256": "0a36a1d8cf12603cd5823881db34bee0c918619619d78726dfbd1b09f1a5221d"
+        },
+        {
+          "path": "testdata/watch-dir/multiple-creates",
+          "sha256": "950bab8a0026d7705397bf6d15fe66b80ac8c2a3028c88d438a896b66c54d769"
+        },
+        {
+          "path": "testdata/watch-dir/only-chmod",
+          "sha256": "6deff7d5477fe01e9b42931ba71966dd936f2bf67edfc32b0b6b52600b95bb17"
+        },
+        {
+          "path": "testdata/watch-dir/only-create",
+          "sha256": "5c352384b49aa9286501db8de828b13aee404bd67d29f879d4cbe7df6214303a"
+        },
+        {
+          "path": "testdata/watch-dir/only-remove",
+          "sha256": "43ad9aa9a2ff3c601101052ccc245eccd5b065c35b78cfa2c383de6a8c91a000"
+        },
+        {
+          "path": "testdata/watch-dir/only-rename",
+          "sha256": "5f3b8b9f81802134a535df2d01e8a10340a2c80ee24173cb854dbd2ab5ec2835"
+        },
+        {
+          "path": "testdata/watch-dir/only-write",
+          "sha256": "f9344e10e0bf760a80d7fcdab337e1bb8ec511714277bb0c8b4331fadef37055"
+        },
+        {
+          "path": "testdata/watch-dir/op-all",
+          "sha256": "6d90145621b84926e2ce013adfee87869c4ece68025b5b244530a4025adffbcf"
+        },
+        {
+          "path": "testdata/watch-dir/op-closeread",
+          "sha256": "00801be81b98a7e950db1eb88ff45dba0aa89500877588f1ccefefd72343a7e1"
+        },
+        {
+          "path": "testdata/watch-dir/op-closewrite",
+          "sha256": "60b5818d599a2c6a0c05c4418d687c0d4a7203a5ddf23545d493d922a9232fea"
+        },
+        {
+          "path": "testdata/watch-dir/op-open",
+          "sha256": "76acda287f75d594c3d926b752a878b7635b7ccb15334de90716ad732195ddbd"
+        },
+        {
+          "path": "testdata/watch-dir/op-read",
+          "sha256": "457aa8e3eaa63874b85e1660341ae27d1ebeda9ebafa7ec51980359dcf044d39"
+        },
+        {
+          "path": "testdata/watch-dir/remove-symlink",
+          "sha256": "bdc40f93ae725445ef36d50a0d6b01fd9449a73353a2aaa910fe45ac81e45bb3"
+        },
+        {
+          "path": "testdata/watch-dir/remove-while-watching-parent",
+          "sha256": "458d78b2debace798aaef41db72295898eb4966c650b1c4d4961abbf74d35a0d"
+        },
+        {
+          "path": "testdata/watch-dir/rename-file",
+          "sha256": "960761c05e859a5223e287fb4873f06b196e57144b79374d501919ad06858d09"
+        },
+        {
+          "path": "testdata/watch-dir/rename-from-other-watch",
+          "sha256": "146f99f2ceb2b1be2b85ed4a7180c8628e44e159123c7d6cef231b045f2c1ab8"
+        },
+        {
+          "path": "testdata/watch-dir/rename-from-unwatched",
+          "sha256": "ce3e625a2a2a79f570d90276aa6b220a808413b56bfbad1ebf50744f2e8cdf90"
+        },
+        {
+          "path": "testdata/watch-dir/rename-from-unwatched-overwrite",
+          "sha256": "d50f83a26922e61c093e1b75abccf95a54428550d94783e14af7ed9b5c0c0c52"
+        },
+        {
+          "path": "testdata/watch-dir/rename-overwrite",
+          "sha256": "b27c1c03af460021be88c73176abd16df3c383e28e3179c3719f6281cb7de187"
+        },
+        {
+          "path": "testdata/watch-dir/rename-symlink",
+          "sha256": "ca9869bac64a6036a77a58b97314b1bae51159451071a7302fec86411fca5fc4"
+        },
+        {
+          "path": "testdata/watch-dir/rename-to-unwatched",
+          "sha256": "255b555c03e6608f0f74a7fdf13c4270e4bb1b2b6ce59df963af77fd16b51aad"
+        },
+        {
+          "path": "testdata/watch-dir/rename-watched-dir",
+          "sha256": "dcf1dbab6a6bc616789163152d26dc056c35ed96d239ae6095f857ebc9731aa4"
+        },
+        {
+          "path": "testdata/watch-dir/subdir",
+          "sha256": "a434aedc879eaf91e649020ba35e928dc5b9b32d74aaff827fab4f6837938d8b"
+        },
+        {
+          "path": "testdata/watch-dir/symlink-dir",
+          "sha256": "2c2abccdd45d88db88a61675948d4b3821d3b7c6167611100b98031e468a9e9b"
+        },
+        {
+          "path": "testdata/watch-dir/symlink-file",
+          "sha256": "c14f38091bc14bfc72f28147442c5b33e5a6b0b12b0468c1508c209215384568"
+        },
+        {
+          "path": "testdata/watch-dir/symlink-nofollow",
+          "sha256": "73dc77fc3e6af02614e4cbb36e833de4b8cd68e7be275ad4451a98f8de4b100f"
+        },
+        {
+          "path": "testdata/watch-dir/truncate-file",
+          "sha256": "db4eeb58d3420e10be42f802b9eb42fbd4eaa9acc945ac403f4d5aab30ab4f91"
+        },
+        {
+          "path": "testdata/watch-dir/unreadable-file",
+          "sha256": "d96cb93c19d9e5c883b872ad1a8be81d9988a4a410893d7be005443bffaed9ab"
+        },
+        {
+          "path": "testdata/watch-dir/watch-dir-inside-watched",
+          "sha256": "56f9b034e1d81d02e5d6dc247989a54ddc224440d2e2a4fc59a13054bff84e03"
+        },
+        {
+          "path": "testdata/watch-dir/watch-file-inside-watched-dir",
+          "sha256": "38e7efbd59b297529ba8d49e797050cd044c8594d8dd205394351e562b565b8e"
+        },
+        {
+          "path": "testdata/watch-dir/watch-twice",
+          "sha256": "372c811561b142d3fc1799deb3fc460007952e4cc09e4f651010949993557a7d"
+        },
+        {
+          "path": "testdata/watch-file/chmod",
+          "sha256": "c04a438ec35365aaf0faa5db1d905a6641982092bbd6bbf80fdf241c54056133"
+        },
+        {
+          "path": "testdata/watch-file/chmod-after-write",
+          "sha256": "70114f393d515659fb6b12e1e945ee3c7664548bd82a07b321f9d66040c0d40d"
+        },
+        {
+          "path": "testdata/watch-file/op-all",
+          "sha256": "8d4f3a640fc7ee82b83b4a40e87f2ab52004a3199c78255d8a4cc86c24fda8f4"
+        },
+        {
+          "path": "testdata/watch-file/op-closeread",
+          "sha256": "49d787f8165afe3f0615a943368cc2cf1bcd252cac92939db256b14ae2847f46"
+        },
+        {
+          "path": "testdata/watch-file/op-closewrite",
+          "sha256": "d39eeb902b32f8d80c690784e8405f3267457d77b79bc4b5f1eefbbca55bad9e"
+        },
+        {
+          "path": "testdata/watch-file/op-open",
+          "sha256": "e2b293d4e55688e65051210a0f8fca17ddf741db22ad96baeb47366e5f29b34d"
+        },
+        {
+          "path": "testdata/watch-file/op-read",
+          "sha256": "325257e630edacb83d3a35c34bf069384802dfa1ac3b62676803af22b165cabd"
+        },
+        {
+          "path": "testdata/watch-file/overwrite-watched-file",
+          "sha256": "a8a1f3881e22098f95ceab700af1a8ddbc878f4002a24840172cd44784716baf"
+        },
+        {
+          "path": "testdata/watch-file/overwrite-watched-file-with-watched-file",
+          "sha256": "5ee11a2a4a1c50e2229b156193199d2b603ea6b5246706e5a3f5a6edd09bedad"
+        },
+        {
+          "path": "testdata/watch-file/re-add-renamed-filed",
+          "sha256": "5207e0a1f7d5c0b2b7372e1323d4e6bdefd73ecb8fd8c5cd4eb54ea3515004fb"
+        },
+        {
+          "path": "testdata/watch-file/remove-watched-file",
+          "sha256": "f614ac10fcc3f123c079e075944219d603c9f3834599e5a558637551e0289009"
+        },
+        {
+          "path": "testdata/watch-file/rename-watched-file",
+          "sha256": "e00fca2af191b6eb43311b0b865419428cbc52294cb98ed9cd35c52fc8e5954a"
+        },
+        {
+          "path": "testdata/watch-file/watch-twice",
+          "sha256": "c5d65e931c7abd5ddeff7b76194ed0f21580a3d484787e15cd7e5563b8a1cde0"
+        },
+        {
+          "path": "testdata/watch-recurse/add-dir",
+          "sha256": "0bd1456c98a734c35abef4cd31c076eeec1af6345b090805bf48d6c15d61eb92"
+        },
+        {
+          "path": "testdata/watch-recurse/add-file",
+          "sha256": "6bb7e7cbe7ffcbc3c6a5ea315ff20d05b0906a0f0877d7c45de70a40ccaff51a"
+        },
+        {
+          "path": "testdata/watch-recurse/remove-dir",
+          "sha256": "d811d9340349ee1ff09ccd01ef1feef41c35d51e1caaa2c5de80578c0fcd4790"
+        },
+        {
+          "path": "testdata/watch-recurse/remove-recursive",
+          "sha256": "2502593d3d945c3f1c3ec51e1545c06f64db96fc9d760bb09e0d136988c6aa46"
+        },
+        {
+          "path": "testdata/watch-recurse/remove-watched-dir",
+          "sha256": "66c40879fb7a3978bd92ec7b47450dfb048e685eaf67d7290ce36d18a9e16dc1"
+        },
+        {
+          "path": "testdata/watch-recurse/rename-dir",
+          "sha256": "e5f0e7225251039d0cb41cac0cf1099410f379aeb964e5b2d355edb2f20e41f9"
+        },
+        {
+          "path": "testdata/watch-symlink/nofollow-dir",
+          "sha256": "4181d4c378eadec0f6b1528ca47f2408ea38d2b9894a7e02b882138f3dceeed9"
+        },
+        {
+          "path": "testdata/watch-symlink/nofollow-file",
+          "sha256": "339dcc245217153fef596de9fa692d066d0e4a48b7a936a1176529fdcc43b072"
+        },
+        {
+          "path": "testdata/watch-symlink/to-dir",
+          "sha256": "1b8dbc7e18bb5124089a3589796210bcc5042f2eff77c43f1bdd1b2159ca211e"
+        },
+        {
+          "path": "testdata/watch-symlink/to-dir-relative",
+          "sha256": "72b31a4aface815fba42b1159a7e35547d0034f22e80d0002d9718e5cf98862d"
+        },
+        {
+          "path": "testdata/watch-symlink/to-file",
+          "sha256": "15e1693f4e41d60531783f748e0fb315277cf27ced7d3742b17e7fda9bcd1df9"
+        },
+        {
+          "path": "testdata/watch-symlink/to-file-relative",
+          "sha256": "3c137ed0e6467be5b6908ee3ab1276ceb2136889ae0541dfc60320f4c357f939"
+        }
+      ]
+    },
+    {
+      "id": "colorful",
+      "local_path": "/home/dikluwe/go/pkg/mod/github.com/lucasb-eyer/go-colorful@v1.2.0",
+      "repo": "lucasb-eyer/go-colorful",
+      "version": "v1.2.0",
+      "license": "MIT",
+      "provenance": "{\"license_file\": \"LICENSE\", \"license_sha256\": \"1e4cf2a117516ec1b54041d68ed4f5d331878b04de3386f4790e7b5b9c04e1ec\", \"metadata\": {\"/home/dikluwe/go/pkg/mod/cache/download/github.com/lucasb-eyer/go-colorful/@v/v1.2.0.info\": {\"content\": {\"Time\": \"2021-01-28T03:22:51Z\", \"Version\": \"v1.2.0\"}, \"sha256\": \"743596bdc92719c1d8c6057751c1932c594a11dd68c12be8828ca89dd4163635\"}, \"/home/dikluwe/go/pkg/mod/cache/download/github.com/lucasb-eyer/go-colorful/@v/v1.2.0.mod\": {\"content\": \"module github.com/lucasb-eyer/go-colorful\\n\\ngo 1.12\\n\", \"sha256\": \"84f9c38e9884ab013c837cb16aee139500d3d5c6ccab02439881db2ecf28f660\"}}, \"module\": \"github.com/lucasb-eyer/go-colorful\", \"snapshot_scope\": \"todos os arquivos regulares recursivos; symlinks não seguidos nem incluídos; arquivos somente lidos, nenhum código do projeto executado\", \"source\": \"cache local de módulos Go; amostra de conveniência, não representativa\", \"version_note\": \"Versão identificada por caminho e metadados locais; origem Git somente quando presente em .info, sem inferir commit ausente.\"}",
+      "files": [
+        {
+          "path": ".github/FUNDING.yml",
+          "sha256": "53183323a7d148b78ce2c8dbd07cfc9f57f363a2d6b2f7e1bc6cac0dd637b0b8"
+        },
+        {
+          "path": ".github/workflows/test.yml",
+          "sha256": "f47036a529776e20aec0a0e3831bc7f6270e1602b1dbb94069425d455e1e8248"
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "e01466644add1e223484c00ccdfa1087f43bb641ad77bfeb224780e828c28a86"
+        },
+        {
+          "path": "CHANGELOG.md",
+          "sha256": "f05013bc1f9db6e382c85c48a88357eb8717cc591f68766e95639be737293d07"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "1e4cf2a117516ec1b54041d68ed4f5d331878b04de3386f4790e7b5b9c04e1ec"
+        },
+        {
+          "path": "README.md",
+          "sha256": "b51e0640c97defdb17bc1861af645b9c6b0c277d13ca0c0680fb0d4c15988901"
+        },
+        {
+          "path": "colorgens.go",
+          "sha256": "99ab94fbf27a32e0263c66a5610e2ce83dea1a6682fe1cc9ca7689aa1a3009e0"
+        },
+        {
+          "path": "colorgens_test.go",
+          "sha256": "8fdbfcdda77239ea870473fd00a26bde773166cd5014e6687a539ca3618b5f8c"
+        },
+        {
+          "path": "colors.go",
+          "sha256": "a75c3edb5dd7e957c49694a6ac3c8901ec7aba2fb5dededca552510eb533e37c"
+        },
+        {
+          "path": "colors_test.go",
+          "sha256": "609dfe03870c2ddfd9d66302cf616bfef82b0e869891e488ecfece5802a3cf08"
+        },
+        {
+          "path": "doc/LinearRGB Approximations.ipynb",
+          "sha256": "b1f4649e4c12aa3269d14ee4d47b3117559a54e6d6c690927c1be943cc0a84db"
+        },
+        {
+          "path": "doc/approx-quality.png",
+          "sha256": "31dad8bb2d30c4313957bc30279450d4b92abe338cd05575ff617306d66f8442"
+        },
+        {
+          "path": "doc/colorblend/clamped.png",
+          "sha256": "fca0589e3cf965dea24b4df31e074f01f429b664090be5874c554accf03fdddb"
+        },
+        {
+          "path": "doc/colorblend/clamped.xcf",
+          "sha256": "766a2f8a29a4c61c9b46be6b7253ca7e7406d75ec759dd706ffe64b81c4d39ab"
+        },
+        {
+          "path": "doc/colorblend/colorblend.go",
+          "sha256": "63e56ab29496b5093297806a976890ee01644bbd1f7a7d1a1055bac21e9cd524"
+        },
+        {
+          "path": "doc/colorblend/colorblend.png",
+          "sha256": "87be6d4aa6b38d070da2620c16d90dde184e7983e596c40d08eb5a505e638de0"
+        },
+        {
+          "path": "doc/colorblend/colorblend.xcf",
+          "sha256": "99f1d603d075a850f76c304e91e61c845ebefcfdb63f37a6eb00aeadf2e5260c"
+        },
+        {
+          "path": "doc/colorblend/invalid.png",
+          "sha256": "36518ec6563dddf8e047950db8700c1aff04a484c28c3a4f29d2f5d220bf9ad2"
+        },
+        {
+          "path": "doc/colorblend/invalid.xcf",
+          "sha256": "8ad4b914bac68a47e8d81f0f9ede0a5ba6545259ffeebd96865b9ab8227bbdbb"
+        },
+        {
+          "path": "doc/colordist/colordist.go",
+          "sha256": "37d3ca20de857b7e167342922fddd741271b4dd64256b7c377aac4abf5969400"
+        },
+        {
+          "path": "doc/colordist/colordist.png",
+          "sha256": "2f92fb2fdec8efd608429daa86c2b29b99868ca46a6cf6939150b16844fdbaff"
+        },
+        {
+          "path": "doc/colordist/colordist.xcf",
+          "sha256": "ccd8e5e365fdba43d4704203c76bd6f74242d8a3a3d1326e474e8be6b4f3f4a0"
+        },
+        {
+          "path": "doc/colorgens/colorgens.go",
+          "sha256": "6641f80610aff36a24a1c57097a51f4d7c4d082d54d66811e2c69dfdd3673a52"
+        },
+        {
+          "path": "doc/colorgens/colorgens.png",
+          "sha256": "7aab04c4a8a0b9f4467b8ff21e29338364a48bdb2f74a58cc8454db752ded165"
+        },
+        {
+          "path": "doc/gradientgen/gradientgen.go",
+          "sha256": "3a40f91d7520190e455acd9bc8e4a4c232567955643b64ac6b68aeb26a2a3fd5"
+        },
+        {
+          "path": "doc/gradientgen/gradientgen.png",
+          "sha256": "78712235b45d888afa7a2f209d0fe6e778221c69da3225d531cfb60c69454cac"
+        },
+        {
+          "path": "doc/palettegens/palettegens.go",
+          "sha256": "10c5d40383ac2b438a347d6999bcfb04d1569923c7b480d030e4c0b80ddb82ce"
+        },
+        {
+          "path": "doc/palettegens/palettegens.png",
+          "sha256": "0109fd4c5d97f897389e78d3bfb0c05c45f49b573aa21cbacdbde1303921fa2d"
+        },
+        {
+          "path": "go.mod",
+          "sha256": "84f9c38e9884ab013c837cb16aee139500d3d5c6ccab02439881db2ecf28f660"
+        },
+        {
+          "path": "happy_palettegen.go",
+          "sha256": "c5c750f2ba212225577c3d6244f94ea2ac2cd77ee54dd0e0f2fc8b3aef7f6b4d"
+        },
+        {
+          "path": "hexcolor.go",
+          "sha256": "65055cc3d484a4954cdcfbc7e97771a738a40943cb0c3026a0cde44344de7bf6"
+        },
+        {
+          "path": "hexcolor_test.go",
+          "sha256": "51bce3c945e18f6d1c24d07cc3a2023f62803f71377c9c92cde3e1b6fd4ebf99"
+        },
+        {
+          "path": "hsluv-snapshot-rev4.json",
+          "sha256": "fa702c58663587d1d1080ad1271be94f6c7002fcf5ba1125ac7e758ed5b98966"
+        },
+        {
+          "path": "hsluv.go",
+          "sha256": "c4ebf971de76f56b1e1c1417d9c5cfe1633990b58ff1b5c05d66c4148a87fa0b"
+        },
+        {
+          "path": "hsluv_test.go",
+          "sha256": "be294599ef0b8cd01d4278cd0178603a21b933a8f8422028eb60c2e248476651"
+        },
+        {
+          "path": "soft_palettegen.go",
+          "sha256": "a78f8db63e6f9e97a1704c903ef2a196425dc69a7e6f469bf074ac32087deb5a"
+        },
+        {
+          "path": "soft_palettegen_test.go",
+          "sha256": "9be13aa931c257d5ec5644f219bb57d8ae55fff95bb7e4635d50f35d09839ec6"
+        },
+        {
+          "path": "warm_palettegen.go",
+          "sha256": "c5f1008484fcab1f1ab97452df49b6f182582100d5bc436d29045e034dbb1c3f"
+        }
+      ]
+    },
+    {
+      "id": "bitset",
+      "local_path": "/home/dikluwe/go/pkg/mod/github.com/bits-and-blooms/bitset@v1.24.2",
+      "repo": "bits-and-blooms/bitset",
+      "version": "v1.24.2",
+      "license": "BSD-3-Clause",
+      "provenance": "{\"license_file\": \"LICENSE\", \"license_sha256\": \"3ef376b769105f14098dd45e9d08ed3568c77d38ad33c470634606048e62119f\", \"metadata\": {\"/home/dikluwe/go/pkg/mod/cache/download/github.com/bits-and-blooms/bitset/@v/v1.24.2.info\": {\"content\": {\"Origin\": {\"Hash\": \"d02158d114ce8c324e9e91077709e7769e805574\", \"Ref\": \"refs/tags/v1.24.2\", \"URL\": \"https://github.com/bits-and-blooms/bitset\", \"VCS\": \"git\"}, \"Time\": \"2025-10-26T15:35:24Z\", \"Version\": \"v1.24.2\"}, \"sha256\": \"b24f5029fffd8a144795999641aa60782bdcf51d4201462e5a52a32d6b6b0bef\"}, \"/home/dikluwe/go/pkg/mod/cache/download/github.com/bits-and-blooms/bitset/@v/v1.24.2.mod\": {\"content\": \"module github.com/bits-and-blooms/bitset\\n\\ngo 1.16\\n\", \"sha256\": \"e1d76f51cb52ad77a366c14e391f29ff1adba192135a9a4cbeca5e87ad7e41fd\"}}, \"module\": \"github.com/bits-and-blooms/bitset\", \"snapshot_scope\": \"todos os arquivos regulares recursivos; symlinks não seguidos nem incluídos; arquivos somente lidos, nenhum código do projeto executado\", \"source\": \"cache local de módulos Go; amostra de conveniência, não representativa\", \"version_note\": \"Versão identificada por caminho e metadados locais; origem Git somente quando presente em .info, sem inferir commit ausente.\"}",
+      "files": [
+        {
+          "path": ".github/FUNDING.yml",
+          "sha256": "00c2ce055f1bb49c71ff95cfe4b03e61bbe458e72fd08264f956a4a9f08352c2"
+        },
+        {
+          "path": ".github/SECURITY.md",
+          "sha256": "625015bf5fbff4495115fbce18a8cf38d2d6bdb7cb15b9197f8d6f82c0710215"
+        },
+        {
+          "path": ".github/dependabot.yml",
+          "sha256": "01fcc43b305d562d8b9e315d1279ff28601af10bd349f778c6234050b3306313"
+        },
+        {
+          "path": ".github/workflows/legacy86.go",
+          "sha256": "f4fe5198aba41ddeca73353cb5e8b8e3dc3c0efc4f92bf611979035f3d28d61c"
+        },
+        {
+          "path": ".github/workflows/scorecard.yml",
+          "sha256": "2a84674e357154f352ca9e794de4eabb23741ed64ad410b522129c8014f67e77"
+        },
+        {
+          "path": ".github/workflows/test.yml",
+          "sha256": "9b2b5862f758cb8372e2ada8065cfb2a27292046c04a10f297c78eb201e5dfaf"
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "299d9f593f6bc092a21b514fa18a3eeab05a35c24fe0d22dbf4189b5df3996cc"
+        },
+        {
+          "path": ".travis.yml",
+          "sha256": "864ad720e4757601f643ab7d4beef8bd63198550c18056225def54cf658b175b"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "3ef376b769105f14098dd45e9d08ed3568c77d38ad33c470634606048e62119f"
+        },
+        {
+          "path": "README.md",
+          "sha256": "4fe7d16f47470747d305d4b9b3b357d12508c9364197283c0979cdef81f36fc3"
+        },
+        {
+          "path": "SECURITY.md",
+          "sha256": "385a66054ea24984ce518078150d30f9e56647c69636075fab4e2c14044c58fd"
+        },
+        {
+          "path": "azure-pipelines.yml",
+          "sha256": "27022db62e79be1325231876ccb0960089a4449676d6e7667efde4a89cd6d216"
+        },
+        {
+          "path": "bitset.go",
+          "sha256": "3db62f1020df04368bdcaa16be403aa1410900bfd688a602aa9c63fb851d7686"
+        },
+        {
+          "path": "bitset_benchmark_test.go",
+          "sha256": "790dd661ee439e4f930b485b6038858f36cd673c11c3eaf1217c2fe1e4d9b1ad"
+        },
+        {
+          "path": "bitset_iter.go",
+          "sha256": "11025b610c891c267a9116c418ef98ab5aecd72d681e49423dac60312d414750"
+        },
+        {
+          "path": "bitset_iter_test.go",
+          "sha256": "69ddef9f967c051c10bcfb1445ce3580810e965a2456f23379030f9db1783fa3"
+        },
+        {
+          "path": "bitset_test.go",
+          "sha256": "c1e9653c3711feea5a37569e1c345b1392fa39133933aa60d4fac9811cf7e99c"
+        },
+        {
+          "path": "cmd/pextgen/main.go",
+          "sha256": "4f1f617e9666310a81f1ad9a984cd647de5b95c486574401797d376648bd5a63"
+        },
+        {
+          "path": "go.mod",
+          "sha256": "e1d76f51cb52ad77a366c14e391f29ff1adba192135a9a4cbeca5e87ad7e41fd"
+        },
+        {
+          "path": "go.sum",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "pext.gen.go",
+          "sha256": "9724417f2842ce796ada58e2977eaf94447b16d4270a81daef99c630eabbe7b5"
+        },
+        {
+          "path": "popcnt.go",
+          "sha256": "cca67d782db41c8a65f9bde3a5b4867b235feb8d039cd70a867c232266d89e2a"
+        },
+        {
+          "path": "popcnt_test.go",
+          "sha256": "3b598125af8ba5b207052ddb406851157e79f5a36640e080467f170861f90cd5"
+        },
+        {
+          "path": "select.go",
+          "sha256": "01cc0f9ccc46ac016aa66cf636c08e73ec66984a1fce0af387200f06f2670854"
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "fsnotify-p1",
+      "project_id": "fsnotify",
+      "query": "Como começar a monitorar alterações nos arquivos de um diretório, incluindo arquivos criados depois, sem observar os subdiretórios?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "fsnotify.go",
+          "symbol": "Add"
+        }
+      ],
+      "rationale": "A entrada pública documenta observação não recursiva de diretórios e inclusão de novos arquivos; seu corpo delega o registro ao backend. É alvo de localização, não prova de comportamento executado.",
+      "evidence": [
+        {
+          "path": "fsnotify.go",
+          "start_line": 278,
+          "end_line": 314,
+          "sha256": "c721c84f2a2c6734ec0e82c0c9f4133ba3f62761457b52cc2a26aaf511e2c78a"
+        }
+      ],
+      "discovery": true
+    },
+    {
+      "id": "fsnotify-p2",
+      "project_id": "fsnotify",
+      "query": "Como parar de receber notificações de mudanças de um caminho que já estava sendo monitorado?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "fsnotify.go",
+          "symbol": "Remove"
+        }
+      ],
+      "rationale": "A entrada pública remove uma observação pelo caminho, delegando ao backend; sua documentação explicita encerramento da observação. Não se afirma validação dinâmica.",
+      "evidence": [
+        {
+          "path": "fsnotify.go",
+          "start_line": 325,
+          "end_line": 333,
+          "sha256": "c721c84f2a2c6734ec0e82c0c9f4133ba3f62761457b52cc2a26aaf511e2c78a"
+        }
+      ],
+      "discovery": false
+    },
+    {
+      "id": "fsnotify-n1",
+      "project_id": "fsnotify",
+      "query": "Como calcular a rota mais curta entre duas cidades em uma malha rodoviária com distâncias ponderadas?",
+      "polarity": "negative",
+      "expected": [],
+      "rationale": "Pedido de algoritmos de rotas em grafos, distinto de observação de eventos do sistema de arquivos. Indícios lexicais não demonstram essa capacidade.",
+      "evidence": [],
+      "discovery": false
+    },
+    {
+      "id": "colorful-p1",
+      "project_id": "colorful",
+      "query": "Como criar uma cor intermediária entre duas cores por interpolação no espaço perceptual L*a*b*, controlando a proporção da mistura?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "colors.go",
+          "symbol": "BlendLab"
+        }
+      ],
+      "rationale": "O método converte ambas as cores a Lab, interpola separadamente suas três componentes pela proporção e converte o resultado em cor. Evidência estática do ponto de implementação.",
+      "evidence": [
+        {
+          "path": "colors.go",
+          "start_line": 733,
+          "end_line": 742,
+          "sha256": "a75c3edb5dd7e957c49694a6ac3c8901ec7aba2fb5dededca552510eb533e37c"
+        }
+      ],
+      "discovery": true
+    },
+    {
+      "id": "colorful-p2",
+      "project_id": "colorful",
+      "query": "Como converter as três componentes de uma cor RGB linear para coordenadas CIE XYZ?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "colors.go",
+          "symbol": "LinearRgbToXyz"
+        }
+      ],
+      "rationale": "A função aplica a matriz de conversão às três componentes lineares e retorna X, Y e Z; o alvo é a declaração exata, sem executar a transformação.",
+      "evidence": [
+        {
+          "path": "colors.go",
+          "start_line": 446,
+          "end_line": 451,
+          "sha256": "a75c3edb5dd7e957c49694a6ac3c8901ec7aba2fb5dededca552510eb533e37c"
+        }
+      ],
+      "discovery": false
+    },
+    {
+      "id": "colorful-n1",
+      "project_id": "colorful",
+      "query": "Como renovar automaticamente um certificado TLS próximo do vencimento por meio do protocolo ACME?",
+      "polarity": "negative",
+      "expected": [],
+      "rationale": "Pedido de gestão de certificados e protocolo ACME, outro domínio em relação à conversão e mistura de cores. Não há alvo esperado.",
+      "evidence": [],
+      "discovery": false
+    },
+    {
+      "id": "bitset-p1",
+      "project_id": "bitset",
+      "query": "Como obter um novo conjunto de bits contendo somente as posições presentes em ambos os conjuntos de entrada?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "bitset.go",
+          "symbol": "Intersection"
+        }
+      ],
+      "rationale": "A função aloca resultado do tamanho do menor conjunto e combina as palavras com AND, sem gravar nos conjuntos de entrada. É alvo estático de interseção.",
+      "evidence": [
+        {
+          "path": "bitset.go",
+          "start_line": 947,
+          "end_line": 959,
+          "sha256": "3db62f1020df04368bdcaa16be403aa1410900bfd688a602aa9c63fb851d7686"
+        }
+      ],
+      "discovery": true
+    },
+    {
+      "id": "bitset-p2",
+      "project_id": "bitset",
+      "query": "Como obter um novo conjunto de bits com todas as posições presentes em qualquer um dos dois conjuntos, preservando os originais?",
+      "polarity": "positive",
+      "expected": [
+        {
+          "path": "bitset.go",
+          "symbol": "Union"
+        }
+      ],
+      "rationale": "A função clona o maior conjunto e combina as palavras do menor com OR no resultado, localizando a união que preserva as entradas.",
+      "evidence": [
+        {
+          "path": "bitset.go",
+          "start_line": 1005,
+          "end_line": 1016,
+          "sha256": "3db62f1020df04368bdcaa16be403aa1410900bfd688a602aa9c63fb851d7686"
+        }
+      ],
+      "discovery": false
+    },
+    {
+      "id": "bitset-n1",
+      "project_id": "bitset",
+      "query": "Como extrair a faixa de áudio de um vídeo e codificá-la no formato MP3?",
+      "polarity": "negative",
+      "expected": [],
+      "rationale": "Pedido de processamento audiovisual, distinto de operações sobre conjuntos de bits. Resultados ocasionais não provam suporte a transcodificação.",
+      "evidence": [],
+      "discovery": false
+    }
+  ]
+}

@@ -2,13 +2,14 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 package cli
 
 import (
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
+	"bateia/02_shell/report"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -112,6 +113,12 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
 	}
 	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": usecase.DefaultEvidenceRules().Version, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
+	if runMode == domain.IdeaRunLocal || runMode == domain.IdeaRunLive {
+		ruleVersions["implementation_search"] = "0061"
+	}
+	if runMode == domain.IdeaRunLive {
+		ruleVersions["discovery_query"] = "live0056-v1"
+	}
 	var previous domain.IdeaRunManifest
 	canReuseEvidence := false
 	if *resume {
@@ -197,7 +204,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 			return err
 		}
 	}
-	if err = writeDecisionMarkdown(filepath.Join(*output, "decision.md"), result.Decision); err != nil {
+	if err = writeDecisionMarkdown(filepath.Join(*output, "decision.md"), result.Decision, result.Bundles); err != nil {
 		return err
 	}
 	if err = writeAlternativesMarkdown(filepath.Join(*output, "alternatives.md"), alternatives); err != nil {
@@ -521,7 +528,7 @@ func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, ev
 	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash {
 		return false
 	}
-	for _, key := range []string{"expansion", "screening", "evidence", "analyzer"} {
+	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query"} {
 		if previous.RuleVersions[key] != ruleVersions[key] {
 			return false
 		}
@@ -628,7 +635,7 @@ func treeHashExcluding(root, excludedPath string) (string, error) {
 	}
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
-func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport) error {
+func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport, evidence ...[]domain.EvidenceBundle) error {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# Decisão de reúso: %s\n\n", r.Decision)
 	fmt.Fprintf(&b, "Fonte canônica: [reuse-decision.json](reuse-decision.json)\n\n")
@@ -655,6 +662,21 @@ func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport) error {
 		}
 	}
 	fmt.Fprintf(&b, "\nEsforço: %s. Método: %s. %s\n", r.Effort.Level, markdownCell(r.Effort.Method), markdownCell(r.Effort.Limitations))
+	if len(evidence) > 0 {
+		for i, bundle := range evidence[0] {
+			if i >= 5 {
+				fmt.Fprintf(&b, "\nMais %d candidatos em evidence/bundles.json.\n", len(evidence[0])-i)
+				break
+			}
+			if bundle.ImplementationSearch == nil || len(bundle.ImplementationSearch.Requirements) == 0 {
+				continue
+			}
+			fmt.Fprintf(&b, "\n## Recuperação em %s\n\n", markdownCell(bundle.Repository.Key()))
+			report.WriteQueryInterpretation(&b, bundle.ImplementationSearch.QueryInterpretation)
+			report.WriteRequirementRetrieval(&b, bundle.ImplementationSearch.Requirements)
+			report.WriteActionAssessments(&b, bundle.ImplementationSearch.ActionAssessments)
+		}
+	}
 	fmt.Fprintln(&b, "\n## Evidências\n\nConsulte [assessment-report.json](assessment-report.json) e [evidence/bundles.json](evidence/bundles.json).")
 	return writeAtomic(path, []byte(b.String()), 0644)
 }

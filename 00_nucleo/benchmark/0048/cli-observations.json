@@ -1,0 +1,4147 @@
+{
+  "binary_sha256": "a3f83f1af76a199b21d8350251fe78b19219c587940b1eec48fd231e47426f5c",
+  "baseline_binary_sha256": "5befd0c9ca732f68e2b632beb44eaee1606eff407ae98b5a14051b7cc9a806c5",
+  "scope": "Controles CLI do integrador em fixture sintética e worktree Bateia; separados da avaliação B. Sem execução de candidato.",
+  "fixture": {
+    "go.mod": {
+      "sha256": "5948c635b5fa1e6f85b983a5240e697fc78707fb62fee65c2cf987cc0beda4db",
+      "content": "module querysample\n\ngo 1.25.0\n"
+    },
+    "sample.go": {
+      "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+      "content": "package querysample\n\nfunc SearchQueue() int {\n queue := 1\n cache := queue\n return cache\n}\n\nfunc sem() {}\nfunc CacheWithoutLock() {}\n"
+    }
+  },
+  "controls": [
+    {
+      "case": "natural",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "buscar fila sem cache",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/natural.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "buscar fila sem cache",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "buscar fila sem cache",
+            "mode": "natural",
+            "terms": [
+              "buscar",
+              "cache",
+              "fila",
+              "queue",
+              "search"
+            ],
+            "symbols": [],
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar fila sem cache",
+                "status": "not_verified"
+              }
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar fila sem cache",
+                "status": "not_verified"
+              }
+            ],
+            "requirement": "buscar fila sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 3 de 5 termos associados a declarações; requisito e comportamento não verificados. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ],
+            "missing_terms": [
+              "buscar",
+              "fila"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "queue",
+                "field": "body",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.6814215765915306
+              },
+              {
+                "term": "queue",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1401,
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "buscar fila sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 4 de 6 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search",
+              "sem"
+            ],
+            "missing_terms": [
+              "buscar",
+              "fila"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "queue",
+                "field": "body",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.6814215765915306
+              },
+              {
+                "term": "queue",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1401,
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 9,
+            "end_line": 9,
+            "score": 1178,
+            "matched_terms": [
+              "sem"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "explicit",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "buscar `sem`",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/explicit.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "buscar `sem`",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "buscar `sem`",
+            "mode": "mixed",
+            "terms": [
+              "buscar",
+              "search",
+              "sem"
+            ],
+            "symbols": [
+              "sem"
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "requirement": "buscar `sem`",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 2 de 3 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "search",
+              "sem"
+            ],
+            "missing_terms": [
+              "buscar"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 9,
+            "end_line": 9,
+            "score": 101178,
+            "matched_terms": [
+              "sem"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1178,
+            "matched_terms": [
+              "search"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "buscar `sem`",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 2 de 3 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "search",
+              "sem"
+            ],
+            "missing_terms": [
+              "buscar"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1178,
+            "matched_terms": [
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 9,
+            "end_line": 9,
+            "score": 1178,
+            "matched_terms": [
+              "sem"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "isolated",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "sem",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/isolated.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "sem",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "sem",
+            "mode": "symbol",
+            "terms": [
+              "sem"
+            ],
+            "symbols": [
+              "sem"
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "requirement": "sem",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 1 de 1 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "sem"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 9,
+            "end_line": 9,
+            "score": 101178,
+            "matched_terms": [
+              "sem"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "sem",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 1 de 1 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "sem"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 9,
+            "end_line": 9,
+            "score": 101178,
+            "matched_terms": [
+              "sem"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "named",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "CacheWithoutLock",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/named.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "CacheWithoutLock",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "CacheWithoutLock",
+            "mode": "symbol",
+            "terms": [
+              "cache",
+              "lock",
+              "without"
+            ],
+            "symbols": [
+              "CacheWithoutLock"
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "requirement": "CacheWithoutLock",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 3 de 3 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "cache",
+              "lock",
+              "without"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              },
+              {
+                "term": "lock",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "without",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 10,
+            "end_line": 10,
+            "score": 101341,
+            "matched_terms": [
+              "CacheWithoutLock",
+              "cache",
+              "lock",
+              "without"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1083,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "CacheWithoutLock",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 3 de 3 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "cache",
+              "lock",
+              "without"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              },
+              {
+                "term": "lock",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "without",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 10,
+            "end_line": 10,
+            "score": 101341,
+            "matched_terms": [
+              "CacheWithoutLock",
+              "cache",
+              "lock",
+              "without"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1083,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "malformed",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "buscar `sem cache",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/malformed.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "buscar `sem cache",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "buscar `sem cache",
+            "mode": "natural",
+            "terms": [
+              "buscar",
+              "cache",
+              "search"
+            ],
+            "symbols": [],
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar `sem cache",
+                "status": "not_verified"
+              }
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar `sem cache",
+                "status": "not_verified"
+              }
+            ],
+            "requirement": "buscar `sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 2 de 3 termos associados a declarações; requisito e comportamento não verificados. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+            "matched_terms": [
+              "cache",
+              "search"
+            ],
+            "missing_terms": [
+              "buscar"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1232,
+            "matched_terms": [
+              "cache",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "buscar `sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 3 de 4 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "cache",
+              "search",
+              "sem"
+            ],
+            "missing_terms": [
+              "buscar"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1232,
+            "matched_terms": [
+              "cache",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 9,
+            "end_line": 9,
+            "score": 1178,
+            "matched_terms": [
+              "sem"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "only_constraint",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "sem não",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/only_constraint.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "sem não",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "sem não",
+            "mode": "natural",
+            "terms": [],
+            "symbols": [],
+            "constraints": [
+              {
+                "marker": "não",
+                "text": "sem não",
+                "status": "not_verified"
+              },
+              {
+                "marker": "sem",
+                "text": "sem não",
+                "status": "not_verified"
+              }
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "constraints": [
+              {
+                "marker": "não",
+                "text": "sem não",
+                "status": "not_verified"
+              },
+              {
+                "marker": "sem",
+                "text": "sem não",
+                "status": "not_verified"
+              }
+            ],
+            "requirement": "sem não",
+            "status": "not_verified",
+            "reason": "Nenhuma fonte lexical confirmada para este requisito no escopo; não demonstra ausência da capacidade. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+            "matched_terms": [],
+            "missing_terms": [],
+            "sources": []
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "sem não",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 1 de 2 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "sem"
+            ],
+            "missing_terms": [
+              "não"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 9,
+            "end_line": 9,
+            "score": 1178,
+            "matched_terms": [
+              "sem"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    },
+    {
+      "case": "mixed",
+      "command": [
+        "/tmp/bateia-0048",
+        "analyze",
+        "-path",
+        "/tmp/bateia-0048-final/fixture",
+        "-query",
+        "buscar fila sem cache\n`sem`",
+        "-format",
+        "json",
+        "-output",
+        "/tmp/bateia-0048-final/mixed.json"
+      ],
+      "exit_code": 0,
+      "query": {
+        "query": "buscar fila sem cache\n`sem`",
+        "language": "go",
+        "max_results": 20,
+        "must_have": null,
+        "depth": 1,
+        "direct_repos": null,
+        "local_path": "/tmp/bateia-0048-final/fixture"
+      },
+      "analyzer_version": "evidence-v10-query-interpretation",
+      "implementation_search": {
+        "query_interpretation": [
+          {
+            "original": "`sem`",
+            "mode": "symbol",
+            "terms": [
+              "sem"
+            ],
+            "symbols": [
+              "sem"
+            ]
+          },
+          {
+            "original": "buscar fila sem cache",
+            "mode": "natural",
+            "terms": [
+              "buscar",
+              "cache",
+              "fila",
+              "queue",
+              "search"
+            ],
+            "symbols": [],
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar fila sem cache",
+                "status": "not_verified"
+              }
+            ]
+          }
+        ],
+        "requirements": [
+          {
+            "requirement": "`sem`",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 1 de 1 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "sem"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          },
+          {
+            "constraints": [
+              {
+                "marker": "sem",
+                "text": "buscar fila sem cache",
+                "status": "not_verified"
+              }
+            ],
+            "requirement": "buscar fila sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 3 de 5 termos associados a declarações; requisito e comportamento não verificados. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ],
+            "missing_terms": [
+              "buscar",
+              "fila"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_query_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 9,
+            "end_line": 9,
+            "score": 101178,
+            "matched_terms": [
+              "sem"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "queue",
+                "field": "body",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.6814215765915306
+              },
+              {
+                "term": "queue",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1401,
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      },
+      "baseline_implementation_search": {
+        "requirements": [
+          {
+            "requirement": "`sem`",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 1 de 1 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "sem"
+            ],
+            "missing_terms": [],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          },
+          {
+            "requirement": "buscar fila sem cache",
+            "status": "evidence_located",
+            "reason": "Inferência lexical: 4 de 6 termos associados a declarações; requisito e comportamento não verificados.",
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search",
+              "sem"
+            ],
+            "missing_terms": [
+              "buscar",
+              "fila"
+            ],
+            "sources": [
+              {
+                "path": "sample.go",
+                "symbol": "SearchQueue",
+                "line": 3,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "sem",
+                "line": 9,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              },
+              {
+                "path": "sample.go",
+                "symbol": "CacheWithoutLock",
+                "line": 10,
+                "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309"
+              }
+            ]
+          }
+        ],
+        "status": "complete",
+        "method": "go_ast_corpus_v1",
+        "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+        "hits": [
+          {
+            "term_weights": [
+              {
+                "term": "sem",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "sem",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento; identificador exato em declaração AST",
+            "line": 9,
+            "end_line": 9,
+            "score": 101178,
+            "matched_terms": [
+              "sem"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "body",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.8057205072784038
+              },
+              {
+                "term": "queue",
+                "field": "body",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.6814215765915306
+              },
+              {
+                "term": "queue",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              },
+              {
+                "term": "search",
+                "field": "name",
+                "document_frequency": 1,
+                "corpus_documents": 3,
+                "weight": 1.9616585060234524
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "SearchQueue",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=2 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 3,
+            "end_line": 7,
+            "score": 1401,
+            "matched_terms": [
+              "cache",
+              "queue",
+              "search"
+            ]
+          },
+          {
+            "term_weights": [
+              {
+                "term": "cache",
+                "field": "name",
+                "document_frequency": 2,
+                "corpus_documents": 3,
+                "weight": 0.9400072584914712
+              }
+            ],
+            "retrieval": "lexical",
+            "path": "sample.go",
+            "symbol": "CacheWithoutLock",
+            "kind": "definition",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=3 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=1 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+            "line": 10,
+            "end_line": 10,
+            "score": 1095,
+            "matched_terms": [
+              "cache"
+            ]
+          }
+        ],
+        "examined": [
+          {
+            "path": "sample.go",
+            "sha256": "cfdd040015667157964cd96af5846064ded9d103ea8bf28d3d4be0db63249309",
+            "bytes": 132
+          }
+        ],
+        "files_read": 1,
+        "bytes_read": 132,
+        "budget": {
+          "max_files": 2048,
+          "max_bytes": 33554432,
+          "max_file_bytes": 524288,
+          "max_results": 24
+        },
+        "limited": false
+      }
+    }
+  ],
+  "replay": {
+    "assessment-report.json": {
+      "identical": true,
+      "sha256": "071f639db876570db9379cad01205e1e7825bb5bd74317e8aa0b92c29546cd65"
+    },
+    "reuse-decision.json": {
+      "identical": true,
+      "sha256": "1d9d4346c04d5dc0211d3a869139f2b7aa18b95ac942704afb7c5c17b41cdb24"
+    },
+    "alternatives.json": {
+      "identical": true,
+      "sha256": "4926a452d65510301a786a74bc32749513b9fd6b71ffb988584e6f3ca37c51a6"
+    },
+    "decision.md": {
+      "identical": true,
+      "sha256": "fd714b31dc1e2024da6d26eb11baa0d8228b985f09ba14aec033cad43e2f7c79"
+    },
+    "evidence/bundles.json": {
+      "identical": true,
+      "sha256": "f31bb509fa8f5753abad04eae5d7c1990bf1c2d49423c3f5d3c68c9ec69398c2"
+    }
+  },
+  "bateia": {
+    "base_commit": "9056cd259e40d6360a06e6e21a157aa2e5b9eac7",
+    "snapshot_hash": "a55fa643be44013a853607118c3cfc854287efe3f9ef3a3f7be5da6342c046bc",
+    "coverage": {
+      "status": "insufficient",
+      "reason": "Definições Go localizadas por AST e releitura de bytes; pertinência heurística e comportamento não verificado.",
+      "requested_files": [
+        "README.md",
+        "go.mod",
+        "01_core/usecase/funnel.go",
+        "03_infra/sourcegraph/client.go",
+        "03_infra/github/catalog_surfaces.go",
+        "01_core/usecase/recommendation.go",
+        "02_shell/cli/tui.go",
+        "01_core/usecase/regional_discovery.go",
+        "01_core/usecase/evidence.go",
+        "01_core/usecase/idea_discovery.go",
+        "01_core/usecase/reuse_decision.go",
+        "01_core/usecase/software_alternative.go",
+        "01_core/usecase/competitive_planning.go",
+        "01_core/usecase/evidence_diagnosis.go"
+      ],
+      "checks_run": [
+        "busca lexical no conteúdo extraído",
+        "heurísticas sobre manifesto e árvore parcial",
+        "recuperação Go por símbolos/conteúdo com identidade conferida"
+      ],
+      "checks_not_run": [
+        "execução de testes e benchmarks",
+        "validação semântica da solução",
+        "AST de linguagens sem provedor; Clang reportado separadamente",
+        "isolamento arquitetural por fluxo de chamadas"
+      ],
+      "supported_languages": [
+        "go (AST)",
+        "rust (símbolos heurísticos)"
+      ]
+    },
+    "implementation_search": {
+      "query_interpretation": [
+        {
+          "original": "como a busca preserva requisitos originais e rejeita capacidades sem evidência",
+          "mode": "natural",
+          "terms": [
+            "busca",
+            "capacidades",
+            "evidence",
+            "evidência",
+            "originais",
+            "preserva",
+            "rejeita",
+            "requisitos",
+            "search"
+          ],
+          "symbols": [],
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "como a busca preserva requisitos originais e rejeita capacidades sem evidência",
+              "status": "not_verified"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "como a busca preserva requisitos originais e rejeita capacidades sem evidência",
+              "status": "not_verified"
+            }
+          ],
+          "requirement": "como a busca preserva requisitos originais e rejeita capacidades sem evidência",
+          "status": "evidence_located",
+          "reason": "Inferência lexical: 2 de 9 termos associados a declarações; requisito e comportamento não verificados. Restrições preservadas; escopo e cumprimento da negação não foram verificados. Recuperação parcial ou não avaliada; cobertura insuficiente para concluir ausência.",
+          "matched_terms": [
+            "evidence",
+            "search"
+          ],
+          "missing_terms": [
+            "busca",
+            "capacidades",
+            "evidência",
+            "originais",
+            "preserva",
+            "rejeita",
+            "requisitos"
+          ],
+          "sources": [
+            {
+              "path": "01_core/usecase/competitive_planning.go",
+              "symbol": "competitiveSourcesValid",
+              "line": 18,
+              "sha256": "3147e012e15da6a35a4d627802502c486ef7a64ac902321c43f2790940b252d9"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "DefaultEvidenceRules",
+              "line": 30,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidence",
+              "line": 137,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidenceForIdea",
+              "line": 141,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidenceForIdeaAndRepositories",
+              "line": 145,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "evidenceScores",
+              "line": 926,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "maxStrength",
+              "line": 940,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            },
+            {
+              "path": "01_core/usecase/evidence_diagnosis.go",
+              "symbol": "evidenceRank",
+              "line": 223,
+              "sha256": "f0904a34e0ed50825224524c8d702d1cd9f8d4ebef364c045d14caa76aec7e0c"
+            },
+            {
+              "path": "01_core/usecase/funnel.go",
+              "symbol": "NewSearchFunnel",
+              "line": 93,
+              "sha256": "5e03b1e4b613eaf942e9f624a5490009dc2cc154ed430a4f3556053d4ab4daf0"
+            },
+            {
+              "path": "01_core/usecase/idea_discovery.go",
+              "symbol": "searchLocalesForExpansionPlan",
+              "line": 210,
+              "sha256": "230ee34d157ee04768fc6d92ae85f2503a9e57fa6aca851d77763af596872964"
+            },
+            {
+              "path": "01_core/usecase/recommendation.go",
+              "symbol": "DefaultRecommendationSearchV1",
+              "line": 50,
+              "sha256": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b"
+            },
+            {
+              "path": "01_core/usecase/recommendation.go",
+              "symbol": "projectEvidence",
+              "line": 356,
+              "sha256": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b"
+            },
+            {
+              "path": "01_core/usecase/regional_discovery.go",
+              "symbol": "canonicalizeSearchLocales",
+              "line": 50,
+              "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6"
+            },
+            {
+              "path": "01_core/usecase/regional_discovery.go",
+              "symbol": "equalSearchLocales",
+              "line": 199,
+              "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6"
+            },
+            {
+              "path": "01_core/usecase/reuse_decision.go",
+              "symbol": "componentEvidence",
+              "line": 329,
+              "sha256": "737d2a20fcd30d3d80c8c69a7391d9d3c89d2c722fd7df490a7e5a1989ee7dd3"
+            },
+            {
+              "path": "01_core/usecase/software_alternative.go",
+              "symbol": "canonicalLicenseAssessment",
+              "line": 586,
+              "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e"
+            },
+            {
+              "path": "01_core/usecase/software_alternative.go",
+              "symbol": "canonicalEvidenceSources",
+              "line": 603,
+              "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e"
+            },
+            {
+              "path": "01_core/usecase/software_alternative.go",
+              "symbol": "alternativeEvidenceRank",
+              "line": 693,
+              "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e"
+            },
+            {
+              "path": "02_shell/cli/tui.go",
+              "symbol": "Init",
+              "line": 83,
+              "sha256": "fdabf41b06ed34e93090ac9025a2ad2f6c702ba7fe0ba51498c425877ee49f5e"
+            },
+            {
+              "path": "03_infra/github/catalog_surfaces.go",
+              "symbol": "SearchSurface",
+              "line": 34,
+              "sha256": "bd9d6ded50ddeb8859964ea29cb39bb589cac2f368ea3530e0e87a70b515048c"
+            },
+            {
+              "path": "03_infra/sourcegraph/client.go",
+              "symbol": "SearchCandidates",
+              "line": 167,
+              "sha256": "4eec76f25932fd7f1898f827242f92afba113442d090e6abf8ad34c0be587fb9"
+            }
+          ]
+        }
+      ],
+      "status": "partial",
+      "method": "go_ast_query_v1",
+      "reason": "Busca ou releitura parcial; somente hits vinculados aos bytes extraídos são apresentados. Ausência não demonstrada.",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 22.93480791050261
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/funnel.go",
+          "symbol": "NewSearchFunnel",
+          "kind": "definition",
+          "sha256": "5e03b1e4b613eaf942e9f624a5490009dc2cc154ed430a4f3556053d4ab4daf0",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 93,
+          "end_line": 99,
+          "score": 1707,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 19.85646658797762
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "03_infra/sourcegraph/client.go",
+          "symbol": "SearchCandidates",
+          "kind": "definition",
+          "sha256": "4eec76f25932fd7f1898f827242f92afba113442d090e6abf8ad34c0be587fb9",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 167,
+          "end_line": 170,
+          "score": 1689,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 16.52870788099979
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "03_infra/github/catalog_surfaces.go",
+          "symbol": "SearchSurface",
+          "kind": "definition",
+          "sha256": "bd9d6ded50ddeb8859964ea29cb39bb589cac2f368ea3530e0e87a70b515048c",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 34,
+          "end_line": 42,
+          "score": 1667,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 15.654208095901724
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/recommendation.go",
+          "symbol": "DefaultRecommendationSearchV1",
+          "kind": "definition",
+          "sha256": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 50,
+          "end_line": 55,
+          "score": 1660,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 21.284911576669867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "02_shell/cli/tui.go",
+          "symbol": "Init",
+          "kind": "definition",
+          "sha256": "fdabf41b06ed34e93090ac9025a2ad2f6c702ba7fe0ba51498c425877ee49f5e",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=6 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 83,
+          "end_line": 88,
+          "score": 1655,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 14.86759439350856
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/regional_discovery.go",
+          "symbol": "equalSearchLocales",
+          "kind": "definition",
+          "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=12 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 199,
+          "end_line": 211,
+          "score": 1653,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 19.693589711027336
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "maxStrength",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=3 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 940,
+          "end_line": 940,
+          "score": 1641,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 13.509870143594451
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/idea_discovery.go",
+          "symbol": "searchLocalesForExpansionPlan",
+          "kind": "definition",
+          "sha256": "230ee34d157ee04768fc6d92ae85f2503a9e57fa6aca851d77763af596872964",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=14 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 210,
+          "end_line": 225,
+          "score": 1641,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 14.406988555885606
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidence",
+              "line": 138,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            }
+          ],
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "PlanEvidenceForIdea",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 141,
+          "end_line": 143,
+          "score": 1633,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 14.406988555885606
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/reuse_decision.go",
+          "symbol": "componentEvidence",
+          "kind": "definition",
+          "sha256": "737d2a20fcd30d3d80c8c69a7391d9d3c89d2c722fd7df490a7e5a1989ee7dd3",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 329,
+          "end_line": 335,
+          "score": 1633,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 14.406988555885606
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/software_alternative.go",
+          "symbol": "alternativeEvidenceRank",
+          "kind": "definition",
+          "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 693,
+          "end_line": 706,
+          "score": 1633,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 18.03877146605126
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/competitive_planning.go",
+          "symbol": "competitiveSourcesValid",
+          "kind": "definition",
+          "sha256": "3147e012e15da6a35a4d627802502c486ef7a64ac902321c43f2790940b252d9",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=4 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 18,
+          "end_line": 20,
+          "score": 1624,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 13.500931780631825
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "PlanEvidence",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=8 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 137,
+          "end_line": 139,
+          "score": 1624,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 13.500931780631825
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/evidence_diagnosis.go",
+          "symbol": "evidenceRank",
+          "kind": "definition",
+          "sha256": "f0904a34e0ed50825224524c8d702d1cd9f8d4ebef364c045d14caa76aec7e0c",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=8 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 223,
+          "end_line": 238,
+          "score": 1624,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 18.03877146605126
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/software_alternative.go",
+          "symbol": "canonicalLicenseAssessment",
+          "kind": "definition",
+          "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=4 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 586,
+          "end_line": 589,
+          "score": 1624,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 11.3580125592767
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "01_core/usecase/recommendation.go",
+          "symbol": "projectEvidence",
+          "kind": "definition",
+          "sha256": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 356,
+          "end_line": 362,
+          "score": 1599,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 3.2088580834071947
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidenceForIdea",
+              "line": 142,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            }
+          ],
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "PlanEvidenceForIdeaAndRepositories",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=59 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 145,
+          "end_line": 185,
+          "score": 1443,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "PlanEvidence",
+              "line": 138,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            }
+          ],
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "DefaultEvidenceRules",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 30,
+          "end_line": 50,
+          "score": 1326,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/evidence.go",
+              "symbol": "maxStrength",
+              "line": 940,
+              "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03"
+            }
+          ],
+          "path": "01_core/usecase/evidence.go",
+          "symbol": "evidenceScores",
+          "kind": "definition",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 926,
+          "end_line": 939,
+          "score": 1326,
+          "matched_terms": [
+            "evidence"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "search",
+              "field": "body",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 8.992996204892751
+            },
+            {
+              "term": "search",
+              "field": "name",
+              "document_frequency": 108,
+              "corpus_documents": 2458,
+              "weight": 6.241519738471356
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/idea_discovery.go",
+              "symbol": "searchLocalesForExpansionPlan",
+              "line": 220,
+              "sha256": "230ee34d157ee04768fc6d92ae85f2503a9e57fa6aca851d77763af596872964"
+            },
+            {
+              "path": "01_core/usecase/regional_discovery.go",
+              "symbol": "equalSearchLocales",
+              "line": 200,
+              "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6"
+            },
+            {
+              "path": "01_core/usecase/regional_discovery.go",
+              "symbol": "equalSearchLocales",
+              "line": 201,
+              "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6"
+            }
+          ],
+          "path": "01_core/usecase/regional_discovery.go",
+          "symbol": "canonicalizeSearchLocales",
+          "kind": "definition",
+          "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=25 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 50,
+          "end_line": 79,
+          "score": 1591,
+          "matched_terms": [
+            "search"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "evidence",
+              "field": "body",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 8.621225259047701
+            },
+            {
+              "term": "evidence",
+              "field": "name",
+              "document_frequency": 255,
+              "corpus_documents": 2458,
+              "weight": 4.528575265144867
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "01_core/usecase/software_alternative.go",
+              "symbol": "canonicalLicenseAssessment",
+              "line": 587,
+              "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e"
+            }
+          ],
+          "path": "01_core/usecase/software_alternative.go",
+          "symbol": "canonicalEvidenceSources",
+          "kind": "definition",
+          "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=2458 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=17 termos únicos AST do corpo, avg=23.7023 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 603,
+          "end_line": 619,
+          "score": 1560,
+          "matched_terms": [
+            "evidence"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "00_nucleo/benchmark/0028/public-end-to-end-calibration-o19-replay.go",
+          "sha256": "cb0201c1c053375951289dbb9156f65ba385380d6c2c13bffa9368b0083be50b",
+          "bytes": 2139
+        },
+        {
+          "path": "00_nucleo/benchmark/0028/public-end-to-end-calibration-o20b-replay.go",
+          "sha256": "00c38ef7501974633a2664620dd1a69bdab1123909bbf5b6408ec41b16b037bd",
+          "bytes": 2140
+        },
+        {
+          "path": "01_core/domain/architectural_mechanism.go",
+          "sha256": "9cefee6ad1db64bd3ad0cf6bfa7d8bf4c6b6023f2584dba5bb6c47febee50440",
+          "bytes": 4195
+        },
+        {
+          "path": "01_core/domain/assisted_judgment.go",
+          "sha256": "3ba0ce48dc0d7062a3f37ed88533eabe3f8671f26bbf88b36b940ea06331c278",
+          "bytes": 2966
+        },
+        {
+          "path": "01_core/domain/authenticated_web_experiment.go",
+          "sha256": "d634caf220e5b811236e934292dd7213bc6d3e13a0b5f452afc6e38b7f1d2e88",
+          "bytes": 1456
+        },
+        {
+          "path": "01_core/domain/catalog_surfaces.go",
+          "sha256": "9d4e241aeb47828f7bf5607c9c7ce9b45c73baed35ecb95838031a1edcfeaa6e",
+          "bytes": 3570
+        },
+        {
+          "path": "01_core/domain/competitive_autophagy.go",
+          "sha256": "8339925d36fbe8546c57580d6f0c9ceebf69813b0f882f56a5d4e96d485410b2",
+          "bytes": 4851
+        },
+        {
+          "path": "01_core/domain/cycle_detector.go",
+          "sha256": "b3437e1f92b0fc6f9c29862383b40435482c613e6aa50f8fa035edbe465b0525",
+          "bytes": 1303
+        },
+        {
+          "path": "01_core/domain/dep_graph.go",
+          "sha256": "8325ca4b9d3336ef946ba8103cf75bf0cebd3501f5f62d15f02a08a18c6b45d8",
+          "bytes": 1400
+        },
+        {
+          "path": "01_core/domain/discovery_ontology.go",
+          "sha256": "37e1ee56f69287e715cc3870577118196cc751649e966038d15f10d1d5db1fca",
+          "bytes": 4273
+        },
+        {
+          "path": "01_core/domain/end_to_end_benchmark.go",
+          "sha256": "06f84e7f59278522d2b757900ce777c070e538cf041f07cf4e4c8b198aa0d6b8",
+          "bytes": 8111
+        },
+        {
+          "path": "01_core/domain/errors.go",
+          "sha256": "df7da37e414c5c4b8c36f0987386621ffa672b482169726b5f2efd91d27331e0",
+          "bytes": 384
+        },
+        {
+          "path": "01_core/domain/evidence.go",
+          "sha256": "cf91e64a08a514475c4fe4ba483bf4ec9b16a52eea7a8f43b136e192262a4f0a",
+          "bytes": 8555
+        },
+        {
+          "path": "01_core/domain/evidence_calibration.go",
+          "sha256": "56292bc6fd64dea215e6bc2a82bc7141734d55156b2f6a027b5a1ceec3aa292a",
+          "bytes": 1348
+        },
+        {
+          "path": "01_core/domain/evidence_coverage.go",
+          "sha256": "1eea512a0a17fa6e58f27be3605db9af017161e8716ac241cb98b1ccc5704906",
+          "bytes": 2251
+        },
+        {
+          "path": "01_core/domain/evidence_recovery.go",
+          "sha256": "e13e3ca5469b522224da269306aa704b7185446ef36b5d7888d298d88b2c5cc2",
+          "bytes": 5198
+        },
+        {
+          "path": "01_core/domain/functional_grammar.go",
+          "sha256": "50fa9a163365e1a8db3331d71fbf687a958460bb3f0aa950d296c446c182c5f5",
+          "bytes": 2043
+        },
+        {
+          "path": "01_core/domain/functional_queries.go",
+          "sha256": "c1f1732d142b03baaafef70c020b178a24c5bac653fbe3dd1102cfc9099ba289",
+          "bytes": 2736
+        },
+        {
+          "path": "01_core/domain/idea_discovery.go",
+          "sha256": "dc56711e5bc2fe61da14b63c313895695225dfc0e3894ba58255a473ce3645f4",
+          "bytes": 7199
+        },
+        {
+          "path": "01_core/domain/idea_run.go",
+          "sha256": "5f2d648bd2d6dd9d5fbcb0b8b734ac1233896fd10a5a73713c7741aa21e0ab8c",
+          "bytes": 3345
+        },
+        {
+          "path": "01_core/domain/idea_spec.go",
+          "sha256": "97135ee1e255ed003dcc72b7a37b6f8a854b8887283c0dc9b218f20603233dfb",
+          "bytes": 2906
+        },
+        {
+          "path": "01_core/domain/implementation_search.go",
+          "sha256": "e5dbd6bcbc4a4b1670fe646ae2371da5f9d7d69345991667f7afa6cf88758eb5",
+          "bytes": 4058
+        },
+        {
+          "path": "01_core/domain/improvement_synthesis.go",
+          "sha256": "4ac89c99731d776f69aec8bf9b4d5815a2ed0f3fce449dcba9582cd8c01f2712",
+          "bytes": 7575
+        },
+        {
+          "path": "01_core/domain/interfaces.go",
+          "sha256": "8292e9a0b1425aabdad38fbf6a6c4b6964d146116e4b8ba5c1f3b982aee50ad4",
+          "bytes": 2022
+        },
+        {
+          "path": "01_core/domain/investigation_plan.go",
+          "sha256": "98a80f4c72289e56ea3af38b7a3302118fc3ccc7354586b458e636fd33ce8d10",
+          "bytes": 1848
+        },
+        {
+          "path": "01_core/domain/market_discovery.go",
+          "sha256": "37e99ddcbfd7d09f62685369cc3b46c2f786e23b99db6dc24e705ab3f7a6763d",
+          "bytes": 11272
+        },
+        {
+          "path": "01_core/domain/product_validation.go",
+          "sha256": "3e7f88e9317a3c527a0cc3ad7f02692cc7e0ff17ca839c574a0e21800f81e176",
+          "bytes": 1557
+        },
+        {
+          "path": "01_core/domain/project_catalog.go",
+          "sha256": "880a2b4ed304ce2eb21930eb13ab10b8aba22b1127eb472c9e1cfb11cb44dd64",
+          "bytes": 3588
+        },
+        {
+          "path": "01_core/domain/recommendation.go",
+          "sha256": "2fa9bf8e8beba55f22279b33cff20084834e510dc6175ad2ee70b6791f149af6",
+          "bytes": 1281
+        },
+        {
+          "path": "01_core/domain/recommendation_run.go",
+          "sha256": "c20d9d155f3102411b498f87c90c714f82739890bf188188389ea9a15b29deda",
+          "bytes": 12496
+        },
+        {
+          "path": "01_core/domain/regional_discovery.go",
+          "sha256": "5b3404e818daf8f5bca9f059a2cc4d7e4a926e98fde9d819ec5c20ecba39f71a",
+          "bytes": 2138
+        },
+        {
+          "path": "01_core/domain/reuse_decision.go",
+          "sha256": "d2eff8c43e0d5126ea598f43961422608dd0ebc147e510ec3d4f12d9b59a7bdc",
+          "bytes": 3384
+        },
+        {
+          "path": "01_core/domain/screening.go",
+          "sha256": "614a786375fe6fbb360570dbbbdb7d44f55bb09922c54be833f2212cfc8509e4",
+          "bytes": 5700
+        },
+        {
+          "path": "01_core/domain/software_alternative.go",
+          "sha256": "5730a4ed17921903ee4676fbf468cd4ed735ffc918e6b10cc681362cc15f6664",
+          "bytes": 2843
+        },
+        {
+          "path": "01_core/domain/types.go",
+          "sha256": "0952c7e9f714c8bd3ca8dc89dc0f77c98f3d81cfd6b85daf0287f24a7db47c67",
+          "bytes": 21475
+        },
+        {
+          "path": "01_core/domain/uuid.go",
+          "sha256": "7c1d33cbed38df32a8804026c171b0b73c548dd1e92741470dd93958a503d5ee",
+          "bytes": 673
+        },
+        {
+          "path": "01_core/domain/web_snapshot.go",
+          "sha256": "2e2dd0db62f3c60598bb39d3fe32aff9831dcc66c9a7dcc85febafa79e2ba776",
+          "bytes": 4672
+        },
+        {
+          "path": "01_core/experiment/catalysis/harness.go",
+          "sha256": "8475a9189da22e19e436b9e85c600278c81bdc5f9ae3c76dea05088f98cf05a4",
+          "bytes": 18504
+        },
+        {
+          "path": "01_core/parser/actionscript.go",
+          "sha256": "be14a570d88c7ad2f6216669b85c50cc06f2b63bb725ce73032f4ac35be1d409",
+          "bytes": 1112
+        },
+        {
+          "path": "01_core/parser/ada.go",
+          "sha256": "68ffcd549d9b966a7204fa3688a67e644a9efc16146d9e95db0cb438dd493c07",
+          "bytes": 1370
+        },
+        {
+          "path": "01_core/parser/adr_generator.go",
+          "sha256": "d5b086e2dea4934298d9aeda8c523e611148853e027621039e768ecab5fa81ad",
+          "bytes": 2589
+        },
+        {
+          "path": "01_core/parser/aho_corasick.go",
+          "sha256": "287cdda885e52ce52481005498fa12622c10c00a648d7050984daee4bd03ed4e",
+          "bytes": 1077
+        },
+        {
+          "path": "01_core/parser/arch_diff.go",
+          "sha256": "b56a3982aa27108be419736fddabef174675655135186d4a1d639e0ba65f4735",
+          "bytes": 1553
+        },
+        {
+          "path": "01_core/parser/arch_linter.go",
+          "sha256": "9f0f2aba39d893b1ca4dccb0a2968c677fa449e9dafb16dba2c63c6c18cb2996",
+          "bytes": 6620
+        },
+        {
+          "path": "01_core/parser/ast.go",
+          "sha256": "9c678c27c08a6f541a3197bcb8b43f23ec6aa31e68738c486eff7e478822378e",
+          "bytes": 1778
+        },
+        {
+          "path": "01_core/parser/ast_analyzer.go",
+          "sha256": "75bc6fc032c39c67f80ef5ce9cbb466f41802c188d2270ce2e2151ea672224d3",
+          "bytes": 2055
+        },
+        {
+          "path": "01_core/parser/basic.go",
+          "sha256": "515f62291b49d946de18f8a08141acb41a253f281d53997d7eeda4402770ee78",
+          "bytes": 1156
+        },
+        {
+          "path": "01_core/parser/c.go",
+          "sha256": "2de58ef3d0bdaf94af09a82504afbd6de0360e6f3378bc34c90684887775518c",
+          "bytes": 2570
+        },
+        {
+          "path": "01_core/parser/chapel.go",
+          "sha256": "99609a31d7e48fab9df89fc298e458da7f1c11c28855dbc80437d6b57b36279c",
+          "bytes": 464
+        },
+        {
+          "path": "01_core/parser/clojure.go",
+          "sha256": "9cc193692c8f9d7541bc05f0db09a18520bb34e816d227ca9b2b12d4c8c9706e",
+          "bytes": 1323
+        },
+        {
+          "path": "01_core/parser/clone_detector.go",
+          "sha256": "8eccafc29361b39136ab2fd12f39cabab0c43d5c41a6c8c4fadcb2ff8486fef1",
+          "bytes": 644
+        },
+        {
+          "path": "01_core/parser/cobol.go",
+          "sha256": "e0011784ae2e7fa6bcceffe07e41b690a3f61dd6bd0a672def9f8d70ff24969c",
+          "bytes": 1579
+        },
+        {
+          "path": "01_core/parser/coldfusion.go",
+          "sha256": "930537e15dbd7fe16cf781220cb7f6e0a32ed7390316730be2cb4223a135042d",
+          "bytes": 1209
+        },
+        {
+          "path": "01_core/parser/corpus_scoring.go",
+          "sha256": "f357776cc644fc2e8b5fac2de81d9b39c324b8fee8bfbcc7f41d0b4a6ef185dc",
+          "bytes": 3081
+        },
+        {
+          "path": "01_core/parser/coupling.go",
+          "sha256": "c01cea964e5c6dafe0609b93917afc17d205ae59804d90926f29d824966e4395",
+          "bytes": 813
+        },
+        {
+          "path": "01_core/parser/cpp.go",
+          "sha256": "50f2f00332b7cb3a49c0ee80e5ee33cb2bbceeae7c9f645d423ec1dcfa447830",
+          "bytes": 5066
+        },
+        {
+          "path": "01_core/parser/crystal.go",
+          "sha256": "b19370afdda75cf9dff1626ba440558cc5d1507aa535e6b241dd7e4bef8cfbb3",
+          "bytes": 1679
+        },
+        {
+          "path": "01_core/parser/csharp.go",
+          "sha256": "79ee92eaf3d9bf96cd2953803ef8d62f1fedf5ef719000b906d16b724c881ab2",
+          "bytes": 1716
+        },
+        {
+          "path": "01_core/parser/cyclomatic.go",
+          "sha256": "f3f6c25f5e065476730e64176dc760899130bcff7078fd570e2d0c69a7b90c7f",
+          "bytes": 1413
+        },
+        {
+          "path": "01_core/parser/d.go",
+          "sha256": "4f7b4819cb270892b87fd370679e6751c16e50646fd0fd3d24054fc6312cd1fb",
+          "bytes": 1176
+        },
+        {
+          "path": "01_core/parser/dart.go",
+          "sha256": "14ac78dd70b1eeb0b78411ab3971086145c2f913b828ee50a21157ccd9c9bcbe",
+          "bytes": 1725
+        },
+        {
+          "path": "01_core/parser/elixir.go",
+          "sha256": "879a4de58b68381026a704a6db01584fd25f9b29e470d1f700762f8ee791e475",
+          "bytes": 1305
+        },
+        {
+          "path": "01_core/parser/erlang.go",
+          "sha256": "bedd294b506d00fedce85a1f8001477d4e03f4b8b93a8a0285c0d2fa3cbd959b",
+          "bytes": 1438
+        },
+        {
+          "path": "01_core/parser/evidence.go",
+          "sha256": "5da30ab724636507a09ac081b6fd70bb0d254869e8f9726f32bfb506a7fb3cd9",
+          "bytes": 5245
+        },
+        {
+          "path": "01_core/parser/fingerprint.go",
+          "sha256": "77b2b886867216528dea77db5b7b748143e97ff14c59ba51b1bc486d99baac21",
+          "bytes": 544
+        },
+        {
+          "path": "01_core/parser/fortran.go",
+          "sha256": "78155c0f634fb1bb4daecab18950195ed1656924533b713430d70d3ea167a693",
+          "bytes": 1406
+        },
+        {
+          "path": "01_core/parser/fsharp.go",
+          "sha256": "9fb448a209ec061fd37f2fae9ae3a8633f61497d508c910e91acacd5d0491ca6",
+          "bytes": 1192
+        },
+        {
+          "path": "01_core/parser/functional_retrieval.go",
+          "sha256": "3ebb39fdb2332dee61753c4372375725a7090d3665112c5ba5ce1891dc4c3551",
+          "bytes": 6577
+        },
+        {
+          "path": "01_core/parser/gleam.go",
+          "sha256": "1b28ed5f7a079dfcca8ffa8b9c86ae8bd7a43745c14338eab46c29975d4ad8bf",
+          "bytes": 1475
+        },
+        {
+          "path": "01_core/parser/gomod.go",
+          "sha256": "28b7bf06526c75a65e7cb26e789fc006b617bf7e629a0baf747ecd04635f9c4c",
+          "bytes": 2025
+        },
+        {
+          "path": "01_core/parser/haskell.go",
+          "sha256": "7a965926dcc40a724d4f2514f21b244e2d571abd463d218ab8431deaed80c287",
+          "bytes": 1987
+        },
+        {
+          "path": "01_core/parser/haxe.go",
+          "sha256": "3faf3d4a55f0c96fda97b0d31e98202c84ed7d1d55e00f0baa4f3760c689631e",
+          "bytes": 1181
+        },
+        {
+          "path": "01_core/parser/html_selector.go",
+          "sha256": "22a20cdf813a48494c9787186a51f076739f9a6fa16916454e4e0f4100686efd",
+          "bytes": 789
+        },
+        {
+          "path": "01_core/parser/ignore_walker.go",
+          "sha256": "ec0b88f86865071a95dc4ba0b87ce1d3a72b408b971c27b9bdca595fdb477e7b",
+          "bytes": 974
+        },
+        {
+          "path": "01_core/parser/implementation_search.go",
+          "sha256": "f063d89a0f9800ec1b1271361994e7290d581f6a2c105e7fe9185c1869db019c",
+          "bytes": 12337
+        },
+        {
+          "path": "01_core/parser/insights.go",
+          "sha256": "35d16d1d74ec5c5bc7ff2cbc39eca902b05534309641cd395a32f445ce296fc8",
+          "bytes": 45578
+        },
+        {
+          "path": "01_core/parser/java.go",
+          "sha256": "2a8ce285ef6bc428fde9d1e04bf0e69bdbcf714968a6e2d017fa0a8a844e8de7",
+          "bytes": 3607
+        },
+        {
+          "path": "01_core/parser/jsonpath_extractor.go",
+          "sha256": "dda645ee99983ec94935130c2a519d3f1ff1f823f2dcdcb226202f3efbc1f3c0",
+          "bytes": 928
+        },
+        {
+          "path": "01_core/parser/julia.go",
+          "sha256": "afa54184ddca7519b78db9fce628ad8c4583edb03322bea54ff7b3a311270bf6",
+          "bytes": 1570
+        },
+        {
+          "path": "01_core/parser/lab_extractor.go",
+          "sha256": "970c6f2afa1a11e9c57d9073d482c80de2647218cf3538aa51918cecfee44ea9",
+          "bytes": 5534
+        },
+        {
+          "path": "01_core/parser/license_checker.go",
+          "sha256": "4ea53d768a853d00cbb9ea2b8daa86a6b90b2a9468a980909a920ca57f1af27c",
+          "bytes": 1129
+        },
+        {
+          "path": "01_core/parser/linter_engine.go",
+          "sha256": "8ff98c9e51cdcf642a133001bb882830fecbd95f9ae31510be56ad8314e14389",
+          "bytes": 1466
+        },
+        {
+          "path": "01_core/parser/lua.go",
+          "sha256": "a12e64e955c939f2f84a2abcf667a295240edf87c2b85ad552c8ecd6a32715e8",
+          "bytes": 1598
+        },
+        {
+          "path": "01_core/parser/manifest.go",
+          "sha256": "c837f1b07bbeb40fcae1dc19b6438d96d510b3bd142a89e415622f4dd81a8f07",
+          "bytes": 5784
+        },
+        {
+          "path": "01_core/parser/mojo.go",
+          "sha256": "0c417e455f8f1429c3209441997da6152b413ca24da00857e1ebf3e902644b1f",
+          "bytes": 1393
+        },
+        {
+          "path": "01_core/parser/nil_detector.go",
+          "sha256": "4c9f4bfeef734ac48ef52ff77aea4fd0d58ba673bf863016c3f1fab97ff0f785",
+          "bytes": 1925
+        },
+        {
+          "path": "01_core/parser/nim.go",
+          "sha256": "029344ed0e9705129a2bd25e25acddc01e246526db818b9f66ede0fc7a69bdf3",
+          "bytes": 1404
+        },
+        {
+          "path": "01_core/parser/objc.go",
+          "sha256": "0e161817f00b639a387d8654f4755782a48ecb5995767002ba255b33cbe18b1e",
+          "bytes": 1051
+        },
+        {
+          "path": "01_core/parser/ocaml.go",
+          "sha256": "d8a6c36099b54c6924ab94760aa8ecdd73ebce5a2896256996e3e9e36df5f207",
+          "bytes": 1384
+        },
+        {
+          "path": "01_core/parser/odin.go",
+          "sha256": "d11732165a94f4c152e707157bf1400a2a9740950336dafee6f2652a347926ae",
+          "bytes": 1070
+        },
+        {
+          "path": "01_core/parser/package_json.go",
+          "sha256": "2f46f3d6100817297a9b38cb61601f265ce91ecb61477a291c1a355b0f4358be",
+          "bytes": 1983
+        },
+        {
+          "path": "01_core/parser/pascal.go",
+          "sha256": "d946ac883b598c9ff9512f44aef010be9faf001f1829198b1d708c97ceb4ab9a",
+          "bytes": 1093
+        },
+        {
+          "path": "01_core/parser/perl.go",
+          "sha256": "8d5199991d1c93e7701e7c3b064ab976fe73128029f831c419d792d5b39ab705",
+          "bytes": 1211
+        },
+        {
+          "path": "01_core/parser/php.go",
+          "sha256": "dc2596fa321c1ce3788f54b0c59e01e2552e34b55aa0c56af1891be75a3734ae",
+          "bytes": 1699
+        },
+        {
+          "path": "01_core/parser/polyglot_matrix.go",
+          "sha256": "f0e93cab30e9323b18a1b7035550f1f5a41f462b440ff359b1fc0bf0c87ef201",
+          "bytes": 1928
+        },
+        {
+          "path": "01_core/parser/pony.go",
+          "sha256": "93ed518cc99e71f1dc420a69055344f4e66e0c96143d079732a67c8268f5c804",
+          "bytes": 1041
+        },
+        {
+          "path": "01_core/parser/python.go",
+          "sha256": "a5f34c61b202dbeae82fbbe036deeb524b1ffa7eaec15fd8056412b325f95dec",
+          "bytes": 3713
+        },
+        {
+          "path": "01_core/parser/query.go",
+          "sha256": "2152439bbabc49376bc802b21718a763259c5cf676af7b1f68dfec089f1f8c3a",
+          "bytes": 2079
+        },
+        {
+          "path": "01_core/parser/query_evidence.go",
+          "sha256": "4c924197869efbb111f7f854d87dec8b10d23c3975875003955fddb9b5406644",
+          "bytes": 9174
+        },
+        {
+          "path": "01_core/parser/query_interpretation.go",
+          "sha256": "c81faa084f041984c5eaf0153f1d8b31db3acff6c6b9280f6cc2100a75ab68ce",
+          "bytes": 3301
+        },
+        {
+          "path": "01_core/parser/r.go",
+          "sha256": "ca3313bc415e425aa1ed6dc3cc6fdb925cdc479d32b2662e52e0734635f07e96",
+          "bytes": 1519
+        },
+        {
+          "path": "01_core/parser/racket.go",
+          "sha256": "4f5825b861aa34b9cf9232f3a51f1adba5478001fc2663d46449a81c8c1a13de",
+          "bytes": 1279
+        },
+        {
+          "path": "01_core/parser/raku.go",
+          "sha256": "ee8a638444c0a8ab837ab577e347ebcd2e5105faea71a80834f89da85b1eda65",
+          "bytes": 1130
+        },
+        {
+          "path": "01_core/parser/regex_validator.go",
+          "sha256": "145e4bf3147aee1f87b1743b5ab2e20b70b7d9ec60d183f5ae132841a77e2c2b",
+          "bytes": 850
+        },
+        {
+          "path": "01_core/parser/relevance.go",
+          "sha256": "131bb187b27127a6b66c831f3831a04b10496d42064b17631c78eca44aa79ee0",
+          "bytes": 4447
+        },
+        {
+          "path": "01_core/parser/requirement_retrieval.go",
+          "sha256": "5ba8c1eb67be793f75640b9e861b3ba239a57ba5302a14318e82ae5a6963ffd9",
+          "bytes": 3355
+        },
+        {
+          "path": "01_core/parser/ruby.go",
+          "sha256": "8ba704cb87561fcb1cac75e132e73c8fdbce071623305c0e623165867b35da27",
+          "bytes": 1155
+        },
+        {
+          "path": "01_core/parser/rule_dsl.go",
+          "sha256": "1eb69d963f3e7851bb4c2585cf9b829543f1adcac21ca3e71874e8c7b975041b",
+          "bytes": 858
+        },
+        {
+          "path": "01_core/parser/rust.go",
+          "sha256": "03534a507a928c0a41485419588f3c0bd0b0a7315786f4104a506c810a377379",
+          "bytes": 5128
+        },
+        {
+          "path": "01_core/parser/scala.go",
+          "sha256": "94d7b81091a8b2a6bdc02e4a769d86714e6518df30d2287fe3d3312eb10a8e6f",
+          "bytes": 1323
+        },
+        {
+          "path": "01_core/parser/security.go",
+          "sha256": "20a8751370487f1ff5da104f77bce8d9890c01898f8647cbee56a956acd198c8",
+          "bytes": 4011
+        },
+        {
+          "path": "01_core/parser/structure.go",
+          "sha256": "97984f78674a4775e7989507b9e02ebc8e948598693e95550c88a4c06e9b39a9",
+          "bytes": 2818
+        },
+        {
+          "path": "01_core/parser/swift.go",
+          "sha256": "39c359f03a870261379ea762c95aced1692c562ffc70a55950afa06b3d7df8de",
+          "bytes": 1426
+        },
+        {
+          "path": "01_core/parser/symbol_table.go",
+          "sha256": "a03501a8cf172937586fef9ae803f2f80d0e8dff9f7037302168dce455e29604",
+          "bytes": 1412
+        },
+        {
+          "path": "01_core/parser/truncate.go",
+          "sha256": "a5823fb606ff0ede8020222a8f6bd91b002c99226adb658b3a2a404e8cdd44f5",
+          "bytes": 2289
+        },
+        {
+          "path": "01_core/parser/v.go",
+          "sha256": "74154d23edcda1cd25142ac8b3edbce4ae706e19ef5e24a264cd7e3e3b1ab62e",
+          "bytes": 1486
+        },
+        {
+          "path": "01_core/parser/zig.go",
+          "sha256": "d5337fe92101125270c11f527320bde423e45877e2ddf8b4047e27ca1601758a",
+          "bytes": 1493
+        },
+        {
+          "path": "01_core/usecase/assisted_judgment.go",
+          "sha256": "802288364934d79aaffd522b15ec40613d7d29e4ef6f16ce08cd4128fd833d84",
+          "bytes": 7949
+        },
+        {
+          "path": "01_core/usecase/authenticated_web_experiment.go",
+          "sha256": "848f13c053665aae559ef462482b366a2fc590497ca4d6c1b17617f12dd3e918",
+          "bytes": 408
+        },
+        {
+          "path": "01_core/usecase/catalog_surfaces.go",
+          "sha256": "4324e0f0c9003956d31f29c27fb851a1127db132680d2e6d3f1813db091db52d",
+          "bytes": 4932
+        },
+        {
+          "path": "01_core/usecase/competitive_autophagy.go",
+          "sha256": "593cb0158f311b6fe1fe9a4a284e8ad265c37eaa78f34ddaad60ef31be1ebdae",
+          "bytes": 16421
+        },
+        {
+          "path": "01_core/usecase/competitive_planning.go",
+          "sha256": "3147e012e15da6a35a4d627802502c486ef7a64ac902321c43f2790940b252d9",
+          "bytes": 12781
+        },
+        {
+          "path": "01_core/usecase/discovery_evaluator.go",
+          "sha256": "9f94614c7d957e8e9d16cd557f6a507498b12450c51a12923eaab9ec04787777",
+          "bytes": 3467
+        },
+        {
+          "path": "01_core/usecase/discovery_ontology.go",
+          "sha256": "ccecde10c4f7b899980bf0d1c9530b7d9c81a92b91ac84b8676f0df0a99a93d6",
+          "bytes": 11870
+        },
+        {
+          "path": "01_core/usecase/end_to_end_benchmark.go",
+          "sha256": "cc17e3b419955f1f236e4abdfc04a3ecce26eb39cdeef9f7cb385c0a0ada6495",
+          "bytes": 11441
+        },
+        {
+          "path": "01_core/usecase/evidence.go",
+          "sha256": "d1d19d88d6b1262b17ee848f69930bda1aec51986b73491a3cfd3adbf2572b03",
+          "bytes": 53822
+        },
+        {
+          "path": "01_core/usecase/evidence_authority.go",
+          "sha256": "93fe8ee156976852b7ebf477e28f59421876deb6e8aaaae0e7458229288a342d",
+          "bytes": 7945
+        },
+        {
+          "path": "01_core/usecase/evidence_calibration.go",
+          "sha256": "4802ac2a1af59747dc0765a0042853406bc181b2dfd6c896ece60432e99d05c3",
+          "bytes": 3771
+        },
+        {
+          "path": "01_core/usecase/evidence_diagnosis.go",
+          "sha256": "f0904a34e0ed50825224524c8d702d1cd9f8d4ebef364c045d14caa76aec7e0c",
+          "bytes": 9536
+        },
+        {
+          "path": "01_core/usecase/evidence_recovery.go",
+          "sha256": "2f935d96b06a41f80f20aaf4178af71c034724838140516a4a54a4d3a5300fb2",
+          "bytes": 19061
+        },
+        {
+          "path": "01_core/usecase/functional_grammar.go",
+          "sha256": "6b3b8668065ab3fa81e8fc24a8b726bec9f99203e216b0278b092230321620d4",
+          "bytes": 6559
+        },
+        {
+          "path": "01_core/usecase/functional_queries.go",
+          "sha256": "4846c3c647c52f563a7730adc071f4bd8837ecafae53d2279ffcf7c4e3defd68",
+          "bytes": 4647
+        },
+        {
+          "path": "01_core/usecase/funnel.go",
+          "sha256": "5e03b1e4b613eaf942e9f624a5490009dc2cc154ed430a4f3556053d4ab4daf0",
+          "bytes": 23739
+        },
+        {
+          "path": "01_core/usecase/idea_discovery.go",
+          "sha256": "230ee34d157ee04768fc6d92ae85f2503a9e57fa6aca851d77763af596872964",
+          "bytes": 12409
+        },
+        {
+          "path": "01_core/usecase/idea_expander.go",
+          "sha256": "86acbd2da6761ca4f06cb9a3a2106afeae44fe6f1e730ad2542d5dfaa3d68b74",
+          "bytes": 3002
+        },
+        {
+          "path": "01_core/usecase/idea_run.go",
+          "sha256": "4104fe6178eca98662ab05728b884f8aca643e8860235196f70834169dcd339c",
+          "bytes": 16482
+        },
+        {
+          "path": "01_core/usecase/implementation_retrieval.go",
+          "sha256": "b6f5b9e07f763702d91a48d3695b34f927cb295df4bb704c1fe7da52435f874d",
+          "bytes": 5451
+        },
+        {
+          "path": "01_core/usecase/improvement_synthesis.go",
+          "sha256": "787831961428617ddabc137959ff988533d1f04ea96b0776a408a0cd8cf7b10f",
+          "bytes": 27419
+        },
+        {
+          "path": "01_core/usecase/investigation_plan.go",
+          "sha256": "05a642cd705c7daaad9559e8d0d25b6c6c82bad6205d5133333d7020676a32fa",
+          "bytes": 10597
+        },
+        {
+          "path": "01_core/usecase/market_discovery.go",
+          "sha256": "be07fd0b1b5619fdf5248065ed6a76e3b9547aaa65266f22fca1a921daf9644e",
+          "bytes": 35216
+        },
+        {
+          "path": "01_core/usecase/mechanism_extraction.go",
+          "sha256": "35f967a2c12d56f0cee57bb015a08ec6a1307754370cffa7300524db7468eceb",
+          "bytes": 23324
+        },
+        {
+          "path": "01_core/usecase/ontology_matcher.go",
+          "sha256": "a5db7848be310c9b02b325bb875213f41b35547bbb28df45c7b45f4335285059",
+          "bytes": 12764
+        },
+        {
+          "path": "01_core/usecase/polyglot_sweep.go",
+          "sha256": "57aa649496bf7784eec03152137d9b78fed669c4e1fdad73f8f780670b832692",
+          "bytes": 7071
+        },
+        {
+          "path": "01_core/usecase/probabilistic_screening.go",
+          "sha256": "6ca1e2c31f35034cdb69743bc116823f80825c5a2f06623e1f57679bc79ddbcf",
+          "bytes": 12029
+        },
+        {
+          "path": "01_core/usecase/product_validation.go",
+          "sha256": "b741026e814b11567457d5c4ebc48889f60bd1f00a2d2615a82603046eba3d0f",
+          "bytes": 2463
+        },
+        {
+          "path": "01_core/usecase/project_catalog.go",
+          "sha256": "ca75c156b9d6db9d9901e8c216443785ec8dd5ae88d017a31c80f64c7df9305b",
+          "bytes": 6658
+        },
+        {
+          "path": "01_core/usecase/recommendation.go",
+          "sha256": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+          "bytes": 17724
+        },
+        {
+          "path": "01_core/usecase/recommendation_observed.go",
+          "sha256": "02c9d790876f0500a5f01ee3126ba0e88cd87ea1a876aeb161b286ac37180a25",
+          "bytes": 1810
+        },
+        {
+          "path": "01_core/usecase/recommendation_run.go",
+          "sha256": "712625a220b52adf94531ea02c1f789eeeb153ff6b60f4c854983dcc991ba28f",
+          "bytes": 30427
+        },
+        {
+          "path": "01_core/usecase/regional_discovery.go",
+          "sha256": "7a6ac53f6df8347084761083d70121af3bdb11f7bd0055753009b219ececa7c6",
+          "bytes": 8206
+        },
+        {
+          "path": "01_core/usecase/requirement_retrieval.go",
+          "sha256": "e476ecc705692ea1786fcf6dc0ca0f701be36928dd743587bf35cc52a02ae5d9",
+          "bytes": 746
+        },
+        {
+          "path": "01_core/usecase/reuse_decision.go",
+          "sha256": "737d2a20fcd30d3d80c8c69a7391d9d3c89d2c722fd7df490a7e5a1989ee7dd3",
+          "bytes": 16353
+        },
+        {
+          "path": "01_core/usecase/screening_calibration.go",
+          "sha256": "bcf31cf58c6bf37451a8c8e6b70e96b2cb03dac1c3466f741571ae26e04b2488",
+          "bytes": 12315
+        },
+        {
+          "path": "01_core/usecase/semantic_expander.go",
+          "sha256": "8f93d972cbf162be01fa4e0724df119088a363f83a7833481cd976ba03874978",
+          "bytes": 9329
+        },
+        {
+          "path": "01_core/usecase/software_alternative.go",
+          "sha256": "a9756f0dc6d901ad7147ebcfacb49157cee9550202af61315a3215f123043d5e",
+          "bytes": 27517
+        },
+        {
+          "path": "01_core/usecase/validation.go",
+          "sha256": "d7da5884fa1922be303cad17757e85bf551435c565a72449b5a1d8b3572dc984",
+          "bytes": 2611
+        },
+        {
+          "path": "01_core/usecase/web_replay.go",
+          "sha256": "bb92edd04230cd8a8babc4519ca3e3b0fd9ba3fa872f7761f61613923a79194a",
+          "bytes": 7047
+        },
+        {
+          "path": "02_shell/cli/app.go",
+          "sha256": "d42057ac0fb137ee018900f53affbf4b9479f47ca40a8ad4eddf816da0258aa6",
+          "bytes": 11716
+        },
+        {
+          "path": "02_shell/cli/assisted_judgment.go",
+          "sha256": "040ec77b24b286b76d88dece69a767621ef60a129f12d83ed7bcd1c1558ddb01",
+          "bytes": 2684
+        },
+        {
+          "path": "02_shell/cli/authenticated_web_experiment.go",
+          "sha256": "438f64486004b614b3b18bff115ccd2d8b941eb35b4c7fafc0d8fafc71fa487f",
+          "bytes": 2268
+        },
+        {
+          "path": "02_shell/cli/benchmark.go",
+          "sha256": "1b38d14ba52004c559a20f5a2f70954f9168b2639bf0c80200a6b39287731360",
+          "bytes": 3969
+        },
+        {
+          "path": "02_shell/cli/durable_mcp.go",
+          "sha256": "a18646cdcfe4fa6fe18ca1e77bf80b5ed79a9fce6627a8a51e51f973c50ab4dd",
+          "bytes": 457
+        },
+        {
+          "path": "02_shell/cli/idea_catalog.go",
+          "sha256": "43efb934bc92ddcc5312ae034bd8ba43464a115e8e0ad86f9a8b4b447ceae816",
+          "bytes": 5339
+        },
+        {
+          "path": "02_shell/cli/idea_competitive.go",
+          "sha256": "878ae56878bcd1d1c6932a29ee5c5f634508f38f5b7f61053e002d06b6a8fef5",
+          "bytes": 3624
+        },
+        {
+          "path": "02_shell/cli/idea_decide.go",
+          "sha256": "f03c7461b50b43aa69be03f550f18fba172c23f39429701c16425a43e9f04a91",
+          "bytes": 1808
+        },
+        {
+          "path": "02_shell/cli/idea_discovery.go",
+          "sha256": "9a1442a383d5db9c0f6f4aaedb714fc894bf8ce87850ed128c4ee1ebd90e2674",
+          "bytes": 6051
+        },
+        {
+          "path": "02_shell/cli/idea_evidence.go",
+          "sha256": "191fd30a47632b325db580290e8426935a5deebe6ba7f64a010fa9dc17911bdc",
+          "bytes": 7213
+        },
+        {
+          "path": "02_shell/cli/idea_evidence_calibrate.go",
+          "sha256": "cce9e5a5a6f6864d0fd47948b49fd09984590336957fb6c573251c41c461dd0f",
+          "bytes": 1025
+        },
+        {
+          "path": "02_shell/cli/idea_evidence_diagnose.go",
+          "sha256": "4f219177b8b75df125959f7ec809d0d776455c07f57207e0ffa9de417a51cfd1",
+          "bytes": 1853
+        },
+        {
+          "path": "02_shell/cli/idea_functional.go",
+          "sha256": "1320c15d1424da7d65d03cd3182f02dcffd1dca2012b83f9694d02ce87d2ffc4",
+          "bytes": 4335
+        },
+        {
+          "path": "02_shell/cli/idea_ontology.go",
+          "sha256": "f27b5e92c1ce5753b10af81adbb9958b6908e9a8ba7617573769d88b135c0d3f",
+          "bytes": 4474
+        },
+        {
+          "path": "02_shell/cli/idea_plan.go",
+          "sha256": "8cd690a942e403ba9d64cec138238fcdaaeb14b1e27f5b9f7328e2b8df87892e",
+          "bytes": 4107
+        },
+        {
+          "path": "02_shell/cli/idea_recommend.go",
+          "sha256": "d4a9783a8c87894e9492ee8e35be332c20239e73a415c6adbcf1f3218e6e2a87",
+          "bytes": 32359
+        },
+        {
+          "path": "02_shell/cli/idea_recover.go",
+          "sha256": "0baffcda54ca1e44415b55c213a738f0e718135bdae42a50334fddc9a45497db",
+          "bytes": 9814
+        },
+        {
+          "path": "02_shell/cli/idea_screening.go",
+          "sha256": "f437009769c4a61a3119e3aa51cade6c6bf0a337e7ba025d060e436e413febc8",
+          "bytes": 7132
+        },
+        {
+          "path": "02_shell/cli/idea_semantic.go",
+          "sha256": "72ae63c521e6173bdb7170d3ec7207cf3dad955f02e668b37b142cc5724a3537",
+          "bytes": 3092
+        },
+        {
+          "path": "02_shell/cli/idea_web.go",
+          "sha256": "e30defc071c289d6570188ff57789941ce2f018528e1ebbcdfcfb850062e9dc3",
+          "bytes": 13159
+        },
+        {
+          "path": "02_shell/cli/man.go",
+          "sha256": "5be0f9505fd3ff69147b6012ce2c3f926ee65d34ece1ca606058b634bb1ec7eb",
+          "bytes": 1483
+        },
+        {
+          "path": "02_shell/cli/similarity_cmd.go",
+          "sha256": "877bbe332e55be0e9cf829531d46f0259d3bae77f28448847d38fb7777a78c3e",
+          "bytes": 3148
+        },
+        {
+          "path": "02_shell/cli/struct_flags.go",
+          "sha256": "fb657c82300253d20044e54afd0310157f7b4c92e30de7d65b0983f869748da7",
+          "bytes": 1693
+        },
+        {
+          "path": "02_shell/cli/tui.go",
+          "sha256": "fdabf41b06ed34e93090ac9025a2ad2f6c702ba7fe0ba51498c425877ee49f5e",
+          "bytes": 5362
+        },
+        {
+          "path": "02_shell/experiment/catalysis/report.go",
+          "sha256": "d957264f1d14d2905b4bb6e716b6a7adc9b52eca199ecd41b71e1968c668e69c",
+          "bytes": 448
+        },
+        {
+          "path": "02_shell/mcp/durable_runs.go",
+          "sha256": "436989b07761406908297d733e8c07cb890c12aae92613cc541a232d8e1ec29e",
+          "bytes": 12216
+        },
+        {
+          "path": "02_shell/mcp/improvement_synthesis.go",
+          "sha256": "95b208a4adc750901ac22b47a33312dfe35813e313a40f9b257dbb2b111fc56d",
+          "bytes": 15533
+        },
+        {
+          "path": "02_shell/mcp/market_discovery.go",
+          "sha256": "8f25b4e5b2b39e069fce18df5e2c5aed558249693065c55b785221acaf4ccff0",
+          "bytes": 17087
+        },
+        {
+          "path": "02_shell/mcp/server.go",
+          "sha256": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42",
+          "bytes": 17820
+        },
+        {
+          "path": "02_shell/report/export_dataset.go",
+          "sha256": "56f75287b0e064bea19b15889bd548587c936763fb73d69374e23909c1e8a208",
+          "bytes": 2171
+        },
+        {
+          "path": "02_shell/report/flow.go",
+          "sha256": "e11aa716a747ab3d609d20de3fb37b0276f2f26f999026b4f2bfb2c36e7a55ba",
+          "bytes": 2792
+        },
+        {
+          "path": "02_shell/report/generator.go",
+          "sha256": "b284d933bdf283234f8ea69ff31b6cc0479b7525fbdbe2a53a4174c986160db9",
+          "bytes": 33911
+        },
+        {
+          "path": "02_shell/report/html_generator.go",
+          "sha256": "9e62f04b3aa96b9fae268bfeefe8677174182880222fcecd5b51698f105188f6",
+          "bytes": 9405
+        },
+        {
+          "path": "02_shell/report/lab_exporter.go",
+          "sha256": "da5d77e42e440229f5a5113765eb592545e43baae506bb640dd5a63b649434ca",
+          "bytes": 2363
+        },
+        {
+          "path": "02_shell/report/mermaid.go",
+          "sha256": "330ea4c565aed582cc032c20001a11b28e7c2c5877f457b6f7c33464f76e796b",
+          "bytes": 1535
+        },
+        {
+          "path": "03_infra/cache/bleve_store.go",
+          "sha256": "3c852e82d91763239005373bf8c9b50eff980603195cc902eef22808ab60652a",
+          "bytes": 4144
+        },
+        {
+          "path": "03_infra/cache/cache_store.go",
+          "sha256": "ff9a1745a0311beb8784d174a14d9032b23e4b180294f449ae2cc49e756ba81b",
+          "bytes": 4852
+        },
+        {
+          "path": "03_infra/cache/fast_cache.go",
+          "sha256": "f4bb6da2211f1c7648c1b688c7349e5b666fd826e43d68a53df74ce61546c9e0",
+          "bytes": 1860
+        },
+        {
+          "path": "03_infra/clang/ast.go",
+          "sha256": "0237f97ee04b5affd40e0d819699012fc9301fdfebfa731c719dc2d0d3c07d0e",
+          "bytes": 5733
+        },
+        {
+          "path": "03_infra/clang/client.go",
+          "sha256": "8dfa8937318c6da88ba39711dc4fce45c5b9d9228d82cd3c22e2779c4dc363cf",
+          "bytes": 12417
+        },
+        {
+          "path": "03_infra/clang/flow.go",
+          "sha256": "722d6ebbac2b0c3a9ea2d2e129b19ef337791a6c84c3e494fc410de6ea5eae02",
+          "bytes": 1481
+        },
+        {
+          "path": "03_infra/content/router.go",
+          "sha256": "01a48592baf9ff1ffc182eb8c45cdaee6f9a9d1d941eee644c419a5d2483baf7",
+          "bytes": 2100
+        },
+        {
+          "path": "03_infra/envfile/load.go",
+          "sha256": "73e372d6960b1e3eeac5e84ca879d36e8dd295d580028918e3e6455f85e10d81",
+          "bytes": 713
+        },
+        {
+          "path": "03_infra/experiment/catalysis/capture.go",
+          "sha256": "077a0a89296de9e691850053cc7a6278c8414c7b490b32dc337af0e5700fabfc",
+          "bytes": 785
+        },
+        {
+          "path": "03_infra/fdroid/market_discovery.go",
+          "sha256": "a92248533e660072f40867d94064c52b18de3246dd1d5df815aca4a5a5c58d33",
+          "bytes": 6506
+        },
+        {
+          "path": "03_infra/forge/forges.go",
+          "sha256": "1361a687dd2e4c5f5b67dbe423776c1285faccc08c68de88ce1de2b897caa7dd",
+          "bytes": 6723
+        },
+        {
+          "path": "03_infra/github/catalog_surfaces.go",
+          "sha256": "bd9d6ded50ddeb8859964ea29cb39bb589cac2f368ea3530e0e87a70b515048c",
+          "bytes": 6332
+        },
+        {
+          "path": "03_infra/github/client.go",
+          "sha256": "9679727f6750ad5c76faa22c21a48bf231c022ab3ffe61c363f4eda969d6a6a7",
+          "bytes": 17570
+        },
+        {
+          "path": "03_infra/github/project_catalog.go",
+          "sha256": "1716e644280558c9cdabc568cac0843292e6fcb1ba4777f7eb124d1ee75e4cba",
+          "bytes": 4916
+        },
+        {
+          "path": "03_infra/itunes/market_discovery.go",
+          "sha256": "5af27162ffd3dfe7926e1fc2ad77f7648df6247b7a68dee38c7e160719ac7985",
+          "bytes": 11270
+        },
+        {
+          "path": "03_infra/lexical/expander.go",
+          "sha256": "aee3259258b6bb12c4a35e8eefe2c304920d1b259b5b516350f6bfc2aab5518b",
+          "bytes": 3105
+        },
+        {
+          "path": "03_infra/local/client.go",
+          "sha256": "29b8176ab30bc07ec9ea818e7a2a6608fa0409b8d0255fa5b12b6268581bb012",
+          "bytes": 9082
+        },
+        {
+          "path": "03_infra/local/implementation_search.go",
+          "sha256": "660d1468e2ba5973380319645bdd62b452db3bdd342317ca69058abf7bc77e02",
+          "bytes": 4131
+        },
+        {
+          "path": "03_infra/marketreplay/replay.go",
+          "sha256": "51c4b12b6fff3452b77c37f338ba323b45f82d5f4633fdb4a73f7b31376631bd",
+          "bytes": 11570
+        },
+        {
+          "path": "03_infra/playstore/market_discovery.go",
+          "sha256": "a4d4541c97c35929193bd207d2dbc806c6f51b62a1d47bf72c991a5a6c9577d7",
+          "bytes": 5574
+        },
+        {
+          "path": "03_infra/runstore/file_store.go",
+          "sha256": "2c407a6c217a28c3f43acd990e90dbfb5390eca9b1b56dc18c69b3c5a3c17b44",
+          "bytes": 29695
+        },
+        {
+          "path": "03_infra/runworker/local_queue.go",
+          "sha256": "8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+          "bytes": 4524
+        },
+        {
+          "path": "03_infra/sourcegraph/client.go",
+          "sha256": "4eec76f25932fd7f1898f827242f92afba113442d090e6abf8ad34c0be587fb9",
+          "bytes": 10823
+        },
+        {
+          "path": "03_infra/sourcegraph/observable_discovery.go",
+          "sha256": "2d6c9baff667e70403b3f916675e92dd01f1e13aea2ef932f45ddedcb1913eef",
+          "bytes": 3383
+        },
+        {
+          "path": "03_infra/sourcegraph/provider_capabilities.go",
+          "sha256": "6e56794a108b8730d0b8acf639648579988750a8f124f4874a095bf1de0f4f61",
+          "bytes": 549
+        },
+        {
+          "path": "03_infra/vfs/memory_vfs.go",
+          "sha256": "c336d9d467dc0444cf3c9baf63d19b645f9b8d50ac0fdced3b83afa0bfff5151",
+          "bytes": 1425
+        },
+        {
+          "path": "03_infra/web/authenticated_client.go",
+          "sha256": "af0533af061a32f9d8f8462f18a2898775b258ebc201936b3e2394e10efe7559",
+          "bytes": 1056
+        },
+        {
+          "path": "03_infra/web/observable_client.go",
+          "sha256": "3b7b5982310d2fbbfa9bcb5c31505e567170309bba9a2704854b17ac0f7facb4",
+          "bytes": 4969
+        },
+        {
+          "path": "04_wiring/durable_config.go",
+          "sha256": "86b1132125c58c583538faecf2cc7c3a1346f884e14f8f0f87838645b2d46519",
+          "bytes": 4511
+        },
+        {
+          "path": "04_wiring/durable_runs.go",
+          "sha256": "52b68a19ca0d1a6827e20657c2089d6a036481b0f7417cd8a8037135316fd1e8",
+          "bytes": 2812
+        },
+        {
+          "path": "04_wiring/improvement_synthesis.go",
+          "sha256": "19cf0fd32976e6adf3b09f3becf8c0c2e9f120b968a3e816615b2391ab9aa24c",
+          "bytes": 2145
+        },
+        {
+          "path": "04_wiring/main.go",
+          "sha256": "97b70beaa64a365694df967282275dfc52b8d16c8380a755501903d59c13dac1",
+          "bytes": 9248
+        },
+        {
+          "path": "04_wiring/market_discovery.go",
+          "sha256": "88f65dcc595f15d698980cb234a0fc71b86d4cc402d44208f96fc1ed239f58c0",
+          "bytes": 3820
+        },
+        {
+          "path": "04_wiring/step0029_experiment/harness.go",
+          "sha256": "114143d2148ad6fc3c3b94f5c7b7a5f78e9e7911023c4eeed09f2185d570d775",
+          "bytes": 68221
+        },
+        {
+          "path": "04_wiring/step0029_experiment/types.go",
+          "sha256": "90bb66e4bea2aafaec93e0daa869bc3b7b2ed595f8c65b3cfe42ea41885fc165",
+          "bytes": 44796
+        },
+        {
+          "path": "04_wiring/step0030_catalysis/compose.go",
+          "sha256": "b59f31d98e2e0dda1931d72741fbba3e3595ee044779feea3b680f4e7d4b26e1",
+          "bytes": 327
+        }
+      ],
+      "files_read": 228,
+      "bytes_read": 1472253,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": true,
+      "issues": [
+        "limite de resultados atingido",
+        "hit não extraído: 02_shell/cli/idea_recover.go",
+        "hit não extraído: 03_infra/content/router.go",
+        "hit não extraído: 01_core/usecase/evidence_authority.go"
+      ]
+    },
+    "query": {
+      "query": "como a busca preserva requisitos originais e rejeita capacidades sem evidência",
+      "language": "go",
+      "max_results": 20,
+      "must_have": null,
+      "depth": 1,
+      "direct_repos": null,
+      "local_path": "/repos/Antigravity/Bateia"
+    }
+  },
+  "recommend_interpretations": [
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "bateia-a061b61e",
+        "commit": "f22d65416a6e78208843f882d9685a19c492a0587feed240c0f7fc46087920a4"
+      },
+      "query_interpretation": [
+        {
+          "original": "Evitar iniciar software do zero quando projetos, componentes ou padrões reutilizáveis já resolvem toda ou parte da ideia, produzindo uma decisão de partida baseada em evidências.",
+          "mode": "natural",
+          "terms": [
+            "baseada",
+            "componentes",
+            "decisão",
+            "evidence",
+            "evidências",
+            "evitar",
+            "ideia",
+            "iniciar",
+            "já",
+            "ou",
+            "padrões",
+            "parte",
+            "partida",
+            "produzindo",
+            "projetos",
+            "quando",
+            "resolvem",
+            "reutilizáveis",
+            "software",
+            "toda",
+            "zero"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "comparar cobertura funcional licença manutenção e operação",
+          "mode": "natural",
+          "terms": [
+            "cobertura",
+            "comparar",
+            "funcional",
+            "licença",
+            "manutenção",
+            "operação"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "comprovar capacidades em documentação manifestos código e testes",
+          "mode": "natural",
+          "terms": [
+            "capacidades",
+            "comprovar",
+            "documentação",
+            "manifestos",
+            "testes"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "decidir entre fork extend compose integrate reference build e inconclusive",
+          "mode": "natural",
+          "terms": [
+            "build",
+            "compose",
+            "decidir",
+            "entre",
+            "extend",
+            "fork",
+            "inconclusive",
+            "integrate",
+            "reference"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "decompor uma ideia em capacidades e restrições rastreáveis",
+          "mode": "natural",
+          "terms": [
+            "capacidades",
+            "decompor",
+            "ideia",
+            "rastreáveis",
+            "restrições"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "descobrir projetos públicos privados ou locais por intenção funcional",
+          "mode": "natural",
+          "terms": [
+            "descobrir",
+            "funcional",
+            "intenção",
+            "locais",
+            "ou",
+            "privados",
+            "projetos",
+            "públicos"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "propor a menor composição de projetos para cobrir lacunas reais",
+          "mode": "natural",
+          "terms": [
+            "cobrir",
+            "composição",
+            "lacunas",
+            "menor",
+            "projetos",
+            "propor",
+            "reais"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "reconhecer capacidades já existentes no próprio projeto",
+          "mode": "natural",
+          "terms": [
+            "capacidades",
+            "existentes",
+            "já",
+            "projeto",
+            "próprio",
+            "reconhecer"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "recuperar evidência faltante sem repetir coleta genérica",
+          "mode": "natural",
+          "terms": [
+            "coleta",
+            "evidence",
+            "evidência",
+            "faltante",
+            "genérica",
+            "recuperar",
+            "repetir",
+            "retry"
+          ],
+          "symbols": [],
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "recuperar evidência faltante sem repetir coleta genérica",
+              "status": "not_verified"
+            }
+          ]
+        },
+        {
+          "original": "rejeitar projetos lexicalmente parecidos e funcionalmente irrelevantes",
+          "mode": "natural",
+          "terms": [
+            "funcionalmente",
+            "irrelevantes",
+            "lexicalmente",
+            "parecidos",
+            "projetos",
+            "rejeitar"
+          ],
+          "symbols": []
+        },
+        {
+          "original": "reproduzir julgamento offline com artefatos e commits congelados",
+          "mode": "natural",
+          "terms": [
+            "artefatos",
+            "commits",
+            "congelados",
+            "julgamento",
+            "offline",
+            "reproduzir"
+          ],
+          "symbols": []
+        }
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "capability": "comparar cobertura funcional licença manutenção e operação",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "comprovar capacidades em documentação manifestos código e testes",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "decidir entre fork extend compose integrate reference build e inconclusive",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "decompor uma ideia em capacidades e restrições rastreáveis",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "descobrir projetos públicos privados ou locais por intenção funcional",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "propor a menor composição de projetos para cobrir lacunas reais",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "reconhecer capacidades já existentes no próprio projeto",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "recuperar evidência faltante sem repetir coleta genérica",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "rejeitar projetos lexicalmente parecidos e funcionalmente irrelevantes",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "capability": "reproduzir julgamento offline com artefatos e commits congelados",
+      "status": "INCONCLUSIVE"
+    }
+  ],
+  "replay_directories": {
+    "local": "/tmp/bateia-0048-final/recommend-release",
+    "replay": "/tmp/bateia-0048-final/replay-release"
+  }
+}

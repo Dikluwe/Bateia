@@ -1,0 +1,38 @@
+[
+  {
+    "id": "uuid-random",
+    "project": "uuid",
+    "query": "Gerar UUID aleatório lendo bytes de um reader e retornar erro de leitura",
+    "expected": [
+      {
+        "path": "version4.go",
+        "symbol": "NewRandomFromReader",
+        "start": 47,
+        "end": 56
+      }
+    ],
+    "rationale": "Leitura manual: io.ReadFull, retorno de erro, ajuste dos bits de versão e variante."
+  },
+  {
+    "id": "uuid-binary",
+    "project": "uuid",
+    "query": "Decodificar UUID binário e rejeitar tamanho inválido dos bytes",
+    "expected": [
+      {
+        "path": "marshal.go",
+        "symbol": "UUID.UnmarshalBinary",
+        "start": 32,
+        "end": 38
+      }
+    ],
+    "rationale": "Leitura manual: len(data) != 16 retorna fmt.Errorf; copy no destino."
+  },
+  {
+    "id": "uuid-negative",
+    "project": "uuid",
+    "query": "Enviar UUID por email usando SMTP",
+    "expected": [],
+    "negative": true,
+    "rationale": "Recorte de geração e codificação UUID lido não implementa envio SMTP; ausência restrita, não universal."
+  }
+]

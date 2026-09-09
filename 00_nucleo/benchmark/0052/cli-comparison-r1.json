@@ -1,0 +1,4157 @@
+[
+  {
+    "name": "snappy-decompress",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "Descomprimir um bloco e rejeitar dados corrompidos",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "block",
+            "blocks",
+            "bloco",
+            "corrompidos",
+            "corrupt",
+            "corrupted",
+            "dados",
+            "data",
+            "decode",
+            "decoded",
+            "decompress",
+            "decompresses",
+            "decompression",
+            "descomprimir",
+            "reject",
+            "rejeitar"
+          ],
+          "symbols": [],
+          "expansions": [
+            {
+              "source": "bloco",
+              "terms": [
+                "block",
+                "blocks"
+              ],
+              "rule_id": "0052-v1:block:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "corrompidos",
+              "terms": [
+                "corrupt",
+                "corrupted"
+              ],
+              "rule_id": "0052-v1:corrupt:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "dados",
+              "terms": [
+                "data"
+              ],
+              "rule_id": "0052-v1:data:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "descomprimir",
+              "terms": [
+                "decompress",
+                "decompression"
+              ],
+              "rule_id": "0052-v1:decompression:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "descomprimir",
+              "terms": [
+                "decode",
+                "decoded",
+                "decompresses"
+              ],
+              "rule_id": "0052-v1:decompression:mechanism",
+              "kind": "mechanism",
+              "status": "hypothesis"
+            },
+            {
+              "source": "rejeitar",
+              "terms": [
+                "reject"
+              ],
+              "rule_id": "0052-v1:reject:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 5 de 16 termos associados aos canais localizados; requisito e comportamento não verificados. Recuperação parcial ou não avaliada; cobertura insuficiente para concluir ausência.",
+          "matched_terms": [
+            "block",
+            "corrupt",
+            "data",
+            "decode",
+            "decoded"
+          ],
+          "missing_terms": [
+            "blocks",
+            "bloco",
+            "corrompidos",
+            "corrupted",
+            "dados",
+            "decompress",
+            "decompresses",
+            "decompression",
+            "descomprimir",
+            "reject",
+            "rejeitar"
+          ],
+          "sources": [
+            {
+              "path": "cmd/snappytool/main.go",
+              "symbol": "decode",
+              "line": 13,
+              "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec"
+            },
+            {
+              "path": "cmd/snappytool/main.go",
+              "symbol": "run",
+              "line": 17,
+              "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "ErrCorrupt",
+              "line": 15,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "DecodedLen",
+              "line": 25,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "decodedLen",
+              "line": 32,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "decodeErrCodeCorrupt",
+              "line": 46,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "Decode",
+              "line": 57,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "NewReader",
+              "line": 79,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "readFull",
+              "line": 111,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "fill",
+              "line": 121,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "Read",
+              "line": 237,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "ReadByte",
+              "line": 252,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode_other.go",
+              "symbol": "decode",
+              "line": 14,
+              "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "Encode",
+              "line": 20,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "NewBufferedWriter",
+              "line": 135,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 211,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 112,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "snappy.go",
+              "symbol": "chunkTypeCompressedData",
+              "line": 85,
+              "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e"
+            },
+            {
+              "path": "snappy.go",
+              "symbol": "chunkTypeUncompressedData",
+              "line": 86,
+              "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e"
+            }
+          ]
+        }
+      ],
+      "status": "partial",
+      "method": "go_ast_query_v1",
+      "reason": "Busca ou releitura parcial; somente hits vinculados aos bytes extraídos são apresentados. Ausência não demonstrada.",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 5.71993908657899
+            },
+            {
+              "term": "decode",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 5.388412911384119
+            },
+            {
+              "term": "decode",
+              "field": "name",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 4.068642212798733
+            },
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 5.71993908657899
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "decode.go",
+              "symbol": "fill",
+              "line": 165,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            }
+          ],
+          "path": "decode.go",
+          "symbol": "Decode",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=14 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 57,
+          "end_line": 74,
+          "score": 1651,
+          "matched_terms": [
+            "corrupt",
+            "decode",
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 11.461877938875592
+            },
+            {
+              "term": "decoded",
+              "field": "name",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 4.318968498706745
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "decode.go",
+              "symbol": "fill",
+              "line": 156,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            }
+          ],
+          "path": "decode.go",
+          "symbol": "DecodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 25,
+          "end_line": 28,
+          "score": 1598,
+          "matched_terms": [
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 2.938943061250152
+            },
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 3.6341495314642223
+            },
+            {
+              "term": "decode",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 2.76860268918257
+            },
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 2.938943061250152
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "fill",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=31 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 121,
+          "end_line": 234,
+          "score": 1545,
+          "matched_terms": [
+            "corrupt",
+            "data",
+            "decode",
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 5.7319044284643965
+            },
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 6.436475732413939
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "NewReader",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=12 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 79,
+          "end_line": 85,
+          "score": 1544,
+          "matched_terms": [
+            "block",
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 3.9576205366635513
+            },
+            {
+              "term": "decode",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 3.728237884237883
+            },
+            {
+              "term": "decode",
+              "field": "name",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 4.068642212798733
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode_other.go",
+          "symbol": "decode",
+          "kind": "definition",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=22 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 14,
+          "end_line": 115,
+          "score": 1536,
+          "matched_terms": [
+            "corrupt",
+            "decode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 5.71993908657899
+            },
+            {
+              "term": "decoded",
+              "field": "name",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 4.318968498706745
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "decode.go",
+              "symbol": "DecodedLen",
+              "line": 26,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "Decode",
+              "line": 58,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            }
+          ],
+          "path": "decode.go",
+          "symbol": "decodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=14 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 32,
+          "end_line": 43,
+          "score": 1501,
+          "matched_terms": [
+            "corrupt",
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 9.3713467424769
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "ReadByte",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 252,
+          "end_line": 264,
+          "score": 1486,
+          "matched_terms": [
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "decoded",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 7.358242627426306
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "Read",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 237,
+          "end_line": 249,
+          "score": 1432,
+          "matched_terms": [
+            "decoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 6.552769754022261
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode.go",
+          "symbol": "NewBufferedWriter",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 135,
+          "end_line": 141,
+          "score": 1406,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 2.6942860409939247
+            },
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 3.741144796857585
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode.go",
+          "symbol": "write",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=30 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 211,
+          "end_line": 266,
+          "score": 1402,
+          "matched_terms": [
+            "block",
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "body",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 6.0570899676984835
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "readFull",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=13 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 111,
+          "end_line": 119,
+          "score": 1388,
+          "matched_terms": [
+            "corrupt"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "decode",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 4.617373563866983
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "cmd/snappytool/main.go",
+          "symbol": "run",
+          "kind": "definition",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=17 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 17,
+          "end_line": 39,
+          "score": 1330,
+          "matched_terms": [
+            "decode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "encodeBlock",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=33 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 112,
+          "end_line": 238,
+          "score": 1293,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.0539375723579005
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 233,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "encode.go",
+          "symbol": "Encode",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=26 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 20,
+          "end_line": 43,
+          "score": 1249,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "name",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 4.318968498706745
+            },
+            {
+              "term": "decode",
+              "field": "name",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 4.068642212798733
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "decodeErrCodeCorrupt",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 46,
+          "end_line": 46,
+          "score": 461,
+          "matched_terms": [
+            "corrupt",
+            "decode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "name",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 5.340619746238726
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "snappy.go",
+          "symbol": "chunkTypeCompressedData",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 85,
+          "end_line": 85,
+          "score": 361,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "name",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 5.340619746238726
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "snappy.go",
+          "symbol": "chunkTypeUncompressedData",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 86,
+          "end_line": 86,
+          "score": 361,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "corrupt",
+              "field": "name",
+              "document_frequency": 7,
+              "corpus_documents": 64,
+              "weight": 4.318968498706745
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "ErrCorrupt",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "var: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 15,
+          "end_line": 15,
+          "score": 316,
+          "matched_terms": [
+            "corrupt"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "decode",
+              "field": "name",
+              "document_frequency": 8,
+              "corpus_documents": 64,
+              "weight": 4.068642212798733
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "cmd/snappytool/main.go",
+          "symbol": "decode",
+          "kind": "definition",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "reason": "var: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 13,
+          "end_line": 13,
+          "score": 304,
+          "matched_terms": [
+            "decode"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode.go",
+              "symbol": "Encode",
+              "line": 21,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "encode.go",
+          "symbol": "MaxEncodedLen",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 78,
+          "end_line": 108,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 220,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 222,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 226,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "hash",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 101,
+          "end_line": 103,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 219,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load64",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 14,
+          "end_line": 18,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 176,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 225,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load32",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 9,
+          "end_line": 12,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "decode.go",
+              "symbol": "fill",
+              "line": 169,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "fill",
+              "line": 196,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 229,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "snappy.go",
+          "symbol": "crc",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 95,
+          "end_line": 98,
+          "score": 0,
+          "matched_terms": []
+        }
+      ],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": true,
+      "issues": [
+        "limite de resultados atingido",
+        "limite de resultados omitiu candidatos documentais"
+      ]
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+      "-query",
+      "Descomprimir um bloco e rejeitar dados corrompidos",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/snappy-decompress-after.json"
+    ]
+  },
+  {
+    "name": "snappy-compress",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "buffer",
+            "bytes",
+            "comprimir",
+            "destino",
+            "reutilizar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "documentation_sources": [
+            {
+              "path": "decode.go",
+              "symbol": "decodedLen",
+              "line": 32,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode_other.go",
+              "symbol": "decode",
+              "line": 14,
+              "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "NewWriter",
+              "line": 121,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitLiteral",
+              "line": 25,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitCopy",
+              "line": 50,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "requirement": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 2 de 6 termos associados aos canais localizados; requisito e comportamento não verificados. Fontes documentais separadas registram declarações do autor, não prova de implementação.",
+          "matched_terms": [
+            "buffer",
+            "bytes"
+          ],
+          "missing_terms": [
+            "bloco",
+            "comprimir",
+            "destino",
+            "reutilizar"
+          ],
+          "sources": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 112,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ]
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "bytes",
+              "field": "body",
+              "document_frequency": 1,
+              "corpus_documents": 64,
+              "weight": 4.851784126181635
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "encodeBlock",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=33 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 112,
+          "end_line": 238,
+          "score": 1340,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 220,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 222,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 226,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "hash",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 101,
+          "end_line": 103,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 219,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load64",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 14,
+          "end_line": 18,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 176,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 225,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load32",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 9,
+          "end_line": 12,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "documentation_line": 30,
+          "documentation_end_line": 31,
+          "retrieval": "documentation",
+          "path": "decode.go",
+          "symbol": "decodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 32,
+          "end_line": 43,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 9,
+          "documentation_end_line": 13,
+          "retrieval": "documentation",
+          "path": "decode_other.go",
+          "symbol": "decode",
+          "kind": "definition",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 14,
+          "end_line": 115,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 112,
+          "documentation_end_line": 120,
+          "retrieval": "documentation",
+          "path": "encode.go",
+          "symbol": "NewWriter",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 121,
+          "end_line": 126,
+          "score": 1,
+          "matched_terms": [
+            "buffer"
+          ]
+        },
+        {
+          "documentation_line": 20,
+          "documentation_end_line": 24,
+          "retrieval": "documentation",
+          "path": "encode_other.go",
+          "symbol": "emitLiteral",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 25,
+          "end_line": 42,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        },
+        {
+          "documentation_line": 44,
+          "documentation_end_line": 49,
+          "retrieval": "documentation",
+          "path": "encode_other.go",
+          "symbol": "emitCopy",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 50,
+          "end_line": 88,
+          "score": 1,
+          "matched_terms": [
+            "bytes"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "mode": "natural",
+          "terms": [
+            "block",
+            "blocks",
+            "bloco",
+            "buffer",
+            "bytes",
+            "compress",
+            "compresses",
+            "compression",
+            "comprimir",
+            "destination",
+            "destino",
+            "dst",
+            "encode",
+            "encoded",
+            "reuse",
+            "reutilizar"
+          ],
+          "symbols": [],
+          "expansions": [
+            {
+              "source": "bloco",
+              "terms": [
+                "block",
+                "blocks"
+              ],
+              "rule_id": "0052-v1:block:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "comprimir",
+              "terms": [
+                "compress",
+                "compression"
+              ],
+              "rule_id": "0052-v1:compression:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "comprimir",
+              "terms": [
+                "compresses",
+                "encode",
+                "encoded"
+              ],
+              "rule_id": "0052-v1:compression:mechanism",
+              "kind": "mechanism",
+              "status": "hypothesis"
+            },
+            {
+              "source": "destino",
+              "terms": [
+                "destination"
+              ],
+              "rule_id": "0052-v1:destination:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "destino",
+              "terms": [
+                "dst"
+              ],
+              "rule_id": "0052-v1:destination:mechanism",
+              "kind": "mechanism",
+              "status": "hypothesis"
+            },
+            {
+              "source": "reutilizar",
+              "terms": [
+                "reuse"
+              ],
+              "rule_id": "0052-v1:reuse:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "documentation_sources": [
+            {
+              "path": "decode.go",
+              "symbol": "DecodedLen",
+              "line": 25,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "NewWriter",
+              "line": 121,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode_asm.go",
+              "symbol": "emitLiteral",
+              "line": 15,
+              "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b"
+            }
+          ],
+          "requirement": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 7 de 16 termos associados aos canais localizados; requisito e comportamento não verificados. Fontes documentais separadas registram declarações do autor, não prova de implementação. Recuperação parcial ou não avaliada; cobertura insuficiente para concluir ausência.",
+          "matched_terms": [
+            "block",
+            "buffer",
+            "bytes",
+            "compresses",
+            "dst",
+            "encode",
+            "encoded"
+          ],
+          "missing_terms": [
+            "blocks",
+            "bloco",
+            "compress",
+            "compression",
+            "comprimir",
+            "destination",
+            "destino",
+            "reuse",
+            "reutilizar"
+          ],
+          "sources": [
+            {
+              "path": "cmd/snappytool/main.go",
+              "symbol": "encode",
+              "line": 14,
+              "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec"
+            },
+            {
+              "path": "cmd/snappytool/main.go",
+              "symbol": "run",
+              "line": 17,
+              "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "Decode",
+              "line": 57,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode.go",
+              "symbol": "NewReader",
+              "line": 79,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            },
+            {
+              "path": "decode_other.go",
+              "symbol": "decode",
+              "line": 14,
+              "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "Encode",
+              "line": 20,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "minNonLiteralBlockSize",
+              "line": 72,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "MaxEncodedLen",
+              "line": 78,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "NewBufferedWriter",
+              "line": 135,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 211,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            },
+            {
+              "path": "encode_asm.go",
+              "symbol": "encodeBlock",
+              "line": 30,
+              "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitLiteral",
+              "line": 25,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "emitCopy",
+              "line": 50,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 112,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "snappy.go",
+              "symbol": "maxBlockSize",
+              "line": 72,
+              "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e"
+            },
+            {
+              "path": "snappy.go",
+              "symbol": "maxEncodedLenOfMaxBlockSize",
+              "line": 78,
+              "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e"
+            }
+          ]
+        }
+      ],
+      "status": "partial",
+      "method": "go_ast_query_v1",
+      "reason": "Busca ou releitura parcial; somente hits vinculados aos bytes extraídos são apresentados. Ausência não demonstrada.",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.0539375723579005
+            },
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 3.656579319138991
+            },
+            {
+              "term": "encode",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 3.656579319138991
+            },
+            {
+              "term": "encode",
+              "field": "name",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 4.605170185988092
+            },
+            {
+              "term": "encoded",
+              "field": "body",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 4.2405381184174
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 233,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "encode.go",
+          "symbol": "Encode",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=26 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 20,
+          "end_line": 43,
+          "score": 1636,
+          "matched_terms": [
+            "block",
+            "dst",
+            "encode",
+            "encoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            },
+            {
+              "term": "bytes",
+              "field": "body",
+              "document_frequency": 1,
+              "corpus_documents": 64,
+              "weight": 4.851784126181635
+            },
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 2.9641487204587533
+            },
+            {
+              "term": "encode",
+              "field": "name",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 4.605170185988092
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "encodeBlock",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=33 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 112,
+          "end_line": 238,
+          "score": 1604,
+          "matched_terms": [
+            "block",
+            "bytes",
+            "dst",
+            "encode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 5.7319044284643965
+            },
+            {
+              "term": "encoded",
+              "field": "body",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 7.95902294795836
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "NewReader",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=12 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 79,
+          "end_line": 85,
+          "score": 1569,
+          "matched_terms": [
+            "block",
+            "encoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 9.157254836691019
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "emitCopy",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=8 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 50,
+          "end_line": 88,
+          "score": 1481,
+          "matched_terms": [
+            "dst"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 7.845845502053786
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_other.go",
+          "symbol": "emitLiteral",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 25,
+          "end_line": 42,
+          "score": 1446,
+          "matched_terms": [
+            "dst"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 6.552769754022261
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode.go",
+          "symbol": "NewBufferedWriter",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 135,
+          "end_line": 141,
+          "score": 1406,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 6.098977789504382
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode.go",
+          "symbol": "Decode",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=14 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 57,
+          "end_line": 74,
+          "score": 1390,
+          "matched_terms": [
+            "dst"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "body",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 2.6942860409939247
+            },
+            {
+              "term": "encode",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 3.2259567800322673
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode.go",
+          "symbol": "write",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=30 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 211,
+          "end_line": 266,
+          "score": 1383,
+          "matched_terms": [
+            "block",
+            "encode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "encoded",
+              "field": "name",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 5.340619746238726
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "encode.go",
+              "symbol": "Encode",
+              "line": 21,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "encode.go",
+          "symbol": "MaxEncodedLen",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 78,
+          "end_line": 108,
+          "score": 1361,
+          "matched_terms": [
+            "encoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "encode",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 5.226262217650959
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "cmd/snappytool/main.go",
+          "symbol": "run",
+          "kind": "definition",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=17 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 17,
+          "end_line": 39,
+          "score": 1356,
+          "matched_terms": [
+            "encode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "dst",
+              "field": "body",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 4.219877062857614
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "decode_other.go",
+          "symbol": "decode",
+          "kind": "definition",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=22 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 14,
+          "end_line": 115,
+          "score": 1311,
+          "matched_terms": [
+            "dst"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            },
+            {
+              "term": "encoded",
+              "field": "name",
+              "document_frequency": 4,
+              "corpus_documents": 64,
+              "weight": 5.340619746238726
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "snappy.go",
+          "symbol": "maxEncodedLenOfMaxBlockSize",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 78,
+          "end_line": 78,
+          "score": 482,
+          "matched_terms": [
+            "block",
+            "encoded"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            },
+            {
+              "term": "encode",
+              "field": "name",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 4.605170185988092
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode_asm.go",
+          "symbol": "encodeBlock",
+          "kind": "definition",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 30,
+          "end_line": 30,
+          "score": 463,
+          "matched_terms": [
+            "block",
+            "encode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "encode",
+              "field": "name",
+              "document_frequency": 6,
+              "corpus_documents": 64,
+              "weight": 4.605170185988092
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "cmd/snappytool/main.go",
+          "symbol": "encode",
+          "kind": "definition",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "reason": "var: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 14,
+          "end_line": 14,
+          "score": 329,
+          "matched_terms": [
+            "encode"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "encode.go",
+          "symbol": "minNonLiteralBlockSize",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 72,
+          "end_line": 72,
+          "score": 293,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "block",
+              "field": "name",
+              "document_frequency": 9,
+              "corpus_documents": 64,
+              "weight": 3.846190942578284
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "snappy.go",
+          "symbol": "maxBlockSize",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "const: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=64 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=0 termos únicos AST do corpo, avg=11.8966 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 72,
+          "end_line": 72,
+          "score": 293,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "decode.go",
+              "symbol": "Decode",
+              "line": 58,
+              "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192"
+            }
+          ],
+          "path": "decode.go",
+          "symbol": "decodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 32,
+          "end_line": 43,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 220,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 222,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 226,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "hash",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 101,
+          "end_line": 103,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 219,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load64",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 14,
+          "end_line": 18,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 143,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 175,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 176,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            },
+            {
+              "path": "encode_other.go",
+              "symbol": "encodeBlock",
+              "line": 225,
+              "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737"
+            }
+          ],
+          "path": "encode_other.go",
+          "symbol": "load32",
+          "kind": "definition",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 9,
+          "end_line": 12,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "encode.go",
+              "symbol": "write",
+              "line": 229,
+              "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e"
+            }
+          ],
+          "path": "snappy.go",
+          "symbol": "crc",
+          "kind": "definition",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 95,
+          "end_line": 98,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "documentation_line": 112,
+          "documentation_end_line": 120,
+          "retrieval": "documentation",
+          "path": "encode.go",
+          "symbol": "NewWriter",
+          "kind": "definition",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 121,
+          "end_line": 126,
+          "score": 2,
+          "matched_terms": [
+            "buffer",
+            "compresses"
+          ]
+        },
+        {
+          "documentation_line": 24,
+          "documentation_end_line": 24,
+          "retrieval": "documentation",
+          "path": "decode.go",
+          "symbol": "DecodedLen",
+          "kind": "definition",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 25,
+          "end_line": 28,
+          "score": 1,
+          "matched_terms": [
+            "block"
+          ]
+        },
+        {
+          "documentation_line": 12,
+          "documentation_end_line": 14,
+          "retrieval": "documentation",
+          "path": "encode_asm.go",
+          "symbol": "emitLiteral",
+          "kind": "definition",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 15,
+          "end_line": 15,
+          "score": 1,
+          "matched_terms": [
+            "encode"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": true,
+      "issues": [
+        "limite de resultados omitiu candidatos documentais"
+      ]
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+      "-query",
+      "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/snappy-compress-after.json"
+    ]
+  },
+  {
+    "name": "uuid-compare",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+    "query": "comparar dados",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "comparar dados",
+          "mode": "natural",
+          "terms": [
+            "comparar",
+            "dados"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "comparar dados",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "comparar",
+            "dados"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "comparar dados",
+          "mode": "natural",
+          "terms": [
+            "comparar",
+            "compare",
+            "comparison",
+            "dados",
+            "data"
+          ],
+          "symbols": [],
+          "expansions": [
+            {
+              "source": "comparar",
+              "terms": [
+                "compare",
+                "comparison"
+              ],
+              "rule_id": "0052-v1:comparison:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "dados",
+              "terms": [
+                "data"
+              ],
+              "rule_id": "0052-v1:data:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "documentation_sources": [
+            {
+              "path": "util.go",
+              "symbol": "randomBits",
+              "line": 12,
+              "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e"
+            },
+            {
+              "path": "uuid.go",
+              "symbol": "SetRand",
+              "line": 319,
+              "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1"
+            }
+          ],
+          "requirement": "comparar dados",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 1 de 5 termos associados aos canais localizados; requisito e comportamento não verificados. Fontes documentais separadas registram declarações do autor, não prova de implementação.",
+          "matched_terms": [
+            "data"
+          ],
+          "missing_terms": [
+            "comparar",
+            "compare",
+            "comparison",
+            "dados"
+          ],
+          "sources": [
+            {
+              "path": "hash.go",
+              "symbol": "NewHash",
+              "line": 33,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewMD5",
+              "line": 49,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewSHA1",
+              "line": 57,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalText",
+              "line": 17,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalBinary",
+              "line": 32,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalBinary",
+              "line": 70,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalText",
+              "line": 89,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalJSON",
+              "line": 110,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            }
+          ]
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 10.90233519775484
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "hash.go",
+          "symbol": "NewMD5",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 49,
+          "end_line": 51,
+          "score": 1520,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 10.90233519775484
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "hash.go",
+          "symbol": "NewSHA1",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 57,
+          "end_line": 59,
+          "score": 1520,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 8.636914896922665
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "marshal.go",
+          "symbol": "UnmarshalText",
+          "kind": "definition",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 17,
+          "end_line": 24,
+          "score": 1468,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 8.636914896922665
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "marshal.go",
+          "symbol": "UnmarshalBinary",
+          "kind": "definition",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 32,
+          "end_line": 38,
+          "score": 1468,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.584578683792527
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalBinary",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 70,
+          "end_line": 77,
+          "score": 1407,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "hash.go",
+              "symbol": "NewMD5",
+              "line": 50,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewSHA1",
+              "line": 58,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            }
+          ],
+          "path": "hash.go",
+          "symbol": "NewHash",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 33,
+          "end_line": 43,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalText",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 89,
+          "end_line": 98,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalJSON",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 110,
+          "end_line": 118,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalText",
+              "line": 18,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalText",
+              "line": 90,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            }
+          ],
+          "path": "uuid.go",
+          "symbol": "ParseBytes",
+          "kind": "definition",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 120,
+          "end_line": 162,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "documentation_line": 11,
+          "documentation_end_line": 11,
+          "retrieval": "documentation",
+          "path": "util.go",
+          "symbol": "randomBits",
+          "kind": "definition",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 12,
+          "end_line": 16,
+          "score": 1,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "documentation_line": 313,
+          "documentation_end_line": 318,
+          "retrieval": "documentation",
+          "path": "uuid.go",
+          "symbol": "SetRand",
+          "kind": "definition",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 319,
+          "end_line": 325,
+          "score": 1,
+          "matched_terms": [
+            "data"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+      "-query",
+      "comparar dados",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/uuid-compare-after.json"
+    ]
+  },
+  {
+    "name": "snappy-negative",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "desserializar transação SQL",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "desserializar transação SQL",
+          "mode": "mixed",
+          "terms": [
+            "desserializar",
+            "sql",
+            "transação"
+          ],
+          "symbols": [
+            "SQL"
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "desserializar transação SQL",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "desserializar",
+            "sql",
+            "transação"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "desserializar transação SQL",
+          "mode": "mixed",
+          "terms": [
+            "deserialization",
+            "deserialize",
+            "desserializar",
+            "sql",
+            "transação",
+            "unmarshal"
+          ],
+          "symbols": [
+            "SQL"
+          ],
+          "expansions": [
+            {
+              "source": "desserializar",
+              "terms": [
+                "deserialization",
+                "deserialize"
+              ],
+              "rule_id": "0052-v1:deserialization:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "desserializar",
+              "terms": [
+                "unmarshal"
+              ],
+              "rule_id": "0052-v1:deserialization:mechanism",
+              "kind": "mechanism",
+              "status": "hypothesis"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "desserializar transação SQL",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "deserialization",
+            "deserialize",
+            "desserializar",
+            "sql",
+            "transação",
+            "unmarshal"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+      "-query",
+      "desserializar transação SQL",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/snappy-negative-after.json"
+    ]
+  },
+  {
+    "name": "snappy-negation",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+    "query": "descomprimir sem alocar",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "descomprimir sem alocar",
+          "mode": "natural",
+          "terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "symbols": [],
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ],
+          "requirement": "descomprimir sem alocar",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+          "matched_terms": [],
+          "missing_terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "descomprimir sem alocar",
+          "mode": "natural",
+          "terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "symbols": [],
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "constraints": [
+            {
+              "marker": "sem",
+              "text": "descomprimir sem alocar",
+              "status": "not_verified"
+            }
+          ],
+          "requirement": "descomprimir sem alocar",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade. Restrições preservadas; escopo e cumprimento da negação não foram verificados.",
+          "matched_terms": [],
+          "missing_terms": [
+            "alocar",
+            "descomprimir"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "cmd/snappytool/main.go",
+          "sha256": "90b0eebb8e6a7197feb1e586eb2eb38d968e9717d94def6f7984b8e0571155ec",
+          "bytes": 682
+        },
+        {
+          "path": "decode.go",
+          "sha256": "eebff83e4ab463713bb79b4d9f35c0212e72b9e1e02b18fb1632b412d4c8c192",
+          "bytes": 6431
+        },
+        {
+          "path": "decode_asm.go",
+          "sha256": "37ffc5a5ac8a0c376dc497891901010529b6bb510a8b9b5512f94eda3497274b",
+          "bytes": 363
+        },
+        {
+          "path": "decode_other.go",
+          "sha256": "5a9ba6d9ec2a2a11998d7876df498ff6890f45527f75aeda900c6ead61c86e12",
+          "bytes": 3471
+        },
+        {
+          "path": "encode.go",
+          "sha256": "b4e357ac92d94c339a523d5c81834eb171f44047a5350376475e7424e1fbbe6e",
+          "bytes": 9304
+        },
+        {
+          "path": "encode_asm.go",
+          "sha256": "992413050d507073a011886d44c2d157d56e0dc949bda4704995a907edabca7b",
+          "bytes": 742
+        },
+        {
+          "path": "encode_other.go",
+          "sha256": "7bada9cb612928b6ad155061c667ee544670f3175daf6d892cd0ab7e0e500737",
+          "bytes": 8216
+        },
+        {
+          "path": "snappy.go",
+          "sha256": "6fb3bc0c2c735aa29e587a64139267fb9cb3e1f947c88c2182f2998ebb2d3e5e",
+          "bytes": 3954
+        }
+      ],
+      "files_read": 8,
+      "bytes_read": 33163,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/golang/snappy@v1.0.0",
+      "-query",
+      "descomprimir sem alocar",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/snappy-negation-after.json"
+    ]
+  },
+  {
+    "name": "uuid-not-compression",
+    "path": "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+    "query": "Descomprimir um bloco e rejeitar dados corrompidos",
+    "baseline": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "symbols": []
+        }
+      ],
+      "requirements": [
+        {
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "not_verified",
+          "reason": "Nenhuma fonte lexical ou documental confirmada para este requisito no escopo; requisito e comportamento não verificados; não demonstra ausência da capacidade.",
+          "matched_terms": [],
+          "missing_terms": [
+            "bloco",
+            "corrompidos",
+            "dados",
+            "descomprimir",
+            "rejeitar"
+          ],
+          "sources": []
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "candidate": {
+      "query_interpretation": [
+        {
+          "original": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "mode": "natural",
+          "terms": [
+            "block",
+            "blocks",
+            "bloco",
+            "corrompidos",
+            "corrupt",
+            "corrupted",
+            "dados",
+            "data",
+            "decode",
+            "decoded",
+            "decompress",
+            "decompresses",
+            "decompression",
+            "descomprimir",
+            "reject",
+            "rejeitar"
+          ],
+          "symbols": [],
+          "expansions": [
+            {
+              "source": "bloco",
+              "terms": [
+                "block",
+                "blocks"
+              ],
+              "rule_id": "0052-v1:block:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "corrompidos",
+              "terms": [
+                "corrupt",
+                "corrupted"
+              ],
+              "rule_id": "0052-v1:corrupt:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "dados",
+              "terms": [
+                "data"
+              ],
+              "rule_id": "0052-v1:data:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "descomprimir",
+              "terms": [
+                "decompress",
+                "decompression"
+              ],
+              "rule_id": "0052-v1:decompression:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            },
+            {
+              "source": "descomprimir",
+              "terms": [
+                "decode",
+                "decoded",
+                "decompresses"
+              ],
+              "rule_id": "0052-v1:decompression:mechanism",
+              "kind": "mechanism",
+              "status": "hypothesis"
+            },
+            {
+              "source": "rejeitar",
+              "terms": [
+                "reject"
+              ],
+              "rule_id": "0052-v1:reject:translation",
+              "kind": "translation",
+              "status": "hypothesis"
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "documentation_sources": [
+            {
+              "path": "util.go",
+              "symbol": "randomBits",
+              "line": 12,
+              "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e"
+            },
+            {
+              "path": "uuid.go",
+              "symbol": "Parse",
+              "line": 68,
+              "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1"
+            },
+            {
+              "path": "uuid.go",
+              "symbol": "SetRand",
+              "line": 319,
+              "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1"
+            }
+          ],
+          "requirement": "Descomprimir um bloco e rejeitar dados corrompidos",
+          "status": "evidence_located",
+          "reason": "Inferência lexical com fontes de código: 2 de 16 termos associados aos canais localizados; requisito e comportamento não verificados. Fontes documentais separadas registram declarações do autor, não prova de implementação.",
+          "matched_terms": [
+            "data",
+            "decoded"
+          ],
+          "missing_terms": [
+            "block",
+            "blocks",
+            "bloco",
+            "corrompidos",
+            "corrupt",
+            "corrupted",
+            "dados",
+            "decode",
+            "decompress",
+            "decompresses",
+            "decompression",
+            "descomprimir",
+            "reject",
+            "rejeitar"
+          ],
+          "sources": [
+            {
+              "path": "hash.go",
+              "symbol": "NewHash",
+              "line": 33,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewMD5",
+              "line": 49,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewSHA1",
+              "line": 57,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalText",
+              "line": 17,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalBinary",
+              "line": 32,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalBinary",
+              "line": 70,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalText",
+              "line": 89,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalJSON",
+              "line": 110,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            }
+          ]
+        }
+      ],
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 10.90233519775484
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "hash.go",
+          "symbol": "NewMD5",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 49,
+          "end_line": 51,
+          "score": 1520,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 10.90233519775484
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "hash.go",
+          "symbol": "NewSHA1",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=5 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 57,
+          "end_line": 59,
+          "score": 1520,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 8.636914896922665
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "marshal.go",
+          "symbol": "UnmarshalText",
+          "kind": "definition",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 17,
+          "end_line": 24,
+          "score": 1468,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 8.636914896922665
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "marshal.go",
+          "symbol": "UnmarshalBinary",
+          "kind": "definition",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=7 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 32,
+          "end_line": 38,
+          "score": 1468,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.584578683792527
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalBinary",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=10 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 70,
+          "end_line": 77,
+          "score": 1407,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "related_to": [
+            {
+              "path": "hash.go",
+              "symbol": "NewMD5",
+              "line": 50,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            },
+            {
+              "path": "hash.go",
+              "symbol": "NewSHA1",
+              "line": 58,
+              "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce"
+            }
+          ],
+          "path": "hash.go",
+          "symbol": "NewHash",
+          "kind": "definition",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "reason": "function: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 33,
+          "end_line": 43,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalText",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 89,
+          "end_line": 98,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "term_weights": [
+            {
+              "term": "data",
+              "field": "body",
+              "document_frequency": 8,
+              "corpus_documents": 118,
+              "weight": 6.1013068537894055
+            }
+          ],
+          "retrieval": "lexical",
+          "path": "null.go",
+          "symbol": "UnmarshalJSON",
+          "kind": "definition",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "reason": "method: go_ast_corpus_v1: IDF=log1p((N-df+0.5)/(df+0.5)); peso name=2*IDF, body=3*IDF/(0.25+0.75*len/avg); Score=ceil(900*soma/(8+soma))+1000 se função pertinente+100000 se exato; N=118 declarações nomeadas AST elegíveis, incluindo não matches, df união nome/corpo; len=11 termos únicos AST do corpo, avg=7.875 (média funções com corpo, piso 1); recorte lido, não ecossistema; expansão lexical PT/EN, não probabilidade nem comprovação de comportamento",
+          "line": 110,
+          "end_line": 118,
+          "score": 1390,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "retrieval": "direct_call",
+          "related_to": [
+            {
+              "path": "marshal.go",
+              "symbol": "UnmarshalText",
+              "line": 18,
+              "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43"
+            },
+            {
+              "path": "null.go",
+              "symbol": "UnmarshalText",
+              "line": 90,
+              "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf"
+            }
+          ],
+          "path": "uuid.go",
+          "symbol": "ParseBytes",
+          "kind": "definition",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "reason": "function: chamada direta AST a destino único no mesmo diretório/pacote; um salto estático, sem prova de execução",
+          "line": 120,
+          "end_line": 162,
+          "score": 0,
+          "matched_terms": []
+        },
+        {
+          "documentation_line": 11,
+          "documentation_end_line": 11,
+          "retrieval": "documentation",
+          "path": "util.go",
+          "symbol": "randomBits",
+          "kind": "definition",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 12,
+          "end_line": 16,
+          "score": 1,
+          "matched_terms": [
+            "data"
+          ]
+        },
+        {
+          "documentation_line": 59,
+          "documentation_end_line": 67,
+          "retrieval": "documentation",
+          "path": "uuid.go",
+          "symbol": "Parse",
+          "kind": "definition",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 68,
+          "end_line": 117,
+          "score": 1,
+          "matched_terms": [
+            "decoded"
+          ]
+        },
+        {
+          "documentation_line": 313,
+          "documentation_end_line": 318,
+          "retrieval": "documentation",
+          "path": "uuid.go",
+          "symbol": "SetRand",
+          "kind": "definition",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "reason": "indício documental em comentário Doc vinculado à declaração AST; declaração do autor, sem verificar implementação, execução ou cumprimento",
+          "line": 319,
+          "end_line": 325,
+          "score": 1,
+          "matched_terms": [
+            "data"
+          ]
+        }
+      ],
+      "examined": [
+        {
+          "path": "dce.go",
+          "sha256": "6a4b89e7f6165a673e76f00bebaabf8d0d7eb4356a672c6cb771d95a45fb2695",
+          "bytes": 2072
+        },
+        {
+          "path": "doc.go",
+          "sha256": "0b286e2af61ede9f58d2455781ea254284c477b7fce2447aab3203992cc51f9f",
+          "bytes": 407
+        },
+        {
+          "path": "hash.go",
+          "sha256": "afe975c3f3e8b9a972c66165f06e978cc5c2f8ea5a4809dae4c46b4cfebbadce",
+          "bytes": 1963
+        },
+        {
+          "path": "marshal.go",
+          "sha256": "933eb226d049268e17809fd37f777c650b9ec8cb3fa988534b792610a64dcc43",
+          "bytes": 907
+        },
+        {
+          "path": "node.go",
+          "sha256": "73a93d192ca24078e0f93b8c1675e13adb442421252d3974d697b0821c4832cf",
+          "bytes": 2323
+        },
+        {
+          "path": "node_js.go",
+          "sha256": "334b6ac9f50339341696319aaf9b912ea8007d0aacf0e909a48a0bb02d982d6d",
+          "bytes": 498
+        },
+        {
+          "path": "node_net.go",
+          "sha256": "78e274b465de8da8690f4ab06281f41025b142c1d093e337fda1d6726b35662b",
+          "bytes": 949
+        },
+        {
+          "path": "null.go",
+          "sha256": "791638f42d54fcf07ac752df6b2df92593f7da308f944465e2cda443dc3346cf",
+          "bytes": 2461
+        },
+        {
+          "path": "sql.go",
+          "sha256": "29281b11e8f97f1ddf73d087854cb401ba42a87c4f59ce45fc69763a4d927f2f",
+          "bytes": 1459
+        },
+        {
+          "path": "time.go",
+          "sha256": "e07999a07de5b667dd1dd5792b544ea933e7e839eca03b3469527f86a8bc2881",
+          "bytes": 3795
+        },
+        {
+          "path": "util.go",
+          "sha256": "755f50afafb13dd89ae6177da7eb6dc31ae650ece2f9ba52821021e9f8de044e",
+          "bytes": 1920
+        },
+        {
+          "path": "uuid.go",
+          "sha256": "0edec8e34c6b6fe0db31b71a29069a09ed832e3fd04ee0175916b58f2b60e5c1",
+          "bytes": 9633
+        },
+        {
+          "path": "version1.go",
+          "sha256": "38a2c229a2aad4bb72d45529304f210b1f31e8ef60bbd2605690a10f0d8a8242",
+          "bytes": 1257
+        },
+        {
+          "path": "version4.go",
+          "sha256": "f252aeb4028659d83cbf7b037d4524f7c9b76cde1fdca1f6f7de310dab6f4dcd",
+          "bytes": 2057
+        },
+        {
+          "path": "version6.go",
+          "sha256": "013cc9f4a9e606746d38d53f8e651b9222f5042fde567484588ec1d7a0c54905",
+          "bytes": 2213
+        },
+        {
+          "path": "version7.go",
+          "sha256": "8002748cc22a032c3782b42f7653a947189b8566c50d246b4a3beb2e075f8d62",
+          "bytes": 3371
+        }
+      ],
+      "files_read": 16,
+      "bytes_read": 37285,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "command": [
+      "/tmp/bateia-0052",
+      "analyze",
+      "-path",
+      "/home/dikluwe/go/pkg/mod/github.com/google/uuid@v1.6.0",
+      "-query",
+      "Descomprimir um bloco e rejeitar dados corrompidos",
+      "-format",
+      "json",
+      "-output",
+      "/tmp/bateia0052/uuid-not-compression-after.json"
+    ]
+  }
+]

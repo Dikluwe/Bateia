@@ -1,0 +1,18 @@
+package main
+import("context";"encoding/json";"os";"time";"bateia/01_core/domain";"bateia/01_core/usecase";"bateia/03_infra/github";"bateia/03_infra/content";"bateia/03_infra/local")
+func main(){
+ ctx,cancel:=context.WithTimeout(context.Background(),90*time.Second);defer cancel()
+ c:=domain.RepositoryCandidate{Owner:"golang",Repo:"snappy",URL:"https://github.com/golang/snappy",CommitID:"43d5d4cd4e0e3390b0b645d5c3ef1187642403d8"}
+ p:=content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")),local.NewClient())
+ query:="Descomprimir um bloco e rejeitar dados corrompidos"
+ r:=usecase.RetrieveImplementationEvidence(ctx,p,c,query)
+ tree,treeErr:=p.FetchTree(ctx,c)
+ paths:=usecase.SelectImplementationPaths(query,tree,r,12)
+ var verified domain.ImplementationSearchReport
+ var extractErr error
+ var files []domain.ExtractedFile
+ if len(r.Hits)>0 {var x *domain.ExtractedRepository;x,extractErr=p.ExtractRepoFiles(ctx,c,paths);if x!=nil{files=x.Files;verified=usecase.ValidateImplementationRequirements(query,r,files)}}
+ out:=map[string]any{"candidate":c,"query":query,"retrieval":r,"selected_paths":paths,"verified":verified,"files":files}
+ if treeErr!=nil{out["tree_error"]=treeErr.Error()};if extractErr!=nil{out["extraction_error"]=extractErr.Error()}
+ json.NewEncoder(os.Stdout).Encode(out)
+}

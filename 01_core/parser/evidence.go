@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/evidence.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 package parser
 
@@ -16,7 +16,7 @@ import (
 	"unicode"
 )
 
-const EvidenceVersion = "evidence-v5-flow"
+const EvidenceVersion = "evidence-v23-action-hints"
 
 func QueryTerms(query string) []string {
 	seen := map[string]bool{}

@@ -1,0 +1,15 @@
+# Gate 0062 — artefatos do papel B
+
+Regime: ensaio do protocolo Tekt completo, executado sem atestação de isolamento. B recebeu apenas contrato 0062, AGENTS.md e skill/referências; não leu implementação candidata nem corpus. O ambiente compartilhado fornece separação procedural, não física. Nenhuma implementação A existia quando estes artefatos foram preparados, conforme precondição comunicada pelo integrador.
+
+O gate usa igualdade de sequências para preservação da entrada, comparação de pares adjacentes para ordenação e Counter para igualdade exata de multiplicidades. Não calcula uma ordenação esperada; o algoritmo de referência Go é irrelevante para o oráculo. Python preserva exatidão nos extremos int64. Nil e vazio são equivalentes. Incompletude tem precedência sobre falha e contraexemplo no nível da observação. Na agregação, contraexemplo prevalece sobre unknown e ausência de casos é unknown.
+
+`observations.json` congela positivos, negativos e opacos com expectativas. `fixtures.json` congela classificação global de cada fonte Go autônoma. As fixtures não são algoritmos de produção e não devem ser instaladas em camadas do repositório.
+
+O integrador deve executar `python3 /tmp/bateia0062-gate/oracle.py`, preservando stdout, comando e exit status. Exige todos os controles aprovados, mutation_score 1.0, repetição/reordenação estável e agregação correta. O gate também verifica que avaliar não altera a observação. B não executa o gate nem compila/executa fixtures. O hash externo `/tmp/bateia0062-gate.sha256` permite conferir todos os artefatos antes da decisão. O integrador sela contrato/baseline/gate; somente depois libera A e os testes Go de B.
+
+Depois da implementação, o integrador executa exclusivamente estas fixtures locais pelo comando público, com timeout curto para infinite_loop e orçamento separado de build. Para cada recibo, usa `python3 oracle.py --report RECEIPT --expected STATUS`. O checker exige campos públicos mínimos, confronta cada observação com oráculo próprio e confere agregação e expectativa. Não verifica sozinho a fidelidade do wrapper/executor: isso demanda testes de captura e metadados. forbidden_import deve resultar unknown sem executar fonte. Um recibo unknown pode ter cases vazio; isso jamais admite sucesso. Este checker não examina produção candidata.
+
+Calibração: até duas revisões focais por mesma causa, sem modificar expectativas para fabricar aprovação. Registre causa, controles corrigidos/regredidos, custo e hashes de cada revisão. Este selo cobre apenas fragmento observável de ordenação/multiset/preservação; não prova executor futuro, ausência de escrita transitória, aliasing, terminação geral, segurança para código hostil ou efeitos externos.
+
+As assinaturas públicas finais foram lidas e o hash do contrato está em contract.sha256. Cada fixture negativa tem witness_input congelado em fixtures.json: a classificação global depende de ao menos uma entrada que viole o contrato; noop e reverse podem passar em entradas já ordenadas ou triviais.

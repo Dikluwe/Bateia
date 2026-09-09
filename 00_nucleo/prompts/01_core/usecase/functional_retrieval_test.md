@@ -1,0 +1,2 @@
+# Validação independente de referências 0045
+Autor B. Testes puros da API ValidateImplementationHits: definição e chamador com SHA256 calculado sobre bytes; chamada na linha3 da função QueueTask. Relação válida preservada. Remover relação quando ausente/hash divergente/linha zero/fora intervalo; remover hit direct_call sem relação; preservar lexical sem relação válida. Construção via JSON público snake_case para evitar depender de implementações. Sem IO L1.

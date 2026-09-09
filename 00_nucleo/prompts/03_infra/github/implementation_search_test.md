@@ -1,0 +1,9 @@
+# Testes independentes de recuperação remota — 0050
+
+Autor B, regime A/B sem atestação de isolamento físico; workspace compartilhado. Entradas: contrato `00_nucleo/passos/0050-recuperar-implementacoes-remotas.md`, regras do projeto, tipos e portas públicos, construtores de clientes e Router, API de seleção/revalidação usecase. Não consultar implementação candidata GitHub, patch Router, ranking/parser ou corpora/testes anteriores para construir esperados.
+
+Construir servidor HTTP GitHub simulado com objetos Git blob SHA-1 calculados independentemente, JSON/base64, SHA de commit fixo e contagem de requisições. Fontes inéditas em caminhos neutros: recuperação funcional deve encontrar definição sem o nome no caminho. Comparar hits inteiros (pesos, linhas e hashes incluídos) e Examined com cliente local sobre os mesmos bytes, exigir hashes SHA-256 calculados pelo teste. Exercitar Router remoto/local e provedor sem porta, seleção do usecase e releitura íntegra/divergente/ausente.
+
+Negativos de identidade antes de I/O; divergência de SHA/tamanho/encoding/base64/conteúdo e JSON opaco nunca admitidos; árvore truncada/duplicada/insegura/symlink; limites de tentativas, bytes, arquivo, resultados e tetos default; 403/429 e cancelamento; envelope excessivo. Exigir partial quando não há ausência demonstrável; Limited quando candidatos são excluídos por orçamento. Não adaptar oráculos a resultados candidatos. Congelar SHA-256 do teste e deste prompt antes da primeira execução. Falhas de compilação por hipótese incorreta de API devem ser documentadas como revisão do harness, sem relaxar esperados de comportamento.
+
+Escopo: testes reprodutíveis de transporte, integridade, limites e integração. Não constitui prova geral de pertinência, independência física, controle de relógio ou equivalência universal.

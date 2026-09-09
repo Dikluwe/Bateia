@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/client.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package sourcegraph
@@ -77,7 +77,7 @@ type sgSearchResponse struct {
 	Data struct {
 		Search struct {
 			Results struct {
-				MatchCount int                  `json:"matchCount"`
+				MatchCount *int                 `json:"matchCount"`
 				Results    []sgSearchResultItem `json:"results"`
 			} `json:"results"`
 		} `json:"search"`
@@ -140,88 +140,14 @@ var sgLangName = map[string]string{
 	"racket":     "Racket",
 }
 
-// shortQuery extrai o(s) primeiro(s) termo(s) relevantes de uma query longa para o fallback sem lang.
-func shortQuery(query string) string {
-	words := strings.Fields(query)
-	stopwords := map[string]bool{
-		"a": true, "o": true, "e": true, "de": true, "do": true, "da": true,
-		"the": true, "an": true, "and": true, "or": true, "with": true,
-		"using": true, "for": true, "in": true, "on": true, "at": true, "to": true,
-		"of": true, "is": true, "are": true, "api": true, "rest": true,
-	}
-	result := make([]string, 0, 3)
-	for _, w := range words {
-		if !stopwords[strings.ToLower(w)] {
-			result = append(result, w)
-		}
-		if len(result) >= 2 {
-			break
-		}
-	}
-	if len(result) == 0 {
-		return strings.Join(words, " ")
-	}
-	return strings.Join(result, " ")
-}
-
 func (c *Client) SearchCandidates(ctx context.Context, filter domain.QueryFilter) ([]domain.RepositoryCandidate, error) {
 	candidates, _, err := c.SearchCandidatesWithTrace(ctx, filter)
 	return candidates, err
 }
 
 func (c *Client) SearchCandidatesWithTrace(ctx context.Context, filter domain.QueryFilter) ([]domain.RepositoryCandidate, []domain.SearchAttempt, error) {
-	var attempts []domain.SearchAttempt
-	// Traduzir nome da linguagem para o formato aceito pelo Sourcegraph
-	sgLang := filter.Language
-	if mapped, ok := sgLangName[strings.ToLower(filter.Language)]; ok {
-		sgLang = mapped
-	} else if len(filter.Language) > 0 {
-		sgLang = strings.ToUpper(filter.Language[:1]) + filter.Language[1:]
-	}
-
-	short := shortQuery(filter.Query)
-
-	queriesToTry := []string{
-		// 1ª tentativa: query completa com linguagem (sem repo: para API pública funcionar)
-		fmt.Sprintf("lang:%s %s", sgLang, filter.Query),
-		// 2ª tentativa: termos curtos com linguagem
-		fmt.Sprintf("lang:%s %s", sgLang, short),
-		// 3ª tentativa: sem filtro de linguagem, apenas termos curtos
-		short,
-	}
-
-	var lastErr error
-	requestSucceeded := false
-	for index, qStr := range queriesToTry {
-		candidates, err := c.executeSGQuery(ctx, qStr, filter.MaxResults)
-		attempt := domain.SearchAttempt{OriginalQuery: filter.Query, Provider: "Sourcegraph", Query: qStr, Candidates: len(candidates)}
-		if index == 1 {
-			attempt.Relaxation = "consulta reduzida aos dois primeiros termos"
-		}
-		if index == 2 {
-			attempt.Relaxation = "consulta reduzida; filtro de linguagem removido"
-		}
-		if err != nil {
-			attempt.Error = err.Error()
-		}
-		attempts = append(attempts, attempt)
-		if err != nil {
-			lastErr = err
-			continue
-		}
-		requestSucceeded = true
-		if len(candidates) > 0 {
-			for i := range candidates {
-				candidates[i].SearchAttempts = append([]domain.SearchAttempt(nil), attempts...)
-			}
-			return candidates, attempts, nil
-		}
-	}
-
-	if !requestSucceeded && lastErr != nil {
-		return nil, attempts, fmt.Errorf("todas as consultas ao Sourcegraph falharam: %w", lastErr)
-	}
-	return []domain.RepositoryCandidate{}, attempts, nil
+	result, err := c.Discover(ctx, domain.DiscoveryRequest{Query: filter.Query, Language: filter.Language, MaxResults: filter.MaxResults})
+	return result.Candidates, discoverySearchAttempts(filter.Query, result.Attempts, result.Matches), err
 }
 
 func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults int) ([]domain.RepositoryCandidate, error) {
@@ -230,79 +156,14 @@ func (c *Client) executeSGQuery(ctx context.Context, queryStr string, maxResults
 }
 
 func (c *Client) executeSGQueryDetailed(ctx context.Context, queryStr string, maxResults int) ([]domain.RepositoryCandidate, []domain.ProviderCandidateMatch, error) {
-	gqlQuery := `
-	query SearchCandidates($query: String!) {
-		search(query: $query, version: V2) {
-			results {
-				matchCount
-				results {
-					__typename
-					... on Repository {
-						name
-						url
-						description
-					}
-					... on FileMatch {
-						file { path }
-						lineMatches { preview }
-						repository {
-							name
-							url
-							description
-						}
-					}
-				}
-			}
-		}
-	}`
-
-	reqBody := graphQLRequest{
-		Query: gqlQuery,
-		Variables: map[string]interface{}{
-			"query": queryStr,
-		},
-	}
-
-	bodyBytes, err := json.Marshal(reqBody)
+	sgResp, err := c.fetchSGQuery(ctx, queryStr)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", c.endpoint, bytes.NewBuffer(bodyBytes))
-	if err != nil {
-		return nil, nil, err
+	if maxResults <= 0 {
+		maxResults = 1
 	}
-
-	req.Header.Set("Content-Type", "application/json")
-	if c.apiToken != "" {
-		req.Header.Set("Authorization", "token "+c.apiToken)
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, nil, fmt.Errorf("erro de conexão com Sourcegraph: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		respData, _ := io.ReadAll(resp.Body)
-		return nil, nil, fmt.Errorf("status inesperado do Sourcegraph: %d: %s", resp.StatusCode, string(respData))
-	}
-
-	respData, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var sgResp sgSearchResponse
-	if err := json.Unmarshal(respData, &sgResp); err != nil {
-		return nil, nil, fmt.Errorf("erro ao decodificar JSON do Sourcegraph: %w", err)
-	}
-
-	if len(sgResp.Errors) > 0 {
-		return nil, nil, fmt.Errorf("erro na API do Sourcegraph: %s", sgResp.Errors[0].Message)
-	}
-
 	candidatesMap := make(map[string]domain.RepositoryCandidate)
 	candidates := make([]domain.RepositoryCandidate, 0)
 	matches := make([]domain.ProviderCandidateMatch, 0)
@@ -326,19 +187,27 @@ func (c *Client) executeSGQueryDetailed(ctx context.Context, queryStr string, ma
 
 		owner, name := parseRepoName(repo.Name)
 		key := strings.ToLower(owner + "/" + name)
-		evidence := domain.MatchEvidence{MatchType: "repository"}
+		// Keep evidence for already retained repositories even after reaching the cap.
+		if _, exists := candidatesMap[repo.Name]; !exists && len(candidates) >= maxResults {
+			continue
+		}
+		evidences := []domain.MatchEvidence{{MatchType: "repository"}}
 		if res.TypeName == "FileMatch" {
-			evidence.MatchType = "file"
-			evidence.Path = res.File.Path
+			evidences = []domain.MatchEvidence{{MatchType: "file", Path: res.File.Path}}
 			if len(res.LineMatches) > 0 {
-				evidence.Snippet = truncateMatchSnippet(res.LineMatches[0].Preview)
+				evidences = nil
+				for _, line := range res.LineMatches {
+					evidences = append(evidences, domain.MatchEvidence{MatchType: "file", Path: res.File.Path, Snippet: truncateMatchSnippet(line.Preview)})
+				}
 			}
 		}
-		if matchIndex, exists := matchIndexes[key]; exists {
-			matches[matchIndex].Evidence = appendUniqueMatchEvidence(matches[matchIndex].Evidence, evidence)
-		} else {
+		if _, exists := matchIndexes[key]; !exists {
 			matchIndexes[key] = len(matches)
-			matches = append(matches, domain.ProviderCandidateMatch{Repository: owner + "/" + name, Evidence: []domain.MatchEvidence{evidence}})
+			matches = append(matches, domain.ProviderCandidateMatch{Repository: owner + "/" + name})
+		}
+		matchIndex := matchIndexes[key]
+		for _, evidence := range evidences {
+			matches[matchIndex].Evidence = appendUniqueMatchEvidence(matches[matchIndex].Evidence, evidence)
 		}
 		if _, exists := candidatesMap[repo.Name]; exists {
 			continue
@@ -358,9 +227,6 @@ func (c *Client) executeSGQueryDetailed(ctx context.Context, queryStr string, ma
 		candidatesMap[repo.Name] = cand
 		candidates = append(candidates, cand)
 
-		if len(candidates) >= maxResults {
-			break
-		}
 	}
 
 	return candidates, matches, nil
@@ -402,4 +268,99 @@ func parseRepoName(fullName string) (string, string) {
 	}
 
 	return owner, repo
+}
+
+func (c *Client) fetchSGQuery(ctx context.Context, queryStr string) (*sgSearchResponse, error) {
+	gqlQuery := `
+	query SearchCandidates($query: String!) {
+		search(query: $query, version: V2) {
+			results {
+				matchCount
+				results {
+					__typename
+					... on Repository {
+						name
+						url
+						description
+					}
+					... on FileMatch {
+						file { path }
+						lineMatches { preview }
+						repository {
+							name
+							url
+							description
+						}
+					}
+				}
+			}
+		}
+	}`
+
+	reqBody := graphQLRequest{
+		Query: gqlQuery,
+		Variables: map[string]interface{}{
+			"query": queryStr,
+		},
+	}
+
+	bodyBytes, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "POST", c.endpoint, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	if c.apiToken != "" {
+		req.Header.Set("Authorization", "token "+c.apiToken)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("erro de conexão com Sourcegraph: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		respData, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("status inesperado do Sourcegraph: %d: %s", resp.StatusCode, string(respData))
+	}
+
+	respData, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var sgResp sgSearchResponse
+	if err := json.Unmarshal(respData, &sgResp); err != nil {
+		return nil, fmt.Errorf("erro ao decodificar JSON do Sourcegraph: %w", err)
+	}
+
+	if len(sgResp.Errors) > 0 {
+		return nil, fmt.Errorf("erro na API do Sourcegraph: %s", sgResp.Errors[0].Message)
+	}
+
+	// Missing or null envelopes are malformed, not valid empty searches.
+	var envelope struct {
+		Data *struct {
+			Search *struct {
+				Results *struct {
+					Results json.RawMessage `json:"results"`
+				} `json:"results"`
+			} `json:"search"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(respData, &envelope); err != nil || envelope.Data == nil || envelope.Data.Search == nil || envelope.Data.Search.Results == nil {
+		return nil, fmt.Errorf("resposta Sourcegraph sem envelope de resultados válido")
+	}
+	rawResults := bytes.TrimSpace(envelope.Data.Search.Results.Results)
+	if len(rawResults) == 0 || rawResults[0] != '[' {
+		return nil, fmt.Errorf("resposta Sourcegraph sem array de resultados válido")
+	}
+
+	return &sgResp, nil
 }

@@ -25,3 +25,10 @@ Limites de quantidade/profundidade devem registrar SKIPPED_BUDGET e Complete=fal
 
 ## Revisão 0043 — autoridade e ligação
 Aplicar o contrato comum de evidence_authority antes de autorizar capacidade ou operação. Evidência lexical/documental não ganha PROVEN. Negação deve conservar polaridade. Na extração de mecanismos aceitar SHA-256 hexadecimal produzido pela avaliação e formato prefixado legado, verificando conteúdo e projeções de tipo file→symbol e test→test_implementation. Preservar IDs reais: catálogo sem regra compatível retorna lacuna explícita, nunca traduz nomes em prova.
+
+# 0044 — Recuperação antes da seleção
+Origem: 00_nucleo/passos/0044-recuperar-implementacoes-por-simbolos.md.
+L1 somente orquestra porta opcional, sem IO concreto. RetrieveImplementationEvidence usa budget finito padrão e reporta not_evaluated em provedor ausente. SelectImplementationPaths preserva manifesto/README e antepõe hits de caminhos relativos presentes na árvore, com limite de código. ValidateImplementationHits copia relatório, descarta fontes não extraídas ou hashes/intervalos divergentes e marca partial; não apaga identidade do índice.
+Funnel/analyze registra relatório; CollectEvidence busca requisitos e prioriza árvore antes do orçamento, sem promoção do status de capacidades. Provedores sem porta preservam contrato antigo. A seleção por conteúdo é distinta da análise de comportamento. Relatório mostra símbolos com linhas/hash e snippet dos bytes revalidados, no máximo20 linhas por hit/8hits apresentados, JSON retém todas as evidências.
+
+0046: conservar query agregada da busca de implementação no escopo CollectEvidence e usar ValidateImplementationRequirements após coleta. Projeção de requisitos acompanha bundle, sem alterar detectores/decisão.

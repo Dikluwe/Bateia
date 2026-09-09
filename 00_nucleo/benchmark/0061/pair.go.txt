@@ -1,0 +1,3 @@
+package main
+import("encoding/json";"os";"bateia/01_core/domain";"bateia/01_core/parser";"bateia/01_core/usecase")
+func main(){b,e:=os.ReadFile(os.Args[1]);if e!=nil{panic(e)};files:=[]domain.ExtractedFile{{Path:"fsnotify.go",Content:string(b),Size:int64(len(b))}};out:=[]domain.ImplementationSearchReport{};for _,q:=range []string{"Como parar a atividade no caminho?","Como iniciar a atividade no caminho?"}{r:=parser.RankGoImplementations(q,files,1000);out=append(out,usecase.ValidateImplementationRequirements(q,r,files))};json.NewEncoder(os.Stdout).Encode(out)}

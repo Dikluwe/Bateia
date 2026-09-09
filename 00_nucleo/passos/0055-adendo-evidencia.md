@@ -1,0 +1,3 @@
+# Adendo 0055 — Recibo da admissão na busca direta
+
+Na busca direta, o retorno público não contém ProviderDiscovery.Matches. Para que a admissão lexical seja auditável, SearchAttempt recebe `AdmissionEvidence []ProviderCandidateMatch json:admission_evidence,omitempty`, somente na derivada, com os matches admitidos, caminhos e snippets efetivamente examinados. Não serializar candidatos rejeitados como provas. A porta Discover já devolve Matches. Relatório Markdown apresenta repositório, caminho e snippet desses recibos como indício lexical; nenhuma afirmação de solução. Adendo de rastreabilidade anterior à implementação deste campo; não muda admissão/catálogo/recall.

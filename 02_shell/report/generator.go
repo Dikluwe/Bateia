@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/report/generator.md
  * @layer L2
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package report
@@ -33,6 +33,34 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 	}
 	for _, a := range report.SearchAttempts {
 		sb.WriteString(fmt.Sprintf("- Busca: original %q; provedor %s; enviada %q; relaxamento %q; candidatos %d; erro %q\n", a.OriginalQuery, a.Provider, a.Query, a.Relaxation, a.Candidates, a.Error))
+		if p := a.QueryPlan; p != nil {
+			sb.WriteString(fmt.Sprintf("  Plano de consulta: estado %q; versão %q; motivo %q; regras %q; ações %q; objetos %q; candidatos brutos %d; rejeitados %d; não verificado %q. Hipótese: admissão lexical é indício, não comprova solução nem atendimento às restrições.\n", p.Status, p.Version, p.Reason, p.RuleIDs, p.ActionTerms, p.ObjectTerms, a.RawCandidates, a.RejectedCandidates, p.Unverified))
+		}
+		if c := a.Coverage; c != nil {
+			sb.WriteString(fmt.Sprintf("  Cobertura do índice: desconhecida (%s). count solicita %d resultados do provedor, não repositórios. Registros recebidos %d; repositórios observados %d, examinados %d, adiados %d; elegíveis %d; selecionados %d.\n", c.Completeness, c.RequestedMatches, c.ReceivedItems, c.ObservedRepositories, c.ExaminedRepositories, c.DeferredRepositories, c.EligibleCandidates, c.SelectedCandidates))
+			if c.ProviderMatches != nil {
+				sb.WriteString(fmt.Sprintf("  matchCount informado pelo provedor: %d (não representa cobertura do índice).\n", *c.ProviderMatches))
+			}
+		}
+		for index, d := range a.CandidateDiagnostics {
+			if index == 10 {
+				sb.WriteString(fmt.Sprintf("  Mais %d diagnósticos omitidos nesta apresentação; disponíveis no JSON.\n", len(a.CandidateDiagnostics)-index))
+				break
+			}
+			sb.WriteString(fmt.Sprintf("  Diagnóstico %q: estado %q; motivo %q; ação encontrada %t; objeto encontrado %t; snippets truncados %d, omitidos na análise %d. Insuficiência dos trechos não demonstra ausência da capacidade.\n", d.Repository, d.Status, d.Reason, d.ActionFound, d.ObjectFound, d.TruncatedSnippets, d.OmittedSnippets))
+			for j, e := range d.Evidence {
+				if j == 3 {
+					sb.WriteString(fmt.Sprintf("  Mais %d trechos omitidos nesta apresentação; disponíveis no JSON.\n", len(d.Evidence)-j))
+					break
+				}
+				sb.WriteString(fmt.Sprintf("  Evidência examinada: arquivo %q; trecho %q.\n", e.Path, e.Snippet))
+			}
+		}
+		for _, match := range a.AdmissionEvidence {
+			for _, evidence := range match.Evidence {
+				sb.WriteString(fmt.Sprintf("  Indício lexical observado: repositório %q; arquivo %q; trecho %q.\n", match.Repository, evidence.Path, evidence.Snippet))
+			}
+		}
 	}
 	sb.WriteString("\n")
 	sb.WriteString("## Resumo do Funil de Redução\n\n")
@@ -169,6 +197,7 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				sb.WriteString("\n")
 			}
 
+			writeImplementationSearch(&sb, res)
 			writeQueryEvidence(&sb, res.QueryEvidence)
 			writeSemanticEvidence(&sb, res.Semantic, report.Query.Query, res.QueryEvidence != nil && len(res.QueryEvidence.Definitions) > 0)
 
@@ -606,4 +635,212 @@ func writeMechanismAnswer(sb *strings.Builder, repo domain.ExtractedRepository) 
 	}
 	writeFlowEvidence(sb, repo, ids)
 	sb.WriteString("**Limites da resposta**: até 3 implementações, até 8 trechos de 5 linhas por função; condições são contexto textual, não prova de fluxo executável. Resultado funcional, alternativas excluídas pelo pré-processador, desempenho e execução permanecem não verificados. A cobertura completa do projeto não foi estabelecida.\n\n")
+}
+
+// Retrieval confirms source locations only; it does not certify capabilities.
+func writeImplementationSearch(sb *strings.Builder, repo domain.ExtractedRepository) {
+	r := repo.ImplementationSearch
+	if r == nil {
+		return
+	}
+	fmt.Fprintf(sb, "#### Recuperação de implementações Go\n\nEstado: **%s**. %s\n\nMétodo: `%s`; arquivos lidos para seleção: %d; bytes: %d. Limites: %d arquivos, %d bytes totais, %d por arquivo, %d hits.\n\n", r.Status, r.Reason, r.Method, r.FilesRead, r.BytesRead, r.Budget.MaxFiles, r.Budget.MaxBytes, r.Budget.MaxFileBytes, r.Budget.MaxResults)
+	sb.WriteString("Definição encontrada é fato estático; pertinência é heurística. Não comprova comportamento ou solução completa. Arquivos indexados e hashes estão no JSON.\n\n")
+	WriteQueryInterpretation(sb, r.QueryInterpretation)
+	WriteRequirementRetrieval(sb, r.Requirements)
+	WriteActionAssessments(sb, r.ActionAssessments)
+	writeImplementationBehavior(sb, r.Behavior)
+	byPath := map[string]domain.ExtractedFile{}
+	for _, f := range repo.Files {
+		byPath[f.Path] = f
+	}
+	for i, h := range r.Hits {
+		if i >= 8 {
+			fmt.Fprintf(sb, "Mais %d hits no JSON.\n\n", len(r.Hits)-i)
+			break
+		}
+		f, ok := byPath[h.Path]
+		if !ok {
+			continue
+		}
+		lines := strings.Split(f.Content, "\n")
+		if h.Line < 1 || h.EndLine < h.Line || h.EndLine > len(lines) {
+			continue
+		}
+		first, last := h.Line, h.EndLine
+		if h.Retrieval == "documentation" {
+			first, last = h.DocumentationLine, h.DocumentationEndLine
+			if first < 1 || last < first || last >= h.Line || last > len(lines) {
+				continue
+			}
+		}
+		if last > first+19 {
+			last = first + 19
+		}
+		fmt.Fprintf(sb, "- **`%s`** — `%s:%d–%d`, SHA-256 `%s`. Seleção: %s; termos: %q. Exibição: %d–%d.\n\n", h.Symbol, h.Path, h.Line, h.EndLine, h.SHA256, h.Reason, h.MatchedTerms, first, last)
+		if len(h.TermWeights) > 0 {
+			sb.WriteString("Contribuições de ranking no corpus de declarações lidas (não probabilidades):\n\n")
+			for j, w := range h.TermWeights {
+				if j >= 5 {
+					fmt.Fprintf(sb, "- Mais %d contribuições no JSON.\n", len(h.TermWeights)-j)
+					break
+				}
+				fmt.Fprintf(sb, "- Termo %q, campo `%s`, df/N=%d/%d, contribuição %.6g.\n", w.Term, w.Field, w.DocumentFrequency, w.CorpusDocuments, w.Weight)
+			}
+			sb.WriteString("\n")
+		}
+		if h.Retrieval == "documentation" {
+			sb.WriteString("Fonte documental vinculada à declaração pelo AST; o trecho é uma descrição do autor, não prova de comportamento.\n\n")
+		} else if h.Retrieval == "direct_call" {
+			sb.WriteString("Recuperação por chamada direta estática, limitada a um salto; não demonstra execução ou satisfação da pergunta.\n\n")
+		} else {
+			sb.WriteString("Pertinência por ordenação lexical de declarações e identificadores; relação funcional ainda não verificada.\n\n")
+		}
+		for j, ref := range h.RelatedTo {
+			if j >= 3 {
+				fmt.Fprintf(sb, "- Mais %d referências no JSON.\n", len(h.RelatedTo)-j)
+				break
+			}
+			fmt.Fprintf(sb, "- Chamadora `%s`, chamada em `%s:%d`, SHA-256 `%s`.\n", ref.Symbol, ref.Path, ref.Line, ref.SHA256)
+		}
+		if len(h.RelatedTo) > 0 {
+			sb.WriteString("\n")
+		}
+		snippet := strings.Join(lines[first-1:last], "\n")
+		sb.WriteString("````go\n" + snippet + "\n````\n\n")
+	}
+	if len(r.Hits) == 0 {
+		sb.WriteString("Nenhuma definição recuperada com identidade conferida neste escopo.\n\n")
+	}
+	for i, issue := range r.Issues {
+		if i >= 8 {
+			fmt.Fprintf(sb, "- Mais %d ocorrências no JSON.\n", len(r.Issues)-i)
+			break
+		}
+		fmt.Fprintf(sb, "- %s\n", issue)
+	}
+	sb.WriteString("\n")
+}
+
+// WriteRequirementRetrieval labels reading evidence, not verified capabilities.
+func WriteRequirementRetrieval(sb *strings.Builder, requirements []domain.RequirementRetrieval) {
+	if len(requirements) == 0 {
+		return
+	}
+	sb.WriteString("##### Indícios e lacunas por requisito\n\nCorrespondência lexical é inferência; requisito satisfeito e comportamento continuam não verificados. Termos sem correspondência não demonstram capacidades ausentes.\n\n")
+	for i, r := range requirements {
+		if i >= 8 {
+			fmt.Fprintf(sb, "Mais %d requisitos no JSON.\n\n", len(requirements)-i)
+			break
+		}
+		fmt.Fprintf(sb, "- Requisito: %q. Estado: `%s`. %s\n", r.Requirement, r.Status, r.Reason)
+		if len(r.Constraints) > 0 {
+			sb.WriteString("  Restrições: escopo e cumprimento da negação não verificados.\n")
+			for j, c := range r.Constraints {
+				if j >= 3 {
+					fmt.Fprintf(sb, "  Mais %d restrições no JSON.\n", len(r.Constraints)-j)
+					break
+				}
+				fmt.Fprintf(sb, "  Marcador %q, texto original %q, estado `%s`.\n", c.Marker, c.Text, c.Status)
+			}
+		}
+		matched, missing := r.MatchedTerms, r.MissingTerms
+		if len(matched) > 12 {
+			matched = matched[:12]
+		}
+		if len(missing) > 12 {
+			missing = missing[:12]
+		}
+		fmt.Fprintf(sb, "  Termos associados (%d/%d exibidos): %q. Sem correspondência (%d/%d exibidos): %q.\n", len(matched), len(r.MatchedTerms), matched, len(missing), len(r.MissingTerms), missing)
+		for j, ref := range r.Sources {
+			if j >= 3 {
+				fmt.Fprintf(sb, "  Mais %d fontes no JSON.\n", len(r.Sources)-j)
+				break
+			}
+			fmt.Fprintf(sb, "  Fonte de código `%s` em `%s:%d`, SHA-256 `%s`.\n", ref.Symbol, ref.Path, ref.Line, ref.SHA256)
+		}
+		for j, ref := range r.DocumentationSources {
+			if j >= 3 {
+				fmt.Fprintf(sb, "  Mais %d fontes documentais no JSON.\n", len(r.DocumentationSources)-j)
+				break
+			}
+			fmt.Fprintf(sb, "  Fonte documental `%s` em `%s:%d`, SHA-256 `%s`; descrição, comportamento não verificado.\n", ref.Symbol, ref.Path, ref.Line, ref.SHA256)
+		}
+		sb.WriteString("\n")
+	}
+}
+
+// WriteQueryInterpretation describes syntax decisions, not semantic understanding.
+func WriteQueryInterpretation(sb *strings.Builder, queries []domain.ImplementationQuery) {
+	if len(queries) == 0 {
+		return
+	}
+	sb.WriteString("##### Interpretação lexical da consulta\n\nSímbolos explícitos são pedidos de busca; restrições não são afirmações sobre o projeto.\n\n")
+	constraints := []domain.ImplementationQueryConstraint{}
+	for _, q := range queries {
+		constraints = append(constraints, q.Constraints...)
+	}
+	if len(constraints) > 0 {
+		fmt.Fprintf(sb, "Restrições registradas: %d. Escopo e cumprimento não verificados, inclusive nas linhas não exibidas abaixo.\n\n", len(constraints))
+		for i, c := range constraints {
+			if i >= 3 {
+				fmt.Fprintf(sb, "- Mais %d restrições no JSON.\n", len(constraints)-i)
+				break
+			}
+			fmt.Fprintf(sb, "- Marcador %q, texto original %q, estado `%s`.\n", c.Marker, c.Text, c.Status)
+		}
+		sb.WriteString("\n")
+	}
+	for i, q := range queries {
+		if i >= 8 {
+			fmt.Fprintf(sb, "Mais %d linhas interpretadas no JSON.\n\n", len(queries)-i)
+			break
+		}
+		symbols := q.Symbols
+		if len(symbols) > 8 {
+			symbols = symbols[:8]
+		}
+		fmt.Fprintf(sb, "- Original: %q. Modo: `%s`. Símbolos (%d/%d exibidos): %q.\n", q.Original, q.Mode, len(symbols), len(q.Symbols), symbols)
+		if len(q.Expansions) > 0 {
+			sb.WriteString("  Expansões: hipóteses lexicais; traduções e alternativas técnicas não comprovam pertinência, equivalência ou capacidade.\n")
+			for j, e := range q.Expansions {
+				if j >= 6 {
+					fmt.Fprintf(sb, "  Mais %d expansões no JSON.\n", len(q.Expansions)-j)
+					break
+				}
+				terms := e.Terms
+				if len(terms) > 8 {
+					terms = terms[:8]
+				}
+				fmt.Fprintf(sb, "  Origem %q; regra `%s`; tipo `%s`; estado `%s`; termos (%d/%d exibidos): %q.\n", e.Source, e.RuleID, e.Kind, e.Status, len(terms), len(e.Terms), terms)
+			}
+		}
+	}
+	sb.WriteString("\n")
+}
+
+// writeImplementationBehavior presents syntax observations, never behavioral proof.
+func writeImplementationBehavior(sb *strings.Builder, values []domain.ImplementationBehavior) {
+	if len(values) == 0 {
+		return
+	}
+	sb.WriteString("#### Observações sintáticas por função\n\nNão comprovam execução, preservação das entradas ou atendimento à intenção original.\n\n")
+	for i, b := range values {
+		if i == 10 {
+			fmt.Fprintf(sb, "Mais %d funções omitidas nesta apresentação; disponíveis no JSON.\n\n", len(values)-i)
+			break
+		}
+		fmt.Fprintf(sb, "- Função %q; arquivo %q; linhas %d–%d; SHA-256 %q; estado %q; motivo %q.\n", b.Source.Symbol, b.Source.Path, b.Source.Line, b.EndLine, b.Source.SHA256, b.Status, b.Reason)
+		fmt.Fprintf(sb, "  Limitações: %q. Ausência de escrita direta não prova preservação das entradas.\n", b.Limitations)
+		if len(b.Facts) == 0 {
+			sb.WriteString("  Nenhum fato sintático registrado; isso não comprova ausência de efeitos.\n")
+		}
+		for j, f := range b.Facts {
+			if j == 8 {
+				fmt.Fprintf(sb, "  Mais %d fatos omitidos nesta apresentação; disponíveis no JSON.\n", len(b.Facts)-j)
+				break
+			}
+			fmt.Fprintf(sb, "  Fato observado: %q; alvo %q; linhas %d–%d; trecho %q.\n", f.Kind, f.Target, f.Line, f.EndLine, f.Snippet)
+		}
+	}
+	sb.WriteString("\n")
 }

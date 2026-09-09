@@ -1,0 +1,27 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/report/discovery_query_test.md
+ * @layer L2
+ * @updated 2026-09-08
+ */
+package report
+
+import (
+	"bateia/01_core/domain"
+	"strings"
+	"testing"
+)
+
+func TestDiscovery0055MarkdownHypothesisTrace(t *testing.T) {
+	p := domain.DiscoveryQueryPlan{Original: "serializar dados mantendo ordem peculiar", Version: "0055-v2", Status: "hypothesis", Reason: "catalog", ActionTerms: []string{"serializ", "marshal"}, ObjectTerms: []string{"data"}, RuleIDs: []string{"synthetic-serial-rule"}, Unverified: []string{"serializar dados mantendo ordem peculiar"}}
+	md := GenerateMarkdownReport(&domain.SearchReport{SearchAttempts: []domain.SearchAttempt{{OriginalQuery: p.Original, Query: "derived", QueryPlan: &p, RawCandidates: 7, RejectedCandidates: 6, Candidates: 1, AdmissionEvidence: []domain.ProviderCandidateMatch{{Repository: "control/synthetic-receipt", Evidence: []domain.MatchEvidence{{MatchType: "FileMatch", Path: "src/synthetic-receipt.go", Snippet: "marshal data synthetic bytes"}}}}}}})
+	for _, want := range []string{"hypothesis", "synthetic-serial-rule", "serializ", "marshal", "data", p.Original, "6", "control/synthetic-receipt", "src/synthetic-receipt.go", "marshal data synthetic bytes"} {
+		if !strings.Contains(md, want) {
+			t.Errorf("missing %q: %s", want, md)
+		}
+	}
+	lower := strings.ToLower(md)
+	if !strings.Contains(lower, "rejeit") || (!strings.Contains(lower, "não verificad") && !strings.Contains(lower, "sem prova")) {
+		t.Errorf("missing rejection or epistemic qualifier: %s", md)
+	}
+}

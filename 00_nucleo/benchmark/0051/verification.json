@@ -1,0 +1,59 @@
+{
+  "spec_sha256": "7c8fd266cccbafc1f49dc65eb827f31aedecd2368d13f5003def4cf134ec2012",
+  "production_sha256": {
+    "01_core/domain/implementation_search.go": "a571f426a4c4ffbb9c02da0dc941d16c6b048683aaceebff725742d63ab31916",
+    "01_core/parser/implementation_search.go": "17b090625e38f96375eb0a477db4f3a2393aac6c0a680aa4d3e1dd4fbe9ce4c3",
+    "01_core/parser/documentation_retrieval.go": "4bc9d5ab6a0ad81c4b26a17c5fb796b6e7576ba277e3b95fa7fd0e616edd8455",
+    "01_core/parser/requirement_retrieval.go": "516385530e5a311e6e07638becfea49a9ad6bc0142063b487b7ec81005421a19",
+    "01_core/usecase/implementation_retrieval.go": "a8dbe439fb3a331bbdc0b3806969f49f7ef9cb1fc7f10b6c544b41bb7f3b5033",
+    "02_shell/report/generator.go": "8fce9793c4f317b71f126fa508d2e4f4eaf93c8f740338b302b7eb1b8a17e655",
+    "01_core/parser/evidence.go": "da1c5abc870ef39b5206f244b724b287a09baead40d289e52b1e651dc2f4c369",
+    "02_shell/cli/idea_recommend.go": "f7e57c49f852baac6049361ef363d67802274a00a63a804c9555f04f54269bc7"
+  },
+  "unchanged": [
+    "01_core/parser/corpus_scoring.go",
+    "01_core/parser/functional_retrieval.go"
+  ],
+  "baseline_binary_sha256": "c52cdaf06a75c664f126525e223d01f5c3de2068b4926a105562105131c06586",
+  "candidate_binary_sha256": "1d9f559785cad39748604f2082ab1d26e690846fd5bcfdee90882241b0b218b5",
+  "checks": [
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go build -o /tmp/bateia-0051 ./04_wiring",
+      "exit_code": 0
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go test ./...",
+      "exit_code": 0,
+      "log": "full-tests.log"
+    },
+    {
+      "command": "crystalline-lint .",
+      "exit_code": 0,
+      "log": "lint.log"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-0048-cache go run /tmp/bateia0051-live.go",
+      "exit_code": 0,
+      "output": "remote-verification.json"
+    }
+  ],
+  "regime": "A/B sem atestação de isolamento físico",
+  "artifacts_sha256": {
+    "baseline.json": "6ec05a03947ae5d677fae1a2314c46decab1fa38fceba727c9f76f333a9c972e",
+    "cli-before.json": "ce366e9eb2df86dfdad9b6459a4a6bcee99e709c3506e6cf7ebe3c722b3dda49",
+    "tests-freeze.json": "ba4fe3b7a6c5b8c23ae7ab0a6b2f891dd2cdd956c323755825b163036faf547a",
+    "cli-comparison.json": "17a0f4830300db82367d8096a899176116591985909794389aff71386f8acb6e",
+    "independent-r1.log": "fd50bc74ede2b3e29c7791f63871616b0c2a62a39f4865d877b65c1511401d70",
+    "tests-freeze-r1.json": "ec7b7552480ec08a5dbbaed5ffc47b69cde3be6ddf196e595d1a85f336b7d336",
+    "renderer-tests-r1.go.txt": "870278fba5b1cea8cb3f3684e9d033b4693bb2c99578a462fcf946fa63763c2c",
+    "independent-r2.log": "16b39be5354228d8156a6ac7c126cb99d5eb9ee2f6c6f8369120ea0474d0fcea",
+    "independent-verdict.md": "583b929273068528ed647b9f1780dc60530d872501ddbf8ab10b3ff494a72b8b",
+    "remote-verification.json": "4a14eaa288630d59455cc8165030523ad4cf78f3fa00e383cd1c781dc4ffd213",
+    "remote-runner.go.txt": "4d91a81cae33e08b44a81ee7b305c495287141555d0a19d298fb7199d7c70b6f",
+    "replay.json": "d820eef02a0050a44609f439140557599cbe569115abdcd62dce6d03069e9e51",
+    "full-tests.log": "d82b6fb4a798ed9750cc5715005044f2d7269f1da8d4fe2ca8b8bd12570bee3f",
+    "lint.log": "91a6d3da4ea876cf1389727cd10abe41cf117fa0295b588912b258b93118f0ac",
+    "snappy.md": "126544941f970b5b0d840a840af93684931c91e6b5f9fe4eaa55bdee220fa1d0",
+    "bbolt.md": "f3855cbe3d0f199f851dbfddf1e161f1b7cd495dea185cf19e97e2d436f67f99"
+  }
+}

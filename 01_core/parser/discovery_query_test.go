@@ -1,0 +1,96 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/parser/discovery_query_test.md
+ * @layer L1
+ * @updated 2026-09-08
+ */
+package parser_test
+
+import (
+	"bateia/01_core/parser"
+	"reflect"
+	"testing"
+)
+
+func TestDiscovery0055FiniteCatalog(t *testing.T) {
+	actions := []struct {
+		words []string
+		terms []string
+	}{
+		{[]string{"monitorar", "monitoramento", "vigiar", "watch"}, []string{"watch", "notify"}},
+		{[]string{"interpolar", "interpolação", "interpolation", "blend"}, []string{"interpolat", "blend"}},
+		{[]string{"interseção", "intersection", "intersect", "presentes em ambos"}, []string{"intersect", "intersection"}},
+		{[]string{"união", "union", "presentes em qualquer"}, []string{"union"}},
+		{[]string{"comprimir", "compressão", "compress"}, []string{"compress"}},
+		{[]string{"serializar", "serialização", "serialize"}, []string{"serializ", "marshal"}},
+	}
+	objects := []struct {
+		words []string
+		terms []string
+	}{
+		{[]string{"arquivo", "arquivos", "file", "files", "diretório", "diretórios", "directory"}, []string{"file", "directory"}},
+		{[]string{"cor", "cores", "color", "colours"}, []string{"color", "colour"}},
+		{[]string{"bit", "bits", "bitset"}, []string{"bit", "bitset"}},
+		{[]string{"dado", "dados", "data"}, []string{"data"}},
+	}
+	for _, a := range actions {
+		for _, o := range objects {
+			for _, aw := range a.words {
+				for _, ow := range o.words {
+					query := "  Preciso " + aw + " " + ow + " mantendo ordem peculiar?  "
+					p := parser.PlanDiscoveryQuery(query)
+					if p.Status != "hypothesis" || p.Original != query || p.Version != "0055-v2" || p.Reason == "" || len(p.RuleIDs) == 0 || !discovery0055Contains(p.Unverified, query) || !reflect.DeepEqual(p.ActionTerms, a.terms) || !reflect.DeepEqual(p.ObjectTerms, o.terms) {
+						t.Fatalf("query=%q plan=%+v", query, p)
+					}
+				}
+			}
+		}
+	}
+	for _, query := range []string{"COMPRESSAO DADOS", "SERIALIZACAO ARQUIVOS", "UNIAO BITS", "MONITORAMENTO DIRETORIOS", "INTERSECAO BITS"} {
+		if p := parser.PlanDiscoveryQuery(query); p.Status != "hypothesis" {
+			t.Errorf("accent/case %q: %+v", query, p)
+		}
+	}
+}
+
+func TestDiscovery0055ConservativeTriggers(t *testing.T) {
+	queries := []string{"", "dados", "comprimir", "comprimir serializar dados", "comprimir dados arquivos", "descomprimir dados", "compressible data", "compress metadata", "watch profile", "comprimir dados\nrapidamente", "comprimir dados\rretidos", `comprimir "dados"`, "comprimir `dados`", "comprimir dados repo:org/x", "comprimir dados && x", "comprimir dados != x", "comprimir dados -> x", "comprimir dados OR x", "comprimir dados AND x", "comprimir dados (x)"}
+	for _, neg := range []string{"sem", "não", "nao", "nunca", "not", "without", "never"} {
+		queries = append(queries, "comprimir dados "+neg+" perder ordem")
+	}
+	for _, q := range queries {
+		p := parser.PlanDiscoveryQuery(q)
+		if p.Status != "literal_only" || p.Original != q || p.Reason == "" {
+			t.Errorf("unsafe trigger %q: %+v", q, p)
+		}
+	}
+	for _, q := range []string{"comprimir compressão dados data", "comprimir dados anotados", "serializar arquivos semanticos"} {
+		if p := parser.PlanDiscoveryQuery(q); p.Status != "hypothesis" {
+			t.Errorf("same family/substring negative %q: %+v", q, p)
+		}
+	}
+}
+
+func TestDiscovery0055EvidenceRequiresBothFamilies(t *testing.T) {
+	p := parser.PlanDiscoveryQuery("serializar dados preservando ordem curiosa")
+	for _, tc := range []struct {
+		text string
+		want bool
+	}{{"", false}, {"serialize", false}, {"data", false}, {"SERIALIZER DATASET", true}, {"marshal data", true}, {"marshal files", false}} {
+		if got := parser.DiscoveryEvidenceMatches(p, tc.text); got != tc.want {
+			t.Errorf("%q=%v want %v", tc.text, got, tc.want)
+		}
+	}
+	if parser.DiscoveryEvidenceMatches(parser.PlanDiscoveryQuery("sem serializar dados"), "marshal data") {
+		t.Fatal("literal_only admitted evidence")
+	}
+}
+
+func discovery0055Contains(values []string, want string) bool {
+	for _, value := range values {
+		if value == want {
+			return true
+		}
+	}
+	return false
+}

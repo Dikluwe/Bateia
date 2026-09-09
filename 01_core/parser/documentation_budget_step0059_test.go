@@ -1,0 +1,244 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/parser/documentation_budget_step0059_test.md
+ * @layer L1
+ * @updated 2026-09-08
+ */
+package parser_test
+
+import (
+	"crypto/sha256"
+	"fmt"
+	"reflect"
+	"strings"
+	"testing"
+
+	"bateia/01_core/domain"
+	"bateia/01_core/parser"
+	"bateia/01_core/usecase"
+)
+
+const budget59Query = "locate violet lantern"
+
+func budget59File(path, content string) domain.ExtractedFile {
+	return domain.ExtractedFile{Path: path, Content: content, Size: int64(len(content))}
+}
+
+func budget59Files(code, docs int, attached bool) []domain.ExtractedFile {
+	var files []domain.ExtractedFile
+	for i := 0; i < code; i++ {
+		comment := ""
+		if attached {
+			comment = "// locate violet lantern\n"
+		}
+		files = append(files, budget59File(fmt.Sprintf("a%02d.go", i), fmt.Sprintf("package sample\n%sfunc VioletLantern%d() {}\n", comment, i)))
+	}
+	for i := 0; i < docs; i++ {
+		files = append(files, budget59File(fmt.Sprintf("z%02d.go", i), fmt.Sprintf("package sample\n// locate violet lantern\n// Author claim only.\nfunc Step%d(counter *int) { *counter += 4 }\n", i)))
+	}
+	return files
+}
+
+func budget59Channels(r domain.ImplementationSearchReport) (code, docs []domain.ImplementationHit) {
+	for _, h := range r.Hits {
+		if h.Retrieval == "documentation" {
+			docs = append(docs, h)
+		} else {
+			code = append(code, h)
+		}
+	}
+	return
+}
+
+func budget59Identity(h domain.ImplementationHit) string {
+	return fmt.Sprintf("%s:%d:%s", h.Path, h.Line, h.Symbol)
+}
+
+func budget59Check(t *testing.T, r domain.ImplementationSearchReport, limit, code, docs int) {
+	t.Helper()
+	c, d := budget59Channels(r)
+	if len(r.Hits) > limit || len(c) != code || len(d) != docs {
+		t.Fatalf("limit %d wants code/doc %d/%d: %+v", limit, code, docs, r)
+	}
+	seen := map[string]bool{}
+	for _, h := range r.Hits {
+		id := budget59Identity(h)
+		if seen[id] {
+			t.Fatalf("duplicate identity: %+v", h)
+		}
+		seen[id] = true
+	}
+}
+
+func budget59Partial(t *testing.T, r domain.ImplementationSearchReport) {
+	t.Helper()
+	if !r.Limited || r.Status != "partial" {
+		t.Fatalf("omission not accounted: %+v", r)
+	}
+}
+
+func TestDocumentationBudget0059SaturationAndSmallLimits(t *testing.T) {
+	files := budget59Files(12, 5, false)
+	full := parser.RankGoImplementations(budget59Query, files, 64)
+	fullCode, fullDocs := budget59Channels(full)
+	budget59Check(t, full, 64, 12, 5)
+	for _, tc := range []struct{ limit, code, docs int }{{1, 1, 0}, {2, 1, 1}, {8, 6, 2}} {
+		t.Run(fmt.Sprint(tc.limit), func(t *testing.T) {
+			r := parser.RankGoImplementations(budget59Query, files, tc.limit)
+			budget59Check(t, r, tc.limit, tc.code, tc.docs)
+			budget59Partial(t, r)
+			c, d := budget59Channels(r)
+			if !reflect.DeepEqual(c, fullCode[:tc.code]) || (tc.docs > 0 && !reflect.DeepEqual(d, fullDocs[:tc.docs])) {
+				t.Fatalf("channel order/score/provenance changed: %+v", r.Hits)
+			}
+			if tc.docs > 0 {
+				reason := strings.ToLower(r.Reason)
+				if !strings.Contains(reason, "reserv") || !strings.Contains(reason, "doc") || !(strings.Contains(reason, "comportamento") || strings.Contains(reason, "behavior")) {
+					t.Errorf("reservation and behavior limitation not explicit: %q", r.Reason)
+				}
+			}
+		})
+	}
+}
+
+func TestDocumentationBudget0059UniqueCandidatesAndPrecutDedup(t *testing.T) {
+	for _, tc := range []struct{ docs, wantCode, wantDocs int }{{0, 8, 0}, {1, 7, 1}, {4, 6, 2}} {
+		t.Run(fmt.Sprint(tc.docs), func(t *testing.T) {
+			files := budget59Files(12, tc.docs, true)
+			if tc.docs > 0 {
+				files = append(files, files[len(files)-1], files[len(files)-1])
+			}
+			r := parser.RankGoImplementations(budget59Query, files, 8)
+			budget59Check(t, r, 8, tc.wantCode, tc.wantDocs)
+			budget59Partial(t, r)
+			_, docs := budget59Channels(r)
+			for i, h := range docs {
+				if h.Path != fmt.Sprintf("z%02d.go", i) {
+					t.Fatalf("cut lexical candidate consumed documentary slot: %+v", h)
+				}
+			}
+		})
+	}
+}
+
+func TestDocumentationBudget0059ExactDeclarationsKeepTheirSlots(t *testing.T) {
+	for _, tc := range []struct{ exact, limit, docs int }{{1, 1, 0}, {1, 2, 1}, {7, 8, 1}, {8, 8, 0}, {9, 8, 0}} {
+		t.Run(fmt.Sprintf("%d-in-%d", tc.exact, tc.limit), func(t *testing.T) {
+			files := budget59Files(0, 4, false)
+			query := budget59Query
+			for i := 0; i < tc.exact; i++ {
+				name := fmt.Sprintf("Anchor%d", i)
+				query += " `" + name + "`"
+				files = append(files, budget59File(fmt.Sprintf("e%02d.go", i), "package sample\nfunc "+name+"() {}\n"))
+			}
+			r := parser.RankGoImplementations(query, files, tc.limit)
+			budget59Check(t, r, tc.limit, tc.limit-tc.docs, tc.docs)
+			budget59Partial(t, r)
+			code, _ := budget59Channels(r)
+			for _, h := range code {
+				if h.Score < 100000 {
+					t.Fatalf("exact declaration lost priority: %+v", h)
+				}
+			}
+		})
+	}
+}
+
+func TestDocumentationBudget0059SingleChannelAndDeterminism(t *testing.T) {
+	for _, tc := range []struct{ code, docs int }{{12, 0}, {0, 12}} {
+		files := budget59Files(tc.code, tc.docs, false)
+		full := parser.RankGoImplementations(budget59Query, files, 32)
+		for _, limit := range []int{1, 2, 8} {
+			r := parser.RankGoImplementations(budget59Query, files, limit)
+			if len(r.Hits) != limit || !reflect.DeepEqual(r.Hits, full.Hits[:limit]) {
+				t.Fatalf("single channel lost capacity: %+v", r)
+			}
+			budget59Partial(t, r)
+		}
+	}
+	files := budget59Files(12, 5, true)
+	a := parser.RankGoImplementations(budget59Query, files, 8)
+	var reversed []domain.ExtractedFile
+	for i := len(files) - 1; i >= 0; i-- {
+		reversed = append(reversed, files[i], files[i])
+	}
+	b := parser.RankGoImplementations(budget59Query, reversed, 8)
+	if !reflect.DeepEqual(a, b) {
+		t.Fatalf("permutation/duplicates changed report: %+v / %+v", a, b)
+	}
+}
+
+func TestDocumentationBudget0059RelationsUseReducedCodeBudget(t *testing.T) {
+	code := []domain.ExtractedFile{budget59File("calls.go", "package sample\nfunc VioletLanternA() { first() }\nfunc VioletLanternB() { second() }\nfunc first() {}\nfunc second() {}\n")}
+	docs := []domain.ExtractedFile{budget59File("z.go", "package sample\n// locate violet lantern\nfunc Step() { hidden() }\nfunc hidden() {}\n")}
+	// Keep the lexical document population fixed while disabling only Doc retrieval.
+	baseline := append(append([]domain.ExtractedFile{}, code...), budget59File("z.go", "package sample\n// Author claim only.\nfunc Step() { hidden() }\nfunc hidden() {}\n"))
+	for _, limit := range []int{2, 4, 8} {
+		files := append(append([]domain.ExtractedFile{}, code...), docs...)
+		r := parser.RankGoImplementations(budget59Query, files, limit)
+		gotCode, gotDocs := budget59Channels(r)
+		want := parser.RankGoImplementations(budget59Query, baseline, limit-1)
+		if len(gotDocs) != 1 || !reflect.DeepEqual(gotCode, want.Hits) || len(r.Hits) > limit {
+			t.Fatalf("relations ignored reduced budget: %+v; code baseline %+v", r, want)
+		}
+		seeds := map[string]bool{}
+		for _, h := range gotCode {
+			if h.Retrieval != "direct_call" {
+				seeds[budget59Identity(h)] = true
+			}
+		}
+		for _, h := range r.Hits {
+			if h.Symbol == "hidden" {
+				t.Fatal("documentation expanded into calls")
+			}
+			if h.Retrieval == "direct_call" {
+				if len(h.RelatedTo) == 0 {
+					t.Fatalf("call has no provenance: %+v", h)
+				}
+				for _, ref := range h.RelatedTo {
+					if !seeds[fmt.Sprintf("%s:%d:%s", ref.Path, ref.Line, ref.Symbol)] {
+						t.Fatalf("orphan relation: %+v", h)
+					}
+				}
+			}
+		}
+	}
+}
+
+func TestDocumentationBudget0059DocumentaryProvenanceIsNotBehavior(t *testing.T) {
+	files := budget59Files(0, 3, false)
+	query := budget59Query + " sem lock"
+	r := parser.RankGoImplementations(query, files, 2)
+	budget59Check(t, r, 2, 0, 2)
+	checked := usecase.ValidateImplementationHits(r, files)
+	if !reflect.DeepEqual(r.Hits, checked.Hits) {
+		t.Fatalf("returned provenance failed reread: %+v", checked)
+	}
+	for i, h := range r.Hits {
+		if h.Path != files[i].Path || h.Symbol != fmt.Sprintf("Step%d", i) || h.Line != 4 || h.EndLine != 4 || h.DocumentationLine != 2 || h.DocumentationEndLine != 3 || h.SHA256 != fmt.Sprintf("%x", sha256.Sum256([]byte(files[i].Content))) || h.Score != len(h.MatchedTerms) || len(h.TermWeights) != 0 || len(h.RelatedTo) != 0 {
+			t.Fatalf("documentary fields changed: %+v", h)
+		}
+	}
+	behavior := parser.InspectImplementationBehavior(r, files)
+	if len(behavior) != len(r.Hits) {
+		t.Fatalf("missing documentary behavior boundary: %+v", behavior)
+	}
+	for _, b := range behavior {
+		if b.Status != "not_evaluated" || len(b.Facts) != 0 {
+			t.Fatalf("comment promoted to behavior: %+v", b)
+		}
+	}
+	projected := usecase.ValidateImplementationRequirements(query, r, files)
+	if len(projected.Requirements) != 1 {
+		t.Fatalf("missing requirement: %+v", projected)
+	}
+	req := projected.Requirements[0]
+	if req.Status != "documentation_located" || len(req.Sources) != 0 || len(req.DocumentationSources) != 2 || len(req.Constraints) == 0 {
+		t.Fatalf("documentation promoted or lost: %+v", req)
+	}
+	for _, c := range req.Constraints {
+		if c.Status != "not_verified" {
+			t.Fatalf("comment proved constraint: %+v", c)
+		}
+	}
+}

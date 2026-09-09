@@ -1,0 +1,27 @@
+package main
+
+import (
+ "context"
+ "encoding/json"
+ "fmt"
+ "os"
+ "time"
+ "bateia/01_core/domain"
+ "bateia/03_infra/local"
+ "bateia/03_infra/sourcegraph"
+)
+
+func main() {
+ if len(os.Args)<3 {fmt.Fprintln(os.Stderr,"probe local PATH QUERY | discovery QUERY");os.Exit(2)}
+ ctx,cancel:=context.WithTimeout(context.Background(),30*time.Second);defer cancel()
+ switch os.Args[1] {
+ case "local":
+  if len(os.Args)!=4 {os.Exit(2)}
+  c:=domain.RepositoryCandidate{Owner:"local",Repo:"benchmark",URL:"file://"+os.Args[2],CommitID:"WORKTREE"}
+  r,err:=local.NewClient().SearchImplementations(ctx,c,os.Args[3],domain.ImplementationSearchBudget{MaxFiles:2048,MaxBytes:32*1024*1024,MaxFileBytes:512*1024,MaxResults:24});if err!=nil{data,_:=json.Marshal(r);out:=map[string]any{};json.Unmarshal(data,&out);out["error"]=err.Error();json.NewEncoder(os.Stdout).Encode(out)}else{json.NewEncoder(os.Stdout).Encode(r)}
+ case "discovery":
+  c:=sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"));r,a,err:=c.SearchCandidatesWithTrace(ctx,domain.QueryFilter{Query:os.Args[2],Language:"go",MaxResults:10,Depth:1})
+  out:=map[string]any{"candidates":r,"attempts":a};if err!=nil{out["error"]=err.Error()};json.NewEncoder(os.Stdout).Encode(out)
+ default:os.Exit(2)
+ }
+}

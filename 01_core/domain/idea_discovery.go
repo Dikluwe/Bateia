@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/idea_discovery.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package domain
@@ -24,16 +24,21 @@ type DiscoveryRequest struct {
 }
 
 type ProviderAttempt struct {
-	Query              string        `json:"query"`
-	AttemptIndex       int           `json:"attempt_index,omitempty"`
-	StartedAt          time.Time     `json:"started_at,omitempty"`
-	Duration           time.Duration `json:"duration,omitempty"`
-	Status             string        `json:"status,omitempty"`
-	ResultCount        int           `json:"result_count"`
-	ErrorClass         string        `json:"error_class,omitempty"`
-	Error              string        `json:"error,omitempty"`
-	SearchLocale       string        `json:"search_locale,omitempty"`
-	RegionalProposalID string        `json:"regional_proposal_id,omitempty"`
+	Coverage             *DiscoveryCoverage             `json:"coverage,omitempty"`
+	CandidateDiagnostics []DiscoveryCandidateDiagnostic `json:"candidate_diagnostics,omitempty"`
+	QueryPlan            *DiscoveryQueryPlan            `json:"query_plan,omitempty"`
+	RawCandidates        int                            `json:"raw_candidates,omitempty"`
+	RejectedCandidates   int                            `json:"rejected_candidates,omitempty"`
+	Query                string                         `json:"query"`
+	AttemptIndex         int                            `json:"attempt_index,omitempty"`
+	StartedAt            time.Time                      `json:"started_at,omitempty"`
+	Duration             time.Duration                  `json:"duration,omitempty"`
+	Status               string                         `json:"status,omitempty"`
+	ResultCount          int                            `json:"result_count"`
+	ErrorClass           string                         `json:"error_class,omitempty"`
+	Error                string                         `json:"error,omitempty"`
+	SearchLocale         string                         `json:"search_locale,omitempty"`
+	RegionalProposalID   string                         `json:"regional_proposal_id,omitempty"`
 }
 
 type ProviderDiscovery struct {

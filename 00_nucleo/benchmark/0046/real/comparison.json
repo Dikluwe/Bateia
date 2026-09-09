@@ -1,0 +1,184 @@
+{
+  "same_inputs": {
+    "input_freeze_sha256": true,
+    "runner_sha256": true,
+    "adapter_sha256": true,
+    "budgets": true,
+    "scan": true
+  },
+  "baseline_sha256": "14aa9840f7889091f92f7528c1d02a660a8aa97a9ea3f17dffc14b19b51cbb00",
+  "candidate_sha256": "9b8c10f1a92df7b7f309faa75cf339a85dbaf0cc1221eb831465bd948470bd6e",
+  "aggregate_before": {
+    "positive_requirements": 6,
+    "negative_requirements": 3,
+    "negative_with_indications": 1,
+    "at_3": {
+      "macro_recall_labeled": 0.0,
+      "micro_precision_labeled": 0.0
+    },
+    "at_12": {
+      "macro_recall_labeled": 0.16666666666666666,
+      "micro_precision_labeled": 0.023255813953488372
+    }
+  },
+  "aggregate_after": {
+    "positive_requirements": 6,
+    "negative_requirements": 3,
+    "negative_with_indications": 1,
+    "at_3": {
+      "macro_recall_labeled": 0.0,
+      "micro_precision_labeled": 0.0
+    },
+    "at_12": {
+      "macro_recall_labeled": 0.16666666666666666,
+      "micro_precision_labeled": 0.02040816326530612
+    }
+  },
+  "requirements": [
+    {
+      "id": "bbolt-write",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 1.0,
+      "recall_at12_after": 1.0,
+      "expected_missing_rank_before": [],
+      "expected_missing_rank_after": [],
+      "paths_before": 6,
+      "paths_after": 13,
+      "hits_before": 24,
+      "hits_after": 24
+    },
+    {
+      "id": "bbolt-read",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 0.0,
+      "recall_at12_after": 0.0,
+      "expected_missing_rank_before": [
+        "db.go"
+      ],
+      "expected_missing_rank_after": [],
+      "paths_before": 13,
+      "paths_after": 20,
+      "hits_before": 24,
+      "hits_after": 24
+    },
+    {
+      "id": "bbolt-negative",
+      "negative": true,
+      "recall_at3_before": null,
+      "recall_at3_after": null,
+      "recall_at12_before": null,
+      "recall_at12_after": null,
+      "expected_missing_rank_before": [],
+      "expected_missing_rank_after": [],
+      "paths_before": 0,
+      "paths_after": 0,
+      "hits_before": 0,
+      "hits_after": 0
+    },
+    {
+      "id": "snappy-compress",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 0.0,
+      "recall_at12_after": 0.0,
+      "expected_missing_rank_before": [
+        "encode.go"
+      ],
+      "expected_missing_rank_after": [
+        "encode.go"
+      ],
+      "paths_before": 1,
+      "paths_after": 1,
+      "hits_before": 4,
+      "hits_after": 4
+    },
+    {
+      "id": "snappy-decompress",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 0.0,
+      "recall_at12_after": 0.0,
+      "expected_missing_rank_before": [
+        "decode.go"
+      ],
+      "expected_missing_rank_after": [
+        "decode.go"
+      ],
+      "paths_before": 0,
+      "paths_after": 0,
+      "hits_before": 0,
+      "hits_after": 0
+    },
+    {
+      "id": "snappy-negative",
+      "negative": true,
+      "recall_at3_before": null,
+      "recall_at3_after": null,
+      "recall_at12_before": null,
+      "recall_at12_after": null,
+      "expected_missing_rank_before": [],
+      "expected_missing_rank_after": [],
+      "paths_before": 0,
+      "paths_after": 0,
+      "hits_before": 0,
+      "hits_after": 0
+    },
+    {
+      "id": "oauth2-header",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 0.0,
+      "recall_at12_after": 0.0,
+      "expected_missing_rank_before": [
+        "transport.go"
+      ],
+      "expected_missing_rank_after": [
+        "transport.go"
+      ],
+      "paths_before": 12,
+      "paths_after": 17,
+      "hits_before": 24,
+      "hits_after": 24
+    },
+    {
+      "id": "oauth2-exchange",
+      "negative": false,
+      "recall_at3_before": 0.0,
+      "recall_at3_after": 0.0,
+      "recall_at12_before": 0.0,
+      "recall_at12_after": 0.0,
+      "expected_missing_rank_before": [
+        "oauth2.go"
+      ],
+      "expected_missing_rank_after": [
+        "oauth2.go"
+      ],
+      "paths_before": 12,
+      "paths_after": 16,
+      "hits_before": 24,
+      "hits_after": 24
+    },
+    {
+      "id": "oauth2-negative",
+      "negative": true,
+      "recall_at3_before": null,
+      "recall_at3_after": null,
+      "recall_at12_before": null,
+      "recall_at12_after": null,
+      "expected_missing_rank_before": [],
+      "expected_missing_rank_after": [],
+      "paths_before": 12,
+      "paths_after": 12,
+      "hits_before": 24,
+      "hits_after": 24
+    }
+  ],
+  "verdict": "No labeled recall gain at extraction cuts 3 or 12. One expected file newly appears in full hit report at position14. Negative indication rate unchanged. Source-only local convenience sample; no semantic capability proof."
+}

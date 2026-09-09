@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package cli
@@ -66,6 +66,7 @@ func (a *CLIApp) Run(args []string) error {
 }
 
 func (a *CLIApp) PrintUsage() {
+	fmt.Println("  effects verify Verifica offline sort-preserve-v1 em casos limitados; effects --help para limites")
 	fmt.Println("🔍 Bateia — Motor de Busca de Código, Análise Arquitetural & Inteligência Ontológica")
 	fmt.Println("\nSubcomandos Disponíveis:")
 	fmt.Println("  similarity    Busca projetos parecidos, calcula Score de Similaridade e sugere melhorias")

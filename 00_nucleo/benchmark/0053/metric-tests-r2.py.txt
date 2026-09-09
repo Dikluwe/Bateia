@@ -1,0 +1,83 @@
+"""Integrator-authored controls from the public evaluator schema, before reading runner."""
+import copy
+import hashlib
+import importlib.util
+from pathlib import Path
+import unittest
+
+spec = importlib.util.spec_from_file_location('runner0053', Path(__file__).with_name('runner.py'))
+runner = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(runner)
+
+class MetricControls(unittest.TestCase):
+    def fixture(self):
+        source = b'package p\nfunc Needle() {}\n'
+        digest = hashlib.sha256(source).hexdigest()
+        project = {'id':'p','repo':'sample/repo','local_path':'/unused','files':[{'path':'x.go','sha256':digest}]}
+        case = {'id':'case','project_id':'p','query':'find a needle','polarity':'positive','expected':[{'path':'x.go','symbol':'Needle'}], 'evidence':[{'path':'x.go','start_line':2,'end_line':2,'sha256':digest}], 'discovery':True}
+        hit = {'path':'x.go','symbol':'Needle','line':2,'end_line':2,'sha256':digest,'retrieval':'lexical','kind':'definition'}
+        raw = {'status':'complete','hits':[hit],'examined':[{'path':'x.go','sha256':digest,'bytes':len(source)}],'issues':[],'limited':False}
+        report = {'results':[{'files':[{'path':'x.go','content':source.decode(),'size':len(source),'evidence':{'sha256':digest,'first_line':1,'last_line':2,'state':'content_inspected'}}], 'implementation_search':copy.deepcopy(raw), 'coverage':{'status':'insufficient'}}]}
+        return case,project,raw,report,{'x.go':source}
+
+    def test_full_observation_is_not_behavior(self):
+        c,p,r,d,s = self.fixture()
+        got=runner.evaluate_case(c,p,r,d,s)
+        self.assertEqual(got['status'],'evaluated')
+        self.assertTrue(got['targets'][0]['symbol_confirmed'])
+        self.assertTrue(got['targets'][0]['body_available'])
+        self.assertEqual(got['verified_behavior'],'not_evaluated')
+
+    def test_path_does_not_replace_symbol(self):
+        c,p,r,d,s=self.fixture()
+        r['hits'][0]['symbol']='Other'
+        d['results'][0]['implementation_search']['hits'][0]['symbol']='Other'
+        got=runner.evaluate_case(c,p,r,d,s)
+        self.assertTrue(got['paths'][0]['file_extracted'])
+        self.assertFalse(got['targets'][0]['symbol_recovered'])
+        self.assertFalse(got['targets'][0]['symbol_confirmed'])
+
+    def test_error_is_not_zero_in_denominator(self):
+        c,p,r,d,s=self.fixture()
+        good=runner.evaluate_case(c,p,r,d,s)
+        c['id']='failed'
+        bad=runner.evaluate_case(c,p,r,d,s,errors=['execution timed out'])
+        summary=runner.summarize([good,bad])
+        self.assertEqual(bad['status'],'unknown')
+        self.assertEqual(summary['positive_evaluable'],1)
+        self.assertIn('failed',summary['unknown_cases'])
+        self.assertEqual(summary['metrics']['symbol_confirmed']['micro']['denominator'],1)
+
+    def test_inventory_changed_invalidates_case(self):
+        c,p,r,d,s=self.fixture()
+        got=runner.evaluate_case(c,p,r,d,s,inventory_valid=False)
+        self.assertEqual(got['status'],'unknown')
+
+    def test_changed_hash_is_not_confirmed(self):
+        c,p,r,d,s=self.fixture()
+        d['results'][0]['files'][0]['content']='package p\nfunc Other() {}\n'
+        got=runner.evaluate_case(c,p,r,d,s)
+        self.assertTrue(got['status']=='unknown' or not got['targets'][0]['symbol_confirmed'])
+
+    def test_documentation_does_not_prove_behavior(self):
+        c,p,r,d,s=self.fixture()
+        r['hits'][0]['retrieval']='documentation'
+        d['results'][0]['implementation_search']['hits'][0]['retrieval']='documentation'
+        got=runner.evaluate_case(c,p,r,d,s)
+        self.assertEqual(got['verified_behavior'],'not_evaluated')
+        self.assertGreater(len(got['channels']['documentation']),0)
+
+    def test_discovery_not_run_is_not_miss(self):
+        c,p,r,d,s=self.fixture()
+        got=runner.evaluate_case(c,p,r,d,s)
+        self.assertEqual(got['discovery']['status'],'not_evaluated')
+        self.assertIsNone(got['discovery']['expected_repo_top10'])
+        summary=runner.summarize([got])
+        self.assertEqual(summary['discovery']['expected_repo_top10']['denominator'],0)
+
+    def test_probe_error_is_unknown(self):
+        c,p,r,d,s=self.fixture()
+        r['error']='transport failure'
+        self.assertEqual(runner.evaluate_case(c,p,r,d,s)['status'],'unknown')
+
+if __name__=='__main__': unittest.main()

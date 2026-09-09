@@ -68,3 +68,6 @@ Cumprir `00_nucleo/passos/0035-corrigir-lint-e-analisar-c-cpp-com-clang.md`. Por
 
 ## Passo 0038
 Aplicar contrato do protótipo AST+CFG: adaptador opcional explicitamente configurado, hashes e limites, fluxo intraprocedural e estados não avaliados.
+
+## Passo 0062
+Despachar effects antes de carregar .env ou clientes; injetar effects.NewRunner em cli.RunEffectsCommand.

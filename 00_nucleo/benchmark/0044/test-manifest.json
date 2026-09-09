@@ -1,0 +1,72 @@
+{
+  "regime": "A/B",
+  "FShared": "notattested",
+  "physical_isolation_attested": false,
+  "frozen_before_first_test_run": true,
+  "frozen_at": "2026-09-07T22:59:14.800775+00:00",
+  "test_author": "retrieval_tests0044",
+  "allowed_inputs": {
+    ".agents/AGENTS.md": "0c8154925d3587fae78ec4ce82753fda16018424cbe6276bcb760401774de528",
+    "00_nucleo/passos/0044-recuperar-implementacoes-por-simbolos.md": "c18902d786ac6914c98e54697b7ceb8f34de68ba136966c028a1ae08912d06f3",
+    "01_core/domain/implementation_search.go": "1bd2b80c34f5e4bb35ca066497dfca0de7d13b358ae15ac20dca9549579bdb23",
+    "01_core/domain/types.go": "0952c7e9f714c8bd3ca8dc89dc0f77c98f3d81cfd6b85daf0287f24a7db47c67",
+    "01_core/domain/evidence.go": "cf91e64a08a514475c4fe4ba483bf4ec9b16a52eea7a8f43b136e192262a4f0a",
+    "01_core/domain/interfaces.go": "8292e9a0b1425aabdad38fbf6a6c4b6964d146116e4b8ba5c1f3b982aee50ad4",
+    "go.mod": "d56bb00a870617fc45cd70b06fc88c67575b10fd4c5e8fa881ed677439b408f8",
+    "/home/dikluwe/.codex/skills/tekt-materializacao-segregada/SKILL.md": "66990d349a9e89851686cd94590a84711c69364f76b6df501230f64daf3b0c48"
+  },
+  "tests": {
+    "01_core/parser/implementation_search_test.go": "4bf41074d10f15809820a776a2977c4791b9687d3083661b0befdd74bb9729e5",
+    "01_core/domain/implementation_search_test.go": "337027cd44cc46dd471635eb5adea867c3865414b25de26aae3a41853635db4a",
+    "01_core/usecase/implementation_retrieval_test.go": "de37e27afdd7c6c8702d3257e63be3b1d7f5dbf2122c8bec51a6c157ceb280d8",
+    "03_infra/local/implementation_search_test.go": "23712a2df308bfec85b251f1cd550122e91dc4833a8a8b7d27215ffb9fd68f9d"
+  },
+  "prompts": {
+    "00_nucleo/prompts/01_core/parser/implementation_search_test.md": "eff1ccfba3b5e5d734fe04736ad71e7d7581a12c63b8205d3b5fd8428189f21a",
+    "00_nucleo/prompts/01_core/domain/implementation_search_test.md": "0d2507da9bac37eecc1792e4b1187fbcd5589ffe8d8b0a04b06b04fa92bf0883",
+    "00_nucleo/prompts/01_core/usecase/implementation_retrieval_test.md": "a8e56db6fd82c856b5678d69f396fa74dee9af8cf797c017655e746e3e0f14b7",
+    "00_nucleo/prompts/03_infra/local/implementation_search_test.md": "03bae728273972cf3f4abf44b523f2ece07b53429328ed08a85a29b4e77853e7"
+  },
+  "context_note": "Fresh bounded parent task; public API clarification from root: local file:// URL; statuses complete/partial/not_evaluated; usecase helpers. No candidate implementation bodies/diffs or old oracles read. Shared filesystem capability exists, hence notattested. No physical segregation claim.",
+  "revisions": [
+    {
+      "revision": 1,
+      "original_tests": {
+        "01_core/parser/implementation_search_test.go": "4bf41074d10f15809820a776a2977c4791b9687d3083661b0befdd74bb9729e5",
+        "01_core/domain/implementation_search_test.go": "337027cd44cc46dd471635eb5adea867c3865414b25de26aae3a41853635db4a",
+        "01_core/usecase/implementation_retrieval_test.go": "3635ab286e0bb819a1b68b015b62aa7e9b8854c7cc31e3c9702f919ed4456bdf",
+        "03_infra/local/implementation_search_test.go": "23712a2df308bfec85b251f1cd550122e91dc4833a8a8b7d27215ffb9fd68f9d"
+      },
+      "observed_result": "parser/domain/local pass; usecase selection returned 4 for limit3; stale fixture omitted valid interval so unchanged case rejected",
+      "change": "Add Line2 EndLine2 to hash validation fixture; requirement unchanged",
+      "discriminatory_delta": "Enables execution of byte mutation assertion after valid unchanged baseline",
+      "at": "2026-09-07T23:00:22.102725+00:00"
+    },
+    {
+      "revision": 2,
+      "previous_tests": {
+        "01_core/parser/implementation_search_test.go": "4bf41074d10f15809820a776a2977c4791b9687d3083661b0befdd74bb9729e5",
+        "01_core/domain/implementation_search_test.go": "337027cd44cc46dd471635eb5adea867c3865414b25de26aae3a41853635db4a",
+        "01_core/usecase/implementation_retrieval_test.go": "3635ab286e0bb819a1b68b015b62aa7e9b8854c7cc31e3c9702f919ed4456bdf",
+        "03_infra/local/implementation_search_test.go": "23712a2df308bfec85b251f1cd550122e91dc4833a8a8b7d27215ffb9fd68f9d"
+      },
+      "at": "2026-09-07T23:00:46.671014+00:00",
+      "change": "Selection test now requests one code slot plus README/go.mod, checks <=3 total and all three required paths",
+      "reason": "Public contract clarification by integrator: historical limit counts code only; spec preserves existing final limits and context documents",
+      "discriminatory_delta": "Directly competes neutral hit with queue filename for sole code slot; no output-specific change"
+    }
+  ],
+  "execution": {
+    "command": "GOCACHE=/tmp/bateia-go-cache go test ./01_core/parser ./01_core/domain ./01_core/usecase ./03_infra/local -run 'Test(Implementation|LocalImplementation)' -count=1",
+    "exit_code": 0,
+    "at": "2026-09-07T23:01:02.797301+00:00",
+    "packages": [
+      "parser PASS",
+      "domain PASS",
+      "usecase PASS",
+      "local PASS"
+    ],
+    "test_hashes_verified_after_execution": true,
+    "initial_environment_issue": "default Go build cache is read-only; retry used writable /tmp cache"
+  }
+}

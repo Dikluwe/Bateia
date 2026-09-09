@@ -1,0 +1,17 @@
+from pathlib import Path
+import hashlib,json,subprocess,sys,time
+root=Path('/repos/Antigravity/Bateia');p=root/'00_nucleo/benchmark/0064';out=p/'executions';out.mkdir(exist_ok=False);work=Path('/tmp/bateia0064-demo');work.mkdir(exist_ok=True)
+binary=Path(sys.argv[1]);sha=lambda b:hashlib.sha256(b).hexdigest();source=(root/'00_nucleo/benchmark/0063/reference.go.txt').read_bytes();rows=[];reports={}
+for name,data,seed in [('reference',source,1),('other_path',source,1),('other_seed',source,2),('mismatch',source+b'\n// changed snapshot\n',1)]:
+ f=work/(name+'.go');f.write_bytes(data);dest=out/(name+'.json');args=[str(binary),'effects','verify','--source',str(f),'--symbol','Transform','--expect-sha256',sha(source),'--seed',str(seed),'--timeout','1s','--output',str(dest)];start=time.monotonic();r=subprocess.run(args,capture_output=True,text=True,timeout=90)
+ row={'name':name,'argv':args,'exit_code':r.returncode,'stdout':r.stdout,'stderr':r.stderr,'tool_telemetry_seconds':time.monotonic()-start,'source_sha256':sha(data),'analyzer_binary_sha256':sha(binary.read_bytes())}
+ if dest.exists():
+  v=json.loads(dest.read_text());reports[name]=v;t=v['trace'];i=t['inputs'];a=t['analyzer'];fields=['contract_id','analyzer_binary_sha256','source_sha256','symbol','seed','execution_timeout_ns','build_timeout_ns','stdout_limit_bytes','stderr_limit_bytes'];encoded=('effect-request-v1\n'+'\n'.join(str(i[k]).lower() if k.endswith('sha256') else str(i[k]) for k in fields)+'\n').encode();want='unknown' if name=='mismatch' else 'supported_in_scope'
+  checks={'effect':v['status']==want,'trace_schema':t['schema_version']=='effect-trace-v1','trace_recorded':t['status']=='recorded','analyzer_recorded':a['status']=='recorded','analyzer_hash':a['binary_sha256']==row['analyzer_binary_sha256']==i['analyzer_binary_sha256'],'source_hash':i['source_sha256']==sha(data)==v['source_sha256'],'symbol':i['symbol']=='Transform','seed':i['seed']==seed,'budgets':(i['execution_timeout_ns'],i['build_timeout_ns'],i['stdout_limit_bytes'],i['stderr_limit_bytes'])==(1000000000,60000000000,1048576,1048576),'fingerprint':t['request_sha256']==sha(encoded),'go_version':a['go_version'].startswith('go'),'utc':t['started_at'].endswith('Z') and t['finished_at'].endswith('Z')}
+  if name=='mismatch':checks['no_candidate']=not any(c['observation']['completed'] for c in v['cases']) and 'binary_sha256' not in v['execution']
+  else:checks['producer_distinct_from_candidate']=a['binary_sha256']!=v['execution']['binary_sha256']
+  row['checks']=checks;row['passed']=r.returncode==0 and all(checks.values());row['receipt_sha256']=sha(dest.read_bytes())
+ else:row['passed']=False
+ rows.append(row);(out/'verification.json').write_text(json.dumps(rows,indent=2)+'\n');print(name,row['passed'],flush=True)
+assert all(r['passed'] for r in rows)
+a=reports['reference']['trace']['request_sha256'];comparison={'different_path_same_fingerprint':a==reports['other_path']['trace']['request_sha256'],'different_seed_different_fingerprint':a!=reports['other_seed']['trace']['request_sha256'],'different_source_different_fingerprint':a!=reports['mismatch']['trace']['request_sha256']};assert all(comparison.values());(out/'comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')

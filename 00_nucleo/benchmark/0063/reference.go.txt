@@ -1,0 +1,14 @@
+package candidate
+
+import "sort"
+
+// Transform mantém os valores originais.
+func Transform(in []int64) []int64 {
+	return ordered(in)
+}
+
+func ordered(in []int64) []int64 {
+	out := append([]int64(nil), in...)
+	sort.Slice(out, func(i, j int) bool { return out[i] < out[j] })
+	return out
+}

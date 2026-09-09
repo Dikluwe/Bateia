@@ -1,0 +1,110 @@
+[
+  {
+    "id": "bbolt-write",
+    "project": "bbolt",
+    "query": "Executar uma transação de escrita com rollback quando a função retorna erro",
+    "expected": [
+      {
+        "path": "db.go",
+        "symbol": "DB.Update",
+        "start": 891,
+        "end": 916
+      }
+    ],
+    "rationale": "Leitura manual: abre Begin(true), chama callback, Rollback em erro e Commit em sucesso."
+  },
+  {
+    "id": "bbolt-read",
+    "project": "bbolt",
+    "query": "Ler dados em uma transação somente leitura",
+    "expected": [
+      {
+        "path": "db.go",
+        "symbol": "DB.View",
+        "start": 922,
+        "end": 948
+      }
+    ],
+    "rationale": "Leitura manual: Begin(false), callback gerenciado e Rollback para encerrar leitura."
+  },
+  {
+    "id": "bbolt-negative",
+    "project": "bbolt",
+    "query": "Enviar notificação por email quando uma transação falha",
+    "expected": [],
+    "negative": true,
+    "rationale": "Recorte manual README.md:15-23 e db.go:891-948: armazenamento local, callback/erro; não há envio de email implementado nesses fluxos. Ausência rotulada no recorte, não prova universal."
+  },
+  {
+    "id": "snappy-compress",
+    "project": "snappy",
+    "query": "Comprimir bytes em um bloco e reutilizar o buffer de destino",
+    "expected": [
+      {
+        "path": "encode.go",
+        "symbol": "Encode",
+        "start": 20,
+        "end": 43
+      }
+    ],
+    "rationale": "Leitura manual: reutiliza dst quando capacidade suficiente, emite tamanho varint e codifica blocos."
+  },
+  {
+    "id": "snappy-decompress",
+    "project": "snappy",
+    "query": "Descomprimir um bloco e rejeitar dados corrompidos",
+    "expected": [
+      {
+        "path": "decode.go",
+        "symbol": "Decode",
+        "start": 57,
+        "end": 76
+      }
+    ],
+    "rationale": "Leitura manual: decodedLen, alocação/reuso de dst, decode e retorno ErrCorrupt."
+  },
+  {
+    "id": "snappy-negative",
+    "project": "snappy",
+    "query": "Persistir blocos comprimidos em uma transação SQL com rollback",
+    "expected": [],
+    "negative": true,
+    "rationale": "Recorte README:1-12, encode.go:20-43 e decode.go:57-76: compressão em bytes, sem implementação de transações SQL nestes fluxos. Não prova ausência universal."
+  },
+  {
+    "id": "oauth2-header",
+    "project": "oauth2",
+    "query": "Adicionar token de acesso ao cabeçalho de autorização de uma requisição HTTP",
+    "expected": [
+      {
+        "path": "transport.go",
+        "symbol": "Transport.RoundTrip",
+        "start": 32,
+        "end": 56
+      }
+    ],
+    "rationale": "Leitura manual: obtém Source.Token, clona request e aplica SetAuthHeader antes de RoundTrip."
+  },
+  {
+    "id": "oauth2-exchange",
+    "project": "oauth2",
+    "query": "Trocar um código de autorização por um token de acesso",
+    "expected": [
+      {
+        "path": "oauth2.go",
+        "symbol": "Config.Exchange",
+        "start": 222,
+        "end": 235
+      }
+    ],
+    "rationale": "Leitura manual: grant_type authorization_code e code passados a retrieveToken."
+  },
+  {
+    "id": "oauth2-negative",
+    "project": "oauth2",
+    "query": "Comprimir o corpo da requisição HTTP em blocos Snappy",
+    "expected": [],
+    "negative": true,
+    "rationale": "Recorte transport.go:32-56 e oauth2.go:222-235: autorização e delegação HTTP, sem compressão Snappy implementada nesses fluxos. Não prova ausência universal."
+  }
+]

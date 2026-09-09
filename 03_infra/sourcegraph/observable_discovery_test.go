@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/observable_discovery_test.md
  * @layer L3
- * @updated 2026-08-24
+ * @updated 2026-09-08
  */
 
 package sourcegraph
@@ -19,9 +19,10 @@ import (
 	"bateia/01_core/domain"
 )
 
-func TestObservableQueriesPreserveFallbackOrder(t *testing.T) {
+// Step 0054 supersedes destructive fallback expectations; baseline hashes are in intent_preservation_test.md.
+func TestObservableQueriesPreserveSingleWholeQuery(t *testing.T) {
 	queries := observableQueries("code impact analysis", "go", nil, "")
-	want := []string{"lang:Go code impact analysis", "lang:Go code impact", "code impact"}
+	want := []string{"lang:Go code impact analysis"}
 	if len(queries) != len(want) {
 		t.Fatalf("tentativas incorretas: %+v", queries)
 	}
@@ -32,15 +33,15 @@ func TestObservableQueriesPreserveFallbackOrder(t *testing.T) {
 	}
 }
 
-func TestObservableQueriesPreserveDeclaredDiscriminator(t *testing.T) {
+func TestObservableQueriesDiscriminatorCannotReplaceQuestion(t *testing.T) {
 	queries := observableQueries("GitHub repository recommendation", "", []string{"repository recommendation"}, "")
-	want := []string{"GitHub repository recommendation", "repository recommendation"}
-	if len(queries) != len(want) || queries[1] != want[1] {
-		t.Fatalf("discriminator perdido no fallback: %+v", queries)
+	want := []string{"GitHub repository recommendation"}
+	if len(queries) != len(want) || queries[0] != want[0] {
+		t.Fatalf("pergunta substituída pelo discriminator: %+v", queries)
 	}
 }
 
-func TestObservableQueriesKeepRepositoryScopeInEveryFallback(t *testing.T) {
+func TestObservableQueriesKeepRepositoryScope(t *testing.T) {
 	queries := observableQueries("software reuse discovery", "", []string{"software reuse"}, "org/repo")
 	for _, query := range queries {
 		if !strings.HasPrefix(query, "repo:^org/repo$ ") {
@@ -60,7 +61,7 @@ func TestDiscoverClassifiesAttemptTimeout(t *testing.T) {
 	if err == nil {
 		t.Fatal("timeout must fail the provider expansion")
 	}
-	if len(result.Attempts) != 2 || result.Attempts[0].Status != "TIMED_OUT" || result.Attempts[1].Status != "TIMED_OUT" || result.Attempts[0].ErrorClass != "TIMEOUT" {
+	if len(result.Attempts) != 1 || result.Attempts[0].Status != "TIMED_OUT" || result.Attempts[0].ErrorClass != "TIMEOUT" {
 		t.Fatalf("timeout misclassified: %#v", result.Attempts)
 	}
 }
@@ -85,7 +86,7 @@ func TestMatchSnippetIsNormalizedAndTruncated(t *testing.T) {
 	}
 }
 
-func TestDiscoverRecordsEmptyAttemptBeforeSuccessfulFallback(t *testing.T) {
+func TestDiscoverRecordsEmptyAttemptWithoutFallback(t *testing.T) {
 	calls := 0
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
 		calls++
@@ -102,7 +103,7 @@ func TestDiscoverRecordsEmptyAttemptBeforeSuccessfulFallback(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result.Attempts) != 2 || result.Attempts[0].ResultCount != 0 || result.Attempts[0].Error != "" || result.Attempts[1].ResultCount != 1 {
+	if calls != 1 || len(result.Attempts) != 1 || result.Attempts[0].ResultCount != 0 || result.Attempts[0].Error != "" || len(result.Candidates) != 0 {
 		t.Fatalf("tentativas incorretas: %+v", result.Attempts)
 	}
 }

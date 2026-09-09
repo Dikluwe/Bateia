@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/types.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-08
  */
 
 package domain
@@ -136,24 +136,25 @@ type SecurityAdvisory struct {
 
 // ExtractedRepository é o resultado final da etapa 3 (Fundo do funil - Extração).
 type ExtractedRepository struct {
-	Ref                CommitRef           `json:"ref"`
-	Candidate          RepositoryCandidate `json:"candidate"`
-	Manifest           *Manifest           `json:"manifest,omitempty"`
-	Files              []ExtractedFile     `json:"files"`
-	Symbols            []ASTSymbol         `json:"symbols,omitempty"`
-	ArchViolations     []ArchViolation     `json:"arch_violations,omitempty"`
-	SecurityAdvisories []SecurityAdvisory  `json:"security_advisories,omitempty"`
-	ConsultadoEm       time.Time           `json:"consultado_em"`
-	Stale              bool                `json:"stale"`
-	RelevanceScore     int                 `json:"relevance_score"`
-	RelevanceLabel     string              `json:"relevance_label"`
-	RelevanceReason    string              `json:"relevance_reason"`
-	QueryEvidence      *QueryEvidence      `json:"query_evidence,omitempty"`
-	Semantic           *SemanticReport     `json:"semantic,omitempty"`
-	Coverage           AnalysisCoverage    `json:"coverage"`
-	BaseCommit         string              `json:"base_commit,omitempty"`
-	SnapshotHash       string              `json:"snapshot_hash,omitempty"`
-	HealthScore        int                 `json:"health_score"`
+	ImplementationSearch *ImplementationSearchReport `json:"implementation_search,omitempty"`
+	Ref                  CommitRef                   `json:"ref"`
+	Candidate            RepositoryCandidate         `json:"candidate"`
+	Manifest             *Manifest                   `json:"manifest,omitempty"`
+	Files                []ExtractedFile             `json:"files"`
+	Symbols              []ASTSymbol                 `json:"symbols,omitempty"`
+	ArchViolations       []ArchViolation             `json:"arch_violations,omitempty"`
+	SecurityAdvisories   []SecurityAdvisory          `json:"security_advisories,omitempty"`
+	ConsultadoEm         time.Time                   `json:"consultado_em"`
+	Stale                bool                        `json:"stale"`
+	RelevanceScore       int                         `json:"relevance_score"`
+	RelevanceLabel       string                      `json:"relevance_label"`
+	RelevanceReason      string                      `json:"relevance_reason"`
+	QueryEvidence        *QueryEvidence              `json:"query_evidence,omitempty"`
+	Semantic             *SemanticReport             `json:"semantic,omitempty"`
+	Coverage             AnalysisCoverage            `json:"coverage"`
+	BaseCommit           string                      `json:"base_commit,omitempty"`
+	SnapshotHash         string                      `json:"snapshot_hash,omitempty"`
+	HealthScore          int                         `json:"health_score"`
 }
 
 // PatternMatch representa um padrão de pacote/ferramenta detectado nos repositórios.
@@ -329,12 +330,18 @@ type ImprovementRecommendation struct {
 
 // SearchAttempt records the actual provider query, including unsuccessful fallbacks.
 type SearchAttempt struct {
-	OriginalQuery string `json:"original_query"`
-	Provider      string `json:"provider"`
-	Query         string `json:"query"`
-	Relaxation    string `json:"relaxation,omitempty"`
-	Candidates    int    `json:"candidates"`
-	Error         string `json:"error,omitempty"`
+	Coverage             *DiscoveryCoverage             `json:"coverage,omitempty"`
+	CandidateDiagnostics []DiscoveryCandidateDiagnostic `json:"candidate_diagnostics,omitempty"`
+	AdmissionEvidence    []ProviderCandidateMatch       `json:"admission_evidence,omitempty"`
+	QueryPlan            *DiscoveryQueryPlan            `json:"query_plan,omitempty"`
+	RawCandidates        int                            `json:"raw_candidates,omitempty"`
+	RejectedCandidates   int                            `json:"rejected_candidates,omitempty"`
+	OriginalQuery        string                         `json:"original_query"`
+	Provider             string                         `json:"provider"`
+	Query                string                         `json:"query"`
+	Relaxation           string                         `json:"relaxation,omitempty"`
+	Candidates           int                            `json:"candidates"`
+	Error                string                         `json:"error,omitempty"`
 }
 
 // FileEvidence describes bytes actually inspected, never semantic proof of a solution.

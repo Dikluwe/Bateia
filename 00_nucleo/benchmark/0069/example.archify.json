@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Bateia Idea Radar",
+    "viewBox": [
+      1400,
+      850
+    ]
+  },
+  "stages": [
+    {
+      "label": "Origins"
+    },
+    {
+      "label": "Perspectives"
+    },
+    {
+      "label": "Targets"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "origin_617263686966792d736368656d61",
+      "type": "external",
+      "label": "O archify~",
+      "stage": 0,
+      "row": 0
+    },
+    {
+      "id": "origin_6261746569612d636f6e7472616374",
+      "type": "external",
+      "label": "O bateia_~",
+      "stage": 0,
+      "row": 1
+    },
+    {
+      "id": "origin_757365722d6272696566",
+      "type": "external",
+      "label": "O user_br~",
+      "stage": 0,
+      "row": 2
+    },
+    {
+      "id": "perspective_617263686974656374757265",
+      "type": "external",
+      "label": "P ARCH",
+      "stage": 1,
+      "row": 0
+    },
+    {
+      "id": "perspective_6265686176696f72",
+      "type": "external",
+      "label": "P BEHV",
+      "stage": 1,
+      "row": 1
+    },
+    {
+      "id": "perspective_70726f626c656d",
+      "type": "external",
+      "label": "P PROB",
+      "stage": 1,
+      "row": 2
+    },
+    {
+      "id": "target_617263686966792d6578706f72742368756d616e2d6d6170",
+      "type": "external",
+      "label": "T archify~",
+      "stage": 2,
+      "row": 0
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow_projection_617263686974656374757265",
+      "from": "origin_6261746569612d636f6e7472616374",
+      "to": "perspective_617263686974656374757265",
+      "label": "projection architecture · origin bateia-contract",
+      "variant": "default",
+      "labelAt": [
+        208,
+        200
+      ]
+    },
+    {
+      "id": "flow_projection_6265686176696f72",
+      "from": "origin_617263686966792d736368656d61",
+      "to": "perspective_6265686176696f72",
+      "label": "projection behavior · origin archify-schema",
+      "variant": "default",
+      "labelAt": [
+        208,
+        314
+      ]
+    },
+    {
+      "id": "flow_projection_70726f626c656d",
+      "from": "origin_757365722d6272696566",
+      "to": "perspective_70726f626c656d",
+      "label": "projection problem · origin user-brief",
+      "variant": "default",
+      "labelAt": [
+        208,
+        428
+      ]
+    },
+    {
+      "id": "flow_observation_6f62732d617263686974656374757265",
+      "from": "perspective_617263686974656374757265",
+      "to": "target_617263686966792d6578706f72742368756d616e2d6d6170",
+      "label": "observation obs-architecture · SUPPORT",
+      "variant": "default",
+      "labelAt": [
+        423,
+        220
+      ]
+    },
+    {
+      "id": "flow_observation_6f62732d6265686176696f72",
+      "from": "perspective_6265686176696f72",
+      "to": "target_617263686966792d6578706f72742368756d616e2d6d6170",
+      "label": "observation obs-behavior · SUPPORT",
+      "variant": "default",
+      "labelAt": [
+        423,
+        334
+      ]
+    },
+    {
+      "id": "flow_observation_6f62732d70726f626c656d",
+      "from": "perspective_70726f626c656d",
+      "to": "target_617263686966792d6578706f72742368756d616e2d6d6170",
+      "label": "observation obs-problem · SUPPORT",
+      "variant": "default",
+      "labelAt": [
+        423,
+        448
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "archify-export#human-map",
+      "items": [
+        "Outcome: CONVERGENT",
+        "Reason: idea_convergent",
+        "Provenance: support=obs-architecture,obs-behavior,obs-problem | conflict=- | ambiguous=- | unknown_origin=- | origins=archify-schema,bateia-contract,user-brief",
+        "Probe archify-export#human-map::p0001: BIND_EVIDENCE | reason=bind_physical_evidence | observations=obs-architecture,obs-behavior,obs-problem | origin_requirement=RECORDED | required_roles=IMPLEMENTATION,INDEPENDENT_TEST"
+      ]
+    }
+  ]
+}

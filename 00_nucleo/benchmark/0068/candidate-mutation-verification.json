@@ -1,0 +1,255 @@
+{
+  "schema_version": "tekt.step0068.candidate-mutation-verification.v1",
+  "step": "0068",
+  "executed_at_utc": "2026-09-11T22:26:28Z",
+  "phase": "POST_SEAL_CANDIDATE_CONFRONTATION",
+  "regime": "protocolo completo; mutantes em copias isoladas sob /tmp; filesystem compartilhado; sem atestacao fisica",
+  "bindings": {
+    "integrator_seal": {
+      "path": "00_nucleo/benchmark/0068/seal.json",
+      "sha256": "9e5559d1176547cc3c61e3d3b123dcf3bed4d687f1d92569937b0f875a5c33e1"
+    },
+    "adversarial_seal": {
+      "path": "00_nucleo/benchmark/0068/adversarial-seal.json",
+      "sha256": "d7e6fddcc1b602aa518cc89a551a9b2cfa6066de2bb56ca08d7a43886f144bc2"
+    },
+    "manifest_sha256": "8a5b00d13efaba7ae9a4f542d228092de5b97c14e7e4c0a3866e103a180e521b"
+  },
+  "candidate_hashes": {
+    "01_core/domain/idea_discovery.go": "38d3e09309c7e09b135cd61a481a22b4e9a35306d581b77a78f3b8f45f80f846",
+    "01_core/usecase/idea_discovery.go": "f8ba302ae29515cbcb9609e86e5c4b5d67d83706974b448de87bda10d53eb7b1",
+    "03_infra/lexical/expander.go": "d43aa4f9c3af84f0c85f8a2fd22a9767c260a8fcecb038efca19ff2708622533",
+    "03_infra/lexical/vocabulary.json": "7807f97a0fdd8abcda476f6d848fa5cbcf426f233f9a0e848efc711ead3442d9",
+    "03_infra/sourcegraph/observable_discovery.go": "a0cbcfbb03050a17964d01f5ec55638916940378f26a8e617cfb833d300416bc",
+    "04_wiring/main.go": "77b33b7ed6bdc41448773333b6e6a19c0d422b13bcdc2730d21a3a3f38a94a11"
+  },
+  "oracle_hashes": {
+    "01_core/domain/idea_discovery_step0068_test.go": "7ab68ce59542ff76d891a082be3d8bbec3205bedfb943c8fbf5a4d343fef5022",
+    "01_core/usecase/idea_discovery_step0068_test.go": "f4130873a5fa0a344660158f51459e3a46c066aa6bd18666dbfcb8eec26f1abd",
+    "03_infra/lexical/expander_step0068_test.go": "41f0583ab1aa509e8d1231e48196e0c73e93920e9e096ca7eb063b10bc7e6f55",
+    "03_infra/sourcegraph/observable_discovery_step0068_test.go": "4a878893668ffd8f9f09edc853bbba2cf957395ff1199bac1581f788f5e0c1d6"
+  },
+  "intact_candidate": {
+    "command": "env GOCACHE=/tmp/bateia-step0068-postseal-gocache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase ./03_infra/lexical ./03_infra/sourcegraph -run 'TestStep0068' -count=2",
+    "result": "PASS",
+    "package_results": {
+      "bateia/01_core/domain": "PASS 0.005s",
+      "bateia/01_core/usecase": "PASS 0.015s",
+      "bateia/03_infra/lexical": "PASS 0.018s",
+      "bateia/03_infra/sourcegraph": "PASS 0.025s"
+    },
+    "wall_seconds": 1.14,
+    "max_rss_kb": 147492,
+    "utility_ab": {
+      "oracle": "TestStep0068CounterfactualUtilityExecutesAndUnionsEveryExpansion",
+      "baseline_recall_at_5": 0.0,
+      "candidate_recall_at_5": 1.0,
+      "baseline_contamination_at_5": 1.0,
+      "candidate_contamination_at_5": 0.5,
+      "baseline_evidence_addressable_capabilities": 0,
+      "candidate_evidence_addressable_capabilities": 1,
+      "baseline_provider_attempts": 1,
+      "candidate_provider_attempts": 4,
+      "technical_origins_for_target": 2,
+      "result": "OBSERVED_ON_FROZEN_COUNTERFACTUAL"
+    },
+    "twenty_permutations": "PASS"
+  },
+  "mutation_environment": {
+    "root": "/tmp/bateia-0068-mutation-verification",
+    "layout": "M01 through M16 are separate minimal repository copies",
+    "repository_candidate_oracles_modified": false,
+    "mutant_workspaces_only": true,
+    "gocache": "/tmp/bateia-step0068-mutants-seq-cache"
+  },
+  "mutations": [
+    {
+      "id": "M01",
+      "semantic_mutation": "canonical English translation replaced by a different paraphrase",
+      "mutated_path": "03_infra/lexical/vocabulary.json",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 6.603718396,
+      "witness": "proposal[0] query differs from the exact canonical translation"
+    },
+    {
+      "id": "M02",
+      "semantic_mutation": "literal expansion removed before enrichment",
+      "mutated_path": "01_core/usecase/semantic_expander.go",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068EnrichmentPreservesOriginalPhraseAndStableIDs$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 5.756104578,
+      "witness": "technical proposal references the now-missing literal source"
+    },
+    {
+      "id": "M03",
+      "semantic_mutation": "generic fallback predicados geometricos emitted instead of symbol pair",
+      "mutated_path": "03_infra/lexical/vocabulary.json",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.36800838,
+      "witness": "proposal[1] is the forbidden generic query"
+    },
+    {
+      "id": "M04",
+      "semantic_mutation": "Shewchuk reference query omitted",
+      "mutated_path": "03_infra/lexical/vocabulary.json",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.788441509,
+      "witness": "catalog emits two proposals instead of three"
+    },
+    {
+      "id": "M05",
+      "semantic_mutation": "technical proposals labeled with legacy lexical strategy",
+      "mutated_path": "03_infra/lexical/expander.go",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 3.337447777,
+      "witness": "proposal loses technical-lexicon-v1 provenance"
+    },
+    {
+      "id": "M06",
+      "semantic_mutation": "source provenance removed from proposals",
+      "mutated_path": "03_infra/lexical/expander.go",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 3.25372057,
+      "witness": "SourceIDs is empty"
+    },
+    {
+      "id": "M07",
+      "semantic_mutation": "technical admission accepts one discriminator",
+      "mutated_path": "03_infra/sourcegraph/observable_discovery.go",
+      "command": "go test ./03_infra/sourcegraph -run '^TestStep0068InvalidOrOpaqueTechnicalDerivationFailsClosedBeforeIO$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 4.821177752,
+      "witness": "one-discriminator control reaches an invalid technical path instead of failing closed"
+    },
+    {
+      "id": "M08",
+      "semantic_mutation": "discriminators from separate files combined for admission",
+      "mutated_path": "03_infra/sourcegraph/discovery_coverage.go",
+      "command": "go test ./03_infra/sourcegraph -run '^TestStep0068TechnicalAdmissionRequiresBothDiscriminatorsInSameFile$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 0.875764698,
+      "witness": "Split is selected and candidate count becomes two"
+    },
+    {
+      "id": "M09",
+      "semantic_mutation": "repository description admitted as file evidence",
+      "mutated_path": "03_infra/sourcegraph/discovery_coverage.go",
+      "command": "go test ./03_infra/sourcegraph -run '^TestStep0068TechnicalAdmissionRequiresBothDiscriminatorsInSameFile$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 0.963280395,
+      "witness": "Metadata is selected and candidate count becomes two"
+    },
+    {
+      "id": "M10",
+      "semantic_mutation": "expansion execution stops after two requests",
+      "mutated_path": "01_core/usecase/idea_discovery.go",
+      "command": "go test ./01_core/usecase -run '^TestStep0068CounterfactualUtilityExecutesAndUnionsEveryExpansion$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 2.211525908,
+      "witness": "requests=2 and per_expansion=2 instead of four"
+    },
+    {
+      "id": "M11",
+      "semantic_mutation": "deduplicated candidate drops the later technical origin",
+      "mutated_path": "01_core/usecase/idea_discovery.go",
+      "command": "go test ./01_core/usecase -run '^TestStep0068CounterfactualUtilityExecutesAndUnionsEveryExpansion$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 2.250973898,
+      "witness": "RobustKernel retains only one CandidateOrigin"
+    },
+    {
+      "id": "M12",
+      "semantic_mutation": "per-source limit relaxed and fourth technical proposal added",
+      "mutated_paths": ["03_infra/lexical/expander.go", "03_infra/lexical/vocabulary.json"],
+      "command": "go test ./03_infra/lexical -run '^TestStep0068DefaultCatalogCompilesExactTechnicalQueries$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.480032126,
+      "witness": "catalog emits adaptive precision geometry as a fourth proposal"
+    },
+    {
+      "id": "M13",
+      "semantic_mutation": "partial phrases activate longer catalog triggers",
+      "mutated_path": "03_infra/lexical/expander.go",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068CatalogBoundaryAndTwentyNormalizedInputs$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.439102865,
+      "witness": "predicados geometricos incorrectly activates all three rules"
+    },
+    {
+      "id": "M14",
+      "semantic_mutation": "legacy serialized rationale changed",
+      "mutated_path": "03_infra/lexical/expander.go",
+      "command": "go test ./03_infra/lexical -run '^TestStep0068LegacyRuleIsByteCompatible$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.375990678,
+      "witness": "legacy JSON differs byte-for-byte"
+    },
+    {
+      "id": "M15",
+      "semantic_mutation": "technical provider error returned as nil error",
+      "mutated_path": "03_infra/sourcegraph/observable_discovery.go",
+      "command": "go test ./03_infra/sourcegraph -run '^TestStep0068TechnicalEmptyAndErrorAreSingleAttemptWithoutFallback$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 0.994403822,
+      "witness": "503 result has err=nil and is rejected by the error control"
+    },
+    {
+      "id": "M16",
+      "semantic_mutation": "discovery coverage claims proven instead of unknown",
+      "mutated_path": "03_infra/sourcegraph/discovery_coverage.go",
+      "command": "go test ./03_infra/sourcegraph -run '^TestStep0068TechnicalAdmissionRequiresBothDiscriminatorsInSameFile$' -count=1",
+      "result": "KILLED",
+      "exit_code": 1,
+      "wall_seconds": 1.016914441,
+      "witness": "Coverage.Completeness=proven violates the evidence-addressable boundary"
+    }
+  ],
+  "summary": {
+    "valid_mutations": 16,
+    "killed": 16,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "verdict": "PASS",
+    "aggregate_mutant_wall_seconds": 39.536362592,
+    "focused_candidate_revisions_before_confrontation": 1,
+    "revision_reason": "EffectiveQuery absent, truncated overflow acceptance, and opaque strategy falling into legacy behavior",
+    "post_revision_survivors": 0
+  },
+  "post_execution_hash_check": {
+    "status": "UNCHANGED",
+    "candidate_hashes_match_binding": true,
+    "oracle_hashes_match_binding": true,
+    "integrator_seal_sha256": "9e5559d1176547cc3c61e3d3b123dcf3bed4d687f1d92569937b0f875a5c33e1",
+    "adversarial_seal_sha256": "d7e6fddcc1b602aa518cc89a551a9b2cfa6066de2bb56ca08d7a43886f144bc2"
+  },
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FISICA_DE_ISOLAMENTO",
+  "limitations": [
+    "Os mutantes foram aplicados a copias locais separadas, mas executor e filesystem de origem foram compartilhados.",
+    "M02, M08, M09 e M16 exercitam dependencias produtivas reutilizadas pelo fragmento 0068 que nao estao entre os seis arquivos candidatos alterados.",
+    "O benchmark A/B e contrafactual offline; nao mede o indice Sourcegraph atual.",
+    "Evidence-addressable nao comprova robustez geometrica, correcao numerica, desempenho, licenca ou adequacao ao Coin.",
+    "Uma tentativa inicial intacta foi bloqueada apenas pela proibicao de bind local do sandbox; a execucao autorizada com httptest passou e nao foi contada como falha semantica."
+  ]
+}

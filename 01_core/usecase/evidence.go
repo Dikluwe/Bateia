@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-16
  */
 
 package usecase
@@ -51,7 +51,7 @@ func DefaultEvidenceRules() domain.CapabilityRuleCatalog {
 
 func rule(id string, terms, patterns []string) domain.CapabilityRule {
 	return domain.CapabilityRule{
-		ID: id, Family: "software-capability", Provenance: "step-0022-contract", TargetHints: []string{"source symbol", "related test or example"}, CapabilityTerms: terms,
+		ID: id, Basis: domain.EvidenceRuleDeclared, Family: "software-capability", Provenance: "step-0022-contract", TargetHints: []string{"source symbol", "related test or example"}, CapabilityTerms: terms,
 		StrongEvidence: []domain.CapabilityPattern{
 			{Kind: domain.EvidenceSymbol, Patterns: patterns},
 			{Kind: domain.EvidenceTest, Patterns: patterns},
@@ -72,12 +72,62 @@ func independentRule(id string, terms, patterns []string) domain.CapabilityRule 
 
 func ruleCatalogHash(c domain.CapabilityRuleCatalog) string {
 	c.Hash = ""
+	c.Rules = canonicalCapabilityRules(c.Rules)
 	b, _ := json.Marshal(c)
 	h := sha256.Sum256(b)
 	return hex.EncodeToString(h[:])
 }
 
+func canonicalCapabilityRules(rules []domain.CapabilityRule) []domain.CapabilityRule {
+	out := append([]domain.CapabilityRule(nil), rules...)
+	for i := range out {
+		if out[i].Basis == "" {
+			out[i].Basis = domain.EvidenceRuleDeclared
+		}
+		out[i].TargetHints = canonicalRuleStrings(out[i].TargetHints)
+		out[i].CapabilityTerms = canonicalRuleStrings(out[i].CapabilityTerms)
+		out[i].NegativeEvidence = canonicalRuleStrings(out[i].NegativeEvidence)
+		out[i].StrongEvidence = canonicalCapabilityPatterns(out[i].StrongEvidence)
+		out[i].SupportingEvidence = canonicalCapabilityPatterns(out[i].SupportingEvidence)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		left, _ := json.Marshal(out[i])
+		right, _ := json.Marshal(out[j])
+		return string(left) < string(right)
+	})
+	return out
+}
+
+func canonicalRuleStrings(values []string) []string {
+	out := append([]string(nil), values...)
+	sort.Slice(out, func(i, j int) bool {
+		left, right := normalizeEvidenceText(out[i]), normalizeEvidenceText(out[j])
+		if left != right {
+			return left < right
+		}
+		return out[i] < out[j]
+	})
+	return out
+}
+
+func canonicalCapabilityPatterns(values []domain.CapabilityPattern) []domain.CapabilityPattern {
+	out := append([]domain.CapabilityPattern(nil), values...)
+	for i := range out {
+		out[i].Patterns = canonicalRuleStrings(out[i].Patterns)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		left, _ := json.Marshal(out[i])
+		right, _ := json.Marshal(out[j])
+		return string(left) < string(right)
+	})
+	return out
+}
+
 func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
+	return validateRuleCatalog(c, false)
+}
+
+func validateRuleCatalog(c domain.CapabilityRuleCatalog, allowAmbiguousCoverage bool) error {
 	if strings.TrimSpace(c.Version) == "" || len(c.Rules) == 0 {
 		return fmt.Errorf("catálogo de regras exige version e rules")
 	}
@@ -89,6 +139,11 @@ func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
 			return fmt.Errorf("ID de regra vazio ou duplicado: %q", r.ID)
 		}
 		ids[r.ID] = true
+		switch r.Basis {
+		case "", domain.EvidenceRuleDeclared, domain.EvidenceRuleHypothesis:
+		default:
+			return fmt.Errorf("regra %s possui basis inválida: %q", r.ID, r.Basis)
+		}
 		if c.SchemaVersion == "2" && (strings.TrimSpace(r.Family) == "" || strings.TrimSpace(r.Provenance) == "" || len(r.TargetHints) == 0) {
 			return fmt.Errorf("regra %s exige família, proveniência e target_hints", r.ID)
 		}
@@ -97,7 +152,7 @@ func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
 			if n == "" || identityDependentRuleText(term) || overlyGenericRuleText(n) {
 				return fmt.Errorf("regra %s contém termo inválido ou dependente de identidade: %q", r.ID, term)
 			}
-			if owner := terms[n]; owner != "" && owner != r.ID {
+			if owner := terms[n]; !allowAmbiguousCoverage && owner != "" && owner != r.ID {
 				return fmt.Errorf("termo duplicado entre %s e %s: %q", owner, r.ID, term)
 			}
 			terms[n] = r.ID
@@ -108,7 +163,7 @@ func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
 				if len(pattern) == 0 || len(pattern) > 120 || identityDependentRuleText(pattern) || overlyGenericRuleText(n) {
 					return fmt.Errorf("regra %s contém padrão vazio ou longo demais", r.ID)
 				}
-				if owner := patterns[n]; owner != "" && owner != r.ID {
+				if owner := patterns[n]; !allowAmbiguousCoverage && owner != "" && owner != r.ID {
 					return fmt.Errorf("padrão duplicado entre %s e %s: %q", owner, r.ID, pattern)
 				}
 				patterns[n] = r.ID
@@ -119,6 +174,92 @@ func ValidateRuleCatalog(c domain.CapabilityRuleCatalog) error {
 		return fmt.Errorf("hash do catálogo não corresponde ao conteúdo")
 	}
 	return nil
+}
+
+func AnalyzeEvidenceCatalogCoverage(idea domain.IdeaSpec, catalog domain.CapabilityRuleCatalog) (domain.EvidenceCatalogCoverage, error) {
+	if err := validateRuleCatalog(catalog, true); err != nil {
+		return domain.EvidenceCatalogCoverage{}, err
+	}
+	coverage := domain.EvidenceCatalogCoverage{
+		SchemaVersion: "1",
+		RulesVersion:  catalog.Version,
+		RulesHash:     ruleCatalogHash(catalog),
+		Entries:       []domain.CatalogCoverageEntry{},
+	}
+	type requirement struct {
+		kind, original, normalized string
+	}
+	requirements := make([]requirement, 0, len(idea.Capabilities)+1)
+	requirements = append(requirements, requirement{kind: "problem", original: idea.Problem, normalized: normalizeEvidenceText(idea.Problem)})
+	for _, capability := range idea.Capabilities {
+		requirements = append(requirements, requirement{kind: "capability", original: capability, normalized: normalizeEvidenceText(capability)})
+	}
+	for _, requirement := range requirements {
+		entry := domain.CatalogCoverageEntry{
+			RequirementKind: requirement.kind,
+			Requirement:     requirement.original,
+			Status:          domain.CatalogCoverageGap,
+			ReasonCode:      "CATALOG_GAP",
+		}
+		matches := exactEvidenceRules(requirement.normalized, catalog)
+		if len(matches) == 1 {
+			basis := evidenceRuleBasis(matches[0])
+			entry.RuleID = matches[0].ID
+			entry.RuleBasis = basis
+			switch basis {
+			case domain.EvidenceRuleDeclared:
+				entry.Status = domain.CatalogCoverageCovered
+				entry.ReasonCode = "COVERED"
+			case domain.EvidenceRuleHypothesis:
+				entry.Status = domain.CatalogCoverageHypothesis
+				entry.ReasonCode = "HYPOTHESIS_ONLY"
+			}
+		}
+		coverage.Entries = append(coverage.Entries, entry)
+	}
+	sort.Slice(coverage.Entries, func(i, j int) bool {
+		left, right := coverage.Entries[i], coverage.Entries[j]
+		leftNormalized, rightNormalized := normalizeEvidenceText(left.Requirement), normalizeEvidenceText(right.Requirement)
+		if left.RequirementKind != right.RequirementKind {
+			return left.RequirementKind < right.RequirementKind
+		}
+		if leftNormalized != rightNormalized {
+			return leftNormalized < rightNormalized
+		}
+		if left.Requirement != right.Requirement {
+			return left.Requirement < right.Requirement
+		}
+		return left.RuleID < right.RuleID
+	})
+	return coverage, nil
+}
+
+func evidenceRuleBasis(rule domain.CapabilityRule) domain.EvidenceRuleBasis {
+	if rule.Basis == "" {
+		return domain.EvidenceRuleDeclared
+	}
+	return rule.Basis
+}
+
+func exactEvidenceRules(normalizedRequirement string, catalog domain.CapabilityRuleCatalog) []domain.CapabilityRule {
+	if normalizedRequirement == "" {
+		return nil
+	}
+	matches := []domain.CapabilityRule{}
+	for _, rule := range catalog.Rules {
+		matched := false
+		for _, term := range rule.CapabilityTerms {
+			if normalizeEvidenceText(term) == normalizedRequirement {
+				matched = true
+				break
+			}
+		}
+		if matched {
+			matches = append(matches, rule)
+		}
+	}
+	sort.Slice(matches, func(i, j int) bool { return matches[i].ID < matches[j].ID })
+	return matches
 }
 
 func identityDependentRuleText(value string) bool {
@@ -143,7 +284,7 @@ func PlanEvidenceForIdea(idea domain.IdeaSpec, report domain.ScreeningReport, ca
 }
 
 func PlanEvidenceForIdeaAndRepositories(idea domain.IdeaSpec, report domain.ScreeningReport, catalog domain.CapabilityRuleCatalog, includes []string) ([]domain.EvidenceExtractionPlan, error) {
-	if err := ValidateRuleCatalog(catalog); err != nil {
+	if _, err := AnalyzeEvidenceCatalogCoverage(idea, catalog); err != nil {
 		return nil, err
 	}
 	capabilities := append([]string(nil), idea.Capabilities...)
@@ -586,17 +727,16 @@ func contentHash(content string) string {
 }
 
 func AssessEvidence(idea domain.IdeaSpec, screening domain.ScreeningReport, bundles []domain.EvidenceBundle, catalog domain.CapabilityRuleCatalog) (domain.AssessmentReport, error) {
-	if err := ValidateRuleCatalog(catalog); err != nil {
+	coverage, err := AnalyzeEvidenceCatalogCoverage(idea, catalog)
+	if err != nil {
 		return domain.AssessmentReport{}, err
 	}
-	if catalog.Hash == "" {
-		catalog.Hash = ruleCatalogHash(catalog)
-	}
+	catalog.Hash = coverage.RulesHash
 	decisionByRepo := map[string]domain.ScreeningDecision{}
 	for _, d := range screening.Decisions {
 		decisionByRepo[repositoryIdentityKey(d.Repository)] = d
 	}
-	report := domain.AssessmentReport{SchemaVersion: "1", RulesVersion: catalog.Version, RulesHash: catalog.Hash}
+	report := domain.AssessmentReport{SchemaVersion: "1", RulesVersion: catalog.Version, RulesHash: catalog.Hash, CatalogCoverage: coverage, Assessments: []domain.CandidateAssessment{}}
 	for _, bundle := range bundles {
 		if err := validateEvidenceBundle(bundle); err != nil {
 			return domain.AssessmentReport{}, err
@@ -605,12 +745,25 @@ func AssessEvidence(idea domain.IdeaSpec, screening domain.ScreeningReport, bund
 		if !ok {
 			decision = bundle.Plan.Decision
 		}
-		assessment := domain.CandidateAssessment{Repository: bundle.Repository, ScreeningDecision: decision, Failures: append([]domain.ExecutionFailure(nil), bundle.Failures...)}
+		assessment := domain.CandidateAssessment{
+			Repository: bundle.Repository, ScreeningDecision: decision,
+			Capabilities: []domain.CapabilityEvidence{}, Constraints: []domain.ConstraintEvidence{},
+			ReusableParts: []domain.ReusableComponent{}, Gaps: []string{},
+			Failures: append([]domain.ExecutionFailure(nil), bundle.Failures...),
+		}
 		assessment.ProblemAlignment = assessCapability(idea.Problem, bundle, findRule(idea.Problem, catalog))
-		for _, capability := range idea.Capabilities {
+		capabilities := append([]string(nil), idea.Capabilities...)
+		sort.Slice(capabilities, func(i, j int) bool {
+			left, right := normalizeEvidenceText(capabilities[i]), normalizeEvidenceText(capabilities[j])
+			if left != right {
+				return left < right
+			}
+			return capabilities[i] < capabilities[j]
+		})
+		for _, capability := range capabilities {
 			e := assessCapability(capability, bundle, findRule(capability, catalog))
 			assessment.Capabilities = append(assessment.Capabilities, e)
-			if e.Status != domain.EvidenceProven {
+			if catalogCoverageStatus(coverage, "capability", capability) == domain.CatalogCoverageCovered && e.Status != domain.EvidenceProven {
 				assessment.Gaps = append(assessment.Gaps, capability)
 			}
 			if e.Status == domain.EvidenceProven {
@@ -631,6 +784,20 @@ func AssessEvidence(idea domain.IdeaSpec, screening domain.ScreeningReport, bund
 		report.Assessments = append(report.Assessments, assessment)
 	}
 	return report, nil
+}
+
+func catalogCoverageStatus(coverage domain.EvidenceCatalogCoverage, kind, requirement string) domain.CatalogCoverageStatus {
+	normalized := normalizeEvidenceText(requirement)
+	for _, entry := range coverage.Entries {
+		if entry.RequirementKind == kind && normalizeEvidenceText(entry.Requirement) == normalized {
+			return entry.Status
+		}
+	}
+	return domain.CatalogCoverageGap
+}
+
+func catalogLimitedEvidence(evidence domain.CapabilityEvidence) bool {
+	return evidence.ReasonCode == "CATALOG_GAP" || evidence.ReasonCode == "HYPOTHESIS_ONLY"
 }
 
 func validateEvidenceBundle(bundle domain.EvidenceBundle) error {
@@ -667,20 +834,19 @@ func strongestReusableSource(sources []domain.EvidenceSource) (domain.EvidenceSo
 }
 
 func findRule(capability string, catalog domain.CapabilityRuleCatalog) *domain.CapabilityRule {
-	n := normalizeEvidenceText(capability)
-	for i := range catalog.Rules {
-		for _, term := range catalog.Rules[i].CapabilityTerms {
-			if strings.Contains(n, normalizeEvidenceText(term)) || strings.Contains(normalizeEvidenceText(term), n) {
-				return &catalog.Rules[i]
-			}
-		}
+	matches := exactEvidenceRules(normalizeEvidenceText(capability), catalog)
+	if len(matches) != 1 {
+		return nil
 	}
-	return nil
+	matched := matches[0]
+	return &matched
 }
 
 func assessCapability(capability string, bundle domain.EvidenceBundle, rule *domain.CapabilityRule) domain.CapabilityEvidence {
 	if rule == nil {
-		return capabilityResult(capability, domain.EvidenceInconclusive, nil, 0, "nenhuma regra versionada cobre esta capacidade")
+		result := capabilityResult(capability, domain.EvidenceInconclusive, nil, 0, "o catálogo não possui regra declarada única e segura para este requisito")
+		result.ReasonCode = "CATALOG_GAP"
+		return result
 	}
 	var sources []domain.EvidenceSource
 	negative := false
@@ -717,11 +883,22 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		}
 	}
 	sources = dedupeSources(sources)
+	if evidenceRuleBasis(*rule) == domain.EvidenceRuleHypothesis {
+		status := domain.EvidenceInconclusive
+		if len(sources) > 0 {
+			status = domain.EvidencePartial
+		}
+		result := capabilityResult(capability, status, sources, maxStrength(sources), "regra hipotética localizou somente indícios sem autoridade para concluir presença ou ausência")
+		result.ReasonCode = "HYPOTHESIS_ONLY"
+		return result
+	}
 	if negative {
 		return capabilityResult(capability, domain.EvidenceConflict, sources, maxStrength(sources), "evidência negativa explícita conflita com a capacidade ou restrição")
 	}
 	if !bundleConclusive(bundle) {
-		return capabilityResult(capability, domain.EvidenceInconclusive, sources, maxStrength(sources), "coleta incompleta ou com falha; ausência não pode ser concluída")
+		result := capabilityResult(capability, domain.EvidenceInconclusive, sources, maxStrength(sources), "coleta incompleta ou com falha; ausência não pode ser concluída")
+		result.ReasonCode = "COLLECTION_INCOMPLETE"
+		return result
 	}
 	// These sources locate declarations, not verified behavior. Independent lexical
 	// matches cannot promote a capability to PROVEN, regardless of their sum.
@@ -733,7 +910,9 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		return capabilityResult(capability, domain.EvidencePartial, sources, combined, "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)")
 	}
 	if len(sources) > 0 {
-		return capabilityResult(capability, domain.EvidenceInconclusive, sources, combined, "sinais fracos impedem concluir presença ou ausência")
+		result := capabilityResult(capability, domain.EvidenceInconclusive, sources, combined, "sinais fracos impedem concluir presença ou ausência")
+		result.ReasonCode = "INSUFFICIENT_EVIDENCE"
+		return result
 	}
 	return capabilityResult(capability, domain.EvidenceAbsent, sources, combined, "busca concluída no orçamento declarado sem evidência suficiente")
 }
@@ -939,7 +1118,11 @@ func evidenceScores(s []domain.EvidenceSource) (float64, float64, int) {
 }
 func maxStrength(s []domain.EvidenceSource) float64 { m, _, _ := evidenceScores(s); return m }
 func capabilityResult(c string, status domain.EvidenceStatus, s []domain.EvidenceSource, confidence float64, explanation string) domain.CapabilityEvidence {
-	return domain.CapabilityEvidence{Capability: c, Status: status, Sources: s, Confidence: confidence, Explanation: explanation}
+	sources := append([]domain.EvidenceSource(nil), s...)
+	if sources == nil {
+		sources = []domain.EvidenceSource{}
+	}
+	return domain.CapabilityEvidence{Capability: c, Status: status, Sources: sources, Confidence: confidence, Explanation: explanation}
 }
 func normalizeEvidenceText(s string) string {
 	var b strings.Builder

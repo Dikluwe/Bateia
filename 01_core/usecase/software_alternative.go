@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/software_alternative.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-16
  */
 
 package usecase
@@ -232,11 +232,17 @@ func inspectSoftwareAlternative(group alternativeGroup, required []string, filte
 		alternative.Evidence = append(alternative.Evidence, assessment.License.Sources...)
 		alternative.Evidence = append(alternative.Evidence, assessment.Maintenance.Sources...)
 		alternative.Evidence = append(alternative.Evidence, assessment.Operation.Sources...)
-		capabilities, gaps, covered, signal, capabilityOpaque, blockers, evidence, reasons := inspectAlternativeCapabilities(assessment, required)
+		capabilities, gaps, covered, assessable, signal, capabilityOpaque, blockers, evidence, reasons := inspectAlternativeCapabilities(assessment, required)
 		alternative.Capabilities = capabilities
 		alternative.Gaps = gaps
-		alternative.Coverage = float64(covered) / float64(len(required))
-		alternative.Reasons = append(alternative.Reasons, fmt.Sprintf("cobertura comprovada: %d/%d", covered, len(required)))
+		if assessable > 0 {
+			alternative.Coverage = float64(covered) / float64(assessable)
+			alternative.Reasons = append(alternative.Reasons, fmt.Sprintf("cobertura comprovada: %d/%d", covered, assessable))
+		} else {
+			alternative.Coverage = 0
+			capabilityOpaque = true
+			alternative.Reasons = append(alternative.Reasons, "cobertura não pontuável: o catálogo não possui regra declarada segura para as capacidades requeridas")
+		}
 		alternative.Blockers = append(alternative.Blockers, blockers...)
 		alternative.Reasons = append(alternative.Reasons, reasons...)
 		alternative.Evidence = append(alternative.Evidence, evidence...)
@@ -251,17 +257,23 @@ func inspectSoftwareAlternative(group alternativeGroup, required []string, filte
 				alternative.Reasons = append(alternative.Reasons, fmt.Sprintf("falha de coleta %s: %s", failure.Stage, failure.Message))
 			}
 		}
-		problemSignal := assessment.ProblemAlignment.Status == domain.EvidenceProven || assessment.ProblemAlignment.Status == domain.EvidencePartial
-		switch assessment.ProblemAlignment.Status {
-		case domain.EvidenceProven, domain.EvidencePartial, domain.EvidenceAbsent:
-		case domain.EvidenceConflict:
-			alternative.Blockers = append(alternative.Blockers, "alinhamento do problema em conflito")
-		case domain.EvidenceInconclusive:
+		problemSignal := false
+		if catalogLimitedEvidence(assessment.ProblemAlignment) {
 			opaque = true
-			alternative.Reasons = append(alternative.Reasons, "alinhamento do problema inconclusivo")
-		default:
-			opaque = true
-			alternative.Reasons = append(alternative.Reasons, "estado de alinhamento do problema desconhecido")
+			alternative.Reasons = append(alternative.Reasons, "alinhamento não avaliável pela cobertura atual do catálogo; isso não descreve o candidato")
+		} else {
+			problemSignal = assessment.ProblemAlignment.Status == domain.EvidenceProven || assessment.ProblemAlignment.Status == domain.EvidencePartial
+			switch assessment.ProblemAlignment.Status {
+			case domain.EvidenceProven, domain.EvidencePartial, domain.EvidenceAbsent:
+			case domain.EvidenceConflict:
+				alternative.Blockers = append(alternative.Blockers, "alinhamento do problema em conflito")
+			case domain.EvidenceInconclusive:
+				opaque = true
+				alternative.Reasons = append(alternative.Reasons, "alinhamento do problema inconclusivo")
+			default:
+				opaque = true
+				alternative.Reasons = append(alternative.Reasons, "estado de alinhamento do problema desconhecido")
+			}
 		}
 		alternative.Fit = deriveSoftwareAlternativeFit(isTarget, alternative, opaque, signal || problemSignal, filters)
 	} else {
@@ -440,7 +452,7 @@ func canonicalExecutionFailures(values []domain.ExecutionFailure) []domain.Execu
 	return out
 }
 
-func inspectAlternativeCapabilities(assessment domain.CandidateAssessment, required []string) ([]domain.SoftwareAlternativeCapability, []string, int, bool, bool, []string, []domain.EvidenceSource, []string) {
+func inspectAlternativeCapabilities(assessment domain.CandidateAssessment, required []string) ([]domain.SoftwareAlternativeCapability, []string, int, int, bool, bool, []string, []domain.EvidenceSource, []string) {
 	byCapability := map[string][]domain.CapabilityEvidence{}
 	for _, evidence := range assessment.Capabilities {
 		key := normalizeDecisionText(evidence.Capability)
@@ -451,6 +463,7 @@ func inspectAlternativeCapabilities(assessment domain.CandidateAssessment, requi
 	statuses := make([]domain.SoftwareAlternativeCapability, 0, len(required))
 	gaps := make([]string, 0, len(required))
 	covered := 0
+	assessable := 0
 	signal := false
 	opaque := false
 	var blockers, reasons []string
@@ -476,6 +489,12 @@ func inspectAlternativeCapabilities(assessment domain.CandidateAssessment, requi
 		sources = canonicalEvidenceSources(sources)
 		statuses = append(statuses, domain.SoftwareAlternativeCapability{Capability: capability, Status: status, Evidence: sources})
 		allEvidence = append(allEvidence, sources...)
+		if len(entries) == 1 && catalogLimitedEvidence(entries[0]) {
+			opaque = true
+			reasons = append(reasons, "capacidade não avaliável pela cobertura atual do catálogo: "+capability+"; isso não descreve lacuna do candidato")
+			continue
+		}
+		assessable++
 		switch status {
 		case domain.EvidenceProven:
 			covered++
@@ -495,7 +514,7 @@ func inspectAlternativeCapabilities(assessment domain.CandidateAssessment, requi
 			gaps = append(gaps, capability)
 		}
 	}
-	return statuses, gaps, covered, signal, opaque, blockers, allEvidence, reasons
+	return statuses, gaps, covered, assessable, signal, opaque, blockers, allEvidence, reasons
 }
 
 func inspectAlternativeGates(assessment domain.CandidateAssessment, filters domain.SoftwareAlternativeFilters) (bool, []string, []string) {

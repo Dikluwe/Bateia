@@ -1,0 +1,89 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "step": "0067",
+  "protocol": "completo, ensaio sem atestacao fisica de isolamento",
+  "created_before_candidate": true,
+  "predecessor": {
+    "step": "0066",
+    "verification_sha256": "149d6206c02a49c3b77951b77d68d11b65a90484c0d946c0d78326a2ee8f57a9",
+    "domain_sha256": "3d90f2155b40e7301c4c15c24f13a1ff3dc3916f1d0a94622699d0f4d7f5791b",
+    "usecase_sha256": "a620229c030a80cd799907170b8188f5dda6c3d7d1e52d999619890019dd50b8"
+  },
+  "inputs": {
+    "step": {
+      "path": "00_nucleo/passos/0067-planejar-fronteira-minima-do-radar-de-ideias.md",
+      "sha256": "5880367359f5b880c241aca16cbb409dd25f16cd8a7074e27caa180d42335d09"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0067/contract.md",
+      "sha256": "28b1bb98bc46913c13f9fce21775ff3968af1c72801d62ee2dd1343fc19f5b0f"
+    },
+    "baseline": {
+      "path": "00_nucleo/benchmark/0067/baseline.json",
+      "sha256": "acdec4bfa5bc8db69d93352f94a5114a14a1719fa08b8ac123a34d3c8bf1087e"
+    },
+    "budget": {
+      "path": "00_nucleo/benchmark/0067/budget.json",
+      "sha256": "3963279f325aa883424f6b15db68d154a1364f878267505782b77f3446b9c3c3"
+    }
+  },
+  "prompts": {
+    "domain": "3a58e77f11de1d709a5947bcb9dc4d6d9687f9230a289e49f4ce7c9939f36971",
+    "domain_test": "ae14a79eefe5cf03085c50dafc8b3e8d7b9f085546d36f99c1c2b7d8f1c3166a",
+    "usecase": "07db73d03a54f765d7f0ae1bd856b9879376726a24bf36f090dbf6bf5263c666",
+    "usecase_test": "5bf2b62246643c2002ad1c7cc331e2eeffa137b2065aa5c7a88c62f0f9ee5428"
+  },
+  "observables": [
+    "calls_0066_as_classification_authority",
+    "active_blocker_only_frontier",
+    "combined_projection_and_origin_probe",
+    "minimal_unknown_origin_subset",
+    "deterministic_priority_order_and_ids",
+    "binding_only_for_convergent",
+    "unknown_and_budget_no_partial",
+    "input_immutability_and_order_invariance",
+    "external_blocker_resolution_and_effort",
+    "no_false_convergence_promise",
+    "zero_verdict_changes"
+  ],
+  "unknown_policy": "radar Unknown, input opaco, metrica obrigatoria indefinida ou budget excedido nunca viram plano util",
+  "roles": {
+    "intent_author": "usuario; congela objetivo",
+    "contract_author": "somente L0 0067; le 0065/0066, sem candidato Go 0067 futuro",
+    "oracle_author": "intencao, contrato, baseline e budget; sem candidato",
+    "adversary": "entradas congeladas; mutantes M01-M16; sem corrigir solucao",
+    "implementer": "contrato e prompts produtivos selados; sem oraculos, mutantes ou testes",
+    "verifier": "artefatos congelados e saidas; sem editar material julgado"
+  },
+  "capabilities": {
+    "contract_author_read": [
+      ".agents/AGENTS.md",
+      "skill tekt-materializacao-segregada e referencias completas",
+      "artefatos, implementacao e verificacao congelados 0065/0066"
+    ],
+    "contract_author_write": [
+      "00_nucleo/passos/0067-*.md",
+      "00_nucleo/prompts/01_core/domain/idea_radar_plan*.md",
+      "00_nucleo/prompts/01_core/usecase/idea_radar_plan*.md",
+      "00_nucleo/benchmark/0067/{README.md,contract.md,baseline.json,budget.json,manifest.json}"
+    ],
+    "contract_author_forbidden": [
+      "arquivos Go",
+      "implementacao candidata 0067 futura",
+      "oraculos ou mutantes",
+      "selo ou veredito final",
+      "edicao de artefatos 0065/0066"
+    ]
+  },
+  "ground_truth": {
+    "location": "00_nucleo/benchmark/0067/baseline.json",
+    "visible_to_productive_code": false,
+    "cases": 10,
+    "eligible_nonconvergent_targets": 8,
+    "families": 5,
+    "frozen_before_candidate": true,
+    "limitation": "efeitos de probe sao simulados e nao estimam resposta ou custo humano real"
+  },
+  "isolation": "autoridades segregadas proceduralmente; filesystem compartilhado; sem atestacao fisica",
+  "seal_status": "CANDIDATE_NOT_SEALED"
+}

@@ -1,0 +1,247 @@
+{
+  "schema_version": "algorithm-history-adversarial-fixtures-v1",
+  "created_before_candidate": true,
+  "binding_free": true,
+  "frozen_inputs": {
+    "00_nucleo/passos/0070-reconstruir-historia-de-algoritmos.md": "3d8b7c273ad0eeb05538347de5ac01d5beabe61aeb3336795b87ff861434840d",
+    "00_nucleo/benchmark/0070/contract.md": "a9ec07e8455731ccc3eca360536e8eb78c4f0cb0a306d793a0cb088a9f4f6035",
+    "00_nucleo/benchmark/0070/baseline.json": "2483eb834ab4ce22e2eba04505607fb756ed5f862734d02968fe3b84b94d7831",
+    "00_nucleo/benchmark/0070/budget.json": "9b869ad5f2d51e7f90a27595e203455ab22b17a5bc6ad905c04101e183983e8f",
+    "00_nucleo/benchmark/0070/manifest.json": "8b73cff17faa647c3d76a920a49322d2c7c2e0cd13460638302fb97f94dd6bcf"
+  },
+  "requirements": {
+    "mutation_score": 1.0,
+    "repetitions": 2,
+    "orders": 20
+  },
+  "cost": {
+    "cases": 18,
+    "controls": 3,
+    "opaque": 3,
+    "valid_mutations": 12,
+    "classification_evaluations": 720,
+    "external_processes": 0
+  },
+  "cases": [
+    {
+      "id": "p01-corroborated-separates-inference",
+      "kind": "control",
+      "expected": "Preserved",
+      "observation": {
+        "status": "COMPLETE",
+        "reason": "analyzed",
+        "assessment_count": 1,
+        "declared_claim_ids": ["beta-from-alpha"],
+        "emitted_claim_ids": ["beta-from-alpha"],
+        "declared_relation": "DERIVED_FROM",
+        "reported_relation": "DERIVED_FROM",
+        "outcome": "CORROBORATED",
+        "supporting_evidence_ids": ["beta-support-primary", "beta-support-secondary"],
+        "supporting_inference_ids": ["beta-inference"],
+        "supporting_origin_ids": ["archive:beta", "journal:beta"],
+        "input_sha256_before": "same",
+        "input_sha256_after": "same",
+        "order_fingerprints": ["stable"]
+      }
+    },
+    {
+      "id": "p02-contested-precedence",
+      "kind": "control",
+      "expected": "Preserved",
+      "observation": {
+        "status": "COMPLETE",
+        "reason": "analyzed",
+        "assessment_count": 1,
+        "declared_claim_ids": ["gamma-improves-beta"],
+        "emitted_claim_ids": ["gamma-improves-beta"],
+        "declared_relation": "IMPROVES",
+        "reported_relation": "IMPROVES",
+        "outcome": "CONTESTED",
+        "supporting_evidence_ids": ["gamma-improve-support"],
+        "conflicting_evidence_ids": ["gamma-improve-conflict"],
+        "supporting_origin_ids": ["artifact:gamma"],
+        "input_sha256_before": "same",
+        "input_sha256_after": "same",
+        "order_fingerprints": ["stable"]
+      }
+    },
+    {
+      "id": "p03-resembles-remains-unknown",
+      "kind": "control",
+      "expected": "Preserved",
+      "observation": {
+        "status": "COMPLETE",
+        "reason": "analyzed",
+        "assessment_count": 1,
+        "declared_claim_ids": ["gamma-resembles-alpha"],
+        "emitted_claim_ids": ["gamma-resembles-alpha"],
+        "declared_relation": "RESEMBLES",
+        "reported_relation": "RESEMBLES",
+        "outcome": "UNKNOWN",
+        "ambiguous_evidence_ids": ["gamma-resemblance-ambiguous"],
+        "supporting_inference_ids": ["gamma-resemblance-inference"],
+        "input_sha256_before": "same",
+        "input_sha256_after": "same",
+        "order_fingerprints": ["stable"]
+      }
+    },
+    {
+      "id": "u01-invalid-schema",
+      "kind": "opaque",
+      "expected": "Unknown",
+      "observation": {"status":"UNKNOWN","reason":"invalid_schema","assessment_count":0,"input_sha256_before":"same","input_sha256_after":"same"}
+    },
+    {
+      "id": "u02-budget-exceeded",
+      "kind": "opaque",
+      "expected": "Unknown",
+      "observation": {"status":"UNKNOWN","reason":"budget_exceeded","assessment_count":0,"limit_exceeded":true,"input_sha256_before":"same","input_sha256_after":"same"}
+    },
+    {
+      "id": "u03-ambiguous-input",
+      "kind": "opaque",
+      "expected": "Unknown",
+      "observation": {"status":"UNKNOWN","reason":"ambiguous_input","assessment_count":0,"input_sha256_before":"same","input_sha256_after":"same"}
+    },
+    {
+      "id": "m01-inference-promoted-to-evidence",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["beta-from-alpha"],"emitted_claim_ids":["beta-from-alpha"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"CORROBORATED",
+        "supporting_evidence_ids":["beta-support-primary","beta-inference"],
+        "supporting_inference_ids":["beta-inference"],"promoted_inference_ids":["beta-inference"],
+        "supporting_origin_ids":["archive:beta","journal:beta"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m02-same-origin-counted-twice",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["beta-from-alpha"],"emitted_claim_ids":["beta-from-alpha"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"CORROBORATED",
+        "supporting_evidence_ids":["support-a","support-b"],
+        "supporting_origin_ids":["same:book","same:book"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m03-invented-transitive-claim",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":2,
+        "declared_claim_ids":["beta-from-alpha"],
+        "emitted_claim_ids":["beta-from-alpha","gamma-from-alpha-inferred"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"supporting_origin_ids":["archive:a"],
+        "input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m04-resembles-promoted-to-causality",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["gamma-resembles-alpha"],"emitted_claim_ids":["gamma-resembles-alpha"],
+        "declared_relation":"RESEMBLES","reported_relation":"INFLUENCED_BY","outcome":"UNKNOWN",
+        "ambiguous_evidence_ids":["ambiguous-a"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m05-controversy-erased",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["gamma-improves-beta"],"emitted_claim_ids":["gamma-improves-beta"],
+        "declared_relation":"IMPROVES","reported_relation":"IMPROVES","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"conflicting_evidence_ids":["conflict-a"],
+        "supporting_origin_ids":["artifact:gamma"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m06-epistemic-unknown-promoted",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["gamma-resembles-alpha"],"emitted_claim_ids":["gamma-resembles-alpha"],
+        "declared_relation":"RESEMBLES","reported_relation":"RESEMBLES","outcome":"SUPPORTED",
+        "ambiguous_evidence_ids":["ambiguous-a"],"supporting_inference_ids":["inference-a"],
+        "input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m07-orphan-reference-accepted",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["claim-a"],"emitted_claim_ids":["claim-a"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"supporting_origin_ids":["archive:a"],
+        "orphan_references":["missing-provenance"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m08-order-dependent-dedup",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["claim-a"],"emitted_claim_ids":["claim-a"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"supporting_origin_ids":["archive:a"],
+        "order_fingerprints":["representative-a","representative-b"],
+        "input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m09-partial-global-unknown",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {"status":"UNKNOWN","reason":"invalid_input","assessment_count":1,"input_sha256_before":"same","input_sha256_after":"same"}
+    },
+    {
+      "id": "m10-forbidden-io",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["claim-a"],"emitted_claim_ids":["claim-a"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"supporting_origin_ids":["archive:a"],
+        "effects":["filesystem","network"],"input_sha256_before":"same","input_sha256_after":"same"
+      }
+    },
+    {
+      "id": "m11-input-mutated",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["claim-a"],"emitted_claim_ids":["claim-a"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"SUPPORTED",
+        "supporting_evidence_ids":["support-a"],"supporting_origin_ids":["archive:a"],
+        "input_sha256_before":"before","input_sha256_after":"after"
+      }
+    },
+    {
+      "id": "m12-claim-without-evidence-accepted",
+      "kind": "mutation",
+      "expected": "Violated",
+      "observation": {
+        "status":"COMPLETE","reason":"analyzed","assessment_count":1,
+        "declared_claim_ids":["claim-a"],"emitted_claim_ids":["claim-a"],
+        "declared_relation":"DERIVED_FROM","reported_relation":"DERIVED_FROM","outcome":"UNKNOWN",
+        "supporting_inference_ids":["inference-a"],"claims_without_evidence":["claim-a"],
+        "input_sha256_before":"same","input_sha256_after":"same"
+      }
+    }
+  ]
+}

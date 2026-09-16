@@ -1,0 +1,223 @@
+{
+  "schema_version": "tekt.step0070.certificate.v1",
+  "step": "0070",
+  "certified_at_utc": "2026-09-12T20:55:23Z",
+  "regime": "protocolo completo; verificacao final segregada proceduralmente em filesystem compartilhado; sem atestacao fisica de isolamento",
+  "authority": "VERIFICADOR_FINAL_INDEPENDENTE_0070",
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "manifest_sha256": "8b73cff17faa647c3d76a920a49322d2c7c2e0cd13460638302fb97f94dd6bcf",
+  "adversarial_seal_sha256": "34052828dcef2f3336694465c41a3f0cac69afc3fdc477fda28a03773217494a",
+  "protected_inputs": {
+    "verified": 16,
+    "total": 16,
+    "status": "UNCHANGED",
+    "source": "00_nucleo/benchmark/0070/adversarial-seal.json"
+  },
+  "candidate_sha256": {
+    "01_core/domain/algorithm_history.go": "d69a45523ea5ea51949c1518d9fe3c7bc4fd4e68d1a8b05874eed88fcd862a35",
+    "01_core/usecase/algorithm_history.go": "71ee92909dc0825e210e0b00d5839a2d2484730c9c83207df972f6f1bae6a7a3",
+    "02_shell/cli/algorithm_history.go": "b5f5f1e7a5ceaf9be7c65aea3a46ffe85155bfa8289b4b42188734f12730096c",
+    "02_shell/cli/app.go": "8c215c6d4bfa8732138712a3e1917da97dde5cde52f3e109a7c9ce156b92b5d9",
+    "04_wiring/main.go": "41a24cacec44a2328aeb43ac4ac7ad47f708404f17f9cd381a728689a00c619a",
+    "00_nucleo/prompts/04_wiring/main.md": "045289144ecdcb04a3a0afc90d989b0f64a55e813d8a633b3e8897f864b07821"
+  },
+  "independent_oracles_sha256": {
+    "01_core/domain/algorithm_history_test.go": "95e07bfb9827b3bc8b6e6a433af4fa01e40e6c869ca77d9e2c245f0cd48acf91",
+    "01_core/usecase/algorithm_history_test.go": "5e7a12dd885493f97cc49209c3df368ab5537d5e0664daffa9d915cd825b48ef",
+    "02_shell/cli/algorithm_history_test.go": "3f7fe68f28700421e906ef289b67410119cee26a61c30cc97c81f04fb464205d",
+    "00_nucleo/prompts/01_core/domain/algorithm_history_test.md": "54fd5b60153e1e68c0dbeb44736873236d9af0d30b839a9aa3d9f580da44cfac"
+  },
+  "examples_sha256": {
+    "00_nucleo/benchmark/0070/example-input.json": "af10ab37ce908cd93d904a3be4d10ebf219206663b5f7ee8e5c2774c742c6817",
+    "00_nucleo/benchmark/0070/example-report.json": "dceabe64e1e4f4b94357e39ef55c3de9d993c3da5b369ff7803427dcf3029a36"
+  },
+  "post_seal_refinements": [
+    {
+      "id": "supplemental-domain-oracle",
+      "kind": "STRUCTURAL_ORACLE_REFINEMENT",
+      "cause": "crystalline-lint V2 required a sibling domain test and its proprietary prompt",
+      "candidate_read_by_oracle_author": false,
+      "protected_inputs_changed": false,
+      "final_test_sha256": "95e07bfb9827b3bc8b6e6a433af4fa01e40e6c869ca77d9e2c245f0cd48acf91",
+      "final_prompt_sha256": "54fd5b60153e1e68c0dbeb44736873236d9af0d30b839a9aa3d9f580da44cfac",
+      "verdict": "ACCEPTED_AS_SUPPLEMENTAL_INDEPENDENT_ORACLE"
+    },
+    {
+      "id": "candidate-r1-offline-wiring",
+      "kind": "CANDIDATE_REFINEMENT_AFTER_VERIFIER_DIAGNOSIS",
+      "cause": "initial real command reached generic L4 initialization and emitted a Bleve/DiskCache warning with timestamp on stderr",
+      "change": "early-dispatch algorithm to RunAlgorithmHistoryCommand before .env, cache, expanders or L3 clients",
+      "protected_inputs_changed": false,
+      "initial_observation": "report byte-identical and stdout empty, but stderr had 174 bytes from unrelated wiring initialization",
+      "final_observation": "report byte-identical; stdout 0 bytes; stderr 0 bytes",
+      "verdict": "RESOLVED_AND_REVERIFIED"
+    }
+  ],
+  "commands": [
+    {
+      "name": "protected_hashes",
+      "command": "python3 -c 'recompute sha256 for every adversarial-seal frozen_inputs entry' 00_nucleo/benchmark/0070/adversarial-seal.json",
+      "status": "PASS",
+      "result": "16/16 unchanged"
+    },
+    {
+      "name": "focal_oracles_race_repetition",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test -race -count=2 -run '^(TestAlgorithmHistory|TestAnalyzeAlgorithmHistory|TestRunAlgorithmHistoryCommand)' ./01_core/domain ./01_core/usecase ./02_shell/cli",
+      "status": "PASS",
+      "packages": 3,
+      "repetitions": 2
+    },
+    {
+      "name": "binding_free_adversarial_gate",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test -count=2 -v ./04_wiring/step0070_gate",
+      "status": "PASS",
+      "controls_preserved": 3,
+      "controls_total": 3,
+      "opaque_unknown": 3,
+      "opaque_total": 3,
+      "rejected_mutations": 12,
+      "valid_mutations": 12,
+      "mutation_score": 1.0,
+      "distinct_orders": 20,
+      "classification_evaluations": 720
+    },
+    {
+      "name": "binding_free_dependencies",
+      "command": "GOCACHE=/tmp/bateia-step0070-gate-cache GOTMPDIR=/tmp go list -deps -test ./04_wiring/step0070_gate",
+      "status": "PASS",
+      "result": "standard library plus bateia/04_wiring/step0070_gate only; no L1, L2 or L3 candidate dependency"
+    },
+    {
+      "name": "real_cli_example",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go run ./04_wiring algorithm history analyze --input 00_nucleo/benchmark/0070/example-input.json --output $TEMP/report.json; cmp $TEMP/report.json 00_nucleo/benchmark/0070/example-report.json",
+      "status": "PASS",
+      "report_sha256": "dceabe64e1e4f4b94357e39ef55c3de9d993c3da5b369ff7803427dcf3029a36",
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "byte_identical": true
+    },
+    {
+      "name": "wiring_race_repetition",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test -race -count=2 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "vet_touched_packages",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go vet ./01_core/domain ./01_core/usecase ./02_shell/cli ./04_wiring/step0070_gate ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "full_suite_sandbox_attempt_1",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test ./...",
+      "status": "ENVIRONMENT_BLOCKED_WITH_TRANSIENT_LEGACY_FAILURE",
+      "observations": [
+        "httptest listeners denied by sandbox in 03_infra/github, 03_infra/sourcegraph and 03_infra/web",
+        "legacy r5 gate M28 transiently returned Preserved"
+      ]
+    },
+    {
+      "name": "legacy_r5_isolation_check",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test -count=1 -run '^TestStep0026R5RealSubstituteMutationGateThreeByThree$' -v ./04_wiring/r5_gate",
+      "status": "PASS",
+      "result": "M28 failure not reproduced"
+    },
+    {
+      "name": "full_suite_sandbox_attempt_2",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go test ./...",
+      "status": "ENVIRONMENT_BLOCKED",
+      "observations": [
+        "only localhost httptest listener denials remained",
+        "legacy r5 and all step0070 packages passed"
+      ]
+    },
+    {
+      "name": "full_suite_external",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache-external GOTMPDIR=/tmp go test ./...",
+      "execution_environment": "outside filesystem/network sandbox to permit localhost httptest listeners",
+      "status": "PASS",
+      "result": "all packages passed, including r5, r6 and step0070"
+    },
+    {
+      "name": "build",
+      "command": "GOCACHE=/tmp/bateia-step0070-final-cache GOTMPDIR=/tmp go build -o /tmp/bateia-step0070-final-r1 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "crystalline_lint",
+      "command": "crystalline-lint .",
+      "status": "PASS_WITH_PREEXISTING_WARNING",
+      "warning": "V7 orphan prompt 00_nucleo/prompts/03_infra/lexical/vocabulary.md"
+    },
+    {
+      "name": "diff_check",
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "name": "format_check",
+      "command": "gofmt -d 01_core/domain/algorithm_history.go 01_core/domain/algorithm_history_test.go 01_core/usecase/algorithm_history.go 01_core/usecase/algorithm_history_test.go 02_shell/cli/algorithm_history.go 02_shell/cli/algorithm_history_test.go 04_wiring/main.go",
+      "status": "PASS",
+      "output": "empty"
+    }
+  ],
+  "observable_audit": {
+    "gravity": "PASS: L1 uses only standard library and L1 domain; L2 imports L1; L4 only dispatches",
+    "l1_zero_io": "PASS: no filesystem, network, process, clock or randomness imports/calls in algorithm_history domain/usecase",
+    "relations": {
+      "status": "PASS",
+      "count": 8,
+      "values": [
+        "DERIVED_FROM",
+        "INFLUENCED_BY",
+        "IMPROVES",
+        "GENERALIZES",
+        "SPECIALIZES",
+        "COMBINES",
+        "REDISCOVERS",
+        "RESEMBLES"
+      ]
+    },
+    "unknown_policy": "PASS: global validation/budget UNKNOWN has no partial assessments; epistemic UNKNOWN remains explicit",
+    "evidence_inference_separation": "PASS: inference lists remain separate and never contribute to evidentiary outcome or origin count",
+    "determinism_and_immutability": "PASS: 20 permutations, nil/empty normalization and deep input immutability covered by independent oracle",
+    "offline_cli": "PASS after candidate-r1: real command bypasses unrelated L3 wiring, writes atomically, leaves stdout/stderr empty in output mode and matches exemplar byte-for-byte",
+    "steps_0066_0069_attribution": "PASS: no 0066-0069 benchmark, prompt, oracle, gate or production artifact was changed by the 0070 candidate; shared app/main diffs contain separately attributable prior 0068/0069 additions, while the 0070 additions are limited to algorithm dispatch and usage",
+    "insufficient_knowledge": {
+      "status": "UNREACHABLE_FOR_VALID_INPUT",
+      "reason": "every canonical claim must have at least one canonical EVIDENCE basis, every valid evidence has exactly one of SUPPORT, CONFLICT or AMBIGUOUS, and the preceding outcome branches exhaust those cases",
+      "role": "defensive/public representational fallback only; invalid absence of evidence fails closed as global invalid_input before assessment"
+    }
+  },
+  "transient_observations": [
+    "The first sandbox full-suite run observed r5/M28 as Preserved; the isolated rerun, second sandbox full-suite run and final external full-suite run all passed, so the current verdict treats it as non-reproduced transient state rather than a 0070 regression.",
+    "Local sandbox full-suite runs could not open localhost httptest listeners; the externally authorized full-suite run passed those same packages."
+  ],
+  "verdicts": {
+    "protected_chain": "PASS",
+    "independent_oracles": "PASS",
+    "adversarial_mutation_gate": "PASS_12_OF_12_SCORE_1_0",
+    "observable_refinement": "PASS",
+    "architecture": "PASS",
+    "full_regression": "PASS_EXTERNAL",
+    "historical_truth": "NOT_CLAIMED"
+  },
+  "status": "CERTIFIED_STEP0070_OBSERVABLE_FRAGMENT_WITH_PROCEDURAL_ISOLATION",
+  "verdict": "PASS",
+  "limitations": [
+    "Segregation was procedural in a shared filesystem; physical isolation and absence of all context leakage are not attested.",
+    "The certificate covers only the finite observable contract, exact candidate hashes and synthetic fixtures recorded here; it does not establish general functional equivalence or historical truth.",
+    "The supplemental domain oracle and prompt were added after the adversarial seal as an independently authored structural refinement; the original 16 sealed inputs remained unchanged.",
+    "Full regression required an externally authorized run because the local sandbox denies localhost sockets used by unrelated httptest packages.",
+    "insufficient_knowledge is present in the public outcome vocabulary but cannot be emitted by AnalyzeAlgorithmHistory for a valid input under the mandatory-evidence and exhaustive-stance invariants."
+  ],
+  "capabilities": {
+    "candidate_read_after_adversarial_seal": true,
+    "verified_artifact_modified": false,
+    "oracle_modified_by_verifier": false,
+    "gate_modified_by_verifier": false,
+    "candidate_modified_by_verifier": false,
+    "write_allowlist_exercised": [
+      "00_nucleo/benchmark/0070/certificate.json"
+    ]
+  }
+}

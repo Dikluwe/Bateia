@@ -1,0 +1,29 @@
+{
+  "schema_version": "idea-radar-archify-benchmark-v1",
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "captured_before_candidate": true,
+  "candidate_files_present": false,
+  "archify": {
+    "repository_commit": "6db72a9aea3d0f67a6a034e41f8a5491476a11c1",
+    "dataflow_schema": "https://raw.githubusercontent.com/tt-a1i/archify/6db72a9aea3d0f67a6a034e41f8a5491476a11c1/archify/schemas/dataflow.schema.json",
+    "common_schema": "https://raw.githubusercontent.com/tt-a1i/archify/6db72a9aea3d0f67a6a034e41f8a5491476a11c1/archify/schemas/common.schema.json",
+    "schema_version": 1,
+    "diagram_type": "dataflow",
+    "id_pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+    "renderer_rows": [0, 1, 2, 3, 4],
+    "default_node_width": 112,
+    "stage_centers": "fixed"
+  },
+  "cases": [
+    {"id":"c01","family":"topology","fixture":"three recorded origins/kinds and one convergent target","expected":{"nodes":7,"flows":6,"cards":1,"probe_kinds":["BIND_EVIDENCE"]}},
+    {"id":"c02","family":"unknown-origin","fixture":"complete radar with UNKNOWN_ORIGIN assessment","expected":"distinct placeholder, descriptive RECORD_ORIGIN, no fabricated physical origin"},
+    {"id":"c03","family":"identity","fixture":"canonical IDs a:b and a/b plus case/edge whitespace","expected":"valid distinct hexadecimal IDs and canonical byte identity"},
+    {"id":"c04","family":"fail-closed","fixture":"invalid schema, empty input, radar UNKNOWN, planner UNKNOWN and derived overflow","expected":"error and zero output"},
+    {"id":"c05","family":"determinism","fixture":"duplicates, nil/empty text and 20 permutations","expected":"byte-identical JSON and unchanged input"},
+    {"id":"c06","family":"cli-safety","fixture":"stdout, atomic output and output aliases input","expected":"exclusive destination and immutable input"},
+    {"id":"c07","family":"renderer-boundary","fixture":"5/5/5 then 6 origins, perspectives or targets","expected":"5/5/5 renders; each 6th fails render_budget_exceeded with zero output"},
+    {"id":"c08","family":"label-fit","fixture":"long and punctuation-heavy identities","expected":"node labels <= 10 ASCII bytes; complete identities remain in ids, flow labels and cards"},
+    {"id":"c09","family":"fixed-renderer","fixture":"example-input.json -> example.archify.json","expected":"archify validate and deliver pass at repository_commit without universal showcase requirement"}
+  ],
+  "forbidden": ["node_or_archify_execution", "probe_flow", "target_to_target_flow", "partial_unknown_output", "edits_to_0066_or_0067"]
+}

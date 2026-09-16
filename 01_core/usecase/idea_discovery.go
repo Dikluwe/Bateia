@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_discovery.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-11
  */
 
 package usecase
@@ -94,7 +94,7 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 			if ctx.Err() != nil {
 				return
 			}
-			request := domain.DiscoveryRequest{RequirementIDs: append([]string(nil), currentExpansion.RequirementIDs...), ExpansionID: currentExpansion.ID, Query: currentExpansion.Query, Discriminators: append([]string(nil), currentExpansion.Discriminators...), RepositoryScope: currentExpansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
+			request := domain.DiscoveryRequest{RequirementIDs: append([]string(nil), currentExpansion.RequirementIDs...), Derivation: cloneDerivation(currentExpansion.Derivation), ExpansionID: currentExpansion.ID, Query: currentExpansion.Query, Discriminators: append([]string(nil), currentExpansion.Discriminators...), RepositoryScope: currentExpansion.RepositoryScope, Language: language, MaxResults: maxResults, AttemptTimeout: policy.AttemptTimeout, MaxAttempts: policy.MaxAttempts}
 			if currentExpansion.Regional != nil {
 				request.SearchLocale = currentExpansion.Regional.Locale
 				request.RegionalProposalID = currentExpansion.Regional.ProposalID
@@ -287,6 +287,19 @@ func candidateOrigin(discovery domain.ExpansionDiscovery, candidate domain.Repos
 			origin.AttemptIndex = match.AttemptIndex
 			origin.EffectiveQuery = match.EffectiveQuery
 			origin.Evidence = append([]domain.MatchEvidence(nil), match.Evidence...)
+			if origin.EffectiveQuery == "" {
+				if match.AttemptIndex >= 0 && match.AttemptIndex < len(discovery.Provider.Attempts) {
+					origin.EffectiveQuery = discovery.Provider.Attempts[match.AttemptIndex].Query
+				}
+				if origin.EffectiveQuery == "" {
+					for _, attempt := range discovery.Provider.Attempts {
+						if attempt.AttemptIndex == match.AttemptIndex && attempt.Query != "" {
+							origin.EffectiveQuery = attempt.Query
+							break
+						}
+					}
+				}
+			}
 			return origin
 		}
 	}

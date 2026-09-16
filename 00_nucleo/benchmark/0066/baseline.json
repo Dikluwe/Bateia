@@ -1,0 +1,140 @@
+{
+  "schema_version": "idea-radar-benchmark-v1",
+  "base_commit": "2545f730545712c3b9950088506020bc755d9e6c",
+  "captured_before_candidate": true,
+  "candidate_files_present": false,
+  "existing_files": {
+    "01_core/domain/idea_spec.go": "97135ee1e255ed003dcc72b7a37b6f8a854b8887283c0dc9b218f20603233dfb",
+    "01_core/domain/evidence_coalition.go": "34594a32ea97ed174237831f3bf89e00a2579bfe8fd3aeff8776db2c62d03580",
+    "01_core/usecase/evidence_coalition.go": "dc5d9929034d9801a2d56973b994b049e72eb30aeb7c3c4265bc38d01bfcefa9",
+    "00_nucleo/benchmark/0065/verification.json": "082f7a92a5286b578e0ea67110544920c86cef2f3444e0e7f40da18344cdacda"
+  },
+  "ground_truth_location": "benchmark_only_not_productive_code",
+  "cases": [
+    {
+      "id": "c01",
+      "family": "event-recovery",
+      "expected_targets": ["cand-log#event-log-recovery"],
+      "forbidden_targets": ["noise-log#snapshot-only"]
+    },
+    {
+      "id": "c02",
+      "family": "event-recovery",
+      "expected_targets": ["cand-journal#write-ahead-log"],
+      "forbidden_targets": ["noise-cache#cache"]
+    },
+    {
+      "id": "c03",
+      "family": "authorization",
+      "expected_targets": ["cand-policy#policy-enforcement"],
+      "forbidden_targets": ["noise-auth#acl"]
+    },
+    {
+      "id": "c04",
+      "family": "authorization",
+      "expected_targets": ["cand-rbac#role-based-access"],
+      "forbidden_targets": ["noise-role#role-map"]
+    },
+    {
+      "id": "c05",
+      "family": "offline-sync",
+      "expected_targets": ["cand-sync#operation-log-sync"],
+      "forbidden_targets": ["noise-sync#timestamp-copy"]
+    },
+    {
+      "id": "c06",
+      "family": "offline-sync",
+      "expected_targets": ["cand-crdt#conflict-free-merge"],
+      "forbidden_targets": ["noise-merge#last-write-wins"]
+    }
+  ],
+  "isolated_predictions": {
+    "PROBLEM": {
+      "c01": ["cand-log#event-log-recovery"],
+      "c02": ["noise-cache#cache"],
+      "c03": ["cand-policy#policy-enforcement"],
+      "c04": [],
+      "c05": ["noise-sync#timestamp-copy"],
+      "c06": []
+    },
+    "BEHAVIOR": {
+      "c01": ["cand-log#event-log-recovery"],
+      "c02": ["cand-journal#write-ahead-log"],
+      "c03": [],
+      "c04": ["noise-role#role-map"],
+      "c05": ["cand-sync#operation-log-sync"],
+      "c06": ["noise-merge#last-write-wins"]
+    },
+    "ARCHITECTURE": {
+      "c01": ["cand-log#event-log-recovery"],
+      "c02": [],
+      "c03": ["cand-policy#policy-enforcement"],
+      "c04": ["noise-role#role-map"],
+      "c05": [],
+      "c06": ["cand-crdt#conflict-free-merge"]
+    },
+    "CONSTRAINT": {
+      "c01": ["noise-log#snapshot-only"],
+      "c02": [],
+      "c03": ["cand-policy#policy-enforcement"],
+      "c04": ["cand-rbac#role-based-access"],
+      "c05": [],
+      "c06": []
+    },
+    "OPERATION": {
+      "c01": ["cand-log#event-log-recovery"],
+      "c02": ["cand-journal#write-ahead-log"],
+      "c03": [],
+      "c04": [],
+      "c05": ["cand-sync#operation-log-sync"],
+      "c06": ["noise-merge#last-write-wins"]
+    }
+  },
+  "expected_best_isolated": {
+    "kind": "ARCHITECTURE",
+    "tp": 3,
+    "fp": 1,
+    "fn": 3,
+    "precision": 0.75,
+    "recall": 0.5,
+    "f1": 0.6,
+    "false_convergence": 0.25,
+    "contamination": 0.25
+  },
+  "expected_radar": {
+    "predicted_targets_by_case": {
+      "c01": ["cand-log#event-log-recovery"],
+      "c02": ["cand-journal#write-ahead-log"],
+      "c03": ["cand-policy#policy-enforcement"],
+      "c04": [],
+      "c05": ["cand-sync#operation-log-sync"],
+      "c06": []
+    },
+    "tp": 4,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.6666666666666666,
+    "f1": 0.8,
+    "false_convergence": 0.0,
+    "contamination": 0.0,
+    "improved_cases": ["c02", "c05"],
+    "improved_families": ["event-recovery", "offline-sync"],
+    "utility_verdict": "OBSERVED"
+  },
+  "legacy_observables": {
+    "decision_impact": "NONE",
+    "verdict_changes": 0,
+    "existing_consumers_call_radar": false,
+    "existing_schema_changes": 0
+  },
+  "allowed_future_production_additions": [
+    "01_core/domain/idea_radar.go",
+    "01_core/usecase/idea_radar.go"
+  ],
+  "forbidden_baseline_edits": [
+    "01_core/domain/idea_spec.go",
+    "01_core/domain/evidence_coalition.go",
+    "01_core/usecase/evidence_coalition.go"
+  ]
+}

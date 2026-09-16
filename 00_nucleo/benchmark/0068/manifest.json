@@ -1,0 +1,122 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "step": "0068",
+  "protocol": "completo, ensaio sem atestacao fisica de isolamento",
+  "created_before_candidate": true,
+  "base_commit": "2545f730545712c3b9950088506020bc755d9e6c",
+  "inputs": {
+    "step": {
+      "path": "00_nucleo/passos/0068-compilar-capacidade-em-consultas-tecnicas.md",
+      "sha256": "2d62cbad6eac20b518a9cb5a8c1ec332e00ba32e2e1112b40b6ba986d27450c5"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0068/contract.md",
+      "sha256": "e7f79869c1e765608e4a101bd4159920f8276f81dbb6860b59d018fcafa02356"
+    },
+    "baseline": {
+      "path": "00_nucleo/benchmark/0068/baseline.json",
+      "sha256": "73a0ffecec5795de259f09e419e89dac43e922457d7bcf0864c9cfaaf607d005"
+    },
+    "budget": {
+      "path": "00_nucleo/benchmark/0068/budget.json",
+      "sha256": "eee3a6692045ffe12c99e1c9963ae5c522929a15856a4af73ab4cd097d837b0d"
+    }
+  },
+  "frozen_real_replay": {
+    "v1_expansion_plan": "78d7bad251fda348e187934826894f6d8b95f6937421737cbc857b5fd7113164",
+    "v1_discovery_snapshot": "33b8bdd16c8ceeed9f84eb50cb959bbdc8c557775673e925b8c19d239c0210eb",
+    "v1_assessment_report": "b5cd5871b22229b09c88b506118b30473a90d5e1dfda577386e0171597c197a7",
+    "v2_expansion_plan": "bb54f79d94a45a3b7532af94234372242b08b9ed43dca0d3a0f920e0cb25b235",
+    "v2_discovery_snapshot": "3e564f25731f864a749f26ff04e06e17a044115a9fc8177a71d76efd82009673",
+    "v2_assessment_report": "2ef4bd40d7408c12d1f03878b8f76a050adea4dc93e62ba5f2fd1cf2670493e5",
+    "directed_shewchuk_evidence": "9218fc629eeac0634dd8194339dd2af395550ab144be97157c486e230be63ffd"
+  },
+  "productive_baseline": {
+    "01_core/usecase/idea_expander.go": "86acbd2da6761ca4f06cb9a3a2106afeae44fe6f1e730ad2542d5dfaa3d68b74",
+    "01_core/usecase/semantic_expander.go": "8f93d972cbf162be01fa4e0724df119088a363f83a7833481cd976ba03874978",
+    "01_core/domain/idea_discovery.go": "dec4a0a2edd3f9ea5d6b1db01f1865b31ae16a48ef5dad6c45c23041776a5e6a",
+    "01_core/usecase/idea_discovery.go": "230ee34d157ee04768fc6d92ae85f2503a9e57fa6aca851d77763af596872964",
+    "03_infra/lexical/expander.go": "aee3259258b6bb12c4a35e8eefe2c304920d1b259b5b516350f6bfc2aab5518b",
+    "03_infra/lexical/vocabulary.json": "01edd2c7f163371ed2c658cafbb935f00bd2c02919f430dc0e8fcace7b5ffba2",
+    "03_infra/sourcegraph/observable_discovery.go": "d285d6ee142194da986d0ccd5571e4470e204e6fe456bd4d19b4c7cba02187ff",
+    "04_wiring/main.go": "0ab8c390c8b164af524d4d737cadca054f46db1f121f59674c9449ac5d1d2607"
+  },
+  "prompts": {
+    "01_core/domain/idea_discovery.md": "f27f6815358ee49d44a0251e89df8eaa2617094b453b4e439b6d44efadf45cd7",
+    "01_core/domain/idea_discovery_step0068_test.md": "6b2ad71b00f23ba3a1d9cfe247a469c6025eb0d49eb4757fc9d5918e3efb78a6",
+    "01_core/usecase/idea_discovery.md": "e2fa45723b3cdf05865613d58a3b7f4e0605112e42e6dbf4ae4f769f60b65af7",
+    "01_core/usecase/idea_discovery_step0068_test.md": "a06bc299797275241255cae06e5ef2ca210b32201c24c5d918b357ac7674120f",
+    "03_infra/lexical/expander.md": "411e3208ea683bd2906e97f3724543d644c0e5897f37e73d173a8dd212feea11",
+    "03_infra/lexical/expander_step0068_test.md": "c9633dabef0589aafae944df87f1ec3c426f16e782793469930a60a4709f7e0e",
+    "03_infra/lexical/vocabulary.md": "629a75497f5de14ad676ba3c7aaedd1c94fbacf3966a21e3bd5a6f86a536e521",
+    "03_infra/sourcegraph/observable_discovery.md": "43990747367a97bff8e7710f4011c1db8dd227d976d295222d88a17e430fd065",
+    "03_infra/sourcegraph/observable_discovery_step0068_test.md": "e205139441020c5750bf04ef3ec7870265572d4d952084a3ecffae0f132a1732",
+    "04_wiring/main.md": "463758bdbd0c1be3700c557e64f76f8cb2407577526ce3d2891164434d05cecc"
+  },
+  "editorial_revisions": [
+    {
+      "id": "0068-r1-test-prompt-bijection",
+      "reason": "crystalline-lint V15 exige prompt proprietário biunívoco para cada arquivo Go de teste",
+      "semantic_change": false,
+      "protected_inputs_changed": false,
+      "added_prompts": [
+        "01_core/domain/idea_discovery_step0068_test.md",
+        "01_core/usecase/idea_discovery_step0068_test.md",
+        "03_infra/lexical/expander_step0068_test.md",
+        "03_infra/sourcegraph/observable_discovery_step0068_test.md"
+      ]
+    }
+  ],
+  "observables": [
+    "exact_canonical_translation",
+    "two_short_technical_queries",
+    "literal_and_source_provenance_preserved",
+    "finite_catalog_boundary",
+    "same_file_two_discriminator_admission",
+    "no_generic_fallback",
+    "all_technical_expansions_executed",
+    "candidate_union_preserves_two_origins",
+    "recall_at_5_and_contamination_at_5",
+    "evidence_addressable_not_proven",
+    "bounded_provider_cost",
+    "legacy_rule_non_regression"
+  ],
+  "unknown_policy": "opacidade, denominador ausente, erro, replay ausente ou budget excedido nunca viram melhoria",
+  "roles": {
+    "intent_author": "usuario",
+    "contract_author": "somente L0 0068; le diagnostico e baseline anterior, sem candidato futuro",
+    "oracle_author": "intencao, contrato, baseline e budget; sem candidato",
+    "adversary": "entradas congeladas e mutantes M01-M16; sem corrigir solucao",
+    "implementer": "contrato e prompts produtivos selados; sem oraculos, mutantes ou dossies",
+    "verifier": "artefatos congelados e saidas; sem editar material julgado"
+  },
+  "capabilities": {
+    "contract_author_read": [
+      ".agents/AGENTS.md",
+      "skill tekt-materializacao-segregada e referencias completas",
+      "dossies coin-tessellation v1/v2 e controles isolados",
+      "ExpandIdea, semantic expander, lexical vocabulary, Sourcegraph discovery, union e passos anteriores"
+    ],
+    "contract_author_write": [
+      "00_nucleo/passos/0068-*.md",
+      "00_nucleo/prompts/{01_core,03_infra,04_wiring}/** especificados",
+      "00_nucleo/benchmark/0068/{README.md,contract.md,baseline.json,budget.json,manifest.json}"
+    ],
+    "contract_author_forbidden": [
+      "arquivos Go ou JSON produtivo",
+      "implementacao candidata 0068 futura",
+      "oraculos, mutantes, selo ou veredito final",
+      "dossies e artefatos 0065-0067"
+    ]
+  },
+  "ground_truth": {
+    "location": "00_nucleo/benchmark/0068/baseline.json",
+    "visible_to_productive_code": false,
+    "counterfactual_cases": 4,
+    "families": 4,
+    "frozen_before_candidate": true,
+    "limitation": "fixtures medem compilacao/admissao/union; nao predizem Sourcegraph atual nem comprovam capacidade"
+  },
+  "isolation": "autoridades segregadas proceduralmente; filesystem compartilhado; sem atestacao fisica",
+  "seal_status": "CANDIDATE_NOT_SEALED"
+}

@@ -1,0 +1,239 @@
+{
+  "schema_version": "tekt.step0066.candidate-mutation-verification.v1",
+  "step": "0066",
+  "executed_at_utc": "2026-09-11T19:20:54Z",
+  "phase": "POST_SEAL_FINAL_CANDIDATE",
+  "authority": "ADVERSARIO_GATE_DISCRIMINATORIO_0066",
+  "isolation": "one independent /tmp copy per mutant; repository candidate and oracle files were never mutated",
+  "candidate": {
+    "focal_revision": 1,
+    "domain_path": "01_core/domain/idea_radar.go",
+    "domain_sha256": "3d90f2155b40e7301c4c15c24f13a1ff3dc3916f1d0a94622699d0f4d7f5791b",
+    "usecase_path": "01_core/usecase/idea_radar.go",
+    "usecase_sha256": "a620229c030a80cd799907170b8188f5dda6c3d7d1e52d999619890019dd50b8",
+    "hashes_matched_authorized_final_candidate": true,
+    "post_execution_hashes_unchanged": true
+  },
+  "frozen_verification_inputs": {
+    "01_core/domain/idea_radar_test.go": "9821a9c35a71941df1d8fd2c53555a778edc9f9a506ec24877ce9d3fb0779063",
+    "01_core/usecase/idea_radar_test.go": "5c3ea6fb3f554931c7e1b7e86e885bb42c46739822cf5039917a1153582e0977",
+    "00_nucleo/benchmark/0066/adversarial-fixtures.json": "c11663fc3341a15d30a2fb22d0835a0bbcc86800e30b34201332a25bfc53d1ad",
+    "00_nucleo/benchmark/0066/adversarial-seal.json": "7d45143ea3248123acd3645bca45638cc78050527a15b769cd3b62c8c80947b7",
+    "00_nucleo/benchmark/0066/adversarial-gate-receipt.json": "171d7ae25ef41dd6083e201753796cb3a41e8f23f1e256e0bab639e07016b502",
+    "04_wiring/step0066_gate/discriminatory_test.go": "471775cd6a41ef588c2f1ae484981fc8b48605061acb9f439d4c681527fac0fc"
+  },
+  "commands": {
+    "candidate_focal_baseline": "env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+    "sealed_adversarial_gate": "env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./04_wiring/step0066_gate -count=1",
+    "mutation_template": "cd /tmp/bateia-0066-m<ID> && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1"
+  },
+  "baseline_results": {
+    "candidate_focal": "PASS",
+    "candidate_domain_test_time_seconds": 0.033,
+    "candidate_usecase_test_time_seconds": 0.039,
+    "candidate_command_wall_seconds": 22.693,
+    "sealed_adversarial_gate": "PASS",
+    "sealed_adversarial_gate_test_time_seconds": 0.055,
+    "sealed_adversarial_gate_wall_seconds": 17.759
+  },
+  "mutants": [
+    {
+      "id": "M01",
+      "mutation": "reduce minimum distinct projection kinds from 3 to 2",
+      "copy": "/tmp/bateia-0066-m01",
+      "mutated_usecase_sha256": "9217563dc3524c453ba49006bcceab66c56a5cd35ab19ab51c24f570f109e54d",
+      "command": "cd /tmp/bateia-0066-m01 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 5409,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarPrecedenceAndIndependentThresholds"
+    },
+    {
+      "id": "M02",
+      "mutation": "reduce minimum distinct recorded origins from 3 to 1",
+      "copy": "/tmp/bateia-0066-m02",
+      "mutated_usecase_sha256": "84ae8f9882a78519e1e6d999c14c94de890ab3600652607d5f1f683cee178fb5",
+      "command": "cd /tmp/bateia-0066-m02 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 5125,
+      "outcome": "KILLED",
+      "primary_witness": "TestExternalUtilityOracle"
+    },
+    {
+      "id": "M03",
+      "mutation": "use origin cardinality in place of kind and recorded-kind cardinality",
+      "copy": "/tmp/bateia-0066-m03",
+      "mutated_usecase_sha256": "619ea5d1e492c4ac31e1f2bebe1808357a627d20d0a5c08ce4485b207cd3b6a4",
+      "command": "cd /tmp/bateia-0066-m03 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 3538,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarPrecedenceAndIndependentThresholds"
+    },
+    {
+      "id": "M04",
+      "mutation": "count UNKNOWN_ORIGIN support observation ids as distinct recorded origins",
+      "copy": "/tmp/bateia-0066-m04",
+      "mutated_usecase_sha256": "6228837a2c592d66aadef4dc7a4e599a2375033f3cfebfae3fbfb8c4cbf00ee4",
+      "command": "cd /tmp/bateia-0066-m04 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 8693,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarPrecedenceAndIndependentThresholds"
+    },
+    {
+      "id": "M05",
+      "mutation": "count observation ids instead of declared OriginID",
+      "copy": "/tmp/bateia-0066-m05",
+      "mutated_usecase_sha256": "b373fad7dea9e1eec86f2d680478538df755d0895575ae8e00d1784456c38ae1",
+      "command": "cd /tmp/bateia-0066-m05 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 1226,
+      "outcome": "KILLED",
+      "primary_witness": "TestExternalUtilityOracle"
+    },
+    {
+      "id": "M06",
+      "mutation": "ignore conflict unless conflict count exceeds kind count",
+      "copy": "/tmp/bateia-0066-m06",
+      "mutated_usecase_sha256": "66071e019e6db6b48311b1322defc4f240559fd965151ea13d37148a26f8786d",
+      "command": "cd /tmp/bateia-0066-m06 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 1527,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarPrecedenceAndIndependentThresholds"
+    },
+    {
+      "id": "M07",
+      "mutation": "disable ambiguous-stance precedence",
+      "copy": "/tmp/bateia-0066-m07",
+      "mutated_usecase_sha256": "5cdc6c101276b1e528eead5e53dd4fff02652a349ec2e86dbf93e84b05e3e6f7",
+      "command": "cd /tmp/bateia-0066-m07 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 6123,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarPrecedenceAndIndependentThresholds"
+    },
+    {
+      "id": "M08",
+      "mutation": "include observation id in semantic deduplication key",
+      "copy": "/tmp/bateia-0066-m08",
+      "mutated_usecase_sha256": "ee50d50383ba2bfa617b50dc750bee1e4c83fe3d7feeab38bbf2a944b42cec8f",
+      "command": "cd /tmp/bateia-0066-m08 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 7694,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarCanonicalDeduplication"
+    },
+    {
+      "id": "M09",
+      "mutation": "accept non-ASCII bytes as canonical identifier characters",
+      "copy": "/tmp/bateia-0066-m09",
+      "mutated_usecase_sha256": "b2c59a112ec3d42f10169379e0cbdcc103fd5b99daf0ea51521b140a6960682a",
+      "command": "cd /tmp/bateia-0066-m09 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 6008,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarRejectsInvalidAndAmbiguousInputs"
+    },
+    {
+      "id": "M10",
+      "mutation": "select ascending or descending target order from input projection order",
+      "copy": "/tmp/bateia-0066-m10",
+      "mutated_usecase_sha256": "d9f65ba345f625766fa0708c34956047ce167accb5d6e7c0f68ea22c80c1ba40",
+      "command": "cd /tmp/bateia-0066-m10 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 3514,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarTwentyPermutationsAndNilEmptyText",
+      "focused_mutant_refinements": 1,
+      "refinement_reason": "replace a merely reverse-canonical first draft with explicit input-order dependence"
+    },
+    {
+      "id": "M11",
+      "mutation": "validate only empty schema and accept unknown non-empty schema",
+      "copy": "/tmp/bateia-0066-m11",
+      "mutated_usecase_sha256": "9e8ccbd7d6f8362eb0c12946353a30ecc36783b4192cba65c607992674225705",
+      "command": "cd /tmp/bateia-0066-m11 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 320,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarRejectsInvalidAndAmbiguousInputs"
+    },
+    {
+      "id": "M12",
+      "mutation": "remove observation-count early budget rejection and permit partial processing",
+      "copy": "/tmp/bateia-0066-m12",
+      "mutated_usecase_sha256": "abc561344c35a773f6a7226cf45ea8a119643eff6df392124e805771dac26b41",
+      "command": "cd /tmp/bateia-0066-m12 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 356,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarInclusiveAndExclusiveLimits"
+    },
+    {
+      "id": "M13",
+      "mutation": "mark every conceptual coalition draft ReadyFor0065=true",
+      "copy": "/tmp/bateia-0066-m13",
+      "mutated_usecase_sha256": "6500d750c7bfd2cc34aebd4761cb1ec238e81c760c58a1495bf9dd7f0a6ea356",
+      "command": "cd /tmp/bateia-0066-m13 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 2592,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarFrozenCorpus"
+    },
+    {
+      "id": "M14",
+      "mutation": "initialize VerdictChanges to 1",
+      "copy": "/tmp/bateia-0066-m14",
+      "mutated_usecase_sha256": "801e7ae4420e1a61406285f5e988d9e21c75df863f612fbe0f452fb9c24ad63d",
+      "command": "cd /tmp/bateia-0066-m14 && env GOCACHE=/tmp/bateia-step0066-postseal-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'IdeaRadar|ExternalUtilityOracle' -count=1",
+      "exit_status": 1,
+      "elapsed_ms": 3387,
+      "outcome": "KILLED",
+      "primary_witness": "TestAnalyzeIdeaRadarFrozenCorpus"
+    }
+  ],
+  "score": {
+    "valid_mutants": 14,
+    "killed": 14,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "verdict": "PASS"
+  },
+  "adversarial_gate": {
+    "status": "SATISFIED",
+    "pre_candidate_discriminants_unchanged": true,
+    "controls": "P preserved, N violated, O Unknown",
+    "orders": "20/20 identical",
+    "candidate_binding": "none; gate remains binding-free"
+  },
+  "utility_discriminants": {
+    "status": "SATISFIED",
+    "candidate_expected_vector": {
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "false_convergence": 0.0,
+      "contamination": 0.0,
+      "verdict": "OBSERVED"
+    },
+    "control_verdicts": ["OBSERVED", "NOT_OBSERVED", "INCONCLUSIVE"],
+    "evidence": "TestExternalUtilityOracle passed for the final candidate; the sealed binding-free gate also passed"
+  },
+  "cost": {
+    "mutant_final_runs_elapsed_ms": 55512,
+    "additional_discarded_m10_first_draft_elapsed_ms": 368,
+    "mutant_invocations": 15,
+    "final_scored_mutants": 14,
+    "candidate_focal_invocations": 1,
+    "sealed_gate_invocations": 1
+  },
+  "repository_writes": [
+    "00_nucleo/benchmark/0066/candidate-mutation-verification.json"
+  ],
+  "attestation": "SEGREGADO_PROCEDURALMENTE_SEM_ATESTACAO_FISICA",
+  "limitation": "This verifies the frozen candidate only against M01-M14 and the recorded observable fragment; it does not prove general semantic equivalence or real-world utility."
+}

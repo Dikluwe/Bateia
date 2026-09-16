@@ -1,0 +1,40 @@
+{
+  "schema_version": "idea-radar-input-v1",
+  "projections": [
+    {
+      "id": "problem",
+      "kind": "PROBLEM",
+      "origin_status": "RECORDED",
+      "origin_id": "user-brief",
+      "terms": ["human visualization"],
+      "actions": [],
+      "objects": ["idea radar"],
+      "required": []
+    },
+    {
+      "id": "behavior",
+      "kind": "BEHAVIOR",
+      "origin_status": "RECORDED",
+      "origin_id": "archify-schema",
+      "terms": ["typed JSON IR"],
+      "actions": ["render"],
+      "objects": ["dataflow"],
+      "required": []
+    },
+    {
+      "id": "architecture",
+      "kind": "ARCHITECTURE",
+      "origin_status": "RECORDED",
+      "origin_id": "bateia-contract",
+      "terms": ["optional adapter"],
+      "actions": ["export"],
+      "objects": ["Archify IR"],
+      "required": ["no Node in core"]
+    }
+  ],
+  "observations": [
+    {"id":"obs-problem","projection_id":"problem","candidate_id":"archify-export","concept_id":"human-map","stance":"SUPPORT"},
+    {"id":"obs-behavior","projection_id":"behavior","candidate_id":"archify-export","concept_id":"human-map","stance":"SUPPORT"},
+    {"id":"obs-architecture","projection_id":"architecture","candidate_id":"archify-export","concept_id":"human-map","stance":"SUPPORT"}
+  ]
+}

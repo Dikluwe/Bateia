@@ -1,0 +1,127 @@
+{
+  "schema_version": "technical-query-benchmark-v1",
+  "base_commit": "2545f730545712c3b9950088506020bc755d9e6c",
+  "captured_before_candidate": true,
+  "candidate_files_present": false,
+  "source_phrase": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+  "canonical_translation": "robust geometric orientation and in-circle predicates for nearly degenerate cases",
+  "forbidden_queries": ["predicados geometricos", "geometric predicates"],
+  "real_replay": {
+    "network_reexecution_required_for_new_claim": true,
+    "v1": {
+      "expansion_plan_sha256": "78d7bad251fda348e187934826894f6d8b95f6937421737cbc857b5fd7113164",
+      "discovery_snapshot_sha256": "33b8bdd16c8ceeed9f84eb50cb959bbdc8c557775673e925b8c19d239c0210eb",
+      "assessment_report_sha256": "b5cd5871b22229b09c88b506118b30473a90d5e1dfda577386e0171597c197a7",
+      "observed_attempts": [
+        "lang:C++ predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+        "lang:C++ predicados geometricos"
+      ],
+      "observed_candidates": ["Dante-Leoncini/Whisk3D-Editor"],
+      "capability_assessments": {"INCONCLUSIVE": 6},
+      "target_recall_at_5": 0.0,
+      "contamination_at_5": 1.0,
+      "evidence_addressable_capabilities": 0
+    },
+    "v2": {
+      "expansion_plan_sha256": "bb54f79d94a45a3b7532af94234372242b08b9ed43dca0d3a0f920e0cb25b235",
+      "discovery_snapshot_sha256": "3e564f25731f864a749f26ff04e06e17a044115a9fc8177a71d76efd82009673",
+      "assessment_report_sha256": "2ef4bd40d7408c12d1f03878b8f76a050adea4dc93e62ba5f2fd1cf2670493e5",
+      "observed_attempts": [
+        "lang:C++ Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "lang:C++ Shewchuk robust",
+        "Shewchuk robust"
+      ],
+      "observed_candidates": [],
+      "target_recall_at_5": 0.0,
+      "contamination_at_5": null,
+      "evidence_addressable_capabilities": 0
+    },
+    "directed_control": {
+      "artifact_sha256": "9218fc629eeac0634dd8194339dd2af395550ab144be97157c486e230be63ffd",
+      "query": "Shewchuk",
+      "top_candidates": 4,
+      "extracted_candidates": [
+        "VTREEM/Carve",
+        "ifcquery/ifcplusplus",
+        "tumcms/Open-Infra-Platform"
+      ],
+      "positive_witness": "VTREEM/Carve CMakeLists.txt: CARVE_USE_EXACT_PREDICATES / Use Shewchuk's exact predicates",
+      "claim_scope": "directed lexical witness, not full capability proof"
+    }
+  },
+  "counterfactual_cases": [
+    {
+      "id": "c01",
+      "family": "retrieval-union",
+      "source": "canonical Portuguese phrase",
+      "judged_relevant": ["geometry/RobustKernel"],
+      "judged_irrelevant": ["noise/Whisk"],
+      "literal_response": ["noise/Whisk"],
+      "technical_responses": {
+        "canonical_translation": [],
+        "orient2d incircle": ["geometry/RobustKernel"],
+        "Shewchuk exact predicates": ["geometry/RobustKernel", "noise/MetadataOnly"]
+      },
+      "evidence": {
+        "geometry/RobustKernel": [
+          {"query": "orient2d incircle", "path": "predicates.cpp", "snippet": "double orient2d(...); double incircle(...);"},
+          {"query": "Shewchuk exact predicates", "path": "exact.cpp", "snippet": "Shewchuk exact predicates"}
+        ],
+        "noise/MetadataOnly": []
+      },
+      "expected_baseline": {"recall_at_5": 0.0, "contamination_at_5": 1.0, "evidence_addressable_capabilities": 0, "provider_attempts": 1},
+      "expected_candidate": {"recall_at_5": 1.0, "contamination_at_5": 0.5, "evidence_addressable_capabilities": 1, "provider_attempts": 4, "technical_origins_for_target": 2}
+    },
+    {
+      "id": "c02",
+      "family": "admission-safety",
+      "fixtures": [
+        {"repository": "noise/Split", "files": {"a.cpp": "orient2d", "b.cpp": "incircle"}, "expected": "rejected"},
+        {"repository": "noise/Metadata", "description": "orient2d incircle", "files": {}, "expected": "rejected"},
+        {"repository": "noise/Single", "files": {"a.cpp": "orient2d only"}, "expected": "rejected"},
+        {"repository": "geometry/SameFile", "files": {"a.cpp": "orient2d and incircle"}, "expected": "selected"}
+      ]
+    },
+    {
+      "id": "c03",
+      "family": "catalog-boundary",
+      "inputs": [
+        {"text": "predicados geometricos", "expected_proposals": 0},
+        {"text": "robust geometric predicates", "expected_proposals": 0},
+        {"text": "predicados geometricos de distancia robustos", "expected_proposals": 0}
+      ]
+    },
+    {
+      "id": "c04",
+      "family": "determinism-compatibility",
+      "checks": ["case_and_whitespace_normalization", "twenty_input_permutations", "duplicate_source_deduplication", "legacy_rule_byte_identity", "input_immutability", "three_proposal_limit"]
+    }
+  ],
+  "expected_utility": {
+    "recall_at_5_delta": 1.0,
+    "contamination_at_5_delta": -0.5,
+    "evidence_addressable_capabilities_delta": 1,
+    "max_provider_attempts_per_source": 4,
+    "minimum_improved_cases": 2,
+    "minimum_improved_families": 2,
+    "verdict": "OBSERVED"
+  },
+  "allowed_productive_changes": [
+    "01_core/domain/idea_discovery.go",
+    "01_core/usecase/idea_discovery.go",
+    "03_infra/lexical/expander.go",
+    "03_infra/lexical/vocabulary.json",
+    "03_infra/sourcegraph/observable_discovery.go",
+    "04_wiring/main.go"
+  ],
+  "forbidden_changes": [
+    "relatorios/coin-tessellation/**",
+    "01_core/domain/idea_radar.go",
+    "01_core/usecase/idea_radar.go",
+    "01_core/domain/idea_radar_plan.go",
+    "01_core/usecase/idea_radar_plan.go",
+    "00_nucleo/benchmark/0065/**",
+    "00_nucleo/benchmark/0066/**",
+    "00_nucleo/benchmark/0067/**"
+  ]
+}

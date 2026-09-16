@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/idea_run.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-16
  */
 
 package domain
@@ -76,13 +76,14 @@ type IdeaRunManifest struct {
 	Failures      []ExecutionFailure `json:"failures,omitempty"`
 }
 type IdeaRunResult struct {
-	Expansion      ExpansionPlan            `json:"expansion"`
-	Discovery      DiscoverySnapshot        `json:"discovery"`
-	Screening      ScreeningReport          `json:"screening"`
-	Plans          []EvidenceExtractionPlan `json:"plans"`
-	Bundles        []EvidenceBundle         `json:"bundles"`
-	Assessment     AssessmentReport         `json:"assessment"`
-	Decision       ReuseDecisionReport      `json:"decision"`
-	Failures       []ExecutionFailure       `json:"failures,omitempty"`
-	StageDurations map[string]int64         `json:"-"`
+	Expansion       ExpansionPlan            `json:"expansion"`
+	Discovery       DiscoverySnapshot        `json:"discovery"`
+	Screening       ScreeningReport          `json:"screening"`
+	CatalogCoverage EvidenceCatalogCoverage  `json:"catalog_coverage"`
+	Plans           []EvidenceExtractionPlan `json:"plans"`
+	Bundles         []EvidenceBundle         `json:"bundles"`
+	Assessment      AssessmentReport         `json:"assessment"`
+	Decision        ReuseDecisionReport      `json:"decision"`
+	Failures        []ExecutionFailure       `json:"failures,omitempty"`
+	StageDurations  map[string]int64         `json:"-"`
 }

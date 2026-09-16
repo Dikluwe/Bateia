@@ -1,0 +1,58 @@
+{
+  "schema_version": "tekt-adversarial-revision-v1",
+  "step": "0069",
+  "revision": "r1",
+  "predecessor": "revisions/adversarial-seal-r0.json",
+  "reason_code": "archify_renderer_fixed_grid",
+  "hypothesis": "a binding-free receipt that observes requested stage counts, canonical rows, byte-exact labels and full identities outside node labels discriminates the r1 renderer boundary",
+  "role": "adversary",
+  "inputs": {
+    "step_sha256": "a5132750ca3486823e9503101262a1abad6a15086510132213db6c20d10b5634",
+    "contract_sha256": "702dfdfa67922055b025b911323980587a1e913b8b8d0e4d06fe32e54e602ce9",
+    "baseline_sha256": "6a188df3e1f99995362cd84a6a00a3448dee2719d6aa10734fa026fb54b41d74",
+    "budget_sha256": "7215957b7528ddbb724531582f4fc3447c0a446e6ea7f7cef2e2de2c6e665f77",
+    "contract_revision_sha256": "e95f9a394331e2b0057bbc74875225de58e98419982a4c09f0a7ed1dac68c56a"
+  },
+  "outputs": {
+    "fixtures": {
+      "path": "00_nucleo/benchmark/0069/adversarial-fixtures-r1.json",
+      "sha256": "d41f42e9cf3388a97ac0ebef8ac5c487d5299ec74cbcd09a093dae9ecd86c451"
+    },
+    "gate": {
+      "path": "04_wiring/step0069_gate/discriminatory_r1_test.go",
+      "sha256": "cafa77eb1d45972f2b8228b9be26c3bcb43a5bab0d447e3023cdf8b5d0228492"
+    },
+    "prompt": {
+      "path": "00_nucleo/prompts/04_wiring/step0069_gate/discriminatory_r1_test.md",
+      "sha256": "5b6a57db6692035fcd00f3b1447214f63d3dd8122a842de30a97b05597c0b657"
+    }
+  },
+  "r0_preserved": {
+    "fixtures_sha256": "c4321d7028442aadaed774b233120f8e44370db188bf97abbf402d4a5783817a",
+    "gate_prompt_sha256": "df2f77e4b270eef8fe054918b17f5c39d52741fa2114463a61abba29bac29703",
+    "gate_sha256": "500ec9d2d725aae9413e3602681025dbb27f9acf4a1184dc66f464dd2c03df02"
+  },
+  "classification": {
+    "preserved": 2,
+    "unknown": 3,
+    "violated": 10,
+    "valid_mutations": 10,
+    "rejected_mutations": 10,
+    "mutation_score": 1.0,
+    "required_mutation_score": 1.0,
+    "combined_r0_r1_rejected_mutations": 27,
+    "regressions": 0
+  },
+  "calibration_cost": {
+    "focused_runs": 2,
+    "full_corpus_runs": 1,
+    "permutation_orders_per_run": 20,
+    "race_full_corpus": true
+  },
+  "full_gate": {
+    "command": "GOCACHE=/tmp/bateia-step0069-r1-cache go test -race -v ./04_wiring/step0069_gate",
+    "result": "PASS"
+  },
+  "status": "ADVERSARIAL_REVISION_COMPLETE_UNSEALED",
+  "attestation": "procedural trial without physical isolation attestation; no candidate implementation read"
+}

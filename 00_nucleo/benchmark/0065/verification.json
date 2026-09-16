@@ -1,0 +1,88 @@
+{
+  "schema_version": "tekt-verification-v1",
+  "step": "0065",
+  "date": "2026-09-11",
+  "regime": "protocolo completo, segregado proceduralmente sem atestacao fisica de isolamento",
+  "seal_sha256": "6919b052ad547d108e0d7ee9f38478e4a8b2c3c35bb40fb61b37ff1a1cf57462",
+  "candidate_sha256": {
+    "01_core/domain/evidence_coalition.go": "34594a32ea97ed174237831f3bf89e00a2579bfe8fd3aeff8776db2c62d03580",
+    "01_core/usecase/evidence_coalition.go": "dc5d9929034d9801a2d56973b994b049e72eb30aeb7c3c4265bc38d01bfcefa9"
+  },
+  "oracle_sha256": {
+    "01_core/domain/evidence_coalition_test.go": "8dc8945f97ffc119f4a0b0f4ca10b6482966dcaeb80aee9b1558b6921ee71800",
+    "01_core/usecase/evidence_coalition_test.go": "dede1e9fbf04e191ef8bf44e800d37dfc89b958899e6761858d18957ae407ad0"
+  },
+  "gates": [
+    {
+      "name": "independent_contract_oracles",
+      "command": "GOCACHE=/tmp/bateia-step0065-final-gocache go test ./01_core/domain ./01_core/usecase -run 'TestEvidenceCoalition|TestAnalyzeEvidenceCoalitions' -count=1 -v",
+      "status": "PASS",
+      "calibration_revisions": 0,
+      "covered_permutations": 20,
+      "verdict_changes": 0
+    },
+    {
+      "name": "candidate_mutation_testing",
+      "receipt_sha256": "29308cde97f606ab34099b7401bb558d077fc58519a9f24f85ccc4d7d92a1f44",
+      "status": "PASS",
+      "killed": 12,
+      "total": 12,
+      "mutation_score": 1.0
+    },
+    {
+      "name": "race",
+      "command": "GOCACHE=/tmp/bateia-step0065-race-cache go test -race ./01_core/domain ./01_core/usecase -run 'TestEvidenceCoalition|TestAnalyzeEvidenceCoalitions' -count=1",
+      "status": "PASS"
+    },
+    {
+      "name": "full_regression",
+      "command": "GOCACHE=/tmp/bateia-step0065-full-unsandboxed-cache go test ./...",
+      "status": "PASS",
+      "note": "executado fora do sandbox somente para permitir listeners locais de httptest"
+    },
+    {
+      "name": "vet_l1",
+      "command": "GOCACHE=/tmp/bateia-step0065-vet-cache go vet ./01_core/...",
+      "status": "PASS"
+    },
+    {
+      "name": "package_build",
+      "command": "GOCACHE=/tmp/bateia-step0065-build-package-cache go build -o /tmp/bateia-step0065 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "crystalline_lint",
+      "command": "crystalline-lint .",
+      "status": "PASS",
+      "output": "No violations found"
+    },
+    {
+      "name": "diff_check",
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "architecture": {
+    "l1_pure": true,
+    "existing_consumers_changed": false,
+    "existing_schemas_changed": false,
+    "power_set_enumeration": false,
+    "shadow_only": true
+  },
+  "measurements": {
+    "contract_corpus_accuracy": 1.0,
+    "mutation_score": 1.0,
+    "permutation_equality": "20/20",
+    "verdict_changes": 0,
+    "inclusive_witness_boundary": 4096,
+    "operations_at_4096_witnesses": 4160,
+    "operation_budget": 8192
+  },
+  "verdict": "APPROVED_FOR_SHADOW_MEASUREMENT",
+  "limitations": [
+    "O analisador recebe papeis e OriginID declarados; nao descobre nem prova independencia causal externa.",
+    "Aprovacao limitada ao contrato, corpus e mutacoes M01-M12 congelados.",
+    "Nenhuma utilidade em repositorios reais foi medida nesta materializacao.",
+    "O comando documental que compila somente 04_wiring/main.go omite arquivos do pacote; o gate compilou o pacote 04_wiring completo."
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": "tekt-verification-v1",
+  "step": "0066",
+  "date": "2026-09-11",
+  "regime": "protocolo completo, segregado proceduralmente sem atestacao fisica de isolamento",
+  "seal_sha256": "df71568cbc1369bc9fe0325fb9b8c591969eb313d1cc172bd7dc8acc470eee21",
+  "focal_revisions": 1,
+  "candidate_sha256": {
+    "01_core/domain/idea_radar.go": "3d90f2155b40e7301c4c15c24f13a1ff3dc3916f1d0a94622699d0f4d7f5791b",
+    "01_core/usecase/idea_radar.go": "a620229c030a80cd799907170b8188f5dda6c3d7d1e52d999619890019dd50b8"
+  },
+  "oracle_sha256": {
+    "01_core/domain/idea_radar_test.go": "9821a9c35a71941df1d8fd2c53555a778edc9f9a506ec24877ce9d3fb0779063",
+    "01_core/usecase/idea_radar_test.go": "5c3ea6fb3f554931c7e1b7e86e885bb42c46739822cf5039917a1153582e0977"
+  },
+  "gates": [
+    {
+      "name": "independent_contract_and_utility_oracles",
+      "command": "GOCACHE=/tmp/bateia-step0066-final-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'TestIdeaRadar|TestAnalyzeIdeaRadar|TestExternalUtilityOracle' -count=1 -v",
+      "status": "PASS",
+      "covered_permutations": 20,
+      "verdict_changes": 0
+    },
+    {
+      "name": "candidate_mutation_testing",
+      "receipt_sha256": "a1d8bf7b3d02863f1b224f310f9048bcbf460b588c529190f4024e02c9aa59b1",
+      "status": "PASS",
+      "killed": 14,
+      "total": 14,
+      "survived": 0,
+      "mutation_score": 1.0
+    },
+    {
+      "name": "race",
+      "command": "GOCACHE=/tmp/bateia-step0066-final-cache GOTMPDIR=/tmp go test -race ./01_core/domain ./01_core/usecase -run 'TestIdeaRadar|TestAnalyzeIdeaRadar|TestExternalUtilityOracle' -count=1",
+      "status": "PASS"
+    },
+    {
+      "name": "full_regression",
+      "command": "GOCACHE=/tmp/bateia-step0066-final-cache GOTMPDIR=/tmp go test ./... -count=1",
+      "status": "PASS",
+      "note": "executado fora do sandbox somente para permitir listeners locais de httptest"
+    },
+    {
+      "name": "vet_l1",
+      "command": "GOCACHE=/tmp/bateia-step0066-final-cache GOTMPDIR=/tmp go vet ./01_core/domain ./01_core/usecase",
+      "status": "PASS"
+    },
+    {
+      "name": "package_build",
+      "command": "GOCACHE=/tmp/bateia-step0066-final-cache GOTMPDIR=/tmp go build -o /tmp/bateia-step0066 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "crystalline_lint",
+      "command": "crystalline-lint .",
+      "status": "PASS",
+      "output": "No violations found"
+    },
+    {
+      "name": "diff_check",
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "architecture": {
+    "l1_pure": true,
+    "existing_consumers_changed": false,
+    "existing_schemas_changed": false,
+    "power_set_enumeration": false,
+    "shadow_only": true
+  },
+  "measurements": {
+    "corpus_cases": 6,
+    "corpus_families": 3,
+    "best_isolated_kind": "ARCHITECTURE",
+    "best_isolated": {
+      "tp": 3,
+      "fp": 1,
+      "fn": 3,
+      "precision": 0.75,
+      "recall": 0.5,
+      "f1": 0.6
+    },
+    "radar": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 2,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "false_convergence": 0.0,
+      "contamination": 0.0
+    },
+    "f1_delta": 0.2,
+    "improved_cases": ["c02", "c05"],
+    "improved_families": ["event-recovery", "offline-sync"],
+    "utility_verdict": "OBSERVED",
+    "permutation_equality": "20/20",
+    "mutation_score": 1.0,
+    "verdict_changes": 0,
+    "maximum_observation_witness_operations": 1026,
+    "maximum_target_witness_operations": 1025,
+    "operation_budget": 4096
+  },
+  "verdict": "APPROVED_FOR_SHADOW_MEASUREMENT",
+  "limitations": [
+    "Utilidade foi observada somente no corpus sintetico congelado de seis casos e tres familias; nao foi medida em repositorios reais.",
+    "As projecoes, CandidateID, ConceptID e OriginID sao entradas estruturadas declaradas; o prototipo nao os extrai de texto nem prova independencia causal.",
+    "Aprovacao limitada ao contrato, corpus, oraculos e mutacoes M01-M14 congelados.",
+    "O radar nao chama consumidores existentes, nao altera ranking ou veredito e nao promove coalizoes para o passo 0065 sem vinculacao de evidencia."
+  ]
+}

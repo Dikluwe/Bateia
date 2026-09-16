@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/investigation_plan.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-16
  */
 package usecase
 
@@ -61,6 +61,10 @@ func investigationRequirements(idea domain.IdeaSpec) []domain.InvestigationRequi
 
 // BuildInvestigationPlan never treats query terms as proof about a candidate.
 func BuildInvestigationPlan(idea domain.IdeaSpec, snapshot domain.DiscoverySnapshot, assessments []domain.CandidateAssessment) domain.InvestigationPlan {
+	return BuildInvestigationPlanWithCatalogCoverage(idea, snapshot, assessments, domain.EvidenceCatalogCoverage{})
+}
+
+func BuildInvestigationPlanWithCatalogCoverage(idea domain.IdeaSpec, snapshot domain.DiscoverySnapshot, assessments []domain.CandidateAssessment, coverage domain.EvidenceCatalogCoverage) domain.InvestigationPlan {
 	out := domain.InvestigationPlan{SchemaVersion: "1", Requirements: investigationRequirements(idea), Searches: []domain.InvestigationSearch{}, Actions: []domain.InvestigationAction{}, StopReason: "RECORDED_SEARCH_FINISHED", Scope: "Somente candidatos, tentativas e evidências registrados; não demonstra busca global completa nem integração verificada.", TelemetryLabel: "Tempos de busca são telemetria do Bateia, não benchmarks dos candidatos."}
 	if snapshot.SchemaVersion == "" && len(snapshot.Candidates) == 0 && len(snapshot.PerExpansion) == 0 {
 		out.StopReason = "NO_CANDIDATES_IN_SCOPE"
@@ -124,7 +128,20 @@ func BuildInvestigationPlan(idea domain.IdeaSpec, snapshot domain.DiscoverySnaps
 	sort.Strings(keys)
 	for _, r := range out.Requirements {
 		if len(keys) == 0 {
-			out.Actions = append(out.Actions, domain.InvestigationAction{RequirementID: r.ID, Question: r.Question, Gap: "Nenhum candidato foi avaliado para este requisito.", Classification: "NOT_VERIFIED", Status: domain.EvidenceInconclusive, Evidence: []domain.EvidenceSource{}, NextAction: "Buscar candidatos para o requisito e registrar origem, filtros e orçamento; não concluir inexistência.", Acceptance: r.Acceptance})
+			classification := "NOT_VERIFIED"
+			gap := "Nenhum candidato foi avaliado para este requisito."
+			nextAction := "Buscar candidatos para o requisito e registrar origem, filtros e orçamento; não concluir inexistência."
+			switch investigationCoverageStatus(coverage, r.Kind, r.Text) {
+			case domain.CatalogCoverageGap:
+				classification = "CATALOG_GAP"
+				gap = "O catálogo não possui regra declarada única e segura para este requisito."
+				nextAction = "Definir uma verificação delimitada e segura antes de atribuir presença ou ausência a qualquer candidato."
+			case domain.CatalogCoverageHypothesis:
+				classification = "HYPOTHESIS"
+				gap = "O catálogo possui apenas uma hipótese sem autoridade declarada para este requisito."
+				nextAction = "Validar a hipótese e seus testemunhos antes de qualquer decisão conclusiva sobre candidatos."
+			}
+			out.Actions = append(out.Actions, domain.InvestigationAction{RequirementID: r.ID, Question: r.Question, Gap: gap, Classification: classification, Status: domain.EvidenceInconclusive, Evidence: []domain.EvidenceSource{}, NextAction: nextAction, Acceptance: r.Acceptance})
 			continue
 		}
 		for _, key := range keys {
@@ -167,6 +184,16 @@ func BuildInvestigationPlan(idea domain.IdeaSpec, snapshot domain.DiscoverySnaps
 					action.NextAction = "Examinar o conflito e suas condições; não aprovar o requisito até resolvê-lo."
 				}
 			}
+			if e.ReasonCode == "CATALOG_GAP" {
+				action.Classification = "CATALOG_GAP"
+				action.Status = domain.EvidenceInconclusive
+				action.Evidence = []domain.EvidenceSource{}
+				action.NextAction = "Definir uma verificação delimitada e segura; a cobertura do catálogo não descreve ausência no candidato."
+			}
+			if e.ReasonCode == "HYPOTHESIS_ONLY" {
+				action.Classification = "HYPOTHESIS"
+				action.NextAction = "Validar a hipótese e seus testemunhos antes de atribuir presença, ausência ou componente ao candidato."
+			}
 			if r.Kind == "preference" {
 				action.NextAction = "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida."
 			}
@@ -186,6 +213,16 @@ func BuildInvestigationPlan(idea domain.IdeaSpec, snapshot domain.DiscoverySnaps
 		}
 	}
 	return publicInvestigationPlan(out)
+}
+
+func investigationCoverageStatus(coverage domain.EvidenceCatalogCoverage, kind, requirement string) domain.CatalogCoverageStatus {
+	normalized := normalizeEvidenceText(requirement)
+	for _, entry := range coverage.Entries {
+		if entry.RequirementKind == kind && normalizeEvidenceText(entry.Requirement) == normalized {
+			return entry.Status
+		}
+	}
+	return ""
 }
 
 func expansionRequirements(idea domain.IdeaSpec, exp domain.SearchExpansion, requirements []domain.InvestigationRequirement) []string {

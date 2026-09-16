@@ -1,0 +1,29 @@
+{
+  "schema_version": "tekt-calibration-budget-v1",
+  "max_focused_revisions_per_cause": 2,
+  "max_full_corpus_runs_before_seal": 3,
+  "required_mutation_score": 1.0,
+  "required_permutation_repetitions": 20,
+  "runtime_limits": {
+    "proposals_per_source": 3,
+    "enriched_plan_expansions": 64,
+    "technical_discriminators": 2,
+    "bytes_per_discriminator": 64,
+    "bytes_per_technical_query": 256,
+    "provider_attempts_per_source_in_experiment": 4,
+    "sourcegraph_requested_matches_min": 20,
+    "sourcegraph_requested_matches_max": 200,
+    "snippets_per_repository": 32,
+    "runes_per_snippet": 240
+  },
+  "utility_gate": {
+    "minimum_recall_at_5_delta": 1.0,
+    "maximum_contamination_at_5_delta": 0.0,
+    "minimum_evidence_addressable_capabilities_delta": 1,
+    "minimum_technical_origins_for_target": 2,
+    "minimum_improved_cases": 2,
+    "minimum_improved_families": 2
+  },
+  "stop_rule": "duas revisoes consecutivas sem delta discriminatorio na mesma causa reabrem o desenho",
+  "unknown_policy": "opacidade, denominador ausente, erro, replay ausente ou budget excedido nunca contam como melhoria"
+}

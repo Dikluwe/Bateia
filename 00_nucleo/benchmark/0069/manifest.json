@@ -1,0 +1,55 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "step": "0069",
+  "protocol": "completo, ensaio procedural sem atestacao fisica de isolamento",
+  "created_before_candidate": true,
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "inputs": {
+    "step": {"path":"00_nucleo/passos/0069-exportar-radar-para-archify.md","sha256":"a5132750ca3486823e9503101262a1abad6a15086510132213db6c20d10b5634"},
+    "contract": {"path":"00_nucleo/benchmark/0069/contract.md","sha256":"702dfdfa67922055b025b911323980587a1e913b8b8d0e4d06fe32e54e602ce9"},
+    "baseline": {"path":"00_nucleo/benchmark/0069/baseline.json","sha256":"6a188df3e1f99995362cd84a6a00a3448dee2719d6aa10734fa026fb54b41d74"},
+    "budget": {"path":"00_nucleo/benchmark/0069/budget.json","sha256":"7215957b7528ddbb724531582f4fc3447c0a446e6ea7f7cef2e2de2c6e665f77"}
+  },
+  "prompts": {
+    "02_shell/report/idea_radar_archify.md": "aa0220c4442600e818defdb2d89a3c3255247eb98f6920957f8beb2dcfaf907a",
+    "02_shell/report/idea_radar_archify_test.md": "2d82bd60eeb2529dd225b7f3f40ab178100da7433db0c1ef603b810905f70f43",
+    "02_shell/cli/idea_radar_export.md": "071ec9c389ba534b6c814f0307423efe00719b2a26a5d3abe86bcb925d2db46c",
+    "02_shell/cli/idea_radar_export_test.md": "83cf74f2537858615b077b178575895034e0dd0a1bfa7f2148bfa4cc37b6de20"
+  },
+  "external_schema": {
+    "repository": "tt-a1i/archify",
+    "commit": "6db72a9aea3d0f67a6a034e41f8a5491476a11c1",
+    "diagram_type": "dataflow",
+    "schema_version": 1
+  },
+  "observables": [
+    "archify_dataflow_v1_shape",
+    "origin_projection_target_topology",
+    "canonical_observations_only",
+    "outcomes_and_probes_descriptive_only",
+    "injective_archify_ids",
+    "unknown_origin_not_coalesced",
+    "deterministic_bytes",
+    "input_immutability",
+    "unknown_and_budget_fail_closed",
+    "atomic_cli_output",
+    "no_renderer_execution"
+  ],
+  "unknown_policy": "radar ou plano UNKNOWN, inconsistencia, opacidade e budget excedido nunca geram documento parcial",
+  "roles": {
+    "intent_author": "usuario",
+    "contract_author": "agent contract_0069; somente L0, sem Go candidato",
+    "oracle_author": "agent oracle_0069; contrato e baseline, sem Go candidato",
+    "adversary": "agent adversary_0069; contrato e baseline, sem corrigir candidato",
+    "implementer": "agent implementer_0069 e refinamento focal do integrador; sem editar oraculos",
+    "verifier": "ferramentas deterministicas e integrador; sem editar entradas seladas"
+  },
+  "isolation": "autoridades segregadas proceduralmente em filesystem compartilhado; sem atestacao fisica",
+  "refinement": {
+    "id": "contract-r1",
+    "reason": "renderer Archify limita Dataflow a cinco rows por stage; schema isolado era insuficiente",
+    "old_chain_preserved_under": "00_nucleo/benchmark/0069/revisions",
+    "external_validation_profile": "standard"
+  },
+  "seal_status": "READY_FOR_R1_SEAL"
+}

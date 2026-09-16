@@ -66,3 +66,7 @@ Implementar o contrato de `00_nucleo/passos/0036-projetar-evidencias-da-consulta
 
 ## Passo 0062
 Adicionar somente ajuda para effects verify e seu recorte offline.
+
+## Passo 0070
+Encaminhar `algorithm history analyze` para a casca offline definida em
+`00_nucleo/prompts/02_shell/cli/algorithm_history.md`, sem lógica histórica no dispatcher.

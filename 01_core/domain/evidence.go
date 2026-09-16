@@ -2,10 +2,12 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/evidence.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-09-16
  */
 
 package domain
+
+import "encoding/json"
 
 type EvidenceStatus string
 
@@ -61,6 +63,7 @@ type CapabilityEvidence struct {
 	Sources     []EvidenceSource `json:"sources"`
 	Confidence  float64          `json:"confidence"`
 	Explanation string           `json:"explanation"`
+	ReasonCode  string           `json:"reason_code,omitempty"`
 }
 
 type ConstraintEvidence struct {
@@ -182,8 +185,62 @@ type CapabilityPattern struct {
 	Patterns []string     `json:"patterns"`
 }
 
+type EvidenceRuleBasis string
+
+const (
+	EvidenceRuleDeclared   EvidenceRuleBasis = "DECLARED"
+	EvidenceRuleHypothesis EvidenceRuleBasis = "HYPOTHESIS"
+)
+
+type CatalogCoverageStatus string
+
+const (
+	CatalogCoverageCovered    CatalogCoverageStatus = "COVERED"
+	CatalogCoverageGap        CatalogCoverageStatus = "CATALOG_GAP"
+	CatalogCoverageHypothesis CatalogCoverageStatus = "HYPOTHESIS"
+)
+
+type CatalogCoverageEntry struct {
+	RequirementKind string                `json:"requirement_kind"`
+	Requirement     string                `json:"requirement"`
+	Status          CatalogCoverageStatus `json:"status"`
+	RuleID          string                `json:"rule_id,omitempty"`
+	RuleBasis       EvidenceRuleBasis     `json:"rule_basis,omitempty"`
+	ReasonCode      string                `json:"reason_code"`
+}
+
+type EvidenceCatalogCoverage struct {
+	SchemaVersion string                 `json:"schema_version"`
+	RulesVersion  string                 `json:"rules_version"`
+	RulesHash     string                 `json:"rules_hash"`
+	Entries       []CatalogCoverageEntry `json:"entries"`
+}
+
+func (coverage EvidenceCatalogCoverage) MarshalJSON() ([]byte, error) {
+	type alias EvidenceCatalogCoverage
+	copy := alias(coverage)
+	if copy.Entries == nil {
+		copy.Entries = []CatalogCoverageEntry{}
+	}
+	return json.Marshal(copy)
+}
+
+func (coverage *EvidenceCatalogCoverage) UnmarshalJSON(data []byte) error {
+	type alias EvidenceCatalogCoverage
+	var decoded alias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	if decoded.Entries == nil {
+		decoded.Entries = []CatalogCoverageEntry{}
+	}
+	*coverage = EvidenceCatalogCoverage(decoded)
+	return nil
+}
+
 type CapabilityRule struct {
 	ID                  string              `json:"id"`
+	Basis               EvidenceRuleBasis   `json:"basis,omitempty"`
 	Family              string              `json:"family,omitempty"`
 	Provenance          string              `json:"provenance,omitempty"`
 	TargetHints         []string            `json:"target_hints,omitempty"`
@@ -202,10 +259,11 @@ type CapabilityRuleCatalog struct {
 }
 
 type AssessmentReport struct {
-	SchemaVersion string                `json:"schema_version"`
-	RulesVersion  string                `json:"rules_version"`
-	RulesHash     string                `json:"rules_hash"`
-	Assessments   []CandidateAssessment `json:"assessments"`
+	SchemaVersion   string                  `json:"schema_version"`
+	RulesVersion    string                  `json:"rules_version"`
+	RulesHash       string                  `json:"rules_hash"`
+	CatalogCoverage EvidenceCatalogCoverage `json:"catalog_coverage"`
+	Assessments     []CandidateAssessment   `json:"assessments"`
 }
 
 type EvidenceJudgment struct {

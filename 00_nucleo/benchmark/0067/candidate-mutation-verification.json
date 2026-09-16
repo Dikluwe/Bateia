@@ -1,0 +1,98 @@
+{
+  "schema_version": "tekt.step0067.candidate-mutation-verification.v1",
+  "step": "0067",
+  "executed_at_utc": "2026-09-11T19:56:52Z",
+  "phase": "POST_SEAL_CANDIDATE_BINDING",
+  "result": "PASS",
+  "authority": "ADVERSARIO_MUTATION_VERIFIER_0067",
+  "isolation": {
+    "mode": "one filesystem copy per mutant under mktemp /tmp",
+    "repository_candidate_or_oracles_modified": false,
+    "physical_isolation_attested": false,
+    "temporary_root": "/tmp/bateia-step0067-mutations.4MippQ"
+  },
+  "sealed_binding": {
+    "seal_sha256": "8865fe2b7dd6998a58826ab9dc9e0fc131f00f88573173ab7c59366e1a731104",
+    "candidate": {
+      "01_core/domain/idea_radar_plan.go": "d9cb64f447f48ee3d3cef75b09b637ca99ee614b87f408aba7339e8c3c3c853b",
+      "01_core/usecase/idea_radar_plan.go": "15d25edfbc66965ee55f524f08a0ec86347a4b5a1ec260aabd757ee8aad4dd53"
+    },
+    "oracles": {
+      "01_core/domain/idea_radar_plan_test.go": "f057b81461f1dd6f9174146271d5793280e1a6986e61cecf0561bbc4be2099b1",
+      "01_core/usecase/idea_radar_plan_test.go": "f15488d8e669176184aee380b8e08b47a70262607a37d0cb815d6b4444bd458d"
+    },
+    "post_execution_hash_check": "UNCHANGED"
+  },
+  "commands": {
+    "baseline_and_each_mutant": "env GOCACHE=/tmp/bateia-step0067-mutation-gocache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'TestIdeaRadarPlan|TestPlanIdeaRadar' -count=1",
+    "sealed_candidate_focal": "env GOCACHE=/tmp/bateia-step0067-postseal-gocache GOTMPDIR=/tmp /usr/bin/time -f 'wall_seconds=%e\\nmax_rss_kb=%M\\nexit_status=%x' go test ./01_core/domain ./01_core/usecase -run 'TestIdeaRadarPlan|TestPlanIdeaRadar' -count=1",
+    "utility_discriminants": "env GOCACHE=/tmp/bateia-step0067-postseal-gocache GOTMPDIR=/tmp /usr/bin/time -f 'wall_seconds=%e\\nmax_rss_kb=%M\\nexit_status=%x' go test ./01_core/usecase -run 'TestPlanIdeaRadarProbesFrozenCorpus|TestPlanIdeaRadarExternalUtilityVerdicts' -count=1 -v"
+  },
+  "baseline": {
+    "result": "PASS",
+    "domain_output": "ok bateia/01_core/domain 0.006s",
+    "usecase_output": "ok bateia/01_core/usecase 0.021s",
+    "wall_seconds": 12.61,
+    "max_rss_kb": 315280,
+    "exit_status": 0
+  },
+  "mutations": [
+    {"id":"M01","operator":"replace RESOLVE_CONFLICT with ADD_PERSPECTIVE while conflict is active","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c06","wall_seconds":2.089969636},
+    {"id":"M02","operator":"iterate conflict observations twice and emit redundant probes","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c06","wall_seconds":2.501813859},
+    {"id":"M03","operator":"replace RESOLVE_AMBIGUITY with lower-frontier ADD_PERSPECTIVE","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c07","wall_seconds":2.143732509},
+    {"id":"M04","operator":"do not subtract perspective probes from the origin deficit","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":2.268683993},
+    {"id":"M05","operator":"select a present projection kind instead of the first missing kind","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":2.068788254},
+    {"id":"M06","operator":"sort unknown-origin observation IDs descending and select the non-minimum ID","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c04","wall_seconds":2.101906052},
+    {"id":"M07","operator":"weaken DISTINCT_RECORDED to RECORDED","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":2.077162798},
+    {"id":"M08","operator":"emit two BIND_EVIDENCE probes for a convergent target","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c08","wall_seconds":2.075493454},
+    {"id":"M09","operator":"add public ready_for_0065 promotion field to the probe wire contract","result":"KILLED","exit_status":1,"killed_by":"TestIdeaRadarPlanPublicWireContract","wall_seconds":2.051105497},
+    {"id":"M10","operator":"return a text-inferred plan status when free-text terms are present","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesDoesNotInferTextAndDeduplicatesSemantics","wall_seconds":2.078177835},
+    {"id":"M11","operator":"make canonical probe sorting conditional on input observation order","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c05","wall_seconds":3.394186963},
+    {"id":"M12","operator":"bypass atomic propagation when the 0066 radar is UNKNOWN","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c10","wall_seconds":2.205147250},
+    {"id":"M13","operator":"turn radar budget_exceeded into COMPLETE/planned","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c10","wall_seconds":0.570657299},
+    {"id":"M14","operator":"mutate the first reachable projection ID during planning","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":0.629654911},
+    {"id":"M15","operator":"report every target plan as CONVERGENT, including C09","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":0.584808563},
+    {"id":"M16","operator":"set VerdictChanges to one in the shadow planner","result":"KILLED","exit_status":1,"killed_by":"TestPlanIdeaRadarProbesFrozenCorpus/c01","wall_seconds":0.468124326}
+  ],
+  "mutation_summary": {
+    "valid_mutations": 16,
+    "killed": 16,
+    "survived": 0,
+    "unknown": 0,
+    "mutation_score": 1.0,
+    "required_score": 1.0,
+    "final_mutant_test_wall_seconds": 29.309413199
+  },
+  "operator_calibration": {
+    "discarded_equivalent_operators": 1,
+    "detail": "The first M11 draft reversed a frontier immediately before unconditional canonical sorting and was observationally equivalent. It was discarded, not counted in the denominator, and replaced by the order-dependent conditional-sort operator above.",
+    "discarded_operator_wall_seconds": 2.185897486,
+    "total_calibration_wall_seconds_including_temp_baseline": 38.999803016,
+    "candidate_or_oracle_revision_caused": false
+  },
+  "utility_discriminants": {
+    "result": "PASS",
+    "eligible_nonconvergent_targets": 8,
+    "planner_blockers_resolved": 8,
+    "naive_blockers_resolved": 8,
+    "planner_resolution_rate": 1.0,
+    "naive_resolution_rate": 1.0,
+    "planner_convergent": 7,
+    "naive_convergent": 7,
+    "planner_probes": 11,
+    "naive_probes": 15,
+    "effort_reduction": 0.26666666666666666,
+    "improved_cases": ["c01", "c02", "c04"],
+    "improved_families": ["coverage-gap", "provenance-gap"],
+    "c09_post_outcome": "INSUFFICIENT_PERSPECTIVES",
+    "c09_false_convergence_promise": false,
+    "verdicts_discriminated": ["OBSERVED", "NOT_OBSERVED", "INCONCLUSIVE"],
+    "verdict": "OBSERVED",
+    "scope": "frozen synthetic corpus and benchmark-only successful-response simulation",
+    "wall_seconds": 0.56,
+    "max_rss_kb": 118764,
+    "exit_status": 0
+  },
+  "attestation": "16/16 MUTANTS KILLED; NO SURVIVORS; SEALED HASHES UNCHANGED",
+  "limitation": "Mutation testing establishes discrimination of the frozen structural contract, not real-world probe effectiveness, human cost, or physical author isolation."
+}

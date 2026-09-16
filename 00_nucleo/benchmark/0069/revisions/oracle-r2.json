@@ -1,0 +1,63 @@
+{
+  "schema_version": "tekt-oracle-revision-v1",
+  "step": "0069",
+  "revision": "oracle-r2",
+  "predecessor": "oracle-r1",
+  "role": "oracle_author",
+  "protocol": "completo, ensaio procedural sem atestacao fisica de isolamento",
+  "contract_inputs": {
+    "step_sha256": "a5132750ca3486823e9503101262a1abad6a15086510132213db6c20d10b5634",
+    "contract_sha256": "702dfdfa67922055b025b911323980587a1e913b8b8d0e4d06fe32e54e602ce9",
+    "budget_sha256": "7215957b7528ddbb724531582f4fc3447c0a446e6ea7f7cef2e2de2c6e665f77",
+    "baseline_sha256": "6a188df3e1f99995362cd84a6a00a3448dee2719d6aa10734fa026fb54b41d74"
+  },
+  "input_oracle": {
+    "path": "00_nucleo/benchmark/0069/revisions/oracle-r1/idea_radar_archify_test.go.txt",
+    "sha256": "02cd41c80c5b6bfef9095661eaee205afc6ab99830a910a605f2f63c5c49937a"
+  },
+  "output_oracle": {
+    "path": "02_shell/report/idea_radar_archify_test.go",
+    "sha256": "8bf855a014b710ed8a574a2c5f7beb03f6bc888203bedbfb1ef269538583956d"
+  },
+  "hypothesis": "A fronteira 5/5/5 e as falhas fechadas em cada sexta perspectiva, origem ou target discriminam renderabilidade; labels ASCII de ate 10 bytes pela funcao short preservam layout sem substituir identidades integrais nos IDs, flows e cards.",
+  "reason_code": "renderer_fixed_rows_and_node_width",
+  "delta": {
+    "cases_added": [
+      "5_origins_5_perspectives_5_targets_preserved",
+      "6_perspectives_render_budget_exceeded",
+      "6_unique_origins_render_budget_exceeded",
+      "6_targets_render_budget_exceeded",
+      "node_label_short_ascii_10_bytes",
+      "full_identity_in_typed_hex_ids_flow_labels_and_cards"
+    ],
+    "cases_corrected_expected": 0,
+    "cases_regressed_expected": 0,
+    "unchanged_observables": [
+      "archify_schema",
+      "topology",
+      "canonical_deduplication",
+      "unknown_origin",
+      "outcomes_and_probes_in_cards",
+      "deterministic_bytes",
+      "input_immutability",
+      "unknown_fail_closed",
+      "cli_safety"
+    ]
+  },
+  "classification": {
+    "positives_preserved": "not_executed_by_oracle",
+    "negatives_violated": "not_executed_by_oracle",
+    "opaques_unknown": "not_executed_by_oracle",
+    "after": "pending_integrator_focused_gate"
+  },
+  "cost": {
+    "focused_revisions_this_cause": 1,
+    "full_corpus_runs": 0,
+    "commands": [
+      "gofmt -w 02_shell/report/idea_radar_archify_test.go",
+      "git diff --check -- scoped_artifacts"
+    ]
+  },
+  "candidate_read": false,
+  "candidate_test_executed": false
+}

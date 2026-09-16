@@ -1,0 +1,32 @@
+{
+  "schema_version": "tekt-verification-v1",
+  "step": "0069",
+  "verified_at": "2026-09-12",
+  "seal_sha256": "fe995dce314d6cddd0a8b8384e1b729f1e42daf87c200922df91611f067a2f44",
+  "verdict": "PASS_WITH_NONBLOCKING_VISUAL_WARNINGS",
+  "gates": [
+    {"name":"report-race","command":"go test -race -count=1 ./02_shell/report","status":"pass"},
+    {"name":"cli-race","command":"go test -race -count=1 ./02_shell/cli","status":"pass"},
+    {"name":"adversarial-race","command":"go test -race -count=2 ./04_wiring/step0069_gate","status":"pass","rejected_mutations":27,"valid_mutations":27,"permutations":20},
+    {"name":"full-suite","command":"go test -count=1 ./...","status":"pass"},
+    {"name":"vet","command":"go vet ./02_shell/report ./02_shell/cli ./04_wiring","status":"pass"},
+    {"name":"build","command":"go build -o /tmp/bateia-step0069-bin ./04_wiring","status":"pass"},
+    {"name":"diff-check","command":"git diff --check","status":"pass"},
+    {"name":"crystalline-lint","command":"crystalline-lint .","status":"pass_with_preexisting_warning","warning":"orphan V7 prompt 00_nucleo/prompts/03_infra/lexical/vocabulary.md"}
+  ],
+  "archify": {
+    "repository":"tt-a1i/archify",
+    "commit":"6db72a9aea3d0f67a6a034e41f8a5491476a11c1",
+    "schema_version":1,
+    "diagram_type":"dataflow",
+    "artifact_checks":{"passed":9,"total":9},
+    "composition":{"profile":"standard","status":"pass","errors":0,"warnings":5,"label_route_clearance":4,"ambiguous_corridors":1},
+    "browser":{"status":"pass","viewports":["1440x900","1600x1000","1920x1080","2048x1320"],"themes":["light","dark"],"overflow":false},
+    "human_inspection":{"status":"functional_pass","limitations":["unused horizontal canvas area","dense convergent routes"]}
+  },
+  "limitations": [
+    "at most five origins, five perspectives and five targets per export",
+    "standard profile only; showcase quality is not claimed",
+    "procedural segregation used a shared filesystem; physical isolation is not attested"
+  ]
+}

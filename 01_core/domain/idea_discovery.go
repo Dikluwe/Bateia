@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/idea_discovery.md
  * @layer L1
- * @updated 2026-09-08
+ * @updated 2026-09-11
  */
 
 package domain
@@ -10,17 +10,18 @@ package domain
 import "time"
 
 type DiscoveryRequest struct {
-	RequirementIDs     []string      `json:"requirement_ids,omitempty"`
-	ExpansionID        string        `json:"expansion_id"`
-	Query              string        `json:"query"`
-	Discriminators     []string      `json:"discriminators,omitempty"`
-	RepositoryScope    string        `json:"repository_scope,omitempty"`
-	Language           string        `json:"language,omitempty"`
-	SearchLocale       string        `json:"search_locale,omitempty"`
-	RegionalProposalID string        `json:"regional_proposal_id,omitempty"`
-	MaxResults         int           `json:"max_results"`
-	AttemptTimeout     time.Duration `json:"attempt_timeout,omitempty"`
-	MaxAttempts        int           `json:"max_attempts,omitempty"`
+	RequirementIDs     []string             `json:"requirement_ids,omitempty"`
+	Derivation         *ExpansionDerivation `json:"derivation,omitempty"`
+	ExpansionID        string               `json:"expansion_id"`
+	Query              string               `json:"query"`
+	Discriminators     []string             `json:"discriminators,omitempty"`
+	RepositoryScope    string               `json:"repository_scope,omitempty"`
+	Language           string               `json:"language,omitempty"`
+	SearchLocale       string               `json:"search_locale,omitempty"`
+	RegionalProposalID string               `json:"regional_proposal_id,omitempty"`
+	MaxResults         int                  `json:"max_results"`
+	AttemptTimeout     time.Duration        `json:"attempt_timeout,omitempty"`
+	MaxAttempts        int                  `json:"max_attempts,omitempty"`
 }
 
 type ProviderAttempt struct {

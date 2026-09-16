@@ -1,0 +1,90 @@
+{
+  "schema_version": "tekt.step0070.adversarial-seal.v1",
+  "step": "0070",
+  "sealed_at_utc": "2026-09-12T20:27:34Z",
+  "phase": "PRE_CANDIDATE",
+  "regime": "protocolo completo; ensaio procedural em filesystem compartilhado; sem atestacao fisica de isolamento",
+  "authority": "VERIFICADOR_INDEPENDENTE_GATE_DISCRIMINATORIO_0070",
+  "manifest_sha256": "8b73cff17faa647c3d76a920a49322d2c7c2e0cd13460638302fb97f94dd6bcf",
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "frozen_inputs": {
+    "00_nucleo/passos/0070-reconstruir-historia-de-algoritmos.md": "3d8b7c273ad0eeb05538347de5ac01d5beabe61aeb3336795b87ff861434840d",
+    "00_nucleo/benchmark/0070/contract.md": "a9ec07e8455731ccc3eca360536e8eb78c4f0cb0a306d793a0cb088a9f4f6035",
+    "00_nucleo/benchmark/0070/baseline.json": "2483eb834ab4ce22e2eba04505607fb756ed5f862734d02968fe3b84b94d7831",
+    "00_nucleo/benchmark/0070/budget.json": "9b869ad5f2d51e7f90a27595e203455ab22b17a5bc6ad905c04101e183983e8f",
+    "00_nucleo/benchmark/0070/README.md": "0240d6bd63234dc95e8a1879aebfcbac9a288a82bce6be3aed5f2cffdf612881",
+    "00_nucleo/benchmark/0070/manifest.json": "8b73cff17faa647c3d76a920a49322d2c7c2e0cd13460638302fb97f94dd6bcf",
+    "00_nucleo/prompts/01_core/domain/algorithm_history.md": "3659986a186f6b6586b5b3fa7099bc1531c047ad2261b0d0d0c3ea012218e96a",
+    "00_nucleo/prompts/01_core/usecase/algorithm_history.md": "803918a000c69237449c1d2470330886a46090bcc10db67264cb2c5bb829665c",
+    "00_nucleo/prompts/01_core/usecase/algorithm_history_test.md": "1bd9d7ab1df9b6184a30d3b26de88e56281572fc01f48eddf45f72278c78bd54",
+    "00_nucleo/prompts/02_shell/cli/algorithm_history.md": "7e679722dfd087018d4542b90940adfd1f8819d54cd22e8d5a6f240506f4c47a",
+    "00_nucleo/prompts/02_shell/cli/algorithm_history_test.md": "d0fc47cd8a20fdc085d18a7e13d44614b1b7500f173ac3215b9c115afd9ef88a",
+    "01_core/usecase/algorithm_history_test.go": "5e7a12dd885493f97cc49209c3df368ab5537d5e0664daffa9d915cd825b48ef",
+    "02_shell/cli/algorithm_history_test.go": "3f7fe68f28700421e906ef289b67410119cee26a61c30cc97c81f04fb464205d",
+    "00_nucleo/benchmark/0070/adversarial-fixtures.json": "953a631d961a2b46a63a418535271c3e345f09ed6a6274f74279f1169e87b008",
+    "00_nucleo/prompts/04_wiring/step0070_gate/discriminatory_test.md": "5c2118770c6881ae05eadd0148aa4dcc8d9effdced3c08d91a127339c877e104",
+    "04_wiring/step0070_gate/discriminatory_test.go": "72987f1af94b01c67c3f254e9ae89d4ef965dcbae51a5d9b414a47b03b0057b0"
+  },
+  "commands": [
+    {
+      "command": "python3 -c 'import json,sys; [json.load(open(path, encoding=\"utf-8\")) for path in sys.argv[1:]]; print(\"JSON_OK\", len(sys.argv)-1)' 00_nucleo/benchmark/0070/manifest.json 00_nucleo/benchmark/0070/baseline.json 00_nucleo/benchmark/0070/budget.json 00_nucleo/benchmark/0070/adversarial-fixtures.json",
+      "result": "PASS: JSON_OK 4"
+    },
+    {
+      "command": "sha256sum 00_nucleo/passos/0070-reconstruir-historia-de-algoritmos.md 00_nucleo/benchmark/0070/contract.md 00_nucleo/benchmark/0070/baseline.json 00_nucleo/benchmark/0070/budget.json 00_nucleo/benchmark/0070/README.md 00_nucleo/benchmark/0070/manifest.json 00_nucleo/benchmark/0070/adversarial-fixtures.json 00_nucleo/prompts/04_wiring/step0070_gate/discriminatory_test.md 04_wiring/step0070_gate/discriminatory_test.go 01_core/usecase/algorithm_history_test.go 02_shell/cli/algorithm_history_test.go 00_nucleo/prompts/01_core/domain/algorithm_history.md 00_nucleo/prompts/01_core/usecase/algorithm_history.md 00_nucleo/prompts/01_core/usecase/algorithm_history_test.md 00_nucleo/prompts/02_shell/cli/algorithm_history.md 00_nucleo/prompts/02_shell/cli/algorithm_history_test.md",
+      "result": "PASS: todos os hashes recomputados coincidem com frozen_inputs e com os bindings do manifesto"
+    },
+    {
+      "command": "git rev-parse HEAD; test ! -e 01_core/domain/algorithm_history.go; test ! -e 01_core/usecase/algorithm_history.go; test ! -e 02_shell/cli/algorithm_history.go",
+      "result": "PASS: base_commit coincide e candidata ausente"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-step0070-gate-cache GOTMPDIR=/tmp go test -count=2 -v ./04_wiring/step0070_gate",
+      "result": "PASS: TestStep0070DiscriminatoryContract passou 2/2"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-step0070-gate-cache GOTMPDIR=/tmp go list -deps -test ./04_wiring/step0070_gate",
+      "result": "PASS: somente standard library e bateia/04_wiring/step0070_gate; nenhuma dependencia L1, L2 ou L3"
+    },
+    {
+      "command": "rg -n 'bateia/(01_core|02_shell|03_infra)|AnalyzeAlgorithmHistory|RunAlgorithmHistoryCommand' 04_wiring/step0070_gate/discriminatory_test.go",
+      "result": "PASS: exit 1 sem correspondencias, confirmando binding-free em relacao a candidata"
+    }
+  ],
+  "gate": {
+    "binding_free": true,
+    "created_before_candidate": true,
+    "controls_preserved": 3,
+    "controls_total": 3,
+    "opaque_unknown": 3,
+    "opaque_total": 3,
+    "valid_mutations": 12,
+    "rejected_mutations": 12,
+    "mutation_score": 1.0,
+    "repetitions": 2,
+    "distinct_orders": 20,
+    "classification_evaluations": 720,
+    "external_processes": 0
+  },
+  "capabilities": {
+    "read_allowlist_exercised": [
+      ".agents/AGENTS.md",
+      "skill tekt-materializacao-segregada e referencias completas",
+      "passo, contrato, baseline, budget, README, manifesto e prompts L0 0070",
+      "fixtures, gate binding-free e dois oraculos independentes 0070",
+      "estrutura e hashes publicos pre-candidata"
+    ],
+    "write_allowlist_exercised": [
+      "00_nucleo/benchmark/0070/adversarial-seal.json"
+    ],
+    "candidate_0070_read": false,
+    "candidate_0070_executed": false,
+    "verified_artifact_modified": false,
+    "oracle_modified": false,
+    "gate_modified": false,
+    "production_modified": false
+  },
+  "verdict": "PRE_CANDIDATE_DISCRIMINATORY_CONTRACT_SEALED",
+  "status": "SEALED_FOR_PRE_CANDIDATE_MATERIALIZATION",
+  "limitation": "Segregacao e isolamento foram exercidos e registrados apenas proceduralmente em filesystem compartilhado. O selo atesta hashes, poder discriminatorio binding-free e ordem causal declarada; nao atesta isolamento fisico, verdade historica geral nem conformidade de candidata futura. Qualquer alteracao de entrada protegida invalida este selo."
+}

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_plan.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-09-12
  */
 
 package cli
@@ -29,7 +29,7 @@ func RunIdeaCommandWithWeb(args []string, stdout io.Writer, semantic usecase.Sem
 
 func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, webProvider domain.ObservableWebSearch) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea <plan|expand|evaluate> [opções]")
+		return fmt.Errorf("uso: bateia idea <plan|expand|evaluate|radar> [opções]")
 	}
 	switch args[0] {
 	case "plan":
@@ -64,8 +64,10 @@ func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticEx
 		return runIdeaWeb(args[1:], stdout, webProvider)
 	case "judge":
 		return RunAssistedJudgmentCommand(args[1:], stdout)
+	case "radar":
+		return RunIdeaRadarExportCommand(args[1:], stdout)
 	default:
-		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia ou katamari", args[0])
+		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia, katamari ou radar", args[0])
 	}
 }
 

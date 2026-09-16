@@ -1,0 +1,31 @@
+{
+  "schema_version": "idea-radar-archify-adversarial-v1",
+  "step": "0069",
+  "fixture_model": "binding-free observable receipt mutations over a canonical complete export",
+  "required_mutation_score": 1.0,
+  "permutation_repetitions": 20,
+  "cases": [
+    {"id":"P01","family":"control","operation":"identity","expected":"Preserved","witness":"complete canonical export"},
+    {"id":"P02","family":"control","operation":"nil_empty_equivalent","expected":"Preserved","witness":"nil and empty optional text retain canonical bytes"},
+    {"id":"U01","family":"opaque","operation":"radar_unknown_no_output","expected":"Unknown","witness":"public authority returned UNKNOWN without a partial document"},
+    {"id":"U02","family":"opaque","operation":"opaque_schema_no_output","expected":"Unknown","witness":"unsupported input schema produced no document"},
+    {"id":"U03","family":"opaque","operation":"budget_exceeded_no_output","expected":"Unknown","witness":"budget exhaustion produced no document"},
+    {"id":"M01","family":"invented-relation","operation":"add_target_relation","expected":"Violated","witness":"target-to-target flow is not authorized"},
+    {"id":"M02","family":"probe-flow","operation":"add_probe_flow","expected":"Violated","witness":"probe was promoted to a flow"},
+    {"id":"M03","family":"unknown-origin-coalesced","operation":"coalesce_unknown_origins","expected":"Violated","witness":"two unknown projections share one placeholder"},
+    {"id":"M04","family":"unknown-origin-promoted","operation":"promote_unknown_origin","expected":"Violated","witness":"unknown placeholder is represented as a recorded physical origin"},
+    {"id":"M05","family":"lossy-id-sanitization","operation":"collide_sanitized_ids","expected":"Violated","witness":"distinct UTF-8 identities collide after lossy sanitization"},
+    {"id":"M06","family":"order","operation":"order_dependent_bytes","expected":"Violated","witness":"one equivalent permutation changes serialized bytes"},
+    {"id":"M07","family":"duplicates","operation":"retain_duplicate_flow","expected":"Violated","witness":"semantic duplicate survives in output"},
+    {"id":"M08","family":"partial-unknown","operation":"radar_unknown_partial","expected":"Violated","witness":"radar UNKNOWN still emits a partial document"},
+    {"id":"M09","family":"invalid-id","operation":"invalid_archify_id","expected":"Violated","witness":"node ID violates the public Archify pattern"},
+    {"id":"M10","family":"stance","operation":"swap_observation_stance","expected":"Violated","witness":"conflict observation is emitted as support"},
+    {"id":"M11","family":"flow-loss","operation":"drop_observation_flow","expected":"Violated","witness":"canonical observation flow is absent"},
+    {"id":"M12","family":"wrong-target","operation":"redirect_observation_target","expected":"Violated","witness":"observation terminates at a different target"},
+    {"id":"M13","family":"card-loss","operation":"drop_target_card","expected":"Violated","witness":"one target card is absent"},
+    {"id":"M14","family":"probe-loss","operation":"drop_probe_text","expected":"Violated","witness":"planned probe is absent from its target card"},
+    {"id":"M15","family":"input-mutation","operation":"mutate_input_digest","expected":"Violated","witness":"reachable input state changes during export"},
+    {"id":"M16","family":"limit","operation":"overflow_with_partial","expected":"Violated","witness":"derived limit is exceeded while output is emitted"},
+    {"id":"M17","family":"atomicity","operation":"non_atomic_receipt","expected":"Violated","witness":"destination is truncated before successful atomic rename"}
+  ]
+}

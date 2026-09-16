@@ -1,0 +1,109 @@
+{
+  "schema_version": "tekt-verification-v1",
+  "step": "0068",
+  "date": "2026-09-11",
+  "regime": "protocolo completo, segregado proceduralmente sem atestacao fisica de isolamento",
+  "seal_sha256": "9e5559d1176547cc3c61e3d3b123dcf3bed4d687f1d92569937b0f875a5c33e1",
+  "manifest_sha256": "8a5b00d13efaba7ae9a4f542d228092de5b97c14e7e4c0a3866e103a180e521b",
+  "candidate_focal_revisions": 1,
+  "candidate_revision_reason": "preservar EffectiveQuery na uniao, falhar fechado no overflow e impedir derivacao opaca no caminho legado",
+  "editorial_revisions": [
+    "0068-r1-test-prompt-bijection: prompts proprietarios exigidos por crystalline-lint V15; nenhuma logica de teste mudou"
+  ],
+  "candidate_sha256": {
+    "01_core/domain/idea_discovery.go": "38d3e09309c7e09b135cd61a481a22b4e9a35306d581b77a78f3b8f45f80f846",
+    "01_core/usecase/idea_discovery.go": "f8ba302ae29515cbcb9609e86e5c4b5d67d83706974b448de87bda10d53eb7b1",
+    "03_infra/lexical/expander.go": "d43aa4f9c3af84f0c85f8a2fd22a9767c260a8fcecb038efca19ff2708622533",
+    "03_infra/lexical/vocabulary.json": "7807f97a0fdd8abcda476f6d848fa5cbcf426f233f9a0e848efc711ead3442d9",
+    "03_infra/sourcegraph/observable_discovery.go": "a0cbcfbb03050a17964d01f5ec55638916940378f26a8e617cfb833d300416bc",
+    "04_wiring/main.go": "77b33b7ed6bdc41448773333b6e6a19c0d422b13bcdc2730d21a3a3f38a94a11"
+  },
+  "gates": [
+    {
+      "name": "independent_oracles",
+      "command": "GOCACHE=/tmp/bateia-step0068-final-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase ./03_infra/lexical ./03_infra/sourcegraph -run 'Test.*0068|TestTechnical|TestRobustPredicates' -count=1 -v",
+      "status": "PASS",
+      "network": false,
+      "localhost_httptest": true,
+      "permutations": "20/20"
+    },
+    {
+      "name": "candidate_mutation_testing",
+      "receipt_sha256": "f3215bf3e145844d0796fa98962bc80ebd7f8b556a982db120d16b0fab0bc1de",
+      "status": "PASS",
+      "killed": 16,
+      "total": 16,
+      "survived": 0,
+      "mutation_score": 1.0
+    },
+    {
+      "name": "race",
+      "command": "GOCACHE=/tmp/bateia-step0068-final-cache GOTMPDIR=/tmp go test -race ./01_core/domain ./01_core/usecase ./03_infra/lexical ./03_infra/sourcegraph -run 'Test.*0068|TestTechnical|TestRobustPredicates' -count=1",
+      "status": "PASS"
+    },
+    {
+      "name": "full_regression",
+      "command": "GOCACHE=/tmp/bateia-step0068-final-cache GOTMPDIR=/tmp go test ./... -count=1",
+      "status": "PASS",
+      "note": "executado fora do sandbox somente para permitir listeners localhost de httptest"
+    },
+    {
+      "name": "vet_touched_packages",
+      "command": "GOCACHE=/tmp/bateia-step0068-final-cache GOTMPDIR=/tmp go vet ./01_core/domain ./01_core/usecase ./03_infra/lexical ./03_infra/sourcegraph ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "package_build",
+      "command": "GOCACHE=/tmp/bateia-step0068-final-cache GOTMPDIR=/tmp go build -o /tmp/bateia-step0068 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "crystalline_lint",
+      "command": "crystalline-lint .",
+      "status": "PASS_WITH_WARNING",
+      "warning": "prompt vocabulary.md documenta asset JSON e nao possui consumer Go"
+    },
+    {
+      "name": "diff_check",
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "translation": {
+    "source": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+    "canonical_english": "robust geometric orientation and in-circle predicates for nearly degenerate cases",
+    "short_queries": ["orient2d incircle", "Shewchuk exact predicates"],
+    "scope": "finite_catalog_not_general_translation"
+  },
+  "measurements": {
+    "baseline_recall_at_5": 0.0,
+    "candidate_recall_at_5": 1.0,
+    "baseline_contamination_at_5": 1.0,
+    "candidate_contamination_at_5": 0.5,
+    "baseline_evidence_addressable_capabilities": 0,
+    "candidate_evidence_addressable_capabilities": 1,
+    "baseline_provider_attempts": 1,
+    "candidate_provider_attempts": 4,
+    "technical_origins_for_target": 2,
+    "utility_verdict": "OBSERVED_ON_FROZEN_COUNTERFACTUAL",
+    "mutation_score": 1.0
+  },
+  "architecture": {
+    "original_phrase_preserved": true,
+    "general_translation_claimed": false,
+    "technical_route_fail_closed": true,
+    "generic_fallback_generated": false,
+    "same_file_discriminator_admission": true,
+    "all_expansions_executed": true,
+    "candidate_origins_preserved": true,
+    "radar_0066_0067_changed": false
+  },
+  "verdict": "APPROVED_FOR_LIVE_SHADOW_MEASUREMENT",
+  "limitations": [
+    "O ganho foi observado em contrafactual offline; nenhuma nova consulta publica ao Sourcegraph foi executada neste passo.",
+    "O catalogo traduz uma frase especifica e nao oferece traducao semantica geral.",
+    "Dois discriminadores no mesmo arquivo tornam a evidencia enderecavel, mas nao comprovam robustez numerica, desempenho, licenca ou adequacao ao Coin.",
+    "A nova rota aumenta o custo controlado de uma para quatro tentativas por capacidade de origem.",
+    "A segregacao foi procedural em filesystem compartilhado, sem atestacao fisica de isolamento."
+  ]
+}

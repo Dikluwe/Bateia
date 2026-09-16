@@ -1,0 +1,86 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "step": "0066",
+  "protocol": "completo, ensaio sem atestacao fisica de isolamento",
+  "created_before_candidate": true,
+  "predecessor": {
+    "step": "0065",
+    "verification_sha256": "082f7a92a5286b578e0ea67110544920c86cef2f3444e0e7f40da18344cdacda"
+  },
+  "inputs": {
+    "step": {
+      "path": "00_nucleo/passos/0066-prototipar-radar-de-convergencia-de-ideias.md",
+      "sha256": "969f8380f6067d57dfafd40d5b7688a3e0e9096b9595c4f73b57ab408748192e"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0066/contract.md",
+      "sha256": "b7a52f40af245e93480ec446c01f4ff30d5d5bf79761fc4ae30762e2aba11ab4"
+    },
+    "baseline": {
+      "path": "00_nucleo/benchmark/0066/baseline.json",
+      "sha256": "881c0077f4050e10262e9347ed6b2f8b96f10fee95e69a1b9882863dad4d23f1"
+    },
+    "budget": {
+      "path": "00_nucleo/benchmark/0066/budget.json",
+      "sha256": "6564f9225f69aa3a94ac942db1547c6aae7a9c866126942ad0bc2680d9b16afd"
+    }
+  },
+  "prompts": {
+    "domain": "fc664428fbfda0a7be657907327b3c27eabb8e579748c5f627a27d7a84689929",
+    "domain_test": "b223efdfd286bb1df59ca42a41351b7be32b5973840f96b09ccf02ef18659fb8",
+    "usecase": "a4edd1909dff1de367d9f39f602977c87e52fc7b1fd3ed6027a0fcb7eea6bf83",
+    "usecase_test": "2bde6fd4030052f47085eadfa74cdcf6ee77d7bc7825719d9f321ddb9bf13d36"
+  },
+  "observables": [
+    "public_types_and_json",
+    "ascii_id_canonicalization",
+    "projection_kind_diversity",
+    "explicit_origin_diversity",
+    "conflict_ambiguity_and_unknown",
+    "canonical_deduplication_and_order",
+    "logical_operations_and_limits",
+    "unready_0065_coalition_draft",
+    "external_precision_recall_f1_gain",
+    "false_convergence_and_contamination",
+    "zero_verdict_changes"
+  ],
+  "unknown_policy": "origem ausente, metrica obrigatoria indefinida, input opaco ou budget excedido nunca viram convergencia nem utilidade observada",
+  "roles": {
+    "intent_author": "usuario; congela objetivo",
+    "contract_author": "somente L0; sem candidato Go futuro",
+    "oracle_author": "intencao, contrato, baseline e budget; sem candidato",
+    "adversary": "contrato e baseline; mutantes M01-M14; sem corrigir solucao",
+    "implementer": "contrato e prompts produtivos selados; sem oraculos, mutantes ou testes",
+    "verifier": "artefatos congelados e saidas; sem editar material julgado"
+  },
+  "capabilities": {
+    "contract_author_read": [
+      ".agents/AGENTS.md",
+      "skill tekt-materializacao-segregada e referencias completas",
+      "ADRs 0001-0003",
+      "passos 0062-0065 e benchmark/verificacao 0065",
+      "tipos publicos IdeaSpec e coalizoes 0065 existentes antes do candidato 0066"
+    ],
+    "contract_author_write": [
+      "00_nucleo/passos/0066-*.md",
+      "00_nucleo/prompts/01_core/domain/idea_radar*.md",
+      "00_nucleo/prompts/01_core/usecase/idea_radar*.md",
+      "00_nucleo/benchmark/0066/{contract.md,baseline.json,budget.json,manifest.json,README.md}"
+    ],
+    "contract_author_forbidden": [
+      "arquivos Go",
+      "implementacao candidata 0066 futura",
+      "oraculos ou mutantes",
+      "veredito final"
+    ]
+  },
+  "ground_truth": {
+    "location": "00_nucleo/benchmark/0066/baseline.json",
+    "visible_to_productive_code": false,
+    "cases": 6,
+    "families": 3,
+    "frozen_before_candidate": true
+  },
+  "isolation": "autoridades segregadas proceduralmente; filesystem compartilhado; sem atestacao fisica",
+  "seal_status": "CANDIDATE_NOT_SEALED"
+}

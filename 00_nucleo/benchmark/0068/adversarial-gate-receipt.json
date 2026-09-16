@@ -1,0 +1,65 @@
+{
+  "schema_version": "tekt.step0068.adversarial-gate-receipt.v1",
+  "step": "0068",
+  "executed_at_utc": "2026-09-11T22:20:10Z",
+  "phase": "PRE_CANDIDATE",
+  "seal_sha256": "d7e6fddcc1b602aa518cc89a551a9b2cfa6066de2bb56ca08d7a43886f144bc2",
+  "command": "env GOCACHE=/tmp/bateia-step0068-rebind-gocache GOTMPDIR=/tmp /usr/bin/time -f 'wall_seconds=%e\\nmax_rss_kb=%M\\nexit_status=%x' go test ./04_wiring/step0068_gate -count=2",
+  "scope": "only ./04_wiring/step0068_gate",
+  "result": "PASS",
+  "go_test_output": "ok bateia/04_wiring/step0068_gate 0.045s",
+  "rebind": {
+    "kind": "EDITORIAL_PROMPT_OWNERSHIP_ONLY",
+    "previous_manifest_sha256": "57445061023b5bae70706a2e98845df42e79db20904dbb8ce96fb4dbecb7ec3f",
+    "current_manifest_sha256": "8a5b00d13efaba7ae9a4f542d228092de5b97c14e7e4c0a3866e103a180e521b",
+    "semantic_inputs_unchanged": true,
+    "gate_and_fixtures_unchanged": true
+  },
+  "discrimination": {
+    "valid_mutations": 16,
+    "valid_mutations_violated": 16,
+    "valid_mutations_unknown": 0,
+    "valid_mutations_preserved": 0,
+    "mutation_score": 1.0,
+    "positive_controls_preserved": 6,
+    "negative_controls_violated": 18,
+    "opaque_controls_unknown": 3,
+    "unknown_counted_as_negative_success": false,
+    "orders_and_repetitions_identical": "20/20",
+    "external_metrics": {
+      "baseline_recall_at_5": 0.0,
+      "candidate_recall_at_5": 1.0,
+      "baseline_contamination_at_5": 1.0,
+      "candidate_contamination_at_5": 0.5,
+      "baseline_evidence_addressable_capabilities": 0,
+      "candidate_evidence_addressable_capabilities": 1,
+      "baseline_provider_attempts": 1,
+      "candidate_provider_attempts": 4,
+      "candidate_technical_origins_for_target": 2
+    },
+    "external_outcomes_preserved": ["OBSERVED", "NOT_OBSERVED"],
+    "false_observed_controls": "Violated",
+    "undefined_metrics_and_missing_binding": "Unknown"
+  },
+  "cost": {
+    "first_full_gate_wall_seconds": 5.26,
+    "first_full_gate_max_rss_kb": 323300,
+    "rebind_full_gate_wall_seconds": 5.02,
+    "rebind_full_gate_max_rss_kb": 307884,
+    "focused_revisions": 0,
+    "full_corpus_executions_before_seal": 1,
+    "full_corpus_executions_after_seal": 3,
+    "setup_failures_before_execution": 0
+  },
+  "post_execution_hash_check": {
+    "status": "UNCHANGED",
+    "fixture_sha256": "090b0e39eb96a705ea7f2c7572939ea79b5bbfc64ad15e3faeb110d2b6a48058",
+    "gate_sha256": "5dff5854da99bfe13bb7d0121011f2ca847067886b9f7f2500045ca93a632aea",
+    "prompt_sha256": "74d4249c1fb666f1d0f12ed138af3f838e388e16aaf1f4a20012614968d77384",
+    "manifest_sha256": "8a5b00d13efaba7ae9a4f542d228092de5b97c14e7e4c0a3866e103a180e521b"
+  },
+  "candidate_binding": "NONE",
+  "candidate_verdict": "NOT_APPLICABLE_PRE_CANDIDATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FISICA_DE_ISOLAMENTO",
+  "limitation": "Prova o poder discriminatorio do fragmento declarativo congelado; nao verifica candidato futuro, rede atual nem robustez geometrica."
+}

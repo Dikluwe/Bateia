@@ -1,0 +1,81 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "step": "0070",
+  "protocol": "completo, ensaio procedural sem atestacao fisica de isolamento",
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "created_before_candidate": true,
+  "candidate_accessed": false,
+  "inputs": {
+    "step": {"path":"00_nucleo/passos/0070-reconstruir-historia-de-algoritmos.md","sha256":"3d8b7c273ad0eeb05538347de5ac01d5beabe61aeb3336795b87ff861434840d"},
+    "contract": {"path":"00_nucleo/benchmark/0070/contract.md","sha256":"a9ec07e8455731ccc3eca360536e8eb78c4f0cb0a306d793a0cb088a9f4f6035"},
+    "baseline": {"path":"00_nucleo/benchmark/0070/baseline.json","sha256":"2483eb834ab4ce22e2eba04505607fb756ed5f862734d02968fe3b84b94d7831"},
+    "budget": {"path":"00_nucleo/benchmark/0070/budget.json","sha256":"9b869ad5f2d51e7f90a27595e203455ab22b17a5bc6ad905c04101e183983e8f"},
+    "readme": {"path":"00_nucleo/benchmark/0070/README.md","sha256":"0240d6bd63234dc95e8a1879aebfcbac9a288a82bce6be3aed5f2cffdf612881"}
+  },
+  "prompts": {
+    "01_core/domain/algorithm_history.md": "3659986a186f6b6586b5b3fa7099bc1531c047ad2261b0d0d0c3ea012218e96a",
+    "01_core/usecase/algorithm_history.md": "803918a000c69237449c1d2470330886a46090bcc10db67264cb2c5bb829665c",
+    "01_core/usecase/algorithm_history_test.md": "1bd9d7ab1df9b6184a30d3b26de88e56281572fc01f48eddf45f72278c78bd54",
+    "02_shell/cli/algorithm_history.md": "7e679722dfd087018d4542b90940adfd1f8819d54cd22e8d5a6f240506f4c47a",
+    "02_shell/cli/algorithm_history_test.md": "d0fc47cd8a20fdc085d18a7e13d44614b1b7500f173ac3215b9c115afd9ef88a"
+  },
+  "future_surface": {
+    "pure_usecase": "usecase.AnalyzeAlgorithmHistory(domain.AlgorithmHistoryInput) domain.AlgorithmHistoryReport",
+    "offline_cli": "bateia algorithm history analyze --input FILE [--output FILE]",
+    "future_files": [
+      "01_core/domain/algorithm_history.go",
+      "01_core/usecase/algorithm_history.go",
+      "01_core/usecase/algorithm_history_test.go",
+      "02_shell/cli/algorithm_history.go",
+      "02_shell/cli/algorithm_history_test.go"
+    ]
+  },
+  "observables": [
+    "typed_historical_relations",
+    "mandatory_evidence_and_provenance",
+    "evidence_inference_separation",
+    "controversy_and_epistemic_unknown",
+    "public_outcome_precedence",
+    "canonical_deduplication_and_reference_remap",
+    "opaque_exact_origin_identity",
+    "deterministic_ordering",
+    "deep_input_immutability",
+    "budget_and_validation_fail_closed",
+    "strict_atomic_offline_cli",
+    "no_automatic_search_network_llm_or_archify"
+  ],
+  "unknown_policy": "invalid, ambiguous, opaque or budget-exceeded input produces global UNKNOWN without partial assessments; epistemic UNKNOWN stays explicit and is never success",
+  "roles": {
+    "intent_author": "usuario",
+    "contract_author": "agent contract_0070; intent and Tekt rules readable; only listed L0 artifacts writable; no candidate/test/gate access",
+    "oracle_author": "future segregated agent; sealed L0 only; no candidate access",
+    "adversary": "future segregated agent; sealed L0 and baseline only; no candidate correction",
+    "implementer": "future root or segregated agent; sealed contract only; cannot edit L0 contract or independent oracles",
+    "verifier": "future deterministic tools and integrator; cannot edit sealed inputs"
+  },
+  "capabilities": {
+    "contract_author_read_allowlist": [
+      ".agents/AGENTS.md",
+      "tekt-materializacao-segregada/SKILL.md",
+      "tekt-materializacao-segregada/references/papeis-e-capacidades.md",
+      "tekt-materializacao-segregada/references/artefatos-e-gates.md",
+      "user_intent_0070"
+    ],
+    "contract_author_write_allowlist": [
+      "00_nucleo/passos/0070-reconstruir-historia-de-algoritmos.md",
+      "00_nucleo/benchmark/0070/contract.md",
+      "00_nucleo/benchmark/0070/baseline.json",
+      "00_nucleo/benchmark/0070/budget.json",
+      "00_nucleo/benchmark/0070/manifest.json",
+      "00_nucleo/benchmark/0070/README.md",
+      "00_nucleo/prompts/01_core/domain/algorithm_history.md",
+      "00_nucleo/prompts/01_core/usecase/algorithm_history.md",
+      "00_nucleo/prompts/01_core/usecase/algorithm_history_test.md",
+      "00_nucleo/prompts/02_shell/cli/algorithm_history.md",
+      "00_nucleo/prompts/02_shell/cli/algorithm_history_test.md"
+    ],
+    "forbidden": ["candidate_0070_read","go_0070_write","oracle_0070_write","gate_execution","network","automatic_search","llm","archify"]
+  },
+  "isolation": "authorities segregated procedurally in shared filesystem; no physical isolation attestation",
+  "seal_status": "CANDIDATE_NOT_SEALED"
+}

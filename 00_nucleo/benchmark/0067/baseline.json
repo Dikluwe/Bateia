@@ -1,0 +1,158 @@
+{
+  "schema_version": "idea-radar-plan-benchmark-v1",
+  "base_commit": "2545f730545712c3b9950088506020bc755d9e6c",
+  "captured_before_candidate": true,
+  "candidate_files_present": false,
+  "ground_truth_location": "benchmark_harness_only",
+  "simulation_policy": {
+    "probe_cost": 1,
+    "resolve_conflict": "remove_named_conflict_observation",
+    "resolve_ambiguity": "replace_named_ambiguous_stance_with_support",
+    "record_origin": "assign_unique_recorded_origin_required_by_probe",
+    "add_support": "add_named_kind_support_with_unique_recorded_origin_required_by_probe",
+    "blocker_resolved": "original_highest_precedence_outcome_does_not_remain",
+    "does_not_predict_real_response": true
+  },
+  "kind_order": ["PROBLEM", "BEHAVIOR", "ARCHITECTURE", "CONSTRAINT", "OPERATION"],
+  "cases": [
+    {
+      "id": "c01",
+      "family": "coverage-gap",
+      "fixture": "support PROBLEM/or-a",
+      "initial_outcome": "INSUFFICIENT_PERSPECTIVES",
+      "expected_planner": ["ADD_PERSPECTIVE:BEHAVIOR:DISTINCT_RECORDED", "ADD_PERSPECTIVE:ARCHITECTURE:DISTINCT_RECORDED"],
+      "planner_probes": 2,
+      "naive_probes": 4,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c02",
+      "family": "coverage-gap",
+      "fixture": "support PROBLEM/or-a; BEHAVIOR/or-b",
+      "initial_outcome": "INSUFFICIENT_PERSPECTIVES",
+      "expected_planner": ["ADD_PERSPECTIVE:ARCHITECTURE:DISTINCT_RECORDED"],
+      "planner_probes": 1,
+      "naive_probes": 2,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c03",
+      "family": "provenance-gap",
+      "fixture": "support PROBLEM/or-a; BEHAVIOR/or-b; ARCHITECTURE/UNKNOWN via obs-arch-1",
+      "initial_outcome": "UNKNOWN_ORIGIN",
+      "expected_planner": ["RECORD_ORIGIN:obs-arch-1:DISTINCT_RECORDED"],
+      "planner_probes": 1,
+      "naive_probes": 1,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c04",
+      "family": "provenance-gap",
+      "fixture": "support PROBLEM/or-a; BEHAVIOR/or-b; ARCHITECTURE/UNKNOWN via obs-arch-1 and obs-arch-2 on distinct projections",
+      "initial_outcome": "UNKNOWN_ORIGIN",
+      "expected_planner": ["RECORD_ORIGIN:obs-arch-1:DISTINCT_RECORDED"],
+      "planner_probes": 1,
+      "naive_probes": 2,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c05",
+      "family": "provenance-gap",
+      "fixture": "support PROBLEM/shared; BEHAVIOR/shared; ARCHITECTURE/shared",
+      "initial_outcome": "INSUFFICIENT_ORIGINS",
+      "expected_planner": ["ADD_INDEPENDENT_ORIGIN:PROBLEM:DISTINCT_RECORDED", "ADD_INDEPENDENT_ORIGIN:BEHAVIOR:DISTINCT_RECORDED"],
+      "planner_probes": 2,
+      "naive_probes": 2,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c06",
+      "family": "signal-resolution",
+      "fixture": "three distinct recorded supports plus conflicts obs-conflict-1 and obs-conflict-2",
+      "initial_outcome": "CONFLICT",
+      "expected_planner": ["RESOLVE_CONFLICT:obs-conflict-1", "RESOLVE_CONFLICT:obs-conflict-2"],
+      "planner_probes": 2,
+      "naive_probes": 2,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c07",
+      "family": "signal-resolution",
+      "fixture": "three distinct recorded supports plus ambiguous obs-ambiguous-1",
+      "initial_outcome": "AMBIGUOUS",
+      "expected_planner": ["RESOLVE_AMBIGUITY:obs-ambiguous-1"],
+      "planner_probes": 1,
+      "naive_probes": 1,
+      "post_outcome": "CONVERGENT"
+    },
+    {
+      "id": "c08",
+      "family": "evidence-binding",
+      "fixture": "three distinct recorded supports",
+      "initial_outcome": "CONVERGENT",
+      "expected_planner": ["BIND_EVIDENCE:RECORDED:IMPLEMENTATION,INDEPENDENT_TEST"],
+      "planner_probes": 1,
+      "naive_probes": 1,
+      "post_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "c09",
+      "family": "safety-control",
+      "fixture": "support PROBLEM/or-a plus conflict obs-conflict-1",
+      "initial_outcome": "CONFLICT",
+      "expected_planner": ["RESOLVE_CONFLICT:obs-conflict-1"],
+      "planner_probes": 1,
+      "naive_probes": 1,
+      "post_outcome": "INSUFFICIENT_PERSPECTIVES",
+      "must_not_promise_convergence": true
+    },
+    {
+      "id": "c10",
+      "family": "opaque-control",
+      "fixture": "invalid radar schema",
+      "initial_outcome": "UNKNOWN",
+      "expected_status": "UNKNOWN",
+      "expected_planner": [],
+      "planner_probes": 0,
+      "naive_probes": 0,
+      "post_outcome": "UNKNOWN"
+    }
+  ],
+  "expected_eligible": {
+    "targets": 8,
+    "planner_blockers_resolved": 8,
+    "naive_blockers_resolved": 8,
+    "planner_resolution_rate": 1.0,
+    "naive_resolution_rate": 1.0,
+    "planner_convergent": 7,
+    "naive_convergent": 7,
+    "planner_probes": 11,
+    "naive_probes": 15,
+    "effort_reduction": 0.26666666666666666,
+    "improved_cases": ["c01", "c02", "c04"],
+    "improved_families": ["coverage-gap", "provenance-gap"],
+    "utility_verdict": "OBSERVED"
+  },
+  "all_planned_targets_including_binding": {
+    "planner_probes": 12,
+    "naive_probes": 16
+  },
+  "legacy_observables": {
+    "decision_impact": "NONE",
+    "verdict_changes": 0,
+    "existing_consumers_call_planner": false,
+    "existing_schema_changes": 0,
+    "radar_threshold_changes": 0
+  },
+  "allowed_future_production_additions": [
+    "01_core/domain/idea_radar_plan.go",
+    "01_core/usecase/idea_radar_plan.go"
+  ],
+  "forbidden_edits": [
+    "01_core/domain/idea_radar.go",
+    "01_core/usecase/idea_radar.go",
+    "01_core/domain/evidence_coalition.go",
+    "01_core/usecase/evidence_coalition.go"
+  ]
+}
+

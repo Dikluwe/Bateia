@@ -1,0 +1,176 @@
+{
+  "schema_version": "tekt-candidate-mutation-verification-v1",
+  "step": "0065",
+  "role": "ADVERSARY_POST_SEAL",
+  "date": "2026-09-11",
+  "scope": "real M01-M12 mutation testing of the frozen candidate against the frozen coalition oracle suite",
+  "isolation": {
+    "mode": "one disposable full repository copy per mutant",
+    "root": "/tmp/bateia-step0065-mutants",
+    "workspace_modified": false,
+    "candidate_or_oracle_corrections": false,
+    "gocache": "/tmp/bateia-step0065-mutants/gocache-<mutation-id>"
+  },
+  "frozen_hashes": {
+    "01_core/domain/evidence_coalition.go": "34594a32ea97ed174237831f3bf89e00a2579bfe8fd3aeff8776db2c62d03580",
+    "01_core/usecase/evidence_coalition.go": "dc5d9929034d9801a2d56973b994b049e72eb30aeb7c3c4265bc38d01bfcefa9",
+    "01_core/domain/evidence_coalition_test.go": "8dc8945f97ffc119f4a0b0f4ca10b6482966dcaeb80aee9b1558b6921ee71800",
+    "01_core/usecase/evidence_coalition_test.go": "dede1e9fbf04e191ef8bf44e800d37dfc89b958899e6761858d18957ae407ad0",
+    "00_nucleo/benchmark/0065/adversarial-cases.json": "29934f45eaf19a4b5f898c5db84e9acdaebaa3df4aed459655058c9b7600fd13",
+    "00_nucleo/benchmark/0065/adversarial-gate-receipt.json": "321c5340ae0e60c6452a8a80767b15cda894770c5bead937c5efc5a310e7f44a"
+  },
+  "suite": {
+    "packages": ["./01_core/domain", "./01_core/usecase"],
+    "run_filter": "EvidenceCoalition|AnalyzeEvidenceCoalitions",
+    "baseline_command": "GOCACHE=/tmp/bateia-step0065-mutants/gocache-baseline go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+    "baseline_exit_code": 0,
+    "baseline_output": "ok bateia/01_core/domain; ok bateia/01_core/usecase"
+  },
+  "mutations": [
+    {
+      "id": "M01",
+      "semantic_mutation": "change the public shadow decision impact constant from NONE to PROMOTE",
+      "mutated_file": "01_core/domain/evidence_coalition.go",
+      "mutant_file_sha256": "bfe4e60b23823037f251be0e4f8edd093f79653adc4b925fcd94741261a6da27",
+      "command": "cd /tmp/bateia-step0065-mutants/M01 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M01 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/P01_distinct_origins",
+      "compact_output": "shadow analysis changed decision: baseline=PROVEN impact=PROMOTE"
+    },
+    {
+      "id": "M02",
+      "semantic_mutation": "derive DISTINCT_ORIGIN when a required role has no RECORDED support",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "54c1d9bf217320c75c6910907d270f02d72a63e663d0c818ed180bc1e9a188d7",
+      "command": "cd /tmp/bateia-step0065-mutants/M02 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M02 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/O01_unknown_origin",
+      "compact_output": "got SATISFIED/DISTINCT_ORIGIN/coalition_satisfied; want UNKNOWN_INDEPENDENCE/UNKNOWN_ORIGIN/origin_unrecorded"
+    },
+    {
+      "id": "M03",
+      "semantic_mutation": "use source path instead of declared OriginID as the distinct-origin key",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "fa0dbb6660c7966cf7ddf690db8a6371a184936dd3219a45bca2ead634160a2f",
+      "command": "cd /tmp/bateia-step0065-mutants/M03 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M03 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/O01_unknown_origin",
+      "compact_output": "distinct origins exposed source path impl.go instead of declared origin A; N01 also turns distinct by locator"
+    },
+    {
+      "id": "M04",
+      "semantic_mutation": "disable conflict precedence when complete support exists",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "d2d718979ed548dcf9f7e9908f9850a357a83c060acf8664ab49b2f5d057c8d8",
+      "command": "cd /tmp/bateia-step0065-mutants/M04 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M04 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/N04_conflict_prevails",
+      "compact_output": "got SATISFIED/coalition_satisfied; want CONFLICT/conflicting_evidence"
+    },
+    {
+      "id": "M05",
+      "semantic_mutation": "allow DOCUMENTATION support to fill every required role",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "1ab560253c7d2be440c4acc4b21483862dde54a5b78b634c489b5100bb5ea405",
+      "command": "cd /tmp/bateia-step0065-mutants/M05 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M05 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/N03_documentation_is_not_implementation",
+      "compact_output": "got SATISFIED/DISTINCT_ORIGIN; want MISSING_ROLES/UNKNOWN_ORIGIN"
+    },
+    {
+      "id": "M06",
+      "semantic_mutation": "remove canonical claim sorting so input order controls report order",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "dc1237b9120dc7e85ba3077d058bf47538e4128c005fc2c5dfed0b2c93c3814b",
+      "command": "cd /tmp/bateia-step0065-mutants/M06 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M06 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsCanonicalAcrossTwentyPermutationsAndNilEmpty",
+      "compact_output": "permutation 0 changed JSON"
+    },
+    {
+      "id": "M07",
+      "semantic_mutation": "include witness ID in physical source identity, preventing duplicate-source deduplication",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "71365670b45c37ed15cbdff89a93613173cabf52a4378250e30249c9144264b1",
+      "command": "cd /tmp/bateia-step0065-mutants/M07 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M07 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/N05_contradictory_duplicate",
+      "compact_output": "duplicate physical sources were treated separately; report reason analyzed, want analyzed_with_invalid_claims"
+    },
+    {
+      "id": "M08",
+      "semantic_mutation": "silently accept semantic disagreement between witnesses sharing one physical source",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "75305db64fdff09800cb74bf5ec3c83680181e396a59cf827b4c254a9e2196c8",
+      "command": "cd /tmp/bateia-step0065-mutants/M08 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M08 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/N05_contradictory_duplicate",
+      "compact_output": "report reason analyzed, want analyzed_with_invalid_claims"
+    },
+    {
+      "id": "M09",
+      "semantic_mutation": "bypass unknown-schema rejection and emit a COMPLETE partial assessment",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "0c3d31cd501d39d0d98d8203a7841f4a0c6bf2ee5c5f9e3511f729d64494081e",
+      "command": "cd /tmp/bateia-step0065-mutants/M09 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M09 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsRejectsOpaqueGlobalInputs/unknown_schema",
+      "compact_output": "got COMPLETE/analyzed_with_invalid_claims with one assessment; want UNKNOWN/invalid_schema with none"
+    },
+    {
+      "id": "M10",
+      "semantic_mutation": "bypass preflight limits and return a COMPLETE partial report",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "577a0eb493a2374d73ca9aedc37d444b5ec788fd7ade206c4280dec5384572b6",
+      "command": "cd /tmp/bateia-step0065-mutants/M10 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M10 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsLimitsAndExactOperations/129_rules",
+      "compact_output": "got COMPLETE/analyzed partial assessment with limit_exceeded=false; want UNKNOWN/budget_exceeded"
+    },
+    {
+      "id": "M11",
+      "semantic_mutation": "emit a nil supporting_witness_ids slice only when input Witnesses is nil",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "902bac982290e884a568b852d490c5b8c0980235fe68ddb4365fd3318f274481",
+      "command": "cd /tmp/bateia-step0065-mutants/M11 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M11 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsCanonicalAcrossTwentyPermutationsAndNilEmpty",
+      "compact_output": "nil and empty witness slices differ"
+    },
+    {
+      "id": "M12",
+      "semantic_mutation": "count witnesses quadratically instead of one operation per normalized witness",
+      "mutated_file": "01_core/usecase/evidence_coalition.go",
+      "mutant_file_sha256": "d548a4b515bb84a7c107c19d92e67f87e4bb20605ee25b5694ec2977adb2e126",
+      "command": "cd /tmp/bateia-step0065-mutants/M12 && GOCACHE=/tmp/bateia-step0065-mutants/gocache-M12 go test ./01_core/domain ./01_core/usecase -run 'EvidenceCoalition|AnalyzeEvidenceCoalitions' -count=1",
+      "exit_code": 1,
+      "killed": true,
+      "killing_test": "TestAnalyzeEvidenceCoalitionsContractCorpus/O01_unknown_origin",
+      "compact_output": "operations=6, want operations=4"
+    }
+  ],
+  "result": {
+    "valid_mutations": 12,
+    "killed_mutations": 12,
+    "surviving_mutations": [],
+    "mutation_score": 1.0,
+    "gate": "APPROVED",
+    "basis": "the unmodified frozen suite passed, and every independently materialized semantic mutant M01-M12 produced a non-zero test exit with a contractual witness"
+  },
+  "limitations": [
+    "Approval is limited to the enumerated M01-M12 mutation gate and the frozen run filter.",
+    "Temporary copies share the same host and therefore provide process/path isolation, not physical host attestation.",
+    "No production, contract, oracle, seal, or prior adversarial artifact was modified."
+  ]
+}

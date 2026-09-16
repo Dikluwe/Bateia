@@ -1,0 +1,24 @@
+{
+  "schema_version": "tekt-calibration-budget-v1",
+  "max_focused_revisions_per_cause": 2,
+  "max_full_corpus_runs_before_seal": 3,
+  "required_mutation_score": 1.0,
+  "required_permutation_repetitions": 20,
+  "runtime_limits": {
+    "projections": 64,
+    "observations": 1024,
+    "targets": 512,
+    "id_or_origin_bytes": 128,
+    "text_items_per_dimension": 64,
+    "text_bytes_per_dimension": 4096,
+    "logical_operations": 4096
+  },
+  "utility_gate": {
+    "minimum_precision_delta": 0.0,
+    "minimum_recall_or_f1_delta": 0.1,
+    "minimum_improved_cases": 2,
+    "minimum_improved_families": 2
+  },
+  "stop_rule": "duas revisoes consecutivas sem delta discriminatorio na mesma causa reabrem o desenho",
+  "unknown_policy": "opacidade, metrica obrigatoria indefinida ou budget excedido nunca contam como convergencia ou utilidade observada"
+}

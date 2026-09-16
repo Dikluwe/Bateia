@@ -1,0 +1,55 @@
+{
+  "schema_version": "tekt.step0067.adversarial-gate-receipt.v1",
+  "step": "0067",
+  "executed_at_utc": "2026-09-11T19:44:10Z",
+  "phase": "PRE_CANDIDATE",
+  "seal_sha256": "3155e644b5673ac063a3f0dde000f86ca91f25d9b14ec8898864380d8ecd4fc4",
+  "command": "env GOCACHE=/tmp/bateia-step0067-gocache GOTMPDIR=/tmp /usr/bin/time -f 'wall_seconds=%e\\nmax_rss_kb=%M\\nexit_status=%x' go test ./04_wiring/step0067_gate -count=1",
+  "scope": "only ./04_wiring/step0067_gate",
+  "result": "PASS",
+  "go_test_output": "ok bateia/04_wiring/step0067_gate 0.004s",
+  "discrimination": {
+    "valid_mutations": 16,
+    "valid_mutations_violated": 16,
+    "valid_mutations_unknown": 0,
+    "valid_mutations_preserved": 0,
+    "mutation_score": 1.0,
+    "positive_controls_preserved": 11,
+    "negative_controls_violated": 18,
+    "opaque_controls_unknown": 2,
+    "unknown_counted_as_negative_success": false,
+    "orders_and_repetitions_identical": "20/20",
+    "external_metrics": {
+      "eligible_targets": 8,
+      "planner_blockers_resolved": 8,
+      "naive_blockers_resolved": 8,
+      "planner_convergent": 7,
+      "naive_convergent": 7,
+      "planner_probes": 11,
+      "naive_probes": 15,
+      "effort_reduction": 0.26666666666666666
+    },
+    "external_verdicts_preserved": ["OBSERVED", "NOT_OBSERVED", "INCONCLUSIVE"],
+    "false_observed_controls": "Violated",
+    "opaque_result_binding": "Unknown"
+  },
+  "cost": {
+    "successful_gate_wall_seconds": 0.18,
+    "successful_gate_max_rss_kb": 83968,
+    "focused_revisions": 0,
+    "full_corpus_executions_before_seal": 1,
+    "full_corpus_executions_after_seal": 1,
+    "setup_failures_before_execution": 0
+  },
+  "post_execution_hash_check": {
+    "status": "UNCHANGED",
+    "fixture_sha256": "3ce7417a4ce9991f39b87612bc57061b039b0fa1022bbba27a7147eb642da279",
+    "gate_sha256": "4f8496adfd415ce9de473130029f2fa6bfc92ebecfaf26068a457f12a36ec102",
+    "prompt_sha256": "11c6877cdd847360660435a02d2ad0802047c0107d53abaa896556a02165104e",
+    "manifest_sha256": "0303e83a4a3d3c6f31021379c76ceeba8d0234d7daf9c5ff071f1a26bbafaa19"
+  },
+  "candidate_binding": "NONE",
+  "candidate_verdict": "NOT_APPLICABLE_PRE_CANDIDATE",
+  "attestation": "EXECUTADO_SEM_ATESTACAO_FISICA_DE_ISOLAMENTO",
+  "limitation": "Prova poder discriminatorio do fragmento declarativo congelado; nao verifica nem certifica implementacao candidata futura."
+}

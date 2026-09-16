@@ -1,0 +1,106 @@
+{
+  "schema_version": "tekt-verification-v1",
+  "step": "0067",
+  "date": "2026-09-11",
+  "regime": "protocolo completo, segregado proceduralmente sem atestacao fisica de isolamento",
+  "seal_sha256": "8865fe2b7dd6998a58826ab9dc9e0fc131f00f88573173ab7c59366e1a731104",
+  "oracle_focal_revisions": 1,
+  "oracle_revision_reason": "dois conflitos da fixture eram duplicatas semanticas segundo 0066; foram movidos para projecoes distintas sem mudar a obrigacao",
+  "candidate_focal_revisions": 0,
+  "candidate_sha256": {
+    "01_core/domain/idea_radar_plan.go": "d9cb64f447f48ee3d3cef75b09b637ca99ee614b87f408aba7339e8c3c3c853b",
+    "01_core/usecase/idea_radar_plan.go": "15d25edfbc66965ee55f524f08a0ec86347a4b5a1ec260aabd757ee8aad4dd53"
+  },
+  "oracle_sha256": {
+    "01_core/domain/idea_radar_plan_test.go": "f057b81461f1dd6f9174146271d5793280e1a6986e61cecf0561bbc4be2099b1",
+    "01_core/usecase/idea_radar_plan_test.go": "f15488d8e669176184aee380b8e08b47a70262607a37d0cb815d6b4444bd458d"
+  },
+  "gates": [
+    {
+      "name": "independent_contract_and_utility_oracles",
+      "command": "GOCACHE=/tmp/bateia-step0067-final-cache GOTMPDIR=/tmp go test ./01_core/domain ./01_core/usecase -run 'TestIdeaRadarPlan|TestPlanIdeaRadarProbes|TestIdeaRadarPlanner|TestExternalPlannerUtility' -count=1 -v",
+      "status": "PASS",
+      "covered_permutations": 20,
+      "verdict_changes": 0
+    },
+    {
+      "name": "candidate_mutation_testing",
+      "receipt_sha256": "7a934da673286baa56ebb6f7a74b8adbf0712a554dedff638a4e5b6cb5ae2f35",
+      "status": "PASS",
+      "killed": 16,
+      "total": 16,
+      "survived": 0,
+      "mutation_score": 1.0
+    },
+    {
+      "name": "race",
+      "command": "GOCACHE=/tmp/bateia-step0067-final-cache GOTMPDIR=/tmp go test -race ./01_core/domain ./01_core/usecase -run 'TestIdeaRadarPlan|TestPlanIdeaRadarProbes|TestIdeaRadarPlanner|TestExternalPlannerUtility' -count=1",
+      "status": "PASS"
+    },
+    {
+      "name": "full_regression",
+      "command": "GOCACHE=/tmp/bateia-step0067-final-cache GOTMPDIR=/tmp go test ./... -count=1",
+      "status": "PASS",
+      "note": "executado fora do sandbox somente para permitir listeners locais de httptest"
+    },
+    {
+      "name": "vet_l1",
+      "command": "GOCACHE=/tmp/bateia-step0067-final-cache GOTMPDIR=/tmp go vet ./01_core/...",
+      "status": "PASS"
+    },
+    {
+      "name": "package_build",
+      "command": "GOCACHE=/tmp/bateia-step0067-final-cache GOTMPDIR=/tmp go build -o /tmp/bateia-step0067 ./04_wiring",
+      "status": "PASS"
+    },
+    {
+      "name": "crystalline_lint",
+      "command": "crystalline-lint .",
+      "status": "PASS",
+      "output": "No violations found"
+    },
+    {
+      "name": "diff_check",
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "architecture": {
+    "l1_pure": true,
+    "calls_0066_as_authority": true,
+    "radar_thresholds_changed": false,
+    "existing_consumers_changed": false,
+    "existing_schemas_changed": false,
+    "executes_probes": false,
+    "shadow_only": true
+  },
+  "measurements": {
+    "eligible_nonconvergent_targets": 8,
+    "planner_blockers_resolved": 8,
+    "naive_blockers_resolved": 8,
+    "planner_resolution_rate": 1.0,
+    "naive_resolution_rate": 1.0,
+    "planner_convergent_after_simulation": 7,
+    "naive_convergent_after_simulation": 7,
+    "planner_probes": 11,
+    "naive_probes": 15,
+    "probe_reduction": 4,
+    "effort_reduction": 0.26666666666666666,
+    "improved_cases": ["c01", "c02", "c04"],
+    "improved_families": ["coverage-gap", "provenance-gap"],
+    "c09_post_outcome": "INSUFFICIENT_PERSPECTIVES",
+    "false_convergence_promises": 0,
+    "utility_verdict": "OBSERVED",
+    "permutation_equality": "20/20",
+    "mutation_score": 1.0,
+    "verdict_changes": 0
+  },
+  "verdict": "APPROVED_FOR_SHADOW_MEASUREMENT",
+  "limitations": [
+    "O ganho foi observado somente em corpus sintetico com respostas de probes simuladas; nao mede economia humana ou eficacia em repositorios reais.",
+    "O numero de probes e um limite inferior estrutural por target, nao estimativa de tempo ou custo.",
+    "Remover o bloqueador ativo pode revelar outro outcome; o planner nunca promete convergencia.",
+    "A versao nao coalesce probes entre targets e nao executa busca, coleta, vinculacao de evidencia ou o passo 0065.",
+    "A segregacao de papeis foi procedural em filesystem compartilhado, sem atestacao fisica de isolamento."
+  ]
+}

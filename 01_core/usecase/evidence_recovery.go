@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_recovery.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-09-16
  */
 package usecase
 
@@ -33,6 +33,7 @@ func DiagnoseInconclusive(runID, decisionHash string, decision domain.ReuseDecis
 	if len(assessment.Assessments) == 0 {
 		d.Findings = append(d.Findings, newFinding(domain.CauseInsufficientCorpus, "", "", "DEC-INCONCLUSIVE-002", nil, nil, []string{"candidate assessment"}, false, "corpus não contém assessments"))
 	}
+	globalCatalogFindings := map[string]bool{}
 	for _, a := range assessment.Assessments {
 		key := a.Repository.Owner + "/" + a.Repository.Repo
 		candidateKey := a.Repository.Key()
@@ -43,11 +44,24 @@ func DiagnoseInconclusive(runID, decisionHash string, decision domain.ReuseDecis
 		providerFailure := hasFailure(a.Failures) || hasFailure(b.Failures)
 		budget := bundleHasStatus(b, domain.TargetSkippedBudget)
 		for _, e := range a.Capabilities {
-			if e.Status != domain.EvidenceInconclusive {
+			if e.Status != domain.EvidenceInconclusive && !catalogLimitedEvidence(e) {
 				continue
 			}
 			cause, rule, missing, recoverable, message := classifyCapabilityFinding(e, catalog, providerFailure, budget)
-			d.Findings = append(d.Findings, newFinding(cause, candidateKey, e.Capability, rule, e.Sources, append(a.Failures, b.Failures...), missing, recoverable, message))
+			findingCandidate := candidateKey
+			findingEvidence := e.Sources
+			findingFailures := append(a.Failures, b.Failures...)
+			if catalogLimitedEvidence(e) {
+				findingCandidate = ""
+				findingEvidence = nil
+				findingFailures = nil
+				key := e.ReasonCode + "|" + normalizeEvidenceText(e.Capability)
+				if globalCatalogFindings[key] {
+					continue
+				}
+				globalCatalogFindings[key] = true
+			}
+			d.Findings = append(d.Findings, newFinding(cause, findingCandidate, e.Capability, rule, findingEvidence, findingFailures, missing, recoverable, message))
 		}
 		if a.License.Status == domain.EvidenceInconclusive {
 			d.Findings = append(d.Findings, newFinding(domain.CauseUnknownLicense, candidateKey, "", "GATE-LICENSE-001", a.License.Sources, a.Failures, []string{"license artifact", "repository license metadata"}, true, "licença permanece desconhecida"))
@@ -74,6 +88,16 @@ func DiagnoseInconclusive(runID, decisionHash string, decision domain.ReuseDecis
 }
 
 func classifyCapabilityFinding(e domain.CapabilityEvidence, catalog domain.CapabilityRuleCatalog, providerFailure, budget bool) (domain.InconclusiveCause, string, []string, bool, string) {
+	switch e.ReasonCode {
+	case "CATALOG_GAP":
+		return domain.CauseRuleCoverageGap, "catalog-gap:" + normalizeEvidenceText(e.Capability), []string{"declared evidence rule"}, false, "o catálogo não possui regra declarada segura; isso não descreve o candidato"
+	case "HYPOTHESIS_ONLY":
+		ruleID := "hypothesis:" + normalizeEvidenceText(e.Capability)
+		if rule := findRule(e.Capability, catalog); rule != nil {
+			ruleID = rule.ID
+		}
+		return domain.CauseRuleCoverageGap, ruleID, []string{"declared rule validation"}, false, "a regra disponível é apenas hipótese sem autoridade; isso não descreve o candidato"
+	}
 	rule := findRule(e.Capability, catalog)
 	if rule == nil {
 		return domain.CauseRuleCoverageGap, "unmapped:" + normalizeEvidenceText(e.Capability), []string{"versioned evidence rule"}, false, "nenhuma regra versionada cobre a capacidade"
@@ -273,7 +297,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		return domain.RecoveryRoundResult{}, err
 	}
 	for _, b := range failed {
-		assessment.Assessments = append(assessment.Assessments, inconclusiveRunAssessment(idea, b))
+		assessment.Assessments = append(assessment.Assessments, inconclusiveRunAssessment(idea, b, rules, assessment.CatalogCoverage))
 	}
 	decision, err := DecideReuse(domain.ReuseDecisionRequest{Idea: idea, Assessments: assessment.Assessments, Policy: decisionPolicy})
 	if err != nil {

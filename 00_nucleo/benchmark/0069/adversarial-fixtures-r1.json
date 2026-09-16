@@ -1,0 +1,25 @@
+{
+  "schema_version": "idea-radar-archify-adversarial-r1",
+  "step": "0069",
+  "predecessor": "adversarial-fixtures.json",
+  "reason_code": "archify_renderer_fixed_grid",
+  "required_mutation_score": 1.0,
+  "permutation_repetitions": 20,
+  "cases": [
+    {"id":"P03","family":"renderer-boundary","operation":"five_by_five_by_five","expected":"Preserved","witness":"five nodes in every stage use rows 0..4"},
+    {"id":"P04","family":"label-fit","operation":"long_punctuated_identities","expected":"Preserved","witness":"node labels are normative ASCII <=10 bytes while full identities remain outside labels"},
+    {"id":"U04","family":"origin-budget","operation":"sixth_origin_rejected","expected":"Unknown","witness":"sixth unique origin fails closed with render_budget_exceeded"},
+    {"id":"U05","family":"perspective-budget","operation":"sixth_perspective_rejected","expected":"Unknown","witness":"sixth perspective fails closed with render_budget_exceeded"},
+    {"id":"U06","family":"target-budget","operation":"sixth_target_rejected","expected":"Unknown","witness":"sixth target fails closed with render_budget_exceeded"},
+    {"id":"M18","family":"origin-budget-partial","operation":"emit_sixth_origin","expected":"Violated","witness":"document exposes a sixth unique origin and row 5"},
+    {"id":"M19","family":"perspective-budget-partial","operation":"emit_sixth_perspective","expected":"Violated","witness":"document exposes a sixth perspective and row 5"},
+    {"id":"M20","family":"target-budget-partial","operation":"emit_sixth_target","expected":"Violated","witness":"document exposes a sixth target and row 5"},
+    {"id":"M21","family":"row-domain","operation":"row_outside_renderer","expected":"Violated","witness":"a stage row is changed from 4 to 5"},
+    {"id":"M22","family":"label-byte-limit","operation":"label_over_ten_bytes","expected":"Violated","witness":"node label exceeds ten ASCII bytes"},
+    {"id":"M23","family":"label-rule","operation":"wrong_short_label","expected":"Violated","witness":"short label fits but does not follow the normative byte transform"},
+    {"id":"M24","family":"identity-in-id","operation":"id_uses_short_identity","expected":"Violated","witness":"node ID encodes the abbreviated label identity instead of the full identity"},
+    {"id":"M25","family":"identity-in-flow","operation":"flow_loses_full_identity","expected":"Violated","witness":"flow label drops full projection/origin/observation identity"},
+    {"id":"M26","family":"identity-in-card","operation":"card_loses_full_identity","expected":"Violated","witness":"card title/items drop full TargetID or provenance"},
+    {"id":"M27","family":"utf8-byte-limit","operation":"multibyte_label_over_ten_bytes","expected":"Violated","witness":"label is short in runes but exceeds ten UTF-8 bytes"}
+  ]
+}

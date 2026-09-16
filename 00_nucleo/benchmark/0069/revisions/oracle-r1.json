@@ -1,0 +1,55 @@
+{
+  "schema_version": "tekt-oracle-revision-v1",
+  "step": "0069",
+  "revision": "oracle-r1",
+  "predecessor": "oracle-r0",
+  "role": "oracle_author",
+  "protocol": "completo, ensaio procedural sem atestacao fisica de isolamento",
+  "manifest_sha256": "9735462770fc3c2c7ef7fb17f19f88da61183b7628acc2dc440b8a1fd6db3c38",
+  "input_oracle": {
+    "path": "00_nucleo/benchmark/0069/revisions/oracle-r0/idea_radar_archify_test.go.txt",
+    "sha256": "14c9f53c89a93a957e8de312a47a706f8314ed8a3168e1be6c3654870caa381e"
+  },
+  "output_oracle": {
+    "path": "02_shell/report/idea_radar_archify_test.go",
+    "sha256": "02cd41c80c5b6bfef9095661eaee205afc6ab99830a910a605f2f63c5c49937a"
+  },
+  "hypothesis": "Os dois positivos publicamente reportados deixam de ser falsamente rejeitados quando cards Dataflow v1 sao identificados e ordenados por title, enquanto a presenca da propriedade proibida id passa a ser rejeitada explicitamente.",
+  "reason_code": "archify_card_forbidden_id",
+  "public_schema_fact": "Cards aceitam exatamente dot, title e items sob additionalProperties=false; id nao pertence ao schema.",
+  "delta": {
+    "cases_corrected_expected": 2,
+    "cases_regressed_expected": 0,
+    "positive_observable": "golden e identity cards usam title como identidade e ordem",
+    "negative_observable": "qualquer card com id ou outra propriedade fora de dot/title/items falha",
+    "unchanged_observables": [
+      "node_ids",
+      "flow_ids",
+      "topology",
+      "deduplication",
+      "unknown_origin",
+      "cards_content",
+      "deterministic_bytes",
+      "input_immutability",
+      "fail_closed",
+      "cli_safety"
+    ]
+  },
+  "classification": {
+    "positives_preserved": "not_executed_by_oracle",
+    "negatives_violated": "not_executed_by_oracle",
+    "opaques_unknown": "not_executed_by_oracle",
+    "before_public_positive_failures": 2,
+    "after": "pending_integrator_focused_gate"
+  },
+  "cost": {
+    "focused_revisions": 1,
+    "full_corpus_runs": 0,
+    "commands": [
+      "gofmt -w 02_shell/report/idea_radar_archify_test.go",
+      "git diff --check -- scoped_artifacts"
+    ]
+  },
+  "candidate_read": false,
+  "candidate_test_executed": false
+}

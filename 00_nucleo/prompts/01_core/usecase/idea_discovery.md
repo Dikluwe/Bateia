@@ -28,3 +28,12 @@ pela ordem do plano e não deixe workers ativos após o retorno.
 ## Contrato 0043 — consultas ligadas à intenção
 
 Antes da chamada ao provedor, cada expansão recebe RequirementIDs derivados dos Covers da IdeaSpec original, com IDs estáveis por conteúdo e tipo. Enviar os IDs na DiscoveryRequest e preservá-los na expansão do snapshot. Sem vínculo válido não fabricar associação: lista vazia exige investigação. Estes IDs descrevem a pergunta, não evidência do candidato.
+
+## Passo 0068 — transporte e união
+
+Aplicar `00_nucleo/passos/0068-compilar-capacidade-em-consultas-tecnicas.md`. Copiar
+profundamente `SearchExpansion.Derivation` para `DiscoveryRequest.Derivation`, sem mutar
+entrada. Executar todas as expansões técnicas independentes sob os budgets existentes;
+resultado não vazio de uma não cancela as demais. Deduplicar candidatos como hoje e
+conservar todas as expansion IDs, queries e origens técnicas canônicas. Não interpretar
+discriminadores nem avaliar capacidade em L1.

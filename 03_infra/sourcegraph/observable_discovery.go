@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/sourcegraph/observable_discovery.md
  * @layer L3
- * @updated 2026-09-08
+ * @updated 2026-09-11
  */
 
 package sourcegraph
@@ -74,6 +74,42 @@ func discoveryDerivedQuery(plan domain.DiscoveryQueryPlan, language, scope strin
 	return observableQueries(expression, language, nil, scope)[0]
 }
 
+func normalizeTechnicalValue(value string) string {
+	return strings.ToLower(strings.Join(strings.Fields(value), " "))
+}
+
+func technicalDiscoveryPlan(request domain.DiscoveryRequest) (domain.DiscoveryQueryPlan, error) {
+	query := strings.TrimSpace(request.Query)
+	if query == "" || len(query) > 256 {
+		return domain.DiscoveryQueryPlan{}, fmt.Errorf("consulta técnica deve conter de 1 a 256 bytes")
+	}
+	if request.Derivation == nil || len(request.Derivation.RuleIDs) != 1 || strings.TrimSpace(request.Derivation.RuleIDs[0]) == "" || len(request.Derivation.SourceIDs) != 1 || strings.TrimSpace(request.Derivation.SourceIDs[0]) == "" {
+		return domain.DiscoveryQueryPlan{}, fmt.Errorf("consulta técnica exige exatamente uma regra e uma origem não vazias")
+	}
+	if len(request.Discriminators) != 2 {
+		return domain.DiscoveryQueryPlan{}, fmt.Errorf("consulta técnica exige exatamente dois discriminadores")
+	}
+	discriminators := make([]string, 2)
+	for index, value := range request.Discriminators {
+		discriminators[index] = strings.TrimSpace(value)
+		if discriminators[index] == "" || len(discriminators[index]) > 64 {
+			return domain.DiscoveryQueryPlan{}, fmt.Errorf("discriminador técnico deve conter de 1 a 64 bytes")
+		}
+	}
+	if normalizeTechnicalValue(discriminators[0]) == normalizeTechnicalValue(discriminators[1]) {
+		return domain.DiscoveryQueryPlan{}, fmt.Errorf("discriminadores técnicos devem ser distintos")
+	}
+	return domain.DiscoveryQueryPlan{
+		Original: query, Version: "0068-technical-v1", Status: "hypothesis", Reason: "technical_discriminators",
+		ActionTerms: []string{discriminators[0]}, ObjectTerms: []string{discriminators[1]},
+		RuleIDs: append([]string(nil), request.Derivation.RuleIDs...), Unverified: []string{query},
+	}, nil
+}
+
+func knownLegacyDerivation(strategy string) bool {
+	return strategy == "lexical" || strategy == "controlled-catalog-exact-v1" || (strings.HasPrefix(strategy, "ontology:") && len(strategy) > len("ontology:"))
+}
+
 func discoverySearchAttempts(original string, attempts []domain.ProviderAttempt, matches []domain.ProviderCandidateMatch) []domain.SearchAttempt {
 	if len(attempts) == 0 {
 		return nil
@@ -99,6 +135,63 @@ func (c *Client) Discover(ctx context.Context, request domain.DiscoveryRequest) 
 	result := domain.ProviderDiscovery{Provider: "sourcegraph", Attempts: make([]domain.ProviderAttempt, 0, 2)}
 	if err := ctx.Err(); err != nil {
 		return result, err
+	}
+	if request.Derivation != nil && !knownLegacyDerivation(request.Derivation.Strategy) && request.Derivation.Strategy != "technical-lexicon-v1" {
+		return result, fmt.Errorf("estratégia de derivação Sourcegraph desconhecida %q", request.Derivation.Strategy)
+	}
+	if request.Derivation != nil && request.Derivation.Strategy == "technical-lexicon-v1" {
+		plan, err := technicalDiscoveryPlan(request)
+		if err != nil {
+			return result, err
+		}
+		query := observableQueries(plan.Original, request.Language, nil, request.RepositoryScope)[0] + fmt.Sprintf(" count:%d", discoveryRequestedMatches(request.MaxResults))
+		attemptCtx := ctx
+		cancel := func() {}
+		if request.AttemptTimeout > 0 {
+			attemptCtx, cancel = context.WithTimeout(ctx, request.AttemptTimeout)
+		}
+		started := time.Now().UTC()
+		attempt := domain.ProviderAttempt{Query: query, AttemptIndex: 0, StartedAt: started, QueryPlan: &plan}
+		candidates, matches, coverage, diagnostics, discoveryErr := c.executeDerivedDiscovery(attemptCtx, query, request.MaxResults, plan)
+		attempt.Coverage, attempt.CandidateDiagnostics = coverage, diagnostics
+		if coverage != nil {
+			attempt.RawCandidates = coverage.ExaminedRepositories
+		}
+		for _, diagnostic := range diagnostics {
+			if diagnostic.Status == "insufficient_evidence" {
+				attempt.RejectedCandidates++
+			}
+		}
+		if discoveryErr == nil {
+			discoveryErr = attemptCtx.Err()
+		}
+		attempt.Status = "SUCCEEDED"
+		if discoveryErr == nil && len(candidates) == 0 {
+			attempt.Status = "EMPTY"
+		}
+		if discoveryErr != nil {
+			attempt.Status, attempt.ErrorClass = "FAILED", "PROVIDER"
+			if errors.Is(discoveryErr, context.DeadlineExceeded) || errors.Is(attemptCtx.Err(), context.DeadlineExceeded) {
+				attempt.Status, attempt.ErrorClass = "TIMED_OUT", "TIMEOUT"
+			}
+			if errors.Is(discoveryErr, context.Canceled) || errors.Is(attemptCtx.Err(), context.Canceled) {
+				attempt.Status, attempt.ErrorClass = "CANCELLED", "CANCELLED"
+			}
+		}
+		attempt.ResultCount, attempt.Duration, attempt.Error = len(candidates), time.Since(started), c.safeError(discoveryErr)
+		cancel()
+		result.Attempts = append(result.Attempts, attempt)
+		if discoveryErr != nil {
+			return result, c.redactedError(discoveryErr)
+		}
+		result.Candidates, result.Matches = candidates, matches
+		for index := range result.Matches {
+			result.Matches[index].AttemptIndex, result.Matches[index].EffectiveQuery = 0, query
+		}
+		for index := range result.Candidates {
+			result.Candidates[index].SearchAttempts = discoverySearchAttempts(request.Query, result.Attempts, result.Matches)
+		}
+		return result, nil
 	}
 	if strings.TrimSpace(request.Query) == "" {
 		return result, fmt.Errorf("consulta Sourcegraph vazia")

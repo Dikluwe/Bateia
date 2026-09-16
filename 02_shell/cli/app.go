@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-09-08
+ * @updated 2026-09-12
  */
 
 package cli
@@ -50,6 +50,8 @@ func (a *CLIApp) Run(args []string) error {
 			return a.runSearchFlags(append([]string{"-path", "."}, args[1:]...))
 		case "idea":
 			return RunIdeaCommand(args[1:], os.Stdout)
+		case "algorithm":
+			return RunAlgorithmHistoryCommand(args[1:], os.Stdout)
 		case "benchmark":
 			return RunBenchmarkCommand(args[1:], os.Stdout)
 		case "mcp":
@@ -86,6 +88,8 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea recommend Orquestra o funil e ranqueia alternativas com evidência")
 	fmt.Println("  idea recover diagnose|plan|execute Recupera evidências de decisões inconclusivas")
 	fmt.Println("  idea autofagia|katamari Audita capacidades internas e compõe somente lacunas comprovadas")
+	fmt.Println("  idea radar export Exporta o radar offline como Archify Dataflow v1")
+	fmt.Println("  algorithm history analyze Reconstrói alegações históricas com proveniência")
 	fmt.Println("  benchmark validate|mutate|run Audita offline o benchmark ponta a ponta")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
 	fmt.Println("  tui           Inicia a interface de terminal interativa TUI")
@@ -101,6 +105,8 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea catalog discover --plan plano.json --provider github --output catalogo.json")
 	fmt.Println("  bateia idea decide --idea ideia.json --assessment assessment.json --policy reuse-policy.json")
 	fmt.Println("  bateia idea recommend --idea ideia.json --policy reuse-policy.json --target-name Software --target-repo owner/repo --output dossie")
+	fmt.Println("  bateia idea radar export --input radar-input.json --output radar.archify.json")
+	fmt.Println("  bateia algorithm history analyze --input history.json --output history-report.json")
 }
 
 func (a *CLIApp) runSearchFlags(args []string) error {

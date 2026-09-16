@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-16
  */
 
 package usecase
@@ -51,6 +51,15 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
 		return report, nil
 	}
+	capabilities = attributableDecisionCapabilities(capabilities, req.Assessments)
+	if len(capabilities) == 0 {
+		report.Decision = domain.DecisionUnknown
+		report.Matrix = []domain.CapabilityComparison{}
+		report.Gaps = []string{}
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-CATALOG-0071", Effect: "verify", Message: "o catálogo não possui regra declarada segura para atribuir presença ou ausência das capacidades aos candidatos"}}
+		report.Effort = assessEffort(report.Decision, 0, 0, true)
+		return report, nil
+	}
 	assessments := append([]domain.CandidateAssessment(nil), req.Assessments...)
 	sort.Slice(assessments, func(i, j int) bool { return assessments[i].Repository.Key() < assessments[j].Repository.Key() })
 	candidates := make([]decisionCandidate, 0, len(assessments))
@@ -64,12 +73,12 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
 		return c.coverage == 1 && len(c.blockers) == 0 && !c.ambiguous && c.a.Operation.LocalStatus == domain.EvidenceProven
 	}); c != nil {
-		return finishDecision(report, req.Idea, *c, domain.DecisionFork, "DEC-FORK-001", "candidato executável cobre todas as capacidades e passa pelos gates"), nil
+		return finishDecision(report, capabilities, *c, domain.DecisionFork, "DEC-FORK-001", "candidato executável cobre todas as capacidades e passa pelos gates"), nil
 	}
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
 		return c.coverage >= req.Policy.ExtendMinCoverage && c.coverage < 1 && c.a.ProblemAlignment.Status == domain.EvidenceProven && len(validParts(c.a.ReusableParts)) > 0 && len(c.blockers) == 0 && !c.ambiguous
 	}); c != nil {
-		return finishDecision(report, req.Idea, *c, domain.DecisionExtend, "DEC-EXTEND-001", "núcleo reutilizável cobre a capacidade central e o limiar da política"), nil
+		return finishDecision(report, capabilities, *c, domain.DecisionExtend, "DEC-EXTEND-001", "núcleo reutilizável cobre a capacidade central e o limiar da política"), nil
 	}
 	if composed, ok := composeCandidates(candidates, capabilities, req.Policy.MaxComponents); ok {
 		report.Decision = domain.DecisionCompose
@@ -82,7 +91,7 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
 		return c.coverage >= req.Policy.IntegrationMinValue && len(validParts(c.a.ReusableParts)) > 0 && len(c.blockers) == 0 && !c.ambiguous
 	}); c != nil {
-		return finishDecision(report, req.Idea, *c, domain.DecisionIntegrate, "DEC-INTEGRATE-001", "componente verificável resolve uma capacidade delimitada importante"), nil
+		return finishDecision(report, capabilities, *c, domain.DecisionIntegrate, "DEC-INTEGRATE-001", "componente verificável resolve uma capacidade delimitada importante"), nil
 	}
 	anyAmbiguous := false
 	for _, c := range candidates {
@@ -93,18 +102,23 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 		report.Decision = domain.DecisionUnknown
 		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-INCONCLUSIVE-001", Effect: "block", Message: "evidência obrigatória ou gate eliminatório permanece inconclusivo"}}
 		covered := map[string]bool{}
+		catalogLimited := false
 		for _, candidate := range candidates {
 			for capability := range candidate.covered {
 				covered[capability] = true
 			}
+			catalogLimited = catalogLimited || assessmentHasCatalogLimitation(candidate.a)
 			report.Reasons = append(report.Reasons, unresolvedCandidateReasons(candidate, req.Policy)...)
+		}
+		if catalogLimited {
+			report.Reasons = append(report.Reasons, domain.DecisionReason{RuleID: "DEC-CATALOG-0071", Effect: "verify", Message: "a cobertura do catálogo é ausente ou apenas hipotética para parte dos requisitos; isso não descreve lacuna de nenhum candidato"})
 		}
 		report.Gaps = uncoveredGaps(capabilities, covered)
 		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
 		return report, nil
 	}
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool { return c.useful }); c != nil {
-		r := finishDecision(report, req.Idea, *c, domain.DecisionReference, "DEC-REFERENCE-001", "há evidência útil, mas gates ou ausência de componente impedem reúso direto")
+		r := finishDecision(report, capabilities, *c, domain.DecisionReference, "DEC-REFERENCE-001", "há evidência útil, mas gates ou ausência de componente impedem reúso direto")
 		r.Blockers = report.Blockers
 		return r, nil
 	}
@@ -113,6 +127,29 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	report.Gaps = append([]string(nil), capabilities...)
 	report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), false)
 	return report, nil
+}
+
+func attributableDecisionCapabilities(capabilities []string, assessments []domain.CandidateAssessment) []string {
+	out := make([]string, 0, len(capabilities))
+	for _, capability := range capabilities {
+		found := false
+		catalogLimited := true
+		for _, assessment := range assessments {
+			for _, evidence := range assessment.Capabilities {
+				if normalizeDecisionText(evidence.Capability) != capability {
+					continue
+				}
+				found = true
+				if evidence.ReasonCode != "CATALOG_GAP" && evidence.ReasonCode != "HYPOTHESIS_ONLY" {
+					catalogLimited = false
+				}
+			}
+		}
+		if !found || !catalogLimited {
+			out = append(out, capability)
+		}
+	}
+	return out
 }
 
 // Unknown adoption gates are evidence gaps, not missing project capabilities.
@@ -131,16 +168,22 @@ func unresolvedCandidateReasons(c decisionCandidate, policy domain.ReuseDecision
 		add("operação local não verificada: examinar requisitos e instruções de execução", c.a.Operation.Sources)
 	}
 	for _, capability := range c.a.Capabilities {
+		if catalogLimitedEvidence(capability) {
+			continue
+		}
 		if capability.Status == domain.EvidencePartial || capability.Status == domain.EvidenceInconclusive {
 			add("capacidade não comprovada: "+capability.Capability+"; "+capability.Explanation, capability.Sources)
 		}
 	}
 	for _, constraint := range c.a.Constraints {
+		if catalogLimitedEvidence(constraint.Evidence) {
+			continue
+		}
 		if constraint.Evidence.Status == domain.EvidenceInconclusive {
 			add("restrição não verificada: "+constraint.Constraint+"; "+constraint.Evidence.Explanation, constraint.Evidence.Sources)
 		}
 	}
-	if c.a.ProblemAlignment.Status == domain.EvidenceInconclusive {
+	if c.a.ProblemAlignment.Status == domain.EvidenceInconclusive && !catalogLimitedEvidence(c.a.ProblemAlignment) {
 		add("relação com a intenção não verificada: "+c.a.ProblemAlignment.Explanation, c.a.ProblemAlignment.Sources)
 	}
 	for _, failure := range c.a.Failures {
@@ -148,6 +191,23 @@ func unresolvedCandidateReasons(c decisionCandidate, policy domain.ReuseDecision
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Message < out[j].Message })
 	return out
+}
+
+func assessmentHasCatalogLimitation(assessment domain.CandidateAssessment) bool {
+	if catalogLimitedEvidence(assessment.ProblemAlignment) {
+		return true
+	}
+	for _, capability := range assessment.Capabilities {
+		if catalogLimitedEvidence(capability) {
+			return true
+		}
+	}
+	for _, constraint := range assessment.Constraints {
+		if catalogLimitedEvidence(constraint.Evidence) {
+			return true
+		}
+	}
+	return false
 }
 
 func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
@@ -169,6 +229,9 @@ func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
 func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.ReuseDecisionPolicy) decisionCandidate {
 	a = SanitizeAssessmentEvidence(a)
 	c := decisionCandidate{a: a, key: a.Repository.Key(), covered: map[string]bool{}}
+	if assessmentHasCatalogLimitation(a) {
+		c.ambiguous = true
+	}
 	byCap := map[string]domain.CapabilityEvidence{}
 	for _, e := range a.Capabilities {
 		byCap[normalizeDecisionText(e.Capability)] = e
@@ -195,6 +258,9 @@ func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.Reus
 		}
 	}
 	c.coverage = float64(len(c.covered)) / float64(len(caps))
+	if catalogLimitedEvidence(a.ProblemAlignment) {
+		c.ambiguous = true
+	}
 	if a.ProblemAlignment.Status == domain.EvidenceInconclusive {
 		c.ambiguous = true
 	}
@@ -221,6 +287,10 @@ func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.Reus
 		}
 	}
 	for _, x := range a.Constraints {
+		if catalogLimitedEvidence(x.Evidence) {
+			c.ambiguous = true
+			continue
+		}
 		if x.Evidence.Status == domain.EvidenceInconclusive {
 			c.ambiguous = true
 		}
@@ -231,11 +301,11 @@ func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.Reus
 	return c
 }
 
-func finishDecision(r domain.ReuseDecisionReport, idea domain.IdeaSpec, c decisionCandidate, decision domain.ReuseDecision, rule, msg string) domain.ReuseDecisionReport {
+func finishDecision(r domain.ReuseDecisionReport, capabilities []string, c decisionCandidate, decision domain.ReuseDecision, rule, msg string) domain.ReuseDecisionReport {
 	r.Decision = decision
 	r.Primary = &domain.ResolvedRepository{Identity: domain.RepositoryIdentity{Owner: c.a.Repository.Owner, Repo: c.a.Repository.Repo}, Commit: c.a.Repository.Commit}
 	r.Components = validParts(c.a.ReusableParts)
-	r.Gaps = uncoveredGaps(normalizedSorted(idea.Capabilities), c.covered)
+	r.Gaps = uncoveredGaps(capabilities, c.covered)
 	r.Reasons = []domain.DecisionReason{{RuleID: rule, Effect: "select", Candidate: c.key, Evidence: c.evidence, Message: msg}}
 	r.Blockers = append(r.Blockers, c.blockers...)
 	r.Effort = assessEffort(decision, len(r.Components), len(r.Gaps), false)

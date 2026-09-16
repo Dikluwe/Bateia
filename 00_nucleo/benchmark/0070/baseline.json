@@ -1,0 +1,56 @@
+{
+  "schema_version": "algorithm-history-benchmark-v1",
+  "base_commit": "fa86a30be391e5a101aa708201858a96ca72e377",
+  "captured_before_candidate": true,
+  "candidate_files_present": false,
+  "fixture": {
+    "schema_version": "algorithm-history-input-v1",
+    "algorithms": [
+      {"id":"alpha-sort","name":"Alpha Sort","chronology":"KNOWN","year_start":1960,"year_end":1960,"chronology_reason":"dated design record","provenance_ids":["archive-alpha"]},
+      {"id":"beta-sort","name":"Beta Sort","chronology":"APPROXIMATE","year_start":1970,"year_end":1972,"chronology_reason":"bounded archive records","provenance_ids":["archive-beta","paper-beta"]},
+      {"id":"gamma-sort","name":"Gamma Sort","chronology":"UNKNOWN","year_start":null,"year_end":null,"chronology_reason":"surviving source is undated","provenance_ids":["archive-gamma"]}
+    ],
+    "provenance": [
+      {"id":"archive-alpha","kind":"PRIMARY_SOURCE","origin_id":"archive:alpha","citation":"Synthetic Alpha design record","locator":"archive://alpha/design"},
+      {"id":"archive-beta","kind":"PRIMARY_SOURCE","origin_id":"archive:beta","citation":"Synthetic Beta notebook","locator":"archive://beta/notebook"},
+      {"id":"paper-beta","kind":"SECONDARY_SOURCE","origin_id":"journal:beta","citation":"Synthetic independent Beta study","locator":"doi:10.0000/example.beta"},
+      {"id":"archive-gamma","kind":"EMPIRICAL_ARTIFACT","origin_id":"artifact:gamma","citation":"Synthetic Gamma source artifact","locator":"artifact://gamma/source"}
+    ],
+    "claims": [
+      {"id":"beta-from-alpha","subject_id":"beta-sort","relation":"DERIVED_FROM","object_id":"alpha-sort","statement":"Beta Sort derived its partition schedule from Alpha Sort"},
+      {"id":"gamma-improves-beta","subject_id":"gamma-sort","relation":"IMPROVES","object_id":"beta-sort","statement":"Gamma Sort improves the bounded-memory behavior of Beta Sort"},
+      {"id":"gamma-resembles-alpha","subject_id":"gamma-sort","relation":"RESEMBLES","object_id":"alpha-sort","statement":"Gamma Sort resembles Alpha Sort in its partition boundary"}
+    ],
+    "bases": [
+      {"id":"beta-support-primary","claim_id":"beta-from-alpha","kind":"EVIDENCE","stance":"SUPPORT","provenance_id":"archive-beta","summary":"Notebook attributes the schedule to Alpha","derived_from_ids":[]},
+      {"id":"beta-support-secondary","claim_id":"beta-from-alpha","kind":"EVIDENCE","stance":"SUPPORT","provenance_id":"paper-beta","summary":"Independent study reports the derivation","derived_from_ids":[]},
+      {"id":"beta-inference","claim_id":"beta-from-alpha","kind":"INFERENCE","stance":"SUPPORT","provenance_id":"paper-beta","summary":"Ordering of changes is consistent with derivation","derived_from_ids":["beta-support-primary"]},
+      {"id":"gamma-improve-support","claim_id":"gamma-improves-beta","kind":"EVIDENCE","stance":"SUPPORT","provenance_id":"archive-gamma","summary":"Artifact uses less bounded workspace in the fixture","derived_from_ids":[]},
+      {"id":"gamma-improve-conflict","claim_id":"gamma-improves-beta","kind":"EVIDENCE","stance":"CONFLICT","provenance_id":"paper-beta","summary":"Study reports no improvement under its workload","derived_from_ids":[]},
+      {"id":"gamma-resemblance-ambiguous","claim_id":"gamma-resembles-alpha","kind":"EVIDENCE","stance":"AMBIGUOUS","provenance_id":"archive-alpha","summary":"Boundary notation admits more than one reading","derived_from_ids":[]},
+      {"id":"gamma-resemblance-inference","claim_id":"gamma-resembles-alpha","kind":"INFERENCE","stance":"SUPPORT","provenance_id":"archive-gamma","summary":"Structural similarity is inferred from the artifact","derived_from_ids":["gamma-resemblance-ambiguous"]}
+    ]
+  },
+  "expected": {
+    "status": "COMPLETE",
+    "reason": "analyzed",
+    "assessments": [
+      {"claim_id":"beta-from-alpha","relation":"DERIVED_FROM","outcome":"CORROBORATED","reason":"independent_origins_corroborate","supporting_evidence_ids":["beta-support-primary","beta-support-secondary"],"supporting_inference_ids":["beta-inference"],"distinct_supporting_origins":["archive:beta","journal:beta"]},
+      {"claim_id":"gamma-improves-beta","relation":"IMPROVES","outcome":"CONTESTED","reason":"evidence_contested","supporting_evidence_ids":["gamma-improve-support"],"conflicting_evidence_ids":["gamma-improve-conflict"]},
+      {"claim_id":"gamma-resembles-alpha","relation":"RESEMBLES","outcome":"UNKNOWN","reason":"evidence_ambiguous","ambiguous_evidence_ids":["gamma-resemblance-ambiguous"],"supporting_inference_ids":["gamma-resemblance-inference"]}
+    ],
+    "metrics": {"input_algorithms":3,"input_provenance":4,"input_claims":3,"input_bases":7,"algorithms":3,"provenance":4,"claims":3,"bases":7,"duplicate_algorithms":0,"duplicate_provenance":0,"duplicate_claims":0,"duplicate_bases":0,"evidence":5,"inferences":2,"corroborated":1,"supported":0,"contested":1,"contradicted":0,"unknown":1,"operations":53,"limit_exceeded":false,"verdict_changes":0}
+  },
+  "families": [
+    "all_eight_relations",
+    "evidence_vs_inference",
+    "same_origin_not_independent",
+    "controversy_and_unknown",
+    "canonical_deduplication",
+    "invalid_and_ambiguous_references",
+    "budgets_and_operations",
+    "20_permutations_and_deep_immutability",
+    "strict_atomic_offline_cli"
+  ],
+  "forbidden": ["automatic_search","network","llm","archify","inferred_transitive_edge","inference_as_evidence","partial_unknown_output","edits_to_0066_0069"]
+}

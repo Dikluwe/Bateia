@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_run.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-16
  */
 package usecase
 
@@ -36,6 +36,14 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	if err := validateIdeaRun(req, deps); err != nil {
 		return domain.IdeaRunResult{}, err
 	}
+	rules := deps.EvidenceRules
+	if !evidenceRuleCatalogProvided(rules) {
+		rules = DefaultEvidenceRules()
+	}
+	catalogCoverage, err := AnalyzeEvidenceCatalogCoverage(req.Idea, rules)
+	if err != nil {
+		return domain.IdeaRunResult{}, err
+	}
 	durations := map[string]int64{}
 	started := time.Now()
 	literal, err := ExpandIdea(req.Idea)
@@ -55,7 +63,7 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 		return domain.IdeaRunResult{}, err
 	}
 	durations["expand"] = time.Since(started).Milliseconds()
-	result := domain.IdeaRunResult{Expansion: plan, StageDurations: durations}
+	result := domain.IdeaRunResult{Expansion: plan, CatalogCoverage: catalogCoverage, StageDurations: durations}
 	started = time.Now()
 	if req.Resume && deps.ReplaySnapshot != nil {
 		if !equalSearchLocales(req.SearchLocales, deps.ReplaySnapshot.SearchLocales) {
@@ -98,10 +106,6 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	maxCandidates := req.MaxCandidates
 	if maxCandidates == 0 {
 		maxCandidates = 5
-	}
-	rules := deps.EvidenceRules
-	if rules.SchemaVersion == "" {
-		rules = DefaultEvidenceRules()
 	}
 	includes := []string{}
 	if req.Mode == domain.IdeaRunLocal {
@@ -166,7 +170,7 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	validIndex := 0
 	for _, bundle := range result.Bundles {
 		if bundle.Repository.Commit == "" || strings.EqualFold(bundle.Repository.Commit, "HEAD") {
-			result.Assessment.Assessments = append(result.Assessment.Assessments, inconclusiveRunAssessment(req.Idea, bundle))
+			result.Assessment.Assessments = append(result.Assessment.Assessments, inconclusiveRunAssessment(req.Idea, bundle, rules, catalogCoverage))
 			continue
 		}
 		result.Assessment.Assessments = append(result.Assessment.Assessments, validAssessments[validIndex])
@@ -178,7 +182,7 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	if err != nil {
 		return result, err
 	}
-	investigation := BuildInvestigationPlan(req.Idea, result.Discovery, result.Assessment.Assessments)
+	investigation := BuildInvestigationPlanWithCatalogCoverage(req.Idea, result.Discovery, result.Assessment.Assessments, catalogCoverage)
 	result.Decision.Investigation = &investigation
 	durations["decide"] = time.Since(started).Milliseconds()
 	return result, nil
@@ -373,12 +377,40 @@ func incompleteReplayBundle(plan domain.EvidenceExtractionPlan, message string) 
 	}
 }
 
-func inconclusiveRunAssessment(idea domain.IdeaSpec, bundle domain.EvidenceBundle) domain.CandidateAssessment {
-	a := domain.CandidateAssessment{Repository: bundle.Repository, ScreeningDecision: bundle.Plan.Decision, ProblemAlignment: domain.CapabilityEvidence{Capability: idea.Problem, Status: domain.EvidenceInconclusive, Explanation: "repositório não resolvido em commit imutável"}, License: domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "coleta incompleta"}, Maintenance: domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive}, Operation: domain.OperationAssessment{LocalStatus: domain.EvidenceInconclusive}, Failures: append([]domain.ExecutionFailure(nil), bundle.Failures...)}
-	for _, capability := range idea.Capabilities {
-		a.Capabilities = append(a.Capabilities, domain.CapabilityEvidence{Capability: capability, Status: domain.EvidenceInconclusive, Explanation: "coleta incompleta"})
+func inconclusiveRunAssessment(idea domain.IdeaSpec, bundle domain.EvidenceBundle, catalog domain.CapabilityRuleCatalog, coverage domain.EvidenceCatalogCoverage) domain.CandidateAssessment {
+	incomplete := bundle
+	incomplete.Complete = false
+	incomplete.TreeComplete = false
+	a := domain.CandidateAssessment{
+		Repository: bundle.Repository, ScreeningDecision: bundle.Plan.Decision,
+		ProblemAlignment: assessCapability(idea.Problem, incomplete, findRule(idea.Problem, catalog)),
+		Capabilities:     []domain.CapabilityEvidence{}, Constraints: []domain.ConstraintEvidence{},
+		License:       domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "coleta incompleta"},
+		Maintenance:   domain.MaintenanceAssessment{Status: domain.EvidenceInconclusive},
+		Operation:     domain.OperationAssessment{LocalStatus: domain.EvidenceInconclusive},
+		ReusableParts: []domain.ReusableComponent{}, Gaps: []string{},
+		Failures: append([]domain.ExecutionFailure(nil), bundle.Failures...),
+	}
+	capabilities := append([]string(nil), idea.Capabilities...)
+	sort.Slice(capabilities, func(i, j int) bool {
+		left, right := normalizeEvidenceText(capabilities[i]), normalizeEvidenceText(capabilities[j])
+		if left != right {
+			return left < right
+		}
+		return capabilities[i] < capabilities[j]
+	})
+	for _, capability := range capabilities {
+		evidence := assessCapability(capability, incomplete, findRule(capability, catalog))
+		a.Capabilities = append(a.Capabilities, evidence)
+		if catalogCoverageStatus(coverage, "capability", capability) == domain.CatalogCoverageCovered {
+			a.Gaps = append(a.Gaps, capability)
+		}
 	}
 	return a
+}
+
+func evidenceRuleCatalogProvided(catalog domain.CapabilityRuleCatalog) bool {
+	return catalog.SchemaVersion != "" || catalog.Version != "" || catalog.Hash != "" || len(catalog.Rules) != 0
 }
 
 func validateIdeaRun(req domain.IdeaRunRequest, deps IdeaRunDependencies) error {

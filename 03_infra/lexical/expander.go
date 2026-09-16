@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/lexical/expander.md
  * @layer L3
- * @updated 2026-08-24
+ * @updated 2026-09-11
  */
 
 package lexical
@@ -20,9 +20,11 @@ import (
 var defaultVocabulary []byte
 
 type Rule struct {
-	ID       string   `json:"id"`
-	WhenAny  []string `json:"when_any"`
-	ExpandTo []string `json:"expand_to"`
+	ID             string   `json:"id"`
+	WhenAny        []string `json:"when_any"`
+	ExpandTo       []string `json:"expand_to"`
+	Strategy       string   `json:"strategy,omitempty"`
+	Discriminators []string `json:"discriminators,omitempty"`
 }
 
 type Vocabulary struct {
@@ -68,6 +70,34 @@ func NewFromJSON(data []byte, maxPerSource int) (*Expander, error) {
 				return nil, fmt.Errorf("regra lexical %s possui termo vazio", rule.ID)
 			}
 		}
+		rule.Strategy = strings.TrimSpace(rule.Strategy)
+		if rule.Strategy == "" {
+			rule.Strategy = "lexical"
+		}
+		switch rule.Strategy {
+		case "lexical":
+			if len(rule.Discriminators) != 0 {
+				return nil, fmt.Errorf("regra lexical %s não aceita discriminadores", rule.ID)
+			}
+		case "technical-lexicon-v1":
+			if len(rule.ExpandTo) != 1 || len(rule.Discriminators) != 2 {
+				return nil, fmt.Errorf("regra técnica %s exige uma expansão e dois discriminadores", rule.ID)
+			}
+			if len(rule.ExpandTo[0]) > 256 {
+				return nil, fmt.Errorf("regra técnica %s excede 256 bytes por consulta", rule.ID)
+			}
+			for discriminatorIndex := range rule.Discriminators {
+				rule.Discriminators[discriminatorIndex] = strings.TrimSpace(rule.Discriminators[discriminatorIndex])
+				if rule.Discriminators[discriminatorIndex] == "" || len(rule.Discriminators[discriminatorIndex]) > 64 {
+					return nil, fmt.Errorf("regra técnica %s possui discriminador vazio ou acima de 64 bytes", rule.ID)
+				}
+			}
+			if normalize(rule.Discriminators[0]) == normalize(rule.Discriminators[1]) {
+				return nil, fmt.Errorf("regra técnica %s possui discriminadores duplicados", rule.ID)
+			}
+		default:
+			return nil, fmt.Errorf("regra lexical %s possui estratégia desconhecida %q", rule.ID, rule.Strategy)
+		}
 	}
 	return &Expander{rules: vocabulary.Rules, maxPerSourceID: maxPerSource}, nil
 }
@@ -97,10 +127,11 @@ func (e *Expander) Expand(plan domain.ExpansionPlan) ([]domain.SearchExpansion, 
 				}
 				proposals = append(proposals, domain.SearchExpansion{
 					Facet: source.Facet, Query: strings.Join(strings.Fields(query), " "),
-					Rationale: "ampliar vocabulário por regra lexical " + rule.ID,
-					Covers:    append([]string(nil), source.Covers...),
+					Rationale:      "ampliar vocabulário por regra lexical " + rule.ID,
+					Covers:         append([]string(nil), source.Covers...),
+					Discriminators: append([]string(nil), rule.Discriminators...),
 					Derivation: &domain.ExpansionDerivation{
-						Strategy: "lexical", RuleIDs: []string{rule.ID}, SourceIDs: []string{source.ID},
+						Strategy: rule.Strategy, RuleIDs: []string{rule.ID}, SourceIDs: []string{source.ID},
 					},
 				})
 				count++
@@ -109,6 +140,9 @@ func (e *Expander) Expand(plan domain.ExpansionPlan) ([]domain.SearchExpansion, 
 				break
 			}
 		}
+	}
+	if len(plan.Expansions)+len(proposals) > 64 {
+		return nil, fmt.Errorf("plano enriquecido excede o limite de 64 expansões")
 	}
 	return proposals, nil
 }

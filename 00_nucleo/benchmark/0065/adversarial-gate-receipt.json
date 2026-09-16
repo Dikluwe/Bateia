@@ -1,0 +1,69 @@
+{
+  "schema_version": "tekt-adversarial-gate-receipt-v1",
+  "protocol": "complete-procedural-trial",
+  "role": "ADVERSARY",
+  "created_before_candidate_execution": true,
+  "attestation": "executed without physical isolation attestation",
+  "authority": {
+    "read_allowlist": [
+      ".agents/AGENTS.md",
+      "tekt-materializacao-segregada/SKILL.md and its two references",
+      "00_nucleo/passos/0065-analisar-coalizoes-de-evidencia-em-modo-sombra.md",
+      "00_nucleo/benchmark/0065/README.md",
+      "00_nucleo/benchmark/0065/contract.md",
+      "00_nucleo/benchmark/0065/baseline.json",
+      "00_nucleo/benchmark/0065/budget.json",
+      "00_nucleo/benchmark/0065/manifest.json",
+      "00_nucleo/prompts/01_core/usecase/evidence_coalition_test.md",
+      "public prior gate patterns"
+    ],
+    "write_allowlist": [
+      "00_nucleo/benchmark/0065/adversarial-cases.json",
+      "00_nucleo/benchmark/0065/adversarial-gate-receipt.json",
+      "00_nucleo/prompts/04_wiring/step0065_gate/discriminatory_test.md",
+      "04_wiring/step0065_gate/discriminatory_test.go"
+    ],
+    "forbidden_observed": [
+      "future candidate evidence_coalition.go",
+      "oracle-owned Go tests",
+      "canonical contract, step, baseline, budget, manifest and frozen prompts"
+    ],
+    "context": "shared filesystem; role-scoped procedural context; no physical isolation proof"
+  },
+  "frozen_input_hashes": {
+    "step": "5cece1cf0f069b2fd6751b778876c2479a04012622494036ef576b9c4d594534",
+    "contract": "84861cd60feb2c45fbf35befeea63cec3cd120dae31af7ca592b8c46792f44de",
+    "baseline": "2c5d72868e490a65cd88ff0e7084906ae9d3ec60272a8edc0e16cd57218cf58c",
+    "budget": "09e4b8b0105812528c3c9f9568a599164fa52a5f3e641e25c4ae6fdc4e64fe40",
+    "manifest": "b3d97ab8e4e7f6b20d2971742a2c29dce788c9df4e4cd74c3f7e410fa67488c6"
+  },
+  "produced_artifact_hashes": {
+    "prompt": "21b15c21c35f625e2e675a1be13d25481869012293d6497efd416dd90c880348",
+    "adversarial_cases": "29934f45eaf19a4b5f898c5db84e9acdaebaa3df4aed459655058c9b7600fd13",
+    "gate_test": "8e5ae4419fd1ddbfc3663795d6c489a43ba1f09665e1c2e4134f9519df78c46b"
+  },
+  "calibration": {
+    "full_corpus_runs": 3,
+    "focused_revisions_by_cause": {},
+    "positive_controls_correct": 4,
+    "negative_controls_correct": 5,
+    "opaque_controls_correct": 3,
+    "valid_mutations": 12,
+    "rejected_mutations": 12,
+    "mutation_score": 1.0,
+    "permutation_repetitions": 20,
+    "verdict_changes": 0,
+    "dominant_reason_code": "none"
+  },
+  "execution": {
+    "command": "go test ./04_wiring/step0065_gate -run TestStep0065PreCandidateDiscriminatoryGate -count=1 -v",
+    "result": "PASS",
+    "reported_line": "mutation_score=1.0 (12/12), repetitions=20"
+  },
+  "verdict": "contract/model is discriminatory for the enumerated M01-M12 fixture",
+  "limitations": [
+    "This is not a seal, candidate verdict, final certificate, or proof of general functional equivalence.",
+    "The gate is binding-free and intentionally does not import or execute candidate production code.",
+    "Physical filesystem isolation was not available; separation is procedural and capability-recorded."
+  ]
+}

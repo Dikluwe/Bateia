@@ -71,3 +71,16 @@ Aplicar contrato do protótipo AST+CFG: adaptador opcional explicitamente config
 
 ## Passo 0062
 Despachar effects antes de carregar .env ou clientes; injetar effects.NewRunner em cli.RunEffectsCommand.
+
+## Passo 0068
+
+Instanciar o expansor lexical produtivo com limite três em todos os três caminhos atuais
+de `main.go`. Isto apenas permite as três propostas do catálogo técnico; regras legadas
+continuam com suas duas saídas. Não adicionar decisão de negócio a L4.
+
+## Passo 0070
+
+Despachar `algorithm history analyze` antes de carregar `.env`, cache, expansores ou
+clientes L3. L4 apenas encaminha argumentos e stdout para
+`cli.RunAlgorithmHistoryCommand`; a análise histórica permanece em L1 e a casca offline
+em L2.

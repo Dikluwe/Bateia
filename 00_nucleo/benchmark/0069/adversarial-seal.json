@@ -1,0 +1,39 @@
+{
+  "schema_version": "tekt-adversarial-seal-v1",
+  "step": "0069",
+  "status": "RESEALED_CONTRACT_R1_ORACLE_R2_ADVERSARY_R1",
+  "manifest_sha256": "0b4e17174f4088992cba0d9ff15d24dfb8f85a342a36cb539768271585f92faa",
+  "protected": {
+    "step_sha256": "a5132750ca3486823e9503101262a1abad6a15086510132213db6c20d10b5634",
+    "contract_sha256": "702dfdfa67922055b025b911323980587a1e913b8b8d0e4d06fe32e54e602ce9",
+    "baseline_sha256": "6a188df3e1f99995362cd84a6a00a3448dee2719d6aa10734fa026fb54b41d74",
+    "budget_sha256": "7215957b7528ddbb724531582f4fc3447c0a446e6ea7f7cef2e2de2c6e665f77",
+    "report_oracle_sha256": "8bf855a014b710ed8a574a2c5f7beb03f6bc888203bedbfb1ef269538583956d",
+    "cli_oracle_sha256": "9ece71af937200413c2f0359d23f11a84f835551500c12eb155a1530fe917b81",
+    "adversarial_fixtures_sha256": "c4321d7028442aadaed774b233120f8e44370db188bf97abbf402d4a5783817a",
+    "discriminatory_gate_sha256": "500ec9d2d725aae9413e3602681025dbb27f9acf4a1184dc66f464dd2c03df02",
+    "gate_prompt_sha256": "df2f77e4b270eef8fe054918b17f5c39d52741fa2114463a61abba29bac29703",
+    "adversarial_fixtures_r1_sha256": "d41f42e9cf3388a97ac0ebef8ac5c487d5299ec74cbcd09a093dae9ecd86c451",
+    "discriminatory_gate_r1_sha256": "cafa77eb1d45972f2b8228b9be26c3bcb43a5bab0d447e3023cdf8b5d0228492",
+    "gate_prompt_r1_sha256": "5b6a57db6692035fcd00f3b1447214f63d3dd8122a842de30a97b05597c0b657"
+  },
+  "gate": {
+    "command": "GOCACHE=/tmp/bateia-step0069-gate-cache GOTMPDIR=/tmp go test -count=2 -v ./04_wiring/step0069_gate",
+    "controls_preserved": 2,
+    "opaque_unknown": 3,
+    "valid_mutations": 27,
+    "rejected_mutations": 27,
+    "mutation_score": 1.0,
+    "permutations": 20
+  },
+  "revision": {
+    "id": "contract-r1/oracle-r2/adversary-r1",
+    "contract_record_sha256": "e95f9a394331e2b0057bbc74875225de58e98419982a4c09f0a7ed1dac68c56a",
+    "oracle_record_sha256": "fe2bfe54c3412179eb76d18b6678e0f85e15bf92f050c6e67b6b0b3cc5b789ec",
+    "adversary_record_sha256": "b9b5589babd1bc8fa69053e0c4aac7b1a8060d2fc870894dde2c2eca1220a033",
+    "scope": "renderabilidade Dataflow rows 0..4, labels curtos e identidade integral preservada",
+    "contract_changed": true
+  },
+  "verdict": "CONTRACT_R1_DISCRIMINATORY_RESEALED",
+  "isolation": "segregacao procedural em filesystem compartilhado; sem atestacao fisica"
+}

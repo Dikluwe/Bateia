@@ -1,0 +1,69 @@
+{
+  "schema_version": "tekt-manifest-v1",
+  "protocol": "completo, ensaio sem atestacao fisica de isolamento",
+  "created_before_candidate": true,
+  "inputs": {
+    "step": {
+      "path": "00_nucleo/passos/0065-analisar-coalizoes-de-evidencia-em-modo-sombra.md",
+      "sha256": "5cece1cf0f069b2fd6751b778876c2479a04012622494036ef576b9c4d594534"
+    },
+    "contract": {
+      "path": "00_nucleo/benchmark/0065/contract.md",
+      "sha256": "84861cd60feb2c45fbf35befeea63cec3cd120dae31af7ca592b8c46792f44de"
+    },
+    "baseline": {
+      "path": "00_nucleo/benchmark/0065/baseline.json",
+      "sha256": "2c5d72868e490a65cd88ff0e7084906ae9d3ec60272a8edc0e16cd57218cf58c"
+    },
+    "budget": {
+      "path": "00_nucleo/benchmark/0065/budget.json",
+      "sha256": "09e4b8b0105812528c3c9f9568a599164fa52a5f3e641e25c4ae6fdc4e64fe40"
+    }
+  },
+  "prompts": {
+    "domain": "364ccc0eaf1e0d2f79b0f76ea2930b52f3a39558072de995aa8c2acf4675a6e8",
+    "domain_test": "1000a07280bf771c05f0a4e550ad315c61da6b227d12045062be5ad5d2722b61",
+    "usecase": "f966134a2c87c9a35b44ab5d7e78c2adc54cdca58254c5ddbf81526e64d4aab8",
+    "usecase_test": "ea21bd974195d868c3936b724ee0327ff2f5af9e60881a5b3e3399d623abeb7d"
+  },
+  "observables": [
+    "public_types_and_json",
+    "claim_outcome_and_reason",
+    "support_conflict_and_missing_roles",
+    "conservative_origin_status",
+    "canonical_order_and_json",
+    "logical_operation_count_and_limits",
+    "baseline_status_echo",
+    "zero_verdict_changes"
+  ],
+  "unknown_policy": "origem ausente, opacidade, entrada vazia, schema desconhecido ou budget excedido nunca viram SATISFIED",
+  "roles": {
+    "intent_author": "usuario; congela objetivo",
+    "contract_author": "somente L0/contrato; sem candidato Go",
+    "oracle_author": "contrato e baseline; sem candidato",
+    "adversary": "contrato e baseline; mutantes M01-M12; sem corrigir solucao",
+    "implementer": "contrato e prompts produtivos selados; sem oraculos, mutantes ou testes",
+    "verifier": "artefatos congelados e saidas; sem editar material julgado"
+  },
+  "capabilities": {
+    "contract_author_read": [
+      ".agents/AGENTS.md",
+      "skill e referencias tekt-materializacao-segregada",
+      "passos e benchmarks 0062-0064 como padroes",
+      "baseline produtivo anterior ao candidato"
+    ],
+    "contract_author_write": [
+      "00_nucleo/passos/0065-*.md",
+      "00_nucleo/prompts/01_core/domain/evidence_coalition*.md",
+      "00_nucleo/prompts/01_core/usecase/evidence_coalition*.md",
+      "00_nucleo/benchmark/0065/**"
+    ],
+    "contract_author_forbidden": [
+      "arquivos Go",
+      "implementacao candidata futura",
+      "veredito final"
+    ]
+  },
+  "isolation": "contextos e autoridades segregados proceduralmente; filesystem compartilhado; sem atestacao fisica",
+  "seal_status": "CANDIDATE_NOT_SEALED"
+}

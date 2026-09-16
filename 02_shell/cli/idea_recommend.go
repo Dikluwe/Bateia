@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-08
+ * @updated 2026-09-16
  */
 package cli
 
@@ -41,6 +41,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	language := fs.String("language", "", "linguagem opcional")
 	replay := fs.String("replay", "", "dossiê fonte para replay")
 	output := fs.String("output", "", "diretório do dossiê")
+	rulesPath := fs.String("rules", "", "catálogo JSON de regras de evidência")
 	resume := fs.Bool("resume", false, "retoma checkpoints válidos")
 	maxPerQuery := fs.Int("max-per-query", 5, "máximo de resultados por expansão")
 	maxCandidates := fs.Int("max-candidates", 5, "máximo de candidatos para coleta")
@@ -79,9 +80,6 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if err != nil {
 		return err
 	}
-	if err := prepareDossier(*output, *resume); err != nil {
-		return err
-	}
 	idea, err := readIdeaSpec(*ideaPath)
 	if err != nil {
 		return err
@@ -96,8 +94,23 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if err = readJSONFile(*policyPath, &policy); err != nil {
 		return err
 	}
+	var evidenceRules domain.CapabilityRuleCatalog
+	if strings.TrimSpace(*rulesPath) != "" {
+		if err = readJSONFile(*rulesPath, &evidenceRules); err != nil {
+			return err
+		}
+	} else {
+		evidenceRules = usecase.DefaultEvidenceRules()
+	}
+	catalogCoverage, err := usecase.AnalyzeEvidenceCatalogCoverage(idea, evidenceRules)
+	if err != nil {
+		return err
+	}
+	if err := prepareDossier(*output, *resume); err != nil {
+		return err
+	}
 	req := domain.IdeaRunRequest{Idea: idea, Policy: policy, Mode: runMode, Strategy: strings.ToLower(*strategy), Provider: *provider, Language: *language, SearchLocales: normalizedSearchLocales, LocalPaths: append([]string(nil), locals...), ReplayDirectory: *replay, OutputDirectory: *output, Resume: *resume, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates}
-	deps := usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content}
+	deps := usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content, EvidenceRules: evidenceRules}
 	if runMode == domain.IdeaRunLocal {
 		deps.LocalCandidates, err = localCandidatesExcluding(idea, locals, *output)
 		if err != nil {
@@ -108,11 +121,11 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if err != nil {
 		return err
 	}
-	inputHashes := map[string]string{"idea": hashJSON(idea), "policy": hashJSON(policy), "mode": hashBytes([]byte(runMode)), "evidence": evidenceHash, "target": hashJSON(target)}
+	inputHashes := map[string]string{"idea": hashJSON(idea), "policy": hashJSON(policy), "mode": hashBytes([]byte(runMode)), "evidence": evidenceHash, "evidence_rules": catalogCoverage.RulesHash, "target": hashJSON(target)}
 	if len(normalizedSearchLocales) > 0 {
 		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
 	}
-	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": usecase.DefaultEvidenceRules().Version, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
+	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": catalogCoverage.RulesVersion, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
 	if runMode == domain.IdeaRunLocal || runMode == domain.IdeaRunLive {
 		ruleVersions["implementation_search"] = "0061"
 	}
@@ -123,7 +136,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	canReuseEvidence := false
 	if *resume {
 		if e := readJSONFile(filepath.Join(*output, "run.json"), &previous); e == nil {
-			canReuseEvidence = reusableEvidenceCheckpoint(*output, previous, evidenceHash, ruleVersions)
+			canReuseEvidence = reusableEvidenceCheckpoint(*output, previous, evidenceHash, catalogCoverage.RulesHash, ruleVersions)
 		}
 	}
 	runIdentity := struct {
@@ -165,8 +178,11 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	var runErr error
 	usesRecommendationService := runMode == domain.IdeaRunLive && targetRepository == nil && !canReuseEvidence
 	if usesRecommendationService {
-		recommendationService := usecase.NewRecommendationService(semantic, discovery, content)
-		if len(recommendationServices) > 0 && recommendationServices[0] != nil {
+		recommendationService, constructorErr := usecase.NewRecommendationServiceWithEvidenceRules(semantic, discovery, content, evidenceRules)
+		if constructorErr != nil {
+			return constructorErr
+		}
+		if strings.TrimSpace(*rulesPath) == "" && len(recommendationServices) > 0 && recommendationServices[0] != nil {
 			recommendationService = recommendationServices[0]
 		}
 		execution, recommendErr := recommendationService.RecommendWithRun(ctx, domain.RecommendationRequest{
@@ -198,7 +214,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	artifacts := []struct {
 		path  string
 		value any
-	}{{"idea.json", idea}, {"reuse-policy.json", policy}, {"expansion-plan.json", result.Expansion}, {"discovery-snapshot.json", result.Discovery}, {"screening-report.json", result.Screening}, {filepath.Join("evidence", "plans.json"), result.Plans}, {filepath.Join("evidence", "bundles.json"), result.Bundles}, {"assessment-report.json", result.Assessment}, {"reuse-decision.json", result.Decision}, {"alternatives.json", alternatives}}
+	}{{"idea.json", idea}, {"reuse-policy.json", policy}, {"expansion-plan.json", result.Expansion}, {"discovery-snapshot.json", result.Discovery}, {"screening-report.json", result.Screening}, {filepath.Join("evidence", "catalog-coverage.json"), result.CatalogCoverage}, {filepath.Join("evidence", "plans.json"), result.Plans}, {filepath.Join("evidence", "bundles.json"), result.Bundles}, {"assessment-report.json", result.Assessment}, {"reuse-decision.json", result.Decision}, {"alternatives.json", alternatives}}
 	for _, a := range artifacts {
 		if err = writeJSONAtomic(filepath.Join(*output, a.path), a.value); err != nil {
 			return err
@@ -519,13 +535,13 @@ func evidenceInputHash(req domain.IdeaRunRequest, local []domain.RepositoryCandi
 	return hashJSON(inputs), nil
 }
 
-func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, evidenceHash string, ruleVersions map[string]string) bool {
+func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, evidenceHash, evidenceRulesHash string, ruleVersions map[string]string) bool {
 	switch previous.Status {
 	case domain.IdeaRunComplete, domain.IdeaRunPartial, domain.IdeaRunInconclusive:
 	default:
 		return false
 	}
-	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash {
+	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash || previous.InputHashes["evidence_rules"] != evidenceRulesHash {
 		return false
 	}
 	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query"} {

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-09-08
+ * @updated 2026-09-12
  */
 
 package main
@@ -76,8 +76,14 @@ func main() {
 		}
 		return
 	}
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "algorithm") {
+		if err := cli.RunAlgorithmHistoryCommand(os.Args[2:], os.Stdout); err != nil {
+			log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
-		lexicalExpander, err := lexical.NewDefault(2)
+		lexicalExpander, err := lexical.NewDefault(3)
 		if err != nil {
 			log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
 		}
@@ -166,7 +172,7 @@ func main() {
 	sgClient := sourcegraph.NewClient(sourcegraphToken)
 	ghClient := github.NewClient(githubToken)
 	contentProvider := content.NewRouter(ghClient, localrepo.NewClient())
-	lexicalExpander, err := lexical.NewDefault(2)
+	lexicalExpander, err := lexical.NewDefault(3)
 	if err != nil {
 		log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
 	}

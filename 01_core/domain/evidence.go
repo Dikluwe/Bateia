@@ -45,16 +45,29 @@ const (
 	EvidenceRepository         EvidenceKind = "repository_metadata"
 )
 
+// EvidenceMatchClass records where a rule pattern matched. Path-only matches
+// are useful to explain retrieval, but are never admissible evidence sources.
+type EvidenceMatchClass string
+
+const (
+	EvidenceMatchStrongContent     EvidenceMatchClass = "STRONG_CONTENT"
+	EvidenceMatchSupportingContent EvidenceMatchClass = "SUPPORTING_CONTENT"
+	EvidenceMatchDocumentation     EvidenceMatchClass = "DOCUMENTATION_CONTENT"
+	EvidenceMatchPathOnly          EvidenceMatchClass = "PATH_ONLY"
+)
+
 type EvidenceSource struct {
-	Kind        EvidenceKind `json:"kind"`
-	Ref         CommitRef    `json:"ref"`
-	Path        string       `json:"path,omitempty"`
-	Symbol      string       `json:"symbol,omitempty"`
-	Line        int          `json:"line,omitempty"`
-	Snippet     string       `json:"snippet,omitempty"`
-	RuleID      string       `json:"rule_id"`
-	ContentHash string       `json:"content_hash,omitempty"`
-	Strength    float64      `json:"strength"`
+	Kind           EvidenceKind       `json:"kind"`
+	Ref            CommitRef          `json:"ref"`
+	Path           string             `json:"path,omitempty"`
+	Symbol         string             `json:"symbol,omitempty"`
+	Line           int                `json:"line,omitempty"`
+	Snippet        string             `json:"snippet,omitempty"`
+	RuleID         string             `json:"rule_id"`
+	MatchedPattern string             `json:"matched_pattern,omitempty"`
+	MatchClass     EvidenceMatchClass `json:"match_class,omitempty"`
+	ContentHash    string             `json:"content_hash,omitempty"`
+	Strength       float64            `json:"strength"`
 }
 
 type CapabilityEvidence struct {
@@ -116,12 +129,40 @@ type CandidateAssessment struct {
 }
 
 type ExtractionBudget struct {
-	Documents  int   `json:"documents"`
-	Manifests  int   `json:"manifests"`
-	CodeFiles  int   `json:"code_files"`
-	Tests      int   `json:"tests_examples"`
-	TotalBytes int64 `json:"total_bytes"`
-	TreeDepth  int   `json:"tree_depth"`
+	Documents        int   `json:"documents"`
+	Manifests        int   `json:"manifests"`
+	CodeFiles        int   `json:"code_files"`
+	RequirementFiles int   `json:"requirement_files"`
+	Tests            int   `json:"tests_examples"`
+	TotalBytes       int64 `json:"total_bytes"`
+	TreeDepth        int   `json:"tree_depth"`
+}
+
+type RequirementCollectionStatus string
+
+const (
+	RequirementTargetedExamined     RequirementCollectionStatus = "TARGETED_EXAMINED"
+	RequirementNoPlausiblePath      RequirementCollectionStatus = "NO_PLAUSIBLE_PATH"
+	RequirementCollectionIncomplete RequirementCollectionStatus = "COLLECTION_INCOMPLETE"
+)
+
+type EvidenceRequirementQuery struct {
+	RequirementKind string   `json:"requirement_kind"`
+	Requirement     string   `json:"requirement"`
+	RuleID          string   `json:"rule_id"`
+	Terms           []string `json:"terms"`
+}
+
+type RequirementCollectionCoverage struct {
+	RequirementKind string                      `json:"requirement_kind"`
+	Requirement     string                      `json:"requirement"`
+	RuleID          string                      `json:"rule_id"`
+	Status          RequirementCollectionStatus `json:"status"`
+	SearchComplete  bool                        `json:"search_complete"`
+	CandidatePaths  []string                    `json:"candidate_paths"`
+	ExaminedPaths   []string                    `json:"examined_paths"`
+	SkippedPaths    []string                    `json:"skipped_paths"`
+	ReasonCode      string                      `json:"reason_code"`
 }
 
 type ExtractionTarget struct {
@@ -150,12 +191,13 @@ type CollectionTargetResult struct {
 }
 
 type EvidenceExtractionPlan struct {
-	SchemaVersion string              `json:"schema_version"`
-	Repository    CommitRef           `json:"repository"`
-	Candidate     RepositoryCandidate `json:"candidate"`
-	Decision      ScreeningDecision   `json:"screening_decision"`
-	Targets       []ExtractionTarget  `json:"targets"`
-	Budget        ExtractionBudget    `json:"budget"`
+	SchemaVersion      string                     `json:"schema_version"`
+	Repository         CommitRef                  `json:"repository"`
+	Candidate          RepositoryCandidate        `json:"candidate"`
+	Decision           ScreeningDecision          `json:"screening_decision"`
+	Targets            []ExtractionTarget         `json:"targets"`
+	Budget             ExtractionBudget           `json:"budget"`
+	RequirementQueries []EvidenceRequirementQuery `json:"requirement_queries"`
 }
 
 type CollectedEvidence struct {
@@ -167,17 +209,58 @@ type CollectedEvidence struct {
 }
 
 type EvidenceBundle struct {
-	ImplementationSearch *ImplementationSearchReport `json:"implementation_search,omitempty"`
-	SchemaVersion        string                      `json:"schema_version"`
-	Repository           CommitRef                   `json:"repository"`
-	Plan                 EvidenceExtractionPlan      `json:"plan"`
-	Items                []CollectedEvidence         `json:"items"`
-	Failures             []ExecutionFailure          `json:"failures,omitempty"`
-	Complete             bool                        `json:"complete"`
-	BytesRead            int64                       `json:"bytes_read"`
-	Targets              []CollectionTargetResult    `json:"target_results"`
-	TreeComplete         bool                        `json:"tree_complete"`
-	DepthReached         int                         `json:"depth_reached"`
+	ImplementationSearch *ImplementationSearchReport     `json:"implementation_search,omitempty"`
+	SchemaVersion        string                          `json:"schema_version"`
+	Repository           CommitRef                       `json:"repository"`
+	Plan                 EvidenceExtractionPlan          `json:"plan"`
+	Items                []CollectedEvidence             `json:"items"`
+	Failures             []ExecutionFailure              `json:"failures,omitempty"`
+	Complete             bool                            `json:"complete"`
+	BytesRead            int64                           `json:"bytes_read"`
+	Targets              []CollectionTargetResult        `json:"target_results"`
+	TreeComplete         bool                            `json:"tree_complete"`
+	DepthReached         int                             `json:"depth_reached"`
+	RequirementCoverage  []RequirementCollectionCoverage `json:"requirement_coverage"`
+}
+
+func (plan EvidenceExtractionPlan) MarshalJSON() ([]byte, error) {
+	type alias EvidenceExtractionPlan
+	copy := alias(plan)
+	if copy.Targets == nil {
+		copy.Targets = []ExtractionTarget{}
+	}
+	if copy.RequirementQueries == nil {
+		copy.RequirementQueries = []EvidenceRequirementQuery{}
+	}
+	return json.Marshal(copy)
+}
+
+func (bundle EvidenceBundle) MarshalJSON() ([]byte, error) {
+	type alias EvidenceBundle
+	copy := alias(bundle)
+	if copy.Items == nil {
+		copy.Items = []CollectedEvidence{}
+	}
+	if copy.Targets == nil {
+		copy.Targets = []CollectionTargetResult{}
+	}
+	if copy.RequirementCoverage == nil {
+		copy.RequirementCoverage = []RequirementCollectionCoverage{}
+	} else {
+		copy.RequirementCoverage = append([]RequirementCollectionCoverage(nil), copy.RequirementCoverage...)
+	}
+	for i := range copy.RequirementCoverage {
+		if copy.RequirementCoverage[i].CandidatePaths == nil {
+			copy.RequirementCoverage[i].CandidatePaths = []string{}
+		}
+		if copy.RequirementCoverage[i].ExaminedPaths == nil {
+			copy.RequirementCoverage[i].ExaminedPaths = []string{}
+		}
+		if copy.RequirementCoverage[i].SkippedPaths == nil {
+			copy.RequirementCoverage[i].SkippedPaths = []string{}
+		}
+	}
+	return json.Marshal(copy)
 }
 
 type CapabilityPattern struct {

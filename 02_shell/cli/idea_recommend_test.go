@@ -1038,7 +1038,7 @@ func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	const (
 		legacyRunID      = "4dbe6d1bec49f5c0"
 		wantEvidenceHash = "275fca39660f176c03c7ab744b744ea6c7a4f8ace07973dff60ec7986ac8b723"
-		wantBundleHash   = "27f663cb5d3887f049502c5a7850df77debc8d28571f9b5bdaff61d3a4c4a30e"
+		wantBundleHash   = "4ee79fb89117467e2eb70874c32fb77a922a3adb5807e675a0b1714e365c9912"
 	)
 	dossier := filepath.Join("..", "..", "00_nucleo", "benchmark", "0024", "proof-recipes", "final-dossier")
 	out := filepath.Join(t.TempDir(), "out")

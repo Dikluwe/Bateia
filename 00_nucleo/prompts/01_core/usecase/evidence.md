@@ -32,3 +32,28 @@ L1 somente orquestra porta opcional, sem IO concreto. RetrieveImplementationEvid
 Funnel/analyze registra relatório; CollectEvidence busca requisitos e prioriza árvore antes do orçamento, sem promoção do status de capacidades. Provedores sem porta preservam contrato antigo. A seleção por conteúdo é distinta da análise de comportamento. Relatório mostra símbolos com linhas/hash e snippet dos bytes revalidados, no máximo20 linhas por hit/8hits apresentados, JSON retém todas as evidências.
 
 0046: conservar query agregada da busca de implementação no escopo CollectEvidence e usar ValidateImplementationRequirements após coleta. Projeção de requisitos acompanha bundle, sem alterar detectores/decisão.
+
+## Passo 0072 — recuperação dirigida anterior à amostra
+
+Compilar consultas somente para requisitos cobertos por uma regra `DECLARED`, usando
+termos técnicos canônicos da própria regra. Enumerar a árvore antes da seleção,
+reservar de modo justo até `RequirementFiles` por requisito dentro dos limites globais
+e só então preencher a amostra geral. Casamento de caminho é exato por basename, stem
+ou token identificador, nunca substring. Headers C++ sem extensão são elegíveis apenas
+quando seu basename completo é termo da consulta. Deduplicar caminhos compartilhados
+sem dupla cobrança e registrar candidatos, examinados e omitidos em ordem canônica.
+Superfície plausível não lida produz `COLLECTION_INCOMPLETE`, confiança zero e nenhum
+gap do candidato; o nome do arquivo não promove evidência.
+Quando a cobertura dirigida de um requisito estiver `TARGETED_EXAMINED`, incompletude
+da amostra geral ainda impede concluir `ABSENT`, mas não apaga evidência positiva ou
+conflitante encontrada nos bytes dirigidos. Bundles legados sem cobertura por requisito
+continuam sujeitos à completude global.
+
+## Passo 0073 — ocorrência exata dentro do arquivo
+
+Separar termos de recuperação (`TargetHints`) de padrões probatórios. Localizar padrões
+fortes e auxiliares nos bytes coletados, ignorando comentários e literais em código,
+respeitando fronteiras de identificadores e sem interpretar macros ou declarações
+divididas. Fontes de regra carregam linha baseada em 1, snippet normalizado, padrão
+canônico e classe da mesma ocorrência. Ordenar deterministicamente por autoridade da
+classe, path, linha, padrão e snippet; path-only permanece diagnóstico e nunca fonte.

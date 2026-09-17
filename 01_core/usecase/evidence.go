@@ -23,7 +23,7 @@ import (
 )
 
 var defaultEvidenceBudget = domain.ExtractionBudget{
-	Documents: 8, Manifests: 4, CodeFiles: 20, Tests: 12,
+	Documents: 8, Manifests: 4, CodeFiles: 20, RequirementFiles: 2, Tests: 12,
 	TotalBytes: 2 * 1024 * 1024, TreeDepth: 4,
 }
 
@@ -284,9 +284,11 @@ func PlanEvidenceForIdea(idea domain.IdeaSpec, report domain.ScreeningReport, ca
 }
 
 func PlanEvidenceForIdeaAndRepositories(idea domain.IdeaSpec, report domain.ScreeningReport, catalog domain.CapabilityRuleCatalog, includes []string) ([]domain.EvidenceExtractionPlan, error) {
-	if _, err := AnalyzeEvidenceCatalogCoverage(idea, catalog); err != nil {
+	coverage, err := AnalyzeEvidenceCatalogCoverage(idea, catalog)
+	if err != nil {
 		return nil, err
 	}
+	requirementQueries := compileEvidenceRequirementQueries(coverage, catalog)
 	capabilities := append([]string(nil), idea.Capabilities...)
 	if strings.TrimSpace(idea.Problem) != "" {
 		capabilities = append(capabilities, idea.Problem)
@@ -320,9 +322,159 @@ func PlanEvidenceForIdeaAndRepositories(idea domain.IdeaSpec, report domain.Scre
 			{Path: "Cargo.toml", Kind: domain.EvidenceManifest, Reason: "manifesto reconhecido"},
 			{Path: "pyproject.toml", Kind: domain.EvidenceManifest, Reason: "manifesto reconhecido"},
 		}
-		plans = append(plans, domain.EvidenceExtractionPlan{SchemaVersion: "1", Repository: ref, Candidate: candidate, Decision: decision, Targets: targets, Budget: defaultEvidenceBudget})
+		plans = append(plans, domain.EvidenceExtractionPlan{SchemaVersion: "1", Repository: ref, Candidate: candidate, Decision: decision, Targets: targets, Budget: defaultEvidenceBudget, RequirementQueries: cloneRequirementQueries(requirementQueries)})
 	}
 	return plans, nil
+}
+
+func compileEvidenceRequirementQueries(coverage domain.EvidenceCatalogCoverage, catalog domain.CapabilityRuleCatalog) []domain.EvidenceRequirementQuery {
+	rules := make(map[string]domain.CapabilityRule, len(catalog.Rules))
+	for _, rule := range catalog.Rules {
+		rules[rule.ID] = rule
+	}
+	queries := []domain.EvidenceRequirementQuery{}
+	for _, entry := range coverage.Entries {
+		if entry.Status != domain.CatalogCoverageCovered || entry.RuleBasis != domain.EvidenceRuleDeclared {
+			continue
+		}
+		rule, ok := rules[entry.RuleID]
+		if !ok || evidenceRuleBasis(rule) != domain.EvidenceRuleDeclared {
+			continue
+		}
+		terms := evidenceRequirementTerms(rule)
+		if len(terms) == 0 {
+			continue
+		}
+		queries = append(queries, domain.EvidenceRequirementQuery{RequirementKind: entry.RequirementKind, Requirement: entry.Requirement, RuleID: entry.RuleID, Terms: terms})
+	}
+	sortRequirementQueries(queries)
+	return queries
+}
+
+func evidenceRequirementTerms(rule domain.CapabilityRule) []string {
+	set := map[string]string{}
+	add := func(raw string, hint bool) {
+		for _, term := range technicalQueryTerms(raw, hint) {
+			key := strings.ToLower(term)
+			if _, exists := set[key]; !exists {
+				set[key] = term
+			}
+		}
+	}
+	for _, value := range rule.TargetHints {
+		add(value, true)
+		// Preserve the step-0072 C++ header convention without borrowing a
+		// proof pattern: an identifier-like header hint may also name its .h
+		// spelling. Both terms are still derived solely from TargetHints.
+		for _, term := range technicalQueryTerms(value, true) {
+			if pathpkg.Ext(term) == "" && strings.Contains(term, "_") {
+				add(term+".h", true)
+			}
+		}
+	}
+	out := make([]string, 0, len(set))
+	for _, value := range set {
+		out = append(out, value)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		left, right := strings.ToLower(out[i]), strings.ToLower(out[j])
+		if left != right {
+			return left < right
+		}
+		return out[i] < out[j]
+	})
+	return out
+}
+
+func technicalQueryTerms(raw string, hint bool) []string {
+	value := strings.TrimSpace(strings.ToLower(slashPath(raw)))
+	if value == "" || identityDependentRuleText(value) {
+		return nil
+	}
+	if strings.Contains(value, "/") {
+		value = pathpkg.Base(value)
+	}
+	if strings.ContainsAny(value, " \t\n") {
+		return nil
+	}
+	base := strings.Trim(value, "<>[](){}\"'`,;:*=+&|!?")
+	if extension := pathpkg.Ext(base); recognizedCPPQueryExtension(extension) {
+		return []string{base}
+	}
+	if index := strings.LastIndex(base, "::"); index >= 0 {
+		base = base[index+2:]
+	}
+	if index := strings.Index(base, "<"); index >= 0 {
+		base = base[:index]
+	}
+	base = strings.Trim(base, "<>[](){}\"'`,;:*=+&|!?")
+	if base == "" || overlyGenericRuleText(normalizeEvidenceText(base)) {
+		return nil
+	}
+	technical := hint || strings.ContainsAny(raw, "_</.:")
+	if !technical && len(base) < 4 {
+		return nil
+	}
+	for _, r := range base {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '.' && r != '-' {
+			return nil
+		}
+	}
+	return []string{base}
+}
+
+func recognizedCPPQueryExtension(extension string) bool {
+	switch strings.ToLower(extension) {
+	case ".h", ".hh", ".hpp", ".hxx", ".c", ".cc", ".cpp", ".cxx":
+		return true
+	default:
+		return false
+	}
+}
+
+func sortRequirementQueries(queries []domain.EvidenceRequirementQuery) {
+	for i := range queries {
+		queries[i].Terms = uniqueSortedFolded(queries[i].Terms)
+	}
+	sort.Slice(queries, func(i, j int) bool {
+		left, right := queries[i], queries[j]
+		if left.RequirementKind != right.RequirementKind {
+			return left.RequirementKind < right.RequirementKind
+		}
+		ln, rn := normalizeEvidenceText(left.Requirement), normalizeEvidenceText(right.Requirement)
+		if ln != rn {
+			return ln < rn
+		}
+		if left.Requirement != right.Requirement {
+			return left.Requirement < right.Requirement
+		}
+		return left.RuleID < right.RuleID
+	})
+}
+
+func cloneRequirementQueries(input []domain.EvidenceRequirementQuery) []domain.EvidenceRequirementQuery {
+	out := make([]domain.EvidenceRequirementQuery, len(input))
+	for i, query := range input {
+		out[i] = query
+		out[i].Terms = append([]string(nil), query.Terms...)
+	}
+	return out
+}
+
+func uniqueSortedFolded(values []string) []string {
+	set := map[string]string{}
+	for _, value := range values {
+		value = strings.TrimSpace(strings.ToLower(value))
+		if value != "" {
+			set[value] = value
+		}
+	}
+	out := make([]string, 0, len(set))
+	for _, value := range set {
+		out = append(out, value)
+	}
+	sort.Strings(out)
+	return out
 }
 
 func uniqueNormalizedStrings(values []string) []string {
@@ -446,7 +598,12 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	if err := ctx.Err(); err != nil {
 		return domain.EvidenceBundle{}, err
 	}
-	bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: true, TreeComplete: true}
+	plan.RequirementQueries = cloneRequirementQueries(plan.RequirementQueries)
+	sortRequirementQueries(plan.RequirementQueries)
+	bundle := domain.EvidenceBundle{
+		SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: true, TreeComplete: true,
+		Items: []domain.CollectedEvidence{}, Targets: []domain.CollectionTargetResult{}, RequirementCoverage: []domain.RequirementCollectionCoverage{},
+	}
 	if metadata, err := json.Marshal(plan.Candidate); err == nil {
 		content := string(metadata)
 		bundle.Items = append(bundle.Items, domain.CollectedEvidence{Kind: domain.EvidenceRepository, Ref: plan.Repository, Path: "@repository-metadata", Content: content, ContentHash: contentHash(content)})
@@ -463,13 +620,22 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		kinds[target.Path] = target.Kind
 		targetByPath[target.Path] = target
 	}
+	selectedPaths := map[string]bool{}
+	for _, path := range paths {
+		selectedPaths[path] = true
+	}
 	implementationQuery := ""
+	var requirementSelections []requirementPathSelection
 	tree, err := provider.FetchTree(ctx, plan.Candidate)
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "tree", Message: err.Error()})
 		bundle.Complete = false
 		bundle.TreeComplete = false
+		requirementSelections = buildRequirementPathSelections(nil, plan.RequirementQueries)
 	} else {
+		tree = canonicalEvidenceTree(tree)
+		requirementSelections = buildRequirementPathSelections(tree, plan.RequirementQueries)
+		reserveRequirementPaths(requirementSelections, plan.Budget, &paths, kinds, targetByPath, selectedPaths)
 		tree = prioritizeEvidenceTree(tree, plan.Targets)
 		if _, ok := provider.(domain.ImplementationSearcher); ok {
 			requirements := []string{}
@@ -508,7 +674,7 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			if kind == domain.EvidenceFile && !isCodePath(node.Path) {
 				continue
 			}
-			if _, exists := targetByPath[node.Path]; exists {
+			if selectedPaths[node.Path] {
 				continue
 			}
 			target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
@@ -520,14 +686,21 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			paths = append(paths, node.Path)
 			kinds[node.Path] = kind
 			targetByPath[node.Path] = target
+			selectedPaths[node.Path] = true
+		}
+	}
+	if err == nil {
+		for _, selection := range requirementSelections {
+			for _, path := range selection.candidates {
+				if !selectedPaths[path] {
+					bundle.Complete = false
+				}
+			}
 		}
 	}
 	if err := ctx.Err(); err != nil {
 		bundle.Complete = false
 		return bundle, err
-	}
-	if bundle.ImplementationSearch == nil {
-		sort.Strings(paths)
 	}
 	extracted, err := provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
 	if err != nil {
@@ -536,33 +709,61 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		for _, path := range paths {
 			bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: targetByPath[path], Status: domain.TargetFailed, Message: err.Error()})
 		}
+		bundle.RequirementCoverage = finalizeRequirementCoverage(requirementSelections, bundle.TreeComplete, nil)
 		return bundle, nil
 	}
-	seenHash := map[string]bool{}
-	collectedPaths := map[string]int64{}
+	filesByPath := map[string]domain.ExtractedFile{}
 	for _, file := range extracted.Files {
+		path := slashPath(file.Path)
+		if _, exists := filesByPath[path]; !exists {
+			file.Path = path
+			filesByPath[path] = file
+		}
+	}
+	extractionPaths := append([]string(nil), paths...)
+	extraPaths := []string{}
+	for path := range filesByPath {
+		if !selectedPaths[path] {
+			extraPaths = append(extraPaths, path)
+		}
+	}
+	sort.Strings(extraPaths)
+	extractionPaths = append(extractionPaths, extraPaths...)
+	collectedPaths := map[string]int64{}
+	fullyExamined := map[string]bool{}
+	seenContent := map[string]bool{}
+	for _, path := range extractionPaths {
+		file, ok := filesByPath[slashPath(path)]
+		if !ok {
+			continue
+		}
 		content := file.Content
 		remaining := plan.Budget.TotalBytes - bundle.BytesRead
 		if remaining <= 0 {
 			bundle.Complete = false
-			break
+			continue
 		}
+		completeContent := true
 		if int64(len(content)) > remaining {
 			content = content[:remaining]
 			bundle.Complete = false
+			completeContent = false
 		}
 		hash := contentHash(content)
-		if seenHash[hash] {
+		if seenContent[hash] {
+			fullyExamined[path] = completeContent
+			collectedPaths[path] = 0
 			continue
 		}
-		seenHash[hash] = true
-		kind := kinds[file.Path]
+		seenContent[hash] = true
+		kind := kinds[path]
 		if kind == "" {
-			kind = classifyEvidencePath(file.Path)
+			kind = classifyEvidencePath(path)
 		}
-		bundle.Items = append(bundle.Items, domain.CollectedEvidence{Kind: kind, Ref: plan.Repository, Path: file.Path, Content: content, ContentHash: hash})
+		bundle.Items = append(bundle.Items, domain.CollectedEvidence{Kind: kind, Ref: plan.Repository, Path: path, Content: content, ContentHash: hash})
 		bundle.BytesRead += int64(len(content))
-		collectedPaths[file.Path] = int64(len(content))
+		collectedPaths[path] = int64(len(content))
+		fullyExamined[path] = completeContent
 	}
 	for _, path := range paths {
 		result := domain.CollectionTargetResult{Target: targetByPath[path], Status: domain.TargetCollected, Bytes: collectedPaths[path]}
@@ -575,6 +776,7 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		}
 		bundle.Targets = append(bundle.Targets, result)
 	}
+	bundle.RequirementCoverage = finalizeRequirementCoverage(requirementSelections, bundle.TreeComplete, fullyExamined)
 	if bundle.ImplementationSearch != nil {
 		readFiles := []domain.ExtractedFile{}
 		for _, item := range bundle.Items {
@@ -587,6 +789,199 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.Complete = false
 	}
 	return bundle, nil
+}
+
+type requirementPathSelection struct {
+	query      domain.EvidenceRequirementQuery
+	candidates []string
+	selected   map[string]bool
+}
+
+func canonicalEvidenceTree(tree []domain.DirectoryNode) []domain.DirectoryNode {
+	byPath := map[string]domain.DirectoryNode{}
+	for _, node := range tree {
+		node.Path = slashPath(strings.TrimPrefix(node.Path, "./"))
+		if node.Path == "" {
+			continue
+		}
+		if previous, exists := byPath[node.Path]; !exists || (previous.Type != "file" && node.Type == "file") {
+			byPath[node.Path] = node
+		}
+	}
+	out := make([]domain.DirectoryNode, 0, len(byPath))
+	for _, node := range byPath {
+		out = append(out, node)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Path != out[j].Path {
+			return out[i].Path < out[j].Path
+		}
+		return out[i].Type < out[j].Type
+	})
+	return out
+}
+
+func buildRequirementPathSelections(tree []domain.DirectoryNode, queries []domain.EvidenceRequirementQuery) []requirementPathSelection {
+	selections := make([]requirementPathSelection, 0, len(queries))
+	for _, query := range queries {
+		selection := requirementPathSelection{query: query, candidates: []string{}, selected: map[string]bool{}}
+		type rankedPath struct {
+			path string
+			rank int
+		}
+		ranked := []rankedPath{}
+		for _, node := range tree {
+			if node.Type != "file" {
+				continue
+			}
+			rank, matched := requirementPathRank(node.Path, query.Terms)
+			if !matched || !isRequirementCodePath(node.Path, query.Terms) {
+				continue
+			}
+			ranked = append(ranked, rankedPath{path: node.Path, rank: rank})
+		}
+		sort.Slice(ranked, func(i, j int) bool {
+			if ranked[i].rank != ranked[j].rank {
+				return ranked[i].rank < ranked[j].rank
+			}
+			leftDepth, rightDepth := pathDepth(ranked[i].path), pathDepth(ranked[j].path)
+			if leftDepth != rightDepth {
+				return leftDepth < rightDepth
+			}
+			return ranked[i].path < ranked[j].path
+		})
+		for _, candidate := range ranked {
+			selection.candidates = append(selection.candidates, candidate.path)
+		}
+		selections = append(selections, selection)
+	}
+	return selections
+}
+
+func reserveRequirementPaths(selections []requirementPathSelection, budget domain.ExtractionBudget, paths *[]string, kinds map[string]domain.EvidenceKind, targets map[string]domain.ExtractionTarget, selected map[string]bool) {
+	quota := budget.RequirementFiles
+	if quota <= 0 {
+		quota = 2
+	}
+	codeCount := 0
+	for _, path := range *paths {
+		if kinds[path] == domain.EvidenceFile && isCodePath(path) {
+			codeCount++
+		}
+	}
+	for round := 0; round < quota; round++ {
+		for index := range selections {
+			selection := &selections[index]
+			for _, path := range selection.candidates {
+				if selection.selected[path] {
+					continue
+				}
+				if pathDepth(path) > budget.TreeDepth {
+					continue
+				}
+				if selected[path] {
+					selection.selected[path] = true
+					break
+				}
+				if codeCount >= budget.CodeFiles {
+					break
+				}
+				kind := classifyEvidencePath(path)
+				*paths = append(*paths, path)
+				kinds[path] = kind
+				targets[path] = domain.ExtractionTarget{Path: path, Kind: kind, Capabilities: []string{selection.query.Requirement}, Reason: "recuperação dirigida pela regra " + selection.query.RuleID}
+				selected[path] = true
+				selection.selected[path] = true
+				codeCount++
+				break
+			}
+		}
+	}
+}
+
+func requirementPathRank(path string, terms []string) (int, bool) {
+	base := strings.ToLower(pathpkg.Base(slashPath(path)))
+	stem := strings.TrimSuffix(base, pathpkg.Ext(base))
+	tokens := identifierTokens(stem)
+	for _, term := range terms {
+		term = strings.ToLower(strings.TrimSpace(pathpkg.Base(slashPath(term))))
+		if term != "" && base == term {
+			return 0, true
+		}
+	}
+	for _, term := range terms {
+		term = strings.ToLower(strings.TrimSpace(pathpkg.Base(slashPath(term))))
+		termStem := strings.TrimSuffix(term, pathpkg.Ext(term))
+		if termStem != "" && stem == termStem {
+			return 1, true
+		}
+	}
+	for _, term := range terms {
+		term = strings.ToLower(strings.TrimSpace(pathpkg.Base(slashPath(term))))
+		term = strings.TrimSuffix(term, pathpkg.Ext(term))
+		for _, token := range tokens {
+			if token == term && term != "" {
+				return 2, true
+			}
+		}
+	}
+	return 0, false
+}
+
+func identifierTokens(value string) []string {
+	return strings.FieldsFunc(strings.ToLower(value), func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_'
+	})
+}
+
+func isRequirementCodePath(path string, terms []string) bool {
+	if isCodePath(path) {
+		return true
+	}
+	base := strings.ToLower(pathpkg.Base(slashPath(path)))
+	if pathpkg.Ext(base) != "" {
+		return false
+	}
+	for _, term := range terms {
+		termBase := strings.ToLower(strings.TrimSpace(pathpkg.Base(slashPath(term))))
+		if pathpkg.Ext(termBase) == "" && base == termBase {
+			return true
+		}
+	}
+	return false
+}
+
+func finalizeRequirementCoverage(selections []requirementPathSelection, searchComplete bool, examined map[string]bool) []domain.RequirementCollectionCoverage {
+	out := make([]domain.RequirementCollectionCoverage, 0, len(selections))
+	for _, selection := range selections {
+		coverage := domain.RequirementCollectionCoverage{
+			RequirementKind: selection.query.RequirementKind, Requirement: selection.query.Requirement, RuleID: selection.query.RuleID,
+			SearchComplete: searchComplete, CandidatePaths: append([]string{}, selection.candidates...), ExaminedPaths: []string{}, SkippedPaths: []string{},
+		}
+		for _, path := range selection.candidates {
+			if examined[path] {
+				coverage.ExaminedPaths = append(coverage.ExaminedPaths, path)
+			} else {
+				coverage.SkippedPaths = append(coverage.SkippedPaths, path)
+			}
+		}
+		sort.Strings(coverage.CandidatePaths)
+		sort.Strings(coverage.ExaminedPaths)
+		sort.Strings(coverage.SkippedPaths)
+		switch {
+		case !searchComplete || len(coverage.SkippedPaths) > 0:
+			coverage.Status = domain.RequirementCollectionIncomplete
+			coverage.ReasonCode = "COLLECTION_INCOMPLETE"
+		case len(coverage.CandidatePaths) == 0:
+			coverage.Status = domain.RequirementNoPlausiblePath
+			coverage.ReasonCode = "NO_PLAUSIBLE_PATH"
+		default:
+			coverage.Status = domain.RequirementTargetedExamined
+			coverage.ReasonCode = "TARGETED_EXAMINED"
+		}
+		out = append(out, coverage)
+	}
+	return out
 }
 
 func prioritizeEvidenceTree(tree []domain.DirectoryNode, targets []domain.ExtractionTarget) []domain.DirectoryNode {
@@ -693,7 +1088,7 @@ func classifyEvidencePath(path string) domain.EvidenceKind {
 func isCodePath(path string) bool {
 	extension := strings.ToLower(pathpkg.Ext(slashPath(path)))
 	switch extension {
-	case ".go", ".rs", ".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".kt", ".rb", ".cs", ".c", ".cc", ".cpp", ".h", ".hpp", ".ex", ".exs":
+	case ".go", ".rs", ".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".kt", ".rb", ".cs", ".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".ex", ".exs":
 		return true
 	default:
 		return false
@@ -763,7 +1158,7 @@ func AssessEvidence(idea domain.IdeaSpec, screening domain.ScreeningReport, bund
 		for _, capability := range capabilities {
 			e := assessCapability(capability, bundle, findRule(capability, catalog))
 			assessment.Capabilities = append(assessment.Capabilities, e)
-			if catalogCoverageStatus(coverage, "capability", capability) == domain.CatalogCoverageCovered && e.Status != domain.EvidenceProven {
+			if catalogCoverageStatus(coverage, "capability", capability) == domain.CatalogCoverageCovered && e.Status != domain.EvidenceProven && e.ReasonCode != "COLLECTION_INCOMPLETE" {
 				assessment.Gaps = append(assessment.Gaps, capability)
 			}
 			if e.Status == domain.EvidenceProven {
@@ -850,36 +1245,41 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 	}
 	var sources []domain.EvidenceSource
 	negative := false
+	lexicalOpaque := false
 	for _, item := range bundle.Items {
-		norm := normalizeEvidenceText(item.Content + " " + item.Path)
+		itemSourceCount := len(sources)
 		if explicitNegativeMatch(item.Content, *rule) {
 			negative = true
-			sources = append(sources, sourceFromItem(item, item.Kind, rule.ID, .5, firstLine(item.Content, rule.CapabilityTerms)))
+			if match, ok := firstAdmissibleContentMatch(item, rule.CapabilityTerms, domain.EvidenceMatchSupportingContent, false); ok {
+				sources = append(sources, sourceFromMatch(item, item.Kind, rule.ID, .5, match))
+			}
 		}
+		strongSourceCount := len(sources)
 		for _, group := range rule.StrongEvidence {
-			if strongKindMatches(item, group, norm) {
+			for _, match := range locateRuleContentMatches(item, group, domain.EvidenceMatchStrongContent) {
 				kind := group.Kind
 				if item.Kind == domain.EvidenceTest {
 					kind = domain.EvidenceTestImplementation
-					symbol, line, snippet, _ := extractTestMatch(item.Content, group.Patterns)
-					source := sourceFromItem(item, kind, rule.ID, strengthFor(kind, item.Path), snippet)
-					source.Symbol, source.Line = symbol, line
-					sources = append(sources, source)
-					continue
 				}
-				if symbol, line, snippet, ok := extractSymbolMatch(item.Content, group.Patterns); ok {
-					source := sourceFromItem(item, kind, rule.ID, strengthFor(kind, item.Path), snippet)
-					source.Symbol, source.Line = symbol, line
-					sources = append(sources, source)
-				}
+				sources = append(sources, sourceFromMatch(item, kind, rule.ID, strengthFor(kind, item.Path), match))
 			}
 		}
+		strongLocated := len(sources) > strongSourceCount
+		pendingSupporting := []domain.EvidenceSource{}
 		for _, group := range rule.SupportingEvidence {
-			if matchesAny(norm, group.Patterns) {
-				kind := item.Kind
-				strength := supportingStrengthForMatch(item, group.Patterns)
-				sources = append(sources, sourceFromItem(item, kind, rule.ID, strength, firstLine(item.Content, group.Patterns)))
+			for _, match := range locateRuleContentMatches(item, group, domain.EvidenceMatchSupportingContent) {
+				strength := supportingStrength(item.Kind, item.Path)
+				pendingSupporting = append(pendingSupporting, sourceFromMatch(item, item.Kind, rule.ID, strength, match))
 			}
+		}
+		// Supporting tokens in source code (for example a common type name)
+		// only corroborate a substantive match in that file. Documentation is
+		// independently useful, but retains its lower authority class.
+		if strongLocated || item.Kind == domain.EvidenceDocumentation {
+			sources = append(sources, pendingSupporting...)
+		}
+		if len(sources) == itemSourceCount && opaqueRuleSignal(item, *rule) {
+			lexicalOpaque = true
 		}
 	}
 	sources = dedupeSources(sources)
@@ -895,9 +1295,20 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 	if negative {
 		return capabilityResult(capability, domain.EvidenceConflict, sources, maxStrength(sources), "evidência negativa explícita conflita com a capacidade ou restrição")
 	}
-	if !bundleConclusive(bundle) {
+	if requirementCollectionIncomplete(bundle, capability, rule.ID) && len(sources) == 0 {
+		result := capabilityResult(capability, domain.EvidenceInconclusive, nil, 0, "coleta dirigida incompleta; caminhos plausíveis permaneceram sem exame")
+		result.ReasonCode = "COLLECTION_INCOMPLETE"
+		return result
+	}
+	targetedExamined := requirementTargetedExamined(bundle, capability, rule.ID)
+	if !bundleConclusive(bundle) && (!targetedExamined || len(sources) == 0) {
 		result := capabilityResult(capability, domain.EvidenceInconclusive, sources, maxStrength(sources), "coleta incompleta ou com falha; ausência não pode ser concluída")
 		result.ReasonCode = "COLLECTION_INCOMPLETE"
+		return result
+	}
+	if len(sources) == 0 && lexicalOpaque {
+		result := capabilityResult(capability, domain.EvidenceInconclusive, nil, 0, "o arquivo ou bytes recuperados contêm apenas sinais que o localizador lexical não pode atribuir com segurança")
+		result.ReasonCode = "LEXICAL_MATCH_OPAQUE"
 		return result
 	}
 	// These sources locate declarations, not verified behavior. Independent lexical
@@ -915,6 +1326,26 @@ func assessCapability(capability string, bundle domain.EvidenceBundle, rule *dom
 		return result
 	}
 	return capabilityResult(capability, domain.EvidenceAbsent, sources, combined, "busca concluída no orçamento declarado sem evidência suficiente")
+}
+
+func requirementCollectionIncomplete(bundle domain.EvidenceBundle, requirement, ruleID string) bool {
+	normalized := normalizeEvidenceText(requirement)
+	for _, coverage := range bundle.RequirementCoverage {
+		if coverage.RuleID == ruleID && normalizeEvidenceText(coverage.Requirement) == normalized {
+			return coverage.Status == domain.RequirementCollectionIncomplete || !coverage.SearchComplete || len(coverage.SkippedPaths) > 0
+		}
+	}
+	return false
+}
+
+func requirementTargetedExamined(bundle domain.EvidenceBundle, requirement, ruleID string) bool {
+	normalized := normalizeEvidenceText(requirement)
+	for _, coverage := range bundle.RequirementCoverage {
+		if coverage.RuleID == ruleID && normalizeEvidenceText(coverage.Requirement) == normalized {
+			return coverage.Status == domain.RequirementTargetedExamined && coverage.SearchComplete && len(coverage.SkippedPaths) == 0
+		}
+	}
+	return false
 }
 
 func explicitNegativeMatch(content string, rule domain.CapabilityRule) bool {
@@ -951,78 +1382,301 @@ func bundleConclusive(bundle domain.EvidenceBundle) bool {
 	return true
 }
 
-func strongKindMatches(item domain.CollectedEvidence, group domain.CapabilityPattern, normalized string) bool {
-	if !matchesAny(normalized, group.Patterns) {
-		return false
-	}
+type locatedEvidenceMatch struct {
+	Pattern string
+	Symbol  string
+	Line    int
+	Snippet string
+	Class   domain.EvidenceMatchClass
+}
+
+func locateRuleContentMatches(item domain.CollectedEvidence, group domain.CapabilityPattern, class domain.EvidenceMatchClass) []locatedEvidenceMatch {
 	switch group.Kind {
 	case domain.EvidenceTest:
 		if item.Kind != domain.EvidenceTest {
-			return false
+			return nil
 		}
-		_, _, _, ok := extractTestMatch(item.Content, group.Patterns)
-		return ok
 	case domain.EvidenceSymbol:
-		if item.Kind != domain.EvidenceFile && item.Kind != domain.EvidenceExample {
+		if item.Kind != domain.EvidenceFile && item.Kind != domain.EvidenceExample && item.Kind != domain.EvidenceTest {
+			return nil
+		}
+	default:
+		if item.Kind != group.Kind {
+			return nil
+		}
+	}
+	if item.Kind == domain.EvidenceDocumentation {
+		class = domain.EvidenceMatchDocumentation
+	}
+
+	rawLines := strings.Split(item.Content, "\n")
+	codeLines := lexicalCodeLines(item.Content)
+	matches := make([]locatedEvidenceMatch, 0)
+	patterns := canonicalRuleStrings(group.Patterns)
+	for index, raw := range rawLines {
+		searchable := codeLines[index]
+		if class == domain.EvidenceMatchDocumentation {
+			searchable = raw
+		}
+		if strings.HasPrefix(strings.TrimSpace(searchable), "#") && class != domain.EvidenceMatchDocumentation {
+			continue
+		}
+		for _, pattern := range patterns {
+			if !exactLexicalPatternMatch(searchable, pattern) {
+				continue
+			}
+			symbol := ""
+			if group.Kind == domain.EvidenceSymbol || group.Kind == domain.EvidenceTest {
+				if !supportedSymbolOccurrence(searchable, pattern, group.Kind == domain.EvidenceTest) {
+					continue
+				}
+				symbol = declaredOrMatchedSymbol(searchable, pattern)
+			}
+			matches = append(matches, locatedEvidenceMatch{
+				Pattern: pattern, Symbol: symbol, Line: index + 1,
+				Snippet: truncateSnippet(raw), Class: class,
+			})
+		}
+	}
+	return matches
+}
+
+func firstAdmissibleContentMatch(item domain.CollectedEvidence, patterns []string, class domain.EvidenceMatchClass, symbol bool) (locatedEvidenceMatch, bool) {
+	kind := domain.EvidenceFile
+	if symbol {
+		kind = domain.EvidenceSymbol
+	}
+	if item.Kind == domain.EvidenceDocumentation {
+		kind = domain.EvidenceDocumentation
+	}
+	matches := locateRuleContentMatches(item, domain.CapabilityPattern{Kind: kind, Patterns: patterns}, class)
+	if len(matches) == 0 {
+		return locatedEvidenceMatch{}, false
+	}
+	return matches[0], true
+}
+
+// lexicalCodeLines replaces comments and quoted literals with spaces while
+// preserving line boundaries and byte positions. It deliberately does not
+// interpret macros, token pasting or declarations split across lines.
+func lexicalCodeLines(content string) []string {
+	lines := strings.Split(content, "\n")
+	out := make([]string, len(lines))
+	inBlockComment := false
+	for lineIndex, raw := range lines {
+		bytes := []byte(raw)
+		clean := make([]byte, len(bytes))
+		for i := range clean {
+			clean[i] = ' '
+		}
+		for i := 0; i < len(bytes); {
+			if inBlockComment {
+				if i+1 < len(bytes) && bytes[i] == '*' && bytes[i+1] == '/' {
+					inBlockComment = false
+					i += 2
+				} else {
+					i++
+				}
+				continue
+			}
+			if i+1 < len(bytes) && bytes[i] == '/' && bytes[i+1] == '/' {
+				break
+			}
+			if i+1 < len(bytes) && bytes[i] == '/' && bytes[i+1] == '*' {
+				inBlockComment = true
+				i += 2
+				continue
+			}
+			if bytes[i] == '\'' || bytes[i] == '"' {
+				quote := bytes[i]
+				i++
+				for i < len(bytes) {
+					if bytes[i] == '\\' {
+						i += 2
+						continue
+					}
+					if bytes[i] == quote {
+						i++
+						break
+					}
+					i++
+				}
+				continue
+			}
+			clean[i] = bytes[i]
+			i++
+		}
+		out[lineIndex] = string(clean)
+	}
+	return out
+}
+
+func exactLexicalPatternMatch(line, pattern string) bool {
+	line = strings.ToLower(strings.Join(strings.Fields(line), " "))
+	pattern = strings.ToLower(strings.Join(strings.Fields(strings.TrimSpace(pattern)), " "))
+	if line == "" || pattern == "" {
+		return false
+	}
+	if lexicalSubstringWithBoundaries(line, pattern) {
+		return true
+	}
+	// Preserve the legacy ability to match a multiword catalog term against a
+	// CamelCase identifier, while retaining whole-identifier boundaries.
+	if strings.Contains(pattern, " ") {
+		joined := strings.ReplaceAll(pattern, " ", "")
+		return strings.Contains(strings.ReplaceAll(line, " ", ""), joined)
+	}
+	return false
+}
+
+func lexicalSubstringWithBoundaries(line, pattern string) bool {
+	for start := 0; ; {
+		position := strings.Index(line[start:], pattern)
+		if position < 0 {
 			return false
 		}
-		_, _, _, ok := extractSymbolMatch(item.Content, group.Patterns)
-		return ok
-	default:
-		return item.Kind == group.Kind
+		position += start
+		end := position + len(pattern)
+		leftOK := !isIdentifierByte(pattern[0]) || position == 0 || !isIdentifierByte(line[position-1])
+		rightOK := !isIdentifierByte(pattern[len(pattern)-1]) || end == len(line) || !isIdentifierByte(line[end])
+		if leftOK && rightOK {
+			return true
+		}
+		start = position + 1
+		if start >= len(line) {
+			return false
+		}
 	}
 }
 
-func extractTestMatch(content string, patterns []string) (string, int, string, bool) {
-	for index, raw := range strings.Split(content, "\n") {
-		line := strings.TrimSpace(raw)
-		if !matchesAny(normalizeEvidenceText(line), patterns) {
-			continue
-		}
-		normalized := normalizeEvidenceText(line)
-		declaration := strings.HasPrefix(normalized, "func test") || strings.HasPrefix(normalized, "def test") ||
+func isIdentifierByte(value byte) bool {
+	return value == '_' || value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' || value >= '0' && value <= '9'
+}
+
+func supportedSymbolOccurrence(line, pattern string, test bool) bool {
+	compact := strings.Join(strings.Fields(line), " ")
+	if strings.HasPrefix(strings.TrimSpace(compact), "#") {
+		return false
+	}
+	if test {
+		normalized := normalizeEvidenceText(compact)
+		return strings.HasPrefix(normalized, "func test") || strings.HasPrefix(normalized, "def test") ||
 			strings.HasPrefix(normalized, "fn test") || strings.HasPrefix(normalized, "test ") || strings.HasPrefix(normalized, "it ")
-		if !declaration {
-			continue
+	}
+	if _, ok := declaredSymbol(compact); ok {
+		return true
+	}
+	identifier := symbolForPattern(pattern)
+	if identifier == "" || !exactLexicalPatternMatch(compact, identifier) {
+		return false
+	}
+	searchCompact := strings.ToLower(compact)
+	searchIdentifier := strings.ToLower(identifier)
+	for start := 0; ; {
+		position := strings.Index(searchCompact[start:], searchIdentifier)
+		if position < 0 {
+			break
 		}
-		fields := strings.Fields(line)
-		for _, field := range fields {
-			name := strings.Trim(field, "(){}:,\"")
-			lower := strings.ToLower(name)
-			if strings.HasPrefix(name, "Test") || strings.HasPrefix(lower, "test_") || lower == "it" {
-				return name, index + 1, truncateSnippet(line), true
+		position += start
+		end := position + len(searchIdentifier)
+		if (position == 0 || !isIdentifierByte(searchCompact[position-1])) && (end == len(searchCompact) || !isIdentifierByte(searchCompact[end])) {
+			rest := strings.TrimSpace(compact[end:])
+			if strings.HasPrefix(rest, "(") || strings.HasPrefix(rest, "<") {
+				return true
+			}
+			prefix := normalizeEvidenceText(compact[:position])
+			for _, keyword := range []string{"func", "type", "class", "struct", "def", "fn"} {
+				if phraseMatch(prefix, keyword) {
+					return true
+				}
 			}
 		}
+		start = position + 1
 	}
-	return "", 0, "", false
+	return false
 }
 
-func extractSymbolMatch(content string, patterns []string) (string, int, string, bool) {
-	for index, raw := range strings.Split(content, "\n") {
-		line := strings.TrimSpace(raw)
-		if !matchesAny(normalizeEvidenceText(line), patterns) {
+func declaredOrMatchedSymbol(line, pattern string) string {
+	if symbol, ok := declaredSymbol(line); ok {
+		return symbol
+	}
+	identifier := symbolForPattern(pattern)
+	lowerLine, lowerIdentifier := strings.ToLower(line), strings.ToLower(identifier)
+	if position := strings.Index(lowerLine, lowerIdentifier); position >= 0 {
+		return line[position : position+len(identifier)]
+	}
+	return identifier
+}
+
+func declaredSymbol(line string) (string, bool) {
+	fields := strings.Fields(strings.TrimSpace(line))
+	for index, field := range fields {
+		keyword := strings.Trim(field, "(){}:")
+		if keyword != "func" && keyword != "type" && keyword != "class" && keyword != "struct" && keyword != "def" && keyword != "fn" && keyword != "test" && keyword != "it" {
 			continue
 		}
-		fields := strings.Fields(line)
-		for position, field := range fields {
-			keyword := strings.Trim(field, "(){}:")
-			if keyword != "func" && keyword != "type" && keyword != "class" && keyword != "def" && keyword != "fn" {
+		for candidate := index + 1; candidate < len(fields); candidate++ {
+			name := strings.Trim(fields[candidate], "(){}:,[<")
+			if name == "" || strings.HasPrefix(name, "(") {
 				continue
 			}
-			if position+1 >= len(fields) {
-				continue
-			}
-			name := strings.Trim(fields[position+1], "(){}:,[<")
 			if cut := strings.IndexAny(name, "([<{:"); cut >= 0 {
 				name = name[:cut]
 			}
-			if name == "" {
-				continue
+			if name != "" {
+				return name, true
 			}
-			return name, index + 1, truncateSnippet(line), true
 		}
 	}
-	return "", 0, "", false
+	return "", false
+}
+
+func symbolForPattern(pattern string) string {
+	pattern = strings.TrimSpace(pattern)
+	if fields := strings.Fields(pattern); len(fields) > 1 {
+		joined := strings.Join(fields, "")
+		for index := range joined {
+			if !isIdentifierByte(joined[index]) {
+				joined = ""
+				break
+			}
+		}
+		if joined != "" {
+			return joined
+		}
+	}
+	start := 0
+	for start < len(pattern) && !isIdentifierByte(pattern[start]) {
+		start++
+	}
+	end := start
+	for end < len(pattern) && isIdentifierByte(pattern[end]) {
+		end++
+	}
+	if start == end {
+		return ""
+	}
+	return pattern[start:end]
+}
+
+func opaqueRuleSignal(item domain.CollectedEvidence, rule domain.CapabilityRule) bool {
+	path := normalizeEvidenceText(item.Path)
+	for _, hint := range rule.TargetHints {
+		if exactLexicalPatternMatch(path, normalizeEvidenceText(hint)) {
+			return true
+		}
+	}
+	patterns := []string{}
+	for _, group := range append(append([]domain.CapabilityPattern{}, rule.StrongEvidence...), rule.SupportingEvidence...) {
+		patterns = append(patterns, group.Patterns...)
+	}
+	raw := strings.Join(strings.Fields(item.Content), " ")
+	for _, pattern := range patterns {
+		if exactLexicalPatternMatch(raw, pattern) {
+			return true
+		}
+	}
+	return false
 }
 
 func truncateSnippet(value string) string {
@@ -1044,6 +1698,15 @@ func sourceFromItem(item domain.CollectedEvidence, kind domain.EvidenceKind, rul
 		}
 	}
 	return domain.EvidenceSource{Kind: kind, Ref: item.Ref, Path: item.Path, Line: line, Snippet: snippet, RuleID: rule, ContentHash: item.ContentHash, Strength: strength}
+}
+
+func sourceFromMatch(item domain.CollectedEvidence, kind domain.EvidenceKind, rule string, strength float64, match locatedEvidenceMatch) domain.EvidenceSource {
+	return domain.EvidenceSource{
+		Kind: kind, Ref: item.Ref, Path: item.Path, Symbol: match.Symbol,
+		Line: match.Line, Snippet: match.Snippet, RuleID: rule,
+		MatchedPattern: match.Pattern, MatchClass: match.Class,
+		ContentHash: item.ContentHash, Strength: strength,
+	}
 }
 func strengthFor(kind domain.EvidenceKind, path string) float64 {
 	if ignoredEvidencePath(path) {
@@ -1073,34 +1736,55 @@ func supportingStrength(kind domain.EvidenceKind, path string) float64 {
 	}
 	return strength
 }
-func supportingStrengthForMatch(item domain.CollectedEvidence, patterns []string) float64 {
-	if item.Kind == domain.EvidenceFile || item.Kind == domain.EvidenceExample {
-		if matchesAny(normalizeEvidenceText(item.Path), patterns) {
-			return .65
-		}
-	}
-	return supportingStrength(item.Kind, item.Path)
-}
 func dedupeSources(in []domain.EvidenceSource) []domain.EvidenceSource {
 	seen := map[string]bool{}
 	out := make([]domain.EvidenceSource, 0, len(in))
 	sort.SliceStable(in, func(i, j int) bool {
-		if in[i].Path == in[j].Path {
+		leftClass, rightClass := evidenceMatchClassRank(in[i].MatchClass), evidenceMatchClassRank(in[j].MatchClass)
+		if leftClass != rightClass {
+			return leftClass < rightClass
+		}
+		if in[i].Path != in[j].Path {
+			return in[i].Path < in[j].Path
+		}
+		if in[i].Line != in[j].Line {
+			return in[i].Line < in[j].Line
+		}
+		if in[i].MatchedPattern != in[j].MatchedPattern {
+			return in[i].MatchedPattern < in[j].MatchedPattern
+		}
+		if in[i].Snippet != in[j].Snippet {
+			return in[i].Snippet < in[j].Snippet
+		}
+		if in[i].Strength != in[j].Strength {
 			return in[i].Strength > in[j].Strength
 		}
-		return in[i].Path < in[j].Path
+		return in[i].Kind < in[j].Kind
 	})
 	for _, s := range in {
-		key := s.ContentHash
-		if key == "" {
-			key = s.Path + "|" + s.Snippet
-		}
+		key := fmt.Sprintf("%s|%d|%s|%s|%s|%s", s.Path, s.Line, s.MatchedPattern, s.MatchClass, s.Snippet, s.Kind)
 		if !seen[key] {
 			seen[key] = true
 			out = append(out, s)
 		}
 	}
 	return out
+}
+
+func evidenceMatchClassRank(class domain.EvidenceMatchClass) int {
+	switch class {
+	case domain.EvidenceMatchStrongContent:
+		return 0
+	case domain.EvidenceMatchSupportingContent:
+		return 1
+	case domain.EvidenceMatchDocumentation:
+		return 2
+	case domain.EvidenceMatchPathOnly:
+		return 3
+	default:
+		// Legacy non-rule sources retain their historical relative ordering.
+		return 4
+	}
 }
 func evidenceScores(s []domain.EvidenceSource) (float64, float64, int) {
 	max, total := 0.0, 0.0

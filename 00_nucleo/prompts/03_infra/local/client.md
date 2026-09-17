@@ -29,6 +29,13 @@ Limites declarados: a raiz escolhida é o diretório aberto; `os.Root` não isol
 
 Abrir descritores com flag não bloqueante para que FIFOs não bloqueiem antes da validação de arquivo regular (plataformas com `syscall.O_NONBLOCK`). A validação continua no descritor aberto, sem depender de `stat` prévio. O subprocesso `git rev-parse HEAD` permanece exclusivamente para metadados de commit-base, incluindo gitdir externo de worktrees legítimas; não executa filtros/hooks nem fornece os bytes analisados.
 
+## Passo 0072 — enumeração completa da superfície local
+
+`FetchTree` não possui corte silencioso por quantidade de entradas. Ele enumera toda a
+superfície acessível sob a raiz confinada, em ordem independente do filesystem, ou
+retorna erro quando a enumeração falha/cancela. Nunca devolver uma árvore truncada como
+sucesso; o chamador transforma erro em `TreeComplete=false`.
+
 ### Refinamento A — aliases absolutos internos
 
 Contraexemplo observado pelo verificador: arquivo regular interno + alias interno retornavam somente um arquivo. `os.Root` recusa links absolutos mesmo quando o alvo está sob a raiz. Estender a abertura com fallback limitado a 40 resoluções: inspecionar componentes apenas por `Root.Lstat`/`Root.Readlink`, converter alvo absoluto lexicalmente contido em nome relativo e recomeçar a resolução. Alvos externos são recusados antes de prosseguir. A abertura de conteúdo final continua exclusivamente por `Root.OpenFile`, preservando a contenção contra troca concorrente. Nunca usar `EvalSymlinks` seguido de abertura absoluta. Este fallback aceita aliases absolutos sob o nome absoluto da raiz aberta; aliases para outra grafia externa da mesma raiz podem ser recusados. Preservar o caminho solicitado na evidência e o hash dos bytes retornados.

@@ -207,7 +207,7 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 	nodes := make([]domain.DirectoryNode, 0, 512)
 	err = fs.WalkDir(scoped.FS(), ".", func(path string, entry os.DirEntry, walkErr error) error {
 		if walkErr != nil {
-			return nil
+			return walkErr
 		}
 		if ctx.Err() != nil {
 			return ctx.Err()
@@ -225,9 +225,6 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 			node.Size = info.Size()
 		}
 		nodes = append(nodes, node)
-		if len(nodes) >= 20_000 {
-			return fs.SkipAll
-		}
 		return nil
 	})
 	return nodes, err

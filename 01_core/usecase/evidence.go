@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-09-17
  */
 
 package usecase
@@ -1566,6 +1566,13 @@ func supportedSymbolOccurrence(line, pattern string, test bool) bool {
 	if _, ok := declaredSymbol(compact); ok {
 		return true
 	}
+	// Some catalog symbols are deliberately operator-rich code idioms rather
+	// than a single declaration or call (for example, a self-assignment guard).
+	// The caller has already established an exact lexical match on comment- and
+	// literal-free code, so this branch only classifies the declared pattern.
+	if supportedCompoundCodeExpression(pattern) {
+		return true
+	}
 	identifier := symbolForPattern(pattern)
 	if identifier == "" || !exactLexicalPatternMatch(compact, identifier) {
 		return false
@@ -1592,6 +1599,48 @@ func supportedSymbolOccurrence(line, pattern string, test bool) bool {
 			}
 		}
 		start = position + 1
+	}
+	return false
+}
+
+func supportedCompoundCodeExpression(pattern string) bool {
+	if strings.ContainsAny(pattern, "\r\n") {
+		return false
+	}
+	pattern = strings.TrimSpace(pattern)
+	if pattern == "" {
+		return false
+	}
+	identifiers := 0
+	for index := 0; index < len(pattern); {
+		if !isIdentifierByte(pattern[index]) {
+			index++
+			continue
+		}
+		identifiers++
+		for index < len(pattern) && isIdentifierByte(pattern[index]) {
+			index++
+		}
+	}
+	if identifiers < 2 {
+		return false
+	}
+	for _, operator := range []string{"==", "!=", "<=", ">=", "&&", "||", "->"} {
+		if strings.Contains(pattern, operator) {
+			return true
+		}
+	}
+	for index := 0; index < len(pattern); index++ {
+		switch pattern[index] {
+		case '=', '%', '+', '*', '/', '&', '|', '^', '<', '>':
+			return true
+		case '-':
+			leftIdentifier := index > 0 && isIdentifierByte(pattern[index-1])
+			rightIdentifier := index+1 < len(pattern) && isIdentifierByte(pattern[index+1])
+			if !leftIdentifier || !rightIdentifier {
+				return true
+			}
+		}
 	}
 	return false
 }

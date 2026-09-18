@@ -57,3 +57,12 @@ respeitando fronteiras de identificadores e sem interpretar macros ou declaraç�
 divididas. Fontes de regra carregam linha baseada em 1, snippet normalizado, padrão
 canônico e classe da mesma ocorrência. Ordenar deterministicamente por autoridade da
 classe, path, linha, padrão e snippet; path-only permanece diagnóstico e nunca fonte.
+
+## Passo 0075 — expressões probatórias compostas
+
+Além de declarações e chamadas, aceitar como ocorrência forte uma expressão literal
+declarada pela regra quando ela contiver identificadores e operador de código explícito
+e casar integralmente na mesma linha admissível. Preservar fronteiras de identificador,
+remoção de comentários/literais e opacidade de macros ou expressões multiline. Texto
+natural multiword sem operador não ganha autoridade. Padrões probatórios continuam fora
+dos termos de recuperação, derivados somente de `TargetHints`.

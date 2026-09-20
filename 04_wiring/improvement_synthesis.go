@@ -2,19 +2,19 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/improvement_synthesis.md
  * @layer L4
- * @updated 2026-09-02
+ * @updated 2026-09-19
  */
 
 package main
 
 import (
 	"context"
-	_ "embed"
 	"io"
 
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/mcp"
+	"bateia/03_infra/runcontainer"
 	"bateia/03_infra/runstore"
 )
 
@@ -23,6 +23,7 @@ func NewImprovementSynthesisMCPServer(
 	recommendationExecutor domain.ObservableRecommendationExecutor,
 	connectors []domain.MarketDiscoveryConnector,
 	mechanismCatalog []byte,
+	mechanismCatalogSHA256 string,
 	baseline *domain.ConventionalBaseline,
 	root string,
 	cursorSecret []byte,
@@ -37,32 +38,26 @@ func NewImprovementSynthesisMCPServer(
 		return nil, nil, domain.ErrInvalidRunInput
 	}
 	extractor := usecase.NewDeterministicMechanismExtractor()
-	if _, err := extractor.ExtractMechanisms(context.Background(), domain.MechanismExtractionInput{RuleCatalogJSON: mechanismCatalog, RuleCatalogSHA256: mechanismRulesSHA256}); err != nil {
+	if _, err := extractor.ExtractMechanisms(context.Background(), domain.MechanismExtractionInput{RuleCatalogJSON: mechanismCatalog, RuleCatalogSHA256: mechanismCatalogSHA256}); err != nil {
 		return nil, nil, err
 	}
-	service, queue, store, err := newDurableComponents(recommendationExecutor, root, cursorSecret, limits, workers, capacity)
+	durable, err := runcontainer.New(recommendationExecutor, root, cursorSecret, limits, workers, capacity)
 	if err != nil {
 		return nil, nil, err
 	}
+	service := durable.Service()
 	service.ConfigureMarketDiscovery(nil, registry)
-	service.ConfigureMechanismExtraction(extractor, mechanismCatalog, mechanismRulesSHA256, baseline)
-	service.ConfigureImprovementSynthesis(mechanismRulesSHA256)
-	if err := service.Recover(context.Background()); err != nil {
-		_ = store.Close()
+	service.ConfigureMechanismExtraction(extractor, mechanismCatalog, mechanismCatalogSHA256, baseline)
+	service.ConfigureImprovementSynthesis(mechanismCatalogSHA256)
+	if err := durable.Recover(context.Background()); err != nil {
 		return nil, nil, err
 	}
-	if err := queue.Start(); err != nil {
-		_ = store.Close()
+	if err := durable.Start(); err != nil {
 		return nil, nil, err
 	}
 	server := mcp.NewMCPServer(funnel, reader, writer, recommendationExecutor).
 		WithDurableRuns(service).
 		WithMarketDiscovery(connectors, service).
 		WithImprovementSynthesis(service)
-	return server, durableShutdown(queue, store), nil
+	return server, durable.Shutdown, nil
 }
-
-const mechanismRulesSHA256 = "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142"
-
-//go:embed mechanism-rules.json
-var embeddedMechanismCatalog []byte

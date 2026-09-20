@@ -37,11 +37,17 @@ O Bateia é construído sobre os princípios da **Arquitetura Cristalina / Tekt*
 
 | Camada | Diretório | Responsabilidade | Restrições |
 |--------|-----------|------------------|------------|
-| **$L_0$** | `00_nucleo/prompts/` | Especificações e prompts versionados | Contratos sujeitos a revisão. Não é código. |
+| **$L_0$** | `00_nucleo/` | Intenção, prompts, ADRs, laudos e evidência passiva | Regime declarativo: sem código ou executores. |
 | **$L_1$** | `01_core/` | Domínio, parsers e casos de uso | Sem adaptadores concretos; orquestração por interfaces. Há consultas ao relógio em parsers, portanto nem todas as funções são puras. |
 | **$L_2$** | `02_shell/` | CLI e Gerador de Relatórios | Conhece apenas $L_1$. Formatadores de saída. |
 | **$L_3$** | `03_infra/` | Adaptadores de Infraestrutura | I/O, GitHub API, Sourcegraph e Cache em disco. |
 | **$L_4$** | `04_wiring/` | Ponto de entrada (`main.go`) | Composição sem lógica de negócio. |
+| **Lab** | `lab/` | Arena, bancada, mutantes e experimentos | Não pode ser importado pelo produto; promoção exige contrato em $L_0$. |
+
+No brownfield, a convergência para essas fronteiras é feita por fatias pequenas e
+reversíveis. Relatórios e ADRs continuam em $L_0$; executores, gates e corpora
+ativos pertencem ao Lab. A decisão está registrada no
+[ADR-0004](00_nucleo/ADR/ADR-0004-lab-e-contencao-brownfield.md).
 
 ---
 
@@ -182,7 +188,7 @@ Execute as verificações para a revisão em uso. Resultados são específicos d
 go test ./...
 
 # Validar conformidade arquitetural Tekt
-crystalline-lint .
+crystalline-lint --fail-on warning .
 ```
 
 ## Limites conhecidos da decisão

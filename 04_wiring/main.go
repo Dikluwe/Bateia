@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-09-12
+ * @updated 2026-09-19
  */
 
 package main
@@ -24,6 +24,7 @@ import (
 	"bateia/03_infra/cache"
 	"bateia/03_infra/clang"
 	"bateia/03_infra/content"
+	"bateia/03_infra/durableconfig"
 	"bateia/03_infra/effects"
 	"bateia/03_infra/envfile"
 	"bateia/03_infra/github"
@@ -190,7 +191,7 @@ func main() {
 		if toolCallBudgetErr != nil {
 			log.Fatalf("Erro ao inicializar orçamento MCP: %v", toolCallBudgetErr)
 		}
-		config, configErr := loadDurableLocalConfig()
+		config, configErr := durableconfig.LoadLocal()
 		if configErr != nil {
 			log.Fatalf("Erro ao inicializar configuração MCP durável: %v", configErr)
 		}
@@ -198,7 +199,8 @@ func main() {
 		if connectorErr != nil {
 			log.Fatalf("Erro ao inicializar conectores públicos: %v", connectorErr)
 		}
-		server, shutdown, serverErr := NewImprovementSynthesisMCPServer(funnelUsecase, recommendationService, connectors, embeddedMechanismCatalog, nil, config.root, config.secret, config.limits, config.workers, config.capacity, os.Stdin, os.Stdout)
+		mechanismCatalog, mechanismCatalogSHA256 := usecase.ActiveMechanismRuleCatalog()
+		server, shutdown, serverErr := NewImprovementSynthesisMCPServer(funnelUsecase, recommendationService, connectors, mechanismCatalog, mechanismCatalogSHA256, nil, config.Root, config.Secret, config.Limits, config.Workers, config.Capacity, os.Stdin, os.Stdout)
 		if serverErr != nil {
 			log.Fatalf("Erro ao inicializar descoberta de mercado MCP: %v", serverErr)
 		}
@@ -220,12 +222,12 @@ func main() {
 	app := cli.NewCLIApp(funnelUsecase, recommendationService)
 	var shutdownDurable func(context.Context) error
 	if durableMCPRequested(os.Args[1:]) {
-		config, configErr := loadDurableLocalConfig()
+		config, configErr := durableconfig.LoadLocal()
 		if configErr != nil {
 			log.Fatalf("Erro ao inicializar configuração MCP durável: %v", configErr)
 		}
 		durableRuns, shutdown, durableErr := newDurableRecommendationRuns(
-			recommendationService, config.root, config.secret, config.limits, config.workers, config.capacity,
+			recommendationService, config.Root, config.Secret, config.Limits, config.Workers, config.Capacity,
 		)
 		if durableErr != nil {
 			log.Fatalf("Erro ao inicializar execuções MCP duráveis: %v", durableErr)

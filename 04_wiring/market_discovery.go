@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/market_discovery.md
  * @layer L4
- * @updated 2026-09-06
+ * @updated 2026-09-19
  */
 
 package main
@@ -18,6 +18,7 @@ import (
 	"bateia/03_infra/forge"
 	"bateia/03_infra/itunes"
 	"bateia/03_infra/playstore"
+	"bateia/03_infra/runcontainer"
 	"bateia/03_infra/runstore"
 )
 
@@ -90,21 +91,20 @@ func NewMarketDiscoveryMCPServer(
 	if err != nil || len(registry.Capabilities()) < 3 {
 		return nil, nil, domain.ErrInvalidRunInput
 	}
-	service, queue, store, err := newDurableComponents(recommendationExecutor, root, cursorSecret, limits, workers, capacity)
+	durable, err := runcontainer.New(recommendationExecutor, root, cursorSecret, limits, workers, capacity)
 	if err != nil {
 		return nil, nil, err
 	}
+	service := durable.Service()
 	service.ConfigureMarketDiscovery(nil, registry)
-	if err := service.Recover(context.Background()); err != nil {
-		_ = store.Close()
+	if err := durable.Recover(context.Background()); err != nil {
 		return nil, nil, err
 	}
-	if err := queue.Start(); err != nil {
-		_ = store.Close()
+	if err := durable.Start(); err != nil {
 		return nil, nil, err
 	}
 	server := mcp.NewMCPServer(funnel, reader, writer, recommendationExecutor).
 		WithDurableRuns(service).
 		WithMarketDiscovery(connectors, service)
-	return server, durableShutdown(queue, store), nil
+	return server, durable.Shutdown, nil
 }

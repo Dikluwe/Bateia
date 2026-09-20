@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/mechanism_extraction.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-19
  */
 
 package usecase
@@ -24,8 +24,6 @@ import (
 	"bateia/01_core/domain"
 	"golang.org/x/text/unicode/norm"
 )
-
-const activeMechanismRulesSHA256 = "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142"
 
 var immutableCommitPattern = regexp.MustCompile(`^(?:[0-9a-f]{40}|[0-9a-f]{64})$`)
 var contentHashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)

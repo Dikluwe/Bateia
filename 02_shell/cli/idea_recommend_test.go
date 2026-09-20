@@ -1132,3 +1132,94 @@ func TestIdeaRecommendM21RejectsInvalidLocaleBeforeProviderAndNoFlagIsNeutral(t 
 		}
 	}
 }
+
+func TestIdeaRecommendUsesExplicitScreeningModel(t *testing.T) {
+	idea, policy, source := recommendReplayFixture(t)
+	modelPath := filepath.Join("..", "..", "00_nucleo", "modelos", "screening-operacional-v1.json")
+	modelBytes, err := os.ReadFile(modelPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	run := func(path string) domain.IdeaRunManifest {
+		t.Helper()
+		out := filepath.Join(t.TempDir(), "out")
+		args := []string{
+			"--idea", idea, "--policy", policy, "--mode", "replay", "--strategy", "literal",
+			"--replay", source, "--output", out, "--screening-model", path,
+		}
+		if err := RunIdeaRecommendCommand(args, &bytes.Buffer{}, nil, nil, nil); err != nil {
+			t.Fatal(err)
+		}
+		var manifest domain.IdeaRunManifest
+		if err := readJSONFile(filepath.Join(out, "run.json"), &manifest); err != nil {
+			t.Fatal(err)
+		}
+		if manifest.InputHashes["screening_model"] != hashBytes(mustReadFile(t, path)) {
+			t.Fatalf("manifesto não identifica os bytes do modelo: %+v", manifest.InputHashes)
+		}
+		if manifest.RuleVersions["screening"] != "screening-opt-in-v1" {
+			t.Fatalf("versão do screening opt-in ausente: %+v", manifest.RuleVersions)
+		}
+		var report domain.ScreeningReport
+		if err := readJSONFile(filepath.Join(out, "screening-report.json"), &report); err != nil {
+			t.Fatal(err)
+		}
+		for _, decision := range report.Decisions {
+			if decision.Decision == "DROP" || decision.Probability != nil {
+				t.Fatalf("modelo não calibrado ganhou autoridade destrutiva: %+v", decision)
+			}
+		}
+		return manifest
+	}
+
+	first := run(modelPath)
+	copyPath := filepath.Join(t.TempDir(), "model-with-extra-newline.json")
+	if err := os.WriteFile(copyPath, append(append([]byte(nil), modelBytes...), '\n'), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	second := run(copyPath)
+	if first.RunID == second.RunID {
+		t.Fatal("mudança nos bytes do modelo não invalidou a identidade da execução")
+	}
+}
+
+func TestIdeaRecommendRejectsInvalidScreeningModelBeforeOutput(t *testing.T) {
+	idea, policy, source := recommendReplayFixture(t)
+	for _, testCase := range []struct {
+		name    string
+		content string
+	}{
+		{name: "unknown-field", content: `{"schema_version":"1","weights":{},"advance_threshold":0.5,"drop_threshold":0.2,"audit_sample_rate":0,"audit_seed":1,"calibration_status":"uncalibrated","extra":true}`},
+		{name: "calibrated", content: `{"schema_version":"1","weights":{},"advance_threshold":0.5,"drop_threshold":0.2,"audit_sample_rate":0,"audit_seed":1,"calibration_status":"calibrated"}`},
+		{name: "trailing-value", content: `{"schema_version":"1","weights":{},"advance_threshold":0.5,"drop_threshold":0.2,"audit_sample_rate":0,"audit_seed":1,"calibration_status":"uncalibrated"} {}`},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			root := t.TempDir()
+			modelPath := filepath.Join(root, "model.json")
+			if err := os.WriteFile(modelPath, []byte(testCase.content), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			out := filepath.Join(root, "must-not-exist")
+			err := RunIdeaRecommendCommand([]string{
+				"--idea", idea, "--policy", policy, "--mode", "replay", "--strategy", "literal",
+				"--replay", source, "--output", out, "--screening-model", modelPath,
+			}, &bytes.Buffer{}, nil, nil, nil)
+			if err == nil || err.Error() != "modelo de screening inválido" {
+				t.Fatalf("erro = %v", err)
+			}
+			if _, statErr := os.Stat(out); !os.IsNotExist(statErr) {
+				t.Fatalf("modelo inválido deixou saída parcial: %v", statErr)
+			}
+		})
+	}
+}
+
+func mustReadFile(t *testing.T, path string) []byte {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}

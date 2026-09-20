@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-16
+ * @updated 2026-09-19
  */
 package cli
 
@@ -10,6 +10,7 @@ import (
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
 	"bateia/02_shell/report"
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -17,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"math"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -29,6 +31,18 @@ type repeatedPaths []string
 
 func (r *repeatedPaths) String() string     { return strings.Join(*r, ",") }
 func (r *repeatedPaths) Set(v string) error { *r = append(*r, v); return nil }
+
+type optionalPath struct {
+	value string
+	set   bool
+}
+
+func (p *optionalPath) String() string { return p.value }
+func (p *optionalPath) Set(v string) error {
+	p.value = v
+	p.set = true
+	return nil
+}
 
 func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, recommendationServices ...*usecase.RecommendationService) error {
 	fs := flag.NewFlagSet("idea recommend", flag.ContinueOnError)
@@ -50,8 +64,10 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	timeout := fs.Duration("timeout", 2*time.Minute, "limite total da execução")
 	var locals repeatedPaths
 	var searchLocales repeatedPaths
+	var screeningModelPath optionalPath
 	fs.Var(&locals, "local", "worktree local; repetível")
 	fs.Var(&searchLocales, "search-locale", "idioma natural/região BCP 47 para descoberta; repetível ou all")
+	fs.Var(&screeningModelPath, "screening-model", "modelo JSON de screening opt-in")
 	if err := fs.Parse(args); err != nil {
 		return fmt.Errorf("parâmetros de idea recommend inválidos: %w", err)
 	}
@@ -70,6 +86,16 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	}
 	if *maxPerQuery < 1 || *maxPerQuery > 25 || *maxCandidates < 1 || *maxCandidates > 20 {
 		return fmt.Errorf("limites de candidatos inválidos")
+	}
+	var screeningModel *domain.ScreeningModel
+	screeningModelHash := ""
+	if screeningModelPath.set {
+		model, hash, modelErr := readOptInScreeningModel(screeningModelPath.value)
+		if modelErr != nil {
+			return modelErr
+		}
+		screeningModel = &model
+		screeningModelHash = hash
 	}
 	regionalInput, err := usecase.PlanRegionalDiscovery(usecase.DefaultRegionalQueryCatalog(), "recipe-manager", searchLocales)
 	if err != nil {
@@ -111,6 +137,9 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	}
 	req := domain.IdeaRunRequest{Idea: idea, Policy: policy, Mode: runMode, Strategy: strings.ToLower(*strategy), Provider: *provider, Language: *language, SearchLocales: normalizedSearchLocales, LocalPaths: append([]string(nil), locals...), ReplayDirectory: *replay, OutputDirectory: *output, Resume: *resume, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates}
 	deps := usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content, EvidenceRules: evidenceRules}
+	if screeningModel != nil {
+		deps.ScreeningModel = *screeningModel
+	}
 	if runMode == domain.IdeaRunLocal {
 		deps.LocalCandidates, err = localCandidatesExcluding(idea, locals, *output)
 		if err != nil {
@@ -122,10 +151,16 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		return err
 	}
 	inputHashes := map[string]string{"idea": hashJSON(idea), "policy": hashJSON(policy), "mode": hashBytes([]byte(runMode)), "evidence": evidenceHash, "evidence_rules": catalogCoverage.RulesHash, "target": hashJSON(target)}
+	if screeningModel != nil {
+		inputHashes["screening_model"] = screeningModelHash
+	}
 	if len(normalizedSearchLocales) > 0 {
 		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
 	}
 	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": catalogCoverage.RulesVersion, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
+	if screeningModel != nil {
+		ruleVersions["screening"] = "screening-opt-in-v1"
+	}
 	if runMode == domain.IdeaRunLocal || runMode == domain.IdeaRunLive {
 		ruleVersions["implementation_search"] = "0061"
 	}
@@ -136,15 +171,16 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	canReuseEvidence := false
 	if *resume {
 		if e := readJSONFile(filepath.Join(*output, "run.json"), &previous); e == nil {
-			canReuseEvidence = reusableEvidenceCheckpoint(*output, previous, evidenceHash, catalogCoverage.RulesHash, ruleVersions)
+			canReuseEvidence = reusableEvidenceCheckpoint(*output, previous, evidenceHash, catalogCoverage.RulesHash, ruleVersions, screeningModelHash)
 		}
 	}
 	runIdentity := struct {
-		EvidenceHash string            `json:"evidence_hash"`
-		PolicyHash   string            `json:"policy_hash"`
-		TargetHash   string            `json:"target_hash"`
-		RuleVersions map[string]string `json:"rule_versions"`
-	}{EvidenceHash: evidenceHash, PolicyHash: inputHashes["policy"], TargetHash: inputHashes["target"], RuleVersions: ruleVersions}
+		EvidenceHash       string            `json:"evidence_hash"`
+		PolicyHash         string            `json:"policy_hash"`
+		TargetHash         string            `json:"target_hash"`
+		ScreeningModelHash string            `json:"screening_model_hash,omitempty"`
+		RuleVersions       map[string]string `json:"rule_versions"`
+	}{EvidenceHash: evidenceHash, PolicyHash: inputHashes["policy"], TargetHash: inputHashes["target"], ScreeningModelHash: screeningModelHash, RuleVersions: ruleVersions}
 	manifest := domain.IdeaRunManifest{SchemaVersion: "1", RunID: usecase.StableRunID(hashJSON(runIdentity)), Mode: runMode, Status: domain.IdeaRunRunning, InputHashes: inputHashes, RuleVersions: ruleVersions, Stages: []domain.IdeaRunStage{}}
 	if err = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest); err != nil {
 		return err
@@ -176,7 +212,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	var result domain.IdeaRunResult
 	var alternatives domain.SoftwareAlternativeReport
 	var runErr error
-	usesRecommendationService := runMode == domain.IdeaRunLive && targetRepository == nil && !canReuseEvidence
+	usesRecommendationService := runMode == domain.IdeaRunLive && targetRepository == nil && !canReuseEvidence && screeningModel == nil
 	if usesRecommendationService {
 		recommendationService, constructorErr := usecase.NewRecommendationServiceWithEvidenceRules(semantic, discovery, content, evidenceRules)
 		if constructorErr != nil {
@@ -488,6 +524,54 @@ func fileHash(path string) (string, error) {
 	return hashBytes(b), nil
 }
 
+func readOptInScreeningModel(path string) (domain.ScreeningModel, string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return domain.ScreeningModel{}, "", fmt.Errorf("não foi possível ler o modelo de screening")
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	var model domain.ScreeningModel
+	if err := decoder.Decode(&model); err != nil {
+		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
+	}
+	if err := decoder.Decode(&struct{}{}); err != io.EOF {
+		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
+	}
+	if !validOptInScreeningModel(model) {
+		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
+	}
+	return model, hashBytes(data), nil
+}
+
+func validOptInScreeningModel(model domain.ScreeningModel) bool {
+	if model.SchemaVersion != "1" || model.CalibrationStatus != "uncalibrated" || model.Calibration != nil || model.Weights == nil {
+		return false
+	}
+	if !finite(model.DropThreshold) || !finite(model.AdvanceThreshold) ||
+		model.DropThreshold < 0 || model.DropThreshold >= model.AdvanceThreshold || model.AdvanceThreshold > 1 {
+		return false
+	}
+	if !finite(model.AuditSampleRate) || model.AuditSampleRate < 0 || model.AuditSampleRate > 1 {
+		return false
+	}
+	for _, weight := range model.Weights {
+		if !finite(weight) {
+			return false
+		}
+	}
+	for _, prior := range model.ExpansionPriors {
+		if !finite(prior) {
+			return false
+		}
+	}
+	return true
+}
+
+func finite(value float64) bool {
+	return !math.IsNaN(value) && !math.IsInf(value, 0)
+}
+
 type evidenceInputs struct {
 	Idea            domain.IdeaSpec      `json:"idea"`
 	Mode            domain.IdeaRunMode   `json:"mode"`
@@ -535,13 +619,25 @@ func evidenceInputHash(req domain.IdeaRunRequest, local []domain.RepositoryCandi
 	return hashJSON(inputs), nil
 }
 
-func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, evidenceHash, evidenceRulesHash string, ruleVersions map[string]string) bool {
+func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, evidenceHash, evidenceRulesHash string, ruleVersions map[string]string, screeningModelHashes ...string) bool {
 	switch previous.Status {
 	case domain.IdeaRunComplete, domain.IdeaRunPartial, domain.IdeaRunInconclusive:
 	default:
 		return false
 	}
 	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash || previous.InputHashes["evidence_rules"] != evidenceRulesHash {
+		return false
+	}
+	screeningModelHash := ""
+	if len(screeningModelHashes) > 0 {
+		screeningModelHash = screeningModelHashes[0]
+	}
+	previousScreeningModelHash, previousHasScreeningModel := previous.InputHashes["screening_model"]
+	if screeningModelHash == "" {
+		if previousHasScreeningModel {
+			return false
+		}
+	} else if !previousHasScreeningModel || previousScreeningModelHash != screeningModelHash {
 		return false
 	}
 	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query"} {

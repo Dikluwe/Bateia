@@ -81,3 +81,34 @@ conserva bundles congelados.
 
 ## Passo 0061
 Checkpoint implementation_search = 0061 local/live; descoberta inalterada. Apresentar WriteActionAssessments ao lado de requisitos no Markdown.
+
+## Modelo de peneira opt-in
+
+Adicionar `--screening-model <arquivo>` a `idea recommend`. Sem a flag, preservar
+exatamente o fluxo, versões, `InputHashes`, pré-imagem do `RunID` e elegibilidade
+de retomada existentes. Com a flag, antes de criar output ou chamar dependências:
+
+- ler bytes uma vez e fazer strict-decode de um único `domain.ScreeningModel`;
+- rejeitar trailing data/campos desconhecidos, números não finitos, schema ou
+  thresholds inválidos, status diferente de `uncalibrated` e calibrador presente;
+- calcular SHA-256 dos bytes exatos e gravá-lo em
+  `InputHashes["screening_model"]`;
+- usar `RuleVersions["screening"]="screening-opt-in-v1"`;
+- inserir `screening_model_hash` depois de `target_hash` e antes de
+  `rule_versions` na pré-imagem opt-in do `RunID`;
+- exigir presença/hash/versão idênticos para `--resume`;
+- injetar o modelo somente por `IdeaRunDependencies.ScreeningModel`.
+
+No `live` sem target/checkpoint, a baseline usa `RecommendationService`, que não
+expõe injeção desse modelo. Somente no caminho opt-in, não selecione esse serviço:
+use o ramo direto já existente de `RunIdeaPipeline` com o modelo em `deps` e depois
+o ranking de alternativas já existente. Não altere L1 nem adicione setter. Sem a
+flag, preserve exatamente a condição e o serviço atuais.
+
+Mesmo conteúdo em outro caminho mantém identidade; qualquer byte diferente muda
+identidade. Presença versus ausência nunca é compatível para retomada. Erro não
+deixa diretório/manifesto parcial. Falha de leitura retorna somente `não foi
+possível ler o modelo de screening`; conteúdo inválido retorna somente `modelo de
+screening inválido`; nunca interpolar path, conteúdo, campo, valor ou erro JSON.
+Não ler modelo de env, default oculto ou `lab/`; não alterar `DefaultScreeningModel`,
+`ScreenDiscovery`, schemas públicos nem o pipeline L1.

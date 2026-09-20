@@ -4,7 +4,11 @@ Origem L0 exclusiva de `01_core/usecase/probabilistic_screening_test.go`. Este c
 
 ## Obrigação
 
-Verificar de forma determinística o comportamento público do contrato relacionado, cobrindo sucesso, rejeição e limites já materializados nesta unidade. Preservar como observáveis: `screeningFixture`, `TestScreenDiscoveryExplainsControlledCandidates`, `TestMigrationV1DoesNotInventEvidence`, `TestRemovingOriginOnlyChangesConvergenceDependentContribution`, `TestValidateAuditRevisionsCountsFalseNegative`, `TestDiagnoseScreeningAdvancesKnownRelevantWithoutChangingScore`. Os testes não podem depender de rede real, relógio não controlado ou ordem acidental.
+Verificar de forma determinística o comportamento público do screening, cobrindo
+ranking, migração, diagnóstico e a autoridade de calibração. Modelo não calibrado não
+pode descartar; calibração válida preserva o descarte; estado contraditório ou não
+finito deve resultar em `AUDIT` sem probabilidade. Os testes não dependem de rede,
+relógio ou ordem acidental.
 
 ## Restrições
 

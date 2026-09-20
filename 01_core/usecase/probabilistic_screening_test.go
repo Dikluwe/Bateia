@@ -9,6 +9,7 @@ package usecase
 
 import (
 	"math"
+	"strings"
 	"testing"
 
 	"bateia/01_core/domain"
@@ -44,8 +45,8 @@ func TestScreenDiscoveryExplainsControlledCandidates(t *testing.T) {
 	if c.Decision != "AUDIT" {
 		t.Fatalf("ausência deveria gerar AUDIT: %+v", c)
 	}
-	if d.Decision != "DROP" || d.Signals.NonGoalConflict == 0 {
-		t.Fatalf("NonGoal não bloqueou avanço: %+v", d)
+	if d.Decision != "AUDIT" || d.Signals.NonGoalConflict == 0 {
+		t.Fatalf("NonGoal sem calibração deveria gerar AUDIT: %+v", d)
 	}
 	if a.Probability != nil || a.CalibrationStatus != "uncalibrated" {
 		t.Fatalf("score não calibrado virou probabilidade: %+v", a)
@@ -57,6 +58,70 @@ func TestScreenDiscoveryExplainsControlledCandidates(t *testing.T) {
 	if math.Abs(clamp(raw)-a.RankingScore) > 1e-12 {
 		t.Fatalf("score não reconstruível: raw=%v score=%v", raw, a.RankingScore)
 	}
+}
+
+func TestScreenDiscoveryRequiresValidCalibrationForDrop(t *testing.T) {
+	decisions := func(model domain.ScreeningModel) map[string]domain.ScreeningDecision {
+		t.Helper()
+		report, err := ScreenDiscovery(screeningFixture(), model)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result := make(map[string]domain.ScreeningDecision, len(report.Decisions))
+		for _, decision := range report.Decisions {
+			result[decision.Repository] = decision
+		}
+		return result
+	}
+
+	uncalibrated := DefaultScreeningModel()
+	uncalibrated.AuditSampleRate = 0
+	contained := decisions(uncalibrated)["org/d"]
+	if contained.Decision != "AUDIT" || contained.Probability != nil ||
+		!containsReason(contained.UncertaintyReasons, "modelo sem calibração válida não autoriza DROP") {
+		t.Fatalf("modelo não calibrado descartou ou ocultou a contenção: %+v", contained)
+	}
+
+	calibrated := uncalibrated
+	calibrated.CalibrationStatus = "calibrated"
+	calibrated.Calibration = &domain.CalibrationParameters{A: 1, B: 0}
+	authorized := decisions(calibrated)["org/d"]
+	if authorized.Decision != "DROP" || authorized.Probability == nil {
+		t.Fatalf("calibração válida não preservou o descarte: %+v", authorized)
+	}
+
+	malformed := uncalibrated
+	malformed.CalibrationStatus = "calibrated"
+	for repository, decision := range decisions(malformed) {
+		if decision.Decision != "AUDIT" || decision.Probability != nil ||
+			!containsReason(decision.UncertaintyReasons, "estado de calibração opaco ou malformado exige AUDIT") {
+			t.Fatalf("estado malformado não foi contido em %s: %+v", repository, decision)
+		}
+	}
+}
+
+func TestScreenDiscoveryRejectsNonFiniteCalibrationAsAuthority(t *testing.T) {
+	model := DefaultScreeningModel()
+	model.CalibrationStatus = "calibrated"
+	model.Calibration = &domain.CalibrationParameters{A: math.Inf(1), B: 0}
+	report, err := ScreenDiscovery(screeningFixture(), model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, decision := range report.Decisions {
+		if decision.Decision != "AUDIT" || decision.Probability != nil {
+			t.Fatalf("calibrador não finito ganhou autoridade: %+v", decision)
+		}
+	}
+}
+
+func containsReason(reasons []string, want string) bool {
+	for _, reason := range reasons {
+		if strings.EqualFold(reason, want) {
+			return true
+		}
+	}
+	return false
 }
 
 func TestMigrationV1DoesNotInventEvidence(t *testing.T) {

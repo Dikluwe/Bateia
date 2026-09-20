@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/probabilistic_screening.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-19
  */
 
 package usecase
@@ -271,7 +271,11 @@ func screenCandidate(snapshot domain.DiscoverySnapshot, candidate domain.Discove
 	repository := candidate.Repository.Owner + "/" + candidate.Repository.Repo
 	decision := domain.ScreeningDecision{Repository: repository, RankingScore: score, CalibrationStatus: model.CalibrationStatus, Signals: signals, Contributions: values, Origins: append([]domain.CandidateOrigin(nil), candidate.Origins...)}
 	decisionValue := score
-	if model.CalibrationStatus == "calibrated" && model.Calibration != nil {
+	validCalibration := model.CalibrationStatus == "calibrated" && model.Calibration != nil &&
+		!math.IsNaN(model.Calibration.A) && !math.IsInf(model.Calibration.A, 0) &&
+		!math.IsNaN(model.Calibration.B) && !math.IsInf(model.Calibration.B, 0)
+	explicitlyUncalibrated := model.CalibrationStatus == "uncalibrated" && model.Calibration == nil
+	if validCalibration {
 		logitInput := math.Log(math.Max(score, 1e-6) / math.Max(1-score, 1e-6))
 		probability := sigmoid(model.Calibration.A*logitInput + model.Calibration.B)
 		decision.Probability = &probability
@@ -295,6 +299,14 @@ func screenCandidate(snapshot domain.DiscoverySnapshot, candidate domain.Discove
 	default:
 		decision.Decision = "AUDIT"
 		decision.UncertaintyReasons = append(decision.UncertaintyReasons, "próximo aos limiares")
+	}
+	if explicitlyUncalibrated && decision.Decision == "DROP" {
+		decision.Decision = "AUDIT"
+		decision.UncertaintyReasons = append(decision.UncertaintyReasons, "modelo sem calibração válida não autoriza DROP")
+	}
+	if !validCalibration && !explicitlyUncalibrated {
+		decision.Decision = "AUDIT"
+		decision.UncertaintyReasons = append(decision.UncertaintyReasons, "estado de calibração opaco ou malformado exige AUDIT")
 	}
 	return decision
 }

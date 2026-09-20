@@ -25,3 +25,17 @@ evidência negativa.
 ## Passo 0040
 
 Queries são rastreabilidade da busca, não conteúdo do candidato. Cobertura preliminar e não objetivos usam descrição e snippets retornados; nunca os termos consultados. A cobertura permanece sinal lexical preliminar, não comprovação.
+
+## Autorização para descarte
+
+`DROP` exige `CalibrationStatus == "calibrated"`, parâmetros de calibração presentes e
+ambos finitos. O estado explícito `uncalibrated + nil` continua usando o ranking para
+ordenar e pode emitir `ADVANCE`, mas converte qualquer `DROP` proposto em `AUDIT`, com a
+razão pública `modelo sem calibração válida não autoriza DROP`.
+
+Qualquer combinação opaca ou contraditória de status e parâmetros produz `AUDIT`,
+`Probability == nil` e a razão pública
+`estado de calibração opaco ou malformado exige AUDIT`. Não transformar opacidade em erro
+ou sucesso. Com calibração válida, preservar integralmente os caminhos atuais de decisão,
+probabilidade e auditoria. Não alterar sinais, pesos, priors, thresholds, seed/taxa,
+calibrador, schema/API, descoberta, evidência ou decisão final de reúso.

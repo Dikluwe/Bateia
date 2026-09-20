@@ -46,4 +46,4 @@ Este passo reduz conclusões indevidas; não demonstra ganho de recall, descober
 
 O próximo ganho de qualidade exige associar capacidades a implementações e verificações específicas, com cobertura declarada, sem depender de adicionar uma regra para cada exemplo. O catálogo fora dos domínios cobertos e a seleção de implementações em repositórios grandes continuam limitados.
 
-[Artefatos, hashes e comandos](../benchmark/0040/README.md).
+[Artefatos, hashes e comandos](../../lab/bancada/history/benchmarks/0040/README.md).

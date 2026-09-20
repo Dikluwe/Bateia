@@ -56,7 +56,7 @@ type execution struct {
 type mutationProgram func(*testing.T, attack) (execution, error)
 
 func TestStep0026R4CausalGateConsumesDeclaredAttacksThreeByThree(t *testing.T) {
-	data, err := os.ReadFile("../../../../00_nucleo/benchmark/0026/adversarial-cases.json")
+	data, err := os.ReadFile("../../../../lab/bancada/history/benchmarks/0026/adversarial-cases.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -227,7 +227,7 @@ func positivePrograms() map[string]func(*testing.T, attack) error {
 			if !strings.Contains(a.Stimulus, "all three legacy tools") || !strings.Contains(a.Witness, "byte-identical") || !strings.Contains(a.Witness, "injected shared service") {
 				return errors.New("declared compatibility witness absent")
 			}
-			want := map[string]string{"../../../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
+			want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
 			for path, expected := range want {
 				data, err := os.ReadFile(path)
 				if err != nil {
@@ -907,7 +907,7 @@ func certifiedPredecessorWitness(t *testing.T, a attack) error {
 	if !strings.Contains(a.Stimulus, "golden") || !strings.Contains(a.Witness, "legacy") {
 		return errors.New("legacy stimulus/witness not consumed")
 	}
-	want := map[string]string{"../../../../00_nucleo/benchmark/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
+	want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
 	for path, expected := range want {
 		data, err := os.ReadFile(path)
 		if err != nil {

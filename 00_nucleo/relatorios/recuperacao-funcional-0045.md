@@ -22,7 +22,7 @@ Autor B congelou um corpus de três projetos sintéticos em domínios distintos,
 | Precisão dos caminhos retornados | 3/10 (30%) | 4/4 (100%) |
 | Controle exato e negativos | Passaram | Passaram |
 
-O corpus, runner e esperados não mudaram para acomodar a candidata. Isso demonstra ganho nesta amostra pequena, não recall público ou compreensão semântica geral. [Avaliação B](../benchmark/0045/evaluation-b.md) e [comparação](../benchmark/0045/comparison.json).
+O corpus, runner e esperados não mudaram para acomodar a candidata. Isso demonstra ganho nesta amostra pequena, não recall público ou compreensão semântica geral. [Avaliação B](../../lab/bancada/history/benchmarks/0045/evaluation-b.md) e [comparação](../../lab/bancada/history/benchmarks/0045/comparison.json).
 
 Os ataques adicionais exercitam profundidade, orçamento, determinismo, chamada ambígua/sombreada e identidade das referências. A primeira revisão falhou: aceitava referência com hash correto na linha do `package`, fora da função chamadora. A correção passou a exigir a chamada AST no local declarado. Segunda execução passou sem alterar os testes. Depois, memoização da releitura e limite de referências exibidas foram incluídos; a suíte completa confirmou os testes novamente.
 
@@ -32,7 +32,7 @@ A pergunta `como a busca preserva requisitos originais e rejeita capacidades sem
 
 A consulta `SanitizeAssessmentEvidence` continua encontrando `evidence_authority.go:125–198` com identidade conferida. Ambas as varreduras examinaram 224 arquivos Go, 1.455.741 bytes, e conservaram 24 hits; estado parcial por orçamento. Esses números são cobertura/telemetria do Bateia, não benchmark do projeto.
 
-A recomendação da ideia do Bateia manteve as dez capacidades INCONCLUSIVE. Foram 43 alvos coletados, 855 ignorados por orçamento e quatro não encontrados; a coleta ainda tem limitações. Replay reproduziu assessment, decisão e alternativas byte a byte. [Inventário, parâmetros, hashes e comparação de replay](../benchmark/0045/observations.json); [relatório natural preservado](../benchmark/0045/natural.md).
+A recomendação da ideia do Bateia manteve as dez capacidades INCONCLUSIVE. Foram 43 alvos coletados, 855 ignorados por orçamento e quatro não encontrados; a coleta ainda tem limitações. Replay reproduziu assessment, decisão e alternativas byte a byte. [Inventário, parâmetros, hashes e comparação de replay](../../lab/bancada/history/benchmarks/0045/observations.json); [relatório natural preservado](../../lab/bancada/history/benchmarks/0045/natural.md).
 
 ## Verificação e custódia
 
@@ -43,7 +43,7 @@ A recomendação da ideia do Bateia manteve as dez capacidades INCONCLUSIVE. For
 
 Regime Tekt **A/B sem atestação de isolamento físico**: autor do parser e autor dos testes separados; coordenador escreveu contrato e integração. Filesystem compartilhado. Corpus métrico congelado e executado antes da candidata; ataques adicionais congelados após liberação da implementação, sem acesso ao código candidato pelo autor B. A avaliação B registra exposição acidental limitada a nomes/linhas de testes antigos não relacionados durante busca de assinaturas.
 
-Houve colisão do nome `baseline.json`: o baseline métrico substituiu o registro inicial de identidade. Os hashes anteriores de produção foram recuperados do registro 0044 já existente; a procedência está explícita em [contract-baseline.json](../benchmark/0045/contract-baseline.json). Não se apresenta reconstrução de registro como selo prévio. O conteúdo do contrato não foi reescrito. Gates e certificados existentes não foram alterados.
+Houve colisão do nome `baseline.json`: o baseline métrico substituiu o registro inicial de identidade. Os hashes anteriores de produção foram recuperados do registro 0044 já existente; a procedência está explícita em [contract-baseline.json](../../lab/bancada/history/benchmarks/0045/contract-baseline.json). Não se apresenta reconstrução de registro como selo prévio. O conteúdo do contrato não foi reescrito. Gates e certificados existentes não foram alterados.
 
 ## Limites e continuidade
 

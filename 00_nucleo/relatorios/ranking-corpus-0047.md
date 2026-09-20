@@ -8,7 +8,7 @@ Usamos o binário0046 para `search -query 'BM25 code search' -lang go -max 3`. A
 
 A análise local do Blevev2.6.0 com `BM25 idf scoring terms query` foi mais útil: localizou `newTermSearcherFromReader` e `docScore`. Inspeção confirmou frequência documental e normalização de comprimento em [scorer_term.go](https://github.com/blevesearch/bleve/blob/d8f2ab9a11166223bc4997143efda40ec98045e7/search/scorer/scorer_term.go) e ligação do scorer em [search_term.go](https://github.com/blevesearch/bleve/blob/d8f2ab9a11166223bc4997143efda40ec98045e7/search/searcher/search_term.go). Essa observação inspirou o experimento, sem copiar código nem instalar dependência.
 
-[Consultas e resultados públicos](../benchmark/0047/ideas/public-search-observations.json), [localizações fornecidas pelo Bateia](../benchmark/0047/ideas/bleve-observations.json) e [arquivos/intervalos inspecionados](../benchmark/0047/ideas/bleve-inspection.json). O fallback não foi confundido com sucesso da consulta original.
+[Consultas e resultados públicos](../../lab/bancada/history/benchmarks/0047/ideas/public-search-observations.json), [localizações fornecidas pelo Bateia](../../lab/bancada/history/benchmarks/0047/ideas/bleve-observations.json) e [arquivos/intervalos inspecionados](../../lab/bancada/history/benchmarks/0047/ideas/bleve-inspection.json). O fallback não foi confundido com sucesso da consulta original.
 
 ## Implementação
 
@@ -35,7 +35,7 @@ Autor B preservou o corpus real0046 e acrescentou um holdout de outro projeto: `
 
 As métricas contam caminhos distintos entre até24 hits; são cortes de recuperação, não execução de capacidade. Precisão é contra um conjunto pequeno de arquivos rotulados, não julgamento exaustivo dos demais. O holdout preserva recall que já era perfeito e mantém indício na negativa: isso limita a força da evidência de generalização e não demonstra ausência de falsos positivos.
 
-[Veredito B](../benchmark/0047/evaluation/verdict.md) e [gate congelado](../benchmark/0047/evaluation/candidate-comparison.json). A candidata passou na primeira revisão, sem ajuste aos esperados. Quatro testes novos exercitam raridade, normalização, contribuições finitas/determinísticas e preservação de exato/escopo AST; seis controles0045 também passaram.
+[Veredito B](../../lab/bancada/history/benchmarks/0047/evaluation/verdict.md) e [gate congelado](../../lab/bancada/history/benchmarks/0047/evaluation/candidate-comparison.json). A candidata passou na primeira revisão, sem ajuste aos esperados. Quatro testes novos exercitam raridade, normalização, contribuições finitas/determinísticas e preservação de exato/escopo AST; seis controles0045 também passaram.
 
 ## CLI completa e replay
 
@@ -49,9 +49,9 @@ A coleta final passou a incluir:
 
 `db.go` na escrita já era coletado. As duas perguntas de Snappy continuam perdendo seus arquivos-alvo; ponderação não cria vocabulário inexistente. A coleta pela CLI confirma quatro de seis arquivos-alvo disponíveis, sem demonstrar que cada pergunta foi respondida completamente.
 
-O controle `SanitizeAssessmentEvidence` continua recuperado. Na consulta natural sobre o próprio Bateia, `sem` recebeu contribuição por coincidir com identificador técnico do código. É uma ambiguidade lexical que IDF pode amplificar; a entrega não resolve interpretação de negação. A lista de fontes contém `idea_discovery.go` e `reuse_decision.go`, mas permanece incompleta para a pergunta. [Relatório natural preservado](../benchmark/0047/natural.md).
+O controle `SanitizeAssessmentEvidence` continua recuperado. Na consulta natural sobre o próprio Bateia, `sem` recebeu contribuição por coincidir com identificador técnico do código. É uma ambiguidade lexical que IDF pode amplificar; a entrega não resolve interpretação de negação. A lista de fontes contém `idea_discovery.go` e `reuse_decision.go`, mas permanece incompleta para a pergunta. [Relatório natural preservado](../../lab/bancada/history/benchmarks/0047/natural.md).
 
-A recomendação do Bateia manteve dez capacidades INCONCLUSIVE. Assessment, decisão, alternativas, bundles e `decision.md` foram reproduzidos byte a byte pelo replay. [Recibos, hashes, pesos e comparação CLI](../benchmark/0047/cli-observations.json). Tempos são telemetria do Bateia, não benchmarks dos projetos analisados.
+A recomendação do Bateia manteve dez capacidades INCONCLUSIVE. Assessment, decisão, alternativas, bundles e `decision.md` foram reproduzidos byte a byte pelo replay. [Recibos, hashes, pesos e comparação CLI](../../lab/bancada/history/benchmarks/0047/cli-observations.json). Tempos são telemetria do Bateia, não benchmarks dos projetos analisados.
 
 ## Verificações e custódia
 
@@ -60,7 +60,7 @@ A recomendação do Bateia manteve dez capacidades INCONCLUSIVE. Assessment, dec
 - `GOCACHE=/tmp/bateia-0047-cache go build -o /tmp/bateia-0047 ./04_wiring`: passou.
 - `git diff --check`: passou.
 
-Regime **A/B sem atestação física de isolamento**. Autoria de parser e de avaliação separadas; coordenador escreveu contrato, integração e relatório e consultou resultados públicos. Corpus adicional oculto do implementador, mas filesystem compartilhado impede alegar segregação atestada. Nenhum gate/certificado antigo ou esperado congelado foi reescrito. O contrato inicial e identidades anteriores permanecem em [contract-baseline.json](../benchmark/0047/contract-baseline.json).
+Regime **A/B sem atestação física de isolamento**. Autoria de parser e de avaliação separadas; coordenador escreveu contrato, integração e relatório e consultou resultados públicos. Corpus adicional oculto do implementador, mas filesystem compartilhado impede alegar segregação atestada. Nenhum gate/certificado antigo ou esperado congelado foi reescrito. O contrato inicial e identidades anteriores permanecem em [contract-baseline.json](../../lab/bancada/history/benchmarks/0047/contract-baseline.json).
 
 ## Limites
 

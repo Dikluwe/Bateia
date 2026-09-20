@@ -48,7 +48,7 @@ type gateDisk struct {
 }
 
 func TestStep0026R3OfflineDiscriminatoryGateExecutesWitnessesThreeByThree(t *testing.T) {
-	data, err := os.ReadFile("../../../../00_nucleo/benchmark/0026/adversarial-cases.json")
+	data, err := os.ReadFile("../../../../lab/bancada/history/benchmarks/0026/adversarial-cases.json")
 	if err != nil {
 		t.Fatal(err)
 	}

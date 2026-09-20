@@ -9,6 +9,7 @@ produtivo (`01_core` a `04_wiring`) pode importar deste diretório.
 lab/
 ├── arena/       # experimentos e protótipos ainda não promovidos
 ├── bancada/     # gates, mutantes, benchmarks, corpora e medições
+│   └── history/ # resultados passivos e acervo histórico da bancada
 └── legado/      # substrato brownfield read-only, quando existir
 ```
 

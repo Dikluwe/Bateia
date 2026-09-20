@@ -45,10 +45,10 @@ Esta correção parte dos bytes já auditados e não os reinterpreta nem substit
 
 | Artefato | SHA-256 | Observação protegida |
 |---|---|---|
-| `00_nucleo/benchmark/0029/catalysis-pilot-r3-results.json` | `3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524` | par inválido, sem comparação |
-| `00_nucleo/benchmark/0029/catalysis-pilot-r3-final-verification.json` | `7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2` | `APROVADO_FAIL_CLOSED` |
-| `00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/events.jsonl` | `f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73` | uma recomendação seguida de três pares web físicos e IDs duplicados |
-| `00_nucleo/benchmark/0029/sessions-catalysis-r3/treatment/output.json` | `42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8` | JSON/schema válidos, `22.578` caracteres |
+| `lab/bancada/history/benchmarks/0029/catalysis-pilot-r3-results.json` | `3239ac23443e451c63027c93867aacfa55ec07e22c87709af97c8666ac2f8524` | par inválido, sem comparação |
+| `lab/bancada/history/benchmarks/0029/catalysis-pilot-r3-final-verification.json` | `7fd942124b0f3045e19b3c4e377b7e7c87371fd283aad4c90df06130888d82e2` | `APROVADO_FAIL_CLOSED` |
+| `lab/bancada/history/benchmarks/0029/sessions-catalysis-r3/treatment/events.jsonl` | `f1e61bf6d04de5c13426f8b09652d471f35f281d9b9c34e3dacd8e3383410a73` | uma recomendação seguida de três pares web físicos e IDs duplicados |
+| `lab/bancada/history/benchmarks/0029/sessions-catalysis-r3/treatment/output.json` | `42c36b20e94915efca624febd1eb58a03253f48d3954bf1c39b757def096b9a8` | JSON/schema válidos, `22.578` caracteres |
 
 Qualquer diferença nesses hashes invalida o uso da tentativa R3 como fixture de
 regressão. O novo passo cria sucessores versionados; não edita contrato, prompt,
@@ -311,7 +311,7 @@ dominante interrompem a calibração e reabrem o desenho.
 
 ## Artefatos previstos
 
-Materializar sob `00_nucleo/benchmark/0030/`:
+Materializar sob `lab/bancada/history/benchmarks/0030/`:
 
 - `intent.json` e hashes das evidências R3;
 - `experiment-manifest.json`;

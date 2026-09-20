@@ -33,4 +33,4 @@ Cada área tem achado sustentado ou marcação de não verificado. Toda conclus�
 
 ## Resultado
 
-[Relatório](../relatorios/sanitizacao-promessas-0042.md) e [evidências reproduzíveis](../benchmark/0042/README.md). Contraexemplos confirmados em negação, autoridade de decisão, integração de mecanismos, contenção local e métricas heurísticas. README e índice de relatórios saneados; hashes de produção permaneceram iguais durante este diagnóstico. Probe offline, lint estrutural e verificação de whitespace concluídos. Não houve nova certificação do produto nem execução de oráculos.
+[Relatório](../relatorios/sanitizacao-promessas-0042.md) e [evidências reproduzíveis](../../lab/bancada/history/benchmarks/0042/README.md). Contraexemplos confirmados em negação, autoridade de decisão, integração de mecanismos, contenção local e métricas heurísticas. README e índice de relatórios saneados; hashes de produção permaneceram iguais durante este diagnóstico. Probe offline, lint estrutural e verificação de whitespace concluídos. Não houve nova certificação do produto nem execução de oráculos.

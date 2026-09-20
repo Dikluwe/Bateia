@@ -85,7 +85,7 @@ func loadFixture(t *testing.T) fixture {
 	if !ok {
 		t.Fatal("cannot resolve gate source")
 	}
-	path := filepath.Join(filepath.Dir(source), "..", "..", "..", "..", "00_nucleo", "benchmark", "0066", "adversarial-fixtures.json")
+	path := filepath.Join(filepath.Dir(source), "..", "..", "..", "..", "lab", "bancada", "history", "benchmarks", "0066", "adversarial-fixtures.json")
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read frozen fixture: %v", err)

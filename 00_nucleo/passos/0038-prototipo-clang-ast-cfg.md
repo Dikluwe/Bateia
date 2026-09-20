@@ -16,4 +16,4 @@ Clang real: retorno antecipado, if/else, for/while, break/continue, curto-circui
 Não há análise interprocedural, resolução de ponteiros, prova de independência de ordem, interpretação geral de algoritmos ou execução gráfica. Protótipo vinculado às bibliotecas LLVM 18 disponíveis. Sem certificação independente. Localizações registram expansão e origem (spelling) inicial; histórico completo de expansões aninhadas permanece fora deste incremento.
 
 ## Execução concluída
-Implementado, integrado e executado no Coin. [Resultados e limites](../benchmark/0038/README.md): CFG de 71 funções no renderizador; suíte completa com auxiliar, teste real, lint e builds aprovados. Auxiliar opcional e explicitamente configurado; nenhuma prova de execução foi atribuída ao grafo.
+Implementado, integrado e executado no Coin. [Resultados e limites](../../lab/bancada/history/benchmarks/0038/README.md): CFG de 71 funções no renderizador; suíte completa com auxiliar, teste real, lint e builds aprovados. Auxiliar opcional e explicitamente configurado; nenhuma prova de execução foi atribuída ao grafo.

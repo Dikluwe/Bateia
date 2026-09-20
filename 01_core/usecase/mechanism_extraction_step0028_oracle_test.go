@@ -65,7 +65,7 @@ type step0028ExtractionFixture struct {
 }
 
 func step0028FixturePath(parts ...string) string {
-	all := append([]string{"..", "..", "00_nucleo", "benchmark", "0028", "oracle", "protected", "fixtures"}, parts...)
+	all := append([]string{"..", "..", "lab", "bancada", "history", "benchmarks", "0028", "oracle", "protected", "fixtures"}, parts...)
 	return filepath.Join(all...)
 }
 

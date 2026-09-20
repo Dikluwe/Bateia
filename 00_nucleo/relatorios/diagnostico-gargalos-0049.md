@@ -10,7 +10,7 @@ Os casos examinados apontam para três gargalos diferentes: a busca remota não 
 
 **Fato observado no código:** `03_infra/content/router.go`, função `SearchImplementations`, chama o buscador apenas quando a URL começa com `file://`. Para os demais candidatos retorna `not_evaluated`, sem arquivos examinados. A enumeração dos adaptadores confirma que a implementação de busca está em `03_infra/local`.
 
-**Fato histórico:** a busca pública `BM25 code search` do passo 0047 retornou dois candidatos pelo fallback; ambos tinham busca de implementação `not_evaluated`. O primeiro extraiu Makefile, README e go.mod. O [recibo histórico](../benchmark/0047/ideas/public-search-observations.json) registra isso.
+**Fato histórico:** a busca pública `BM25 code search` do passo 0047 retornou dois candidatos pelo fallback; ambos tinham busca de implementação `not_evaluated`. O primeiro extraiu Makefile, README e go.mod. O [recibo histórico](../../lab/bancada/history/benchmarks/0047/ideas/public-search-observations.json) registra isso.
 
 **Inferência:** ajustar IDF e interpretação no caminho local não melhora esse trecho da jornada remota. O achado explica por que podemos melhorar benchmarks locais e continuar recebendo documentação pouco útil ao procurar projetos externos. Não mede a qualidade atual dos provedores: a consulta remota não foi repetida neste diagnóstico.
 
@@ -18,7 +18,7 @@ Os casos examinados apontam para três gargalos diferentes: a busca remota não 
 
 **Fato observado no código:** `implementation_search.go` calcula termos do nome e de `functionalBodyTerms`; esta função visita identificadores AST do corpo, sem comentários e sem a assinatura como campo próprio. O parâmetro `doc` chega à função de coleta mas não é usado. Existe um glossário PT/EN finito; não cobre as formulações de compressão/descompressão examinadas.
 
-**Experimento executado:** mesmo binário 0048 e mesmos arquivos Snappy v1.0.0, variando apenas a consulta. [Comandos, arquivos lidos, hashes, termos e hits](../benchmark/0049-diagnostico/comparisons.json).
+**Experimento executado:** mesmo binário 0048 e mesmos arquivos Snappy v1.0.0, variando apenas a consulta. [Comandos, arquivos lidos, hashes, termos e hits](../../lab/bancada/history/benchmarks/0049-diagnostico/comparisons.json).
 
 | Consulta | Observação |
 | --- | --- |
@@ -43,7 +43,7 @@ Os casos examinados apontam para três gargalos diferentes: a busca remota não 
 
 ## 4. Encontrar mais código não desbloqueia o catálogo de avaliação
 
-**Fato observado:** nove das dez capacidades na recomendação local 0048 têm a explicação `nenhuma regra versionada cobre esta capacidade`. A décima encontra indícios relacionados a offline, mas também permanece inconclusiva. [Causas preservadas](../benchmark/0049-diagnostico/assessment-causes.json).
+**Fato observado:** nove das dez capacidades na recomendação local 0048 têm a explicação `nenhuma regra versionada cobre esta capacidade`. A décima encontra indícios relacionados a offline, mas também permanece inconclusiva. [Causas preservadas](../../lab/bancada/history/benchmarks/0049-diagnostico/assessment-causes.json).
 
 **Causa no código:** em `01_core/usecase/evidence.go`, `findRule` escolhe a primeira regra com correspondência por substring nos termos da capacidade. `assessCapability` retorna imediatamente `INCONCLUSIVE` quando não há regra, antes de examinar os itens coletados. Mais arquivos ou melhor ranking não mudam essa condição. Essa contenção evita inventar uma prova; o problema é a cobertura limitada do avaliador, não o uso de `INCONCLUSIVE` em si.
 
@@ -55,4 +55,4 @@ Depois, avaliar se os indícios cobrem ação, objeto e condições em vez de us
 
 O próximo contrato de implementação deve exigir melhora em perguntas funcionais novas e nos artefatos da CLI completa, além de controles negativos e equivalência de recuperação local/remota para o mesmo snapshot. Preservar métricas antigas é regressão, não demonstração de ganho. Este diagnóstico não altera os testes congelados nem amplia glossários para memorizar Snappy.
 
-[Identidades e limites da investigação](../benchmark/0049-diagnostico/receipt.json). Os testes exploratórios são do integrador, sem alegação de avaliação independente. Código externo foi somente lido. Tempos são telemetria do Bateia.
+[Identidades e limites da investigação](../../lab/bancada/history/benchmarks/0049-diagnostico/receipt.json). Os testes exploratórios são do integrador, sem alegação de avaliação independente. Código externo foi somente lido. Tempos são telemetria do Bateia.

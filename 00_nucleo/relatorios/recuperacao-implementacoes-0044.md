@@ -28,8 +28,8 @@ A busca das consultas individuais examinou 223 arquivos Go, 1.443.663 bytes. A r
 - `GOCACHE=/tmp/bateia-0044-cache go test ./...`: passou, incluindo gates existentes; permissão ampliada apenas para servidores HTTP locais dos testes.
 - `crystalline-lint .`: `✓ No violations found`.
 - `GOCACHE=/tmp/bateia-0044-cache go build -o /tmp/bateia-0044 ./04_wiring`: passou. Build do pacote, pois o wiring contém vários arquivos.
-- CLI: duas consultas em Markdown e JSON; recomendação local e replay; comandos, versão, commit-base, hashes dos arquivos examinados e comparação em [observations.json](../benchmark/0044/observations.json).
-- Especificação e baseline prévio em [baseline.json](../benchmark/0044/baseline.json); testes e duas revisões explícitas de fixtures/contrato em [test-manifest.json](../benchmark/0044/test-manifest.json). Nenhum ajuste de certificado de gates.
+- CLI: duas consultas em Markdown e JSON; recomendação local e replay; comandos, versão, commit-base, hashes dos arquivos examinados e comparação em [observations.json](../../lab/bancada/history/benchmarks/0044/observations.json).
+- Especificação e baseline prévio em [baseline.json](../../lab/bancada/history/benchmarks/0044/baseline.json); testes e duas revisões explícitas de fixtures/contrato em [test-manifest.json](../../lab/bancada/history/benchmarks/0044/test-manifest.json). Nenhum ajuste de certificado de gates.
 
 Regime Tekt A/B: autores de implementação e testes separados; filesystem compartilhado, portanto **sem atestação de isolamento físico ou certificação independente**. O coordenador integra produção e consulta resultados públicos. A especificação congelada não foi reescrita para acomodar resultados.
 
@@ -37,4 +37,4 @@ Regime Tekt A/B: autores de implementação e testes separados; filesystem compa
 
 Varredura nova somente local/Go; não há novo índice persistente nem prova de equivalência, comportamento ou integração. A exclusão de oráculos/gates se refere à nova varredura; este passo não redesenha todos os coletores legados. Não corrigimos a classificação gRPC/Protobuf, o ruído Clang em projetos Go ou o fallback Bleve. Os relatórios anexos preservam esses defeitos como observados. A busca natural e os planos de investigação ainda precisam melhorar.
 
-Evidências legíveis: [controle exato](../benchmark/0044/symbol.md), [pergunta natural](../benchmark/0044/natural.md). Os inventários não duplicam corpos de testes/oráculos. Mudanças posteriores no worktree devem ser comparadas aos hashes registrados, não tratadas como a mesma análise.
+Evidências legíveis: [controle exato](../../lab/bancada/history/benchmarks/0044/symbol.md), [pergunta natural](../../lab/bancada/history/benchmarks/0044/natural.md). Os inventários não duplicam corpos de testes/oráculos. Mudanças posteriores no worktree devem ser comparadas aos hashes registrados, não tratadas como a mesma análise.

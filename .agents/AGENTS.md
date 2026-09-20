@@ -17,7 +17,7 @@ L₄ (Wiring)     04_wiring/main.go    Composition root, injeção de dependênc
 L₂ (Shell)      02_shell/            CLI (cli/), apresentador Markdown (report/) — importa L₀, L₁
 L₃ (Infra)      03_infra/            DiskCacheStore, Sourcegraph, GitHub — importa L₀, L₁
 L₁ (Core)       01_core/             Domínio, Parsers puros, SearchFunnel Usecase — ZERO I/O, importa L₀
-L₀ (Nucleus)    00_nucleo/           Intenção, prompts, ADRs, laudos e evidência passiva — ZERO EXECUÇÃO
+L₀ (Nucleus)    00_nucleo/           Intenção, prompts, ADRs, passos, laudos e relatórios — ZERO EXECUÇÃO
 Lab             lab/                 Arena, bancada e legado — nunca é dependência do produto
 ```
 
@@ -28,8 +28,8 @@ Lab             lab/                 Arena, bancada e legado — nunca é depend
 * **Restrição de $L_2$ (Casca):** Não pode importar adaptadores concretos de $L_3$. A CLI recebe o orquestrador pronto via $L_4$.
 * **Restrição de $L_3$ (Infraestrutura):** Implementa as interfaces de $L_1$. Proibido importar $L_2$ ou $L_4$.
 * **Restrição de $L_4$ (Fiação Pura):** ZERO LÓGICA DE NEGÓCIO. Ponto de entrada em `04_wiring/main.go` reservado exclusivamente para instanciação dos adaptadores de $L_3$ e injeção em $L_1$ e $L_2$.
-* **Restrição de $L_0$ (Regime Declarativo):** Proibidos código, scripts, HTML executável, `go.mod`, shebangs e arquivos com bit executável. Prompts são ex-ante; laudos são ex-post; ADRs registram decisões transversais.
-* **Restrição do Lab:** `lab/arena` contém experimentos, `lab/bancada` contém gates, mutantes, corpora executáveis e medições, e `lab/legado` contém substrato brownfield isolado. Nenhuma camada produtiva pode importar `lab/`.
+* **Restrição de $L_0$ (Regime Declarativo):** Proibidos código, scripts, HTML executável, `go.mod`, shebangs e arquivos com bit executável. Prompts são ex-ante; laudos são ex-post; ADRs registram decisões transversais. Benchmarks, fixtures, resultados de execução e evidência de bancada, mesmo passivos, pertencem a `lab/bancada`; L0 pode apenas referenciá-los.
+* **Restrição do Lab:** `lab/arena` contém experimentos, `lab/bancada` contém gates, mutantes, corpora executáveis e medições, `lab/bancada/history` preserva o acervo passivo, e `lab/legado` contém substrato brownfield isolado. Nenhuma camada produtiva pode importar `lab/`.
 
 ---
 
@@ -82,7 +82,7 @@ Toda alteração deve passar pela seguinte pilha:
 1. **Linteiro Cristalino:** `crystalline-lint --fail-on warning .` (deve retornar `✓ No violations found`).
 2. **Testes Unitários:** `go test ./...` (deve passar 100% dos testes sem I/O em $L_1$).
 3. **Análise estática:** `go vet ./...`.
-4. **Compilação:** `go build -o bateia ./04_wiring`.
+4. **Compilação:** `go build -o /dev/shm/bateia ./04_wiring`.
 
 Confirme também que L0 não contém fontes mascarados como `*.go.txt`, `*.py.txt`
 ou equivalentes, que L4 não contém bancadas e que o produto não importa `lab/`.
@@ -90,3 +90,5 @@ ou equivalentes, que L4 não contém bancadas e que o produto não importa `lab/
 ## 7. Convergência Brownfield
 
 Faça exegese antes de mover ou renomear código herdado. Prefira fatias pequenas e reversíveis por capacidade. Dentro de uma capacidade, separe `phase` (transição), `container` (estado e invariantes) e `facade` (API pública) quando isso reduzir acoplamento. Nomes brownfield podem permanecer até existir obrigação e ADR que justifiquem a migração: limpeza Tekt é compressão causal e contenção, não renomeação estética em massa.
+
+Gates selados preservam recibos, hashes e caminhos históricos. Sua reprodução usa o commit registrado no próprio gate; não reescreva evidência antiga para fazê-la parecer emitida pela árvore atual.

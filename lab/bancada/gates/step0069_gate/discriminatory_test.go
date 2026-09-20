@@ -387,7 +387,7 @@ func loadFixtures(t *testing.T) fixtureFile {
 	if !ok {
 		t.Fatal("cannot locate gate source")
 	}
-	path := filepath.Join(filepath.Dir(here), "..", "..", "..", "..", "00_nucleo", "benchmark", "0069", "adversarial-fixtures.json")
+	path := filepath.Join(filepath.Dir(here), "..", "..", "..", "..", "lab", "bancada", "history", "benchmarks", "0069", "adversarial-fixtures.json")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("read fixtures: %v", err)

@@ -38,8 +38,8 @@ Inventário inicial: 186 V12 (136 em `_test.go`, 50 em outros arquivos) e 9 V7. 
 
 ## Entrega
 
-Registrar implementação, comandos, resultados e limites em `00_nucleo/benchmark/0035/`. Não declarar cobertura de todo o Coin a partir de unidades selecionadas.
+Registrar implementação, comandos, resultados e limites em `lab/bancada/history/benchmarks/0035/`. Não declarar cobertura de todo o Coin a partir de unidades selecionadas.
 
 ## Resultado
 
-195 → 0 avisos com correção da ferramenta e classificação explícita dos harnesses. Clang integrado à CLI/funil local; testes A/B passaram sem alteração. Coin validado em cópia dos fontes reais com configuração existente: 12/898 unidades, status parcial. Evidências, limitações e reprodução em [`../benchmark/0035/README.md`](../benchmark/0035/README.md). V12 estrutural não certifica pureza de corpos de funções; Clang não certifica comportamento gráfico.
+195 → 0 avisos com correção da ferramenta e classificação explícita dos harnesses. Clang integrado à CLI/funil local; testes A/B passaram sem alteração. Coin validado em cópia dos fontes reais com configuração existente: 12/898 unidades, status parcial. Evidências, limitações e reprodução em [`../../lab/bancada/history/benchmarks/0035/README.md`](../../lab/bancada/history/benchmarks/0035/README.md). V12 estrutural não certifica pureza de corpos de funções; Clang não certifica comportamento gráfico.

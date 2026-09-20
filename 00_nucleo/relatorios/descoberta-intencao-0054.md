@@ -6,7 +6,7 @@ A descoberta Sourcegraph usa uma única consulta integral em SearchCandidatesWit
 A versão `evidence-v14-intent-preserving-discovery` invalida caches associados à versão anterior. O texto preservado continua sendo interpretado pelo provedor: não há alegação de tradução semântica de perguntas naturais. O passo remove deliberadamente o fallback defeituoso; não o substitui por um novo planejador. Ranking e extração local não foram alterados.
 
 ## Autoria e custódia
-Contrato e prompts foram escritos antes da implementação. A implementou somente produção; B escreveu controles sem ler produção/patch e atualizou os contratos legados que exigiam o defeito anterior. Integração executou os gates. Regime A/B executado sem atestação de isolamento físico, sem selo formal de refinamento. Baseline e congelamentos estão em `../benchmark/0054/`.
+Contrato e prompts foram escritos antes da implementação. A implementou somente produção; B escreveu controles sem ler produção/patch e atualizou os contratos legados que exigiam o defeito anterior. Integração executou os gates. Regime A/B executado sem atestação de isolamento físico, sem selo formal de refinamento. Baseline e congelamentos estão em `../../lab/bancada/history/benchmarks/0054/`.
 
 Corpus, runner r2 e expectativas do passo 0053 são as mesmas entradas para a comparação. Os arquivos de 0053 são conferidos por hash antes/depois. A descoberta pública e a análise local de snapshots são medições separadas; a jornada remota integrada e o comportamento executável dos projetos permanecem não avaliados.
 
@@ -15,7 +15,7 @@ Suíte Go completa passou, incluindo os controles HTTP independentes das duas po
 
 Os testes legados deixaram de exigir várias tentativas, substituição por discriminador, timeout duplicado e sucesso posterior a uma resposta vazia. A alteração é uma substituição explícita do contrato defeituoso, não evidência de equivalência com a estratégia anterior. Os controles novos cobrem termos tardios, negação/símbolos, linguagem/escopo, sucesso/vazio, falha HTTP/GraphQL/JSON, cancelamento e redação de token.
 
-[Recibo e hashes](../benchmark/0054/verification.json), [controles congelados](../benchmark/0054/tests-freeze.json), [logs](../benchmark/0054/full-tests.log).
+[Recibo e hashes](../../lab/bancada/history/benchmarks/0054/verification.json), [controles congelados](../../lab/bancada/history/benchmarks/0054/tests-freeze.json), [logs](../../lab/bancada/history/benchmarks/0054/full-tests.log).
 
 ## Resultado medido
 
@@ -28,7 +28,7 @@ Os testes legados deixaram de exigir várias tentativas, substituição por disc
 
 As três consultas públicas retornaram zero candidatos, sem erro nesta coleta. Não apareceram listas provenientes de “Como criar” ou “Como obter”, pois essas consultas deixaram de ser emitidas. Não houve ganho demonstrado de recall. Todas as métricas locais permaneceram iguais; reavaliar os mesmos bytes offline reproduziu as métricas. O corpus e todos os artefatos 0053 mantiveram seus hashes.
 
-[Métricas e tentativas](../benchmark/0054/comparison.json), [respostas brutas e recibos](../benchmark/0054/collected/receipts.json), [reprodução](../benchmark/0054/README.md).
+[Métricas e tentativas](../../lab/bancada/history/benchmarks/0054/comparison.json), [respostas brutas e recibos](../../lab/bancada/history/benchmarks/0054/collected/receipts.json), [reprodução](../../lab/bancada/history/benchmarks/0054/README.md).
 
 ## Conclusão proporcional à evidência
 

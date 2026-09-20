@@ -24,8 +24,8 @@ executáveis pertencem ao Lab e nunca podem ser importados pelo sistema produtiv
    benchmarks e medições reproduzíveis.
 3. Retirar de L4 todos os diretórios cujo papel seja gate, mutante, fixture ou
    experimento histórico.
-4. Retirar de L0 todo código executável. Documentação e resultados passivos podem
-   permanecer em L0.
+4. Retirar de L0 toda bancada, inclusive benchmarks, fixtures e resultados passivos.
+   L0 pode descrevê-los e referenciá-los; o acervo pertence a `lab/bancada/history`.
 5. Preservar nomes cronológicos dentro do Lab: ali eles identificam a execução
    histórica e não definem a arquitetura do produto.
 6. Não alterar neste marco domínio, CLI, MCP, persistência, formatos públicos,
@@ -35,7 +35,7 @@ executáveis pertencem ao Lab e nunca podem ser importados pelo sistema produtiv
 
 ## Consequências
 
-- L0 volta a ser exclusivamente declarativo.
+- L0 volta a ser exclusivamente declarativo, sem armazenar o acervo medido que descreve.
 - L4 deixa de ser depósito de verificação histórica.
 - A suíte de produto continua funcionalmente idêntica; material histórico útil fica
   isolado no Lab.
@@ -45,7 +45,7 @@ executáveis pertencem ao Lab e nunca podem ser importados pelo sistema produtiv
 ## Critérios de aceite
 
 - `crystalline-lint --fail-on warning .` sem violações;
-- `go build -o /tmp/bateia-cleanup ./04_wiring` passa;
+- `go build -o /dev/shm/bateia-cleanup ./04_wiring` passa;
 - `go test ./...` passa;
 - nenhum fonte executável, inclusive código mascarado por sufixo `.txt`, permanece em `00_nucleo`;
 - nenhum diretório de gate, mutante ou experimento permanece em `04_wiring`;

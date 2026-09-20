@@ -396,15 +396,15 @@ existe apenas no adaptador L3 chamado pela composição em L4.
 
 ```text
 03_infra/lexical/functional-grammar-v2.json
-00_nucleo/benchmark/0018/grammar-corpus.json
-00_nucleo/benchmark/0018/queries-n.json
-00_nucleo/benchmark/0018/queries-f1.json
-00_nucleo/benchmark/0018/queries-f2.json
-00_nucleo/benchmark/0018/snapshot-n.json
-00_nucleo/benchmark/0018/snapshot-f1.json
-00_nucleo/benchmark/0018/snapshot-f2.json
-00_nucleo/benchmark/0018/blinded-judgments.json
-00_nucleo/benchmark/0018/grammar-experiment.json
+lab/bancada/history/benchmarks/0018/grammar-corpus.json
+lab/bancada/history/benchmarks/0018/queries-n.json
+lab/bancada/history/benchmarks/0018/queries-f1.json
+lab/bancada/history/benchmarks/0018/queries-f2.json
+lab/bancada/history/benchmarks/0018/snapshot-n.json
+lab/bancada/history/benchmarks/0018/snapshot-f1.json
+lab/bancada/history/benchmarks/0018/snapshot-f2.json
+lab/bancada/history/benchmarks/0018/blinded-judgments.json
+lab/bancada/history/benchmarks/0018/grammar-experiment.json
 00_nucleo/laudos/0018-versionar-gramatica-funcional-e-congelar-busca-web-reexecutavel.md
 ```
 

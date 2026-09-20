@@ -1,6 +1,6 @@
 # Execução 0043 — Promessas, buscas e planos verificáveis
 
-Data: 2026-09-07. Origem: [plano 0043 congelado](../passos/0043-delimitar-promessas-e-planejar-buscas-verificaveis.md). Evidências: [registro da execução](../benchmark/0043/README.md).
+Data: 2026-09-07. Origem: [plano 0043 congelado](../passos/0043-delimitar-promessas-e-planejar-buscas-verificaveis.md). Evidências: [registro da execução](../../lab/bancada/history/benchmarks/0043/README.md).
 
 ## Resultado e alcance
 

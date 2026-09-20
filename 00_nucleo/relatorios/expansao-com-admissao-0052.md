@@ -12,7 +12,7 @@ Esse filtro verifica coocorrência lexical, não fluxo, condições ou equivalê
 
 ## Experimento inicial e correção
 
-A candidata r1 colocou `Decode` e `Encode` em primeiro no Snappy, mas fez a mesma pergunta de descompressão retornar doze hits no UUID. Termos secundários e alternativas técnicas amplas admitiam código sem relação com compressão. [Resultado r1 preservado](../benchmark/0052/cli-comparison-r1.json), junto aos hashes e arquivos da primeira candidata.
+A candidata r1 colocou `Decode` e `Encode` em primeiro no Snappy, mas fez a mesma pergunta de descompressão retornar doze hits no UUID. Termos secundários e alternativas técnicas amplas admitiam código sem relação com compressão. [Resultado r1 preservado](../../lab/bancada/history/benchmarks/0052/cli-comparison-r1.json), junto aos hashes e arquivos da primeira candidata.
 
 O adendo foi escrito e congelado depois desse contraexemplo público, antes dos novos testes e execução r2. A revisão restringiu a admissão, mantendo o catálogo de pares. Não removemos a consulta negativa nem alteramos suas palavras para aparentar melhora.
 
@@ -30,19 +30,19 @@ Mesmos módulos e perguntas, comparados com o binário 0051:
 | Snappy: `descomprimir sem alocar` | 0 | 0 | 0; sem novas expansões |
 | UUID: `serializar dados` | 0 | não executado | 6; `MarshalJSON` primeiro |
 
-[Recibos r2 com consultas originais, expansões, contribuições, intervalos e hashes](../benchmark/0052/cli-comparison-r2.json), [Markdown Snappy](../benchmark/0052/snappy.md). O controle de serialização foi acrescentado como ensaio diagnóstico posterior; não é holdout. O número de hits não é precisão: algumas fontes ainda cobrem apenas parte da pergunta, e não houve julgamento exaustivo de todas as fontes.
+[Recibos r2 com consultas originais, expansões, contribuições, intervalos e hashes](../../lab/bancada/history/benchmarks/0052/cli-comparison-r2.json), [Markdown Snappy](../../lab/bancada/history/benchmarks/0052/snappy.md). O controle de serialização foi acrescentado como ensaio diagnóstico posterior; não é holdout. O número de hits não é precisão: algumas fontes ainda cobrem apenas parte da pergunta, e não houve julgamento exaustivo de todas as fontes.
 
-**Execução remota:** Snappy no commit `43d5d4cd4e0e3390b0b645d5c3ef1187642403d8`, com a pergunta portuguesa original. Os oito hits coincidiram com os locais e foram confirmados após extração/releitura. `Decode` permaneceu primeiro. [Recibo remoto](../benchmark/0052/remote-verification.json) e [runner](../benchmark/0052/remote-runner.go.txt). Estado `complete` refere-se à recuperação limitada, não à capacidade demonstrada. A rede exigiu permissão após bloqueio no sandbox. Código externo foi somente lido.
+**Execução remota:** Snappy no commit `43d5d4cd4e0e3390b0b645d5c3ef1187642403d8`, com a pergunta portuguesa original. Os oito hits coincidiram com os locais e foram confirmados após extração/releitura. `Decode` permaneceu primeiro. [Recibo remoto](../../lab/bancada/history/benchmarks/0052/remote-verification.json) e [runner](../../lab/bancada/history/benchmarks/0052/remote-runner.go.txt). Estado `complete` refere-se à recuperação limitada, não à capacidade demonstrada. A rede exigiu permissão após bloqueio no sandbox. Código externo foi somente lido.
 
 ## Verificação e custódia
 
-Build de `./04_wiring`, suíte completa `go test ./...`, `crystalline-lint .` e `git diff --check` passaram. Replay reproduziu os cinco artefatos comparados byte a byte; dez capacidades da autoavaliação permaneceram inconclusivas. [Replay](../benchmark/0052/replay.json) e [recibo final](../benchmark/0052/verification.json).
+Build de `./04_wiring`, suíte completa `go test ./...`, `crystalline-lint .` e `git diff --check` passaram. Replay reproduziu os cinco artefatos comparados byte a byte; dez capacidades da autoavaliação permaneceram inconclusivas. [Replay](../../lab/bancada/history/benchmarks/0052/replay.json) e [recibo final](../../lab/bancada/history/benchmarks/0052/verification.json).
 
 Tekt A/B executado sem atestação de isolamento físico. Integrador escreveu contratos, apresentação, versões e ensaios; A implementou interpretação/admissão; B escreveu testes sem ler corpos da candidata. Filesystem compartilhado. Busca de assinaturas expôs nomes de testes anteriores a B, sem corpos; isso consta no veredito.
 
 Dois erros de observabilidade dos testes iniciais foram corrigidos com registros preservados: ordem visual da tabela versus ordem lexicográfica dos termos, e tentativa de reconstruir a consulta por uma API que não recebia a consulta original. O teste B1 que exigia admissão irrestrita de `Decode` sem contexto foi arquivado e retirado da suíte ativa por conflito explícito com o novo adendo. Essa supersessão é semântica e não foi apresentada como simples correção mecânica. Demais esperados B1 foram mantidos.
 
-Os testes r2 foram congelados antes da execução e passaram na primeira tentativa: dezoito casos de ação/contexto/famílias/exceção de símbolo, quatro de separação documento/código, além de multilinha/projeção e controles B1 remanescentes. [Veredito B e histórico](../benchmark/0052/tests-verdict.md). Não há selo de refinamento ou teste de mutações que prove equivalência geral.
+Os testes r2 foram congelados antes da execução e passaram na primeira tentativa: dezoito casos de ação/contexto/famílias/exceção de símbolo, quatro de separação documento/código, além de multilinha/projeção e controles B1 remanescentes. [Veredito B e histórico](../../lab/bancada/history/benchmarks/0052/tests-verdict.md). Não há selo de refinamento ou teste de mutações que prove equivalência geral.
 
 ## Limites
 

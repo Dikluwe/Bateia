@@ -27,14 +27,14 @@ const step0026LegacyBenchmarkTool = `{"name":"bateia_benchmark","description":"E
 func TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute(t *testing.T) {
 	for path, want := range map[string]string{
 		"../../00_nucleo/relatorios/evidence-contract-supersession.json": "85d81c593847d08f211b4fae6e661468c06ced727ccab7a0992df0be7581c394",
-		"../../00_nucleo/benchmark/0025/certificate.json":                "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+		"../../lab/bancada/history/benchmarks/0025/certificate.json":                "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
 		"recommendation_step0025_contract_test.go":                       "7e9d9652ea6eac94fa144ec24d3f44e81971aaec9d13456169f8276c9c118f1f",
 		"server_test.go": "f7d15d6e29b66c6591e91d832e5c0e1c155641ca345a150610470133a3dd098d",
 		"../../00_nucleo/prompts/02_shell/mcp/server.md":                                "b5075f7cbb40a86a15d90ff690b410e4a47a8b3d806c5def3794dd8c4b76f564",
 		"../../00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md": "4004e5f494ffdb29430c5d1655adda8da4e1cd1c97248e6f9d6bf919ba2c2dc8",
-		"../../00_nucleo/benchmark/0029/historical-hash-invalidation-o2-to-o3.json":     "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
-		"../../00_nucleo/benchmark/0029/historical-hash-successor-o3.json":              "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
-		"../../00_nucleo/benchmark/0031/historical-contract-supersession.json":          "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
+		"../../lab/bancada/history/benchmarks/0029/historical-hash-invalidation-o2-to-o3.json":     "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
+		"../../lab/bancada/history/benchmarks/0029/historical-hash-successor-o3.json":              "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
+		"../../lab/bancada/history/benchmarks/0031/historical-contract-supersession.json":          "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
 	} {
 		data, err := os.ReadFile(path)
 		if err != nil {

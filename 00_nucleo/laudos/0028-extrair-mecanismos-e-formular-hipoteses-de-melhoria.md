@@ -42,7 +42,7 @@ Os 42 arquivos do manifest protegido O23 foram rehashados sem divergência. Rece
 | MCP compilado real via stdio duas vezes | PASS; bytes idênticos, dez tools |
 | scan de raw content, canários e segredos | PASS |
 | imports, I/O, catálogo embedded e runtime único | PASS |
-| módulo aninhado `00_nucleo/benchmark/0028/go.mod` | PASS |
+| módulo aninhado `lab/bancada/history/benchmarks/0028/go.mod` | PASS |
 
 As primeiras execuções não escaladas de `go test ./...` confirmaram a restrição do sandbox ao abrir listeners de `httptest`. As duas execuções contratuais foram então repetidas com loopback local habilitado e passaram integralmente. Nenhuma rede externa foi autorizada por essa escalada.
 
@@ -56,7 +56,7 @@ O binário real foi executado por stdio em dois roots duráveis novos. As duas r
 
 L1 não introduziu I/O externo; L2 não importou L3/L4; L3 não importou camadas superiores; L4 permaneceu composição. O catálogo embedded mede exatamente `52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142`. A fiação contém uma única construção de `FileStore` e uma de `LocalQueue`.
 
-O adaptador adicional `03_infra/envfile/load.go` está corretamente em L3, sem dependência ascendente, preserva valores já presentes no ambiente e não participa do replay offline. O `go.mod` aninhado em `00_nucleo/benchmark/0028` isola somente os dois programas públicos de calibração; as suítes protegidas e os testes de produção continuam enumerados e executados pelo módulo raiz.
+O adaptador adicional `03_infra/envfile/load.go` está corretamente em L3, sem dependência ascendente, preserva valores já presentes no ambiente e não participa do replay offline. O `go.mod` aninhado em `lab/bancada/history/benchmarks/0028` isola somente os dois programas públicos de calibração; as suítes protegidas e os testes de produção continuam enumerados e executados pelo módulo raiz.
 
 Foram emitidos receipts separados preservando:
 

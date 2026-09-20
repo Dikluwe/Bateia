@@ -25,7 +25,7 @@ Autor B escolheu snapshots de módulos Go reais disponíveis no cache, com commi
 | Precisão em relação aos arquivos rotulados, corte 12 | 1/43 |
 | Negativas com algum indício lexical | 1/3 |
 
-Precisão rotulada não significa que os outros 42 caminhos foram julgados irrelevantes. Métrica por arquivo também não demonstra recuperação do símbolo esperado. O runner aplica orçamento de 24 hits e simula cortes de caminhos; não equivale à execução da coleta. Manifestos e [avaliação B detalhada](../benchmark/0046/evaluation-real.md) documentam essas distinções, fontes e perdas por requisito.
+Precisão rotulada não significa que os outros 42 caminhos foram julgados irrelevantes. Métrica por arquivo também não demonstra recuperação do símbolo esperado. O runner aplica orçamento de 24 hits e simula cortes de caminhos; não equivale à execução da coleta. Manifestos e [avaliação B detalhada](../../lab/bancada/history/benchmarks/0046/evaluation-real.md) documentam essas distinções, fontes e perdas por requisito.
 
 A varredura não esgotou orçamento de leitura neste corpus. Houve perdas por formulação sem correspondência útil, termos genéricos compartilhados e corte de resultados. A pergunta de descompressão Snappy, por exemplo, não retornou definição; em OAuth2, a negativa sobre compressão retornou indícios pelo termo HTTP.
 
@@ -43,7 +43,7 @@ Na negativa OAuth2, a projeção apresenta apenas `http` entre os termos associa
 
 No controle multilinha `SanitizeAssessmentEvidence` + `quasar teleportation`, o primeiro requisito tem fontes lexicais conferidas e o segundo não tem fonte. A recomendação da ideia do próprio Bateia mantém dez capacidades INCONCLUSIVE. Replay preservou byte a byte assessment, decisão, alternativas, bundles e `decision.md`.
 
-[Recibos, comandos, identidades e projeções da CLI](../benchmark/0046/cli-observations.json), [controle legível](../benchmark/0046/requirements.md) e [decisão com requisitos](../benchmark/0046/decision.md). Tempos das execuções são telemetria da ferramenta, não benchmarks dos projetos. Nenhum código externo foi executado; fontes foram lidas para análise.
+[Recibos, comandos, identidades e projeções da CLI](../../lab/bancada/history/benchmarks/0046/cli-observations.json), [controle legível](../../lab/bancada/history/benchmarks/0046/requirements.md) e [decisão com requisitos](../../lab/bancada/history/benchmarks/0046/decision.md). Tempos das execuções são telemetria da ferramenta, não benchmarks dos projetos. Nenhum código externo foi executado; fontes foram lidas para análise.
 
 ## Validação e Tekt
 
@@ -51,8 +51,8 @@ No controle multilinha `SanitizeAssessmentEvidence` + `quasar teleportation`, o 
 - `crystalline-lint .`: `✓ No violations found`.
 - `GOCACHE=/tmp/bateia-0046-cache go build -o /tmp/bateia-0046 ./04_wiring`: passou.
 - `git diff --check`: passou.
-- Testes independentes da projeção: passaram, inclusive releitura alterada/ausente e não reutilização de fontes obsoletas. [Recibo final](../benchmark/0046/tests/execution-final.json).
-- Regressão 0045: corpus/testes originais preservados; recall e precisão sintéticos continuam 100%, sem generalizar para o corpus real. [Avaliação da regressão](../benchmark/0046/regression0045/final/evaluation.md).
+- Testes independentes da projeção: passaram, inclusive releitura alterada/ausente e não reutilização de fontes obsoletas. [Recibo final](../../lab/bancada/history/benchmarks/0046/tests/execution-final.json).
+- Regressão 0045: corpus/testes originais preservados; recall e precisão sintéticos continuam 100%, sem generalizar para o corpus real. [Avaliação da regressão](../../lab/bancada/history/benchmarks/0046/regression0045/final/evaluation.md).
 
 Regime **A/B executado sem atestação física de isolamento**. Autor de corpus e autor de testes não leram a implementação candidata para formular os casos. Coordenador escreveu contrato e produção e recebeu resultados públicos para decidir o experimento. O corpus real foi congelado antes do baseline; testes exploratórios da diversificação foram congelados após a implementação, com essa limitação registrada. Não há novo selo de refinamento nem alteração de gates/certificados existentes.
 

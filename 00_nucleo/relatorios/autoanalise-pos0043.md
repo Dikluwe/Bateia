@@ -1,6 +1,6 @@
 # Autoanálise após 0043 — Execução real do Bateia
 
-2026-09-07; commit `9056cd259e40d6360a06e6e21a157aa2e5b9eac7`. Foram executados `idea recommend` sobre a ideia do próprio produto, `analyze` com uma pergunta funcional e `analyze` com o nome exato de uma função. [Comandos, identidade e inventário](../benchmark/autoanalise-pos0043/observations.json).
+2026-09-07; commit `9056cd259e40d6360a06e6e21a157aa2e5b9eac7`. Foram executados `idea recommend` sobre a ideia do próprio produto, `analyze` com uma pergunta funcional e `analyze` com o nome exato de uma função. [Comandos, identidade e inventário](../../lab/bancada/history/benchmarks/autoanalise-pos0043/observations.json).
 
 **Conclusão:** a saída conserva melhor a incerteza, mas ainda não fornece evidência suficiente para uma boa análise funcional do próprio projeto. Este diagnóstico é local e dirigido; não mede recall público nem qualidade global.
 
@@ -10,11 +10,11 @@
 - O relatório distingue conteúdo examinado, trecho exibido, hash, commit-base e análise não realizada. Tempos aparecem como telemetria da ferramenta.
 - A decisão contém 24 ações de investigação e distingue falta de detector de coleta incompleta.
 
-Fontes: [decisão canônica](../benchmark/autoanalise-pos0043/reuse-decision.json) e [relatório funcional](../benchmark/autoanalise-pos0043/analysis.md).
+Fontes: [decisão canônica](../../lab/bancada/history/benchmarks/autoanalise-pos0043/reuse-decision.json) e [relatório funcional](../../lab/bancada/history/benchmarks/autoanalise-pos0043/analysis.md).
 
 ## Onde a qualidade ainda falha
 
-1. **Recuperação por símbolo insuficiente.** `SanitizeAssessmentEvidence` existe em `01_core/usecase/evidence_authority.go`, linha 125. Porém a consulta exata selecionou somente README e go.mod e não encontrou definição. O controle demonstra falha de recuperação neste caso, não inexistência de AST no produto. [Saída do controle](../benchmark/autoanalise-pos0043/symbol-control.md).
+1. **Recuperação por símbolo insuficiente.** `SanitizeAssessmentEvidence` existe em `01_core/usecase/evidence_authority.go`, linha 125. Porém a consulta exata selecionou somente README e go.mod e não encontrou definição. O controle demonstra falha de recuperação neste caso, não inexistência de AST no produto. [Saída do controle](../../lab/bancada/history/benchmarks/autoanalise-pos0043/symbol-control.md).
 2. **A pergunta funcional não chegou às implementações centrais.** Foram selecionados 14 arquivos, incluindo `evidence_authority.go`, mas ficaram fora `idea_discovery.go`, `reuse_decision.go` e `investigation_plan.go`. A saída não apresentou definição ancorada em chamadas estáticas. A relevância 26/100 foi justificada por termos do README, incluindo “como” e “sem”; é pontuação pouco discriminatória para esta pergunta.
 3. **A jornada principal não reconhece a maior parte da descrição natural do produto.** As dez capacidades ficaram INCONCLUSIVE: nove sem regra versionada aplicável e uma por coleta incompleta. Isso não demonstra falta dessas funções no projeto. Demonstra alcance insuficiente do avaliador para essa formulação.
 4. **Orçamento consumido com seleção pouco dirigida.** Foram registrados 43 alvos coletados, 837 ignorados por orçamento e quatro não encontrados. O inventário inclui numerosos tipos de domínio, documentos e fixtures; implementações centrais ficaram fora da coleta. A lista é evidência de cobertura, não revisão dos conteúdos de todos esses arquivos. Simplesmente aumentar o limite pode aumentar ruído.

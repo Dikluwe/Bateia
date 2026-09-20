@@ -1037,10 +1037,10 @@ func TestIdeaRecommendM21RegionalCLIReplayAndDeterminism(t *testing.T) {
 func TestIdeaRecommendM21ZeroLocaleGoldenIdentity(t *testing.T) {
 	const (
 		legacyRunID      = "4dbe6d1bec49f5c0"
-		wantEvidenceHash = "275fca39660f176c03c7ab744b744ea6c7a4f8ace07973dff60ec7986ac8b723"
+		wantEvidenceHash = "a92ab04e7601769fe61d3c9511bf0060e26069c23d777d5cfb946e04b83eb3a0"
 		wantBundleHash   = "4ee79fb89117467e2eb70874c32fb77a922a3adb5807e675a0b1714e365c9912"
 	)
-	dossier := filepath.Join("..", "..", "00_nucleo", "benchmark", "0024", "proof-recipes", "final-dossier")
+	dossier := filepath.Join("..", "..", "lab", "bancada", "history", "benchmarks", "0024", "proof-recipes", "final-dossier")
 	out := filepath.Join(t.TempDir(), "out")
 	args := []string{
 		"--idea", filepath.Join(dossier, "idea.json"),

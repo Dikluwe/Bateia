@@ -25,4 +25,4 @@ Este incremento reduz confiança indevida; não implementa prova comportamental 
 
 Implementadas as seis frentes do contrato, incluindo remoção das consultas do cálculo de cobertura preliminar e registro SKIPPED_BUDGET para arquivos não examinados. Cinco recomendações locais, replay e controles serviço/MCP verificados. Suíte completa, linteiro e compilação do pacote aprovados.
 
-A autoanálise continua com cobertura insuficiente, agora explicitada; não foi implementada comprovação comportamental geral. Veja o [relatório de mudanças e limites](../relatorios/correcoes-jornada-principal-0040.md) e os [artefatos](../benchmark/0040/README.md).
+A autoanálise continua com cobertura insuficiente, agora explicitada; não foi implementada comprovação comportamental geral. Veja o [relatório de mudanças e limites](../relatorios/correcoes-jornada-principal-0040.md) e os [artefatos](../../lab/bancada/history/benchmarks/0040/README.md).

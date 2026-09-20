@@ -208,7 +208,7 @@ resultado correto.
 ## Experimento competitivo
 
 O protocolo executável e os inputs pré-registrados estão em
-[`benchmark/0012/experimento`](../benchmark/0012/experimento/README.md). Eles não
+[`benchmark/0012/experimento`](../../lab/bancada/history/benchmarks/0012/experimento/README.md). Eles não
 foram executados nem constituem resultado de produto enquanto os bundles e
 oráculos independentes permanecerem ausentes.
 

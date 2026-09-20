@@ -20,7 +20,7 @@ Aumentar candidatos admitidos não demonstra melhora semântica. A pergunta de b
 
 Os três registros são periph/devices, soypat/gsdf e majestrate/XD. Houve5 snippets omitidos em periph/devices pelo teto32; zero truncamentos registrados. Os demais não tiveram omissões. As outras duas perguntas públicas permaneceram literais pelos bloqueios de negação/sintaxe já existentes.
 
-[Métricas e diagnósticos](../benchmark/0056/comparison.json), [resposta completa da pergunta de bits](../benchmark/0056/collected/case-07/discovery.stdout), [recibos de execução](../benchmark/0056/collected/receipts.json).
+[Métricas e diagnósticos](../../lab/bancada/history/benchmarks/0056/comparison.json), [resposta completa da pergunta de bits](../../lab/bancada/history/benchmarks/0056/collected/case-07/discovery.stdout), [recibos de execução](../../lab/bancada/history/benchmarks/0056/collected/receipts.json).
 
 ## Relação com a intenção original
 **Fatos observados nos snippets:** periph/devices mostra r.Intersect(i.Rect) em ssd1306/image1bit/image1bit.go. soypat/gsdf descreve interseção de SDFs em operations.go. majestrate/XD contém Reserved.Intersect em lib/bittorrent/handshake.go, com comentário de que limpa bits ausentes do outro operando. Esses arquivos/trechos estão no recibo citado acima; não foram executados.
@@ -38,7 +38,7 @@ Os controles HTTP verificam que, com MaxResults1, um primeiro candidato insufici
 
 Uma única rodada pública foi executada. Corpus/runner/expectativas0053 permaneceram intactos; reavaliação offline reproduziu as métricas. Tempos são telemetria de Bateia/provedor, não benchmarks dos projetos.
 
-[Verificação final e hashes](../benchmark/0056/verification.json), [reprodução](../benchmark/0056/README.md). A sintaxe de count segue a [documentação oficial Sourcegraph](https://sourcegraph.com/docs/code-search/queries).
+[Verificação final e hashes](../../lab/bancada/history/benchmarks/0056/verification.json), [reprodução](../../lab/bancada/history/benchmarks/0056/README.md). A sintaxe de count segue a [documentação oficial Sourcegraph](https://sourcegraph.com/docs/code-search/queries).
 
 A primeira suíte completa encontrou um identificador incorreto no checkpoint: implementação0056-v1, contrato/teste live0056-v1. Corrigida somente a string de identidade da retomada e preservados os testes. Logs e versão anterior do arquivo foram arquivados. A coleta pública precede essa correção, que não altera consulta, admissão ou análise local; não houve nova busca para escolher resultados. O hash do binário medido está em collected/receipts.json e o do binário final no recibo de verificação.
 

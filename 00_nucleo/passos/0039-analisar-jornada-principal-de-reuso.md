@@ -25,4 +25,4 @@ Relatório com achados priorizados, evidência reproduzível e recomendação do
 
 Cinco recomendações locais, um replay e dois cenários controlados de descoberta pelo serviço e MCP executados. Testes existentes de usecase, CLI e MCP aprovados. O diagnóstico reproduziu comprovação indevida por nomes/testes, fonte de licença sem autoridade, metadados locais derivados da consulta, cobertura insuficiente e falhas de negação/projeção. As proteções de descoberta inconclusiva e replay foram preservadas nos casos examinados.
 
-Veja o [relatório completo](../relatorios/analise-jornada-principal-0039.md) e os [artefatos reproduzíveis](../benchmark/0039/README.md). Nenhuma correção de produção foi aplicada neste passo; a próxima prioridade recomendada é o contrato de comprovação e autoridade da evidência na jornada principal.
+Veja o [relatório completo](../relatorios/analise-jornada-principal-0039.md) e os [artefatos reproduzíveis](../../lab/bancada/history/benchmarks/0039/README.md). Nenhuma correção de produção foi aplicada neste passo; a próxima prioridade recomendada é o contrato de comprovação e autoridade da evidência na jornada principal.

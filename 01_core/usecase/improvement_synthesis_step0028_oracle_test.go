@@ -30,7 +30,7 @@ type step0028RuntimeFixture struct {
 func TestStep0028OracleProtectedSynthesisAndRuntimeFixturesAreComplete(t *testing.T) {
 	read := func(name string, target any) {
 		t.Helper()
-		content, err := os.ReadFile(filepath.Join("..", "..", "00_nucleo", "benchmark", "0028", "oracle", "protected", "fixtures", name))
+		content, err := os.ReadFile(filepath.Join("..", "..", "lab", "bancada", "history", "benchmarks", "0028", "oracle", "protected", "fixtures", name))
 		if err != nil {
 			t.Fatal(err)
 		}

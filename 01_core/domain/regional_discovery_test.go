@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/benchmark/0024/proof-recipes/m21-oracle-interface.md
+ * @prompt 00_nucleo/prompts/01_core/domain/regional_discovery_test.md
  * @layer L1
  * @updated 2026-09-01
  */

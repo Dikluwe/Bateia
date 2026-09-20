@@ -32,7 +32,7 @@ Compilado o pacote ./04_wiring para /tmp/bateia-auditoria-atual. Executado o exe
 - Bundle: 44 itens, 404726 bytes lidos, complete=false; target_results registra 43 COLLECTED, 1002 SKIPPED_BUDGET e quatro NOT_FOUND. Contagens referem-se a observáveis diferentes, não a 44 implementações comprovadas.
 - Alternativas: zero elegíveis, uma excluída. Como é autoanálise local, não mede descoberta de alternativas nem autoriza dizer que elas não existem.
 
-Artefatos completos: ../benchmark/auditoria-produto-pos0064/dossie/. Comando, binário e hashes em receipt.json. A saída foi coletada em /tmp e copiada após a execução, para não inserir o próprio dossiê na coleta.
+Artefatos completos: ../../lab/bancada/history/benchmarks/auditoria-produto-pos0064/dossie/. Comando, binário e hashes em receipt.json. A saída foi coletada em /tmp e copiada após a execução, para não inserir o próprio dossiê na coleta.
 
 **Inferência:** o gargalo observado aqui é ligar requisitos a detectores/evidências pertinentes, além da cobertura de coleta. O algoritmo prudente sabe suspender a conclusão, mas muitas ações devolvem ao usuário a tarefa genérica de definir a verificação. Isso não prova ausência das capacidades no projeto nem demonstra que elevar limites resolva o problema.
 

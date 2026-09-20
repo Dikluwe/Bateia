@@ -12,9 +12,9 @@ O corpus 0053 congelado produziu 121 registros: 120 observados e um não avaliad
 
 A recuperação permaneceu em 1/6 funções-alvo e 5/6 arquivos-alvo extraídos. Há mais informação sobre funções recuperadas, mas não ganho demonstrado na recuperação de alvos. Descoberta pública não foi repetida e está não avaliada nesta rodada. Nenhum código dos projetos foi executado.
 
-Exemplo pertinente: LinearRgbToXyz, colors.go:446–451, SHA256 a75c3edb5dd7e957c49694a6ac3c8901ec7aba2fb5dededca552510eb533e37c. Foram observadas três atribuições a x/y/z nas linhas 447–449 e return na 450. O recibo contém as expressões completas. Isso descreve a sintaxe; não verifica correção matemática ou comportamento em execução. [Saída da análise](../benchmark/0057/collected-r1/case-05/cli.json).
+Exemplo pertinente: LinearRgbToXyz, colors.go:446–451, SHA256 a75c3edb5dd7e957c49694a6ac3c8901ec7aba2fb5dededca552510eb533e37c. Foram observadas três atribuições a x/y/z nas linhas 447–449 e return na 450. O recibo contém as expressões completas. Isso descreve a sintaxe; não verifica correção matemática ou comportamento em execução. [Saída da análise](../../lab/bancada/history/benchmarks/0057/collected-r1/case-05/cli.json).
 
-[Métricas](../benchmark/0057/comparison.json), [recibos e hashes dos inputs](../benchmark/0057/collected-r1/receipts.json).
+[Métricas](../../lab/bancada/history/benchmarks/0057/comparison.json), [recibos e hashes dos inputs](../../lab/bancada/history/benchmarks/0057/collected-r1/receipts.json).
 
 ## Limites da conclusão
 Fato observado: instrução identificada pelo parser nos bytes e intervalos citados. Não é prova de que o caminho executa, de mutação observável pelo chamador ou de equivalência funcional. Aliases, chamadas, efeitos indiretos e fluxos de controle permanecem não verificados. Uma função sem escrita direta não ganha classificação de imutável/pura; retorno de uma variável não prova que ela é nova ou independente.
@@ -28,7 +28,7 @@ Os controles independentes cobrem fatos e snippets exatos, identidade/hash/range
 
 Corpus e todos os artefatos 0053 permanecem byte a byte intactos. Reavaliação offline reproduziu as métricas. Corpus conhecido, não holdout; tempos são telemetria do Bateia, não benchmarks dos projetos.
 
-[Verificação final](../benchmark/0057/verification.json), [reprodução](../benchmark/0057/README.md). O próximo ganho de relevância ainda exige recuperar a implementação pertinente; a verificação de efeitos precisará de contrato específico de alias/fluxo/tipos ou execução controlada, sem inferir propriedades pela ausência de achados.
+[Verificação final](../../lab/bancada/history/benchmarks/0057/verification.json), [reprodução](../../lab/bancada/history/benchmarks/0057/README.md). O próximo ganho de relevância ainda exige recuperar a implementação pertinente; a verificação de efeitos precisará de contrato específico de alias/fluxo/tipos ou execução controlada, sem inferir propriedades pela ausência de achados.
 
 ## Revisão por falha de regressão
 A primeira suíte completa detectou que uma função encontrada apenas por documentação passou a mostrar fatos do corpo, contrariando o canal documental0051. O teste legado permaneceu intacto. O adendo0057-origem-documental passou a impedir esse caso: status not_evaluated, zero fatos. Um controle independente verifica que outro hit lexical válido da mesma função continua independente. Coleta e log r0 foram preservados; a rodada final local é collected-r1. Não houve rede. O contrato final inclui esta correção posterior à primeira execução, sem alegar que toda a revisão estava congelada antes das observações.

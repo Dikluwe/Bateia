@@ -52,4 +52,4 @@ produziu snapshot dentro de aproximadamente cinco minutos e recebeu
 itens, 95.991 bytes e zero falhas, mas as dez capacidades ficaram
 `INCONCLUSIVE`. O Katamari não foi executado porque inserir concorrentes conhecidos
 depois da falha violaria o protocolo. Evidências e findings estão em
-[`benchmark/0012/run/execution-report.md`](../benchmark/0012/run/execution-report.md).
+[`benchmark/0012/run/execution-report.md`](../../lab/bancada/history/benchmarks/0012/run/execution-report.md).

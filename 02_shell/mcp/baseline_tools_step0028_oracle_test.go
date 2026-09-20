@@ -31,7 +31,7 @@ func TestStep0028OracleFrozenBasalNineCapture(t *testing.T) {
 		SHA256 string   `json:"sha256"`
 		Names  []string `json:"names"`
 	}
-	fixture, err := os.ReadFile(filepath.Join("..", "..", "00_nucleo", "benchmark", "0031", "basal-tools-successor.json"))
+	fixture, err := os.ReadFile(filepath.Join("..", "..", "lab", "bancada", "history", "benchmarks", "0031", "basal-tools-successor.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

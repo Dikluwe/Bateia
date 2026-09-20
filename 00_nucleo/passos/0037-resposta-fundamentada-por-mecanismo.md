@@ -17,4 +17,4 @@ Coin: preservar mecanismo por camadas e expor seleção, suporte, laço e compos
 Síntese determinística de fatos estáticos; não interpretação universal de algoritmos. Trechos condicionais não provam caminho executável. Código excluído pelo pré-processador não produz chamadas AST; conteúdo textual isolado não é prova. Não há veredito independente.
 
 ## Execução concluída
-Implementado e validado. [Resultados e limites](../benchmark/0037/README.md): condições, fallback, laço e composição presentes na abertura; 23 definições e 39 chamadas em contexto único. Testes Go, Clang real, lint e build aprovados.
+Implementado e validado. [Resultados e limites](../../lab/bancada/history/benchmarks/0037/README.md): condições, fallback, laço e composição presentes na abertura; 23 definições e 39 chamadas em contexto único. Testes Go, Clang real, lint e build aprovados.

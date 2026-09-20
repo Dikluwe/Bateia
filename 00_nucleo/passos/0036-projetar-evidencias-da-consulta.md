@@ -20,4 +20,4 @@ A coleta Clang do passo 0035 encontra implementações, mas a projeção Markdow
 Seleção continua heurística lexical e estática; chamadas não demonstram comportamento em execução. Não há certificação independente nem comprovação universal de qualidade semântica.
 
 ## Conclusão da execução
-Implementado e validado. Evidências e comandos em [benchmark/0036](../benchmark/0036/README.md). As seis funções centrais do Coin e suas chamadas chegam ao Markdown; 12/898 unidades continuam explicitamente parciais. Documento passou de 476.063 para 38.140 bytes. Lint sem violações, suíte Go completa e build aprovados. A melhoria demonstrada é de seleção, rastreabilidade e projeção; adequação funcional continua não verificada.
+Implementado e validado. Evidências e comandos em [benchmark/0036](../../lab/bancada/history/benchmarks/0036/README.md). As seis funções centrais do Coin e suas chamadas chegam ao Markdown; 12/898 unidades continuam explicitamente parciais. Documento passou de 476.063 para 38.140 bytes. Lint sem violações, suíte Go completa e build aprovados. A melhoria demonstrada é de seleção, rastreabilidade e projeção; adequação funcional continua não verificada.

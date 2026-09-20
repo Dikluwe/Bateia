@@ -16,7 +16,7 @@ Todos os comandos CLI concluíram com código 0. Os testes existentes de `01_cor
 
 Não foi medida descoberta pública, recall entre ecossistemas ou qualidade geral. Coin não foi candidato desta amostra; arquivos históricos sobre ele apareceram incidentalmente na autoanálise. Não foram executados benchmarks dos projetos. Tempos presentes nos logs são telemetria do Bateia. Os exemplos sintéticos foram inspecionados estaticamente; a existência de um teste não significa que o Bateia o executou.
 
-Entradas, dossiês e logs estão no [pacote 0039](../benchmark/0039/README.md). O [resultado estruturado](../benchmark/0039/results.json) registra estados, caminhos coletados e comparações. O manifesto registra commit-base, hashes de fontes, binário e pacote; hashes identificam o estado, mas não substituem a preservação do checkout para recompilá-lo.
+Entradas, dossiês e logs estão no [pacote 0039](../../lab/bancada/history/benchmarks/0039/README.md). O [resultado estruturado](../../lab/bancada/history/benchmarks/0039/results.json) registra estados, caminhos coletados e comparações. O manifesto registra commit-base, hashes de fontes, binário e pacote; hashes identificam o estado, mas não substituem a preservação do checkout para recompilá-lo.
 
 ## Casos observados
 

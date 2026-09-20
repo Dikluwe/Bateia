@@ -15,7 +15,7 @@ A demonstração pública gerou quatro recibos, conferidos por um script Python 
 
 Nos três casos executados, 39 observações completaram cada avaliação. Hashes de produtor e candidata são distintos e aparecem em campos separados. O trace da versão construída registrou módulo bateia, Go go1.26.5, revisão de build 9056cd259e40d6360a06e6e21a157aa2e5b9eac7 e vcs_modified=true. Essa revisão pertence ao analisador; não foi atribuída à fonte candidata. Dados disponíveis foram obtidos do executável em execução, sem consultar .git durante a análise.
 
-Recibos e conferência: ../benchmark/0064/executions/verification.json. Comparações: executions/comparison.json. O protocolo canônico do fingerprint está no contrato ../passos/0064-identificar-analisador-e-parametros.md e foi conferido independentemente em Go e Python.
+Recibos e conferência: ../../lab/bancada/history/benchmarks/0064/executions/verification.json. Comparações: executions/comparison.json. O protocolo canônico do fingerprint está no contrato ../passos/0064-identificar-analisador-e-parametros.md e foi conferido independentemente em Go e Python.
 
 ## Significado dos campos
 
@@ -31,7 +31,7 @@ recorded não é um novo nível de aprovação da função. Um pedido interrompi
 
 Contrato/baseline congelados antes de A/B; produção e testes em contextos separados, filesystem compartilhado. Ensaio Tekt sem atestação física. Nenhuma alegação de equivalência geral ou selo discriminatório completo.
 
-Na primeira execução, dois testes exigiram Cases vazio no preflight. Essa exigência excedia o contrato0063, que exige zero casos completos e permite conservar os casos planejados. O autor B corrigiu apenas essa condição para inspecionar Observation.Completed; status unknown, binding, razão e demais exigências permaneceram. A implementação e o contrato não mudaram. Falha, snapshots e freezes B r0 preservados em ../benchmark/0064/revisions/b-r0/. Os testes novos passaram após a correção. Também conferem hash independente do processo de teste, metadados runtime/debug, coordenadas temporais UTC, inputs, sensibilidade, seed máxima e entradas inválidas.
+Na primeira execução, dois testes exigiram Cases vazio no preflight. Essa exigência excedia o contrato0063, que exige zero casos completos e permite conservar os casos planejados. O autor B corrigiu apenas essa condição para inspecionar Observation.Completed; status unknown, binding, razão e demais exigências permaneceram. A implementação e o contrato não mudaram. Falha, snapshots e freezes B r0 preservados em ../../lab/bancada/history/benchmarks/0064/revisions/b-r0/. Os testes novos passaram após a correção. Também conferem hash independente do processo de teste, metadados runtime/debug, coordenadas temporais UTC, inputs, sensibilidade, seed máxima e entradas inválidas.
 
 ## Limites da conclusão
 
@@ -50,4 +50,4 @@ go build -o /tmp/bateia-0064 ./04_wiring
 
 Comparar trace.inputs para explicar diferenças entre pedidos; source_binding para identidade previamente esperada; cases/status para o resultado limitado da propriedade. Um hash diferente sozinho não explica a causa da diferença.
 
-Validação final: testes novos sem cache, suíte Go completa, build, crystalline-lint e git diff --check passaram. Quatro cenários novos, quatro regressões0063 e oito regressões0062 aprovados. Contrato e produção mantiveram freezes; houve uma revisão contratualmente justificada dos testes. Comandos/logs em ../benchmark/0064/verification.json. Falha de leitura de identidade e recuo de relógio foram auditados no código, mas não forçados no ambiente. Sem commit.
+Validação final: testes novos sem cache, suíte Go completa, build, crystalline-lint e git diff --check passaram. Quatro cenários novos, quatro regressões0063 e oito regressões0062 aprovados. Contrato e produção mantiveram freezes; houve uma revisão contratualmente justificada dos testes. Comandos/logs em ../../lab/bancada/history/benchmarks/0064/verification.json. Falha de leitura de identidade e recuo de relógio foram auditados no código, mas não forçados no ambiente. Sem commit.

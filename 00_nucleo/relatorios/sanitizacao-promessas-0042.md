@@ -1,6 +1,6 @@
 # Diagnóstico 0042 — Promessas, engenharia e limites do Bateia
 
-Data: 2026-09-07. Estado: diagnóstico concluído; defeitos de produção abaixo ainda não corrigidos. [Plano](../passos/0042-auditar-promessas-e-limites-do-projeto.md), [reproduções e inventário](../benchmark/0042/README.md).
+Data: 2026-09-07. Estado: diagnóstico concluído; defeitos de produção abaixo ainda não corrigidos. [Plano](../passos/0042-auditar-promessas-e-limites-do-projeto.md), [reproduções e inventário](../../lab/bancada/history/benchmarks/0042/README.md).
 
 A evidência não sustenta dizer que todo o projeto é ilusório ou que seu autor não conseguiu fazer engenharia. Há implementações reais, infraestrutura de execução e salvaguardas úteis. O problema transversal observado é a falta de um contrato uniforme de comprovação entre módulos: uma etapa conserva a incerteza, outra aceita um rótulo ou rejeita uma evidência produzida pela etapa anterior. Documentação abrangente demais esconde essas diferenças.
 
@@ -56,7 +56,7 @@ O resultado limita-se à leitura do manifesto e de caminhos explicitamente solic
 | Validação de produto | `product_validation.go`, linhas 16–69, deixa downstream não avaliado sem métricas; benchmark executa pipeline | Utilidade no benchmark vem de julgamento fornecido (`end_to_end_benchmark.go`, linhas 153–204), não de benefício medido automaticamente |
 | Rastreabilidade e execução | Serviço possui persistência/idempotência; 0040 registra replay delimitado | Não se reexecutaram testes de falhas, concorrência, durabilidade ou toda a superfície MCP; limite local por symlink confirmado |
 
-As referências de código dessa matriz, com hashes e intervalos, estão no [registro de leitura](../benchmark/0042/review-ledger.json). Resultados de testes 0041 são evidência histórica de regressão daquele checkout, não prova de precisão do produto. Tempos de execução do Bateia são telemetria da ferramenta; não medem desempenho dos candidatos.
+As referências de código dessa matriz, com hashes e intervalos, estão no [registro de leitura](../../lab/bancada/history/benchmarks/0042/review-ledger.json). Resultados de testes 0041 são evidência histórica de regressão daquele checkout, não prova de precisão do produto. Tempos de execução do Bateia são telemetria da ferramenta; não medem desempenho dos candidatos.
 
 ## Saneamento executado
 

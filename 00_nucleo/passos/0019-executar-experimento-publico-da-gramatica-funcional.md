@@ -72,11 +72,11 @@ Sem autorização explícita, o estado permanece `BLOCKED_BY_APPROVAL`.
 Registrar caminho e SHA-256 antes da rede:
 
 ```text
-00_nucleo/benchmark/0018/queries-n.json
-00_nucleo/benchmark/0018/queries-f1.json
-00_nucleo/benchmark/0018/queries-f2.json
+lab/bancada/history/benchmarks/0018/queries-n.json
+lab/bancada/history/benchmarks/0018/queries-f1.json
+lab/bancada/history/benchmarks/0018/queries-f2.json
 03_infra/lexical/functional-grammar-v2.json
-00_nucleo/benchmark/0018/segregacao/selo.json
+lab/bancada/history/benchmarks/0018/segregacao/selo.json
 ```
 
 O executor encerra antes da rede se:
@@ -307,21 +307,21 @@ representam cada braço, mas não autorizam execução sequencial N → F1 → F
 ```bash
 env -u GITHUB_TOKEN -u GH_TOKEN \
   bateia idea web discover-observable \
-  --queries 00_nucleo/benchmark/0018/queries-n.json \
+  --queries lab/bancada/history/benchmarks/0018/queries-n.json \
   --arm N --max-per-query 5 \
-  --output 00_nucleo/benchmark/0019/snapshot-n.json
+  --output lab/bancada/history/benchmarks/0019/snapshot-n.json
 
 env -u GITHUB_TOKEN -u GH_TOKEN \
   bateia idea web discover-observable \
-  --queries 00_nucleo/benchmark/0018/queries-f1.json \
+  --queries lab/bancada/history/benchmarks/0018/queries-f1.json \
   --arm F1 --max-per-query 5 \
-  --output 00_nucleo/benchmark/0019/snapshot-f1.json
+  --output lab/bancada/history/benchmarks/0019/snapshot-f1.json
 
 env -u GITHUB_TOKEN -u GH_TOKEN \
   bateia idea web discover-observable \
-  --queries 00_nucleo/benchmark/0018/queries-f2.json \
+  --queries lab/bancada/history/benchmarks/0018/queries-f2.json \
   --arm F2 --max-per-query 5 \
-  --output 00_nucleo/benchmark/0019/snapshot-f2.json
+  --output lab/bancada/history/benchmarks/0019/snapshot-f2.json
 ```
 
 ## Testes obrigatórios antes da rede
@@ -355,18 +355,18 @@ env -u GITHUB_TOKEN -u GH_TOKEN \
 ## Artefatos esperados
 
 ```text
-00_nucleo/benchmark/0019/authorization.json
-00_nucleo/benchmark/0019/manifest.json
-00_nucleo/benchmark/0019/snapshot-n.json
-00_nucleo/benchmark/0019/snapshot-f1.json
-00_nucleo/benchmark/0019/snapshot-f2.json
-00_nucleo/benchmark/0019/replay-n.json
-00_nucleo/benchmark/0019/replay-f1.json
-00_nucleo/benchmark/0019/replay-f2.json
-00_nucleo/benchmark/0019/blinded-candidates.json
-00_nucleo/benchmark/0019/blinded-judgments.json
-00_nucleo/benchmark/0019/experiment.json
-00_nucleo/benchmark/0019/receipt.json
+lab/bancada/history/benchmarks/0019/authorization.json
+lab/bancada/history/benchmarks/0019/manifest.json
+lab/bancada/history/benchmarks/0019/snapshot-n.json
+lab/bancada/history/benchmarks/0019/snapshot-f1.json
+lab/bancada/history/benchmarks/0019/snapshot-f2.json
+lab/bancada/history/benchmarks/0019/replay-n.json
+lab/bancada/history/benchmarks/0019/replay-f1.json
+lab/bancada/history/benchmarks/0019/replay-f2.json
+lab/bancada/history/benchmarks/0019/blinded-candidates.json
+lab/bancada/history/benchmarks/0019/blinded-judgments.json
+lab/bancada/history/benchmarks/0019/experiment.json
+lab/bancada/history/benchmarks/0019/receipt.json
 00_nucleo/laudos/0019-executar-experimento-publico-da-gramatica-funcional.md
 ```
 

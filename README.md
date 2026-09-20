@@ -16,8 +16,8 @@ Para avaliar a própria worktree, incluindo alterações não commitadas:
 
 ```bash
 ./bateia idea recommend \
-  --idea 00_nucleo/benchmark/0012/experimento/bateia-idea.json \
-  --policy 00_nucleo/benchmark/0012/experimento/reuse-policy.json \
+  --idea lab/bancada/history/benchmarks/0012/experimento/bateia-idea.json \
+  --policy lab/bancada/history/benchmarks/0012/experimento/reuse-policy.json \
   --target-name "Bateia" \
   --target-repo Dikluwe/Bateia \
   --mode local \

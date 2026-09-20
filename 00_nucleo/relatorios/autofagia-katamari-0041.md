@@ -42,4 +42,4 @@ As fontes PROVEN dos casos positivos são fixtures declaradas para testar a sele
 
 O motor não demonstra equivalência entre implementações, não estima custo real de integração e não prova compatibilidade entre componentes. Ele entrega o plano e as verificações necessárias para isso. O próximo avanço depende de protocolos delimitados por capacidade e interface, com resultado de aceitação rastreável. Não haverá um estado “integração validada” obtido apenas pela soma de pontuações ou pela declaração PROVEN de um candidato.
 
-[Artefatos e comandos reproduzíveis](../benchmark/0041/README.md).
+[Artefatos e comandos reproduzíveis](../../lab/bancada/history/benchmarks/0041/README.md).

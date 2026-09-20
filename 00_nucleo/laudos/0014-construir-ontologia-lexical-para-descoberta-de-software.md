@@ -83,6 +83,6 @@ catálogo identificar repositórios. O próximo passo útil é uma porta de cat�
 que pesquise descrição, README, tópicos e metadados, mantendo a ontologia e a
 auditoria construídas aqui como geradoras de intenção.
 
-Artefatos reproduzíveis ficam em `00_nucleo/benchmark/0012/run/`: expansão,
+Artefatos reproduzíveis ficam em `lab/bancada/history/benchmarks/0012/run/`: expansão,
 plano, auditoria, avaliação offline, run inválido preservado e snapshot live
 final.

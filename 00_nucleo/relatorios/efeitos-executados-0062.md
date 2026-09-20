@@ -19,7 +19,7 @@ Oito fixtures congeladas antes da implementação foram executadas pela CLI púb
 
 As seis fixtures executadas até o fim registraram 39 observações cada. Os dois resultados unknown conservam os 39 casos planejados como incompletos: um caso listado não significa execução concluída. Fonte, wrapper, módulo, binário, toolchain, plataforma, argumentos e orçamentos estão identificados nos recibos quando essa etapa foi alcançada. Tempos são telemetria da ferramenta, não benchmarks dos candidatos.
 
-A repetição da referência com seed 1 preservou os 39 casos/observações e os hashes de fonte, wrapper, módulo e binário, além da versão Go. Comparação em `../benchmark/0062/reproduction.json`. Recibos e conferência por fixture em `../benchmark/0062/executions/verification.json` e arquivos vizinhos.
+A repetição da referência com seed 1 preservou os 39 casos/observações e os hashes de fonte, wrapper, módulo e binário, além da versão Go. Comparação em `../../lab/bancada/history/benchmarks/0062/reproduction.json`. Recibos e conferência por fixture em `../../lab/bancada/history/benchmarks/0062/executions/verification.json` e arquivos vizinhos.
 
 ## Verificação e autoria
 
@@ -49,4 +49,4 @@ Consultar `status`, `cases`, `execution` e `limitations`; exit code zero também
 
 A busca e os scores permanecem fora deste experimento. O ganho demonstrado é conseguir refutar efeitos concretos e preservar evidência reproduzível num recorte pequeno, não ter resolvido entendimento semântico geral. Antes de conectar o recurso à busca, o próximo contrato deve definir como ligar a implementação extraída à função realmente compilada, sem perder dependências nem ampliar a conclusão além da cobertura.
 
-Validação final: build, testes novos sem cache, suíte Go completa (com cache nos pacotes inalterados), crystalline-lint e git diff --check passaram. Contrato, implementação, oráculo e testes mantiveram seus hashes congelados. Comandos e limites em `../benchmark/0062/verification.json`; logs preservados no mesmo diretório.
+Validação final: build, testes novos sem cache, suíte Go completa (com cache nos pacotes inalterados), crystalline-lint e git diff --check passaram. Contrato, implementação, oráculo e testes mantiveram seus hashes congelados. Comandos e limites em `../../lab/bancada/history/benchmarks/0062/verification.json`; logs preservados no mesmo diretório.

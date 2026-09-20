@@ -23,5 +23,5 @@ for flags in sorted(build.glob('src/**/CMakeFiles/*.dir/flags.make')):
  provenance.append({'path':str(flags),'sha256':hashlib.sha256(flags.read_bytes()).hexdigest()})
 (snapshot/'compile_commands.json').write_text(json.dumps(entries,indent=2)+'\n')
 receipt={'original_root':str(source),'snapshot_root':str(snapshot),'base_commit':subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip(),'compilation_units':len(entries),'configuration_source':'arguments reconstruídos de flags.make e caminhos de build.make existentes; nenhum build executado','flags_inputs':provenance}
-Path('00_nucleo/benchmark/0035/coin-inputs.json').write_text(json.dumps(receipt,indent=2)+'\n')
+Path('lab/bancada/history/benchmarks/0035/coin-inputs.json').write_text(json.dumps(receipt,indent=2)+'\n')
 print(len(entries),'compilation units')

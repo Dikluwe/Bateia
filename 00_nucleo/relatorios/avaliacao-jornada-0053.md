@@ -4,7 +4,7 @@
 
 ## Corpus e protocolo
 
-Autor B escolheu fsnotify v1.9.0, go-colorful v1.2.0 e bitset v1.24.2: monitoramento de arquivos, ciência de cores e conjuntos de bits. Escreveu duas perguntas funcionais em português e uma negativa por projeto, sem consultar ranking, catálogos, testes ou benchmarks antigos. Os alvos são declarações exatas, sustentadas por arquivos/intervalos, não somente caminhos. Versão, licença, proveniência e hashes de 181 arquivos estão no [corpus](../benchmark/0053/corpus.json), congelado em [freeze.json](../benchmark/0053/freeze.json) antes da execução.
+Autor B escolheu fsnotify v1.9.0, go-colorful v1.2.0 e bitset v1.24.2: monitoramento de arquivos, ciência de cores e conjuntos de bits. Escreveu duas perguntas funcionais em português e uma negativa por projeto, sem consultar ranking, catálogos, testes ou benchmarks antigos. Os alvos são declarações exatas, sustentadas por arquivos/intervalos, não somente caminhos. Versão, licença, proveniência e hashes de 181 arquivos estão no [corpus](../../lab/bancada/history/benchmarks/0053/corpus.json), congelado em [freeze.json](../../lab/bancada/history/benchmarks/0053/freeze.json) antes da execução.
 
 O autor A escreveu o executor sem ler esse corpus; o integrador testou métricas com fontes sintéticas antes da avaliação real. Regime Tekt A/B sem atestação física: filesystem compartilhado, sem selo de refinamento. Projetos vieram do cache de módulos disponível, logo são uma amostra de conveniência, não representativa do ecossistema. As perguntas deixam de ser holdout para futuras mudanças após esta publicação.
 
@@ -35,7 +35,7 @@ Três negativas sem hits ou alegações explícitas de satisfação detectadas p
 | Posições presentes em ambos os conjuntos | bitset `Intersection` | Sim | Não |
 | Posições presentes em qualquer conjunto | bitset `Union` | Sim | Não |
 
-[Métricas finais locais](../benchmark/0053/local-final/summary.json) e [casos com canais, fontes e lacunas](../benchmark/0053/local-final/cases.json). Os recibos completos da coleta foram preservados em `local-collected/`.
+[Métricas finais locais](../../lab/bancada/history/benchmarks/0053/local-final/summary.json) e [casos com canais, fontes e lacunas](../../lab/bancada/history/benchmarks/0053/local-final/cases.json). Os recibos completos da coleta foram preservados em `local-collected/`.
 
 ## Onde a recuperação perdeu qualidade
 
@@ -57,7 +57,7 @@ Executadas as três perguntas marcadas para descoberta, sem fornecer nomes de re
 
 Resultado: **0/2 projetos esperados nos primeiros dez candidatos avaliáveis; uma busca desconhecida**. A lista de colorful inclui `Benevanio/Jobs_Scraper_Global`; a de bitset inclui `OpenAiTx/OpenAiTx`. Não houve julgamento exaustivo dos demais candidatos, mas os termos efetivos mostram a perda da informação funcional da pergunta.
 
-[Métricas públicas corrigidas](../benchmark/0053/public-final/summary.json) e [tentativas/candidatos preservados](../benchmark/0053/public-final/cases.json). Os registros originais estão em `public-collected/`. Nenhum projeto esperado foi encontrado nas buscas avaliáveis; não substituímos consultas por repositórios injetados para simular sucesso. A jornada remota integrada permanece **não avaliada**. Descoberta pública e análise local em snapshot congelado não foram multiplicadas em um suposto sucesso ponta a ponta no mesmo commit.
+[Métricas públicas corrigidas](../../lab/bancada/history/benchmarks/0053/public-final/summary.json) e [tentativas/candidatos preservados](../../lab/bancada/history/benchmarks/0053/public-final/cases.json). Os registros originais estão em `public-collected/`. Nenhum projeto esperado foi encontrado nas buscas avaliáveis; não substituímos consultas por repositórios injetados para simular sucesso. A jornada remota integrada permanece **não avaliada**. Descoberta pública e análise local em snapshot congelado não foram multiplicadas em um suposto sucesso ponta a ponta no mesmo commit.
 
 ## Correções no executor e rastreabilidade
 
@@ -68,9 +68,9 @@ Os controles do integrador detectaram dois defeitos no avaliador, corrigidos pel
 
 O corpus/perguntas/alvos permaneceram intactos. A revisão r2 do executor ocorreu depois de o integrador observar resultados, portanto não é apresentada como avaliador final integralmente congelado antes da coleta. Há congelamentos encadeados e fontes anteriores para auditar a mudança. O autor A recebeu apenas os contraexemplos de schema/contabilidade.
 
-Os testes sintéticos também tiveram correções explícitas de fixture: acrescentar o campo obrigatório FileEvidence e tratar `channels` como lista, sem alterar as expectativas de integridade. Os nove controles finais passaram, incluindo hash adulterado, erro fora do denominador, caminho sem símbolo, documentação sem prova e descoberta omitida. Os arquivos entregues inicialmente em `benchmark/0053` foram movidos mecanicamente para `00_nucleo/benchmark/0053`, preservando bytes e hashes; o recibo de localização registra isso.
+Os testes sintéticos também tiveram correções explícitas de fixture: acrescentar o campo obrigatório FileEvidence e tratar `channels` como lista, sem alterar as expectativas de integridade. Os nove controles finais passaram, incluindo hash adulterado, erro fora do denominador, caminho sem símbolo, documentação sem prova e descoberta omitida. Os arquivos entregues inicialmente em `benchmark/0053` foram movidos mecanicamente para `lab/bancada/history/benchmarks/0053`, preservando bytes e hashes; o recibo de localização registra isso.
 
-As métricas locais foram idênticas em duas coletas. Reavaliar as observações congeladas com o executor r2 também preservou as métricas locais. [Replicação](../benchmark/0053/replication.json), [instruções e scripts](../benchmark/0053/README.md), [verificação e hashes](../benchmark/0053/verification.json).
+As métricas locais foram idênticas em duas coletas. Reavaliar as observações congeladas com o executor r2 também preservou as métricas locais. [Replicação](../../lab/bancada/history/benchmarks/0053/replication.json), [instruções e scripts](../../lab/bancada/history/benchmarks/0053/README.md), [verificação e hashes](../../lab/bancada/history/benchmarks/0053/verification.json).
 
 Build, suíte Go completa e linteiro passaram; testes HTTP e descoberta pública usaram as permissões correspondentes. Os arquivos Go de produção mantêm os hashes da baseline. A entrega implementa a avaliação, não reivindica melhora do algoritmo. Durações são telemetria da ferramenta.
 

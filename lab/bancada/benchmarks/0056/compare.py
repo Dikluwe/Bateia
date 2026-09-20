@@ -2,8 +2,8 @@
 import argparse,json
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);a=p.parse_args()
-r=Path(a.input);corpus=json.loads(Path('00_nucleo/benchmark/0053/corpus.json').read_text());projects={v['id']:v['repo'] for v in corpus['projects']}
-old=json.loads(Path('00_nucleo/benchmark/0055/collected-r2/summary.json').read_text());new=json.loads((r/'summary.json').read_text());out={'baseline':'0055/collected-r2','local_metrics_unchanged':old['metrics']==new['metrics'],'discovery_before':old['discovery'],'discovery_after':new['discovery'],'diagnostics':[]}
+r=Path(a.input);corpus=json.loads(Path('lab/bancada/history/benchmarks/0053/corpus.json').read_text());projects={v['id']:v['repo'] for v in corpus['projects']}
+old=json.loads(Path('lab/bancada/history/benchmarks/0055/collected-r2/summary.json').read_text());new=json.loads((r/'summary.json').read_text());out={'baseline':'0055/collected-r2','local_metrics_unchanged':old['metrics']==new['metrics'],'discovery_before':old['discovery'],'discovery_after':new['discovery'],'diagnostics':[]}
 for i,c in enumerate(corpus['cases'],1):
  path=r/('case-%02d'%i)/'discovery.stdout'
  if not path.exists():continue

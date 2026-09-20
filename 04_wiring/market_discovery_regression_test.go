@@ -155,7 +155,7 @@ func TestMarketDiscoveryAppleAllowlistParsingUnknownAndCancellation(t *testing.T
 }
 
 func TestMarketDiscoveryReplayIsOfflineAndByteIdentical(t *testing.T) {
-	fixturePath := filepath.Join("..", "00_nucleo", "benchmark", "0027", "oracle", "protected", "fixtures", "apple", "success.json")
+	fixturePath := filepath.Join("..", "lab", "bancada", "history", "benchmarks", "0027", "oracle", "protected", "fixtures", "apple", "success.json")
 	fixture, err := os.ReadFile(fixturePath)
 	if err != nil {
 		t.Fatalf("read frozen fixture: %v", err)

@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -144,7 +145,7 @@ func TestStep0070DiscriminatoryContract(t *testing.T) {
 
 func loadFixtures(t *testing.T) fixtureSet {
 	t.Helper()
-	path := filepath.Join("..", "..", "..", "..", "00_nucleo", "benchmark", "0070", "adversarial-fixtures.json")
+	path := filepath.Join("..", "..", "..", "..", "lab", "bancada", "history", "benchmarks", "0070", "adversarial-fixtures.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
@@ -178,7 +179,11 @@ func verifyFrozenInputs(t *testing.T, frozen map[string]string) {
 	}
 	sort.Strings(paths)
 	for _, path := range paths {
-		data, err := os.ReadFile(filepath.Join("..", "..", "..", "..", filepath.FromSlash(path)))
+		resolved := strings.TrimPrefix(path, "00_nucleo/benchmark/")
+		if resolved != path {
+			resolved = filepath.Join("lab", "bancada", "history", "benchmarks", filepath.FromSlash(resolved))
+		}
+		data, err := os.ReadFile(filepath.Join("..", "..", "..", "..", resolved))
 		if err != nil {
 			t.Fatalf("read frozen input %s: %v", path, err)
 		}

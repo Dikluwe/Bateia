@@ -115,7 +115,7 @@ func TestStep0065PreCandidateDiscriminatoryGate(t *testing.T) {
 
 func loadSuite0065(t *testing.T) suite0065 {
 	t.Helper()
-	path := filepath.Join("..", "..", "..", "..", "00_nucleo", "benchmark", "0065", "adversarial-cases.json")
+	path := filepath.Join("..", "..", "..", "..", "lab", "bancada", "history", "benchmarks", "0065", "adversarial-cases.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
@@ -139,7 +139,11 @@ func checkFrozenInputs0065(t *testing.T, inputs map[string]string) {
 		t.Fatalf("want five frozen inputs, got %d", len(inputs))
 	}
 	for relative, expected := range inputs {
-		data, err := os.ReadFile(filepath.Join("..", "..", "..", "..", filepath.FromSlash(relative)))
+		resolved := strings.TrimPrefix(relative, "00_nucleo/benchmark/")
+		if resolved != relative {
+			resolved = filepath.Join("lab", "bancada", "history", "benchmarks", filepath.FromSlash(resolved))
+		}
+		data, err := os.ReadFile(filepath.Join("..", "..", "..", "..", resolved))
 		if err != nil {
 			t.Fatalf("read frozen input %s: %v", relative, err)
 		}

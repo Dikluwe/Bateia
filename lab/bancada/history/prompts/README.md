@@ -10,3 +10,8 @@ Os prompts dos oráculos `market_discovery_step0027` e
 `improvement_synthesis_step0028` congelaram a construção concreta do runtime em
 L4. O passo 0079 substitui essa observação de localização por testes funcionais do
 container L3.
+
+Os prompts de `experiment/catalysis`, `step0029_experiment` e
+`step0030_catalysis` governaram experimentos já encerrados. Como suas
+materializações não integram mais o produto nem a arena ativa, eles permanecem aqui
+somente para explicar os passos e laudos históricos correspondentes.

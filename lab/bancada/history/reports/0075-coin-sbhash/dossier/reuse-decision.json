@@ -1,0 +1,2479 @@
+{
+  "investigation_plan": {
+    "schema_version": "1",
+    "requirements": [
+      {
+        "id": "req-capability-475738ce491f3988",
+        "kind": "capability",
+        "text": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+        "question": "Que evidência responde a: guard copy assignment against self-assignment as the first statement, before any destructive mutation?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-489cff8a1754ef6b",
+        "kind": "capability",
+        "text": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+        "question": "Que evidência responde a: reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-59d0c6bafc3811cb",
+        "kind": "capability",
+        "text": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+        "question": "Que evidência responde a: apply an avalanche/mixing step to a hash value before reducing it to a bucket index?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-632dd51db5f2bc06",
+        "kind": "capability",
+        "text": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+        "question": "Que evidência responde a: publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-9686a0a84b35cec1",
+        "kind": "capability",
+        "text": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+        "question": "Que evidência responde a: relink existing nodes into new buckets during resize instead of copying and destroying every key and value?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-constraint-670e3168a42258d3",
+        "kind": "constraint",
+        "text": "must not require heap allocation beyond the bucket array and node pool already in use",
+        "question": "Que evidência responde a: must not require heap allocation beyond the bucket array and node pool already in use?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-constraint-da9653ee9141cc8c",
+        "kind": "constraint",
+        "text": "C++11 as the minimum supported language standard",
+        "question": "Que evidência responde a: C++11 as the minimum supported language standard?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-non_goal-6c7b7aae157283dc",
+        "kind": "non_goal",
+        "text": "switching the storage strategy away from chained buckets",
+        "question": "Que evidência responde a: switching the storage strategy away from chained buckets?",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "id": "req-non_goal-7542d06d31f13b1c",
+        "kind": "non_goal",
+        "text": "changing the container's public method names",
+        "question": "Que evidência responde a: changing the container's public method names?",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "id": "req-preference-4682918564fa2db4",
+        "kind": "preference",
+        "text": "cmake",
+        "question": "Que evidência responde a: cmake?",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "id": "req-preference-5d050596ec3e3a4f",
+        "kind": "preference",
+        "text": "c++",
+        "question": "Que evidência responde a: c++?",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "id": "req-problem-77ed1e4eb35e2137",
+        "kind": "problem",
+        "text": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "question": "Que evidência responde a: Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      }
+    ],
+    "searches": [],
+    "actions": [
+      {
+        "question": "Que evidência responde a: guard copy assignment against self-assignment as the first statement, before any destructive mutation?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-475738ce491f3988",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: guard copy assignment against self-assignment as the first statement, before any destructive mutation?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-475738ce491f3988",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-489cff8a1754ef6b",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable_policy.h",
+            "symbol": "_Mod_range_hashing",
+            "line": 519,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Mod_range_hashing",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable_policy.h",
+            "symbol": "_Prime_rehash_policy",
+            "line": 540,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable_policy.h",
+            "symbol": "_Prime_rehash_policy",
+            "line": 544,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable_policy.h",
+            "symbol": "_Mod_range_hashing",
+            "line": 361,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Mod_range_hashing",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable_policy.h",
+            "symbol": "_Prime_rehash_policy",
+            "line": 381,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable_policy.h",
+            "symbol": "_Prime_rehash_policy",
+            "line": 383,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable_policy.h",
+            "symbol": "_Prime_rehash_policy",
+            "line": 549,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable_policy.h",
+            "symbol": "_Rehash_base",
+            "line": 536,
+            "rule_id": "prime-modulo-bucket-index",
+            "matched_pattern": "_Prime_rehash_policy",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-489cff8a1754ef6b",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: apply an avalanche/mixing step to a hash value before reducing it to a bucket index?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-59d0c6bafc3811cb",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: apply an avalanche/mixing step to a hash value before reducing it to a bucket index?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-59d0c6bafc3811cb",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 748,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 769,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 792,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 799,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 806,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/include/robin_hood.h",
+            "symbol": "hash_int",
+            "line": 822,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "hash_int",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "src/test/unit/show_hash.cpp",
+            "symbol": "mix",
+            "line": 71,
+            "rule_id": "avalanche-mixing-step",
+            "matched_pattern": "mix",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "53dcdfd21130c23e4d0aa14502aab45324f48b613ae0e8f8bb575647a790b527",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-632dd51db5f2bc06",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1198,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1238,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1316,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1362,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 2586,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 2629,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 434,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 442,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable_policy.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1976,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable_policy.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 2039,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 1158,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 191,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 497,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 543,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 573,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "tr1/hashtable.h",
+            "symbol": "_M_allocate_buckets",
+            "line": 603,
+            "rule_id": "rehash-allocate-before-publish",
+            "matched_pattern": "_M_allocate_buckets",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-632dd51db5f2bc06",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: relink existing nodes into new buckets during resize instead of copying and destroying every key and value?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-9686a0a84b35cec1",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_rehash_aux",
+            "line": 1160,
+            "rule_id": "resize-relinks-nodes",
+            "matched_pattern": "_M_rehash_aux",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_rehash_aux",
+            "line": 1163,
+            "rule_id": "resize-relinks-nodes",
+            "matched_pattern": "_M_rehash_aux",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_rehash_aux",
+            "line": 2565,
+            "rule_id": "resize-relinks-nodes",
+            "matched_pattern": "_M_rehash_aux",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_rehash_aux",
+            "line": 2584,
+            "rule_id": "resize-relinks-nodes",
+            "matched_pattern": "_M_rehash_aux",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "bits/hashtable.h",
+            "symbol": "_M_rehash_aux",
+            "line": 2627,
+            "rule_id": "resize-relinks-nodes",
+            "matched_pattern": "_M_rehash_aux",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: relink existing nodes into new buckets during resize instead of copying and destroying every key and value?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-9686a0a84b35cec1",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: must not require heap allocation beyond the bucket array and node pool already in use?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-670e3168a42258d3",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: must not require heap allocation beyond the bucket array and node pool already in use?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-670e3168a42258d3",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: C++11 as the minimum supported language standard?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-da9653ee9141cc8c",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: C++11 as the minimum supported language standard?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-da9653ee9141cc8c",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: switching the storage strategy away from chained buckets?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-6c7b7aae157283dc",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: switching the storage strategy away from chained buckets?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-6c7b7aae157283dc",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: changing the container's public method names?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-7542d06d31f13b1c",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: changing the container's public method names?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-7542d06d31f13b1c",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: cmake?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-4682918564fa2db4",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: cmake?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-4682918564fa2db4",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: c++?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-5d050596ec3e3a4f",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: c++?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-5d050596ec3e3a4f",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.?",
+        "gap": "o catálogo não possui regra declarada única e segura para este requisito",
+        "requirement_id": "req-problem-77ed1e4eb35e2137",
+        "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "classification": "CATALOG_GAP",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada e segura; a cobertura do catálogo não descreve ausência no candidato.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.?",
+        "gap": "o catálogo não possui regra declarada única e segura para este requisito",
+        "requirement_id": "req-problem-77ed1e4eb35e2137",
+        "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "classification": "CATALOG_GAP",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada e segura; a cobertura do catálogo não descreve ausência no candidato.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      }
+    ],
+    "stop_reason": "RECORDED_SEARCH_FINISHED",
+    "scope": "Somente candidatos, tentativas e evidências registrados; não demonstra busca global completa nem integração verificada.",
+    "telemetry_label": "Tempos de busca são telemetria do Bateia, não benchmarks dos candidatos."
+  },
+  "schema_version": "1",
+  "policy": {
+    "schema_version": "1",
+    "allowed_licenses": [
+      "MIT",
+      "Apache-2.0",
+      "MPL-2.0",
+      "BSL-1.0",
+      "BSD-3-Clause"
+    ],
+    "require_local": true,
+    "allow_archived": false,
+    "max_components": 6,
+    "extend_min_coverage": 0.6,
+    "integration_min_value": 0.3
+  },
+  "policy_hash": "11cff97bd04c0988b5b0737af13a511c70e58836391adcd5e2803cc8ef652508",
+  "decision": "INCONCLUSIVE",
+  "matrix": [
+    {
+      "capability": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+      "candidates": [
+        {
+          "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+          "status": "INCONCLUSIVE"
+        },
+        {
+          "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 748,
+              "snippet": "inline size_t hash_int(uint64_t x) noexcept {",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 769,
+              "snippet": "return hash_int(static_cast\u003cdetail::SizeT\u003e(result));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 792,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 799,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 806,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 822,
+              "snippet": "return hash_int(static_cast\u003cuint64_t\u003e(obj)); \\",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/test/unit/show_hash.cpp",
+              "symbol": "mix",
+              "line": 71,
+              "snippet": "for (size_t mix = 0; mix \u003c 10; ++mix) {",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "mix",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "53dcdfd21130c23e4d0aa14502aab45324f48b613ae0e8f8bb575647a790b527",
+              "strength": 0.6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "capability": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+      "candidates": [
+        {
+          "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+          "status": "INCONCLUSIVE"
+        },
+        {
+          "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    },
+    {
+      "capability": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+      "candidates": [
+        {
+          "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 434,
+              "snippet": "_M_allocate_buckets(size_type __bkt_count)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 442,
+              "snippet": "return __hashtable_alloc::_M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1198,
+              "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1238,
+              "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1316,
+              "snippet": "_M_buckets = _M_allocate_buckets(__ht._M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1362,
+              "snippet": "_M_buckets = __buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2586,
+              "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2629,
+              "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1976,
+              "snippet": "_M_allocate_buckets(std::size_t __bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2039,
+              "snippet": "_Hashtable_alloc\u003c_NodeAlloc\u003e::_M_allocate_buckets(std::size_t __bkt_count)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 191,
+              "snippet": "_M_allocate_buckets(size_type __n);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 497,
+              "snippet": "_M_allocate_buckets(size_type __n)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 543,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 573,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 603,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1158,
+              "snippet": "_Node** __new_array = _M_allocate_buckets(__n);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            }
+          ]
+        },
+        {
+          "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    },
+    {
+      "capability": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+      "candidates": [
+        {
+          "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Mod_range_hashing",
+              "line": 519,
+              "snippet": "struct _Mod_range_hashing",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Mod_range_hashing",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 540,
+              "snippet": "struct _Prime_rehash_policy",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 544,
+              "snippet": "_Prime_rehash_policy(float __z = 1.0) noexcept",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Mod_range_hashing",
+              "line": 361,
+              "snippet": "struct _Mod_range_hashing",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Mod_range_hashing",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 381,
+              "snippet": "struct _Prime_rehash_policy",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 383,
+              "snippet": "_Prime_rehash_policy(float __z = 1.0)",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Rehash_base",
+              "line": 536,
+              "snippet": "struct _Rehash_base\u003c_Prime_rehash_policy, _Hashtable\u003e",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 549,
+              "snippet": "__this-\u003e__rehash_policy(_Prime_rehash_policy(__z));",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            }
+          ]
+        },
+        {
+          "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    },
+    {
+      "capability": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+      "candidates": [
+        {
+          "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 1160,
+              "snippet": "void _M_rehash_aux(size_type __bkt_count, true_type __uks);",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 1163,
+              "snippet": "void _M_rehash_aux(size_type __bkt_count, false_type __uks);",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2565,
+              "snippet": "_M_rehash_aux(__bkt_count, __unique_keys{});",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2584,
+              "snippet": "_M_rehash_aux(size_type __bkt_count, true_type /* __uks */)",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2627,
+              "snippet": "_M_rehash_aux(size_type __bkt_count, false_type /* __uks */)",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            }
+          ]
+        },
+        {
+          "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+    "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+    "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+    "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+    "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+  ],
+  "reasons": [
+    {
+      "rule_id": "DEC-INCONCLUSIVE-001",
+      "effect": "block",
+      "message": "evidência obrigatória ou gate eliminatório permanece inconclusivo"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "capacidade não comprovada: apply an avalanche/mixing step to a hash value before reducing it to a bucket index; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "capacidade não comprovada: guard copy assignment against self-assignment as the first statement, before any destructive mutation; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 434,
+          "snippet": "_M_allocate_buckets(size_type __bkt_count)",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 442,
+          "snippet": "return __hashtable_alloc::_M_allocate_buckets(__bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1198,
+          "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1238,
+          "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1316,
+          "snippet": "_M_buckets = _M_allocate_buckets(__ht._M_bucket_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1362,
+          "snippet": "_M_buckets = __buckets = _M_allocate_buckets(_M_bucket_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 2586,
+          "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 2629,
+          "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable_policy.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1976,
+          "snippet": "_M_allocate_buckets(std::size_t __bkt_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable_policy.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 2039,
+          "snippet": "_Hashtable_alloc\u003c_NodeAlloc\u003e::_M_allocate_buckets(std::size_t __bkt_count)",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 191,
+          "snippet": "_M_allocate_buckets(size_type __n);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 497,
+          "snippet": "_M_allocate_buckets(size_type __n)",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 543,
+          "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 573,
+          "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 603,
+          "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable.h",
+          "symbol": "_M_allocate_buckets",
+          "line": 1158,
+          "snippet": "_Node** __new_array = _M_allocate_buckets(__n);",
+          "rule_id": "rehash-allocate-before-publish",
+          "matched_pattern": "_M_allocate_buckets",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable_policy.h",
+          "symbol": "_Mod_range_hashing",
+          "line": 519,
+          "snippet": "struct _Mod_range_hashing",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Mod_range_hashing",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable_policy.h",
+          "symbol": "_Prime_rehash_policy",
+          "line": 540,
+          "snippet": "struct _Prime_rehash_policy",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable_policy.h",
+          "symbol": "_Prime_rehash_policy",
+          "line": 544,
+          "snippet": "_Prime_rehash_policy(float __z = 1.0) noexcept",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable_policy.h",
+          "symbol": "_Mod_range_hashing",
+          "line": 361,
+          "snippet": "struct _Mod_range_hashing",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Mod_range_hashing",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable_policy.h",
+          "symbol": "_Prime_rehash_policy",
+          "line": 381,
+          "snippet": "struct _Prime_rehash_policy",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable_policy.h",
+          "symbol": "_Prime_rehash_policy",
+          "line": 383,
+          "snippet": "_Prime_rehash_policy(float __z = 1.0)",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable_policy.h",
+          "symbol": "_Rehash_base",
+          "line": 536,
+          "snippet": "struct _Rehash_base\u003c_Prime_rehash_policy, _Hashtable\u003e",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "tr1/hashtable_policy.h",
+          "symbol": "_Prime_rehash_policy",
+          "line": 549,
+          "snippet": "__this-\u003e__rehash_policy(_Prime_rehash_policy(__z));",
+          "rule_id": "prime-modulo-bucket-index",
+          "matched_pattern": "_Prime_rehash_policy",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_rehash_aux",
+          "line": 1160,
+          "snippet": "void _M_rehash_aux(size_type __bkt_count, true_type __uks);",
+          "rule_id": "resize-relinks-nodes",
+          "matched_pattern": "_M_rehash_aux",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_rehash_aux",
+          "line": 1163,
+          "snippet": "void _M_rehash_aux(size_type __bkt_count, false_type __uks);",
+          "rule_id": "resize-relinks-nodes",
+          "matched_pattern": "_M_rehash_aux",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_rehash_aux",
+          "line": 2565,
+          "snippet": "_M_rehash_aux(__bkt_count, __unique_keys{});",
+          "rule_id": "resize-relinks-nodes",
+          "matched_pattern": "_M_rehash_aux",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_rehash_aux",
+          "line": 2584,
+          "snippet": "_M_rehash_aux(size_type __bkt_count, true_type /* __uks */)",
+          "rule_id": "resize-relinks-nodes",
+          "matched_pattern": "_M_rehash_aux",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "bits/hashtable.h",
+          "symbol": "_M_rehash_aux",
+          "line": 2627,
+          "snippet": "_M_rehash_aux(size_type __bkt_count, false_type /* __uks */)",
+          "rule_id": "resize-relinks-nodes",
+          "matched_pattern": "_M_rehash_aux",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: relink existing nodes into new buckets during resize instead of copying and destroying every key and value; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "licença não verificada: localizar documento de licença com autoridade no projeto"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "evidence": [
+        {
+          "kind": "repository_metadata",
+          "ref": {
+            "owner": "local",
+            "repo": "13-0ea945f7",
+            "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+          },
+          "path": "@repository-metadata",
+          "snippet": "metadados imutáveis da coleta",
+          "rule_id": "repository-maintenance",
+          "content_hash": "69d00feea9f8d2d8c9dc5771d6267934ef0f5df58bec75a8c8c6b6ab6f36604c",
+          "strength": 0.7
+        }
+      ],
+      "message": "manutenção não verificada: obter metadados datados de atividade e arquivamento"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "operação local não verificada: examinar requisitos e instruções de execução"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "restrição não verificada: C++11 as the minimum supported language standard; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "restrição não verificada: must not require heap allocation beyond the bucket array and node pool already in use; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "restrição não verificada: non_goal: changing the container's public method names; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "message": "restrição não verificada: non_goal: switching the storage strategy away from chained buckets; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 748,
+          "snippet": "inline size_t hash_int(uint64_t x) noexcept {",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 769,
+          "snippet": "return hash_int(static_cast\u003cdetail::SizeT\u003e(result));",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 792,
+          "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr));",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 799,
+          "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 806,
+          "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/include/robin_hood.h",
+          "symbol": "hash_int",
+          "line": 822,
+          "snippet": "return hash_int(static_cast\u003cuint64_t\u003e(obj)); \\",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "hash_int",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "src/test/unit/show_hash.cpp",
+          "symbol": "mix",
+          "line": 71,
+          "snippet": "for (size_t mix = 0; mix \u003c 10; ++mix) {",
+          "rule_id": "avalanche-mixing-step",
+          "matched_pattern": "mix",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "53dcdfd21130c23e4d0aa14502aab45324f48b613ae0e8f8bb575647a790b527",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: apply an avalanche/mixing step to a hash value before reducing it to a bucket index; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "capacidade não comprovada: guard copy assignment against self-assignment as the first statement, before any destructive mutation; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "capacidade não comprovada: publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "capacidade não comprovada: reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "capacidade não comprovada: relink existing nodes into new buckets during resize instead of copying and destroying every key and value; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "evidence": [
+        {
+          "kind": "repository_metadata",
+          "ref": {
+            "owner": "local",
+            "repo": "robin-hood-d6555e08",
+            "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+          },
+          "path": "@repository-metadata",
+          "snippet": "metadados imutáveis da coleta",
+          "rule_id": "repository-maintenance",
+          "content_hash": "10a0197cc529b76b63584a1214378a3bf14e815c053810fa0a008c1670106b4b",
+          "strength": 0.7
+        }
+      ],
+      "message": "manutenção não verificada: obter metadados datados de atividade e arquivamento"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "operação local não verificada: examinar requisitos e instruções de execução"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "restrição não verificada: C++11 as the minimum supported language standard; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "restrição não verificada: must not require heap allocation beyond the bucket array and node pool already in use; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "restrição não verificada: non_goal: changing the container's public method names; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "message": "restrição não verificada: non_goal: switching the storage strategy away from chained buckets; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-CATALOG-0071",
+      "effect": "verify",
+      "message": "a cobertura do catálogo é ausente ou apenas hipotética para parte dos requisitos; isso não descreve lacuna de nenhum candidato"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": "REFERENCE",
+      "candidate": "local/13-0ea945f7@3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+      "coverage": 0,
+      "message": "0% das capacidades obrigatórias comprovadas"
+    },
+    {
+      "decision": "REFERENCE",
+      "candidate": "local/robin-hood-d6555e08@64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+      "coverage": 0,
+      "message": "0% das capacidades obrigatórias comprovadas"
+    }
+  ],
+  "effort": {
+    "method": "heuristic_component_gap_count",
+    "limitations": "Não mede custo nem viabilidade; requer ensaio de integração",
+    "level": "INCONCLUSIVE",
+    "factors": [
+      {
+        "factor": "evidence",
+        "effect": "unknown",
+        "evidence": "coleta ou gate inconclusivo"
+      }
+    ]
+  }
+}

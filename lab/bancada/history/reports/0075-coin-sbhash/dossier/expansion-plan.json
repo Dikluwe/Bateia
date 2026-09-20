@@ -1,0 +1,102 @@
+{
+  "idea": {
+    "problem": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+    "users": [
+      "Coin maintainers hardening SbHash (internal, COIN_INTERNAL-only container used by 40 files)",
+      "contributors evaluating the codex/maps/experiment/sbhash-relink-resize branch"
+    ],
+    "capabilities": [
+      "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+      "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+      "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+      "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+      "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+    ],
+    "constraints": [
+      "C++11 as the minimum supported language standard",
+      "must not require heap allocation beyond the bucket array and node pool already in use"
+    ],
+    "non_goals": [
+      "switching the storage strategy away from chained buckets",
+      "changing the container's public method names"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "expansions": [
+    {
+      "id": "exp-problem-77ed1e4eb35e",
+      "facet": "problem",
+      "query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+      "rationale": "descobrir soluções para o problema central",
+      "covers": [
+        "problem"
+      ]
+    },
+    {
+      "id": "exp-capability-475738ce491f",
+      "facet": "capability",
+      "query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[0]"
+      ]
+    },
+    {
+      "id": "exp-capability-632dd51db5f2",
+      "facet": "capability",
+      "query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[1]"
+      ]
+    },
+    {
+      "id": "exp-capability-9686a0a84b35",
+      "facet": "capability",
+      "query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[2]"
+      ]
+    },
+    {
+      "id": "exp-capability-489cff8a1754",
+      "facet": "capability",
+      "query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[3]"
+      ]
+    },
+    {
+      "id": "exp-capability-59d0c6bafc38",
+      "facet": "capability",
+      "query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[4]"
+      ]
+    },
+    {
+      "id": "exp-constraint-da9653ee9141",
+      "facet": "constraint",
+      "query": "C++11 as the minimum supported language standard",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[0]"
+      ]
+    },
+    {
+      "id": "exp-constraint-670e3168a422",
+      "facet": "constraint",
+      "query": "must not require heap allocation beyond the bucket array and node pool already in use",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[1]"
+      ]
+    }
+  ]
+}

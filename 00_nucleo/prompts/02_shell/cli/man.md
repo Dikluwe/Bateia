@@ -10,3 +10,6 @@
 func GenerateManPage() string
 func PrintManPage()
 ```
+
+O manual apresenta `relatorio_bateia.md` como saída padrão, sem direcionar execuções
+para `00_nucleo` ou para um diretório estrutural de relatórios.

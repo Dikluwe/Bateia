@@ -1,0 +1,1241 @@
+{
+  "schema_version": "1",
+  "rules_version": "2026-09-17.coin-sbhash",
+  "rules_hash": "e21b31ae910fe6a7b4d1800a4a72b2666a4438ad1f35b2c427f6a0b1193d32d1",
+  "catalog_coverage": {
+    "schema_version": "1",
+    "rules_version": "2026-09-17.coin-sbhash",
+    "rules_hash": "e21b31ae910fe6a7b4d1800a4a72b2666a4438ad1f35b2c427f6a0b1193d32d1",
+    "entries": [
+      {
+        "requirement_kind": "capability",
+        "requirement": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+        "status": "COVERED",
+        "rule_id": "avalanche-mixing-step",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+        "status": "COVERED",
+        "rule_id": "self-assignment-guard-hashtable",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+        "status": "COVERED",
+        "rule_id": "rehash-allocate-before-publish",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+        "status": "COVERED",
+        "rule_id": "prime-modulo-bucket-index",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+        "status": "COVERED",
+        "rule_id": "resize-relinks-nodes",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "problem",
+        "requirement": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "status": "CATALOG_GAP",
+        "reason_code": "CATALOG_GAP"
+      }
+    ]
+  },
+  "assessments": [
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "13-0ea945f7",
+        "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+      },
+      "screening_decision": {
+        "repository": "local/13-0ea945f7",
+        "ranking_score": 0.33000000000000007,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 8,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0.3
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0,
+            "weight": 0.1,
+            "effect": 0,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 0.3,
+            "weight": 0.1,
+            "effect": 0.03,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "evidência incompleta"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-constraint-da9653ee9141",
+            "planned_query": "C++11 as the minimum supported language standard",
+            "attempt_index": 0,
+            "effective_query": "C++11 as the minimum supported language standard"
+          },
+          {
+            "expansion_id": "exp-problem-77ed1e4eb35e",
+            "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+            "attempt_index": 0,
+            "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+          },
+          {
+            "expansion_id": "exp-capability-59d0c6bafc38",
+            "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+            "attempt_index": 0,
+            "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+          },
+          {
+            "expansion_id": "exp-capability-475738ce491f",
+            "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+            "attempt_index": 0,
+            "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+          },
+          {
+            "expansion_id": "exp-constraint-670e3168a422",
+            "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+            "attempt_index": 0,
+            "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+          },
+          {
+            "expansion_id": "exp-capability-632dd51db5f2",
+            "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+            "attempt_index": 0,
+            "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+          },
+          {
+            "expansion_id": "exp-capability-489cff8a1754",
+            "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+            "attempt_index": 0,
+            "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+          },
+          {
+            "expansion_id": "exp-capability-9686a0a84b35",
+            "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+            "attempt_index": 0,
+            "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "status": "INCONCLUSIVE",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "o catálogo não possui regra declarada única e segura para este requisito",
+        "reason_code": "CATALOG_GAP"
+      },
+      "capabilities": [
+        {
+          "capability": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 434,
+              "snippet": "_M_allocate_buckets(size_type __bkt_count)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 442,
+              "snippet": "return __hashtable_alloc::_M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1198,
+              "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1238,
+              "snippet": "_M_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1316,
+              "snippet": "_M_buckets = _M_allocate_buckets(__ht._M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1362,
+              "snippet": "_M_buckets = __buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2586,
+              "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2629,
+              "snippet": "__buckets_ptr __new_buckets = _M_allocate_buckets(__bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1976,
+              "snippet": "_M_allocate_buckets(std::size_t __bkt_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 2039,
+              "snippet": "_Hashtable_alloc\u003c_NodeAlloc\u003e::_M_allocate_buckets(std::size_t __bkt_count)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 191,
+              "snippet": "_M_allocate_buckets(size_type __n);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 497,
+              "snippet": "_M_allocate_buckets(size_type __n)",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 543,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 573,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 603,
+              "snippet": "_M_buckets = _M_allocate_buckets(_M_bucket_count);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable.h",
+              "symbol": "_M_allocate_buckets",
+              "line": 1158,
+              "snippet": "_Node** __new_array = _M_allocate_buckets(__n);",
+              "rule_id": "rehash-allocate-before-publish",
+              "matched_pattern": "_M_allocate_buckets",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "5e079e9ff0a60509b47a9f27f938f59ee98ccb294781f8820cb7e1062104a952",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.65,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        },
+        {
+          "capability": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Mod_range_hashing",
+              "line": 519,
+              "snippet": "struct _Mod_range_hashing",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Mod_range_hashing",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 540,
+              "snippet": "struct _Prime_rehash_policy",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 544,
+              "snippet": "_Prime_rehash_policy(float __z = 1.0) noexcept",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "c0fcc494a20e6474d2f096c3cef0b63fec6391ff88b688b2b41e1715a131c9e7",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Mod_range_hashing",
+              "line": 361,
+              "snippet": "struct _Mod_range_hashing",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Mod_range_hashing",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 381,
+              "snippet": "struct _Prime_rehash_policy",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 383,
+              "snippet": "_Prime_rehash_policy(float __z = 1.0)",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Rehash_base",
+              "line": 536,
+              "snippet": "struct _Rehash_base\u003c_Prime_rehash_policy, _Hashtable\u003e",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "tr1/hashtable_policy.h",
+              "symbol": "_Prime_rehash_policy",
+              "line": 549,
+              "snippet": "__this-\u003e__rehash_policy(_Prime_rehash_policy(__z));",
+              "rule_id": "prime-modulo-bucket-index",
+              "matched_pattern": "_Prime_rehash_policy",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "473a69ab1b10c6bdc59440b40d3bc06074d183bec15585db8d3a131690446fc3",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.65,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        },
+        {
+          "capability": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 1160,
+              "snippet": "void _M_rehash_aux(size_type __bkt_count, true_type __uks);",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 1163,
+              "snippet": "void _M_rehash_aux(size_type __bkt_count, false_type __uks);",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2565,
+              "snippet": "_M_rehash_aux(__bkt_count, __unique_keys{});",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2584,
+              "snippet": "_M_rehash_aux(size_type __bkt_count, true_type /* __uks */)",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "13-0ea945f7",
+                "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+              },
+              "path": "bits/hashtable.h",
+              "symbol": "_M_rehash_aux",
+              "line": 2627,
+              "snippet": "_M_rehash_aux(size_type __bkt_count, false_type /* __uks */)",
+              "rule_id": "resize-relinks-nodes",
+              "matched_pattern": "_M_rehash_aux",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "31822462261338f25382cdcb94f609bb78fbb4f2743212fe74fbebdc784ff67d",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.6,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "C++11 as the minimum supported language standard",
+          "evidence": {
+            "capability": "C++11 as the minimum supported language standard",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "evidence": {
+            "capability": "must not require heap allocation beyond the bucket array and node pool already in use",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: switching the storage strategy away from chained buckets",
+          "evidence": {
+            "capability": "switching the storage strategy away from chained buckets",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        },
+        {
+          "constraint": "non_goal: changing the container's public method names",
+          "evidence": {
+            "capability": "changing the container's public method names",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        }
+      ],
+      "license": {
+        "status": "INCONCLUSIVE",
+        "caveat": "coleta incompleta"
+      },
+      "maintenance": {
+        "status": "INCONCLUSIVE",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "local",
+              "repo": "13-0ea945f7",
+              "commit": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591"
+            },
+            "path": "@repository-metadata",
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "69d00feea9f8d2d8c9dc5771d6267934ef0f5df58bec75a8c8c6b6ab6f36604c",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "coleta incompleta"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE"
+      },
+      "reusable_parts": [],
+      "gaps": [
+        "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+        "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+        "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+      ]
+    },
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "robin-hood-d6555e08",
+        "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+      },
+      "screening_decision": {
+        "repository": "local/robin-hood-d6555e08",
+        "ranking_score": 0.33000000000000007,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 8,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0.3
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0,
+            "weight": 0.1,
+            "effect": 0,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 0.3,
+            "weight": 0.1,
+            "effect": 0.03,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "evidência incompleta"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-constraint-da9653ee9141",
+            "planned_query": "C++11 as the minimum supported language standard",
+            "attempt_index": 0,
+            "effective_query": "C++11 as the minimum supported language standard"
+          },
+          {
+            "expansion_id": "exp-problem-77ed1e4eb35e",
+            "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+            "attempt_index": 0,
+            "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+          },
+          {
+            "expansion_id": "exp-capability-59d0c6bafc38",
+            "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+            "attempt_index": 0,
+            "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+          },
+          {
+            "expansion_id": "exp-capability-475738ce491f",
+            "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+            "attempt_index": 0,
+            "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+          },
+          {
+            "expansion_id": "exp-constraint-670e3168a422",
+            "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+            "attempt_index": 0,
+            "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+          },
+          {
+            "expansion_id": "exp-capability-632dd51db5f2",
+            "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+            "attempt_index": 0,
+            "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+          },
+          {
+            "expansion_id": "exp-capability-489cff8a1754",
+            "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+            "attempt_index": 0,
+            "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+          },
+          {
+            "expansion_id": "exp-capability-9686a0a84b35",
+            "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+            "attempt_index": 0,
+            "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "status": "INCONCLUSIVE",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "o catálogo não possui regra declarada única e segura para este requisito",
+        "reason_code": "CATALOG_GAP"
+      },
+      "capabilities": [
+        {
+          "capability": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 748,
+              "snippet": "inline size_t hash_int(uint64_t x) noexcept {",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 769,
+              "snippet": "return hash_int(static_cast\u003cdetail::SizeT\u003e(result));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 792,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 799,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 806,
+              "snippet": "return hash_int(reinterpret_cast\u003cdetail::SizeT\u003e(ptr.get()));",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/include/robin_hood.h",
+              "symbol": "hash_int",
+              "line": 822,
+              "snippet": "return hash_int(static_cast\u003cuint64_t\u003e(obj)); \\",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "hash_int",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "ac6260e8070d1252fc993f3c95aefd0a52674cb5a1bad67539ead15b4614696b",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "robin-hood-d6555e08",
+                "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+              },
+              "path": "src/test/unit/show_hash.cpp",
+              "symbol": "mix",
+              "line": 71,
+              "snippet": "for (size_t mix = 0; mix \u003c 10; ++mix) {",
+              "rule_id": "avalanche-mixing-step",
+              "matched_pattern": "mix",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "53dcdfd21130c23e4d0aa14502aab45324f48b613ae0e8f8bb575647a790b527",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.65,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        },
+        {
+          "capability": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "C++11 as the minimum supported language standard",
+          "evidence": {
+            "capability": "C++11 as the minimum supported language standard",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "evidence": {
+            "capability": "must not require heap allocation beyond the bucket array and node pool already in use",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: switching the storage strategy away from chained buckets",
+          "evidence": {
+            "capability": "switching the storage strategy away from chained buckets",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        },
+        {
+          "constraint": "non_goal: changing the container's public method names",
+          "evidence": {
+            "capability": "changing the container's public method names",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        }
+      ],
+      "license": {
+        "status": "PROVEN",
+        "identifier": "MIT",
+        "sources": [
+          {
+            "kind": "license",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "LICENSE",
+            "line": 1,
+            "snippet": "MIT License",
+            "rule_id": "license-detect",
+            "content_hash": "686cf8d62cc44fecff4be967238aba89665f9b6acf8a728987801ffc3a626bc7",
+            "strength": 0.7
+          }
+        ],
+        "caveat": "identificação automática; não é aconselhamento jurídico"
+      },
+      "maintenance": {
+        "status": "INCONCLUSIVE",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "local",
+              "repo": "robin-hood-d6555e08",
+              "commit": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584"
+            },
+            "path": "@repository-metadata",
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "10a0197cc529b76b63584a1214378a3bf14e815c053810fa0a008c1670106b4b",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "coleta incompleta"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE"
+      },
+      "reusable_parts": [],
+      "gaps": [
+        "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+      ]
+    }
+  ]
+}

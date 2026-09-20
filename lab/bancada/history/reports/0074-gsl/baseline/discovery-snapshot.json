@@ -1,0 +1,182 @@
+{
+  "schema_version": "1",
+  "idea": {
+    "problem": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+    "users": [
+      "Coin 5 library maintainers hardening SoPath::copy()",
+      "contributors reviewing sub-range/slice APIs across the codebase"
+    ],
+    "capabilities": [
+      "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+      "clamp an excessive requested count to the remaining length instead of treating it as an error",
+      "reject an out-of-range start position unconditionally, not only in debug builds",
+      "express a sub-range using two absolute bounds instead of an offset-plus-count pair"
+    ],
+    "constraints": [
+      "C++11 as the minimum supported language standard",
+      "must not allocate more than the resulting sub-range needs"
+    ],
+    "non_goals": [
+      "changing the container's own element storage",
+      "supporting negative indices as counting from the end"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "strategy": "lexical",
+  "per_expansion": null,
+  "candidates": [
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "13-0ea945f7",
+        "url": "file:///usr/include/c++/13",
+        "description": "",
+        "stars": 0,
+        "commit_id": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "consultado_em": "0001-01-01T00:00:00Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-c46287951f7b",
+        "exp-capability-c81b145ee031",
+        "exp-capability-6de26864b1d0",
+        "exp-capability-f17ebfece51e",
+        "exp-capability-61ba9f8a86bb",
+        "exp-constraint-da9653ee9141",
+        "exp-constraint-f0bf6cb3dd3f"
+      ],
+      "queries": [
+        "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+        "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+        "clamp an excessive requested count to the remaining length instead of treating it as an error",
+        "reject an out-of-range start position unconditionally, not only in debug builds",
+        "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+        "C++11 as the minimum supported language standard",
+        "must not allocate more than the resulting sub-range needs"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-c46287951f7b",
+          "planned_query": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+          "attempt_index": 0,
+          "effective_query": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow."
+        },
+        {
+          "expansion_id": "exp-capability-c81b145ee031",
+          "planned_query": "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+          "attempt_index": 0,
+          "effective_query": "avoid signed-integer overflow when validating a start offset combined with a count against a total length"
+        },
+        {
+          "expansion_id": "exp-capability-6de26864b1d0",
+          "planned_query": "clamp an excessive requested count to the remaining length instead of treating it as an error",
+          "attempt_index": 0,
+          "effective_query": "clamp an excessive requested count to the remaining length instead of treating it as an error"
+        },
+        {
+          "expansion_id": "exp-capability-61ba9f8a86bb",
+          "planned_query": "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+          "attempt_index": 0,
+          "effective_query": "express a sub-range using two absolute bounds instead of an offset-plus-count pair"
+        },
+        {
+          "expansion_id": "exp-constraint-f0bf6cb3dd3f",
+          "planned_query": "must not allocate more than the resulting sub-range needs",
+          "attempt_index": 0,
+          "effective_query": "must not allocate more than the resulting sub-range needs"
+        },
+        {
+          "expansion_id": "exp-capability-f17ebfece51e",
+          "planned_query": "reject an out-of-range start position unconditionally, not only in debug builds",
+          "attempt_index": 0,
+          "effective_query": "reject an out-of-range start position unconditionally, not only in debug builds"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "gsl-b02e3c12",
+        "url": "file:///dev/shm/peer-libs/gsl",
+        "description": "",
+        "stars": 0,
+        "commit_id": "18ec80b61c87dbdc1472bb3a7169734af0db2d14e435e490ba6eafa137d5aa72",
+        "consultado_em": "0001-01-01T00:00:00Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-c46287951f7b",
+        "exp-capability-c81b145ee031",
+        "exp-capability-6de26864b1d0",
+        "exp-capability-f17ebfece51e",
+        "exp-capability-61ba9f8a86bb",
+        "exp-constraint-da9653ee9141",
+        "exp-constraint-f0bf6cb3dd3f"
+      ],
+      "queries": [
+        "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+        "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+        "clamp an excessive requested count to the remaining length instead of treating it as an error",
+        "reject an out-of-range start position unconditionally, not only in debug builds",
+        "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+        "C++11 as the minimum supported language standard",
+        "must not allocate more than the resulting sub-range needs"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-c46287951f7b",
+          "planned_query": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+          "attempt_index": 0,
+          "effective_query": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow."
+        },
+        {
+          "expansion_id": "exp-capability-c81b145ee031",
+          "planned_query": "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+          "attempt_index": 0,
+          "effective_query": "avoid signed-integer overflow when validating a start offset combined with a count against a total length"
+        },
+        {
+          "expansion_id": "exp-capability-6de26864b1d0",
+          "planned_query": "clamp an excessive requested count to the remaining length instead of treating it as an error",
+          "attempt_index": 0,
+          "effective_query": "clamp an excessive requested count to the remaining length instead of treating it as an error"
+        },
+        {
+          "expansion_id": "exp-capability-61ba9f8a86bb",
+          "planned_query": "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+          "attempt_index": 0,
+          "effective_query": "express a sub-range using two absolute bounds instead of an offset-plus-count pair"
+        },
+        {
+          "expansion_id": "exp-constraint-f0bf6cb3dd3f",
+          "planned_query": "must not allocate more than the resulting sub-range needs",
+          "attempt_index": 0,
+          "effective_query": "must not allocate more than the resulting sub-range needs"
+        },
+        {
+          "expansion_id": "exp-capability-f17ebfece51e",
+          "planned_query": "reject an out-of-range start position unconditionally, not only in debug builds",
+          "attempt_index": 0,
+          "effective_query": "reject an out-of-range start position unconditionally, not only in debug builds"
+        }
+      ]
+    }
+  ]
+}

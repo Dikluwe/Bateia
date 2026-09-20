@@ -1,0 +1,91 @@
+{
+  "idea": {
+    "problem": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+    "users": [
+      "Coin 5 maintainers reviewing SoPath::operator= (branch fix/sopath-assignment-auditor-lifecycle)"
+    ],
+    "capabilities": [
+      "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+      "guard copy assignment against self-assignment before mutating any state",
+      "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+      "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+    ],
+    "constraints": [
+      "C++11 as the minimum supported language standard",
+      "must not leave a stale pointer registered on any external list after assignment"
+    ],
+    "non_goals": [
+      "changing the meaning of copy construction",
+      "making the type non-copyable"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "expansions": [
+    {
+      "id": "exp-problem-eab51dc68a7b",
+      "facet": "problem",
+      "query": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+      "rationale": "descobrir soluções para o problema central",
+      "covers": [
+        "problem"
+      ]
+    },
+    {
+      "id": "exp-capability-2a9d52bc4dc8",
+      "facet": "capability",
+      "query": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[0]"
+      ]
+    },
+    {
+      "id": "exp-capability-a638d285b0fe",
+      "facet": "capability",
+      "query": "guard copy assignment against self-assignment before mutating any state",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[1]"
+      ]
+    },
+    {
+      "id": "exp-capability-6b9c235339c7",
+      "facet": "capability",
+      "query": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[2]"
+      ]
+    },
+    {
+      "id": "exp-capability-4007800bc682",
+      "facet": "capability",
+      "query": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[3]"
+      ]
+    },
+    {
+      "id": "exp-constraint-da9653ee9141",
+      "facet": "constraint",
+      "query": "C++11 as the minimum supported language standard",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[0]"
+      ]
+    },
+    {
+      "id": "exp-constraint-e2c530f30872",
+      "facet": "constraint",
+      "query": "must not leave a stale pointer registered on any external list after assignment",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[1]"
+      ]
+    }
+  ]
+}

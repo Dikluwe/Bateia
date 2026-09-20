@@ -1,0 +1,2075 @@
+{
+  "schema_version": "2",
+  "idea": {
+    "problem": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+    "users": [
+      "coin3d Coin scene graph library maintainers",
+      "C++ developers needing 2D polygon triangulation with holes"
+    ],
+    "capabilities": [
+      "poly2tri sweep line constrained Delaunay triangulation with holes",
+      "CDT constrained Delaunay triangulation C++ library artem-ogre",
+      "Sloan incremental constrained Delaunay triangulation algorithm",
+      "Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+      "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+      "ear clipping polygon triangulation library C++ concave holes"
+    ],
+    "constraints": [
+      "permissive open source license compatible with BSD 3-clause",
+      "C++11 compatible",
+      "no runtime network dependency, local execution only",
+      "no mandatory GPU context"
+    ],
+    "non_goals": [
+      "self-intersecting polygon support",
+      "choosing by popularity or stars alone",
+      "generating code automatically without human review"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "strategy": "lexical",
+  "language": "cpp",
+  "per_expansion": [
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-problem-4d392164f69c8f76"
+        ],
+        "id": "exp-problem-4d392164f69c",
+        "facet": "problem",
+        "query": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+        "rationale": "descobrir soluções para o problema central",
+        "covers": [
+          "problem"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+            "started_at": "2026-09-11T21:12:49.980150712Z",
+            "duration": 29864058551,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ Constrained Delaunay",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:13:19.844211156Z",
+            "duration": 2251357346,
+            "status": "SUCCEEDED",
+            "result_count": 2
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "Chaste",
+            "repo": "Chaste",
+            "url": "https://github.com/Chaste/Chaste",
+            "description": "Chaste - Cancer Heart And Soft Tissue Environment - main public repository. ",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:13:22.095547883Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "vmtk",
+            "repo": "vmtk",
+            "url": "https://github.com/vmtk/vmtk",
+            "description": "the Vascular Modeling Toolkit",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:13:22.095542784Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "Chaste/Chaste",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ Constrained Delaunay",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "mesh/src/3rdparty/triangle/triangle.h",
+                "snippet": "/* constrained Delaunay triangulation. Specifically, the -DCDT_ONLY switch */"
+              },
+              {
+                "match_type": "file",
+                "path": "mesh/src/3rdparty/triangle/triangle.cpp",
+                "snippet": "/* segments to create a constrained Delaunay triangulation is probably */"
+              },
+              {
+                "match_type": "file",
+                "path": "mesh/src/3rdparty/tetgen1.4.2/tetgen.h",
+                "snippet": "// TetGen computes Delaunay tetrahedralizations, constrained Delaunay tetra- //"
+              },
+              {
+                "match_type": "file",
+                "path": "mesh/src/3rdparty/triangle/triangle_orig.c",
+                "snippet": "/* segments to create a constrained Delaunay triangulation is probably */"
+              }
+            ]
+          },
+          {
+            "repository": "vmtk/vmtk",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ Constrained Delaunay",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "vtkVmtk/Utilities/tetgen1.4.3/tetgen.h",
+                "snippet": "// The constrained Delaunay tetrahedralization algorithm is described in: //"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-a1848b977d5415ca"
+        ],
+        "id": "exp-capability-a1848b977d54",
+        "facet": "capability",
+        "query": "poly2tri sweep line constrained Delaunay triangulation with holes",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[0]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ poly2tri sweep line constrained Delaunay triangulation with holes",
+            "started_at": "2026-09-11T21:13:22.09563196Z",
+            "duration": 28728349026,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ poly2tri sweep",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:13:50.823983831Z",
+            "duration": 21174331425,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "poly2tri sweep",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T21:14:11.998318502Z",
+            "duration": 2159878795,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-c99dbbba0c45ee99"
+        ],
+        "id": "exp-capability-c99dbbba0c45",
+        "facet": "capability",
+        "query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[1]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ CDT constrained Delaunay triangulation C++ library artem-ogre",
+            "started_at": "2026-09-11T21:14:14.158290661Z",
+            "duration": 5957046728,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ CDT constrained",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:14:20.115338201Z",
+            "duration": 9257903624,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "GNOME",
+            "repo": "gegl",
+            "url": "https://github.com/GNOME/gegl",
+            "description": "Read-only mirror of https://gitlab.gnome.org/GNOME/gegl",
+            "stars": 0,
+            "commit_id": "34e6fced0f5847e11786b8515c9469f8072fbf92",
+            "consultado_em": "2026-09-11T21:14:29.373176694Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "o3de",
+            "repo": "o3de",
+            "url": "https://github.com/o3de/o3de",
+            "description": "Open 3D Engine (O3DE) is an Apache 2.0-licensed multi-platform 3D engine that enables developers and content creators to build AAA games, cinema-quality 3D worlds, and high-fidelity simulations without any fees or commercial obligations.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:14:29.373168659Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "OpenCL",
+            "repo": "GEGL-OpenCL",
+            "url": "https://github.com/OpenCL/GEGL-OpenCL",
+            "description": "Gimp-GEGL is the first official OpenCL Porting Project of ",
+            "stars": 0,
+            "commit_id": "d5e8cd3f96c050faa96f8cded31c919780ce6f0a",
+            "consultado_em": "2026-09-11T21:14:29.373180501Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "GNOME/gegl",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ CDT constrained",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "subprojects/poly2tri-c/poly2tri-c/refine/cdt.h",
+                "snippet": "* @param cdt A P2tCDT Constrained Delaunay Triangulation"
+              }
+            ]
+          },
+          {
+            "repository": "OpenCL/GEGL-OpenCL",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ CDT constrained",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "libs/poly2tri-c/poly2tri-c/refine/cdt.h",
+                "snippet": "* @param cdt A P2tCDT Constrained Delaunay Triangulation"
+              }
+            ]
+          },
+          {
+            "repository": "o3de/o3de",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ CDT constrained",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "Gems/PhysX/Core/Code/Tests/PolygonPrismMeshUtilsTest.cpp",
+                "snippet": "p2t::CDT constrainedDelaunayTriangulation(polyline);"
+              },
+              {
+                "match_type": "file",
+                "path": "Gems/PhysX/Core/Code/Source/EditorShapeColliderComponent.cpp",
+                "snippet": "p2t::CDT constrainedDelaunayTriangulation(polyline);"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-f02a40c9567af91b"
+        ],
+        "id": "exp-capability-f02a40c9567a",
+        "facet": "capability",
+        "query": "Sloan incremental constrained Delaunay triangulation algorithm",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[2]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ Sloan incremental constrained Delaunay triangulation algorithm",
+            "started_at": "2026-09-11T21:14:29.373261121Z",
+            "duration": 6585166620,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ Sloan incremental",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:14:35.958432791Z",
+            "duration": 7158257129,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "Sloan incremental",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T21:14:43.116691403Z",
+            "duration": 2436261757,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-23b9293c449a761a"
+        ],
+        "id": "exp-capability-23b9293c449a",
+        "facet": "capability",
+        "query": "Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[3]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+            "started_at": "2026-09-11T21:14:45.553086378Z",
+            "duration": 9504433913,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ Shewchuk robust",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:14:55.057521143Z",
+            "duration": 15078860900,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "Shewchuk robust",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T21:15:10.136383496Z",
+            "duration": 2343573940,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-42ae2ee3fc334416"
+        ],
+        "id": "exp-capability-42ae2ee3fc33",
+        "facet": "capability",
+        "query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[4]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+            "started_at": "2026-09-11T21:15:12.480027546Z",
+            "duration": 15682468188,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ GLU tessellator",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:15:28.162496866Z",
+            "duration": 2480407146,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "cnr-isti-vclab",
+            "repo": "meshlab",
+            "url": "https://github.com/cnr-isti-vclab/meshlab",
+            "description": "The open source mesh processing system",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:30.642896618Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "LiangliangNan",
+            "repo": "Easy3D",
+            "url": "https://github.com/LiangliangNan/Easy3D",
+            "description": "A lightweight, easy-to-use, and efficient library for processing and rendering 3D data (C++ \u0026 Python)",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:30.642887912Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "vividos",
+            "repo": "UnderworldAdventures",
+            "url": "https://github.com/vividos/UnderworldAdventures",
+            "description": "Underworld Adventures is a project to recreate Ultima Underworld 1 on modern operating systems, using the original game files.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:30.642891739Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "LiangliangNan/Easy3D",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ GLU tessellator",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "easy3d/algo/tessellator.h",
+                "snippet": "// GLU tessellator callbacks"
+              }
+            ]
+          },
+          {
+            "repository": "cnr-isti-vclab/meshlab",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ GLU tessellator",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "unsupported/plugins_unsupported/filter_zippering/filter_zippering.cpp",
+                "snippet": "glu_tesselator::tesselate( outlines, indices ); //glu tessellator"
+              }
+            ]
+          },
+          {
+            "repository": "vividos/UnderworldAdventures",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ GLU tessellator",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "uwadv/source/renderer/fixed/GluPolygonTessellatorImpl.hpp",
+                "snippet": "/// GLU tessellator object"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-d8c1e71ae5a786b1"
+        ],
+        "id": "exp-capability-d8c1e71ae5a7",
+        "facet": "capability",
+        "query": "ear clipping polygon triangulation library C++ concave holes",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[5]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ ear clipping polygon triangulation library C++ concave holes",
+            "started_at": "2026-09-11T21:15:30.642922998Z",
+            "duration": 16713944995,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ ear clipping",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:15:47.356869566Z",
+            "duration": 1511058336,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "prusa3d",
+            "repo": "PrusaSlicer",
+            "url": "https://github.com/prusa3d/PrusaSlicer",
+            "description": "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:48.867916591Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "ReyeMe",
+            "repo": "SaturnRingLib",
+            "url": "https://github.com/ReyeMe/SaturnRingLib",
+            "description": "Wrapper for SGL in c++",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:48.86791079Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Zygo",
+            "repo": "xscreensaver",
+            "url": "https://github.com/Zygo/xscreensaver",
+            "description": "The closest thing to a git repo of xscreensaver known to exist, because jwz Does Not Do Github.  This is a READ ONLY mirror.  Please send pull requests and bug reports directly to the upstream project.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:15:48.867920128Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "ReyeMe/SaturnRingLib",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ ear clipping",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "modules/sgl/INC/sl_def.h",
+                "snippet": "/** @brief Near clipping"
+              }
+            ]
+          },
+          {
+            "repository": "Zygo/xscreensaver",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ ear clipping",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "jwxyz/jwxyz-gl.c",
+                "snippet": "* We currently do Nonconvex with the simple-to-implement ear clipping"
+              }
+            ]
+          },
+          {
+            "repository": "prusa3d/PrusaSlicer",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ ear clipping",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "bundled_deps/imgui/imgui/imgui_draw.cpp",
+                "snippet": "// Triangulate concave polygons. Based on \"Triangulation by Ear Clipping\" paper, O(N^2) complexity."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-08777f5e25e0e113"
+        ],
+        "id": "exp-constraint-08777f5e25e0",
+        "facet": "constraint",
+        "query": "permissive open source license compatible with BSD 3-clause",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[0]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ permissive open source license compatible with BSD 3-clause",
+            "started_at": "2026-09-11T21:15:48.867949823Z",
+            "duration": 21248330510,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ permissive open",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:16:10.116281365Z",
+            "duration": 8433534248,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "HippoPlayer",
+            "repo": "HippoPlayer",
+            "url": "https://github.com/HippoPlayer/HippoPlayer",
+            "description": "A modern music player for your oldsk00l needs",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:18.549807548Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "ianmaclarty",
+            "repo": "amulet",
+            "url": "https://github.com/ianmaclarty/amulet",
+            "description": "lua game toolkit",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:18.549798772Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "lockekk",
+            "repo": "dshare-hid",
+            "url": "https://github.com/lockekk/dshare-hid",
+            "description": "DShare-HID(forked from Deskflow) is a high-performance extension that brings Deskflow to mobile devices with minimal latency.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:18.549804292Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "HippoPlayer/HippoPlayer",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ permissive open",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "src/external/bgfx/3rdparty/glsl-optimizer/src/util/ralloc.h",
+                "snippet": "* a non-permissive open source license."
+              }
+            ]
+          },
+          {
+            "repository": "ianmaclarty/amulet",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ permissive open",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "third_party/glsl-optimizer/src/util/ralloc.h",
+                "snippet": "* a non-permissive open source license."
+              }
+            ]
+          },
+          {
+            "repository": "lockekk/dshare-hid",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ permissive open",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "src/lib/gui/widgets/Esp32HidToolsWidget.cpp",
+                "snippet": "// Use permissive open to detect if device is in firmware mode (any FW)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-5e86ed5f43dab8d5"
+        ],
+        "id": "exp-constraint-5e86ed5f43da",
+        "facet": "constraint",
+        "query": "C++11 compatible",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[1]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ C++11 compatible",
+            "started_at": "2026-09-11T21:16:18.549836121Z",
+            "duration": 1677341468,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "CadQuery",
+            "repo": "OCP",
+            "url": "https://github.com/CadQuery/OCP",
+            "description": "",
+            "stars": 0,
+            "commit_id": "b0495a71d10168b96cef8043ac39020a3fa45372",
+            "consultado_em": "2026-09-11T21:16:20.227169815Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "kaydxh",
+            "repo": "golang",
+            "url": "https://github.com/kaydxh/golang",
+            "description": "Golang lib is a programming toolkit for building microservices in Go. It has very useful interface or service to develop application.",
+            "stars": 0,
+            "commit_id": "13f3bf11f1f29abda778aa1adbea655b7ec05224",
+            "consultado_em": "2026-09-11T21:16:20.227166058Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Mechanical-Advantage",
+            "repo": "AdvantageKit",
+            "url": "https://github.com/Mechanical-Advantage/AdvantageKit",
+            "description": "Logging \u0026 replay framework for FRC",
+            "stars": 0,
+            "commit_id": "b8c8a0be1e20f5ca8defeb5215adf550d8f6d618",
+            "consultado_em": "2026-09-11T21:16:20.227160017Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "CadQuery/OCP",
+            "attempt_index": 0,
+            "effective_query": "lang:C++ C++11 compatible",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "opencascade/Standard_Macro.hxx",
+                "snippet": "#error C++11 compatible compiler is required (Visual Studio 2010 or newer)"
+              }
+            ]
+          },
+          {
+            "repository": "Mechanical-Advantage/AdvantageKit",
+            "attempt_index": 0,
+            "effective_query": "lang:C++ C++11 compatible",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "akit/src/main/thirdparty/include/flatbuffers/base.h",
+                "snippet": "#error A C++11 compatible compiler with support for the auto typing is \\"
+              }
+            ]
+          },
+          {
+            "repository": "kaydxh/golang",
+            "attempt_index": 0,
+            "effective_query": "lang:C++ C++11 compatible",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "pkg/gocv/cgo/third_path/pybind11/tests/test_methods_and_attributes.cpp",
+                "snippet": "// Use both the traditional static_cast method and the C++11 compatible overload_cast_"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-446418afc6660aad"
+        ],
+        "id": "exp-constraint-446418afc666",
+        "facet": "constraint",
+        "query": "no runtime network dependency, local execution only",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[2]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ no runtime network dependency, local execution only",
+            "started_at": "2026-09-11T21:16:20.227221942Z",
+            "duration": 21420360838,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ no runtime",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:16:41.647584303Z",
+            "duration": 2179223029,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "InteractiveComputerGraphics",
+            "repo": "PositionBasedDynamics",
+            "url": "https://github.com/InteractiveComputerGraphics/PositionBasedDynamics",
+            "description": "PositionBasedDynamics is a library for the physically-based simulation of rigid bodies, deformable solids and fluids.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:43.826779981Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Ipotrick",
+            "repo": "Daxa",
+            "url": "https://github.com/Ipotrick/Daxa",
+            "description": "Daxa is a convenient, simple and modern gpu api built on vulkan",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:43.826795019Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "KhronosGroup",
+            "repo": "OpenXR-SDK-Source",
+            "url": "https://github.com/KhronosGroup/OpenXR-SDK-Source",
+            "description": "Sources for OpenXR loader, basic API layers, and example code.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:16:43.826786673Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "InteractiveComputerGraphics/PositionBasedDynamics",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no runtime",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "extern/imgui/imstb_textedit.h",
+                "snippet": "// Uses no other functions. Performs no runtime allocations."
+              }
+            ]
+          },
+          {
+            "repository": "Ipotrick/Daxa",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no runtime",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "tests/2_daxa_api/6_task_graph/persistent_resources.hpp",
+                "snippet": "// It will error out when it detects that there are no runtime images for a task image when updating the view cache."
+              }
+            ]
+          },
+          {
+            "repository": "KhronosGroup/OpenXR-SDK-Source",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no runtime",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "src/tests/loader_test/loader_test.cpp",
+                "snippet": "SKIP(\"Skipped - no runtime installed\");"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-c41196eaffe3c547"
+        ],
+        "id": "exp-constraint-c41196eaffe3",
+        "facet": "constraint",
+        "query": "no mandatory GPU context",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[3]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ no mandatory GPU context",
+            "started_at": "2026-09-11T21:16:43.826856513Z",
+            "duration": 21055993297,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ no mandatory",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T21:17:04.882850962Z",
+            "duration": 1773284695,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "a1ive",
+            "repo": "nwinfo",
+            "url": "https://github.com/a1ive/nwinfo",
+            "description": "Hardware information utility for Windows",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:17:06.65612128Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Lienol",
+            "repo": "openwrt",
+            "url": "https://github.com/Lienol/openwrt",
+            "description": "Lienol's Modified OpenWrt source",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:17:06.656125307Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "NLnetLabs",
+            "repo": "simdzone",
+            "url": "https://github.com/NLnetLabs/simdzone",
+            "description": "Fast and standards compliant DNS zone parser",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T21:17:06.656128864Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "Lienol/openwrt",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no mandatory",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "package/wwan/driver/quectel-gobinet/src/QMI.c",
+                "snippet": "// Note: Indications. No Mandatory TLV required"
+              }
+            ]
+          },
+          {
+            "repository": "NLnetLabs/simdzone",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no mandatory",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "src/generic/svcb.h",
+                "snippet": "return 0; // no mandatory parameter"
+              }
+            ]
+          },
+          {
+            "repository": "a1ive/nwinfo",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ no mandatory",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "libcpuid/recog_arm.c",
+                "snippet": "/* If there are no mandatory features (like ARMv9.3-A), check that at least one optional feature is implemented */"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "a1ive",
+        "repo": "nwinfo",
+        "url": "https://github.com/a1ive/nwinfo",
+        "description": "Hardware information utility for Windows",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:17:06.65612128Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-c41196eaffe3"
+      ],
+      "queries": [
+        "no mandatory GPU context"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-c41196eaffe3",
+          "planned_query": "no mandatory GPU context",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no mandatory",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "libcpuid/recog_arm.c",
+              "snippet": "/* If there are no mandatory features (like ARMv9.3-A), check that at least one optional feature is implemented */"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "CadQuery",
+        "repo": "OCP",
+        "url": "https://github.com/CadQuery/OCP",
+        "description": "",
+        "stars": 0,
+        "commit_id": "b0495a71d10168b96cef8043ac39020a3fa45372",
+        "consultado_em": "2026-09-11T21:16:20.227169815Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-5e86ed5f43da"
+      ],
+      "queries": [
+        "C++11 compatible"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-5e86ed5f43da",
+          "planned_query": "C++11 compatible",
+          "attempt_index": 0,
+          "effective_query": "lang:C++ C++11 compatible",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "opencascade/Standard_Macro.hxx",
+              "snippet": "#error C++11 compatible compiler is required (Visual Studio 2010 or newer)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Chaste",
+        "repo": "Chaste",
+        "url": "https://github.com/Chaste/Chaste",
+        "description": "Chaste - Cancer Heart And Soft Tissue Environment - main public repository. ",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:13:22.095547883Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-4d392164f69c"
+      ],
+      "queries": [
+        "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-4d392164f69c",
+          "planned_query": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ Constrained Delaunay",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "mesh/src/3rdparty/triangle/triangle.h",
+              "snippet": "/* constrained Delaunay triangulation. Specifically, the -DCDT_ONLY switch */"
+            },
+            {
+              "match_type": "file",
+              "path": "mesh/src/3rdparty/triangle/triangle.cpp",
+              "snippet": "/* segments to create a constrained Delaunay triangulation is probably */"
+            },
+            {
+              "match_type": "file",
+              "path": "mesh/src/3rdparty/tetgen1.4.2/tetgen.h",
+              "snippet": "// TetGen computes Delaunay tetrahedralizations, constrained Delaunay tetra- //"
+            },
+            {
+              "match_type": "file",
+              "path": "mesh/src/3rdparty/triangle/triangle_orig.c",
+              "snippet": "/* segments to create a constrained Delaunay triangulation is probably */"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "cnr-isti-vclab",
+        "repo": "meshlab",
+        "url": "https://github.com/cnr-isti-vclab/meshlab",
+        "description": "The open source mesh processing system",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:30.642896618Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-42ae2ee3fc33"
+      ],
+      "queries": [
+        "GLU tessellator gluTessBeginContour multiple contours winding rule holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-42ae2ee3fc33",
+          "planned_query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ GLU tessellator",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "unsupported/plugins_unsupported/filter_zippering/filter_zippering.cpp",
+              "snippet": "glu_tesselator::tesselate( outlines, indices ); //glu tessellator"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "GNOME",
+        "repo": "gegl",
+        "url": "https://github.com/GNOME/gegl",
+        "description": "Read-only mirror of https://gitlab.gnome.org/GNOME/gegl",
+        "stars": 0,
+        "commit_id": "34e6fced0f5847e11786b8515c9469f8072fbf92",
+        "consultado_em": "2026-09-11T21:14:29.373176694Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-c99dbbba0c45"
+      ],
+      "queries": [
+        "CDT constrained Delaunay triangulation C++ library artem-ogre"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-c99dbbba0c45",
+          "planned_query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ CDT constrained",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "subprojects/poly2tri-c/poly2tri-c/refine/cdt.h",
+              "snippet": "* @param cdt A P2tCDT Constrained Delaunay Triangulation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "HippoPlayer",
+        "repo": "HippoPlayer",
+        "url": "https://github.com/HippoPlayer/HippoPlayer",
+        "description": "A modern music player for your oldsk00l needs",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:18.549807548Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-08777f5e25e0"
+      ],
+      "queries": [
+        "permissive open source license compatible with BSD 3-clause"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-08777f5e25e0",
+          "planned_query": "permissive open source license compatible with BSD 3-clause",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ permissive open",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "src/external/bgfx/3rdparty/glsl-optimizer/src/util/ralloc.h",
+              "snippet": "* a non-permissive open source license."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "ianmaclarty",
+        "repo": "amulet",
+        "url": "https://github.com/ianmaclarty/amulet",
+        "description": "lua game toolkit",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:18.549798772Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-08777f5e25e0"
+      ],
+      "queries": [
+        "permissive open source license compatible with BSD 3-clause"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-08777f5e25e0",
+          "planned_query": "permissive open source license compatible with BSD 3-clause",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ permissive open",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "third_party/glsl-optimizer/src/util/ralloc.h",
+              "snippet": "* a non-permissive open source license."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "InteractiveComputerGraphics",
+        "repo": "PositionBasedDynamics",
+        "url": "https://github.com/InteractiveComputerGraphics/PositionBasedDynamics",
+        "description": "PositionBasedDynamics is a library for the physically-based simulation of rigid bodies, deformable solids and fluids.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:43.826779981Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-446418afc666"
+      ],
+      "queries": [
+        "no runtime network dependency, local execution only"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-446418afc666",
+          "planned_query": "no runtime network dependency, local execution only",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no runtime",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "extern/imgui/imstb_textedit.h",
+              "snippet": "// Uses no other functions. Performs no runtime allocations."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Ipotrick",
+        "repo": "Daxa",
+        "url": "https://github.com/Ipotrick/Daxa",
+        "description": "Daxa is a convenient, simple and modern gpu api built on vulkan",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:43.826795019Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-446418afc666"
+      ],
+      "queries": [
+        "no runtime network dependency, local execution only"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-446418afc666",
+          "planned_query": "no runtime network dependency, local execution only",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no runtime",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "tests/2_daxa_api/6_task_graph/persistent_resources.hpp",
+              "snippet": "// It will error out when it detects that there are no runtime images for a task image when updating the view cache."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "kaydxh",
+        "repo": "golang",
+        "url": "https://github.com/kaydxh/golang",
+        "description": "Golang lib is a programming toolkit for building microservices in Go. It has very useful interface or service to develop application.",
+        "stars": 0,
+        "commit_id": "13f3bf11f1f29abda778aa1adbea655b7ec05224",
+        "consultado_em": "2026-09-11T21:16:20.227166058Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-5e86ed5f43da"
+      ],
+      "queries": [
+        "C++11 compatible"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-5e86ed5f43da",
+          "planned_query": "C++11 compatible",
+          "attempt_index": 0,
+          "effective_query": "lang:C++ C++11 compatible",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "pkg/gocv/cgo/third_path/pybind11/tests/test_methods_and_attributes.cpp",
+              "snippet": "// Use both the traditional static_cast method and the C++11 compatible overload_cast_"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "KhronosGroup",
+        "repo": "OpenXR-SDK-Source",
+        "url": "https://github.com/KhronosGroup/OpenXR-SDK-Source",
+        "description": "Sources for OpenXR loader, basic API layers, and example code.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:43.826786673Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-446418afc666"
+      ],
+      "queries": [
+        "no runtime network dependency, local execution only"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-446418afc666",
+          "planned_query": "no runtime network dependency, local execution only",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no runtime",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "src/tests/loader_test/loader_test.cpp",
+              "snippet": "SKIP(\"Skipped - no runtime installed\");"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "LiangliangNan",
+        "repo": "Easy3D",
+        "url": "https://github.com/LiangliangNan/Easy3D",
+        "description": "A lightweight, easy-to-use, and efficient library for processing and rendering 3D data (C++ \u0026 Python)",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:30.642887912Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-42ae2ee3fc33"
+      ],
+      "queries": [
+        "GLU tessellator gluTessBeginContour multiple contours winding rule holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-42ae2ee3fc33",
+          "planned_query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ GLU tessellator",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "easy3d/algo/tessellator.h",
+              "snippet": "// GLU tessellator callbacks"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Lienol",
+        "repo": "openwrt",
+        "url": "https://github.com/Lienol/openwrt",
+        "description": "Lienol's Modified OpenWrt source",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:17:06.656125307Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-c41196eaffe3"
+      ],
+      "queries": [
+        "no mandatory GPU context"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-c41196eaffe3",
+          "planned_query": "no mandatory GPU context",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no mandatory",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "package/wwan/driver/quectel-gobinet/src/QMI.c",
+              "snippet": "// Note: Indications. No Mandatory TLV required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "lockekk",
+        "repo": "dshare-hid",
+        "url": "https://github.com/lockekk/dshare-hid",
+        "description": "DShare-HID(forked from Deskflow) is a high-performance extension that brings Deskflow to mobile devices with minimal latency.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:16:18.549804292Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-08777f5e25e0"
+      ],
+      "queries": [
+        "permissive open source license compatible with BSD 3-clause"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-08777f5e25e0",
+          "planned_query": "permissive open source license compatible with BSD 3-clause",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ permissive open",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "src/lib/gui/widgets/Esp32HidToolsWidget.cpp",
+              "snippet": "// Use permissive open to detect if device is in firmware mode (any FW)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Mechanical-Advantage",
+        "repo": "AdvantageKit",
+        "url": "https://github.com/Mechanical-Advantage/AdvantageKit",
+        "description": "Logging \u0026 replay framework for FRC",
+        "stars": 0,
+        "commit_id": "b8c8a0be1e20f5ca8defeb5215adf550d8f6d618",
+        "consultado_em": "2026-09-11T21:16:20.227160017Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-5e86ed5f43da"
+      ],
+      "queries": [
+        "C++11 compatible"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-5e86ed5f43da",
+          "planned_query": "C++11 compatible",
+          "attempt_index": 0,
+          "effective_query": "lang:C++ C++11 compatible",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "akit/src/main/thirdparty/include/flatbuffers/base.h",
+              "snippet": "#error A C++11 compatible compiler with support for the auto typing is \\"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "NLnetLabs",
+        "repo": "simdzone",
+        "url": "https://github.com/NLnetLabs/simdzone",
+        "description": "Fast and standards compliant DNS zone parser",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:17:06.656128864Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-c41196eaffe3"
+      ],
+      "queries": [
+        "no mandatory GPU context"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-c41196eaffe3",
+          "planned_query": "no mandatory GPU context",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ no mandatory",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "src/generic/svcb.h",
+              "snippet": "return 0; // no mandatory parameter"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "o3de",
+        "repo": "o3de",
+        "url": "https://github.com/o3de/o3de",
+        "description": "Open 3D Engine (O3DE) is an Apache 2.0-licensed multi-platform 3D engine that enables developers and content creators to build AAA games, cinema-quality 3D worlds, and high-fidelity simulations without any fees or commercial obligations.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:14:29.373168659Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-c99dbbba0c45"
+      ],
+      "queries": [
+        "CDT constrained Delaunay triangulation C++ library artem-ogre"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-c99dbbba0c45",
+          "planned_query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ CDT constrained",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "Gems/PhysX/Core/Code/Tests/PolygonPrismMeshUtilsTest.cpp",
+              "snippet": "p2t::CDT constrainedDelaunayTriangulation(polyline);"
+            },
+            {
+              "match_type": "file",
+              "path": "Gems/PhysX/Core/Code/Source/EditorShapeColliderComponent.cpp",
+              "snippet": "p2t::CDT constrainedDelaunayTriangulation(polyline);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "OpenCL",
+        "repo": "GEGL-OpenCL",
+        "url": "https://github.com/OpenCL/GEGL-OpenCL",
+        "description": "Gimp-GEGL is the first official OpenCL Porting Project of ",
+        "stars": 0,
+        "commit_id": "d5e8cd3f96c050faa96f8cded31c919780ce6f0a",
+        "consultado_em": "2026-09-11T21:14:29.373180501Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-c99dbbba0c45"
+      ],
+      "queries": [
+        "CDT constrained Delaunay triangulation C++ library artem-ogre"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-c99dbbba0c45",
+          "planned_query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ CDT constrained",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "libs/poly2tri-c/poly2tri-c/refine/cdt.h",
+              "snippet": "* @param cdt A P2tCDT Constrained Delaunay Triangulation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "prusa3d",
+        "repo": "PrusaSlicer",
+        "url": "https://github.com/prusa3d/PrusaSlicer",
+        "description": "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:48.867916591Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-d8c1e71ae5a7"
+      ],
+      "queries": [
+        "ear clipping polygon triangulation library C++ concave holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-d8c1e71ae5a7",
+          "planned_query": "ear clipping polygon triangulation library C++ concave holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ ear clipping",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "bundled_deps/imgui/imgui/imgui_draw.cpp",
+              "snippet": "// Triangulate concave polygons. Based on \"Triangulation by Ear Clipping\" paper, O(N^2) complexity."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "ReyeMe",
+        "repo": "SaturnRingLib",
+        "url": "https://github.com/ReyeMe/SaturnRingLib",
+        "description": "Wrapper for SGL in c++",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:48.86791079Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-d8c1e71ae5a7"
+      ],
+      "queries": [
+        "ear clipping polygon triangulation library C++ concave holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-d8c1e71ae5a7",
+          "planned_query": "ear clipping polygon triangulation library C++ concave holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ ear clipping",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "modules/sgl/INC/sl_def.h",
+              "snippet": "/** @brief Near clipping"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "vividos",
+        "repo": "UnderworldAdventures",
+        "url": "https://github.com/vividos/UnderworldAdventures",
+        "description": "Underworld Adventures is a project to recreate Ultima Underworld 1 on modern operating systems, using the original game files.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:30.642891739Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-42ae2ee3fc33"
+      ],
+      "queries": [
+        "GLU tessellator gluTessBeginContour multiple contours winding rule holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-42ae2ee3fc33",
+          "planned_query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ GLU tessellator",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "uwadv/source/renderer/fixed/GluPolygonTessellatorImpl.hpp",
+              "snippet": "/// GLU tessellator object"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "vmtk",
+        "repo": "vmtk",
+        "url": "https://github.com/vmtk/vmtk",
+        "description": "the Vascular Modeling Toolkit",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:13:22.095542784Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-4d392164f69c"
+      ],
+      "queries": [
+        "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-4d392164f69c",
+          "planned_query": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ Constrained Delaunay",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "vtkVmtk/Utilities/tetgen1.4.3/tetgen.h",
+              "snippet": "// The constrained Delaunay tetrahedralization algorithm is described in: //"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Zygo",
+        "repo": "xscreensaver",
+        "url": "https://github.com/Zygo/xscreensaver",
+        "description": "The closest thing to a git repo of xscreensaver known to exist, because jwz Does Not Do Github.  This is a READ ONLY mirror.  Please send pull requests and bug reports directly to the upstream project.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T21:15:48.867920128Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-d8c1e71ae5a7"
+      ],
+      "queries": [
+        "ear clipping polygon triangulation library C++ concave holes"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-d8c1e71ae5a7",
+          "planned_query": "ear clipping polygon triangulation library C++ concave holes",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ ear clipping",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "jwxyz/jwxyz-gl.c",
+              "snippet": "* We currently do Nonconvex with the simple-to-implement ear clipping"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "COMPLETE",
+    "completion_cause": "FINISHED",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 0,
+      "attempt_timeout": 0,
+      "concurrency": 2,
+      "max_attempts": 3
+    },
+    "planned": 11,
+    "started": 11,
+    "completed": 11,
+    "timed_out": 0,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": [
+      {
+        "expansion_id": "exp-problem-4d392164f69c",
+        "attempt_index": 0,
+        "planned_query": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+        "effective_query": "lang:C++ Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+        "started_at": "2026-09-11T21:12:49.980150712Z",
+        "duration": 29864058551,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-problem-4d392164f69c",
+        "attempt_index": 1,
+        "planned_query": "Constrained Delaunay triangulation library in C++ for polygon tessellation with holes, to fix missing triangles in Coin's SoIndexedFaceSet rendering (coin3d/coin issue 177)",
+        "effective_query": "lang:C++ Constrained Delaunay",
+        "started_at": "2026-09-11T21:13:19.844211156Z",
+        "duration": 2251357346,
+        "status": "SUCCEEDED",
+        "result_count": 2
+      },
+      {
+        "expansion_id": "exp-capability-a1848b977d54",
+        "attempt_index": 0,
+        "planned_query": "poly2tri sweep line constrained Delaunay triangulation with holes",
+        "effective_query": "lang:C++ poly2tri sweep line constrained Delaunay triangulation with holes",
+        "started_at": "2026-09-11T21:13:22.09563196Z",
+        "duration": 28728349026,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-a1848b977d54",
+        "attempt_index": 1,
+        "planned_query": "poly2tri sweep line constrained Delaunay triangulation with holes",
+        "effective_query": "lang:C++ poly2tri sweep",
+        "started_at": "2026-09-11T21:13:50.823983831Z",
+        "duration": 21174331425,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-a1848b977d54",
+        "attempt_index": 2,
+        "planned_query": "poly2tri sweep line constrained Delaunay triangulation with holes",
+        "effective_query": "poly2tri sweep",
+        "started_at": "2026-09-11T21:14:11.998318502Z",
+        "duration": 2159878795,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-c99dbbba0c45",
+        "attempt_index": 0,
+        "planned_query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+        "effective_query": "lang:C++ CDT constrained Delaunay triangulation C++ library artem-ogre",
+        "started_at": "2026-09-11T21:14:14.158290661Z",
+        "duration": 5957046728,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-c99dbbba0c45",
+        "attempt_index": 1,
+        "planned_query": "CDT constrained Delaunay triangulation C++ library artem-ogre",
+        "effective_query": "lang:C++ CDT constrained",
+        "started_at": "2026-09-11T21:14:20.115338201Z",
+        "duration": 9257903624,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-f02a40c9567a",
+        "attempt_index": 0,
+        "planned_query": "Sloan incremental constrained Delaunay triangulation algorithm",
+        "effective_query": "lang:C++ Sloan incremental constrained Delaunay triangulation algorithm",
+        "started_at": "2026-09-11T21:14:29.373261121Z",
+        "duration": 6585166620,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-f02a40c9567a",
+        "attempt_index": 1,
+        "planned_query": "Sloan incremental constrained Delaunay triangulation algorithm",
+        "effective_query": "lang:C++ Sloan incremental",
+        "started_at": "2026-09-11T21:14:35.958432791Z",
+        "duration": 7158257129,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-f02a40c9567a",
+        "attempt_index": 2,
+        "planned_query": "Sloan incremental constrained Delaunay triangulation algorithm",
+        "effective_query": "Sloan incremental",
+        "started_at": "2026-09-11T21:14:43.116691403Z",
+        "duration": 2436261757,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-23b9293c449a",
+        "attempt_index": 0,
+        "planned_query": "Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "effective_query": "lang:C++ Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "started_at": "2026-09-11T21:14:45.553086378Z",
+        "duration": 9504433913,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-23b9293c449a",
+        "attempt_index": 1,
+        "planned_query": "Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "effective_query": "lang:C++ Shewchuk robust",
+        "started_at": "2026-09-11T21:14:55.057521143Z",
+        "duration": 15078860900,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-23b9293c449a",
+        "attempt_index": 2,
+        "planned_query": "Shewchuk robust adaptive precision geometric predicates orient2d incircle",
+        "effective_query": "Shewchuk robust",
+        "started_at": "2026-09-11T21:15:10.136383496Z",
+        "duration": 2343573940,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-42ae2ee3fc33",
+        "attempt_index": 0,
+        "planned_query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+        "effective_query": "lang:C++ GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+        "started_at": "2026-09-11T21:15:12.480027546Z",
+        "duration": 15682468188,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-42ae2ee3fc33",
+        "attempt_index": 1,
+        "planned_query": "GLU tessellator gluTessBeginContour multiple contours winding rule holes",
+        "effective_query": "lang:C++ GLU tessellator",
+        "started_at": "2026-09-11T21:15:28.162496866Z",
+        "duration": 2480407146,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-d8c1e71ae5a7",
+        "attempt_index": 0,
+        "planned_query": "ear clipping polygon triangulation library C++ concave holes",
+        "effective_query": "lang:C++ ear clipping polygon triangulation library C++ concave holes",
+        "started_at": "2026-09-11T21:15:30.642922998Z",
+        "duration": 16713944995,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-d8c1e71ae5a7",
+        "attempt_index": 1,
+        "planned_query": "ear clipping polygon triangulation library C++ concave holes",
+        "effective_query": "lang:C++ ear clipping",
+        "started_at": "2026-09-11T21:15:47.356869566Z",
+        "duration": 1511058336,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-constraint-08777f5e25e0",
+        "attempt_index": 0,
+        "planned_query": "permissive open source license compatible with BSD 3-clause",
+        "effective_query": "lang:C++ permissive open source license compatible with BSD 3-clause",
+        "started_at": "2026-09-11T21:15:48.867949823Z",
+        "duration": 21248330510,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-08777f5e25e0",
+        "attempt_index": 1,
+        "planned_query": "permissive open source license compatible with BSD 3-clause",
+        "effective_query": "lang:C++ permissive open",
+        "started_at": "2026-09-11T21:16:10.116281365Z",
+        "duration": 8433534248,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-constraint-5e86ed5f43da",
+        "attempt_index": 0,
+        "planned_query": "C++11 compatible",
+        "effective_query": "lang:C++ C++11 compatible",
+        "started_at": "2026-09-11T21:16:18.549836121Z",
+        "duration": 1677341468,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-constraint-446418afc666",
+        "attempt_index": 0,
+        "planned_query": "no runtime network dependency, local execution only",
+        "effective_query": "lang:C++ no runtime network dependency, local execution only",
+        "started_at": "2026-09-11T21:16:20.227221942Z",
+        "duration": 21420360838,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-446418afc666",
+        "attempt_index": 1,
+        "planned_query": "no runtime network dependency, local execution only",
+        "effective_query": "lang:C++ no runtime",
+        "started_at": "2026-09-11T21:16:41.647584303Z",
+        "duration": 2179223029,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-constraint-c41196eaffe3",
+        "attempt_index": 0,
+        "planned_query": "no mandatory GPU context",
+        "effective_query": "lang:C++ no mandatory GPU context",
+        "started_at": "2026-09-11T21:16:43.826856513Z",
+        "duration": 21055993297,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-c41196eaffe3",
+        "attempt_index": 1,
+        "planned_query": "no mandatory GPU context",
+        "effective_query": "lang:C++ no mandatory",
+        "started_at": "2026-09-11T21:17:04.882850962Z",
+        "duration": 1773284695,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      }
+    ]
+  }
+}

@@ -20,8 +20,9 @@ consultas dirigidas: `EvidenceRequirementQuery.Terms` continua contendo somente
 
 ## Replay observado
 
-O replay reutilizou os bundles imutáveis de `relatorios/coin-sbhash-dossie` e o catálogo
-`relatorios/coin-sbhash-rules.json`:
+O replay reutilizou os bundles imutáveis de
+`lab/bancada/history/reports/0075-coin-sbhash/dossier` e o catálogo
+`lab/bancada/history/reports/0075-coin-sbhash/rules.json`:
 
 | Candidato | Antes | Depois | Fonte exata |
 |---|---|---|---|
@@ -46,4 +47,3 @@ mesmo filesystem. Portanto, o regime Tekt foi executado sem atestação de isola
 sem mutation score independente. O resultado atesta apenas localização lexical; não
 prova que o guard seja a primeira instrução efetiva nem que nenhuma mutação destrutiva o
 preceda após expansão de macros ou análise semântica.
-

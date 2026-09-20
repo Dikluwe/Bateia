@@ -1,0 +1,292 @@
+{
+  "schema_version": "1",
+  "strategy": "lexical",
+  "decisions": [
+    {
+      "repository": "local/13-0ea945f7",
+      "ranking_score": 0.33000000000000007,
+      "probability": null,
+      "calibration_status": "uncalibrated",
+      "decision": "AUDIT",
+      "signals": {
+        "expansion_prior": 0,
+        "query_retention": 1,
+        "fallback_depth": 0,
+        "match_specificity": 0,
+        "description_alignment": 0,
+        "origin_convergence": 8,
+        "capability_coverage": 0,
+        "non_goal_conflict": 0,
+        "evidence_completeness": 0.3
+      },
+      "contributions": [
+        {
+          "signal": "intercept",
+          "value": 1,
+          "weight": 0.05,
+          "effect": 0.05,
+          "reason": "base explícita do modelo"
+        },
+        {
+          "signal": "expansion_prior",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "produtividade julgada da expansão"
+        },
+        {
+          "signal": "query_retention",
+          "value": 1,
+          "weight": 0.15,
+          "effect": 0.15,
+          "reason": "termos informativos preservados"
+        },
+        {
+          "signal": "fallback_depth",
+          "value": 0,
+          "weight": -0.1,
+          "effect": -0,
+          "reason": "profundidade do fallback efetivo"
+        },
+        {
+          "signal": "match_specificity",
+          "value": 0,
+          "weight": 0.1,
+          "effect": 0,
+          "reason": "especificidade do tipo de match"
+        },
+        {
+          "signal": "description_alignment",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "alinhamento lexical da descrição"
+        },
+        {
+          "signal": "origin_convergence",
+          "value": 1,
+          "weight": 0.1,
+          "effect": 0.1,
+          "reason": "convergência de expansões independentes"
+        },
+        {
+          "signal": "capability_coverage",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "capacidades com sinal preliminar"
+        },
+        {
+          "signal": "non_goal_conflict",
+          "value": 0,
+          "weight": -0.4,
+          "effect": -0,
+          "reason": "conflito explícito com não objetivos"
+        },
+        {
+          "signal": "evidence_completeness",
+          "value": 0.3,
+          "weight": 0.1,
+          "effect": 0.03,
+          "reason": "completude da evidência disponível"
+        }
+      ],
+      "uncertainty_reasons": [
+        "evidência incompleta"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-77ed1e4eb35e",
+          "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+          "attempt_index": 0,
+          "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+        },
+        {
+          "expansion_id": "exp-capability-59d0c6bafc38",
+          "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "attempt_index": 0,
+          "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+        },
+        {
+          "expansion_id": "exp-capability-475738ce491f",
+          "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "attempt_index": 0,
+          "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+        },
+        {
+          "expansion_id": "exp-constraint-670e3168a422",
+          "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "attempt_index": 0,
+          "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+        },
+        {
+          "expansion_id": "exp-capability-632dd51db5f2",
+          "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "attempt_index": 0,
+          "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+        },
+        {
+          "expansion_id": "exp-capability-489cff8a1754",
+          "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "attempt_index": 0,
+          "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+        },
+        {
+          "expansion_id": "exp-capability-9686a0a84b35",
+          "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "attempt_index": 0,
+          "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+        }
+      ]
+    },
+    {
+      "repository": "local/robin-hood-d6555e08",
+      "ranking_score": 0.33000000000000007,
+      "probability": null,
+      "calibration_status": "uncalibrated",
+      "decision": "AUDIT",
+      "signals": {
+        "expansion_prior": 0,
+        "query_retention": 1,
+        "fallback_depth": 0,
+        "match_specificity": 0,
+        "description_alignment": 0,
+        "origin_convergence": 8,
+        "capability_coverage": 0,
+        "non_goal_conflict": 0,
+        "evidence_completeness": 0.3
+      },
+      "contributions": [
+        {
+          "signal": "intercept",
+          "value": 1,
+          "weight": 0.05,
+          "effect": 0.05,
+          "reason": "base explícita do modelo"
+        },
+        {
+          "signal": "expansion_prior",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "produtividade julgada da expansão"
+        },
+        {
+          "signal": "query_retention",
+          "value": 1,
+          "weight": 0.15,
+          "effect": 0.15,
+          "reason": "termos informativos preservados"
+        },
+        {
+          "signal": "fallback_depth",
+          "value": 0,
+          "weight": -0.1,
+          "effect": -0,
+          "reason": "profundidade do fallback efetivo"
+        },
+        {
+          "signal": "match_specificity",
+          "value": 0,
+          "weight": 0.1,
+          "effect": 0,
+          "reason": "especificidade do tipo de match"
+        },
+        {
+          "signal": "description_alignment",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "alinhamento lexical da descrição"
+        },
+        {
+          "signal": "origin_convergence",
+          "value": 1,
+          "weight": 0.1,
+          "effect": 0.1,
+          "reason": "convergência de expansões independentes"
+        },
+        {
+          "signal": "capability_coverage",
+          "value": 0,
+          "weight": 0.15,
+          "effect": 0,
+          "reason": "capacidades com sinal preliminar"
+        },
+        {
+          "signal": "non_goal_conflict",
+          "value": 0,
+          "weight": -0.4,
+          "effect": -0,
+          "reason": "conflito explícito com não objetivos"
+        },
+        {
+          "signal": "evidence_completeness",
+          "value": 0.3,
+          "weight": 0.1,
+          "effect": 0.03,
+          "reason": "completude da evidência disponível"
+        }
+      ],
+      "uncertainty_reasons": [
+        "evidência incompleta"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-77ed1e4eb35e",
+          "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+          "attempt_index": 0,
+          "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+        },
+        {
+          "expansion_id": "exp-capability-59d0c6bafc38",
+          "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "attempt_index": 0,
+          "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+        },
+        {
+          "expansion_id": "exp-capability-475738ce491f",
+          "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "attempt_index": 0,
+          "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+        },
+        {
+          "expansion_id": "exp-constraint-670e3168a422",
+          "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "attempt_index": 0,
+          "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+        },
+        {
+          "expansion_id": "exp-capability-632dd51db5f2",
+          "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "attempt_index": 0,
+          "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+        },
+        {
+          "expansion_id": "exp-capability-489cff8a1754",
+          "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "attempt_index": 0,
+          "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+        },
+        {
+          "expansion_id": "exp-capability-9686a0a84b35",
+          "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "attempt_index": 0,
+          "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+        }
+      ]
+    }
+  ]
+}

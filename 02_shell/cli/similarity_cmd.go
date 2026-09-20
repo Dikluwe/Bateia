@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/subcommands.md
  * @layer L2
- * @updated 2026-08-08
+ * @updated 2026-09-19
  */
 
 package cli
@@ -33,7 +33,7 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 	excludeLangFlag := fs.String("exclude-lang", "", "Linguagens para excluir da varredura poliglota (ex: 'go,typescript')")
 	sweepFlag := fs.Bool("sweep", false, "Executa a varredura poliglota em múltiplos ecossistemas")
 	maxFlag := fs.Int("max", 15, "Número máximo de candidatos no topo do funil")
-	outputFlag := fs.String("output", "relatorios/similaridade.md", "Arquivo de saída para o relatório de similaridade ontológica")
+	outputFlag := fs.String("output", "relatorio_similaridade.md", "Arquivo de saída para o relatório de similaridade ontológica")
 
 	if err := fs.Parse(args); err != nil {
 		return err

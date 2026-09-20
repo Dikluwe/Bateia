@@ -1,0 +1,34 @@
+{
+  "problem": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+  "users": [
+    "mantenedores do Coin (biblioteca de grafo de cena C++/OpenGL, implementacao do Open Inventor 2.1)",
+    "aplicacoes que renderizam SoIndexedFaceSet com geometria complexa contendo buracos",
+    "desenvolvedores avaliando bibliotecas de tesselacao 2D para pipelines de renderizacao"
+  ],
+  "capabilities": [
+    "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+    "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+    "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+    "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+    "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+    "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin"
+  ],
+  "constraints": [
+    "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+    "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+    "execucao local sem dependencia de rede ou servico externo",
+    "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+    "evidencia vinculada a codigo, testes e commits reais",
+    "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp"
+  ],
+  "non_goals": [
+    "suportar poligonos auto-intersectantes, ja descartado como fora de escopo pelo mantenedor original do issue",
+    "substituir todo o pipeline de renderizacao do Coin",
+    "escolher biblioteca apenas por popularidade ou numero de estrelas",
+    "gerar codigo automaticamente sem revisao humana"
+  ],
+  "preferred_stack": [
+    "c++",
+    "cmake"
+  ]
+}

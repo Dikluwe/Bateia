@@ -1,0 +1,92 @@
+{
+  "idea": {
+    "problem": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+    "users": [
+      "Coin 5 library maintainers hardening SoPath::copy()",
+      "contributors reviewing sub-range/slice APIs across the codebase"
+    ],
+    "capabilities": [
+      "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+      "clamp an excessive requested count to the remaining length instead of treating it as an error",
+      "reject an out-of-range start position unconditionally, not only in debug builds",
+      "express a sub-range using two absolute bounds instead of an offset-plus-count pair"
+    ],
+    "constraints": [
+      "C++11 as the minimum supported language standard",
+      "must not allocate more than the resulting sub-range needs"
+    ],
+    "non_goals": [
+      "changing the container's own element storage",
+      "supporting negative indices as counting from the end"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "expansions": [
+    {
+      "id": "exp-problem-c46287951f7b",
+      "facet": "problem",
+      "query": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+      "rationale": "descobrir soluções para o problema central",
+      "covers": [
+        "problem"
+      ]
+    },
+    {
+      "id": "exp-capability-c81b145ee031",
+      "facet": "capability",
+      "query": "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[0]"
+      ]
+    },
+    {
+      "id": "exp-capability-6de26864b1d0",
+      "facet": "capability",
+      "query": "clamp an excessive requested count to the remaining length instead of treating it as an error",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[1]"
+      ]
+    },
+    {
+      "id": "exp-capability-f17ebfece51e",
+      "facet": "capability",
+      "query": "reject an out-of-range start position unconditionally, not only in debug builds",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[2]"
+      ]
+    },
+    {
+      "id": "exp-capability-61ba9f8a86bb",
+      "facet": "capability",
+      "query": "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[3]"
+      ]
+    },
+    {
+      "id": "exp-constraint-da9653ee9141",
+      "facet": "constraint",
+      "query": "C++11 as the minimum supported language standard",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[0]"
+      ]
+    },
+    {
+      "id": "exp-constraint-f0bf6cb3dd3f",
+      "facet": "constraint",
+      "query": "must not allocate more than the resulting sub-range needs",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[1]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "1",
+  "rules_version": "2026-09-16.coin5-pathcopy-0073",
+  "rules_hash": "ddb6d56d41401be620d7cefada3c825b8925bb6ac81ebc0e12b569dff477c69e",
+  "entries": [
+    {
+      "requirement_kind": "capability",
+      "requirement": "avoid signed-integer overflow when validating a start offset combined with a count against a total length",
+      "status": "COVERED",
+      "rule_id": "overflow-safe-subrange-arithmetic",
+      "rule_basis": "DECLARED",
+      "reason_code": "COVERED"
+    },
+    {
+      "requirement_kind": "capability",
+      "requirement": "clamp an excessive requested count to the remaining length instead of treating it as an error",
+      "status": "COVERED",
+      "rule_id": "clamp-excessive-count",
+      "rule_basis": "DECLARED",
+      "reason_code": "COVERED"
+    },
+    {
+      "requirement_kind": "capability",
+      "requirement": "express a sub-range using two absolute bounds instead of an offset-plus-count pair",
+      "status": "COVERED",
+      "rule_id": "absolute-bounds-range-shape",
+      "rule_basis": "DECLARED",
+      "reason_code": "COVERED"
+    },
+    {
+      "requirement_kind": "capability",
+      "requirement": "reject an out-of-range start position unconditionally, not only in debug builds",
+      "status": "COVERED",
+      "rule_id": "unconditional-start-validation",
+      "rule_basis": "DECLARED",
+      "reason_code": "COVERED"
+    },
+    {
+      "requirement_kind": "problem",
+      "requirement": "Model a safe sub-range copy operation (like SoPath::copy(start, count)) over an indexed sequence, correctly handling an empty or out-of-range start, an excessive requested count, and the arithmetic needed to validate start+count without signed-integer overflow.",
+      "status": "CATALOG_GAP",
+      "reason_code": "CATALOG_GAP"
+    }
+  ]
+}

@@ -12,7 +12,7 @@
 
 ## Diagnóstico congelado
 
-No dossiê `relatorios/coin-sbhash-dossie`, a recuperação dirigida funcionou:
+No dossiê `lab/bancada/history/reports/0075-coin-sbhash/dossier`, a recuperação dirigida funcionou:
 
 - `bits/hashtable.h` foi candidato e arquivo examinado para
   `self-assignment-guard-hashtable`; o guard está na linha 1257;
@@ -88,4 +88,3 @@ Replay do dossiê congelado, sem nova coleta:
 O dossiê geral continua `INCONCLUSIVE` por outras capacidades; a correção não transforma
 localização lexical em prova comportamental. Regime final: executado sem atestação de
 isolamento e sem mutation score independente.
-

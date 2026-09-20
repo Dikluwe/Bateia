@@ -1,0 +1,199 @@
+{
+  "schema_version": "1",
+  "idea": {
+    "problem": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+    "users": [
+      "Coin maintainers hardening SbHash (internal, COIN_INTERNAL-only container used by 40 files)",
+      "contributors evaluating the codex/maps/experiment/sbhash-relink-resize branch"
+    ],
+    "capabilities": [
+      "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+      "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+      "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+      "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+      "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+    ],
+    "constraints": [
+      "C++11 as the minimum supported language standard",
+      "must not require heap allocation beyond the bucket array and node pool already in use"
+    ],
+    "non_goals": [
+      "switching the storage strategy away from chained buckets",
+      "changing the container's public method names"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "strategy": "lexical",
+  "per_expansion": null,
+  "candidates": [
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "13-0ea945f7",
+        "url": "file:///usr/include/c++/13",
+        "description": "",
+        "stars": 0,
+        "commit_id": "3b858f322d7ad7f2c92f017e630cd187b5db6770f33070ec0c9ab0bbba62e591",
+        "consultado_em": "0001-01-01T00:00:00Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-77ed1e4eb35e",
+        "exp-capability-475738ce491f",
+        "exp-capability-632dd51db5f2",
+        "exp-capability-9686a0a84b35",
+        "exp-capability-489cff8a1754",
+        "exp-capability-59d0c6bafc38",
+        "exp-constraint-da9653ee9141",
+        "exp-constraint-670e3168a422"
+      ],
+      "queries": [
+        "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+        "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+        "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+        "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+        "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+        "C++11 as the minimum supported language standard",
+        "must not require heap allocation beyond the bucket array and node pool already in use"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-77ed1e4eb35e",
+          "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+          "attempt_index": 0,
+          "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+        },
+        {
+          "expansion_id": "exp-capability-59d0c6bafc38",
+          "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "attempt_index": 0,
+          "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+        },
+        {
+          "expansion_id": "exp-capability-475738ce491f",
+          "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "attempt_index": 0,
+          "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+        },
+        {
+          "expansion_id": "exp-constraint-670e3168a422",
+          "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "attempt_index": 0,
+          "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+        },
+        {
+          "expansion_id": "exp-capability-632dd51db5f2",
+          "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "attempt_index": 0,
+          "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+        },
+        {
+          "expansion_id": "exp-capability-489cff8a1754",
+          "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "attempt_index": 0,
+          "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+        },
+        {
+          "expansion_id": "exp-capability-9686a0a84b35",
+          "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "attempt_index": 0,
+          "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "robin-hood-d6555e08",
+        "url": "file:///dev/shm/peer-libs/robin-hood",
+        "description": "",
+        "stars": 0,
+        "commit_id": "64c56098e7a10f6400a426f3dea0462f7c8c02d9e75a261442a9f4a6cedc0584",
+        "consultado_em": "0001-01-01T00:00:00Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-77ed1e4eb35e",
+        "exp-capability-475738ce491f",
+        "exp-capability-632dd51db5f2",
+        "exp-capability-9686a0a84b35",
+        "exp-capability-489cff8a1754",
+        "exp-capability-59d0c6bafc38",
+        "exp-constraint-da9653ee9141",
+        "exp-constraint-670e3168a422"
+      ],
+      "queries": [
+        "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+        "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+        "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+        "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+        "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+        "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+        "C++11 as the minimum supported language standard",
+        "must not require heap allocation beyond the bucket array and node pool already in use"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-da9653ee9141",
+          "planned_query": "C++11 as the minimum supported language standard",
+          "attempt_index": 0,
+          "effective_query": "C++11 as the minimum supported language standard"
+        },
+        {
+          "expansion_id": "exp-problem-77ed1e4eb35e",
+          "planned_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems.",
+          "attempt_index": 0,
+          "effective_query": "Fix three confirmed defects in Coin's internal SbHash\u003cKey,Type\u003e chained hash table (broken const-only iterator, a self-assignment that clears the source before copying it, and a resize that is not exception-safe and leaks live objects when a key/value copy throws mid-rehash) and decide whether resize should relink existing nodes instead of copying them, informed by how mature hash table implementations handle the same problems."
+        },
+        {
+          "expansion_id": "exp-capability-59d0c6bafc38",
+          "planned_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index",
+          "attempt_index": 0,
+          "effective_query": "apply an avalanche/mixing step to a hash value before reducing it to a bucket index"
+        },
+        {
+          "expansion_id": "exp-capability-475738ce491f",
+          "planned_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation",
+          "attempt_index": 0,
+          "effective_query": "guard copy assignment against self-assignment as the first statement, before any destructive mutation"
+        },
+        {
+          "expansion_id": "exp-constraint-670e3168a422",
+          "planned_query": "must not require heap allocation beyond the bucket array and node pool already in use",
+          "attempt_index": 0,
+          "effective_query": "must not require heap allocation beyond the bucket array and node pool already in use"
+        },
+        {
+          "expansion_id": "exp-capability-632dd51db5f2",
+          "planned_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path",
+          "attempt_index": 0,
+          "effective_query": "publish a rehashed table's new bucket array only after its allocation succeeds, without destroying any existing node on the failing path"
+        },
+        {
+          "expansion_id": "exp-capability-489cff8a1754",
+          "planned_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask",
+          "attempt_index": 0,
+          "effective_query": "reduce a hash value to a bucket index using a prime bucket count with plain modulo instead of a power-of-two mask"
+        },
+        {
+          "expansion_id": "exp-capability-9686a0a84b35",
+          "planned_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value",
+          "attempt_index": 0,
+          "effective_query": "relink existing nodes into new buckets during resize instead of copying and destroying every key and value"
+        }
+      ]
+    }
+  ]
+}

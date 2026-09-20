@@ -1,0 +1,78 @@
+{
+  "schema_version": "2",
+  "version": "2026-09-16.coin5-pathcopy-0074",
+  "rules": [
+    {
+      "id": "overflow-safe-subrange-arithmetic",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathcopy-study",
+      "target_hints": ["basic_string.h", "span"],
+      "capability_terms": [
+        "avoid signed-integer overflow when validating a start offset combined with a count against a total length"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["_M_limit", "subspan", "size() - __pos", "size() - _Offset", "size() - pos", "size() - offset"] },
+        { "kind": "test", "patterns": ["_M_limit", "subspan"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["overflow", "out of range"] },
+        { "kind": "file", "patterns": ["basic_string.h", "span"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    },
+    {
+      "id": "clamp-excessive-count",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathcopy-study",
+      "target_hints": ["basic_string.h", "span"],
+      "capability_terms": [
+        "clamp an excessive requested count to the remaining length instead of treating it as an error"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["_M_limit", "subspan", "npos", "dynamic_extent"] },
+        { "kind": "test", "patterns": ["substr", "subspan"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["clamp", "remaining", "truncate"] },
+        { "kind": "file", "patterns": ["basic_string.h", "span"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    },
+    {
+      "id": "unconditional-start-validation",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathcopy-study",
+      "target_hints": ["basic_string.h", "span"],
+      "capability_terms": [
+        "reject an out-of-range start position unconditionally, not only in debug builds"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["_M_check", "ThrowStdOutOfRange", "__throw_out_of_range", "out_of_range", "Expects((size() >= Offset)", "Expects(size() >= offset)"] },
+        { "kind": "test", "patterns": ["out_of_range"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["throws", "out_of_range", "precondition"] },
+        { "kind": "file", "patterns": ["basic_string.h", "span"] }
+      ],
+      "negative_evidence": ["ifdef ndebug", "ifdef debug", "only in debug"]
+    },
+    {
+      "id": "absolute-bounds-range-shape",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathcopy-study",
+      "target_hints": ["basic_string.h", "span"],
+      "capability_terms": [
+        "express a sub-range using two absolute bounds instead of an offset-plus-count pair"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["subspan", "first, last", "begin, end", "low, high"] },
+        { "kind": "test", "patterns": ["first, last", "begin, end"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["half-open range", "[first, last)", "iterator range"] },
+        { "kind": "file", "patterns": ["span", "basic_string.h"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    }
+  ]
+}

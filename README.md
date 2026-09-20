@@ -22,7 +22,7 @@ Para avaliar a própria worktree, incluindo alterações não commitadas:
   --target-repo Dikluwe/Bateia \
   --mode local \
   --local . \
-  --output relatorios/dossie-local
+  --output /dev/shm/bateia-runs/dossie-local
 ```
 
 O diretório de saída contém a expansão da ideia, snapshot de descoberta, triagem, planos e bundles de evidência, assessment, decisão canônica, `alternatives.json`, `alternatives.md` e uma projeção legível em `decision.md`. `--target-name` é opcional e usa `IdeaSpec.problem` como fallback; `--target-repo` aceita `owner/repo` ou URL GitHub e exclui o próprio alvo do ranking independentemente do commit. Uma execução interrompida ou uma mudança apenas de política ou alvo pode usar `--resume`; o Bateia só reaproveita evidência quando os inputs causais e os hashes dos checkpoints continuam válidos.
@@ -132,49 +132,49 @@ go build -o bateia ./04_wiring
 
 #### Analisar uma worktree local (incluindo alterações não commitadas)
 ```bash
-./bateia analyze -path . -query "arquitetura do projeto" -format markdown -output relatorios/analise_local.md
+./bateia analyze -path . -query "arquitetura do projeto" -format markdown -output /dev/shm/bateia-runs/analise_local.md
 ```
 
 O modo local não depende do GitHub e ignora diretórios gerados ou volumosos como `.git`, `node_modules`, `vendor`, `target`, `dist` e `build`.
 
 #### 1. Buscar Projetos Go usando Fiber
 ```bash
-./bateia -query "github.com/gofiber/fiber" -lang go -max 10 -output relatorios/fiber.md
+./bateia -query "github.com/gofiber/fiber" -lang go -max 10 -output /dev/shm/bateia-runs/fiber.md
 ```
 
 #### 2. Buscar Projetos TypeScript usando NestJS
 ```bash
-./bateia -query "@nestjs/core" -lang typescript -max 10 -output relatorios/nestjs.md
+./bateia -query "@nestjs/core" -lang typescript -max 10 -output /dev/shm/bateia-runs/nestjs.md
 ```
 
 #### 3. Buscar Projetos Python usando FastAPI
 ```bash
-./bateia -query "fastapi" -lang python -max 10 -output relatorios/fastapi.md
+./bateia -query "fastapi" -lang python -max 10 -output /dev/shm/bateia-runs/fastapi.md
 ```
 
 #### 4. Buscar Projetos Rust usando Axum
 ```bash
-./bateia -query "axum" -lang rust -max 10 -output relatorios/axum.md
+./bateia -query "axum" -lang rust -max 10 -output /dev/shm/bateia-runs/axum.md
 ```
 
 #### 5. Buscar Projetos Java usando Spring Boot
 ```bash
-./bateia -query "spring-boot" -lang java -max 10 -output relatorios/spring.md
+./bateia -query "spring-boot" -lang java -max 10 -output /dev/shm/bateia-runs/spring.md
 ```
 
 #### 6. Buscar Projetos PHP usando Laravel
 ```bash
-./bateia -query "laravel" -lang php -max 10 -output relatorios/laravel.md
+./bateia -query "laravel" -lang php -max 10 -output /dev/shm/bateia-runs/laravel.md
 ```
 
 #### 7. Buscar Projetos C++ usando CMake / Boost
 ```bash
-./bateia -query "boost" -lang cpp -max 10 -output relatorios/cpp.md
+./bateia -query "boost" -lang cpp -max 10 -output /dev/shm/bateia-runs/cpp.md
 ```
 
 #### 8. Buscar Projetos C# / .NET usando Entity Framework
 ```bash
-./bateia -query "EntityFrameworkCore" -lang csharp -max 10 -output relatorios/dotnet.md
+./bateia -query "EntityFrameworkCore" -lang csharp -max 10 -output /dev/shm/bateia-runs/dotnet.md
 ```
 
 ---

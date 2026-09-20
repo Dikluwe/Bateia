@@ -1,0 +1,139 @@
+{
+  "schema_version": "algorithm-history-report-v1",
+  "status": "COMPLETE",
+  "reason": "analyzed",
+  "assessments": [
+    {
+      "claim_id": "ac-improves-repeated-scan",
+      "subject_id": "aho-corasick-1975",
+      "relation": "IMPROVES",
+      "object_id": "straightforward-multipattern-scan",
+      "statement": "The Aho-Corasick finite-state machine improves the repeated single-pattern scan for multi-keyword bibliographic search.",
+      "outcome": "SUPPORTED",
+      "supporting_evidence_ids": [
+        "paper-performance-support"
+      ],
+      "conflicting_evidence_ids": [],
+      "ambiguous_evidence_ids": [],
+      "supporting_inference_ids": [
+        "paper-mechanism-inference"
+      ],
+      "conflicting_inference_ids": [],
+      "ambiguous_inference_ids": [],
+      "distinct_supporting_origins": [
+        "publication:doi:10.1145/360825.360855"
+      ],
+      "reason": "single_origin_support"
+    },
+    {
+      "claim_id": "bateia-derived-from-ac",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "DERIVED_FROM",
+      "object_id": "aho-corasick-1975",
+      "statement": "The current Bateia component is historically and mechanically derived from the Aho-Corasick automaton.",
+      "outcome": "UNKNOWN",
+      "supporting_evidence_ids": [
+        "bateia-name-and-objective-support"
+      ],
+      "conflicting_evidence_ids": [],
+      "ambiguous_evidence_ids": [
+        "bateia-mechanism-ambiguous"
+      ],
+      "supporting_inference_ids": [],
+      "conflicting_inference_ids": [],
+      "ambiguous_inference_ids": [],
+      "distinct_supporting_origins": [
+        "source:bateia:prompt:01_core/parser/aho_corasick.md"
+      ],
+      "reason": "evidence_ambiguous"
+    },
+    {
+      "claim_id": "bateia-influenced-by-gitleaks",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "INFLUENCED_BY",
+      "object_id": "gitleaks-aho-prefilter",
+      "statement": "The Bateia component was influenced by the Gitleaks Aho-Corasick prefilter.",
+      "outcome": "UNKNOWN",
+      "supporting_evidence_ids": [
+        "bateia-prompt-gitleaks-support"
+      ],
+      "conflicting_evidence_ids": [],
+      "ambiguous_evidence_ids": [
+        "gitleaks-transfer-ambiguous"
+      ],
+      "supporting_inference_ids": [],
+      "conflicting_inference_ids": [],
+      "ambiguous_inference_ids": [],
+      "distinct_supporting_origins": [
+        "source:bateia:prompt:01_core/parser/aho_corasick.md"
+      ],
+      "reason": "evidence_ambiguous"
+    },
+    {
+      "claim_id": "bateia-resembles-repeated-scan",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "RESEMBLES",
+      "object_id": "straightforward-multipattern-scan",
+      "statement": "The current Bateia component mechanically resembles a repeated single-pattern scan.",
+      "outcome": "CORROBORATED",
+      "supporting_evidence_ids": [
+        "bateia-loop-support",
+        "go-contains-support"
+      ],
+      "conflicting_evidence_ids": [],
+      "ambiguous_evidence_ids": [],
+      "supporting_inference_ids": [],
+      "conflicting_inference_ids": [],
+      "ambiguous_inference_ids": [],
+      "distinct_supporting_origins": [
+        "source:bateia:aho_corasick.go:sha256:287cdda885e52ce5",
+        "source:go:strings/strings.go"
+      ],
+      "reason": "independent_origins_corroborate"
+    },
+    {
+      "claim_id": "gitleaks-derived-from-ac",
+      "subject_id": "gitleaks-aho-prefilter",
+      "relation": "DERIVED_FROM",
+      "object_id": "aho-corasick-1975",
+      "statement": "The inspected Gitleaks prefilter is implemented with a library explicitly implementing Aho-Corasick.",
+      "outcome": "SUPPORTED",
+      "supporting_evidence_ids": [
+        "gitleaks-import-support"
+      ],
+      "conflicting_evidence_ids": [],
+      "ambiguous_evidence_ids": [],
+      "supporting_inference_ids": [],
+      "conflicting_inference_ids": [],
+      "ambiguous_inference_ids": [],
+      "distinct_supporting_origins": [
+        "source:github:gitleaks/gitleaks:master:detect/detect.go"
+      ],
+      "reason": "single_origin_support"
+    }
+  ],
+  "metrics": {
+    "input_algorithms": 4,
+    "input_provenance": 7,
+    "input_claims": 5,
+    "input_bases": 9,
+    "algorithms": 4,
+    "provenance": 7,
+    "claims": 5,
+    "bases": 9,
+    "duplicate_algorithms": 0,
+    "duplicate_provenance": 0,
+    "duplicate_claims": 0,
+    "duplicate_bases": 0,
+    "evidence": 8,
+    "inferences": 1,
+    "corroborated": 1,
+    "supported": 2,
+    "contested": 0,
+    "contradicted": 0,
+    "unknown": 2,
+    "operations": 75,
+    "limit_exceeded": false,
+    "verdict_changes": 0
+  }
+}

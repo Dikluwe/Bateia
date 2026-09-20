@@ -3,12 +3,12 @@
 ## Regime
 
 Calibração Tekt A/B limitada ao catálogo experimental
-`relatorios/coin5-pathcopy-rules.json`. O motor, os contratos 0072/0073 e seus gates
+`lab/bancada/history/reports/0074-gsl/rules.json`. O motor, os contratos 0072/0073 e seus gates
 permanecem inalterados. Não se alega equivalência geral nem isolamento físico.
 
 ## Baseline observável
 
-No dossiê `coin5-pathcopy-dossie-v3`, a capacidade
+No dossiê baseline `lab/bancada/history/reports/0074-gsl/baseline`, a capacidade
 `reject an out-of-range start position unconditionally, not only in debug builds`
 recebe somente a fonte documental `README.md:46`, padrão `precondition`, confiança 0.40.
 O mesmo bundle contém `include/gsl/span:609` e `include/gsl/span:747`, mas a regra
@@ -33,4 +33,3 @@ Atualizar a versão do catálogo para registrar a calibração.
 - preservação: a fonte documental pode permanecer, mas não deve ser a única fonte;
 - limite: a correspondência lexical não comprova execução nem transforma o resultado em
   `PROVEN`.
-

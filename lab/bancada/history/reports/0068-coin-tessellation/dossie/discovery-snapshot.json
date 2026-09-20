@@ -1,0 +1,1892 @@
+{
+  "schema_version": "2",
+  "idea": {
+    "problem": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+    "users": [
+      "mantenedores do Coin (biblioteca de grafo de cena C++/OpenGL, implementacao do Open Inventor 2.1)",
+      "aplicacoes que renderizam SoIndexedFaceSet com geometria complexa contendo buracos",
+      "desenvolvedores avaliando bibliotecas de tesselacao 2D para pipelines de renderizacao"
+    ],
+    "capabilities": [
+      "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+      "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+      "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+      "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+      "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+      "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin"
+    ],
+    "constraints": [
+      "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+      "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+      "execucao local sem dependencia de rede ou servico externo",
+      "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+      "evidencia vinculada a codigo, testes e commits reais",
+      "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp"
+    ],
+    "non_goals": [
+      "suportar poligonos auto-intersectantes, ja descartado como fora de escopo pelo mantenedor original do issue",
+      "substituir todo o pipeline de renderizacao do Coin",
+      "escolher biblioteca apenas por popularidade ou numero de estrelas",
+      "gerar codigo automaticamente sem revisao humana"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "strategy": "lexical",
+  "language": "cpp",
+  "per_expansion": [
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-problem-fab8b0f9e05277e9"
+        ],
+        "id": "exp-problem-fab8b0f9e052",
+        "facet": "problem",
+        "query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+        "rationale": "descobrir soluções para o problema central",
+        "covers": [
+          "problem"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+            "started_at": "2026-09-11T20:40:56.321486908Z",
+            "duration": 15079018337,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ Decidir se",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:41:11.400507229Z",
+            "duration": 21309177084,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "andreia",
+            "repo": "symfony-docs-pt-BR",
+            "url": "https://github.com/andreia/symfony-docs-pt-BR",
+            "description": "Tradução da Documentação do Symfony para Português do Brasil - Portuguese translation of the Symfony Documentation (official repository)",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:41:32.709664516Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "petbccufscar",
+            "repo": "pet-colab",
+            "url": "https://github.com/petbccufscar/pet-colab",
+            "description": "Este é o Repositório Colaborativo do PET-BCC, uma iniciativa para promover a colaboração entre alunos. Aqui, você encontrará uma variedade de recursos educacionais, com foco em listas de exercícios e suas resoluções, destinadas a apoiar os estudantes de Computação.",
+            "stars": 0,
+            "commit_id": "b1225ad5838f10423ba0f24ed044d85a489c3e95",
+            "consultado_em": "2026-09-11T20:41:32.709655569Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "rodsmade",
+            "repo": "Projets_42_SP",
+            "url": "https://github.com/rodsmade/Projets_42_SP",
+            "description": "🌵 Todos os projetos desenvolvidos na escola 42 São Paulo 💂 All projects developed at 42 school São Paulo ",
+            "stars": 0,
+            "commit_id": "4cf365c661bf009b76136aa5eecc710c44b5bfc6",
+            "consultado_em": "2026-09-11T20:41:32.709673853Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "andreia/symfony-docs-pt-BR",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ Decidir se",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "security/voter_interface.rst.inc",
+                "snippet": "* ``VoterInterface::ACCESS_ABSTAIN``: O voter não pode decidir se a autorização deve ser concedida;"
+              }
+            ]
+          },
+          {
+            "repository": "petbccufscar/pet-colab",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ Decidir se",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "material-extra/acompanhamento-de-disciplinas/CAP/aula2/exercicio1_gabarito_c.c",
+                "snippet": "//Decidir se é ou não um triângulo"
+              }
+            ]
+          },
+          {
+            "repository": "rodsmade/Projets_42_SP",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ Decidir se",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": ".notes_personelles/minilibx_learning_path.c",
+                "snippet": "// hook para capturar tecla apertada e decidir se move, se fecha"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-cebfc01f26dba424"
+        ],
+        "id": "exp-capability-cebfc01f26db",
+        "facet": "capability",
+        "query": "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[0]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+            "started_at": "2026-09-11T20:41:32.709717646Z",
+            "duration": 9577336765,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ triangulacao poligonos",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:41:42.287056064Z",
+            "duration": 4934937508,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "triangulacao poligonos",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:41:47.221995105Z",
+            "duration": 1147621731,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-be4fd940a72bd8da"
+        ],
+        "id": "exp-capability-be4fd940a72b",
+        "facet": "capability",
+        "query": "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[1]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+            "started_at": "2026-09-11T20:41:48.369699442Z",
+            "duration": 6347640984,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ insercao arestas",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:41:54.717342009Z",
+            "duration": 10630084189,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "insercao arestas",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:42:05.347428292Z",
+            "duration": 4344020002,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-2a3ee9022538225f"
+        ],
+        "id": "exp-capability-2a3ee9022538",
+        "facet": "capability",
+        "query": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[2]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+            "started_at": "2026-09-11T20:42:09.691467931Z",
+            "duration": 17214301323,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ predicados geometricos",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:42:26.905770777Z",
+            "duration": 26798818225,
+            "status": "SUCCEEDED",
+            "result_count": 1
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "Dante-Leoncini",
+            "repo": "Whisk3D-Editor",
+            "url": "https://github.com/Dante-Leoncini/Whisk3D-Editor",
+            "description": "Whisk 3D (ex Blendersito) es un Clon 100% libre de blender",
+            "stars": 0,
+            "commit_id": "9b3b9e1d2bc319c043b21233a56b17cd407d9432",
+            "consultado_em": "2026-09-11T20:42:53.704575576Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "Dante-Leoncini/Whisk3D-Editor",
+            "attempt_index": 1,
+            "effective_query": "lang:C++ predicados geometricos",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "main/edit/BoxSelect.h",
+                "snippet": "// de predicados geometricos; no sabe QUE se selecciona. Cada editor le pregunta"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-522401ba7a174bf2"
+        ],
+        "id": "exp-capability-522401ba7a17",
+        "facet": "capability",
+        "query": "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[3]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+            "started_at": "2026-09-11T20:42:53.704663112Z",
+            "duration": 20116039162,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ embutivel em",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:43:13.820703456Z",
+            "duration": 14802779993,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "embutivel em",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:43:28.623484892Z",
+            "duration": 12590412813,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-3bcdb22a71e38912"
+        ],
+        "id": "exp-capability-3bcdb22a71e3",
+        "facet": "capability",
+        "query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[4]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+            "started_at": "2026-09-11T20:43:41.213994147Z",
+            "duration": 16492986617,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ desempenho adequado",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:43:57.706981926Z",
+            "duration": 17698573767,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "desempenho adequado",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:44:15.405556624Z",
+            "duration": 2735808102,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "nightscout",
+            "repo": "AndroidAPS",
+            "url": "https://github.com/nightscout/AndroidAPS",
+            "description": "Opensource automated insulin delivery system (closed loop)",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:44:18.141320843Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "Shopify",
+            "repo": "product-taxonomy",
+            "url": "https://github.com/Shopify/product-taxonomy",
+            "description": "Shopify's standardized product taxonomy.",
+            "stars": 0,
+            "commit_id": "ad206247ecc45a95fe4b01bce2ad2f0e7bec3c66",
+            "consultado_em": "2026-09-11T20:44:18.141326013Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "SUPLA",
+            "repo": "supla-cloud",
+            "url": "https://github.com/SUPLA/supla-cloud",
+            "description": "Cloud web application and REST API for the SUPLA open smart home platform.",
+            "stars": 0,
+            "commit_id": "7e0c8d5a7bea477aaf160c2ef7a62ddda0a8c2d2",
+            "consultado_em": "2026-09-11T20:44:18.1413561Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "SUPLA/supla-cloud",
+            "attempt_index": 2,
+            "effective_query": "desempenho adequado",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "public/regulations/privacy/privacy_pt.html",
+                "snippet": "\u003cb\u003e7.\u003c/b\u003e Os dados pessoais não serão compartilhados com ninguém. Os dados pessoais são confiados por contrato para processamento a entidades cujos serviços são utilizados pelo Administrador no âmbito do seu processamento (em conformidade c"
+              }
+            ]
+          },
+          {
+            "repository": "Shopify/product-taxonomy",
+            "attempt_index": 2,
+            "effective_query": "desempenho adequado",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "data/localizations/return_reasons/pt-BR.yml",
+                "snippet": "description: O item não apresenta desempenho adequado na superfície específica"
+              },
+              {
+                "match_type": "file",
+                "path": "dist/pt-BR/return_reasons.json",
+                "snippet": "\"description\": \"O item não apresenta desempenho adequado na superfície específica pretendida pelo cliente.\""
+              },
+              {
+                "match_type": "file",
+                "path": "data/localizations/return_reasons/pt-PT.yml",
+                "snippet": "description: O item não apresenta um desempenho adequado na superfície específica"
+              },
+              {
+                "match_type": "file",
+                "path": "dist/pt-PT/return_reasons.json",
+                "snippet": "\"description\": \"O item não apresenta um desempenho adequado na superfície específica pretendida pelo cliente.\""
+              }
+            ]
+          },
+          {
+            "repository": "nightscout/AndroidAPS",
+            "attempt_index": 2,
+            "effective_query": "desempenho adequado",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "plugins/configuration/src/main/res/values-pt-rBR/strings.xml",
+                "snippet": "\u003cstring name=\"need_whitelisting\"\u003eNecessário autorização para otimização de bateria para desempenho adequado.\u003c/string\u003e"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-capability-55dab65773b3245a"
+        ],
+        "id": "exp-capability-55dab65773b3",
+        "facet": "capability",
+        "query": "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+        "rationale": "buscar implementação da capacidade isoladamente",
+        "covers": [
+          "capabilities[5]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+            "started_at": "2026-09-11T20:44:18.141387308Z",
+            "duration": 16839731502,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ tratamento poligonos",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:44:34.981121154Z",
+            "duration": 4299067431,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "tratamento poligonos",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:44:39.280189457Z",
+            "duration": 1430928423,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-6c852cc46c8c7612"
+        ],
+        "id": "exp-constraint-6c852cc46c8c",
+        "facet": "constraint",
+        "query": "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[0]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+            "started_at": "2026-09-11T20:44:40.711235071Z",
+            "duration": 2624141940,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ licenca compativel",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:44:43.335378654Z",
+            "duration": 10180807831,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "licenca compativel",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:44:53.516188138Z",
+            "duration": 5732683533,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-31e6d0f3db84b164"
+        ],
+        "id": "exp-constraint-31e6d0f3db84",
+        "facet": "constraint",
+        "query": "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[1]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+            "started_at": "2026-09-11T20:44:59.249199649Z",
+            "duration": 12595214470,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ codigo C++11",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:45:11.844417886Z",
+            "duration": 12598776606,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "codigo C++11",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:45:24.443195955Z",
+            "duration": 1433511570,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-2bd04b8d34ec946e"
+        ],
+        "id": "exp-constraint-2bd04b8d34ec",
+        "facet": "constraint",
+        "query": "execucao local sem dependencia de rede ou servico externo",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[2]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ execucao local sem dependencia de rede ou servico externo",
+            "started_at": "2026-09-11T20:45:25.876798827Z",
+            "duration": 8973217712,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ execucao local",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:45:34.850017892Z",
+            "duration": 4457509311,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "execucao local",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:45:39.307530439Z",
+            "duration": 1763931402,
+            "status": "SUCCEEDED",
+            "result_count": 2
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "gameguild-gg",
+            "repo": "gameguild",
+            "url": "https://github.com/gameguild-gg/gameguild",
+            "description": "Open Source Platform for Game Developers A platform designed to connect game developers through community collaboration, educational resources, and tools for playtesting and game launches.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:45:41.071436403Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "hyperledger-iroha",
+            "repo": "iroha",
+            "url": "https://github.com/hyperledger-iroha/iroha",
+            "description": "Iroha: A cutting-edge, enterprise-grade decentralized ledger",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:45:41.0714453Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "gameguild-gg/gameguild",
+            "attempt_index": 2,
+            "effective_query": "execucao local",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/superpowers/plans/2026-08-11-base-tenant-membership-authorization.md",
+                "snippet": "\u003e Execucao local e sequencial: o usuario proibiu o uso de agentes para esta tarefa."
+              }
+            ]
+          },
+          {
+            "repository": "hyperledger-iroha/iroha",
+            "attempt_index": 2,
+            "effective_query": "execucao local",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.md",
+                "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+              },
+              {
+                "match_type": "file",
+                "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.he.md",
+                "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+              },
+              {
+                "match_type": "file",
+                "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.ja.md",
+                "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+              },
+              {
+                "match_type": "file",
+                "path": "docs/portal/docs/norito/getting-started.pt.md",
+                "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+              },
+              {
+                "match_type": "file",
+                "path": "docs/portal/versioned_docs/version-2025-q2/norito/getting-started.pt.md",
+                "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-49520d17d3f39f15"
+        ],
+        "id": "exp-constraint-49520d17d3f3",
+        "facet": "constraint",
+        "query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[3]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+            "started_at": "2026-09-11T20:45:41.07149844Z",
+            "duration": 10597971859,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ sem exigencia",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:45:51.669473415Z",
+            "duration": 11192629725,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "sem exigencia",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:46:02.862104092Z",
+            "duration": 13419665180,
+            "status": "SUCCEEDED",
+            "result_count": 2
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "elzobrito",
+            "repo": "ESAA-Core",
+            "url": "https://github.com/elzobrito/ESAA-Core",
+            "description": "ESAA combina Event Sourcing, projeção determinística e políticas fail-closed para transformar automação multiagente em um sistema auditável e previsível.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:46:16.281755827Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "majiayu000",
+            "repo": "claude-skill-registry",
+            "url": "https://github.com/majiayu000/claude-skill-registry",
+            "description": "The most comprehensive Claude Code skills registry | Web Search: https://majiayu000.github.io/claude-skill-registry-core/",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:46:16.281721973Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "elzobrito/ESAA-Core",
+            "attempt_index": 2,
+            "effective_query": "sem exigencia",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "docs/spec/G07-task-lessons-review-model.md",
+                "snippet": "- Review com modo valido em task sem exigencia e aceito e preservado."
+              }
+            ]
+          },
+          {
+            "repository": "majiayu000/claude-skill-registry",
+            "attempt_index": 2,
+            "effective_query": "sem exigencia",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "skills/devops/gerindo-expedicao/SKILL.md",
+                "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+              },
+              {
+                "match_type": "file",
+                "path": "skills/data/gerindo-expedicao/SKILL.md",
+                "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+              },
+              {
+                "match_type": "file",
+                "path": "skills/devops/gerindo-expedicao-rafael-2109-frete-sistema/SKILL.md",
+                "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+              },
+              {
+                "match_type": "file",
+                "path": "skills/devops/gerindo-expedicao-rafael-2109-frete-sistema-65050c94/SKILL.md",
+                "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-49a93fc031997d28"
+        ],
+        "id": "exp-constraint-49a93fc03199",
+        "facet": "constraint",
+        "query": "evidencia vinculada a codigo, testes e commits reais",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[4]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ evidencia vinculada a codigo, testes e commits reais",
+            "started_at": "2026-09-11T20:46:16.281806102Z",
+            "duration": 16286535465,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ evidencia vinculada",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:46:32.568342469Z",
+            "duration": 13388224515,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "evidencia vinculada",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:46:45.956568507Z",
+            "duration": 2851979102,
+            "status": "SUCCEEDED",
+            "result_count": 3
+          }
+        ],
+        "candidates": [
+          {
+            "owner": "gassechen",
+            "repo": "iiscv",
+            "url": "https://github.com/gassechen/iiscv",
+            "description": "The main objective of the IISCV (Lisp-based Version Control System) project is to \"revive the image-based software development paradigm, inherent to Lisp, and adapt it with a layer of internal and external auditability.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:46:48.80852136Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "intuitem",
+            "repo": "ciso-assistant-community",
+            "url": "https://github.com/intuitem/ciso-assistant-community",
+            "description": "CISO Assistant is a one-stop-shop GRC platform for Risk Management, AppSec, Compliance \u0026 Audit, TPRM, BIA, Privacy, and Reporting. It supports 200+ global frameworks with automatic control mapping, including ISO 27001, NIST CSF, SOC 2, CIS, PCI DSS, NIS2, DORA, GDPR, HIPAA, CMMC, and more.",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:46:48.80853718Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          },
+          {
+            "owner": "johpaz",
+            "repo": "hive",
+            "url": "https://github.com/johpaz/hive",
+            "description": "Hive Agents harnest agent loop localfirts ",
+            "stars": 0,
+            "commit_id": "HEAD",
+            "consultado_em": "2026-09-11T20:46:48.808508526Z",
+            "stale": false,
+            "updated_at": "0001-01-01T00:00:00Z"
+          }
+        ],
+        "matches": [
+          {
+            "repository": "gassechen/iiscv",
+            "attempt_index": 2,
+            "effective_query": "evidencia vinculada",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "experiments/profiler.lisp",
+                "snippet": "(format t \"~%[IISCV-FORENSIC] Evidencia vinculada al UUID: ~A\" uuid)"
+              }
+            ]
+          },
+          {
+            "repository": "intuitem/ciso-assistant-community",
+            "attempt_index": 2,
+            "effective_query": "evidencia vinculada",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "frontend/messages/es.json",
+                "snippet": "\"taskNodeNewEvidence\": \"Evidencia vinculada globalmente a la tarea y extendida a las ocurrencias. Puede agregar una revisión en la pestaña 'Evidencias' a continuación\","
+              }
+            ]
+          },
+          {
+            "repository": "johpaz/hive",
+            "attempt_index": 2,
+            "effective_query": "evidencia vinculada",
+            "evidence": [
+              {
+                "match_type": "file",
+                "path": "packages/core/src/agent/agent-catalog.ts",
+                "snippet": "- evidence: evidencia vinculada a cada criterio de aceptación"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "expansion": {
+        "requirement_ids": [
+          "req-constraint-d8bcde2da8fa5243"
+        ],
+        "id": "exp-constraint-d8bcde2da8fa",
+        "facet": "constraint",
+        "query": "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+        "rationale": "buscar soluções que declaram a restrição relevante",
+        "covers": [
+          "constraints[5]"
+        ]
+      },
+      "provider": {
+        "provider": "sourcegraph",
+        "attempts": [
+          {
+            "query": "lang:C++ integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+            "started_at": "2026-09-11T20:46:48.808639923Z",
+            "duration": 4450352302,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "lang:C++ integracao viavel",
+            "attempt_index": 1,
+            "started_at": "2026-09-11T20:46:53.258993788Z",
+            "duration": 8669913149,
+            "status": "EMPTY",
+            "result_count": 0
+          },
+          {
+            "query": "integracao viavel",
+            "attempt_index": 2,
+            "started_at": "2026-09-11T20:47:01.928909312Z",
+            "duration": 11682664113,
+            "status": "EMPTY",
+            "result_count": 0
+          }
+        ],
+        "candidates": null
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "andreia",
+        "repo": "symfony-docs-pt-BR",
+        "url": "https://github.com/andreia/symfony-docs-pt-BR",
+        "description": "Tradução da Documentação do Symfony para Português do Brasil - Portuguese translation of the Symfony Documentation (official repository)",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:41:32.709664516Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-fab8b0f9e052"
+      ],
+      "queries": [
+        "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles)."
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-fab8b0f9e052",
+          "planned_query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ Decidir se",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "security/voter_interface.rst.inc",
+              "snippet": "* ``VoterInterface::ACCESS_ABSTAIN``: O voter não pode decidir se a autorização deve ser concedida;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Dante-Leoncini",
+        "repo": "Whisk3D-Editor",
+        "url": "https://github.com/Dante-Leoncini/Whisk3D-Editor",
+        "description": "Whisk 3D (ex Blendersito) es un Clon 100% libre de blender",
+        "stars": 0,
+        "commit_id": "9b3b9e1d2bc319c043b21233a56b17cd407d9432",
+        "consultado_em": "2026-09-11T20:42:53.704575576Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-2a3ee9022538"
+      ],
+      "queries": [
+        "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-2a3ee9022538",
+          "planned_query": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ predicados geometricos",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "main/edit/BoxSelect.h",
+              "snippet": "// de predicados geometricos; no sabe QUE se selecciona. Cada editor le pregunta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "elzobrito",
+        "repo": "ESAA-Core",
+        "url": "https://github.com/elzobrito/ESAA-Core",
+        "description": "ESAA combina Event Sourcing, projeção determinística e políticas fail-closed para transformar automação multiagente em um sistema auditável e previsível.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:46:16.281755827Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-49520d17d3f3"
+      ],
+      "queries": [
+        "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-49520d17d3f3",
+          "planned_query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+          "attempt_index": 2,
+          "effective_query": "sem exigencia",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/spec/G07-task-lessons-review-model.md",
+              "snippet": "- Review com modo valido em task sem exigencia e aceito e preservado."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "gameguild-gg",
+        "repo": "gameguild",
+        "url": "https://github.com/gameguild-gg/gameguild",
+        "description": "Open Source Platform for Game Developers A platform designed to connect game developers through community collaboration, educational resources, and tools for playtesting and game launches.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:45:41.071436403Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-2bd04b8d34ec"
+      ],
+      "queries": [
+        "execucao local sem dependencia de rede ou servico externo"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-2bd04b8d34ec",
+          "planned_query": "execucao local sem dependencia de rede ou servico externo",
+          "attempt_index": 2,
+          "effective_query": "execucao local",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/superpowers/plans/2026-08-11-base-tenant-membership-authorization.md",
+              "snippet": "\u003e Execucao local e sequencial: o usuario proibiu o uso de agentes para esta tarefa."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "gassechen",
+        "repo": "iiscv",
+        "url": "https://github.com/gassechen/iiscv",
+        "description": "The main objective of the IISCV (Lisp-based Version Control System) project is to \"revive the image-based software development paradigm, inherent to Lisp, and adapt it with a layer of internal and external auditability.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:46:48.80852136Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-49a93fc03199"
+      ],
+      "queries": [
+        "evidencia vinculada a codigo, testes e commits reais"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-49a93fc03199",
+          "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+          "attempt_index": 2,
+          "effective_query": "evidencia vinculada",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "experiments/profiler.lisp",
+              "snippet": "(format t \"~%[IISCV-FORENSIC] Evidencia vinculada al UUID: ~A\" uuid)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "hyperledger-iroha",
+        "repo": "iroha",
+        "url": "https://github.com/hyperledger-iroha/iroha",
+        "description": "Iroha: A cutting-edge, enterprise-grade decentralized ledger",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:45:41.0714453Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-2bd04b8d34ec"
+      ],
+      "queries": [
+        "execucao local sem dependencia de rede ou servico externo"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-2bd04b8d34ec",
+          "planned_query": "execucao local sem dependencia de rede ou servico externo",
+          "attempt_index": 2,
+          "effective_query": "execucao local",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.md",
+              "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+            },
+            {
+              "match_type": "file",
+              "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.he.md",
+              "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+            },
+            {
+              "match_type": "file",
+              "path": "docs/portal/i18n/pt/docusaurus-plugin-content-docs/current/norito/getting-started.ja.md",
+              "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+            },
+            {
+              "match_type": "file",
+              "path": "docs/portal/docs/norito/getting-started.pt.md",
+              "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+            },
+            {
+              "match_type": "file",
+              "path": "docs/portal/versioned_docs/version-2025-q2/norito/getting-started.pt.md",
+              "snippet": "- `ivm_run` e `ivm_tool` - utilitarios de execucao local e inspecao"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "intuitem",
+        "repo": "ciso-assistant-community",
+        "url": "https://github.com/intuitem/ciso-assistant-community",
+        "description": "CISO Assistant is a one-stop-shop GRC platform for Risk Management, AppSec, Compliance \u0026 Audit, TPRM, BIA, Privacy, and Reporting. It supports 200+ global frameworks with automatic control mapping, including ISO 27001, NIST CSF, SOC 2, CIS, PCI DSS, NIS2, DORA, GDPR, HIPAA, CMMC, and more.",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:46:48.80853718Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-49a93fc03199"
+      ],
+      "queries": [
+        "evidencia vinculada a codigo, testes e commits reais"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-49a93fc03199",
+          "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+          "attempt_index": 2,
+          "effective_query": "evidencia vinculada",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "frontend/messages/es.json",
+              "snippet": "\"taskNodeNewEvidence\": \"Evidencia vinculada globalmente a la tarea y extendida a las ocurrencias. Puede agregar una revisión en la pestaña 'Evidencias' a continuación\","
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "johpaz",
+        "repo": "hive",
+        "url": "https://github.com/johpaz/hive",
+        "description": "Hive Agents harnest agent loop localfirts ",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:46:48.808508526Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-49a93fc03199"
+      ],
+      "queries": [
+        "evidencia vinculada a codigo, testes e commits reais"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-49a93fc03199",
+          "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+          "attempt_index": 2,
+          "effective_query": "evidencia vinculada",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "packages/core/src/agent/agent-catalog.ts",
+              "snippet": "- evidence: evidencia vinculada a cada criterio de aceptación"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "majiayu000",
+        "repo": "claude-skill-registry",
+        "url": "https://github.com/majiayu000/claude-skill-registry",
+        "description": "The most comprehensive Claude Code skills registry | Web Search: https://majiayu000.github.io/claude-skill-registry-core/",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:46:16.281721973Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-constraint-49520d17d3f3"
+      ],
+      "queries": [
+        "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-constraint-49520d17d3f3",
+          "planned_query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+          "attempt_index": 2,
+          "effective_query": "sem exigencia",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "skills/devops/gerindo-expedicao/SKILL.md",
+              "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+            },
+            {
+              "match_type": "file",
+              "path": "skills/data/gerindo-expedicao/SKILL.md",
+              "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+            },
+            {
+              "match_type": "file",
+              "path": "skills/devops/gerindo-expedicao-rafael-2109-frete-sistema/SKILL.md",
+              "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+            },
+            {
+              "match_type": "file",
+              "path": "skills/devops/gerindo-expedicao-rafael-2109-frete-sistema-65050c94/SKILL.md",
+              "snippet": "| `--sem-agendamento` | Apenas pedidos sem exigencia de agendamento | flag |"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "nightscout",
+        "repo": "AndroidAPS",
+        "url": "https://github.com/nightscout/AndroidAPS",
+        "description": "Opensource automated insulin delivery system (closed loop)",
+        "stars": 0,
+        "commit_id": "HEAD",
+        "consultado_em": "2026-09-11T20:44:18.141320843Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-3bcdb22a71e3"
+      ],
+      "queries": [
+        "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-3bcdb22a71e3",
+          "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+          "attempt_index": 2,
+          "effective_query": "desempenho adequado",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "plugins/configuration/src/main/res/values-pt-rBR/strings.xml",
+              "snippet": "\u003cstring name=\"need_whitelisting\"\u003eNecessário autorização para otimização de bateria para desempenho adequado.\u003c/string\u003e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "petbccufscar",
+        "repo": "pet-colab",
+        "url": "https://github.com/petbccufscar/pet-colab",
+        "description": "Este é o Repositório Colaborativo do PET-BCC, uma iniciativa para promover a colaboração entre alunos. Aqui, você encontrará uma variedade de recursos educacionais, com foco em listas de exercícios e suas resoluções, destinadas a apoiar os estudantes de Computação.",
+        "stars": 0,
+        "commit_id": "b1225ad5838f10423ba0f24ed044d85a489c3e95",
+        "consultado_em": "2026-09-11T20:41:32.709655569Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-fab8b0f9e052"
+      ],
+      "queries": [
+        "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles)."
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-fab8b0f9e052",
+          "planned_query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ Decidir se",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "material-extra/acompanhamento-de-disciplinas/CAP/aula2/exercicio1_gabarito_c.c",
+              "snippet": "//Decidir se é ou não um triângulo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "rodsmade",
+        "repo": "Projets_42_SP",
+        "url": "https://github.com/rodsmade/Projets_42_SP",
+        "description": "🌵 Todos os projetos desenvolvidos na escola 42 São Paulo 💂 All projects developed at 42 school São Paulo ",
+        "stars": 0,
+        "commit_id": "4cf365c661bf009b76136aa5eecc710c44b5bfc6",
+        "consultado_em": "2026-09-11T20:41:32.709673853Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-problem-fab8b0f9e052"
+      ],
+      "queries": [
+        "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles)."
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-problem-fab8b0f9e052",
+          "planned_query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+          "attempt_index": 1,
+          "effective_query": "lang:C++ Decidir se",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": ".notes_personelles/minilibx_learning_path.c",
+              "snippet": "// hook para capturar tecla apertada e decidir se move, se fecha"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Shopify",
+        "repo": "product-taxonomy",
+        "url": "https://github.com/Shopify/product-taxonomy",
+        "description": "Shopify's standardized product taxonomy.",
+        "stars": 0,
+        "commit_id": "ad206247ecc45a95fe4b01bce2ad2f0e7bec3c66",
+        "consultado_em": "2026-09-11T20:44:18.141326013Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-3bcdb22a71e3"
+      ],
+      "queries": [
+        "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-3bcdb22a71e3",
+          "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+          "attempt_index": 2,
+          "effective_query": "desempenho adequado",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "data/localizations/return_reasons/pt-BR.yml",
+              "snippet": "description: O item não apresenta desempenho adequado na superfície específica"
+            },
+            {
+              "match_type": "file",
+              "path": "dist/pt-BR/return_reasons.json",
+              "snippet": "\"description\": \"O item não apresenta desempenho adequado na superfície específica pretendida pelo cliente.\""
+            },
+            {
+              "match_type": "file",
+              "path": "data/localizations/return_reasons/pt-PT.yml",
+              "snippet": "description: O item não apresenta um desempenho adequado na superfície específica"
+            },
+            {
+              "match_type": "file",
+              "path": "dist/pt-PT/return_reasons.json",
+              "snippet": "\"description\": \"O item não apresenta um desempenho adequado na superfície específica pretendida pelo cliente.\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "SUPLA",
+        "repo": "supla-cloud",
+        "url": "https://github.com/SUPLA/supla-cloud",
+        "description": "Cloud web application and REST API for the SUPLA open smart home platform.",
+        "stars": 0,
+        "commit_id": "7e0c8d5a7bea477aaf160c2ef7a62ddda0a8c2d2",
+        "consultado_em": "2026-09-11T20:44:18.1413561Z",
+        "stale": false,
+        "updated_at": "0001-01-01T00:00:00Z"
+      },
+      "expansion_ids": [
+        "exp-capability-3bcdb22a71e3"
+      ],
+      "queries": [
+        "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao"
+      ],
+      "origins": [
+        {
+          "expansion_id": "exp-capability-3bcdb22a71e3",
+          "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+          "attempt_index": 2,
+          "effective_query": "desempenho adequado",
+          "evidence": [
+            {
+              "match_type": "file",
+              "path": "public/regulations/privacy/privacy_pt.html",
+              "snippet": "\u003cb\u003e7.\u003c/b\u003e Os dados pessoais não serão compartilhados com ninguém. Os dados pessoais são confiados por contrato para processamento a entidades cujos serviços são utilizados pelo Administrador no âmbito do seu processamento (em conformidade c"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "COMPLETE",
+    "completion_cause": "FINISHED",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 0,
+      "attempt_timeout": 0,
+      "concurrency": 2,
+      "max_attempts": 3
+    },
+    "planned": 13,
+    "started": 13,
+    "completed": 13,
+    "timed_out": 0,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": [
+      {
+        "expansion_id": "exp-problem-fab8b0f9e052",
+        "attempt_index": 0,
+        "planned_query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+        "effective_query": "lang:C++ Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+        "started_at": "2026-09-11T20:40:56.321486908Z",
+        "duration": 15079018337,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-problem-fab8b0f9e052",
+        "attempt_index": 1,
+        "planned_query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+        "effective_query": "lang:C++ Decidir se",
+        "started_at": "2026-09-11T20:41:11.400507229Z",
+        "duration": 21309177084,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-cebfc01f26db",
+        "attempt_index": 0,
+        "planned_query": "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+        "effective_query": "lang:C++ triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+        "started_at": "2026-09-11T20:41:32.709717646Z",
+        "duration": 9577336765,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-cebfc01f26db",
+        "attempt_index": 1,
+        "planned_query": "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+        "effective_query": "lang:C++ triangulacao poligonos",
+        "started_at": "2026-09-11T20:41:42.287056064Z",
+        "duration": 4934937508,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-cebfc01f26db",
+        "attempt_index": 2,
+        "planned_query": "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+        "effective_query": "triangulacao poligonos",
+        "started_at": "2026-09-11T20:41:47.221995105Z",
+        "duration": 1147621731,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-be4fd940a72b",
+        "attempt_index": 0,
+        "planned_query": "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+        "effective_query": "lang:C++ insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+        "started_at": "2026-09-11T20:41:48.369699442Z",
+        "duration": 6347640984,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-be4fd940a72b",
+        "attempt_index": 1,
+        "planned_query": "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+        "effective_query": "lang:C++ insercao arestas",
+        "started_at": "2026-09-11T20:41:54.717342009Z",
+        "duration": 10630084189,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-be4fd940a72b",
+        "attempt_index": 2,
+        "planned_query": "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+        "effective_query": "insercao arestas",
+        "started_at": "2026-09-11T20:42:05.347428292Z",
+        "duration": 4344020002,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-2a3ee9022538",
+        "attempt_index": 0,
+        "planned_query": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+        "effective_query": "lang:C++ predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+        "started_at": "2026-09-11T20:42:09.691467931Z",
+        "duration": 17214301323,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-2a3ee9022538",
+        "attempt_index": 1,
+        "planned_query": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+        "effective_query": "lang:C++ predicados geometricos",
+        "started_at": "2026-09-11T20:42:26.905770777Z",
+        "duration": 26798818225,
+        "status": "SUCCEEDED",
+        "result_count": 1
+      },
+      {
+        "expansion_id": "exp-capability-522401ba7a17",
+        "attempt_index": 0,
+        "planned_query": "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+        "effective_query": "lang:C++ API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+        "started_at": "2026-09-11T20:42:53.704663112Z",
+        "duration": 20116039162,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-522401ba7a17",
+        "attempt_index": 1,
+        "planned_query": "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+        "effective_query": "lang:C++ embutivel em",
+        "started_at": "2026-09-11T20:43:13.820703456Z",
+        "duration": 14802779993,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-522401ba7a17",
+        "attempt_index": 2,
+        "planned_query": "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+        "effective_query": "embutivel em",
+        "started_at": "2026-09-11T20:43:28.623484892Z",
+        "duration": 12590412813,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-3bcdb22a71e3",
+        "attempt_index": 0,
+        "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+        "effective_query": "lang:C++ desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+        "started_at": "2026-09-11T20:43:41.213994147Z",
+        "duration": 16492986617,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-3bcdb22a71e3",
+        "attempt_index": 1,
+        "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+        "effective_query": "lang:C++ desempenho adequado",
+        "started_at": "2026-09-11T20:43:57.706981926Z",
+        "duration": 17698573767,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-3bcdb22a71e3",
+        "attempt_index": 2,
+        "planned_query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+        "effective_query": "desempenho adequado",
+        "started_at": "2026-09-11T20:44:15.405556624Z",
+        "duration": 2735808102,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-capability-55dab65773b3",
+        "attempt_index": 0,
+        "planned_query": "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+        "effective_query": "lang:C++ tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+        "started_at": "2026-09-11T20:44:18.141387308Z",
+        "duration": 16839731502,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-55dab65773b3",
+        "attempt_index": 1,
+        "planned_query": "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+        "effective_query": "lang:C++ tratamento poligonos",
+        "started_at": "2026-09-11T20:44:34.981121154Z",
+        "duration": 4299067431,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-capability-55dab65773b3",
+        "attempt_index": 2,
+        "planned_query": "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+        "effective_query": "tratamento poligonos",
+        "started_at": "2026-09-11T20:44:39.280189457Z",
+        "duration": 1430928423,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-6c852cc46c8c",
+        "attempt_index": 0,
+        "planned_query": "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+        "effective_query": "lang:C++ licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+        "started_at": "2026-09-11T20:44:40.711235071Z",
+        "duration": 2624141940,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-6c852cc46c8c",
+        "attempt_index": 1,
+        "planned_query": "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+        "effective_query": "lang:C++ licenca compativel",
+        "started_at": "2026-09-11T20:44:43.335378654Z",
+        "duration": 10180807831,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-6c852cc46c8c",
+        "attempt_index": 2,
+        "planned_query": "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+        "effective_query": "licenca compativel",
+        "started_at": "2026-09-11T20:44:53.516188138Z",
+        "duration": 5732683533,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-31e6d0f3db84",
+        "attempt_index": 0,
+        "planned_query": "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+        "effective_query": "lang:C++ codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+        "started_at": "2026-09-11T20:44:59.249199649Z",
+        "duration": 12595214470,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-31e6d0f3db84",
+        "attempt_index": 1,
+        "planned_query": "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+        "effective_query": "lang:C++ codigo C++11",
+        "started_at": "2026-09-11T20:45:11.844417886Z",
+        "duration": 12598776606,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-31e6d0f3db84",
+        "attempt_index": 2,
+        "planned_query": "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+        "effective_query": "codigo C++11",
+        "started_at": "2026-09-11T20:45:24.443195955Z",
+        "duration": 1433511570,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-2bd04b8d34ec",
+        "attempt_index": 0,
+        "planned_query": "execucao local sem dependencia de rede ou servico externo",
+        "effective_query": "lang:C++ execucao local sem dependencia de rede ou servico externo",
+        "started_at": "2026-09-11T20:45:25.876798827Z",
+        "duration": 8973217712,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-2bd04b8d34ec",
+        "attempt_index": 1,
+        "planned_query": "execucao local sem dependencia de rede ou servico externo",
+        "effective_query": "lang:C++ execucao local",
+        "started_at": "2026-09-11T20:45:34.850017892Z",
+        "duration": 4457509311,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-2bd04b8d34ec",
+        "attempt_index": 2,
+        "planned_query": "execucao local sem dependencia de rede ou servico externo",
+        "effective_query": "execucao local",
+        "started_at": "2026-09-11T20:45:39.307530439Z",
+        "duration": 1763931402,
+        "status": "SUCCEEDED",
+        "result_count": 2
+      },
+      {
+        "expansion_id": "exp-constraint-49520d17d3f3",
+        "attempt_index": 0,
+        "planned_query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+        "effective_query": "lang:C++ sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+        "started_at": "2026-09-11T20:45:41.07149844Z",
+        "duration": 10597971859,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-49520d17d3f3",
+        "attempt_index": 1,
+        "planned_query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+        "effective_query": "lang:C++ sem exigencia",
+        "started_at": "2026-09-11T20:45:51.669473415Z",
+        "duration": 11192629725,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-49520d17d3f3",
+        "attempt_index": 2,
+        "planned_query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+        "effective_query": "sem exigencia",
+        "started_at": "2026-09-11T20:46:02.862104092Z",
+        "duration": 13419665180,
+        "status": "SUCCEEDED",
+        "result_count": 2
+      },
+      {
+        "expansion_id": "exp-constraint-49a93fc03199",
+        "attempt_index": 0,
+        "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+        "effective_query": "lang:C++ evidencia vinculada a codigo, testes e commits reais",
+        "started_at": "2026-09-11T20:46:16.281806102Z",
+        "duration": 16286535465,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-49a93fc03199",
+        "attempt_index": 1,
+        "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+        "effective_query": "lang:C++ evidencia vinculada",
+        "started_at": "2026-09-11T20:46:32.568342469Z",
+        "duration": 13388224515,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-49a93fc03199",
+        "attempt_index": 2,
+        "planned_query": "evidencia vinculada a codigo, testes e commits reais",
+        "effective_query": "evidencia vinculada",
+        "started_at": "2026-09-11T20:46:45.956568507Z",
+        "duration": 2851979102,
+        "status": "SUCCEEDED",
+        "result_count": 3
+      },
+      {
+        "expansion_id": "exp-constraint-d8bcde2da8fa",
+        "attempt_index": 0,
+        "planned_query": "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+        "effective_query": "lang:C++ integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+        "started_at": "2026-09-11T20:46:48.808639923Z",
+        "duration": 4450352302,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-d8bcde2da8fa",
+        "attempt_index": 1,
+        "planned_query": "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+        "effective_query": "lang:C++ integracao viavel",
+        "started_at": "2026-09-11T20:46:53.258993788Z",
+        "duration": 8669913149,
+        "status": "EMPTY",
+        "result_count": 0
+      },
+      {
+        "expansion_id": "exp-constraint-d8bcde2da8fa",
+        "attempt_index": 2,
+        "planned_query": "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+        "effective_query": "integracao viavel",
+        "started_at": "2026-09-11T20:47:01.928909312Z",
+        "duration": 11682664113,
+        "status": "EMPTY",
+        "result_count": 0
+      }
+    ]
+  }
+}

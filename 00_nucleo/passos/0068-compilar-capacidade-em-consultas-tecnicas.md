@@ -2,7 +2,8 @@
 
 ## Intenção e causa raiz congeladas
 
-Corrigir incrementalmente a perda observada no dossiê `coin-tessellation`: uma capacidade
+Corrigir incrementalmente a perda observada no dossiê
+`lab/bancada/history/reports/0068-coin-tessellation`: uma capacidade
 natural longa em português foi enviada como consulta lexical e a redução posterior
 `predicados geometricos` admitiu `Dante-Leoncini/Whisk3D-Editor`, cujo trecho apenas usa a
 expressão genérica em comentário. O dossiê v2, escrito manualmente com vocabulário técnico

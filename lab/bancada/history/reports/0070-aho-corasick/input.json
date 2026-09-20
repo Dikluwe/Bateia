@@ -1,0 +1,212 @@
+{
+  "schema_version": "algorithm-history-input-v1",
+  "algorithms": [
+    {
+      "id": "straightforward-multipattern-scan",
+      "name": "Repeated single-pattern keyword scan",
+      "chronology": "UNKNOWN",
+      "year_start": null,
+      "year_end": null,
+      "chronology_reason": "The 1975 paper describes this as the straightforward comparison baseline but does not establish its first author or date.",
+      "provenance_ids": ["paper-aho-corasick"]
+    },
+    {
+      "id": "aho-corasick-1975",
+      "name": "Aho-Corasick finite-state string matching machine",
+      "chronology": "KNOWN",
+      "year_start": 1975,
+      "year_end": 1975,
+      "chronology_reason": "The original Communications of the ACM article was published in June 1975.",
+      "provenance_ids": ["paper-aho-corasick", "dblp-aho-corasick"]
+    },
+    {
+      "id": "gitleaks-aho-prefilter",
+      "name": "Gitleaks Aho-Corasick prefilter",
+      "chronology": "UNKNOWN",
+      "year_start": null,
+      "year_end": null,
+      "chronology_reason": "The inspected source establishes the current mechanism, not the date on which it entered Gitleaks.",
+      "provenance_ids": ["gitleaks-current-source"]
+    },
+    {
+      "id": "bateia-pattern-loop-2026",
+      "name": "Bateia parser AhoCorasick component",
+      "chronology": "KNOWN",
+      "year_start": 2026,
+      "year_end": 2026,
+      "chronology_reason": "Git records introduce the component and its prompt together on 2026-08-08.",
+      "provenance_ids": ["bateia-introduction-commit", "bateia-current-source", "bateia-parser-prompt"]
+    }
+  ],
+  "provenance": [
+    {
+      "id": "paper-aho-corasick",
+      "kind": "PRIMARY_SOURCE",
+      "origin_id": "publication:doi:10.1145/360825.360855",
+      "citation": "Alfred V. Aho and Margaret J. Corasick. Efficient String Matching: An Aid to Bibliographic Search. CACM 18(6), 1975, 333-340.",
+      "locator": "https://par.cse.nsysu.edu.tw/resource/paper/2022/220913/Efficient%20String%20Matching%20an%20Aid%20to%20Bibliographic%20Search.pdf"
+    },
+    {
+      "id": "dblp-aho-corasick",
+      "kind": "SECONDARY_SOURCE",
+      "origin_id": "catalog:dblp:journals/cacm/AhoC75",
+      "citation": "DBLP bibliographic record for Aho and Corasick, CACM 18(6), 1975.",
+      "locator": "https://dblp.uni-trier.de/rec/journals/cacm/AhoC75.html"
+    },
+    {
+      "id": "go-strings-source",
+      "kind": "EMPIRICAL_ARTIFACT",
+      "origin_id": "source:go:strings/strings.go",
+      "citation": "Go standard library source for strings.Contains.",
+      "locator": "https://go.dev/src/strings/strings.go?s=11324%3A11361"
+    },
+    {
+      "id": "gitleaks-current-source",
+      "kind": "EMPIRICAL_ARTIFACT",
+      "origin_id": "source:github:gitleaks/gitleaks:master:detect/detect.go",
+      "citation": "Current Gitleaks detector source importing github.com/BobuSumisu/aho-corasick and constructing a prefilter matcher.",
+      "locator": "https://github.com/gitleaks/gitleaks/blob/master/detect/detect.go"
+    },
+    {
+      "id": "bateia-current-source",
+      "kind": "EMPIRICAL_ARTIFACT",
+      "origin_id": "source:bateia:aho_corasick.go:sha256:287cdda885e52ce5",
+      "citation": "Current Bateia AhoCorasick source, SHA-256 287cdda885e52ce52481005498fa12622c10c00a648d7050984daee4bd03ed4e.",
+      "locator": "01_core/parser/aho_corasick.go"
+    },
+    {
+      "id": "bateia-introduction-commit",
+      "kind": "PRIMARY_SOURCE",
+      "origin_id": "git:bateia:2a7372c33d6523479b5e3600167bac998da2dce3",
+      "citation": "Bateia commit 2a7372c, feat: implementar inovaçoes tecnológicas da camada 4, authored 2026-08-08.",
+      "locator": "https://github.com/Dikluwe/Bateia/commit/2a7372c33d6523479b5e3600167bac998da2dce3"
+    },
+    {
+      "id": "bateia-parser-prompt",
+      "kind": "PRIMARY_SOURCE",
+      "origin_id": "source:bateia:prompt:01_core/parser/aho_corasick.md",
+      "citation": "Bateia crystalline prompt for the parser Aho-Corasick component, introduced with commit 2a7372c.",
+      "locator": "00_nucleo/prompts/01_core/parser/aho_corasick.md"
+    }
+  ],
+  "claims": [
+    {
+      "id": "ac-improves-repeated-scan",
+      "subject_id": "aho-corasick-1975",
+      "relation": "IMPROVES",
+      "object_id": "straightforward-multipattern-scan",
+      "statement": "The Aho-Corasick finite-state machine improves the repeated single-pattern scan for multi-keyword bibliographic search."
+    },
+    {
+      "id": "gitleaks-derived-from-ac",
+      "subject_id": "gitleaks-aho-prefilter",
+      "relation": "DERIVED_FROM",
+      "object_id": "aho-corasick-1975",
+      "statement": "The inspected Gitleaks prefilter is implemented with a library explicitly implementing Aho-Corasick."
+    },
+    {
+      "id": "bateia-resembles-repeated-scan",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "RESEMBLES",
+      "object_id": "straightforward-multipattern-scan",
+      "statement": "The current Bateia component mechanically resembles a repeated single-pattern scan."
+    },
+    {
+      "id": "bateia-derived-from-ac",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "DERIVED_FROM",
+      "object_id": "aho-corasick-1975",
+      "statement": "The current Bateia component is historically and mechanically derived from the Aho-Corasick automaton."
+    },
+    {
+      "id": "bateia-influenced-by-gitleaks",
+      "subject_id": "bateia-pattern-loop-2026",
+      "relation": "INFLUENCED_BY",
+      "object_id": "gitleaks-aho-prefilter",
+      "statement": "The Bateia component was influenced by the Gitleaks Aho-Corasick prefilter."
+    }
+  ],
+  "bases": [
+    {
+      "id": "paper-performance-support",
+      "claim_id": "ac-improves-repeated-scan",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "paper-aho-corasick",
+      "summary": "The original paper contrasts its finite-state machine with straightforward matching, reports text processing independent of the number of keywords, and reports a five-to-tenfold improvement on typical bibliographic inputs.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "paper-mechanism-inference",
+      "claim_id": "ac-improves-repeated-scan",
+      "kind": "INFERENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "paper-aho-corasick",
+      "summary": "The improvement follows from sharing prefix states and failure transitions instead of restarting an independent search for every keyword.",
+      "derived_from_ids": ["paper-performance-support"]
+    },
+    {
+      "id": "gitleaks-import-support",
+      "claim_id": "gitleaks-derived-from-ac",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "gitleaks-current-source",
+      "summary": "The detector imports github.com/BobuSumisu/aho-corasick, constructs its trie, and calls Match on decoded text as a prefilter.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "bateia-loop-support",
+      "claim_id": "bateia-resembles-repeated-scan",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "bateia-current-source",
+      "summary": "MatchAll iterates over every stored pattern and invokes strings.Contains separately for each one; the type stores no automaton states or failure links.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "go-contains-support",
+      "claim_id": "bateia-resembles-repeated-scan",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "go-strings-source",
+      "summary": "The official Go source defines strings.Contains as Index(s, substr) >= 0, confirming that each Bateia loop iteration launches a standalone substring lookup.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "bateia-name-and-objective-support",
+      "claim_id": "bateia-derived-from-ac",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "bateia-parser-prompt",
+      "summary": "The design prompt explicitly names Aho-Corasick and requests construction of its multiple-pattern automaton with O(n+m) behavior.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "bateia-mechanism-ambiguous",
+      "claim_id": "bateia-derived-from-ac",
+      "kind": "EVIDENCE",
+      "stance": "AMBIGUOUS",
+      "provenance_id": "bateia-current-source",
+      "summary": "The delivered component keeps the historical name but implements a per-pattern strings.Contains loop, so the available artifact does not establish mechanical descent from the finite-state algorithm.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "bateia-prompt-gitleaks-support",
+      "claim_id": "bateia-influenced-by-gitleaks",
+      "kind": "EVIDENCE",
+      "stance": "SUPPORT",
+      "provenance_id": "bateia-parser-prompt",
+      "summary": "The Bateia prompt says the component was discovered during a scan that included gitleaks/gitleaks.",
+      "derived_from_ids": []
+    },
+    {
+      "id": "gitleaks-transfer-ambiguous",
+      "claim_id": "bateia-influenced-by-gitleaks",
+      "kind": "EVIDENCE",
+      "stance": "AMBIGUOUS",
+      "provenance_id": "gitleaks-current-source",
+      "summary": "The inspected Gitleaks artifact proves use of an Aho-Corasick library but contains no reference to Bateia and cannot by itself establish a direct transfer path.",
+      "derived_from_ids": []
+    }
+  ]
+}

@@ -1,0 +1,977 @@
+{
+  "schema_version": "1",
+  "rules_version": "2026-09-16.coin5-pathassign",
+  "rules_hash": "b4d76c027da3ecfe3657fe34e9923b744a03741e8fd509e644b89ccc1b3b8467",
+  "catalog_coverage": {
+    "schema_version": "1",
+    "rules_version": "2026-09-16.coin5-pathassign",
+    "rules_hash": "b4d76c027da3ecfe3657fe34e9923b744a03741e8fd509e644b89ccc1b3b8467",
+    "entries": [
+      {
+        "requirement_kind": "capability",
+        "requirement": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+        "status": "COVERED",
+        "rule_id": "assignment-leaves-membership-untouched",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+        "status": "COVERED",
+        "rule_id": "explicit-unregister-before-adopt",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "guard copy assignment against self-assignment before mutating any state",
+        "status": "COVERED",
+        "rule_id": "self-assignment-guard",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "capability",
+        "requirement": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+        "status": "COVERED",
+        "rule_id": "copy-and-swap-idiom",
+        "rule_basis": "DECLARED",
+        "reason_code": "COVERED"
+      },
+      {
+        "requirement_kind": "problem",
+        "requirement": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+        "status": "CATALOG_GAP",
+        "reason_code": "CATALOG_GAP"
+      }
+    ]
+  },
+  "assessments": [
+    {
+      "repository": {
+        "owner": "local",
+        "repo": "boost-intrusive-ddb60e30",
+        "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+      },
+      "screening_decision": {
+        "repository": "local/boost-intrusive-ddb60e30",
+        "ranking_score": 0.33000000000000007,
+        "probability": null,
+        "calibration_status": "uncalibrated",
+        "decision": "AUDIT",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 1,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 7,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0.3
+        },
+        "contributions": [
+          {
+            "signal": "intercept",
+            "value": 1,
+            "weight": 0.05,
+            "effect": 0.05,
+            "reason": "base explícita do modelo"
+          },
+          {
+            "signal": "expansion_prior",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "produtividade julgada da expansão"
+          },
+          {
+            "signal": "query_retention",
+            "value": 1,
+            "weight": 0.15,
+            "effect": 0.15,
+            "reason": "termos informativos preservados"
+          },
+          {
+            "signal": "fallback_depth",
+            "value": 0,
+            "weight": -0.1,
+            "effect": -0,
+            "reason": "profundidade do fallback efetivo"
+          },
+          {
+            "signal": "match_specificity",
+            "value": 0,
+            "weight": 0.1,
+            "effect": 0,
+            "reason": "especificidade do tipo de match"
+          },
+          {
+            "signal": "description_alignment",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "alinhamento lexical da descrição"
+          },
+          {
+            "signal": "origin_convergence",
+            "value": 1,
+            "weight": 0.1,
+            "effect": 0.1,
+            "reason": "convergência de expansões independentes"
+          },
+          {
+            "signal": "capability_coverage",
+            "value": 0,
+            "weight": 0.15,
+            "effect": 0,
+            "reason": "capacidades com sinal preliminar"
+          },
+          {
+            "signal": "non_goal_conflict",
+            "value": 0,
+            "weight": -0.4,
+            "effect": -0,
+            "reason": "conflito explícito com não objetivos"
+          },
+          {
+            "signal": "evidence_completeness",
+            "value": 0.3,
+            "weight": 0.1,
+            "effect": 0.03,
+            "reason": "completude da evidência disponível"
+          }
+        ],
+        "uncertainty_reasons": [
+          "evidência incompleta"
+        ],
+        "origins": [
+          {
+            "expansion_id": "exp-constraint-da9653ee9141",
+            "planned_query": "C++11 as the minimum supported language standard",
+            "attempt_index": 0,
+            "effective_query": "C++11 as the minimum supported language standard"
+          },
+          {
+            "expansion_id": "exp-problem-eab51dc68a7b",
+            "planned_query": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+            "attempt_index": 0,
+            "effective_query": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op."
+          },
+          {
+            "expansion_id": "exp-capability-6b9c235339c7",
+            "planned_query": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+            "attempt_index": 0,
+            "effective_query": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap"
+          },
+          {
+            "expansion_id": "exp-capability-2a9d52bc4dc8",
+            "planned_query": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+            "attempt_index": 0,
+            "effective_query": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state"
+          },
+          {
+            "expansion_id": "exp-capability-a638d285b0fe",
+            "planned_query": "guard copy assignment against self-assignment before mutating any state",
+            "attempt_index": 0,
+            "effective_query": "guard copy assignment against self-assignment before mutating any state"
+          },
+          {
+            "expansion_id": "exp-constraint-e2c530f30872",
+            "planned_query": "must not leave a stale pointer registered on any external list after assignment",
+            "attempt_index": 0,
+            "effective_query": "must not leave a stale pointer registered on any external list after assignment"
+          },
+          {
+            "expansion_id": "exp-capability-4007800bc682",
+            "planned_query": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+            "attempt_index": 0,
+            "effective_query": "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+          }
+        ]
+      },
+      "problem_alignment": {
+        "capability": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+        "status": "INCONCLUSIVE",
+        "sources": [],
+        "confidence": 0,
+        "explanation": "o catálogo não possui regra declarada única e segura para este requisito",
+        "reason_code": "CATALOG_GAP"
+      },
+      "capabilities": [
+        {
+          "capability": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "is_linked",
+              "line": 151,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "unlink",
+              "line": 157,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "is_linked",
+              "line": 274,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "unlink",
+              "line": 280,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "is_linked",
+              "line": 154,
+              "snippet": "bool is_linked() const BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "unlink",
+              "line": 160,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "is_linked",
+              "line": 283,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "unlink",
+              "line": 289,
+              "snippet": "void unlink();",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 45,
+              "snippet": "BOOST_TEST(!rhs.is_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 51,
+              "snippet": "BOOST_TEST(!this-\u003eis_linked() \u0026\u0026 !rhs.is_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 57,
+              "snippet": "BOOST_TEST(!this-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 67,
+              "snippet": "bool is_linked() const",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 437,
+              "snippet": "BOOST_TEST(!(\u0026values[1])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 438,
+              "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 444,
+              "snippet": "BOOST_TEST((\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 445,
+              "snippet": "BOOST_TEST(!(\u0026values[0])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 451,
+              "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 452,
+              "snippet": "BOOST_TEST((\u0026values[0])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.65,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        },
+        {
+          "capability": "guard copy assignment against self-assignment before mutating any state",
+          "status": "INCONCLUSIVE",
+          "sources": [],
+          "confidence": 0,
+          "explanation": "coleta incompleta ou com falha; ausência não pode ser concluída",
+          "reason_code": "COLLECTION_INCOMPLETE"
+        },
+        {
+          "capability": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+          "status": "PARTIAL",
+          "sources": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 232,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 238,
+              "snippet": "{ this-\u003eswap(x); return *this; }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 560,
+              "snippet": "void swap(list_impl\u0026 other) BOOST_NOEXCEPT",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 563,
+              "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1045,
+              "snippet": "carry.swap(counter[i++]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1047,
+              "snippet": "carry.swap(counter[i]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1053,
+              "snippet": "this-\u003eswap(counter[fill-1]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1418,
+              "snippet": "inline friend void swap(list_impl \u0026x, list_impl \u0026y) BOOST_NOEXCEPT",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1419,
+              "snippet": "{ x.swap(y); }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 352,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 358,
+              "snippet": "{ this-\u003eswap(x); return *this; }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 721,
+              "snippet": "void swap(slist_impl\u0026 other)",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 729,
+              "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 1277,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 1472,
+              "snippet": "carry.swap(counter[i]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 2017,
+              "snippet": "friend void swap(slist_impl \u0026x, slist_impl \u0026y)",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 2018,
+              "snippet": "{ x.swap(y); }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 363,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 391,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 399,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 406,
+              "snippet": "testlist2.swap(testlist1);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            }
+          ],
+          "confidence": 0.65,
+          "explanation": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint": "C++11 as the minimum supported language standard",
+          "evidence": {
+            "capability": "C++11 as the minimum supported language standard",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "must not leave a stale pointer registered on any external list after assignment",
+          "evidence": {
+            "capability": "must not leave a stale pointer registered on any external list after assignment",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "restrição sem regra determinística específica"
+          }
+        },
+        {
+          "constraint": "non_goal: changing the meaning of copy construction",
+          "evidence": {
+            "capability": "changing the meaning of copy construction",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        },
+        {
+          "constraint": "non_goal: making the type non-copyable",
+          "evidence": {
+            "capability": "making the type non-copyable",
+            "status": "INCONCLUSIVE",
+            "sources": [],
+            "confidence": 0,
+            "explanation": "coleta incompleta"
+          }
+        }
+      ],
+      "license": {
+        "status": "INCONCLUSIVE",
+        "caveat": "coleta incompleta"
+      },
+      "maintenance": {
+        "status": "INCONCLUSIVE",
+        "archived": false,
+        "sources": [
+          {
+            "kind": "repository_metadata",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "@repository-metadata",
+            "snippet": "metadados imutáveis da coleta",
+            "rule_id": "repository-maintenance",
+            "content_hash": "ee38f1cd4ac96278f67770676c3fbe057051bcb06fb0ad22db0ccf301e9000b5",
+            "strength": 0.7
+          }
+        ],
+        "warnings": [
+          "coleta incompleta"
+        ]
+      },
+      "operation": {
+        "local_status": "INCONCLUSIVE"
+      },
+      "reusable_parts": [],
+      "gaps": [
+        "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+        "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+      ]
+    }
+  ]
+}

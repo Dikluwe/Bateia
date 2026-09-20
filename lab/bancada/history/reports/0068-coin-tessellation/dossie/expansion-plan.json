@@ -1,0 +1,155 @@
+{
+  "idea": {
+    "problem": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+    "users": [
+      "mantenedores do Coin (biblioteca de grafo de cena C++/OpenGL, implementacao do Open Inventor 2.1)",
+      "aplicacoes que renderizam SoIndexedFaceSet com geometria complexa contendo buracos",
+      "desenvolvedores avaliando bibliotecas de tesselacao 2D para pipelines de renderizacao"
+    ],
+    "capabilities": [
+      "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+      "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+      "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+      "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+      "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+      "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin"
+    ],
+    "constraints": [
+      "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+      "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+      "execucao local sem dependencia de rede ou servico externo",
+      "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+      "evidencia vinculada a codigo, testes e commits reais",
+      "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp"
+    ],
+    "non_goals": [
+      "suportar poligonos auto-intersectantes, ja descartado como fora de escopo pelo mantenedor original do issue",
+      "substituir todo o pipeline de renderizacao do Coin",
+      "escolher biblioteca apenas por popularidade ou numero de estrelas",
+      "gerar codigo automaticamente sem revisao humana"
+    ],
+    "preferred_stack": [
+      "c++",
+      "cmake"
+    ]
+  },
+  "expansions": [
+    {
+      "id": "exp-problem-fab8b0f9e052",
+      "facet": "problem",
+      "query": "Decidir se vale construir do zero, estender o tesselador interno do Coin (SbTesselator, ear-clipping tipo-Delaunay de anel unico) ou adotar/compor uma biblioteca C++ existente de Constrained Delaunay Triangulation para renderizar corretamente faces SoIndexedFaceSet com buracos ou multiplos contornos (issue coin3d/coin #177, Render is missing Triangles).",
+      "rationale": "descobrir soluções para o problema central",
+      "covers": [
+        "problem"
+      ]
+    },
+    {
+      "id": "exp-capability-cebfc01f26db",
+      "facet": "capability",
+      "query": "triangulacao de poligonos com multiplos contornos, incluindo buracos e ilhas aninhadas",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[0]"
+      ]
+    },
+    {
+      "id": "exp-capability-be4fd940a72b",
+      "facet": "capability",
+      "query": "insercao de arestas restritas garantindo que arestas de contorno sobrevivam na triangulacao final",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[1]"
+      ]
+    },
+    {
+      "id": "exp-capability-2a3ee9022538",
+      "facet": "capability",
+      "query": "predicados geometricos de orientacao e in-circle robustos a casos quase degenerados",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[2]"
+      ]
+    },
+    {
+      "id": "exp-capability-522401ba7a17",
+      "facet": "capability",
+      "query": "API embutivel em C++ sem dependencia obrigatoria de servico externo ou GPU",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[3]"
+      ]
+    },
+    {
+      "id": "exp-capability-3bcdb22a71e3",
+      "facet": "capability",
+      "query": "desempenho adequado para geometria de cena processada em tempo real no caminho de renderizacao",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[4]"
+      ]
+    },
+    {
+      "id": "exp-capability-55dab65773b3",
+      "facet": "capability",
+      "query": "tratamento de poligonos concavos com contorno unico, ja suportado hoje pelo Coin",
+      "rationale": "buscar implementação da capacidade isoladamente",
+      "covers": [
+        "capabilities[5]"
+      ]
+    },
+    {
+      "id": "exp-constraint-6c852cc46c8c",
+      "facet": "constraint",
+      "query": "licenca compativel com uso comercial permissivo, compativel com BSD 3-clause",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[0]"
+      ]
+    },
+    {
+      "id": "exp-constraint-31e6d0f3db84",
+      "facet": "constraint",
+      "query": "codigo C++11 ou portavel para C++11 sem quebrar o padrao minimo do Coin",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[1]"
+      ]
+    },
+    {
+      "id": "exp-constraint-2bd04b8d34ec",
+      "facet": "constraint",
+      "query": "execucao local sem dependencia de rede ou servico externo",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[2]"
+      ]
+    },
+    {
+      "id": "exp-constraint-49520d17d3f3",
+      "facet": "constraint",
+      "query": "sem exigencia de contexto GPU, ja que a tesselacao roda em CPU antes do envio para a placa de video",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[3]"
+      ]
+    },
+    {
+      "id": "exp-constraint-49a93fc03199",
+      "facet": "constraint",
+      "query": "evidencia vinculada a codigo, testes e commits reais",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[4]"
+      ]
+    },
+    {
+      "id": "exp-constraint-d8bcde2da8fa",
+      "facet": "constraint",
+      "query": "integracao viavel nos pontos de uso atuais: SoConvexDataCache, SoExtSelection, Extrusion.cpp, soshape_primdata.cpp",
+      "rationale": "buscar soluções que declaram a restrição relevante",
+      "covers": [
+        "constraints[5]"
+      ]
+    }
+  ]
+}

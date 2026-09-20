@@ -1,0 +1,78 @@
+{
+  "schema_version": "2",
+  "version": "2026-09-16.coin5-pathassign",
+  "rules": [
+    {
+      "id": "explicit-unregister-before-adopt",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathassign-study",
+      "target_hints": ["list_hook.hpp", "slist_hook.hpp"],
+      "capability_terms": [
+        "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["unlink()", "is_linked()", "node_algorithms::unlink"] },
+        { "kind": "test", "patterns": ["unlink()"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["unlink", "unregister"] },
+        { "kind": "file", "patterns": ["list_hook.hpp"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    },
+    {
+      "id": "self-assignment-guard",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathassign-study",
+      "target_hints": ["list_hook.hpp"],
+      "capability_terms": [
+        "guard copy assignment against self-assignment before mutating any state"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["this == &", "&x == this", "if (this =="] },
+        { "kind": "test", "patterns": ["this =="] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["self-assignment", "self assignment"] },
+        { "kind": "file", "patterns": ["list_hook.hpp"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    },
+    {
+      "id": "assignment-leaves-membership-untouched",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathassign-study",
+      "target_hints": ["list_hook.hpp"],
+      "capability_terms": [
+        "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["Empty function", "argument is ignored"] },
+        { "kind": "documentation", "patterns": ["Empty function. The argument is ignored", "emulate move-semantics"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["swap can be used", "STL-compliant"] },
+        { "kind": "file", "patterns": ["list_hook.hpp"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    },
+    {
+      "id": "copy-and-swap-idiom",
+      "family": "cpp-api-design",
+      "provenance": "coin5-pathassign-study",
+      "target_hints": ["list_hook.hpp"],
+      "capability_terms": [
+        "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+      ],
+      "strong_evidence": [
+        { "kind": "symbol", "patterns": ["swap(", "void swap"] },
+        { "kind": "documentation", "patterns": ["swap can be used to emulate move-semantics"] }
+      ],
+      "supporting_evidence": [
+        { "kind": "documentation", "patterns": ["copy-and-swap", "swap idiom"] },
+        { "kind": "file", "patterns": ["list_hook.hpp"] }
+      ],
+      "negative_evidence": ["not implemented", "planned"]
+    }
+  ]
+}

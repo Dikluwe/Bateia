@@ -1,0 +1,2346 @@
+{
+  "investigation_plan": {
+    "schema_version": "1",
+    "requirements": [
+      {
+        "id": "req-capability-2a9d52bc4dc88bda",
+        "kind": "capability",
+        "text": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+        "question": "Que evidência responde a: explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-4007800bc6820bea",
+        "kind": "capability",
+        "text": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+        "question": "Que evidência responde a: use the copy-and-swap idiom so the old state's own destructor performs cleanup?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-6b9c235339c79256",
+        "kind": "capability",
+        "text": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+        "question": "Que evidência responde a: document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-capability-a638d285b0fe11f0",
+        "kind": "capability",
+        "text": "guard copy assignment against self-assignment before mutating any state",
+        "question": "Que evidência responde a: guard copy assignment against self-assignment before mutating any state?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-constraint-da9653ee9141cc8c",
+        "kind": "constraint",
+        "text": "C++11 as the minimum supported language standard",
+        "question": "Que evidência responde a: C++11 as the minimum supported language standard?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-constraint-e2c530f308726f35",
+        "kind": "constraint",
+        "text": "must not leave a stale pointer registered on any external list after assignment",
+        "question": "Que evidência responde a: must not leave a stale pointer registered on any external list after assignment?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "id": "req-non_goal-03ee38507131a5cb",
+        "kind": "non_goal",
+        "text": "changing the meaning of copy construction",
+        "question": "Que evidência responde a: changing the meaning of copy construction?",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "id": "req-non_goal-8ad5701813765558",
+        "kind": "non_goal",
+        "text": "making the type non-copyable",
+        "question": "Que evidência responde a: making the type non-copyable?",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "id": "req-preference-4682918564fa2db4",
+        "kind": "preference",
+        "text": "cmake",
+        "question": "Que evidência responde a: cmake?",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "id": "req-preference-5d050596ec3e3a4f",
+        "kind": "preference",
+        "text": "c++",
+        "question": "Que evidência responde a: c++?",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "id": "req-problem-eab51dc68a7bb30c",
+        "kind": "problem",
+        "text": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+        "question": "Que evidência responde a: Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.?",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      }
+    ],
+    "searches": [],
+    "actions": [
+      {
+        "question": "Que evidência responde a: explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-2a9d52bc4dc88bda",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list_hook.hpp",
+            "symbol": "is_linked",
+            "line": 151,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list_hook.hpp",
+            "symbol": "is_linked",
+            "line": 274,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list_hook.hpp",
+            "symbol": "unlink",
+            "line": 157,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "unlink()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list_hook.hpp",
+            "symbol": "unlink",
+            "line": 280,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "unlink()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist_hook.hpp",
+            "symbol": "is_linked",
+            "line": 154,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist_hook.hpp",
+            "symbol": "is_linked",
+            "line": 283,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist_hook.hpp",
+            "symbol": "unlink",
+            "line": 160,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "unlink()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist_hook.hpp",
+            "symbol": "unlink",
+            "line": 289,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "unlink()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/nonhook_node.hpp",
+            "symbol": "is_linked",
+            "line": 45,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/nonhook_node.hpp",
+            "symbol": "is_linked",
+            "line": 51,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/nonhook_node.hpp",
+            "symbol": "is_linked",
+            "line": 57,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/nonhook_node.hpp",
+            "symbol": "is_linked",
+            "line": 67,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 437,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 438,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 444,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 445,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 451,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "is_linked",
+            "line": 452,
+            "rule_id": "explicit-unregister-before-adopt",
+            "matched_pattern": "is_linked()",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: use the copy-and-swap idiom so the old state's own destructor performs cleanup?",
+        "gap": "símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)",
+        "requirement_id": "req-capability-4007800bc6820bea",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "INFERENCE",
+        "status": "PARTIAL",
+        "evidence": [
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 1045,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 1047,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 1053,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 1418,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 1419,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 232,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 238,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 560,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/list.hpp",
+            "symbol": "swap",
+            "line": 563,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 1277,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 1472,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 2017,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 2018,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 352,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 358,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 721,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "symbol",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "include/boost/intrusive/slist.hpp",
+            "symbol": "swap",
+            "line": 729,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "swap",
+            "line": 363,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "swap",
+            "line": 391,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "swap",
+            "line": 399,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          },
+          {
+            "kind": "test_implementation",
+            "ref": {
+              "owner": "local",
+              "repo": "boost-intrusive-ddb60e30",
+              "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+            },
+            "path": "test/slist_test.cpp",
+            "symbol": "swap",
+            "line": 406,
+            "rule_id": "copy-and-swap-idiom",
+            "matched_pattern": "swap(",
+            "match_class": "STRONG_CONTENT",
+            "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+            "strength": 0.6
+          }
+        ],
+        "next_action": "Verificar se os indícios atendem ao requisito original e procurar contrapontos antes de recomendar reúso.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-6b9c235339c79256",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: guard copy assignment against self-assignment before mutating any state?",
+        "gap": "coleta incompleta ou com falha; ausência não pode ser concluída",
+        "requirement_id": "req-capability-a638d285b0fe11f0",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Completar a coleta indicada nas falhas do assessment antes de avaliar a capacidade; não inferir ausência.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: C++11 as the minimum supported language standard?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-da9653ee9141cc8c",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: must not leave a stale pointer registered on any external list after assignment?",
+        "gap": "restrição sem regra determinística específica",
+        "requirement_id": "req-constraint-e2c530f308726f35",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada para este requisito e os testemunhos necessários; o catálogo atual não possui detector aplicável.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      },
+      {
+        "question": "Que evidência responde a: changing the meaning of copy construction?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-03ee38507131a5cb",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: making the type non-copyable?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-non_goal-8ad5701813765558",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Investigar explicitamente o comportamento excluído e sua negação; não inferir ausência por silêncio.",
+        "acceptance": "Examinar presença e negação do comportamento excluído; ausência de menção não demonstra ausência do comportamento."
+      },
+      {
+        "question": "Que evidência responde a: cmake?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-4682918564fa2db4",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: c++?",
+        "gap": "Evidência admissível insuficiente para responder à pergunta.",
+        "requirement_id": "req-preference-5d050596ec3e3a4f",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "NOT_VERIFIED",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Comparar a preferência de stack com manifesto e interfaces; não excluir por preferência desconhecida.",
+        "acceptance": "Registrar compatibilidade observada; preferência não é gate eliminatório."
+      },
+      {
+        "question": "Que evidência responde a: Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.?",
+        "gap": "o catálogo não possui regra declarada única e segura para este requisito",
+        "requirement_id": "req-problem-eab51dc68a7bb30c",
+        "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+        "classification": "CATALOG_GAP",
+        "status": "INCONCLUSIVE",
+        "evidence": [],
+        "next_action": "Definir uma verificação delimitada e segura; a cobertura do catálogo não descreve ausência no candidato.",
+        "acceptance": "Localizar implementação e testemunho pertinente ao requisito, com identidade e limites; validar o comportamento sob condições declaradas."
+      }
+    ],
+    "stop_reason": "RECORDED_SEARCH_FINISHED",
+    "scope": "Somente candidatos, tentativas e evidências registrados; não demonstra busca global completa nem integração verificada.",
+    "telemetry_label": "Tempos de busca são telemetria do Bateia, não benchmarks dos candidatos."
+  },
+  "schema_version": "1",
+  "policy": {
+    "schema_version": "1",
+    "allowed_licenses": [
+      "MIT",
+      "Apache-2.0",
+      "MPL-2.0",
+      "BSL-1.0",
+      "BSD-3-Clause"
+    ],
+    "require_local": true,
+    "allow_archived": false,
+    "max_components": 6,
+    "extend_min_coverage": 0.6,
+    "integration_min_value": 0.3
+  },
+  "policy_hash": "11cff97bd04c0988b5b0737af13a511c70e58836391adcd5e2803cc8ef652508",
+  "decision": "INCONCLUSIVE",
+  "matrix": [
+    {
+      "capability": "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+      "candidates": [
+        {
+          "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    },
+    {
+      "capability": "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+      "candidates": [
+        {
+          "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "is_linked",
+              "line": 151,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "unlink",
+              "line": 157,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "is_linked",
+              "line": 274,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list_hook.hpp",
+              "symbol": "unlink",
+              "line": 280,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "is_linked",
+              "line": 154,
+              "snippet": "bool is_linked() const BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "unlink",
+              "line": 160,
+              "snippet": "void unlink() BOOST_NOEXCEPT;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "is_linked",
+              "line": 283,
+              "snippet": "bool is_linked() const;",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist_hook.hpp",
+              "symbol": "unlink",
+              "line": 289,
+              "snippet": "void unlink();",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "unlink()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 45,
+              "snippet": "BOOST_TEST(!rhs.is_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 51,
+              "snippet": "BOOST_TEST(!this-\u003eis_linked() \u0026\u0026 !rhs.is_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 57,
+              "snippet": "BOOST_TEST(!this-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/nonhook_node.hpp",
+              "symbol": "is_linked",
+              "line": 67,
+              "snippet": "bool is_linked() const",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 437,
+              "snippet": "BOOST_TEST(!(\u0026values[1])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 438,
+              "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 444,
+              "snippet": "BOOST_TEST((\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 445,
+              "snippet": "BOOST_TEST(!(\u0026values[0])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 451,
+              "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "is_linked",
+              "line": 452,
+              "snippet": "BOOST_TEST((\u0026values[0])-\u003eis_linked());",
+              "rule_id": "explicit-unregister-before-adopt",
+              "matched_pattern": "is_linked()",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "capability": "guard copy assignment against self-assignment before mutating any state",
+      "candidates": [
+        {
+          "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+          "status": "INCONCLUSIVE"
+        }
+      ]
+    },
+    {
+      "capability": "use the copy-and-swap idiom so the old state's own destructor performs cleanup",
+      "candidates": [
+        {
+          "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+          "status": "PARTIAL",
+          "evidence": [
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 232,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 238,
+              "snippet": "{ this-\u003eswap(x); return *this; }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 560,
+              "snippet": "void swap(list_impl\u0026 other) BOOST_NOEXCEPT",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 563,
+              "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1045,
+              "snippet": "carry.swap(counter[i++]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1047,
+              "snippet": "carry.swap(counter[i]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1053,
+              "snippet": "this-\u003eswap(counter[fill-1]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1418,
+              "snippet": "inline friend void swap(list_impl \u0026x, list_impl \u0026y) BOOST_NOEXCEPT",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/list.hpp",
+              "symbol": "swap",
+              "line": 1419,
+              "snippet": "{ x.swap(y); }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 352,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 358,
+              "snippet": "{ this-\u003eswap(x); return *this; }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 721,
+              "snippet": "void swap(slist_impl\u0026 other)",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 729,
+              "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 1277,
+              "snippet": "this-\u003eswap(x);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 1472,
+              "snippet": "carry.swap(counter[i]);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 2017,
+              "snippet": "friend void swap(slist_impl \u0026x, slist_impl \u0026y)",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "symbol",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "include/boost/intrusive/slist.hpp",
+              "symbol": "swap",
+              "line": 2018,
+              "snippet": "{ x.swap(y); }",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 363,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 391,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 399,
+              "snippet": "testlist1.swap(testlist2);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            },
+            {
+              "kind": "test_implementation",
+              "ref": {
+                "owner": "local",
+                "repo": "boost-intrusive-ddb60e30",
+                "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+              },
+              "path": "test/slist_test.cpp",
+              "symbol": "swap",
+              "line": 406,
+              "snippet": "testlist2.swap(testlist1);",
+              "rule_id": "copy-and-swap-idiom",
+              "matched_pattern": "swap(",
+              "match_class": "STRONG_CONTENT",
+              "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+              "strength": 0.6
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+    "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+    "guard copy assignment against self-assignment before mutating any state",
+    "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+  ],
+  "reasons": [
+    {
+      "rule_id": "DEC-INCONCLUSIVE-001",
+      "effect": "block",
+      "message": "evidência obrigatória ou gate eliminatório permanece inconclusivo"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "capacidade não comprovada: document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list_hook.hpp",
+          "symbol": "is_linked",
+          "line": 151,
+          "snippet": "bool is_linked() const;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list_hook.hpp",
+          "symbol": "unlink",
+          "line": 157,
+          "snippet": "void unlink() BOOST_NOEXCEPT;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "unlink()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list_hook.hpp",
+          "symbol": "is_linked",
+          "line": 274,
+          "snippet": "bool is_linked() const;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list_hook.hpp",
+          "symbol": "unlink",
+          "line": 280,
+          "snippet": "void unlink() BOOST_NOEXCEPT;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "unlink()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "05a54f6538a093dc51355280ef8cce6ba8e3348ed4af08acd3ad776a2f6cd845",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist_hook.hpp",
+          "symbol": "is_linked",
+          "line": 154,
+          "snippet": "bool is_linked() const BOOST_NOEXCEPT;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist_hook.hpp",
+          "symbol": "unlink",
+          "line": 160,
+          "snippet": "void unlink() BOOST_NOEXCEPT;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "unlink()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist_hook.hpp",
+          "symbol": "is_linked",
+          "line": 283,
+          "snippet": "bool is_linked() const;",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist_hook.hpp",
+          "symbol": "unlink",
+          "line": 289,
+          "snippet": "void unlink();",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "unlink()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "69faba8868747ce3fee0b466436a238819cd8b4555fd4ad45fc4ea7f188b0aab",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/nonhook_node.hpp",
+          "symbol": "is_linked",
+          "line": 45,
+          "snippet": "BOOST_TEST(!rhs.is_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/nonhook_node.hpp",
+          "symbol": "is_linked",
+          "line": 51,
+          "snippet": "BOOST_TEST(!this-\u003eis_linked() \u0026\u0026 !rhs.is_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/nonhook_node.hpp",
+          "symbol": "is_linked",
+          "line": 57,
+          "snippet": "BOOST_TEST(!this-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/nonhook_node.hpp",
+          "symbol": "is_linked",
+          "line": 67,
+          "snippet": "bool is_linked() const",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "1513df599dae62ef135fcb522437045018f8f3c3eed83a59e96452fd6b13c117",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 437,
+          "snippet": "BOOST_TEST(!(\u0026values[1])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 438,
+          "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 444,
+          "snippet": "BOOST_TEST((\u0026values[2])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 445,
+          "snippet": "BOOST_TEST(!(\u0026values[0])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 451,
+          "snippet": "BOOST_TEST(!(\u0026values[2])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "is_linked",
+          "line": 452,
+          "snippet": "BOOST_TEST((\u0026values[0])-\u003eis_linked());",
+          "rule_id": "explicit-unregister-before-adopt",
+          "matched_pattern": "is_linked()",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "capacidade não comprovada: guard copy assignment against self-assignment before mutating any state; coleta incompleta ou com falha; ausência não pode ser concluída"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "evidence": [
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 232,
+          "snippet": "this-\u003eswap(x);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 238,
+          "snippet": "{ this-\u003eswap(x); return *this; }",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 560,
+          "snippet": "void swap(list_impl\u0026 other) BOOST_NOEXCEPT",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 563,
+          "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 1045,
+          "snippet": "carry.swap(counter[i++]);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 1047,
+          "snippet": "carry.swap(counter[i]);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 1053,
+          "snippet": "this-\u003eswap(counter[fill-1]);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 1418,
+          "snippet": "inline friend void swap(list_impl \u0026x, list_impl \u0026y) BOOST_NOEXCEPT",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/list.hpp",
+          "symbol": "swap",
+          "line": 1419,
+          "snippet": "{ x.swap(y); }",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "8a5510b5ad8ed06cac894385be686eb8c5cf47cdcd6207f314791a9015b0d062",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 352,
+          "snippet": "this-\u003eswap(x);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 358,
+          "snippet": "{ this-\u003eswap(x); return *this; }",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 721,
+          "snippet": "void swap(slist_impl\u0026 other)",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 729,
+          "snippet": "this-\u003epriv_size_traits().swap(other.priv_size_traits());",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 1277,
+          "snippet": "this-\u003eswap(x);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 1472,
+          "snippet": "carry.swap(counter[i]);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 2017,
+          "snippet": "friend void swap(slist_impl \u0026x, slist_impl \u0026y)",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "symbol",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "include/boost/intrusive/slist.hpp",
+          "symbol": "swap",
+          "line": 2018,
+          "snippet": "{ x.swap(y); }",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "b6f17f66f403366201912e43c5a02139fa87033771b99e29ee270997decea424",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "swap",
+          "line": 363,
+          "snippet": "testlist1.swap(testlist2);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "swap",
+          "line": 391,
+          "snippet": "testlist1.swap(testlist2);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "swap",
+          "line": 399,
+          "snippet": "testlist1.swap(testlist2);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        },
+        {
+          "kind": "test_implementation",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "test/slist_test.cpp",
+          "symbol": "swap",
+          "line": 406,
+          "snippet": "testlist2.swap(testlist1);",
+          "rule_id": "copy-and-swap-idiom",
+          "matched_pattern": "swap(",
+          "match_class": "STRONG_CONTENT",
+          "content_hash": "64b0ea57380ac6162b256725689088698fc4cb205e381b716194f1738d660f71",
+          "strength": 0.6
+        }
+      ],
+      "message": "capacidade não comprovada: use the copy-and-swap idiom so the old state's own destructor performs cleanup; símbolo, teste ou indício localizado; comportamento não verificado (avaliação lexical)"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "licença não verificada: localizar documento de licença com autoridade no projeto"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "evidence": [
+        {
+          "kind": "repository_metadata",
+          "ref": {
+            "owner": "local",
+            "repo": "boost-intrusive-ddb60e30",
+            "commit": "81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631"
+          },
+          "path": "@repository-metadata",
+          "snippet": "metadados imutáveis da coleta",
+          "rule_id": "repository-maintenance",
+          "content_hash": "ee38f1cd4ac96278f67770676c3fbe057051bcb06fb0ad22db0ccf301e9000b5",
+          "strength": 0.7
+        }
+      ],
+      "message": "manutenção não verificada: obter metadados datados de atividade e arquivamento"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "operação local não verificada: examinar requisitos e instruções de execução"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "restrição não verificada: C++11 as the minimum supported language standard; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "restrição não verificada: must not leave a stale pointer registered on any external list after assignment; restrição sem regra determinística específica"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "restrição não verificada: non_goal: changing the meaning of copy construction; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-EVIDENCE-0040",
+      "effect": "verify",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "message": "restrição não verificada: non_goal: making the type non-copyable; coleta incompleta"
+    },
+    {
+      "rule_id": "DEC-CATALOG-0071",
+      "effect": "verify",
+      "message": "a cobertura do catálogo é ausente ou apenas hipotética para parte dos requisitos; isso não descreve lacuna de nenhum candidato"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": "REFERENCE",
+      "candidate": "local/boost-intrusive-ddb60e30@81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631",
+      "coverage": 0,
+      "message": "0% das capacidades obrigatórias comprovadas"
+    }
+  ],
+  "effort": {
+    "method": "heuristic_component_gap_count",
+    "limitations": "Não mede custo nem viabilidade; requer ensaio de integração",
+    "level": "INCONCLUSIVE",
+    "factors": [
+      {
+        "factor": "evidence",
+        "effect": "unknown",
+        "evidence": "coleta ou gate inconclusivo"
+      }
+    ]
+  }
+}

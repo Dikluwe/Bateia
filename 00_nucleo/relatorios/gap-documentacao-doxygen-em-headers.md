@@ -2,7 +2,7 @@
 
 ## Observação reproduzida
 
-No dossiê `relatorios/coin5-pathassign-dossie`, o Bateia encontrou
+No dossiê `lab/bancada/history/reports/doxygen-header-gap/dossier`, o Bateia encontrou
 `unlink()` e `is_linked()` como indícios de desregistro explícito no candidato
 `local/boost-intrusive-ddb60e30`, commit imutável
 `81bbd0043760edd5c34a4d3a5b11f12d76e52f97f23fc45809c49e0cfed59631`.
@@ -84,4 +84,3 @@ semântica”, mantendo a fronteira entre contrato documentado e efeito verifica
 Isso deve beneficiar especialmente bibliotecas C/C++ com documentação de API
 embutida em headers, sem reabrir os falsos positivos em comentários que o
 localizador de ocorrência probatória passou a rejeitar.
-

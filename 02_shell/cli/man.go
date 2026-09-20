@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/man.md
  * @layer L2
- * @updated 2026-08-08
+ * @updated 2026-09-19
  */
 
 package cli
@@ -35,7 +35,7 @@ Numero maximo de repositorios a extrair no estagio 3 (default: 5).
 Profundidade de busca recursiva no grafo de dependencias (default: 1).
 .TP
 \fB\-output\fR \fIPATH\fR
-Caminho do relatorio gerado (default: 00_nucleo/relatorios/relatorio_bateia.md).
+Caminho do relatorio gerado (default: relatorio_bateia.md).
 .TP
 \fB\-man\fR
 Exibe esta manpage no formato roff UNIX.

@@ -1,0 +1,21 @@
+{
+  "problem": "Correctly implement copy assignment for a type that registers itself, by its own address, as an observer/auditor on external containers reachable from its current state (like SoPath registering itself on each node's SoChildList so scene-graph edits notify it), so that assigning a new route unregisters the old observation exactly once, registers the new one exactly once, and self-assignment is a safe no-op.",
+  "users": [
+    "Coin 5 maintainers reviewing SoPath::operator= (branch fix/sopath-assignment-auditor-lifecycle)"
+  ],
+  "capabilities": [
+    "explicitly unregister an object's own address from every external observer list it is currently registered on before adopting new state",
+    "guard copy assignment against self-assignment before mutating any state",
+    "document assignment as intentionally leaving container/observer membership untouched, deferring identity transfer to an explicit swap",
+    "use the copy-and-swap idiom so the old state's own destructor performs cleanup"
+  ],
+  "constraints": [
+    "C++11 as the minimum supported language standard",
+    "must not leave a stale pointer registered on any external list after assignment"
+  ],
+  "non_goals": [
+    "changing the meaning of copy construction",
+    "making the type non-copyable"
+  ],
+  "preferred_stack": ["c++", "cmake"]
+}

@@ -45,3 +45,18 @@ stdout/arquivo. Reutilizar admissão/writer dos outros trace comandos. Documento
 report/idea/rule_versions e JSON Pointer são declarações indexadas, não paths a
 buscar ou provas de autenticidade. Sem recalcular/promover decisão ou executar IO
 no núcleo.
+
+## Compare 0100
+
+Aceitar `idea trace compare --input request.json [--output comparison.json]`.
+Decodificar estritamente DecisionTraceCompareInput schema1 com before e after,
+ambos grafos congelados; usar CompareDecisionTraces sem IO no núcleo.
+Reutilizar o parser, admissão antecipada, reader limitado e writer atômico trace.
+Hashes ausentes/adulterados ou grafos inválidos são recusados antes de qualquer
+stdout/arquivo. O resultado distingue historical_decision e candidate_decision:
+esta última é apenas o veredito fornecido no segundo snapshot, não aprovação.
+decision_impact permanece NONE e o plano de impacto conserva a decisão histórica.
+Comparar declarações/arestas registradas não comprova mudança real, revogação,
+autenticidade ou suficiência das evidências. Sem rede, execução de candidatos,
+releitura de fontes, carregamento de providers/env ou alteração de recommend e
+artefatos default.

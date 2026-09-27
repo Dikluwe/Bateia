@@ -60,3 +60,11 @@ Comparar declarações/arestas registradas não comprova mudança real, revogaç
 autenticidade ou suficiência das evidências. Sem rede, execução de candidatos,
 releitura de fontes, carregamento de providers/env ou alteração de recommend e
 artefatos default.
+
+## Review 0101
+
+Aceitar idea trace review --input pedido.json [--output registro.json]. Entrada
+DecisionTraceReviewInput schema1: impact_input e records opcional. Reutilizar
+TrackDecisionTraceReview, leitor JSON estrito e writer atômico protegido. Recusar
+hashes/estados/recibos inválidos sem stdout ou substituição de arquivo. Sem rede,
+.env, provedores, execução ou promoção de decisões. Busca simples inalterada.

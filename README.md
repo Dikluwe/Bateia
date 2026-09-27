@@ -31,6 +31,8 @@ Para pesquisa remota, use `--mode live`; para reproduzir uma decisão sem rede, 
 
 No modo avançado, `--trace` adiciona `trace-graph.json` e `trace-index.json` ao dossiê; `idea decide --trace-output <arquivo>` emite somente o grafo. `idea trace build`, `idea trace impact` e `idea trace explain` constroem o índice de dependências, planejam revisões e localizam declarações no relatório original, offline. `idea trace compare` compara dois grafos congelados e planeja a revisão das diferenças registradas. Isso não troca o veredito nem autentica as evidências. Consulte os contratos [0098](00_nucleo/passos/0098-rastrear-dependencias-e-planejar-revisao.md), [0099](00_nucleo/passos/0099-localizar-declaracoes-no-relatorio-original.md) e [0100](00_nucleo/passos/0100-comparar-grafos-e-planejar-revisao.md) para formatos, limites e pertencimento ao manifest.
 
+`idea trace review` registra progresso declarado das tarefas (pendente, em andamento, bloqueada ou concluída), com recibos vinculados ao plano por hash. Concluir tarefas não aprova nem troca a decisão histórica. Consulte o contrato [0101](00_nucleo/passos/0101-registrar-progresso-de-revisao.md).
+
 ---
 
 ## 🏛️ **Arquitetura Tekt (Five-Layer Lattice v1.4)**

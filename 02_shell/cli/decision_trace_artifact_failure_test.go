@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/02_shell/cli/decision_trace_artifact_test.md
+ * @prompt 00_nucleo/prompts/02_shell/cli/decision_trace_artifact_failure_test.md
  * @layer L2
  * @updated 2026-09-26
  */

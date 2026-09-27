@@ -1,6 +1,6 @@
 /**
  * Crystalline Lineage
- * @prompt 00_nucleo/prompts/01_core/usecase/decision_trace_explain_test.md
+ * @prompt 00_nucleo/prompts/01_core/usecase/decision_trace_explain_contract_test.md
  * @layer L1
  * @updated 2026-09-26
  */

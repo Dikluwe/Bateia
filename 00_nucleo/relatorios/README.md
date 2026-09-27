@@ -43,9 +43,13 @@ da versão atual.
 - [0063 — Vínculo fonte–efeito](vinculo-fonte-efeito-0063.md)
 - [0064 — Identidade do analisador](rastreabilidade-analisador-0064.md)
 - [0075 — Expressões probatórias compostas](expressoes-probatorias-compostas-0075.md)
+- [0084 — Revisão sistemática viva do funil](revisao-sistematica-viva-0084.md)
+- [0085 — Valor decisório das investigações](valor-decisorio-investigacoes-0085.md)
 
 ## Diagnósticos ainda abertos
 
+- [Simulação do intake avançado com 10 agentes Luna — passo 0083](simulacao-intake-10-agentes-luna-0083.md)
 - [Estado do produto após 0064](estado-do-produto-pos0064.md)
 - [Autoanálise após 0043](autoanalise-pos0043.md)
 - [Gap de documentação Doxygen em headers](gap-documentacao-doxygen-em-headers.md)
+- [0086 — Fronteira multicritério robusta](fronteira-multicriterio-robusta-0086.md)

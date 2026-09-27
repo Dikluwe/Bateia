@@ -1,0 +1,56 @@
+{
+  "schema_version": "1",
+  "cases": [
+    {
+      "id": "code-search-balanced",
+      "screening": {
+        "schema_version": "1",
+        "strategy": "sealed-fixture",
+        "decisions": [
+          {"repository":"lab/a","ranking_score":0.86,"decision":"AUDIT","signals":{"description_alignment":0.9,"capability_coverage":0.8,"evidence_completeness":0.8},"origins":[{"expansion_id":"semantic"}]},
+          {"repository":"lab/b","ranking_score":0.71,"decision":"AUDIT","signals":{"description_alignment":0.7,"capability_coverage":0.7,"evidence_completeness":0.6},"origins":[{"expansion_id":"lexical"}]},
+          {"repository":"lab/c","ranking_score":0.64,"decision":"AUDIT","signals":{"description_alignment":0.6,"capability_coverage":0.5,"evidence_completeness":0.8},"origins":[{"expansion_id":"functional"}]},
+          {"repository":"lab/d","ranking_score":0.52,"decision":"AUDIT","signals":{"description_alignment":0.5,"capability_coverage":0.4,"evidence_completeness":0.4},"origins":[{"expansion_id":"lexical"}]},
+          {"repository":"lab/e","ranking_score":0.38,"decision":"AUDIT","signals":{"description_alignment":0.3,"capability_coverage":0.4,"evidence_completeness":0.5},"origins":[{"expansion_id":"regional"}]},
+          {"repository":"lab/f","ranking_score":0.18,"decision":"AUDIT","signals":{"description_alignment":0.1,"capability_coverage":0.2,"evidence_completeness":0.3},"origins":[{"expansion_id":"lexical"}]}
+        ]
+      },
+      "seeds": [],
+      "gold": [
+        {"repository":"lab/a","label":"relevant","reason":"sealed judgment"},
+        {"repository":"lab/b","label":"irrelevant","reason":"sealed judgment"},
+        {"repository":"lab/c","label":"relevant","reason":"sealed judgment"},
+        {"repository":"lab/d","label":"irrelevant","reason":"sealed judgment"},
+        {"repository":"lab/e","label":"relevant","reason":"sealed judgment"},
+        {"repository":"lab/f","label":"irrelevant","reason":"sealed judgment"}
+      ]
+    },
+    {
+      "id": "low-score-relevant",
+      "screening": {
+        "schema_version": "1",
+        "strategy": "sealed-fixture",
+        "decisions": [
+          {"repository":"edge/a","ranking_score":0.82,"decision":"AUDIT","signals":{"description_alignment":0.8,"capability_coverage":0.7,"evidence_completeness":0.7},"origins":[{"expansion_id":"common"}]},
+          {"repository":"edge/b","ranking_score":0.68,"decision":"AUDIT","signals":{"description_alignment":0.6,"capability_coverage":0.6,"evidence_completeness":0.6},"origins":[{"expansion_id":"common"}]},
+          {"repository":"edge/c","ranking_score":0.55,"decision":"AUDIT","signals":{"description_alignment":0.5,"capability_coverage":0.5,"evidence_completeness":0.5},"origins":[{"expansion_id":"common"}]},
+          {"repository":"edge/d","ranking_score":0.42,"decision":"AUDIT","signals":{"description_alignment":0.4,"capability_coverage":0.4,"evidence_completeness":0.6},"origins":[{"expansion_id":"rare"}]},
+          {"repository":"edge/e","ranking_score":0.27,"decision":"AUDIT","signals":{"description_alignment":0.2,"capability_coverage":0.3,"evidence_completeness":0.8},"origins":[{"expansion_id":"rare"}]},
+          {"repository":"edge/f","ranking_score":0.12,"decision":"AUDIT","signals":{"description_alignment":0.1,"capability_coverage":0.2,"evidence_completeness":0.9},"origins":[{"expansion_id":"regional"}]}
+        ]
+      },
+      "seeds": [
+        {"repository":"edge/a","label":"irrelevant","reason":"seed judgment"},
+        {"repository":"edge/f","label":"relevant","reason":"seed judgment"}
+      ],
+      "gold": [
+        {"repository":"edge/a","label":"irrelevant","reason":"sealed judgment"},
+        {"repository":"edge/b","label":"irrelevant","reason":"sealed judgment"},
+        {"repository":"edge/c","label":"relevant","reason":"sealed judgment"},
+        {"repository":"edge/d","label":"irrelevant","reason":"sealed judgment"},
+        {"repository":"edge/e","label":"relevant","reason":"sealed judgment"},
+        {"repository":"edge/f","label":"relevant","reason":"sealed judgment"}
+      ]
+    }
+  ]
+}

@@ -11,3 +11,10 @@ serialize um único item textual JSON compacto e mapeie erros somente às mensag
 públicas contratadas. Não importe L3/L4 nem implemente store, fila, rede, hash,
 merge, budget ou saneamento semântico.
 
+
+## Correção de segurança — 2026-09-26
+
+A extensão agora registra handlers no dispatcher comum; não usa readers que
+interceptam chamadas. Todas as ferramentas/artefatos atravessam o orçamento
+comum exatamente uma vez e recebem o contexto da sessão. Framing limitado é
+aplicado antes de qualquer parsing. Ver `request_dispatch.md` para a supersessão.

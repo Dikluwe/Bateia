@@ -53,3 +53,10 @@ unknown fields fail with `-32602`. Publish the static defaults in the MCP schema
 and identify `idea.problem` as the dynamic target default. Share the exact same
 materializer with the durable start gateway. The permissive license list is an
 acceptance policy, never evidence or attribution of a candidate license.
+
+## Correção de segurança — 2026-09-26
+
+Todas as extensões registram handlers no dispatcher central antes de qualquer
+execução: orçamento comum exatamente uma vez, contexto de Serve preservado e
+framing de 64 KiB/32 níveis/8192 tokens antes de decodificar objetos.
+Ver `request_dispatch.md` para limites e supersessão explícita dos hashes.

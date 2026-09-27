@@ -18,3 +18,18 @@ invocação observável predecessor-only como gate complementar. Casos opacos co
 Execute os casos em ordem lexical, reversa e intercalada, três repetições por ordem, e
 exija o mesmo digest normalizado nas nove rodadas. O pacote deve compilar sem importar
 qualquer implementação candidata.
+
+## Supersessão explícita de segurança do MCP — 2026-09-26
+
+O guard comum corrige bypass do orçamento e framing ilimitado nas extensões MCP,
+exigindo alterar server.go. Nos dois witnesses de compatibilidade deste gate,
+substitua somente o hash esperado dessa fonte:
+e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42
+→ ec8fc8c4461d73984c29a73b8b5d65f5ffcb6c3a35b7ad907529b5fc613c4ff9.
+
+O certificado histórico 0025 permanece inalterado, assim como os 70 ataques,
+categorias, expected outcomes, programa de mutação de retrocompatibilidade,
+comparação causal e nove rodadas. A revisão não é recertificação histórica da
+nova implementação. Contratos/goldens públicos são mantidos pelos testes MCP;
+o hash identifica a revisão sucessora de segurança para permitir que este gate
+continue exercitando o mesmo ataque, em vez de falhar antes de executá-lo.

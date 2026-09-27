@@ -24,17 +24,20 @@ import (
 const step0026LegacySearchTool = `{"name":"bateia_search","description":"Executa busca arquitetural no GitHub/Sourcegraph reduzindo repositórios via funil de 3 estágios","inputSchema":{"type":"object","properties":{"query":{"type":"string","description":"Query de busca (ex: 'hexagonal architecture' ou nome do pacote)"},"language":{"type":"string","description":"Linguagem alvo (go, typescript, python, rust, php, etc.)","default":"go"},"depth":{"type":"integer","description":"Profundidade da busca recursiva em grafo de dependências","default":1}},"required":["query"]}}`
 const step0026LegacyBenchmarkTool = `{"name":"bateia_benchmark","description":"Executa comparação arquitetural direta de uma lista de repositórios conhecidos","inputSchema":{"type":"object","properties":{"repos":{"type":"string","description":"Repositórios separados por vírgula no formato owner/repo (ex: 'traggo/server,solidtime-io/solidtime')"},"query":{"type":"string","description":"Título ou tema da comparação de benchmark","default":"Benchmark de Repositórios"}},"required":["repos"]}}`
 
+// The server prompt's security-dispatch addition supersedes its hash only;
+// historical certificates and behavioral fixtures below remain immutable.
+// See prompts/02_shell/mcp/request_dispatch.md (2026-09-26).
 func TestStep0026R2LegacyGoldenIsManifestBoundAndAllThreeToolsReallyExecute(t *testing.T) {
 	for path, want := range map[string]string{
 		"../../00_nucleo/relatorios/evidence-contract-supersession.json": "85d81c593847d08f211b4fae6e661468c06ced727ccab7a0992df0be7581c394",
-		"../../lab/bancada/history/benchmarks/0025/certificate.json":                "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
+		"../../lab/bancada/history/benchmarks/0025/certificate.json":     "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d",
 		"recommendation_step0025_contract_test.go":                       "7e9d9652ea6eac94fa144ec24d3f44e81971aaec9d13456169f8276c9c118f1f",
 		"server_test.go": "f7d15d6e29b66c6591e91d832e5c0e1c155641ca345a150610470133a3dd098d",
-		"../../00_nucleo/prompts/02_shell/mcp/server.md":                                "b5075f7cbb40a86a15d90ff690b410e4a47a8b3d806c5def3794dd8c4b76f564",
-		"../../00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md": "4004e5f494ffdb29430c5d1655adda8da4e1cd1c97248e6f9d6bf919ba2c2dc8",
-		"../../lab/bancada/history/benchmarks/0029/historical-hash-invalidation-o2-to-o3.json":     "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
-		"../../lab/bancada/history/benchmarks/0029/historical-hash-successor-o3.json":              "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
-		"../../lab/bancada/history/benchmarks/0031/historical-contract-supersession.json":          "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
+		"../../00_nucleo/prompts/02_shell/mcp/server.md":                                       "70222330ecb281f58af0996eb9ec7690bf9f1e4fc48e8d665c0cbf708c080410",
+		"../../00_nucleo/prompts/02_shell/mcp/recommendation_step0025_contract_test.md":        "4004e5f494ffdb29430c5d1655adda8da4e1cd1c97248e6f9d6bf919ba2c2dc8",
+		"../../lab/bancada/history/benchmarks/0029/historical-hash-invalidation-o2-to-o3.json": "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
+		"../../lab/bancada/history/benchmarks/0029/historical-hash-successor-o3.json":          "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
+		"../../lab/bancada/history/benchmarks/0031/historical-contract-supersession.json":      "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",
 	} {
 		data, err := os.ReadFile(path)
 		if err != nil {

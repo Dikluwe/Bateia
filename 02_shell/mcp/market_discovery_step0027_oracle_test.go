@@ -111,10 +111,13 @@ func step0027Tools(t *testing.T, response JSONRPCResponse) []map[string]any {
 	return envelope.Tools
 }
 
+// Security supersession replaces only transport implementation hashes; exact
+// tool/schema comparisons below still certify the legacy protocol contract.
+// See prompts/02_shell/mcp/request_dispatch.md (2026-09-26).
 func TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact(t *testing.T) {
 	for path, want := range map[string]string{
-		"server.go":       "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42",
-		"durable_runs.go": "436989b07761406908297d733e8c07cb890c12aae92613cc541a232d8e1ec29e",
+		"server.go":       "ec8fc8c4461d73984c29a73b8b5d65f5ffcb6c3a35b7ad907529b5fc613c4ff9",
+		"durable_runs.go": "ccd07f1e8832f02895be7274f88a65661537d332b58ff03ca83a6c7a0a1ac627",
 		"../../lab/bancada/history/benchmarks/0029/historical-hash-invalidation-o2-to-o3.json": "98c36700e72c434a2443ce4aa7e64c5b5c9b599f0eb0b5451cf07c9af46639ca",
 		"../../lab/bancada/history/benchmarks/0029/historical-hash-successor-o3.json":          "cf5da34d390b710425f71a5545d46978245db3581d5f2caacf762980238c4156",
 		"../../lab/bancada/history/benchmarks/0031/historical-contract-supersession.json":      "65598792dd329561e7d8a21bd1cf0bbd22c19d00876470361ac2ce6e4d6aae67",

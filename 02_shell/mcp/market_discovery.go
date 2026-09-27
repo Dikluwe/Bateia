@@ -8,7 +8,6 @@
 package mcp
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -27,69 +26,21 @@ type MarketDiscoveryStarter interface {
 }
 
 func (s *MCPServer) WithMarketDiscovery(connectors []domain.MarketDiscoveryConnector, starter MarketDiscoveryStarter) *MCPServer {
-	if s == nil || starter == nil {
-		return s
-	}
-	if _, exists := s.reader.(*marketInterceptReader); exists {
+	if s == nil || starter == nil || s.marketDiscovery != nil {
 		return s
 	}
 	registry, err := usecase.NewDiscoveryConnectorRegistry(connectors)
 	if err != nil {
 		return s
 	}
-	var durable DurableRecommendationRuns
-	var durableReader *durableInterceptReader
-	source := bufio.NewReader(s.reader)
-	if interceptor, ok := s.reader.(*durableInterceptReader); ok {
-		durable = interceptor.durable
-		durableReader = interceptor
-		source = interceptor.source
-	}
-	s.reader = &marketInterceptReader{source: source, server: s, durable: durable, durableReader: durableReader, market: starter, registry: registry}
+	s.marketDiscovery = &marketInterceptReader{server: s, market: starter, registry: registry}
 	return s
 }
 
 type marketInterceptReader struct {
-	source        *bufio.Reader
-	server        *MCPServer
-	durable       DurableRecommendationRuns
-	durableReader *durableInterceptReader
-	market        MarketDiscoveryStarter
-	registry      *usecase.DiscoveryConnectorRegistry
-	pending       []byte
-}
-
-func (r *marketInterceptReader) Read(target []byte) (int, error) {
-	for len(r.pending) == 0 {
-		line, err := r.source.ReadBytes('\n')
-		if len(line) == 0 {
-			return 0, err
-		}
-		trimmed := bytes.TrimSpace(line)
-		var request JSONRPCRequest
-		decoded, multiple := decodeMarketEnvelope(trimmed, &request)
-		if !decoded {
-			if id, ok := malformedMarketCallID(trimmed); ok {
-				r.server.sendError(id, -32602, "Invalid params")
-				r.pending = []byte(`{"jsonrpc":"2.0","method":"notifications/initialized"}` + "\n")
-			} else {
-				r.pending = line
-			}
-		} else if multiple && marketCallRequest(request) {
-			r.server.sendError(request.ID, -32602, "Invalid params")
-			r.pending = []byte(`{"jsonrpc":"2.0","method":"notifications/initialized"}` + "\n")
-		} else if decoded && !multiple && r.intercept(request) {
-			r.pending = []byte(`{"jsonrpc":"2.0","method":"notifications/initialized"}` + "\n")
-		} else {
-			r.pending = line
-		}
-		if err != nil && len(r.pending) == 0 {
-			return 0, err
-		}
-	}
-	n := copy(target, r.pending)
-	r.pending = r.pending[n:]
-	return n, nil
+	server   *MCPServer
+	market   MarketDiscoveryStarter
+	registry *usecase.DiscoveryConnectorRegistry
 }
 
 func decodeMarketEnvelope(data []byte, request *JSONRPCRequest) (bool, bool) {
@@ -132,46 +83,6 @@ func malformedMarketCallID(data []byte) (interface{}, bool) {
 		return nil, false
 	}
 	return id, true
-}
-
-func (r *marketInterceptReader) intercept(request JSONRPCRequest) bool {
-	if request.Method == "tools/list" {
-		result, err := marketToolsList()
-		if err != nil {
-			r.server.sendError(request.ID, -32603, "Internal error")
-		} else {
-			r.server.sendResult(request.ID, result)
-		}
-		return true
-	}
-	if request.Method != "tools/call" {
-		return false
-	}
-	var params struct {
-		Name      string          `json:"name"`
-		Arguments json.RawMessage `json:"arguments"`
-	}
-	if json.Unmarshal(request.Params, &params) != nil {
-		return false
-	}
-	switch params.Name {
-	case "bateia_list_connectors", "bateia_start_market_discovery":
-		r.handleMarket(context.Background(), request.ID, params.Name, params.Arguments)
-		return true
-	case "bateia_get_artifact":
-		if r.durable != nil && marketArtifactRequested(params.Arguments) {
-			r.handleMarketArtifact(context.Background(), request.ID, params.Arguments)
-			return true
-		}
-	}
-	if r.durableReader != nil {
-		switch params.Name {
-		case "bateia_start_recommendation", "bateia_get_run", "bateia_get_artifact", "bateia_cancel_run":
-			r.durableReader.handle(context.Background(), request.ID, params.Name, params.Arguments)
-			return true
-		}
-	}
-	return false
 }
 
 func marketArtifactRequested(raw json.RawMessage) bool {
@@ -302,8 +213,6 @@ func marketStartSchema() map[string]interface{} {
 	}
 }
 
-
-
 func buildMarketStartSchemaWithConnectors(connectorIDs []string, maxConnectors int) map[string]interface{} {
 	schema := marketStartSchema()
 	props := schema["properties"].(map[string]interface{})
@@ -326,7 +235,6 @@ func marketTextSchema(max int) map[string]interface{} {
 func integerRange(min, max int) map[string]interface{} {
 	return map[string]interface{}{"type": "integer", "minimum": float64(min), "maximum": float64(max)}
 }
-
 
 func (r *marketInterceptReader) handleMarket(ctx context.Context, id interface{}, name string, arguments json.RawMessage) {
 	if name == "bateia_list_connectors" {
@@ -373,7 +281,7 @@ func (r *marketInterceptReader) handleMarketArtifact(ctx context.Context, id int
 		r.server.sendError(id, -32602, "Invalid params")
 		return
 	}
-	page, err := r.durable.GetArtifact(ctx, request)
+	page, err := r.server.durableRuns.durable.GetArtifact(ctx, request)
 	if err != nil {
 		code, message := durablePublicError(err)
 		r.server.sendError(id, code, message)

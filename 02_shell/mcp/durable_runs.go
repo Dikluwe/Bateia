@@ -8,7 +8,6 @@
 package mcp
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -33,75 +32,17 @@ var (
 	durableCursorPattern = regexp.MustCompile(`^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$`)
 )
 
-// WithDurableRuns adiciona a extensão sem alterar o servidor certificado do
-// Passo 0025. O reader intercepta somente as quatro novas ferramentas e list.
+// WithDurableRuns registers tools behind the common request dispatcher.
 func (s *MCPServer) WithDurableRuns(durable DurableRecommendationRuns) *MCPServer {
-	if s == nil || durable == nil {
-		return s
+	if s != nil && durable != nil && s.durableRuns == nil {
+		s.durableRuns = &durableInterceptReader{server: s, durable: durable}
 	}
-	if _, already := s.reader.(*durableInterceptReader); already {
-		return s
-	}
-	s.reader = &durableInterceptReader{source: bufio.NewReader(s.reader), server: s, durable: durable}
 	return s
 }
 
 type durableInterceptReader struct {
-	source  *bufio.Reader
 	server  *MCPServer
 	durable DurableRecommendationRuns
-	pending []byte
-}
-
-func (r *durableInterceptReader) Read(target []byte) (int, error) {
-	for len(r.pending) == 0 {
-		line, err := r.source.ReadBytes('\n')
-		if len(line) == 0 {
-			return 0, err
-		}
-		trimmed := bytes.TrimSpace(line)
-		var request JSONRPCRequest
-		if json.Unmarshal(trimmed, &request) == nil && r.intercept(request) {
-			r.pending = []byte(`{"jsonrpc":"2.0","method":"notifications/initialized"}` + "\n")
-		} else {
-			r.pending = line
-		}
-		if err != nil && len(r.pending) == 0 {
-			return 0, err
-		}
-	}
-	n := copy(target, r.pending)
-	r.pending = r.pending[n:]
-	return n, nil
-}
-
-func (r *durableInterceptReader) intercept(request JSONRPCRequest) bool {
-	if request.Method == "tools/list" {
-		result, err := durableToolsList()
-		if err != nil {
-			r.server.sendError(request.ID, -32603, "Internal error")
-		} else {
-			r.server.sendResult(request.ID, result)
-		}
-		return true
-	}
-	if request.Method != "tools/call" {
-		return false
-	}
-	var params struct {
-		Name      string          `json:"name"`
-		Arguments json.RawMessage `json:"arguments"`
-	}
-	if err := json.Unmarshal(request.Params, &params); err != nil {
-		return false
-	}
-	switch params.Name {
-	case "bateia_start_recommendation", "bateia_get_run", "bateia_get_artifact", "bateia_cancel_run":
-		r.handle(context.Background(), request.ID, params.Name, params.Arguments)
-		return true
-	default:
-		return false
-	}
 }
 
 func durableToolsList() (map[string]interface{}, error) {

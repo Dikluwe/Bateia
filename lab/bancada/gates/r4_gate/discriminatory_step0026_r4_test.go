@@ -31,6 +31,12 @@ import (
 	"testing"
 )
 
+// Security dispatch supersession (2026-09-26): the source-body hash changes from
+// e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42.
+// This is not historical recertification; the certificate stays immutable and
+// MCP legacy schemas/goldens are still checked by their behavioral oracle.
+const step0026R4SecuritySuccessorMCPHash = "ec8fc8c4461d73984c29a73b8b5d65f5ffcb6c3a35b7ad907529b5fc613c4ff9"
+
 type attack struct {
 	ID            string `json:"id"`
 	Kind          string `json:"kind"`
@@ -227,7 +233,7 @@ func positivePrograms() map[string]func(*testing.T, attack) error {
 			if !strings.Contains(a.Stimulus, "all three legacy tools") || !strings.Contains(a.Witness, "byte-identical") || !strings.Contains(a.Witness, "injected shared service") {
 				return errors.New("declared compatibility witness absent")
 			}
-			want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
+			want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": step0026R4SecuritySuccessorMCPHash}
 			for path, expected := range want {
 				data, err := os.ReadFile(path)
 				if err != nil {
@@ -907,7 +913,7 @@ func certifiedPredecessorWitness(t *testing.T, a attack) error {
 	if !strings.Contains(a.Stimulus, "golden") || !strings.Contains(a.Witness, "legacy") {
 		return errors.New("legacy stimulus/witness not consumed")
 	}
-	want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": "e0c8605039740c895e733c8edc7cb7b6e6137a23b91ce93a1dbfa34fe18a0d42"}
+	want := map[string]string{"../../../../lab/bancada/history/benchmarks/0025/certificate.json": "bb678dcd4e198347896e98683311148a35613eac99bedefee73fdff321ee5c4d", "../../../../02_shell/mcp/server.go": step0026R4SecuritySuccessorMCPHash}
 	for path, expected := range want {
 		data, err := os.ReadFile(path)
 		if err != nil {

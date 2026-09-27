@@ -28,3 +28,10 @@ Derive o schema de start do schema síncrono refinado: somente
 `idempotency_key` e `idea` são obrigatórios. Use o mesmo materializador de
 `policy`, `target` e `search` do gateway síncrono, preserve valores explícitos e
 rejeite `null`, campos desconhecidos e valores inválidos antes de `Start`.
+
+## Correção de segurança — 2026-09-26
+
+A extensão agora registra handlers no dispatcher comum; não usa readers que
+interceptam chamadas. Todas as ferramentas/artefatos atravessam o orçamento
+comum exatamente uma vez e recebem o contexto da sessão. Framing limitado é
+aplicado antes de qualquer parsing. Ver `request_dispatch.md` para a supersessão.

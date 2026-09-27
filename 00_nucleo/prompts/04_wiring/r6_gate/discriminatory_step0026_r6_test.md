@@ -23,3 +23,15 @@ Execute as variantes nas ordens lexical, reversa e permutação determinística,
 por ordem. Exija referência preservada, cada processo mutante rejeitado e o mesmo conjunto
 de subtestes falhos nas nove rodadas. Registre SHA-256 da fonte e do diff de cada variante;
 O01–O05 continuam Unknown e os 30 casos já causalmente validados permanecem creditados.
+
+
+## Adendo 0098 — Execução do legado após extração do transporte
+
+O recorte antigo de quatro arquivos MCP deixou de compilar depois da extração
+anterior dos helpers de dispatch/segurança. Executar o pacote completo
+./02_shell/mcp, selecionando explicitamente os mesmos goldens R3 e certificados,
+mais o teste real TestStep0025LegacySuccessfulSearchUsesEvidenceContract
+(sucessor já existente do nome MatchesFrozenBaselineBytes). Não alterar hashes,
+goldens, expectativas, mutantes ou classificação dos casos. Essa correção é de
+invocação: recompõe helpers ausentes e impede seletor legado vazio; não credita
+qualidade do produto ou nova prova aos testes de infraestrutura.

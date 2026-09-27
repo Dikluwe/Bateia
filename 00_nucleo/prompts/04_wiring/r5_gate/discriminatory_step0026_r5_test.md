@@ -25,3 +25,15 @@ Execute os 70 casos em três ordens determinísticas, três vezes por ordem, exi
 veredito e digest idênticos nas nove observações. O gate autoritativo deve alcançar
 60/60 mutações mortas sem compilar candidato; se um observável não diferir, reporte o
 caso como sobrevivente.
+
+
+## Adendo 0098 — Execução do legado após extração do transporte
+
+O recorte antigo de quatro arquivos MCP deixou de compilar depois da extração
+anterior dos helpers de dispatch/segurança. Executar o pacote completo
+./02_shell/mcp, selecionando explicitamente os mesmos goldens R3 e certificados,
+mais o teste real TestStep0025LegacySuccessfulSearchUsesEvidenceContract
+(sucessor já existente do nome MatchesFrozenBaselineBytes). Não alterar hashes,
+goldens, expectativas, mutantes ou classificação dos casos. Essa correção é de
+invocação: recompõe helpers ausentes e impede seletor legado vazio; não credita
+qualidade do produto ou nova prova aos testes de infraestrutura.

@@ -614,7 +614,7 @@ func certifiedPredecessor(t *testing.T) error {
 			predecessorErr = err
 			return
 		}
-		args := []string{"test", "02_shell/mcp/server.go", "02_shell/mcp/server_test.go", "02_shell/mcp/recommendation_step0025_contract_test.go", "02_shell/mcp/durable_runs_step0026_r3_test.go", "-run", "TestStep0026R3LegacyBenchmarkAndRecommendationUseIndependentByteGoldens|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes", "-count=1"}
+		args := []string{"test", "./02_shell/mcp", "-run", "TestStep0026R3LegacyBenchmarkAndRecommendationUseIndependentByteGoldens|TestStep0026R3PredecessorServerHashesRemainCertified|TestStep0025LegacySuccessfulSearchMatchesFrozenBaselineBytes|TestStep0025LegacySuccessfulSearchUsesEvidenceContract", "-count=1"}
 		cmd := exec.Command("go", args...)
 		cmd.Dir = repo
 		cmd.Env = append(os.Environ(), "GOCACHE=/tmp/bateia-go-cache-0026-r5")

@@ -8,7 +8,6 @@
 package mcp
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -75,11 +74,15 @@ func (b *ToolCallBudget) Dispatch(method string, decodeAndForward func() *JSONRP
 
 // MCPServer lida com a comunicação JSON-RPC via stdio.
 type MCPServer struct {
-	funnel         *usecase.SearchFunnel
-	recommender    RecommendationRecommender
-	reader         io.Reader
-	writer         io.Writer
-	toolCallBudget *ToolCallBudget
+	funnel               *usecase.SearchFunnel
+	recommender          RecommendationRecommender
+	reader               io.Reader
+	writer               io.Writer
+	toolCallBudget       *ToolCallBudget
+	advancedIntake       *advancedIntakeInterceptReader
+	durableRuns          *durableInterceptReader
+	marketDiscovery      *marketInterceptReader
+	improvementSynthesis *improvementInterceptReader
 }
 
 type RecommendationRecommender interface {
@@ -105,15 +108,31 @@ func (s *MCPServer) WithToolCallBudget(budget *ToolCallBudget) *MCPServer {
 }
 
 func (s *MCPServer) Serve(ctx context.Context) error {
-	scanner := bufio.NewScanner(s.reader)
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	scanner := boundedMCPScanner(s.reader)
 	for scanner.Scan() {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		line := scanner.Bytes()
 		if len(line) == 0 {
 			continue
 		}
 
 		var req JSONRPCRequest
+		if err := validateMCPStructure(line); err != nil {
+			s.sendError(nil, -32700, "Message structure exceeds limits")
+			continue
+		}
 		if err := json.Unmarshal(line, &req); err != nil {
+			if s.marketDiscovery != nil {
+				if id, ok := malformedMarketCallID(line); ok {
+					s.handleMalformedMarketRequest(ctx, id)
+					continue
+				}
+			}
 			s.sendError(nil, -32700, "Parse error")
 			continue
 		}
@@ -121,10 +140,17 @@ func (s *MCPServer) Serve(ctx context.Context) error {
 		s.handleRequest(ctx, req)
 	}
 
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	return scanner.Err()
 }
 
 func (s *MCPServer) handleRequest(ctx context.Context, req JSONRPCRequest) {
+	if ctx.Err() != nil {
+		s.sendError(req.ID, -32800, "Request cancelled")
+		return
+	}
 	if s.toolCallBudget != nil {
 		budgetErr := s.toolCallBudget.Dispatch(req.Method, func() *JSONRPCError {
 			s.handleForwardedRequest(ctx, req)
@@ -139,6 +165,9 @@ func (s *MCPServer) handleRequest(ctx context.Context, req JSONRPCRequest) {
 }
 
 func (s *MCPServer) handleForwardedRequest(ctx context.Context, req JSONRPCRequest) {
+	if s.handleExtensionRequest(ctx, req) {
+		return
+	}
 	switch req.Method {
 	case "initialize":
 		res := map[string]interface{}{

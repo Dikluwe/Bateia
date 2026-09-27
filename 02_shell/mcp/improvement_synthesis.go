@@ -8,7 +8,6 @@
 package mcp
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -19,99 +18,15 @@ import (
 )
 
 func (s *MCPServer) WithImprovementSynthesis(starter domain.ImprovementSynthesisStarter) *MCPServer {
-	if s == nil || starter == nil {
-		return s
+	if s != nil && starter != nil && s.improvementSynthesis == nil {
+		s.improvementSynthesis = &improvementInterceptReader{server: s, starter: starter}
 	}
-	if _, exists := s.reader.(*improvementInterceptReader); exists {
-		return s
-	}
-	reader := &improvementInterceptReader{server: s, starter: starter}
-	switch current := s.reader.(type) {
-	case *marketInterceptReader:
-		reader.source = current.source
-		reader.market = current
-		reader.durable = current.durable
-		reader.durableReader = current.durableReader
-	case *durableInterceptReader:
-		reader.source = current.source
-		reader.durable = current.durable
-		reader.durableReader = current
-	default:
-		reader.source = bufio.NewReader(s.reader)
-	}
-	s.reader = reader
 	return s
 }
 
 type improvementInterceptReader struct {
-	source        *bufio.Reader
-	server        *MCPServer
-	starter       domain.ImprovementSynthesisStarter
-	durable       DurableRecommendationRuns
-	durableReader *durableInterceptReader
-	market        *marketInterceptReader
-	pending       []byte
-}
-
-func (r *improvementInterceptReader) Read(target []byte) (int, error) {
-	for len(r.pending) == 0 {
-		line, err := r.source.ReadBytes('\n')
-		if len(line) == 0 {
-			return 0, err
-		}
-		var request JSONRPCRequest
-		decoder := json.NewDecoder(bytes.NewReader(bytes.TrimSpace(line)))
-		decoded := decoder.Decode(&request) == nil && decoder.Decode(&struct{}{}) == io.EOF
-		if decoded && r.intercept(request) {
-			r.pending = []byte(`{"jsonrpc":"2.0","method":"notifications/initialized"}` + "\n")
-		} else {
-			r.pending = line
-		}
-	}
-	n := copy(target, r.pending)
-	r.pending = r.pending[n:]
-	return n, nil
-}
-
-func (r *improvementInterceptReader) intercept(request JSONRPCRequest) bool {
-	if request.Method == "tools/list" {
-		result, err := improvementToolsList()
-		if err != nil {
-			r.server.sendError(request.ID, -32603, "Internal error")
-		} else {
-			r.server.sendResult(request.ID, result)
-		}
-		return true
-	}
-	if request.Method != "tools/call" {
-		return false
-	}
-	var params struct {
-		Name      string          `json:"name"`
-		Arguments json.RawMessage `json:"arguments"`
-	}
-	if json.Unmarshal(request.Params, &params) != nil {
-		return false
-	}
-	if params.Name == "bateia_start_improvement_synthesis" {
-		r.handleStart(context.Background(), request.ID, params.Arguments)
-		return true
-	}
-	if params.Name == "bateia_get_artifact" && improvementArtifactRequested(params.Arguments) {
-		r.handleArtifact(context.Background(), request.ID, params.Arguments)
-		return true
-	}
-	if r.market != nil && r.market.intercept(request) {
-		return true
-	}
-	if r.durableReader != nil {
-		switch params.Name {
-		case "bateia_start_recommendation", "bateia_get_run", "bateia_get_artifact", "bateia_cancel_run":
-			r.durableReader.handle(context.Background(), request.ID, params.Name, params.Arguments)
-			return true
-		}
-	}
-	return false
+	server  *MCPServer
+	starter domain.ImprovementSynthesisStarter
 }
 
 func improvementToolsList() (map[string]interface{}, error) {
@@ -314,7 +229,7 @@ func decodeImprovementArtifact(raw json.RawMessage) (domain.ArtifactReadRequest,
 }
 
 func (r *improvementInterceptReader) handleArtifact(ctx context.Context, id interface{}, raw json.RawMessage) {
-	if r.durable == nil {
+	if r.server.durableRuns == nil || r.server.durableRuns.durable == nil {
 		r.server.sendError(id, -32603, "Internal error")
 		return
 	}
@@ -323,7 +238,7 @@ func (r *improvementInterceptReader) handleArtifact(ctx context.Context, id inte
 		r.server.sendError(id, -32602, "Invalid params")
 		return
 	}
-	page, err := r.durable.GetArtifact(ctx, request)
+	page, err := r.server.durableRuns.durable.GetArtifact(ctx, request)
 	if err != nil {
 		code, message := durablePublicError(err)
 		r.server.sendError(id, code, message)

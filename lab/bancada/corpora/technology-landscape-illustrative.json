@@ -1,0 +1,68 @@
+{
+  "schema_version": "1",
+  "previous": {
+    "as_of": "2026-08-24",
+    "need": ["search", "export"],
+    "candidates": [
+      {
+        "id": "illustrative/full-app",
+        "kind": "REPOSITORY",
+        "name": "Full App",
+        "capabilities": [
+          {"id": "search", "status": "PROVEN", "sources": ["fixture:test-search"]},
+          {"id": "export", "status": "PROVEN", "sources": ["fixture:test-export"]}
+        ],
+        "signals": [
+          {"kind": "RELEASES", "value": 2, "unit": "count", "window_days": 90, "observed_at": "2026-08-24", "sources": ["fixture:release-feed-1"]}
+        ]
+      }
+    ]
+  },
+  "current": {
+    "as_of": "2026-09-24",
+    "need": ["search", "export"],
+    "candidates": [
+      {
+        "id": "illustrative/full-app",
+        "kind": "REPOSITORY",
+        "name": "Full App",
+        "capabilities": [
+          {"id": "search", "status": "PROVEN", "sources": ["fixture:test-search"]},
+          {"id": "export", "status": "PROVEN", "sources": ["fixture:test-export"]}
+        ],
+        "standalone": {"status": "PROVEN", "sources": ["fixture:runtime-test"]},
+        "signals": [
+          {"kind": "RELEASES", "value": 3, "unit": "count", "window_days": 90, "observed_at": "2026-09-24", "sources": ["fixture:release-feed-2"]}
+        ]
+      },
+      {
+        "id": "illustrative/export-plugin",
+        "kind": "REPOSITORY",
+        "name": "Export Plugin",
+        "capabilities": [
+          {"id": "search", "status": "ABSENT", "sources": ["fixture:scope-inspection"]},
+          {"id": "export", "status": "PROVEN", "sources": ["fixture:export-test"]}
+        ],
+        "integration": {"status": "PROVEN", "sources": ["fixture:integration-test"]}
+      },
+      {
+        "id": "illustrative/architectural-paper",
+        "kind": "TECHNOLOGY",
+        "name": "Architectural Paper",
+        "capabilities": [
+          {"id": "search", "status": "ABSENT", "sources": ["fixture:scope-paper"]},
+          {"id": "export", "status": "ABSENT", "sources": ["fixture:scope-paper"]}
+        ],
+        "analogy": {"status": "PROVEN", "sources": ["fixture:architecture-comparison"]}
+      },
+      {
+        "id": "illustrative/unclear-tool",
+        "kind": "PRODUCT",
+        "name": "Unclear Tool",
+        "capabilities": [
+          {"id": "search", "status": "PROVEN", "sources": ["fixture:demo"]}
+        ]
+      }
+    ]
+  }
+}

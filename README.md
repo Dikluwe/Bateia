@@ -33,6 +33,8 @@ No modo avançado, `--trace` adiciona `trace-graph.json` e `trace-index.json` ao
 
 `idea trace review` registra progresso declarado das tarefas (pendente, em andamento, bloqueada ou concluída), com recibos vinculados ao plano por hash. Concluir tarefas não aprova nem troca a decisão histórica. Consulte o contrato [0101](00_nucleo/passos/0101-registrar-progresso-de-revisao.md).
 
+`idea trace review-context` liga essas tarefas às declarações originais e aos ancestrais alterados, com localizadores compartilhados e progresso preservado. Consulte o contrato [0102](00_nucleo/passos/0102-ligar-revisao-as-declaracoes-originais.md).
+
 ---
 
 ## 🏛️ **Arquitetura Tekt (Five-Layer Lattice v1.4)**

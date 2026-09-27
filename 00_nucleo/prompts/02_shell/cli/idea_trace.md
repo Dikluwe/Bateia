@@ -68,3 +68,12 @@ DecisionTraceReviewInput schema1: impact_input e records opcional. Reutilizar
 TrackDecisionTraceReview, leitor JSON estrito e writer atômico protegido. Recusar
 hashes/estados/recibos inválidos sem stdout ou substituição de arquivo. Sem rede,
 .env, provedores, execução ou promoção de decisões. Busca simples inalterada.
+
+## Review-context 0102
+
+Aceitar idea trace review-context --input pedido.json [--output contexto.json].
+Entrada DecisionTraceReviewContextInput schema1 com review_input e build_input.
+Usar BuildDecisionTraceReviewContext, leitor estrito e writer protegido/atômico.
+Não aceitar índices/planos arbitrários nem promover COMPLETED. Recusar documentos
+que não correspondem ao grafo congelado, inclusive sem tarefas. Sem rede/env,
+execução ou alteração da pesquisa simples.

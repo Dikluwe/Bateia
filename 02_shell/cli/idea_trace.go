@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_trace.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-09-27
  */
 package cli
 
@@ -23,8 +23,8 @@ import (
 
 // Trace commands only describe declared dependencies; they never rerun a decision.
 func runIdeaTrace(args []string, stdout io.Writer) error {
-	if len(args) == 0 || (args[0] != "build" && args[0] != "impact" && args[0] != "explain" && args[0] != "compare" && args[0] != "review") {
-		return fmt.Errorf("uso: bateia idea trace <build|impact|explain|compare|review> --input arquivo.json [--output arquivo.json]")
+	if len(args) == 0 || (args[0] != "build" && args[0] != "impact" && args[0] != "explain" && args[0] != "compare" && args[0] != "review" && args[0] != "review-context") {
+		return fmt.Errorf("uso: bateia idea trace <build|impact|explain|compare|review|review-context> --input arquivo.json [--output arquivo.json]")
 	}
 	input, output, err := parseDecisionTraceArgs(args[1:])
 	if err != nil {
@@ -58,12 +58,18 @@ func runIdeaTrace(args []string, stdout io.Writer) error {
 			return err
 		}
 		result, err = usecase.CompareDecisionTraces(request)
-	} else {
+	} else if args[0] == "review" {
 		var request domain.DecisionTraceReviewInput
 		if err := readStrictIntakeJSON(input, &request); err != nil {
 			return err
 		}
 		result, err = usecase.TrackDecisionTraceReview(request)
+	} else {
+		var request domain.DecisionTraceReviewContextInput
+		if err := readStrictIntakeJSON(input, &request); err != nil {
+			return err
+		}
+		result, err = usecase.BuildDecisionTraceReviewContext(request)
 	}
 	if err != nil {
 		return fmt.Errorf("rastreabilidade rejeitada: %w", err)

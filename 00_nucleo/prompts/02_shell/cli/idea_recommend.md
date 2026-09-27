@@ -131,3 +131,18 @@ saída contra entradas e aliases antes do dossiê; não criar grafo sem flag. Fa
 do trace marca execução FAILED. Retomada sem flag preserva grafo antigo no disco,
 não o consome/anuncia no manifest e avisa no stdout. Manifest/hashes, não simples
 existência do arquivo, identificam pertencimento à execução. Hash não autentica.
+## Passo 0099 — Índice legível opt-in
+
+A mesma flag --trace agora gera também trace-index.json via ExplainDecisionTrace,
+usando exatamente o build input do grafo. Sem flag não criar índice. Não adicionar
+flags, inputs causais, RuleVersions ou gate de checkpoint. Preflight ambos filenames
+contra idea/policy/rules/screening, replay discovery/bundles quando consumidos,
+checkpoints discovery/bundles em resume, e mutuamente entre os sidecars; recusar
+aliases/hardlinks/symlinks antes de prepareDossier/run.json. Revalidar na escrita.
+Computar ambos antes de escrever; falha de explicação/escrita/hash deixa run/trace
+FAILED com outputs vazios. Stage complete contract decision-trace-projection-v2,
+outputs grafo primeiro e índice segundo com hashes de arquivo e counts entries/
+locations. Escrita individual atômica não equivale a transação de dois arquivos.
+Resume sem flag preserva ambos sidecars antigos no disco, exclui stage trace e
+avisa que a projeção não pertence à execução atual. Decide sidecar continua grafo
+somente. Declarações legíveis não são validação de verdade/completude/autoria.

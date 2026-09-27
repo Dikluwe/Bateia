@@ -35,3 +35,13 @@ Não declarar proteção contra toda mutação concorrente do namespace externo.
 Testar caminhos positivos build/impact, stdout versus arquivo, rejeições de flags,
 JSON desconhecido/duplicado/ambiguidades, FIFO, aliases, adulteração de graph_hash,
 preservação de inputs e ausência de efeitos em falhas.
+## Explain 0099
+
+Aceitar também `idea trace explain --input request.json [--output index.json]`.
+Strict decode de DecisionTraceExplainInput schema1 seguido de ExplainDecisionTrace.
+A requisição contém grafo congelado e build_input exato; seleção node_ids opcional.
+Recusar mismatch, hash ausente/adulterado e IDs desconhecidos/duplicados antes de
+stdout/arquivo. Reutilizar admissão/writer dos outros trace comandos. Documento
+report/idea/rule_versions e JSON Pointer são declarações indexadas, não paths a
+buscar ou provas de autenticidade. Sem recalcular/promover decisão ou executar IO
+no núcleo.

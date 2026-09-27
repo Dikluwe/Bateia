@@ -29,7 +29,7 @@ O diretório de saída contém a expansão da ideia, snapshot de descoberta, tri
 
 Para pesquisa remota, use `--mode live`; para reproduzir uma decisão sem rede, use `--mode replay --replay <dossiê-fonte>`. Quando identidade, coleta ou evidência são opacas, o resultado permanece `INCONCLUSIVE` em vez de virar `BUILD` por ausência presumida.
 
-No modo avançado, `--trace` adiciona `trace-graph.json` ao dossiê; `idea decide --trace-output <arquivo>` emite um sidecar. `idea trace build` e `idea trace impact` constroem o índice e planejam revisões offline a partir de mudanças declaradas. Isso não troca o veredito nem autentica as evidências. Consulte o [contrato 0098](00_nucleo/passos/0098-rastrear-dependencias-e-planejar-revisao.md) para formatos, limites e pertencimento ao manifest.
+No modo avançado, `--trace` adiciona `trace-graph.json` e `trace-index.json` ao dossiê; `idea decide --trace-output <arquivo>` emite somente o grafo. `idea trace build`, `idea trace impact` e `idea trace explain` constroem o índice de dependências, planejam revisões e localizam declarações no relatório original, offline. Isso não troca o veredito nem autentica as evidências. Consulte os contratos [0098](00_nucleo/passos/0098-rastrear-dependencias-e-planejar-revisao.md) e [0099](00_nucleo/passos/0099-localizar-declaracoes-no-relatorio-original.md) para formatos, limites e pertencimento ao manifest.
 
 ---
 

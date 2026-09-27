@@ -55,6 +55,9 @@ func TestRecommendTraceIsOptInAndPreservesCausalArtifacts(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(plain, "trace-graph.json")); !os.IsNotExist(err) {
 		t.Fatal("default run emitted trace")
 	}
+	if _, err := os.Stat(filepath.Join(plain, "trace-index.json")); !os.IsNotExist(err) {
+		t.Fatal("default run emitted trace index")
+	}
 	var graph domain.DecisionTraceGraph
 	if err := readJSONFile(filepath.Join(traced, "trace-graph.json"), &graph); err != nil {
 		t.Fatal(err)
@@ -72,6 +75,26 @@ func TestRecommendTraceIsOptInAndPreservesCausalArtifacts(t *testing.T) {
 	}
 	if stage.Name != "trace" || stage.Outputs[0].Hash != hash || stage.Counts["nodes"] != int64(len(graph.Nodes)) {
 		t.Fatalf("invalid stage %+v", stage)
+	}
+	var index domain.DecisionTraceExplanation
+	indexPath := filepath.Join(traced, "trace-index.json")
+	if err := readJSONFile(indexPath, &index); err != nil {
+		t.Fatal(err)
+	}
+	indexHash, err := fileHash(indexPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	locations := 0
+	for _, entry := range index.Entries {
+		locations += len(entry.Locations)
+	}
+	if index.GraphHash != graph.GraphHash || len(index.Entries) != len(graph.Nodes) || len(stage.Outputs) != 2 || stage.Outputs[1].Path != "trace-index.json" || stage.Outputs[1].Hash != indexHash || stage.Counts["entries"] != int64(len(index.Entries)) || stage.Counts["locations"] != int64(locations) {
+		t.Fatalf("unbound or unrecorded trace index: %+v / %+v", index, stage)
+	}
+	indexBefore, err := os.ReadFile(indexPath)
+	if err != nil {
+		t.Fatal(err)
 	}
 	// Expiry asks for review; the historical decision and graph are not rewritten.
 	before, err := os.ReadFile(filepath.Join(traced, "trace-graph.json"))
@@ -113,8 +136,12 @@ func TestRecommendTraceIsOptInAndPreservesCausalArtifacts(t *testing.T) {
 	}
 	// A resumed run without opt-in must not advertise or consume an older graph.
 	c := run(traced, "--resume")
-	if !strings.Contains(lastStdout.String(), "não pertence à execução atual") {
+	if !strings.Contains(lastStdout.String(), "não pertence à execução atual") || !strings.Contains(lastStdout.String(), "trace-index.json") {
 		t.Fatal("resume did not warn about historical trace")
+	}
+	indexAfter, err := os.ReadFile(indexPath)
+	if err != nil || !bytes.Equal(indexBefore, indexAfter) {
+		t.Fatal("untraced resume rewrote historical trace index")
 	}
 	for _, stage := range c.Stages {
 		if stage.Name == "trace" {

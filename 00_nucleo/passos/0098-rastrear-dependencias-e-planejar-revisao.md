@@ -89,7 +89,7 @@ e não chama o decisor.
 Valida schema, enums, IDs únicos, fingerprints, fontes ambíguas, exatamente uma
 decisão, DAG sem ciclos/autorreferências/arestas pendentes ou duplicadas.
 Limites máximos: 1000 nós, 4000 arestas, 100 mudanças, 8192 bytes por string,
-2 MiB de JSON/texto, profundidade 64 e orçamento estrutural conservador de 20000
+2 MiB de JSON/texto, profundidade 64 e orçamento estrutural conservador de 100000
 valores. Este último pode recusar entradas antes dos outros tetos. O plano de
 impacto também passa pela guarda de saída antes da serialização integral:
 expansão de muitos ancestrais é recusada com erro, não com JSON parcial.

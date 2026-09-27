@@ -78,8 +78,18 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	}
 	traceInputs := []string{*ideaPath, *policyPath, *rulesPath, screeningModelPath.value}
 	if *withTrace {
-		if err := validateDecisionTraceOutput(filepath.Join(*output, "trace-graph.json"), traceInputs...); err != nil {
-			return err
+		if strings.EqualFold(*mode, string(domain.IdeaRunReplay)) && *replay != "" {
+			traceInputs = append(traceInputs, filepath.Join(*replay, "discovery-snapshot.json"), filepath.Join(*replay, "evidence", "bundles.json"))
+		}
+		if *resume {
+			traceInputs = append(traceInputs, filepath.Join(*output, "discovery-snapshot.json"), filepath.Join(*output, "evidence", "bundles.json"))
+		}
+		graphPath, indexPath := filepath.Join(*output, "trace-graph.json"), filepath.Join(*output, "trace-index.json")
+		for _, paths := range [][2]string{{graphPath, indexPath}, {indexPath, graphPath}} {
+			protected := append(append([]string(nil), traceInputs...), paths[1])
+			if err := validateDecisionTraceOutput(paths[0], protected...); err != nil {
+				return err
+			}
 		}
 	}
 	runMode := domain.IdeaRunMode(strings.ToLower(*mode))
@@ -208,8 +218,10 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	var previous domain.IdeaRunManifest
 	staleTrace := false
 	if *resume && !*withTrace {
-		_, traceErr := os.Lstat(filepath.Join(*output, "trace-graph.json"))
-		staleTrace = traceErr == nil
+		for _, path := range []string{"trace-graph.json", "trace-index.json"} {
+			_, traceErr := os.Lstat(filepath.Join(*output, path))
+			staleTrace = staleTrace || traceErr == nil
+		}
 	}
 	canReuseEvidence := false
 	if *resume {
@@ -294,14 +306,22 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		}
 	}
 	var traceGraph *domain.DecisionTraceGraph
+	var traceIndex domain.DecisionTraceExplanation
 	if *withTrace {
-		graph, traceErr := usecase.BuildDecisionTrace(domain.DecisionTraceBuildInput{SchemaVersion: "1", Idea: &idea, Report: result.Decision, RuleVersions: ruleVersions})
+		buildInput := domain.DecisionTraceBuildInput{SchemaVersion: "1", Idea: &idea, Report: result.Decision, RuleVersions: ruleVersions}
+		graph, traceErr := usecase.BuildDecisionTrace(buildInput)
 		if traceErr == nil {
-			traceErr = writeDecisionTraceJSON(graph, filepath.Join(*output, "trace-graph.json"), nil, traceInputs...)
+			traceIndex, traceErr = usecase.ExplainDecisionTrace(domain.DecisionTraceExplainInput{SchemaVersion: "1", Graph: graph, BuildInput: buildInput})
+		}
+		graphPath, indexPath := filepath.Join(*output, "trace-graph.json"), filepath.Join(*output, "trace-index.json")
+		if traceErr == nil {
+			traceErr = writeDecisionTraceJSON(graph, graphPath, nil, append(append([]string(nil), traceInputs...), indexPath)...)
+		}
+		if traceErr == nil {
+			traceErr = writeDecisionTraceJSON(traceIndex, indexPath, nil, append(append([]string(nil), traceInputs...), graphPath)...)
 		}
 		if traceErr != nil {
-			manifest.Status = domain.IdeaRunFailed
-			manifest.Failures = append(manifest.Failures, domain.ExecutionFailure{Scope: "run", Stage: "trace", Message: traceErr.Error()})
+			markDecisionTraceFailed(&manifest, traceErr)
 			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
 			return traceErr
 		}
@@ -327,8 +347,10 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	manifest.Failures = append(manifest.Failures, result.Failures...)
 	manifest.Stages = buildRunStages(*output, result, alternatives)
 	if traceGraph != nil {
-		stage, err := buildDecisionTraceStage(*output, *traceGraph, ruleVersions)
+		stage, err := buildDecisionTraceStage(*output, *traceGraph, traceIndex, ruleVersions)
 		if err != nil {
+			markDecisionTraceFailed(&manifest, err)
+			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
 			return err
 		}
 		manifest.Stages = append(manifest.Stages, stage)
@@ -350,7 +372,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if stdout != nil {
 		_, _ = fmt.Fprintf(stdout, "dossiê %s: %s (%s)\n", manifest.RunID, result.Decision.Decision, *output)
 		if staleTrace {
-			_, _ = fmt.Fprintln(stdout, "aviso: trace-graph.json anterior permanece no disco, mas não pertence à execução atual; consulte os estágios e hashes em run.json")
+			_, _ = fmt.Fprintln(stdout, "aviso: projeção anterior (trace-graph.json/trace-index.json) permanece no disco, mas não pertence à execução atual; consulte os estágios e hashes em run.json")
 		}
 	}
 	return nil

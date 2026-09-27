@@ -9,24 +9,25 @@ package domain_test
 import (
 	"bateia/01_core/domain"
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
 func TestDecisionTraceExplainContract(t *testing.T) {
 	exp := domain.DecisionTraceExplanation{
 		SchemaVersion:     domain.DecisionTraceExplanationSchemaVersion,
-		GraphHash:         "gh-123",
-		ReportFingerprint: "rf-456",
-		Scope:             "LOCAL",
+		GraphHash:         strings.Repeat("a", 64),
+		ReportFingerprint: strings.Repeat("b", 64),
+		Scope:             domain.DecisionTraceScope,
 		Entries: []domain.DecisionTraceExplanationEntry{
 			{
-				NodeID:      "claim-1",
+				NodeID:      strings.Repeat("c", 64),
 				Kind:        domain.TraceClaim,
-				Label:       "Licença MIT",
-				Fingerprint: "fp-mit",
-				Statement:   "Licença MIT confirmada por análise confinada",
+				Label:       "Razão declarada",
+				Fingerprint: strings.Repeat("d", 64),
+				Statement:   "Registro consultivo de uma razão do relatório",
 				Locations: []domain.DecisionTraceLocation{
-					{Document: "bundles.json", Pointer: "/0/items/0"},
+					{Document: "report", Pointer: "/reasons/0"},
 				},
 			},
 		},
@@ -43,7 +44,7 @@ func TestDecisionTraceExplainContract(t *testing.T) {
 	if restored.SchemaVersion != domain.DecisionTraceExplanationSchemaVersion || len(restored.Entries) != 1 {
 		t.Fatalf("restored explanation mismatch: %+v", restored)
 	}
-	if restored.Entries[0].Locations[0].Pointer != "/0/items/0" {
+	if restored.Entries[0].Locations[0].Pointer != "/reasons/0" {
 		t.Fatalf("location pointer mismatch: %+v", restored)
 	}
 }

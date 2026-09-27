@@ -85,10 +85,12 @@ type ConstraintEvidence struct {
 }
 
 type LicenseAssessment struct {
-	Status     EvidenceStatus   `json:"status"`
-	Identifier string           `json:"identifier,omitempty"`
-	Sources    []EvidenceSource `json:"sources,omitempty"`
-	Caveat     string           `json:"caveat,omitempty"`
+	Status              EvidenceStatus   `json:"status"`
+	Identifier          string           `json:"identifier,omitempty"`
+	RecognitionBasis    string           `json:"recognition_basis,omitempty"`
+	DetectedIdentifiers []string         `json:"detected_identifiers,omitempty"`
+	Sources             []EvidenceSource `json:"sources,omitempty"`
+	Caveat              string           `json:"caveat,omitempty"`
 }
 
 type MaintenanceAssessment struct {

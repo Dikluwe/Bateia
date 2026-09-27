@@ -12,3 +12,5 @@ operações JSON reproduzíveis e offline.
 - `screening calibrate` pareia snapshots e julgamentos por ideia.
 - `screening audit` preserva revisões, evidência e rótulos anteriores.
 - Estratégia, schemas e arquivos inválidos geram erros acionáveis.
+
+Segurança: readJSONFile e modelo/calibração usam readIdeaJSONInput antes de Unmarshal, conforme security_json_input.md; saídas válidas preservadas.

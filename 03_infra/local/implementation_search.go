@@ -22,16 +22,16 @@ import (
 )
 
 func (c *Client) SearchImplementations(ctx context.Context, candidate domain.RepositoryCandidate, query string, budget domain.ImplementationSearchBudget) (domain.ImplementationSearchReport, error) {
-	if budget.MaxFiles <= 0 {
+	if budget.MaxFiles <= 0 || budget.MaxFiles > 2048 {
 		budget.MaxFiles = 2048
 	}
-	if budget.MaxBytes <= 0 {
+	if budget.MaxBytes <= 0 || budget.MaxBytes > 32*1024*1024 {
 		budget.MaxBytes = 32 * 1024 * 1024
 	}
-	if budget.MaxFileBytes <= 0 {
+	if budget.MaxFileBytes <= 0 || budget.MaxFileBytes > 512*1024 {
 		budget.MaxFileBytes = 512 * 1024
 	}
-	if budget.MaxResults <= 0 {
+	if budget.MaxResults <= 0 || budget.MaxResults > 100 {
 		budget.MaxResults = 24
 	}
 	report := domain.ImplementationSearchReport{Status: "partial", Method: "go_ast_query_v1", Budget: budget, Hits: []domain.ImplementationHit{}, Examined: []domain.ImplementationInput{}}
@@ -52,13 +52,9 @@ func (c *Client) SearchImplementations(ctx context.Context, candidate domain.Rep
 	limited := false
 	var bytesRead int64
 	attempted := 0
-	err = fs.WalkDir(scoped.FS(), ".", func(name string, entry fs.DirEntry, walkErr error) error {
+	err = walkLocalTree(ctx, scoped, func(name string, entry fs.DirEntry) error {
 		if ctx.Err() != nil {
 			return ctx.Err()
-		}
-		if walkErr != nil {
-			issues = append(issues, fmt.Sprintf("varredura %s: %v", name, walkErr))
-			return nil
 		}
 		if name == "." {
 			return nil
@@ -93,8 +89,8 @@ func (c *Client) SearchImplementations(ctx context.Context, candidate domain.Rep
 			issues = append(issues, fmt.Sprintf("stat %s: %v", name, statErr))
 			return nil
 		}
-		if !info.Mode().IsRegular() {
-			issues = append(issues, "arquivo não regular: "+name)
+		if !singleLinkRegular(info) {
+			issues = append(issues, "arquivo não regular/hardlink: "+name)
 			return nil
 		}
 		cap := budget.MaxFileBytes
@@ -115,7 +111,7 @@ func (c *Client) SearchImplementations(ctx context.Context, candidate domain.Rep
 			issues = append(issues, fmt.Sprintf("leitura incompleta %s: read=%v stat=%v", name, readErr, afterErr))
 			return nil
 		}
-		if after.Size() != int64(len(data)) || !after.ModTime().Equal(info.ModTime()) {
+		if !singleLinkRegular(after) || after.Size() != int64(len(data)) || !after.ModTime().Equal(info.ModTime()) {
 			limited = true
 			issues = append(issues, "arquivo alterado ou truncado durante leitura: "+name)
 			return nil

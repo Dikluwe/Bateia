@@ -8,12 +8,14 @@
 package domain
 
 type IdeaSpec struct {
-	Problem        string   `json:"problem"`
-	Users          []string `json:"users,omitempty"`
-	Capabilities   []string `json:"capabilities"`
-	Constraints    []string `json:"constraints,omitempty"`
-	NonGoals       []string `json:"non_goals,omitempty"`
-	PreferredStack []string `json:"preferred_stack,omitempty"`
+	Problem             string   `json:"problem"`
+	Users               []string `json:"users,omitempty"`
+	Capabilities        []string `json:"capabilities"`
+	Qualities           []string `json:"qualities,omitempty"`
+	OperatingConditions []string `json:"operating_conditions,omitempty"`
+	Constraints         []string `json:"constraints,omitempty"`
+	NonGoals            []string `json:"non_goals,omitempty"`
+	PreferredStack      []string `json:"preferred_stack,omitempty"`
 }
 
 type ExpansionFacet string

@@ -1,3 +1,10 @@
+## Passo 0094 — cobertura do scanner
+
+Registrar SecurityScan junto aos advisories: NOT_SCANNED sem manifesto,
+SCANNED_NO_MATCH sem correspondência e VULNERABILITY_FOUND com achados.
+Declarar scanner, escopo parcial de dependências diretas e data da base;
+lista vazia não é certificado de segurança. Preservar busca simples.
+
 # Prompt: Orquestrador do Funil de Busca (usecase/funnel)
 
 **Camada**: L₁ — Núcleo  

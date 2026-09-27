@@ -1,0 +1,5 @@
+# Regressões de captura local
+
+Use somente fixtures sintéticas, sem rede, sem executar candidatos e sem comandos Git. Vincule uma origem a uma captura privada de bytes; mude a origem e remova seu endereço por rename. Verifique que manifesto, árvore, arquivos e busca continuam retornando os bytes capturados e a identidade/ref original. Constructor deve aceitar origem já ausente. Metadados devem explicitar falta de autenticação Git, BaseCommit vazio e git_base_metadata não executado, inclusive se o diretório fornecido contiver metadata Git.
+
+Rejeite identidades incompletas, duplicadas ou ambíguas, aliases e diretórios relativos/não existentes/não diretórios. Candidatos file:// desconhecidos ou revisões divergentes nunca devem atingir fallback. Teste fallback remoto e indisponibilidade explícita quando ausente. Erros e diagnósticos não devem vazar o diretório privado; mantenha sentinelas de cancelamento e ausência de manifesto. Verifique os limites de probes/bytes de extração e os budgets de busca herdados do Client.

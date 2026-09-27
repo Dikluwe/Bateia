@@ -41,8 +41,8 @@ func autophagyRequest(internal, competitors []domain.EvidenceBundle) domain.Comp
 }
 
 func TestAutophagyKeepsLexicalMatchesPartial(t *testing.T) {
-	internal := autophagyBundle("local", "bateia", "target1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
-	external := autophagyBundle("oss", "impact", "c1", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
+	internal := autophagyBundle("local", "bateia", "target1", "DependencyGraph", true, step0025MITLicense)
+	external := autophagyBundle("oss", "impact", "c1", "BlastRadius", true, step0025MITLicense)
 	result, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{internal}, []domain.EvidenceBundle{external}))
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +57,7 @@ func TestAutophagyKeepsLexicalMatchesPartial(t *testing.T) {
 }
 
 func TestIncompleteInternalEvidenceIsUnknownNotGap(t *testing.T) {
-	internal := autophagyBundle("local", "bateia", "target1", "", false, "MIT License\nPermission is hereby granted, free of charge")
+	internal := autophagyBundle("local", "bateia", "target1", "", false, step0025MITLicense)
 	result, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{internal}, nil))
 	if err != nil {
 		t.Fatal(err)
@@ -71,8 +71,8 @@ func TestIncompleteInternalEvidenceIsUnknownNotGap(t *testing.T) {
 }
 
 func TestDuplicateLexicalDeclarationsDoNotRequireConsolidation(t *testing.T) {
-	a := autophagyBundle("local", "one", "a1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
-	b := autophagyBundle("local", "two", "b1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
+	a := autophagyBundle("local", "one", "a1", "DependencyGraph", true, step0025MITLicense)
+	b := autophagyBundle("local", "two", "b1", "DependencyGraph", true, step0025MITLicense)
 	r, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{a, b}, nil))
 	if err != nil {
 		t.Fatal(err)
@@ -90,10 +90,10 @@ func TestDuplicateLexicalDeclarationsDoNotRequireConsolidation(t *testing.T) {
 }
 
 func TestKatamariRejectsUnverifiedComponentsAndForbiddenLicense(t *testing.T) {
-	internal := autophagyBundle("local", "bateia", "target1", "", true, "MIT License\nPermission is hereby granted, free of charge")
-	graph := autophagyBundle("oss", "graph", "g1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
-	impact := autophagyBundle("oss", "impact", "i1", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
-	both := autophagyBundle("oss", "both", "b1", "DependencyGraph BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
+	internal := autophagyBundle("local", "bateia", "target1", "", true, step0025MITLicense)
+	graph := autophagyBundle("oss", "graph", "g1", "DependencyGraph", true, step0025MITLicense)
+	impact := autophagyBundle("oss", "impact", "i1", "BlastRadius", true, step0025MITLicense)
+	both := autophagyBundle("oss", "both", "b1", "DependencyGraph BlastRadius", true, step0025MITLicense)
 	forbidden := autophagyBundle("oss", "forbidden", "f1", "DependencyGraph BlastRadius", true, "GNU Affero General Public License")
 	r, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{internal}, []domain.EvidenceBundle{impact, graph, forbidden, both}))
 	if err != nil {
@@ -112,9 +112,9 @@ func TestKatamariRejectsUnverifiedComponentsAndForbiddenLicense(t *testing.T) {
 }
 
 func TestKatamariIsInvariantToCompetitorOrder(t *testing.T) {
-	internal := autophagyBundle("local", "bateia", "target1", "", true, "MIT License\nPermission is hereby granted, free of charge")
-	a := autophagyBundle("oss", "a", "a1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
-	b := autophagyBundle("oss", "b", "b1", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")
+	internal := autophagyBundle("local", "bateia", "target1", "", true, step0025MITLicense)
+	a := autophagyBundle("oss", "a", "a1", "DependencyGraph", true, step0025MITLicense)
+	b := autophagyBundle("oss", "b", "b1", "BlastRadius", true, step0025MITLicense)
 	left, err := RunCompetitiveAutophagy(autophagyRequest([]domain.EvidenceBundle{internal}, []domain.EvidenceBundle{a, b}))
 	if err != nil {
 		t.Fatal(err)
@@ -142,7 +142,7 @@ func TestHeadAndInvalidPolicyAreRejected(t *testing.T) {
 }
 
 func TestCompetitiveMutationGateRejectsEverySemanticMutation(t *testing.T) {
-	validBundle := autophagyBundle("local", "bateia", "target1", "DependencyGraph", true, "MIT License\nPermission is hereby granted, free of charge")
+	validBundle := autophagyBundle("local", "bateia", "target1", "DependencyGraph", true, step0025MITLicense)
 	base := autophagyRequest([]domain.EvidenceBundle{validBundle}, nil)
 	mutations := []func(domain.CompetitiveAutophagyRequest) domain.CompetitiveAutophagyRequest{
 		func(r domain.CompetitiveAutophagyRequest) domain.CompetitiveAutophagyRequest {
@@ -174,7 +174,7 @@ func TestCompetitiveMutationGateRejectsEverySemanticMutation(t *testing.T) {
 			return r
 		},
 		func(r domain.CompetitiveAutophagyRequest) domain.CompetitiveAutophagyRequest {
-			r.Competitors = []domain.EvidenceBundle{autophagyBundle("oss", "opaque", "HEAD", "BlastRadius", true, "MIT License\nPermission is hereby granted, free of charge")}
+			r.Competitors = []domain.EvidenceBundle{autophagyBundle("oss", "opaque", "HEAD", "BlastRadius", true, step0025MITLicense)}
 			return r
 		},
 	}

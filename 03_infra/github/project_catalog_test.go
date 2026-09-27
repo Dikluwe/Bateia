@@ -25,7 +25,7 @@ func TestGitHubCatalogSearchReturnsResolvedRepository(t *testing.T) {
 			return
 		}
 		if r.URL.Path == "/repos/org/reuse/commits/main" {
-			_ = json.NewEncoder(w).Encode(map[string]any{"sha": "abc123"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"})
 			return
 		}
 		http.NotFound(w, r)
@@ -36,7 +36,7 @@ func TestGitHubCatalogSearchReturnsResolvedRepository(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.Role != domain.RoleProjectCatalog || len(got.Candidates) != 1 || got.Candidates[0].Repository.CommitID != "abc123" {
+	if got.Role != domain.RoleProjectCatalog || len(got.Candidates) != 1 || got.Candidates[0].Repository.CommitID != "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" {
 		t.Fatalf("invalid catalog: %+v", got)
 	}
 	if len(got.Candidates[0].MatchedFields) == 0 {

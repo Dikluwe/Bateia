@@ -13,3 +13,7 @@ Aplicar o contrato de autoridade, sinais lexicais sem comprovação comportament
 
 ## Revisão 0043 — autoridade e ligação
 Aplicar o contrato comum de evidence_authority antes de autorizar capacidade ou operação. Evidência lexical/documental não ganha PROVEN. Negação deve conservar polaridade. Na extração de mecanismos aceitar SHA-256 hexadecimal produzido pela avaliação e formato prefixado legado, verificando conteúdo e projeções de tipo file→symbol e test→test_implementation. Preservar IDs reais: catálogo sem regra compatível retorna lacuna explícita, nunca traduz nomes em prova.
+
+## Passo 0088 — composição verificável
+
+Substituir seleção gulosa por candidatas de composição. Cobertura complementar sem conexões admissíveis e ensaio executado do conjunto exato retorna INCONCLUSIVE, nunca COMPOSE. Incompatibilidades e truncamento são explícitos; não transformar ausência de composição encontrada em BUILD quando o limite foi atingido.

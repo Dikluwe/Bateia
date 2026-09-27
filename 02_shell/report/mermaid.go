@@ -10,6 +10,7 @@ package report
 import (
 	"fmt"
 	"strings"
+	"unicode"
 
 	"bateia/01_core/domain"
 )
@@ -24,29 +25,44 @@ func GenerateMermaidGraph(report *domain.SearchReport) string {
 	sb.WriteString("```mermaid\ngraph TD\n")
 
 	// Nó raiz
-	queryNode := sanitizeMermaidID("Query: " + report.Query.Query)
-	sb.WriteString(fmt.Sprintf("    Root[\"%s\"] --> Candidates\n", report.Query.Query))
+	sb.WriteString(fmt.Sprintf("    Root[\"%s\"] --> Candidates\n", escapeMermaidLabel(report.Query.Query)))
 
 	for i, res := range report.Results {
 		repoID := fmt.Sprintf("Repo_%d", i+1)
 		repoLabel := fmt.Sprintf("%s/%s", res.Candidate.Owner, res.Candidate.Repo)
 
-		sb.WriteString(fmt.Sprintf("    Root --> %s[\"%s\"]\n", repoID, repoLabel))
+		sb.WriteString(fmt.Sprintf("    Root --> %s[\"%s\"]\n", repoID, escapeMermaidLabel(repoLabel)))
 
 		if res.Manifest != nil && len(res.Manifest.Dependencies) > 0 {
 			depCount := 0
 			for _, dep := range res.Manifest.Dependencies {
 				if !dep.Indirect && depCount < 3 {
-					depID := sanitizeMermaidID(dep.Name)
-					sb.WriteString(fmt.Sprintf("    %s --> %s[\"%s\"]\n", repoID, depID, dep.Name))
+					depID := fmt.Sprintf("Dep_%d_%d", i+1, depCount+1)
+					sb.WriteString(fmt.Sprintf("    %s --> %s[\"%s\"]\n", repoID, depID, escapeMermaidLabel(dep.Name)))
 					depCount++
 				}
 			}
 		}
 	}
 
-	_ = queryNode
 	sb.WriteString("```\n")
+	return sb.String()
+}
+
+// Mermaid entities are not HTML escaping: syntax delimiters, entity markers,
+// backticks and markup characters must not leave the quoted node label.
+func escapeMermaidLabel(raw string) string {
+	var sb strings.Builder
+	for _, r := range raw {
+		switch {
+		case unicode.IsControl(r) || r == '\u2028' || r == '\u2029':
+			sb.WriteByte(' ')
+		case unicode.IsLetter(r) || unicode.IsNumber(r) || strings.ContainsRune(" /._:-", r):
+			sb.WriteRune(r)
+		default:
+			fmt.Fprintf(&sb, "#%d;", r)
+		}
+	}
 	return sb.String()
 }
 

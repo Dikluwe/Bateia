@@ -23,6 +23,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 
 	sb.WriteString("<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n")
 	sb.WriteString("  <meta charset=\"UTF-8\">\n")
+	sb.WriteString("  <meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; connect-src 'none'\">\n")
 	sb.WriteString("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n")
 	sb.WriteString(fmt.Sprintf("  <title>Bateia v1.0 — Relatório: %s</title>\n", html.EscapeString(report.Query.Query)))
 	sb.WriteString("  <style>\n")
@@ -37,6 +38,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString("    .badge-gold { background: #9e6a03; }\n")
 	sb.WriteString("    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }\n")
 	sb.WriteString("    .card h3 { margin-top: 0; color: var(--accent); }\n")
+	sb.WriteString("    a { color: var(--accent); text-decoration: none; }\n")
 	sb.WriteString("    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }\n")
 	sb.WriteString("    th, td { border: 1px solid var(--border); padding: 0.6rem 0.8rem; text-align: left; }\n")
 	sb.WriteString("    th { background: #21262d; color: var(--accent); }\n")
@@ -44,14 +46,11 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	sb.WriteString("    details { margin-top: 1rem; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; }\n")
 	sb.WriteString("    summary { cursor: pointer; font-weight: bold; color: var(--accent); }\n")
 	sb.WriteString("  </style>\n")
-	sb.WriteString("  <script type=\"module\">\n")
-	sb.WriteString("    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';\n")
-	sb.WriteString("    mermaid.initialize({ startOnLoad: true, theme: 'dark' });\n")
-	sb.WriteString("  </script>\n</head>\n<body>\n<div class=\"container\">\n")
+	sb.WriteString("</head>\n<body>\n<div class=\"container\">\n")
 
 	sb.WriteString("  <header>\n")
 	sb.WriteString("    <h1>🔍 Bateia v1.0 — Relatório Arquitetural</h1>\n")
-	sb.WriteString(fmt.Sprintf("    <div class=\"meta\">Query: <strong>%s</strong> | Linguagem: <strong>%s</strong> | Gerado em: %s</div>\n", html.EscapeString(report.Query.Query), html.EscapeString(report.Query.Language), report.GeneratedAt.Format("2006-01-02 15:04:05 MST")))
+	sb.WriteString(fmt.Sprintf("    <div class=\"meta\">Query: <strong>%s</strong> | Linguagem: <strong>%s</strong> | Gerado em: %s</div>\n", html.EscapeString(report.Query.Query), html.EscapeString(report.Query.Language), html.EscapeString(report.GeneratedAt.Format("2006-01-02 15:04:05 MST"))))
 	sb.WriteString("  </header>\n")
 
 	sb.WriteString("  <section class=\"card\">\n")
@@ -78,7 +77,8 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 	if mermaidGraph != "" {
 		cleanMermaid := strings.TrimPrefix(strings.TrimSuffix(mermaidGraph, "```\n"), "```mermaid\n")
 		sb.WriteString("    <h3>📊 Grafo de Dependências</h3>\n")
-		sb.WriteString(fmt.Sprintf("    <pre class=\"mermaid\">\n%s    </pre>\n", cleanMermaid))
+		sb.WriteString("    <p class=\"meta\">Diagrama Mermaid em texto: relatório offline, sem execução de scripts.</p>\n")
+		sb.WriteString(fmt.Sprintf("    <pre class=\"mermaid-source\"><code>%s</code></pre>\n", html.EscapeString(cleanMermaid)))
 	}
 
 	if len(report.PolyglotMatrix) > 0 {
@@ -100,7 +100,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 		}
 
 		sb.WriteString("  <article class=\"card\">\n")
-		sb.WriteString(fmt.Sprintf("    <h3>%d. <a href=\"%s\" target=\"_blank\" style=\"color:var(--accent);text-decoration:none;\">%s/%s</a> <span class=\"badge %s\">Score %d/100</span></h3>\n", i+1, res.Candidate.URL, html.EscapeString(res.Candidate.Owner), html.EscapeString(res.Candidate.Repo), badgeClass, res.RelevanceScore))
+		sb.WriteString(fmt.Sprintf("    <h3>%d. %s <span class=\"badge %s\">Score %d/100</span></h3>\n", i+1, reportHTMLLink(res.Candidate.URL, res.Candidate.Owner+"/"+res.Candidate.Repo, true), badgeClass, res.RelevanceScore))
 		sb.WriteString(fmt.Sprintf("    <p><strong>Justificativa:</strong> %s</p>\n", html.EscapeString(res.RelevanceReason)))
 		sb.WriteString(fmt.Sprintf("    <p class=\"meta\">Commit: <code>%s</code></p>\n", html.EscapeString(res.Ref.Key())))
 
@@ -124,10 +124,12 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 			sb.WriteString("    </ul>\n")
 		}
 
+		writeSecurityScanHTML(&sb, res.SecurityScan)
+
 		if len(res.SecurityAdvisories) > 0 {
 			sb.WriteString("    <h4>🛡️ Possíveis Correspondências de Segurança (Base Local Heurística)</h4>\n    <ul>\n")
 			for _, adv := range res.SecurityAdvisories {
-				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#da3633;\">[%s] %s</strong>: %s em <code>%s</code> (%s). Confiança: %s. <a href=\"%s\">Fonte</a>; base %s.</li>\n", html.EscapeString(adv.Severity), html.EscapeString(adv.AdvisoryID), html.EscapeString(adv.Message), html.EscapeString(adv.Package), html.EscapeString(adv.VulnerableVersion), html.EscapeString(adv.Confidence), html.EscapeString(adv.Source), html.EscapeString(adv.DatabaseUpdatedAt)))
+				sb.WriteString(fmt.Sprintf("      <li><strong style=\"color:#da3633;\">[%s] %s</strong>: %s em <code>%s</code> (%s). Confiança: %s. %s; base %s.</li>\n", html.EscapeString(adv.Severity), html.EscapeString(adv.AdvisoryID), html.EscapeString(adv.Message), html.EscapeString(adv.Package), html.EscapeString(adv.VulnerableVersion), html.EscapeString(adv.Confidence), reportHTMLLink(adv.Source, "Fonte", false), html.EscapeString(adv.DatabaseUpdatedAt)))
 			}
 			sb.WriteString("    </ul>\n")
 		}
@@ -139,7 +141,7 @@ func GenerateHTMLReport(report *domain.SearchReport) string {
 				content, _ := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
 
 				sb.WriteString(fmt.Sprintf("    <details><summary>%s (%d bytes)</summary>\n", html.EscapeString(f.Path), f.Size))
-				sb.WriteString(fmt.Sprintf("      <p><a href=\"%s\" target=\"_blank\" style=\"color:var(--accent);\">Ver no GitHub ↗</a></p>\n", githubURL))
+				sb.WriteString(fmt.Sprintf("      <p>%s</p>\n", reportHTMLLink(githubURL, "Ver arquivo ↗", true)))
 				sb.WriteString(fmt.Sprintf("      <pre><code>%s</code></pre>\n", html.EscapeString(content)))
 				sb.WriteString("    </details>\n")
 			}

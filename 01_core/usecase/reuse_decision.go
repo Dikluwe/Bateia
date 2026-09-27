@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-09-24
  */
 
 package usecase
@@ -30,8 +30,16 @@ type decisionCandidate struct {
 }
 
 func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionReport, err error) {
+	return decideReuseProjected(req, nil)
+}
+
+// decisionAssessmentProjection is used only by bounded counterfactual analysis.
+// It runs after evidence admission, so hypothetical states never become sources.
+type decisionAssessmentProjection func(domain.CandidateAssessment) domain.CandidateAssessment
+
+func decideReuseProjected(req domain.ReuseDecisionRequest, projection decisionAssessmentProjection) (result domain.ReuseDecisionReport, err error) {
 	defer func() {
-		if err == nil {
+		if err == nil && projection == nil {
 			plan := BuildInvestigationPlan(req.Idea, domain.DiscoverySnapshot{}, req.Assessments)
 			result.Investigation = &plan
 		}
@@ -43,6 +51,14 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	h := sha256.Sum256(policyJSON)
 	report := domain.ReuseDecisionReport{SchemaVersion: "1", Policy: req.Policy, PolicyHash: hex.EncodeToString(h[:]), Alternatives: []domain.DecisionAlternative{}}
 	capabilities := normalizedSorted(req.Idea.Capabilities)
+	if len(req.Idea.Qualities) > 0 || len(req.Idea.OperatingConditions) > 0 {
+		report.Decision = domain.DecisionUnknown
+		report.Matrix = buildDecisionMatrix(capabilities, nil)
+		report.Gaps = append(normalizeIdeaList(req.Idea.Qualities), normalizeIdeaList(req.Idea.OperatingConditions)...)
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-REQUIREMENTS-0087", Effect: "verify", Message: "qualidades e condições operacionais declaradas ainda não são avaliadas por candidato; verificar os critérios compilados antes de decidir"}}
+		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
+		return report, nil
+	}
 	if len(req.Assessments) == 0 {
 		report.Decision = domain.DecisionUnknown
 		report.Matrix = buildDecisionMatrix(capabilities, nil)
@@ -64,11 +80,23 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	sort.Slice(assessments, func(i, j int) bool { return assessments[i].Repository.Key() < assessments[j].Repository.Key() })
 	candidates := make([]decisionCandidate, 0, len(assessments))
 	for _, a := range assessments {
-		candidates = append(candidates, inspectCandidate(a, capabilities, req.Policy))
+		a = SanitizeAssessmentEvidence(a)
+		if projection != nil {
+			a = projection(a)
+		}
+		candidates = append(candidates, inspectPreparedCandidate(a, capabilities, req.Policy))
 	}
 	report.Matrix = buildDecisionMatrix(capabilities, candidates)
+	composition, err := analyzeCompositions(candidates, capabilities, req.Policy, req.Composition)
+	if err != nil {
+		return domain.ReuseDecisionReport{}, err
+	}
+	report.Composition = &composition
 	for _, c := range candidates {
 		report.Alternatives = append(report.Alternatives, domain.DecisionAlternative{Decision: domain.DecisionReference, Candidate: c.key, Coverage: c.coverage, Message: fmt.Sprintf("%d%% das capacidades obrigatórias comprovadas", int(c.coverage*100))})
+	}
+	for _, candidate := range composition.Candidates {
+		report.Alternatives = append(report.Alternatives, domain.DecisionAlternative{Decision: domain.DecisionCompose, Candidate: candidate.ID, Coverage: float64(len(candidate.Coverage)) / float64(len(capabilities)), Message: string(candidate.Status)})
 	}
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
 		return c.coverage == 1 && len(c.blockers) == 0 && !c.ambiguous && c.a.Operation.LocalStatus == domain.EvidenceProven
@@ -80,12 +108,32 @@ func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionRe
 	}); c != nil {
 		return finishDecision(report, capabilities, *c, domain.DecisionExtend, "DEC-EXTEND-001", "núcleo reutilizável cobre a capacidade central e o limiar da política"), nil
 	}
-	if composed, ok := composeCandidates(candidates, capabilities, req.Policy.MaxComponents); ok {
-		report.Decision = domain.DecisionCompose
-		report.Components = composed
-		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-COMPOSE-001", Effect: "select", Evidence: componentEvidence(composed), Message: "componentes complementares cobrem mais que qualquer candidato isolado"}}
-		report.Gaps = uncoveredGaps(capabilities, componentsCoverage(composed))
-		report.Effort = assessEffort(report.Decision, len(composed), len(report.Gaps), false)
+	for _, candidate := range composition.Candidates {
+		if candidate.Status == domain.CompositionVerified {
+			report.Decision = domain.DecisionCompose
+			for _, member := range candidate.Members {
+				report.Components = append(report.Components, member.Component)
+			}
+			report.Reasons = []domain.DecisionReason{{RuleID: "DEC-COMPOSE-0088", Effect: "select", Candidate: candidate.ID, Evidence: candidate.Evidence, Message: "composição cobre as capacidades, interfaces conectadas e ensaio do conjunto declarado como executado e aprovado"}}
+			report.Gaps = candidate.Gaps
+			report.Effort = assessEffort(report.Decision, len(candidate.Members), 0, false)
+			return report, nil
+		}
+	}
+	for _, candidate := range composition.Candidates {
+		if candidate.Status == domain.CompositionProposed {
+			report.Decision = domain.DecisionUnknown
+			report.Gaps = candidate.Gaps
+			report.Reasons = []domain.DecisionReason{{RuleID: "DEC-COMPOSE-ABSTAIN-0088", Effect: "verify", Candidate: candidate.ID, Evidence: candidate.Evidence, Message: "cobertura complementar é hipótese; verificar interfaces, dependências e ensaio de integração antes de COMPOSE"}}
+			report.Effort = assessEffort(report.Decision, len(candidate.Members), 0, true)
+			return report, nil
+		}
+	}
+	if composition.Truncated {
+		report.Decision = domain.DecisionUnknown
+		report.Gaps = append([]string(nil), capabilities...)
+		report.Reasons = []domain.DecisionReason{{RuleID: "DEC-COMPOSE-LIMIT-0088", Effect: "verify", Message: "busca limitada de composições; ausência de solução não foi comprovada"}}
+		report.Effort = assessEffort(report.Decision, 0, len(report.Gaps), true)
 		return report, nil
 	}
 	if c := firstCandidate(candidates, func(c decisionCandidate) bool {
@@ -227,7 +275,10 @@ func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
 }
 
 func inspectCandidate(a domain.CandidateAssessment, caps []string, p domain.ReuseDecisionPolicy) decisionCandidate {
-	a = SanitizeAssessmentEvidence(a)
+	return inspectPreparedCandidate(SanitizeAssessmentEvidence(a), caps, p)
+}
+
+func inspectPreparedCandidate(a domain.CandidateAssessment, caps []string, p domain.ReuseDecisionPolicy) decisionCandidate {
 	c := decisionCandidate{a: a, key: a.Repository.Key(), covered: map[string]bool{}}
 	if assessmentHasCatalogLimitation(a) {
 		c.ambiguous = true
@@ -333,48 +384,6 @@ func buildDecisionMatrix(caps []string, cs []decisionCandidate) []domain.Capabil
 	return out
 }
 
-func composeCandidates(cs []decisionCandidate, caps []string, max int) ([]domain.ReusableComponent, bool) {
-	bestSingle := 0
-	for _, c := range cs {
-		if len(c.blockers) == 0 && !c.ambiguous && len(c.covered) > bestSingle {
-			bestSingle = len(c.covered)
-		}
-	}
-	covered := map[string]bool{}
-	var chosen []domain.ReusableComponent
-	for len(chosen) < max {
-		bestGain := 0
-		var best *domain.ReusableComponent
-		for _, c := range cs {
-			if len(c.blockers) > 0 || c.ambiguous {
-				continue
-			}
-			for _, part := range validParts(c.a.ReusableParts) {
-				gain := 0
-				for _, x := range part.Capabilities {
-					n := normalizeDecisionText(x)
-					if !covered[n] && contains(caps, n) {
-						gain++
-					}
-				}
-				if gain > bestGain || (gain == bestGain && gain > 0 && part.Name < best.Name) {
-					copy := part
-					best = &copy
-					bestGain = gain
-				}
-			}
-		}
-		if best == nil {
-			break
-		}
-		chosen = append(chosen, *best)
-		for _, x := range best.Capabilities {
-			covered[normalizeDecisionText(x)] = true
-		}
-	}
-	return chosen, len(chosen) >= 2 && len(covered) > bestSingle && len(covered) == len(caps)
-}
-
 func assessEffort(d domain.ReuseDecision, n, gaps int, amb bool) domain.EffortAssessment {
 	if amb {
 		return domain.EffortAssessment{Method: "heuristic_component_gap_count", Limitations: "Não mede custo nem viabilidade; requer ensaio de integração", Level: domain.EffortUnknown, Factors: []domain.EffortFactor{{Factor: "evidence", Effect: "unknown", Evidence: "coleta ou gate inconclusivo"}}}
@@ -395,22 +404,6 @@ func firstCandidate(cs []decisionCandidate, p func(decisionCandidate) bool) *dec
 		}
 	}
 	return nil
-}
-func componentEvidence(parts []domain.ReusableComponent) []domain.EvidenceSource {
-	var out []domain.EvidenceSource
-	for _, p := range parts {
-		out = append(out, p.Evidence...)
-	}
-	return out
-}
-func componentsCoverage(parts []domain.ReusableComponent) map[string]bool {
-	m := map[string]bool{}
-	for _, p := range parts {
-		for _, c := range p.Capabilities {
-			m[normalizeDecisionText(c)] = true
-		}
-	}
-	return m
 }
 func uncoveredGaps(caps []string, covered map[string]bool) []string {
 	var out []string

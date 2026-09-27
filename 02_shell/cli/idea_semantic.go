@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"bateia/01_core/domain"
@@ -80,7 +79,7 @@ func runIdeaEvaluate(args []string, stdout io.Writer, lexical usecase.SemanticEx
 	if err != nil {
 		return err
 	}
-	data, err := os.ReadFile(*corpusPath)
+	data, err := readIdeaJSONInput(*corpusPath)
 	if err != nil {
 		return fmt.Errorf("não foi possível ler corpus %s: %w", *corpusPath, err)
 	}

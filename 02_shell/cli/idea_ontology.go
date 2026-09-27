@@ -11,7 +11,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
@@ -34,7 +33,7 @@ func runIdeaOntology(args []string, stdout io.Writer) error {
 }
 
 func readOntologyJSON(path string, destination any) error {
-	data, err := os.ReadFile(path)
+	data, err := readIdeaJSONInput(path)
 	if err != nil {
 		return fmt.Errorf("não foi possível ler %s: %w", path, err)
 	}

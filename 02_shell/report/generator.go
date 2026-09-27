@@ -9,6 +9,8 @@ package report
 
 import (
 	"fmt"
+	"html"
+	"net/url"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -124,7 +126,7 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 		sb.WriteString("> Nenhum candidato encontrado para os critérios informados. Considere alargar os termos da query ou remover filtros restritivos.\n\n")
 	} else {
 		for i, res := range report.Results {
-			sb.WriteString(fmt.Sprintf("### %d. [%s/%s](%s)\n\n", i+1, res.Candidate.Owner, res.Candidate.Repo, res.Candidate.URL))
+			sb.WriteString(fmt.Sprintf("### %d. %s\n\n", i+1, reportHTMLLink(res.Candidate.URL, res.Candidate.Owner+"/"+res.Candidate.Repo, true)))
 
 			sb.WriteString(fmt.Sprintf("- **Score de Relevância**: `%d/100` (`%s`)\n", res.RelevanceScore, res.RelevanceLabel))
 			sb.WriteString("- **Saúde Arquitetural**: Não avaliado — penalidades heurísticas não medem saúde nem cobertura.\n")
@@ -224,10 +226,12 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 				sb.WriteString("\n")
 			}
 
+			writeSecurityScanMarkdown(&sb, res.SecurityScan)
+
 			if len(res.SecurityAdvisories) > 0 {
 				sb.WriteString("#### 🛡️ Possíveis Correspondências de Segurança (Base Local Heurística)\n")
 				for _, adv := range res.SecurityAdvisories {
-					sb.WriteString(fmt.Sprintf("- **[%s] %s** (%s): %s em `%s` (%s). Confiança: %s. [Fonte](%s), base atualizada em %s.\n", adv.Severity, adv.AdvisoryID, adv.Package, adv.Message, adv.Package, adv.VulnerableVersion, adv.Confidence, adv.Source, adv.DatabaseUpdatedAt))
+					sb.WriteString(fmt.Sprintf("- **[%s] %s** (%s): %s em `%s` (%s). Confiança: %s. %s, base atualizada em %s.\n", adv.Severity, adv.AdvisoryID, adv.Package, adv.Message, adv.Package, adv.VulnerableVersion, adv.Confidence, reportHTMLLink(adv.Source, "Fonte", false), adv.DatabaseUpdatedAt))
 				}
 				sb.WriteString("\n")
 			}
@@ -239,7 +243,7 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 					content, isTruncated := parser.TruncateSmart(f.Content, parser.DefaultMaxChars, parser.DefaultMaxLines)
 
 					sb.WriteString(fmt.Sprintf("Fato observado: `%s`, SHA-256 `%s`; conteúdo examinado: linhas %d–%d, método: %s. Estado: %s. Termos: %q, linhas: %v. Exibição: linhas 1–%d (última linha pode ser parcial). Implementação como solução: não verificada.\n\n", f.Path, f.Evidence.SHA256, f.Evidence.FirstLine, f.Evidence.LastLine, f.Evidence.Method, f.Evidence.State, f.Evidence.MatchedTerms, f.Evidence.MatchLines, strings.Count(strings.TrimSuffix(content, "\n"), "\n")+1))
-					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes) — <a href=\"%s\" target=\"_blank\">Ver arquivo ↗</a></summary>\n\n", f.Path, f.Size, githubURL))
+					sb.WriteString(fmt.Sprintf("<details><summary><b>%s</b> (%d bytes) — %s</summary>\n\n", html.EscapeString(f.Path), f.Size, reportHTMLLink(githubURL, "Ver arquivo ↗", true)))
 
 					ext := strings.TrimPrefix(filepath.Ext(f.Path), ".")
 					if ext == "" {
@@ -441,10 +445,21 @@ func GenerateMarkdownReport(report *domain.SearchReport) string {
 }
 
 func sourceFileURL(repository domain.ExtractedRepository, path string) string {
-	if strings.HasPrefix(repository.Candidate.URL, "file://") {
-		return strings.TrimSuffix(repository.Candidate.URL, "/") + "/" + strings.ReplaceAll(filepath.ToSlash(path), " ", "%20")
+	if !filepath.IsLocal(path) || strings.Contains(path, "\\") {
+		return ""
 	}
-	return parser.GenerateGitHubFileURL(repository.Candidate.Owner, repository.Candidate.Repo, repository.Ref.Commit, path)
+	u, err := url.Parse(repository.Candidate.URL)
+	if err == nil && strings.EqualFold(u.Scheme, "file") {
+		if safeReportURL(repository.Candidate.URL, true) == "" {
+			return ""
+		}
+		u.Path = strings.TrimSuffix(u.Path, "/") + "/" + filepath.ToSlash(path)
+		u.RawPath = ""
+		return safeReportURL(u.String(), true)
+	}
+	return safeReportURL(parser.GenerateGitHubFileURL(
+		url.PathEscape(repository.Candidate.Owner),
+		url.PathEscape(repository.Candidate.Repo), repository.Ref.Commit, path), false)
 }
 
 func formatStars(stars int) string {

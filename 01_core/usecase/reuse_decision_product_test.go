@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision_product_test.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-24
  */
 
 package usecase
@@ -38,6 +38,7 @@ func TestReuseDecisionProductReplayFiveDistinctIdeas(t *testing.T) {
 		name        string
 		idea        domain.IdeaSpec
 		assessments []domain.CandidateAssessment
+		composition *domain.CompositionInput
 		want        domain.ReuseDecision
 	}
 	all := func(xs ...string) map[string]bool {
@@ -61,6 +62,7 @@ func TestReuseDecisionProductReplayFiveDistinctIdeas(t *testing.T) {
 	b := productCandidate("flow", scenarios[2].idea.Capabilities, all("transformar", "exportar"), []domain.ReusableComponent{productPart("flow", "pipeline", "transformar", "exportar")})
 	b.ProblemAlignment.Status = domain.EvidencePartial
 	scenarios[2].assessments = []domain.CandidateAssessment{a, b}
+	scenarios[2].composition = verifiedComposition(compositionMemberID(a.Repository, a.ReusableParts[0]), compositionMemberID(b.Repository, b.ReusableParts[0]), "ingest")
 	c := productCandidate("recipe-parser", scenarios[3].idea.Capabilities, all("parsear"), []domain.ReusableComponent{productPart("recipe-parser", "parser", "parsear")})
 	c.ProblemAlignment.Status = domain.EvidencePartial
 	scenarios[3].assessments = []domain.CandidateAssessment{c}
@@ -69,7 +71,7 @@ func TestReuseDecisionProductReplayFiveDistinctIdeas(t *testing.T) {
 	scenarios[4].assessments = []domain.CandidateAssessment{d}
 	useful := 0
 	for _, s := range scenarios {
-		r, err := DecideReuse(domain.ReuseDecisionRequest{Idea: s.idea, Assessments: s.assessments, Policy: decisionPolicy()})
+		r, err := DecideReuse(domain.ReuseDecisionRequest{Idea: s.idea, Assessments: s.assessments, Policy: decisionPolicy(), Composition: s.composition})
 		if err != nil {
 			t.Fatalf("%s: %v", s.name, err)
 		}

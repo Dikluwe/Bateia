@@ -29,7 +29,7 @@ func RunIdeaCommandWithWeb(args []string, stdout io.Writer, semantic usecase.Sem
 
 func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, webProvider domain.ObservableWebSearch) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea <plan|expand|evaluate|radar> [opções]")
+		return fmt.Errorf("uso: bateia idea <plan|expand|evaluate|radar|landscape|trace> [opções]")
 	}
 	switch args[0] {
 	case "plan":
@@ -54,6 +54,12 @@ func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticEx
 		return runIdeaDecide(args[1:], stdout)
 	case "recommend":
 		return RunIdeaRecommendCommand(args[1:], stdout, semantic, nil, nil)
+	case "intake":
+		return runIdeaIntake(args[1:], stdout)
+	case "review":
+		return runIdeaReview(args[1:], stdout)
+	case "trace":
+		return runIdeaTrace(args[1:], stdout)
 	case "recover":
 		return RunIdeaRecoverCommand(args[1:], stdout, nil)
 	case "autofagia":
@@ -66,8 +72,10 @@ func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticEx
 		return RunAssistedJudgmentCommand(args[1:], stdout)
 	case "radar":
 		return RunIdeaRadarExportCommand(args[1:], stdout)
+	case "landscape":
+		return runIdeaLandscape(args[1:], stdout)
 	default:
-		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, recover, autofagia, katamari ou radar", args[0])
+		return fmt.Errorf("subcomando idea desconhecido %q; use plan, expand, evaluate, ontology, discovery, screen, screening, evidence, decide, recommend, intake, review, trace, recover, autofagia, katamari, radar ou landscape", args[0])
 	}
 }
 
@@ -97,9 +105,12 @@ func writeIdeaJSON(value any, outputPath string, stdout io.Writer) error {
 }
 
 func readIdeaSpec(path string) (domain.IdeaSpec, error) {
-	data, err := os.ReadFile(path)
+	data, err := readIdeaInput(path)
 	if err != nil {
 		return domain.IdeaSpec{}, fmt.Errorf("não foi possível ler IdeaSpec %s: %w", path, err)
+	}
+	if err := validateIdeaJSONStructure(data); err != nil {
+		return domain.IdeaSpec{}, fmt.Errorf("IdeaSpec JSON inválida em %s: %w", path, err)
 	}
 	var spec domain.IdeaSpec
 	if err := json.Unmarshal(data, &spec); err != nil {

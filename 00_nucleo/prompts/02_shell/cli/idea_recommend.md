@@ -112,3 +112,22 @@ possível ler o modelo de screening`; conteúdo inválido retorna somente `model
 screening inválido`; nunca interpolar path, conteúdo, campo, valor ou erro JSON.
 Não ler modelo de env, default oculto ou `lab/`; não alterar `DefaultScreeningModel`,
 `ScreenDiscovery`, schemas públicos nem o pipeline L1.
+
+## Segurança de entrada
+
+Usar readIdeaInput nonblocking/regular/16MiB para hashes de replay. JSON de ideia, policy, rules, checkpoints e modelo passa pela guarda compartilhada antes da desserialização; duplicatas incluindo capitalização/escapes são recusadas. Preservar mensagens de modelo inválido, hashes de arquivos e certificados históricos. Contrato em security_json_input.md.
+
+0096: hash local usa security_tree_hash.md, formato tree-sha256-v2 e orçamento agregado compartilhado entre raízes. local_snapshot participa da identidade e comparação de checkpoint; versão antiga/ausente não é reutilizada. Iniciar contexto único com timeout positivo antes da admissão; só criar dossiê após todos os hashes válidos. Não manter a pré-imagem ambígua v1.
+
+Metadata Git para remapeamento usa readLocalGitConfig: os.Root único, caminhos/pointer gitdir/commondir somente internos, recusa de symlink/hardlink/FIFO e validação pós-leitura. Unsafe/indisponível=>nil identities; linked worktrees com administração externa deixam identidade remota desconhecida. Metadata local é declaração, não autenticação da origem. Contrato em security_git_metadata.md.
+
+0097: modo local captura na mesma leitura do hash e usa SnapshotProvider sem reler origem. Contrato local_snapshot_capture.md; local_collection=frozen-local-v1 participa dos checkpoints. local_metadata participa de InputHashes e RunID por IDs consultivos congelados quando há target. Stages locais registram checkpoint_reused0/1. Hash v2, pesquisa simples e live/replay preservados; limpar capturas em qualquer saída.
+
+## Passo 0098 — Trace opt-in
+
+--trace gera trace-graph.json consultivo e estágio trace com hash dos bytes.
+Preservar bytes causais, RunID/RuleVersions e critérios de checkpoint. Validar
+saída contra entradas e aliases antes do dossiê; não criar grafo sem flag. Falha
+do trace marca execução FAILED. Retomada sem flag preserva grafo antigo no disco,
+não o consome/anuncia no manifest e avisa no stdout. Manifest/hashes, não simples
+existência do arquivo, identificam pertencimento à execução. Hash não autentica.

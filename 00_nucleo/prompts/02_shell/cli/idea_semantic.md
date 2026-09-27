@@ -19,3 +19,5 @@ estratégia lexical por injeção.
 - Os comandos funcionam sem infraestrutura remota.
 - `--output` grava arquivo e mantém stdout vazio.
 - Corpus, estratégia e JSON inválidos são rejeitados.
+
+Segurança: corpus JSON usa readIdeaJSONInput antes de Unmarshal, conforme security_json_input.md; saídas válidas preservadas.

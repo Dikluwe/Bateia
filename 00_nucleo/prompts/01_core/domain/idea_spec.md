@@ -10,14 +10,15 @@ descoberta: `IdeaSpec`, `ExpansionFacet`, `SearchExpansion` e `ExpansionPlan`.
 - Camada L1, pacote `domain`.
 - Zero I/O e zero dependências externas.
 - Estruturas serializáveis em JSON.
-- Problema, capacidades, restrições, não objetivos e stack permanecem dimensões
-  distintas.
+- Problema, capacidades, qualidades, condições operacionais, restrições, não objetivos e stack permanecem dimensões
+  distintas; os campos novos são opcionais.
 - A representação não executa busca nem contém detalhes de Sourcegraph/GitHub.
 
 ## Critérios de Verificação
 
 - A forma pública é coberta por testes de serialização.
 - `NonGoals` e `PreferredStack` não são confundidos com capacidades.
+- Qualidades e condições operacionais não viram consultas positivas automaticamente.
 - Os tipos podem ser consumidos por L1 e L2 sem importar infraestrutura.
 
 ## Contrato 0043 — consultas ligadas à intenção

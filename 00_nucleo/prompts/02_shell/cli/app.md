@@ -1,3 +1,8 @@
+## Passo 0094 — ajuda do scanner
+
+Incluir security scan --binary CAMINHO_ABSOLUTO [--output arquivo.json] na ajuda.
+Informar uso de govulncheck instalado e que o binário candidato não é executado.
+
 # Prompt: Interface CLI e Controle de Flags (cli/app)
 
 **Camada**: L₂ — Casca  
@@ -70,3 +75,12 @@ Adicionar somente ajuda para effects verify e seu recorte offline.
 ## Passo 0070
 Encaminhar `algorithm history analyze` para a casca offline definida em
 `00_nucleo/prompts/02_shell/cli/algorithm_history.md`, sem lógica histórica no dispatcher.
+
+## Passo 0090
+
+Inclua ajuda e exemplo para `idea landscape analyze`, mantendo o comando opcional e offline.
+
+## Passo 0093
+
+Adicionar ajuda e exemplo para `idea evidence recheck`, releitura opcional
+no provedor GitHub com entrada explícita e bundles exportáveis.

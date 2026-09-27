@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_decide_test.md
  * @layer L2
- * @updated 2026-09-07
+ * @updated 2026-09-24
  */
 
 package cli
@@ -45,6 +45,18 @@ func TestRunIdeaDecideIsOfflineAndWritesReport(t *testing.T) {
 	}
 	if got.Decision != domain.DecisionUnknown || got.PolicyHash == "" {
 		t.Fatalf("got %#v", got)
+	}
+	out.Reset()
+	err = RunIdeaCommand([]string{"decide", "--idea", write("idea.json", idea), "--assessment", write("assessment.json", assessment), "--policy", write("policy.json", policy), "--composition", write("composition.json", domain.CompositionInput{})}, &out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var advanced domain.ReuseDecisionReport
+	if err := json.Unmarshal(out.Bytes(), &advanced); err != nil {
+		t.Fatal(err)
+	}
+	if advanced.Composition == nil {
+		t.Fatal("composition input was ignored")
 	}
 }
 func TestRunIdeaDecideRequiresAllInputs(t *testing.T) {

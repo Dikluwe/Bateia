@@ -555,7 +555,9 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 
 		extracted.ArchViolations = parser.EvaluateArchViolations(extracted.Manifest, tRepo.Tree)
 		extracted.HealthScore = -1 // No validated architectural coverage metric.
-		extracted.SecurityAdvisories = parser.EvaluateSecurityAdvisories(extracted.Manifest)
+		securityScan, advisories := parser.EvaluateSecurityScan(extracted.Manifest)
+		extracted.SecurityScan = &securityScan
+		extracted.SecurityAdvisories = advisories
 
 		f.mu.Lock()
 		report.Results = append(report.Results, *extracted)

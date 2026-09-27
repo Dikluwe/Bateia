@@ -20,13 +20,15 @@ import (
 
 func RunIdeaRecoverCommand(args []string, stdout io.Writer, provider domain.ContentProvider) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea recover <diagnose|plan|execute>")
+		return fmt.Errorf("uso: bateia idea recover <diagnose|plan|value|execute>")
 	}
 	switch args[0] {
 	case "diagnose":
 		return runRecoverDiagnose(args[1:], stdout)
 	case "plan":
 		return runRecoverPlan(args[1:], stdout)
+	case "value":
+		return runRecoverValue(args[1:], stdout)
 	case "execute":
 		return runRecoverExecute(args[1:], stdout, provider)
 	default:

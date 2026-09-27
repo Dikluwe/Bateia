@@ -20,3 +20,16 @@ sem inicializar qualquer infraestrutura remota ou cache.
 - Funciona sem token, rede e cache gravável.
 - JSON inválido e ideia vazia retornam erro.
 - Com `--output`, grava o plano esperado.
+
+## Passo 0090
+
+Roteie `idea landscape analyze` para a casca offline, sem alterar `idea plan` ou a busca simples.
+
+Segurança: IdeaSpec usa leitura limitada seguida de validateIdeaJSONStructure antes de Unmarshal; preservar mensagens existentes de JSON inválido e saídas válidas, conforme security_json_input.md.
+
+
+## Passo 0098
+
+Roteie idea trace build/impact para a casca offline própria, sem alterar plan
+ou a busca simples. Erros de subcomandos e uso incluem trace. Writer trace não
+reutiliza o writer legado não atômico; o contrato está em idea_trace.md.

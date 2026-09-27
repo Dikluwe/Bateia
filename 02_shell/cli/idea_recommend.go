@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-19
+ * @updated 2026-09-26
  */
 package cli
 
@@ -24,6 +24,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -44,7 +45,7 @@ func (p *optionalPath) Set(v string) error {
 	return nil
 }
 
-func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, recommendationServices ...*usecase.RecommendationService) error {
+func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, recommendationServices ...*usecase.RecommendationService) (returnErr error) {
 	fs := flag.NewFlagSet("idea recommend", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	ideaPath := fs.String("idea", "", "IdeaSpec JSON")
@@ -57,6 +58,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	output := fs.String("output", "", "diretório do dossiê")
 	rulesPath := fs.String("rules", "", "catálogo JSON de regras de evidência")
 	resume := fs.Bool("resume", false, "retoma checkpoints válidos")
+	withTrace := fs.Bool("trace", false, "registra grafo consultivo de dependências da decisão")
 	maxPerQuery := fs.Int("max-per-query", 5, "máximo de resultados por expansão")
 	maxCandidates := fs.Int("max-candidates", 5, "máximo de candidatos para coleta")
 	targetName := fs.String("target-name", "", "nome do software alvo; usa idea.problem quando omitido")
@@ -74,6 +76,12 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if *ideaPath == "" || *policyPath == "" || *output == "" {
 		return fmt.Errorf("idea recommend exige --idea, --policy e --output")
 	}
+	traceInputs := []string{*ideaPath, *policyPath, *rulesPath, screeningModelPath.value}
+	if *withTrace {
+		if err := validateDecisionTraceOutput(filepath.Join(*output, "trace-graph.json"), traceInputs...); err != nil {
+			return err
+		}
+	}
 	runMode := domain.IdeaRunMode(strings.ToLower(*mode))
 	if runMode == domain.IdeaRunLive && strings.ToLower(*provider) != "sourcegraph" {
 		return fmt.Errorf("provedor %q desconhecido", *provider)
@@ -87,6 +95,11 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if *maxPerQuery < 1 || *maxPerQuery > 25 || *maxCandidates < 1 || *maxCandidates > 20 {
 		return fmt.Errorf("limites de candidatos inválidos")
 	}
+	if *timeout <= 0 {
+		return fmt.Errorf("timeout deve ser positivo")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	defer cancel()
 	var screeningModel *domain.ScreeningModel
 	screeningModelHash := ""
 	if screeningModelPath.set {
@@ -132,22 +145,40 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if err != nil {
 		return err
 	}
-	if err := prepareDossier(*output, *resume); err != nil {
-		return err
-	}
 	req := domain.IdeaRunRequest{Idea: idea, Policy: policy, Mode: runMode, Strategy: strings.ToLower(*strategy), Provider: *provider, Language: *language, SearchLocales: normalizedSearchLocales, LocalPaths: append([]string(nil), locals...), ReplayDirectory: *replay, OutputDirectory: *output, Resume: *resume, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates}
 	deps := usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content, EvidenceRules: evidenceRules}
 	if screeningModel != nil {
 		deps.ScreeningModel = *screeningModel
 	}
+	var localSnapshot *capturedLocalRun
 	if runMode == domain.IdeaRunLocal {
-		deps.LocalCandidates, err = localCandidatesExcluding(idea, locals, *output)
+		localSnapshot, err = captureLocalCandidates(ctx, locals, *output, targetRepository != nil)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			if cleanupErr := localSnapshot.Close(); cleanupErr != nil {
+				if returnErr == nil {
+					returnErr = cleanupErr
+				} else {
+					returnErr = fmt.Errorf("%w; %v", returnErr, cleanupErr)
+				}
+			}
+		}()
+		deps.LocalCandidates = localSnapshot.Candidates
+		deps.Content, err = buildSnapshotProvider(content, localSnapshot.Bindings)
 		if err != nil {
 			return err
 		}
 	}
 	evidenceHash, err := evidenceInputHash(req, deps.LocalCandidates)
 	if err != nil {
+		return err
+	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if err := prepareDossier(*output, *resume); err != nil {
 		return err
 	}
 	inputHashes := map[string]string{"idea": hashJSON(idea), "policy": hashJSON(policy), "mode": hashBytes([]byte(runMode)), "evidence": evidenceHash, "evidence_rules": catalogCoverage.RulesHash, "target": hashJSON(target)}
@@ -157,9 +188,16 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if len(normalizedSearchLocales) > 0 {
 		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
 	}
+	if localSnapshot != nil && targetRepository != nil {
+		inputHashes["local_metadata"] = hashJSON(localSnapshot.Identities)
+	}
 	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": catalogCoverage.RulesVersion, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
 	if screeningModel != nil {
 		ruleVersions["screening"] = "screening-opt-in-v1"
+	}
+	if runMode == domain.IdeaRunLocal {
+		ruleVersions["local_snapshot"] = localTreeHashVersion
+		ruleVersions["local_collection"] = localCollectionVersion
 	}
 	if runMode == domain.IdeaRunLocal || runMode == domain.IdeaRunLive {
 		ruleVersions["implementation_search"] = "0061"
@@ -168,6 +206,11 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		ruleVersions["discovery_query"] = "live0056-v1"
 	}
 	var previous domain.IdeaRunManifest
+	staleTrace := false
+	if *resume && !*withTrace {
+		_, traceErr := os.Lstat(filepath.Join(*output, "trace-graph.json"))
+		staleTrace = traceErr == nil
+	}
 	canReuseEvidence := false
 	if *resume {
 		if e := readJSONFile(filepath.Join(*output, "run.json"), &previous); e == nil {
@@ -179,8 +222,9 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		PolicyHash         string            `json:"policy_hash"`
 		TargetHash         string            `json:"target_hash"`
 		ScreeningModelHash string            `json:"screening_model_hash,omitempty"`
+		LocalMetadataHash  string            `json:"local_metadata_hash,omitempty"`
 		RuleVersions       map[string]string `json:"rule_versions"`
-	}{EvidenceHash: evidenceHash, PolicyHash: inputHashes["policy"], TargetHash: inputHashes["target"], ScreeningModelHash: screeningModelHash, RuleVersions: ruleVersions}
+	}{EvidenceHash: evidenceHash, PolicyHash: inputHashes["policy"], TargetHash: inputHashes["target"], ScreeningModelHash: screeningModelHash, LocalMetadataHash: inputHashes["local_metadata"], RuleVersions: ruleVersions}
 	manifest := domain.IdeaRunManifest{SchemaVersion: "1", RunID: usecase.StableRunID(hashJSON(runIdentity)), Mode: runMode, Status: domain.IdeaRunRunning, InputHashes: inputHashes, RuleVersions: ruleVersions, Stages: []domain.IdeaRunStage{}}
 	if err = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest); err != nil {
 		return err
@@ -207,8 +251,6 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 		deps.ReplaySnapshot = &snap
 		deps.ReplayBundles = bundles
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
-	defer cancel()
 	var result domain.IdeaRunResult
 	var alternatives domain.SoftwareAlternativeReport
 	var runErr error
@@ -237,7 +279,11 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	}
 	if !usesRecommendationService {
 		alternativesStarted := time.Now()
-		alternativeDiscovery, alternativeAssessments := alternativeInputsForTarget(runMode, result.Discovery, result.Assessment.Assessments, targetRepository)
+		identitiesFor := localGitHubRepositoryIdentities
+		if localSnapshot != nil {
+			identitiesFor = func(candidateURL string) []domain.RepositoryIdentity { return localSnapshot.Identities[candidateURL] }
+		}
+		alternativeDiscovery, alternativeAssessments := alternativeInputsForTargetUsing(runMode, result.Discovery, result.Assessment.Assessments, targetRepository, identitiesFor)
 		alternatives, err = usecase.RankSoftwareAlternatives(target, idea, alternativeDiscovery, alternativeAssessments, policy)
 		result.StageDurations["alternatives"] = time.Since(alternativesStarted).Milliseconds()
 		if err != nil {
@@ -246,6 +292,20 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
 			return err
 		}
+	}
+	var traceGraph *domain.DecisionTraceGraph
+	if *withTrace {
+		graph, traceErr := usecase.BuildDecisionTrace(domain.DecisionTraceBuildInput{SchemaVersion: "1", Idea: &idea, Report: result.Decision, RuleVersions: ruleVersions})
+		if traceErr == nil {
+			traceErr = writeDecisionTraceJSON(graph, filepath.Join(*output, "trace-graph.json"), nil, traceInputs...)
+		}
+		if traceErr != nil {
+			manifest.Status = domain.IdeaRunFailed
+			manifest.Failures = append(manifest.Failures, domain.ExecutionFailure{Scope: "run", Stage: "trace", Message: traceErr.Error()})
+			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
+			return traceErr
+		}
+		traceGraph = &graph
 	}
 	artifacts := []struct {
 		path  string
@@ -266,11 +326,32 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	manifest.DecisionPath = "reuse-decision.json"
 	manifest.Failures = append(manifest.Failures, result.Failures...)
 	manifest.Stages = buildRunStages(*output, result, alternatives)
+	if traceGraph != nil {
+		stage, err := buildDecisionTraceStage(*output, *traceGraph, ruleVersions)
+		if err != nil {
+			return err
+		}
+		manifest.Stages = append(manifest.Stages, stage)
+	}
+	if localSnapshot != nil {
+		for i := range manifest.Stages {
+			stage := &manifest.Stages[i]
+			if stage.Name == "discover" || stage.Name == "collect" {
+				stage.Counts["checkpoint_reused"] = 0
+				if canReuseEvidence && (stage.Name == "discover" || len(deps.ReplayBundles) > 0) {
+					stage.Counts["checkpoint_reused"] = 1
+				}
+			}
+		}
+	}
 	if err = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest); err != nil {
 		return err
 	}
 	if stdout != nil {
 		_, _ = fmt.Fprintf(stdout, "dossiê %s: %s (%s)\n", manifest.RunID, result.Decision.Decision, *output)
+		if staleTrace {
+			_, _ = fmt.Fprintln(stdout, "aviso: trace-graph.json anterior permanece no disco, mas não pertence à execução atual; consulte os estágios e hashes em run.json")
+		}
 	}
 	return nil
 }
@@ -308,6 +389,10 @@ type localAlternativeBinding struct {
 }
 
 func alternativeInputsForTarget(mode domain.IdeaRunMode, discovery domain.DiscoverySnapshot, assessments []domain.CandidateAssessment, target *domain.RepositoryIdentity) (domain.DiscoverySnapshot, []domain.CandidateAssessment) {
+	return alternativeInputsForTargetUsing(mode, discovery, assessments, target, localGitHubRepositoryIdentities)
+}
+
+func alternativeInputsForTargetUsing(mode domain.IdeaRunMode, discovery domain.DiscoverySnapshot, assessments []domain.CandidateAssessment, target *domain.RepositoryIdentity, identitiesFor func(string) []domain.RepositoryIdentity) (domain.DiscoverySnapshot, []domain.CandidateAssessment) {
 	discovery.Candidates = append([]domain.DiscoveredCandidate(nil), discovery.Candidates...)
 	assessments = append([]domain.CandidateAssessment(nil), assessments...)
 	if mode != domain.IdeaRunLocal || target == nil {
@@ -317,7 +402,7 @@ func alternativeInputsForTarget(mode domain.IdeaRunMode, discovery domain.Discov
 	for i := range discovery.Candidates {
 		candidate := discovery.Candidates[i].Repository
 		key := alternativeIdentityKey(candidate.Owner, candidate.Repo)
-		identities := localGitHubRepositoryIdentities(candidate.URL)
+		identities := identitiesFor(candidate.URL)
 		if len(identities) == 0 {
 			discovery.Candidates[i].Repository.Stale = true
 			continue
@@ -347,15 +432,15 @@ func alternativeIdentityKey(owner, repo string) string {
 }
 
 func localGitHubRepositoryIdentities(candidateURL string) []domain.RepositoryIdentity {
+	return localGitHubRepositoryIdentitiesLimit(candidateURL, maxIdeaInputBytes)
+}
+
+func localGitHubRepositoryIdentitiesLimit(candidateURL string, limit int64) []domain.RepositoryIdentity {
 	parsed, err := url.Parse(candidateURL)
-	if err != nil || !strings.EqualFold(parsed.Scheme, "file") || parsed.Path == "" {
+	if err != nil || !strings.EqualFold(parsed.Scheme, "file") || !filepath.IsAbs(parsed.Path) || (parsed.Host != "" && parsed.Host != "localhost") || parsed.RawQuery != "" || parsed.Fragment != "" {
 		return nil
 	}
-	configPath := localGitConfigPath(filepath.FromSlash(parsed.Path))
-	if configPath == "" {
-		return nil
-	}
-	data, err := os.ReadFile(configPath)
+	data, err := readLocalGitConfigLimit(filepath.FromSlash(parsed.Path), limit)
 	if err != nil {
 		return nil
 	}
@@ -390,38 +475,6 @@ func localGitHubRepositoryIdentities(candidateURL string) []domain.RepositoryIde
 		out = append(out, seen[key])
 	}
 	return out
-}
-
-func localGitConfigPath(root string) string {
-	dotGit := filepath.Join(root, ".git")
-	info, err := os.Stat(dotGit)
-	if err != nil {
-		return ""
-	}
-	if info.IsDir() {
-		return filepath.Join(dotGit, "config")
-	}
-	data, err := os.ReadFile(dotGit)
-	if err != nil {
-		return ""
-	}
-	line := strings.TrimSpace(string(data))
-	if !strings.HasPrefix(strings.ToLower(line), "gitdir:") {
-		return ""
-	}
-	gitDir := strings.TrimSpace(line[len("gitdir:"):])
-	if !filepath.IsAbs(gitDir) {
-		gitDir = filepath.Join(root, gitDir)
-	}
-	configRoot := filepath.Clean(gitDir)
-	if common, readErr := os.ReadFile(filepath.Join(configRoot, "commondir")); readErr == nil {
-		commonDir := strings.TrimSpace(string(common))
-		if !filepath.IsAbs(commonDir) {
-			commonDir = filepath.Join(configRoot, commonDir)
-		}
-		configRoot = filepath.Clean(commonDir)
-	}
-	return filepath.Join(configRoot, "config")
 }
 
 func rebindAlternativeAssessment(assessment domain.CandidateAssessment, repository domain.RepositoryIdentity) domain.CandidateAssessment {
@@ -461,12 +514,30 @@ func prepareDossier(path string, resume bool) error {
 		if info.Mode()&os.ModeSymlink != 0 {
 			return fmt.Errorf("diretório de saída não pode ser symlink")
 		}
-		entries, e := os.ReadDir(path)
-		if e != nil {
-			return e
+		if !info.IsDir() {
+			return fmt.Errorf("saída exige diretório")
 		}
-		if len(entries) > 0 && !resume {
-			return fmt.Errorf("diretório de saída já contém artefatos; use --resume")
+		if !resume {
+			dir, e := os.OpenFile(path, os.O_RDONLY|syscall.O_NONBLOCK|syscall.O_NOFOLLOW, 0)
+			if e != nil {
+				return e
+			}
+			opened, e := dir.Stat()
+			if e != nil || !opened.IsDir() || !os.SameFile(info, opened) {
+				dir.Close()
+				return fmt.Errorf("diretório de saída alterado durante validação")
+			}
+			entries, readErr := dir.ReadDir(1)
+			closeErr := dir.Close()
+			if readErr != nil && readErr != io.EOF {
+				return readErr
+			}
+			if closeErr != nil {
+				return closeErr
+			}
+			if len(entries) > 0 {
+				return fmt.Errorf("diretório de saída já contém artefatos; use --resume")
+			}
 		}
 	} else if !os.IsNotExist(err) {
 		return err
@@ -517,7 +588,7 @@ func rejectSerializedSecrets(data []byte) error {
 func hashJSON(v any) string     { b, _ := json.Marshal(v); return hashBytes(b) }
 func hashBytes(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }
 func fileHash(path string) (string, error) {
-	b, e := os.ReadFile(path)
+	b, e := readIdeaInput(path)
 	if e != nil {
 		return "", e
 	}
@@ -525,9 +596,12 @@ func fileHash(path string) (string, error) {
 }
 
 func readOptInScreeningModel(path string) (domain.ScreeningModel, string, error) {
-	data, err := os.ReadFile(path)
+	data, err := readIdeaInput(path)
 	if err != nil {
 		return domain.ScreeningModel{}, "", fmt.Errorf("não foi possível ler o modelo de screening")
+	}
+	if err := validateIdeaJSONStructure(data); err != nil {
+		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -640,7 +714,7 @@ func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, ev
 	} else if !previousHasScreeningModel || previousScreeningModelHash != screeningModelHash {
 		return false
 	}
-	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query"} {
+	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query", "local_snapshot", "local_collection"} {
 		if previous.RuleVersions[key] != ruleVersions[key] {
 			return false
 		}
@@ -672,80 +746,40 @@ func localCandidates(idea domain.IdeaSpec, paths []string) ([]domain.RepositoryC
 }
 
 func localCandidatesExcluding(idea domain.IdeaSpec, paths []string, excludedPath string) ([]domain.RepositoryCandidate, error) {
+	return localCandidatesExcludingContext(context.Background(), idea, paths, excludedPath)
+}
+
+func localCandidatesExcludingContext(ctx context.Context, idea domain.IdeaSpec, paths []string, excludedPath string) ([]domain.RepositoryCandidate, error) {
+	roots, err := normalizedLocalHashRoots(ctx, paths, excludedPath)
+	if err != nil {
+		return nil, err
+	}
+	budget := newTreeHashBudget()
 	var out []domain.RepositoryCandidate
-	for _, path := range paths {
-		abs, e := filepath.Abs(path)
+	for _, abs := range roots {
+		h, e := treeHashExcludingContext(ctx, abs, excludedPath, budget)
 		if e != nil {
 			return nil, e
 		}
-		h, e := treeHashExcluding(abs, excludedPath)
-		if e != nil {
-			return nil, e
-		}
-		base := strings.ToLower(filepath.Base(abs))
-		pathHash := hashBytes([]byte(abs))
-		repo := base + "-" + pathHash[:8]
-		out = append(out, domain.RepositoryCandidate{Owner: "local", Repo: repo, URL: "file://" + abs, CommitID: h})
+		out = append(out, localHashCandidate(abs, h))
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Repo < out[j].Repo })
 	return out, nil
 }
+
+func localHashCandidate(abs, digest string) domain.RepositoryCandidate {
+	base := strings.ToLower(filepath.Base(abs))
+	pathHash := hashBytes([]byte(abs))
+	repo := base + "-" + pathHash[:8]
+	return domain.RepositoryCandidate{Owner: "local", Repo: repo, URL: "file://" + abs, CommitID: digest}
+}
+
 func treeHash(root string) (string, error) {
 	return treeHashExcluding(root, "")
 }
 
 func treeHashExcluding(root, excludedPath string) (string, error) {
-	h := sha256.New()
-	excluded := ""
-	if strings.TrimSpace(excludedPath) != "" {
-		var err error
-		excluded, err = filepath.Abs(excludedPath)
-		if err != nil {
-			return "", fmt.Errorf("caminho de saída inválido: %w", err)
-		}
-	}
-	err := filepath.WalkDir(root, func(path string, d os.DirEntry, e error) error {
-		if e != nil {
-			return e
-		}
-		if d.IsDir() && (d.Name() == ".git" || d.Name() == "target" || d.Name() == "node_modules") {
-			if path != root {
-				return filepath.SkipDir
-			}
-		}
-		if excluded != "" && path == excluded {
-			if d.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		if d.IsDir() {
-			return nil
-		}
-		rel, e := filepath.Rel(root, path)
-		if e != nil {
-			return e
-		}
-		info, e := d.Info()
-		if e != nil {
-			return e
-		}
-		if info.Mode()&os.ModeSymlink != 0 {
-			return nil
-		}
-		b, e := os.ReadFile(path)
-		if e != nil {
-			return e
-		}
-		_, _ = h.Write([]byte(filepath.ToSlash(rel)))
-		_, _ = h.Write([]byte{0})
-		_, _ = h.Write(b)
-		return nil
-	})
-	if err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
+	return treeHashExcludingContext(context.Background(), root, excludedPath, newTreeHashBudget())
 }
 func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport, evidence ...[]domain.EvidenceBundle) error {
 	var b strings.Builder

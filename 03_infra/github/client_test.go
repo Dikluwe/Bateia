@@ -28,7 +28,7 @@ func TestClient_FetchRepoMetadata(t *testing.T) {
 			return
 		}
 		if strings.Contains(r.URL.Path, "/commits/") {
-			json.NewEncoder(w).Encode(map[string]interface{}{"sha": "abc123immutable"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"})
 			return
 		}
 		resp := map[string]interface{}{
@@ -58,7 +58,7 @@ func TestClient_FetchRepoMetadata(t *testing.T) {
 	if result.Description != "A great project" {
 		t.Errorf("Description inesperada: %s", result.Description)
 	}
-	if result.CommitID != "abc123immutable" {
+	if result.CommitID != "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" {
 		t.Errorf("CommitID não foi resolvido: %s", result.CommitID)
 	}
 }

@@ -1,0 +1,7 @@
+# Provedor de capturas locais
+
+Implemente um adaptador ContentProvider e ImplementationSearcher sobre Client, sem capturar/remover diretórios nem executar código dos candidatos. Receba até 20 vínculos de identidade local exata (owner, repo, URL original e CommitID) para diretórios privados absolutos, canônicos e sem aliases, mantidos imutáveis pelo chamador. Rejeite revisões vazias, identidades/URLs/diretórios duplicados ou ambíguos. A origem não deve ser relida nem necessária para construir o adaptador.
+
+Encaminhe todos os bytes, árvores, manifestos e buscas locais aos diretórios capturados, preservando owner/repo/revisão e URL original nos resultados. Não use fallback para candidatos locais desconhecidos ou revisão divergente. Remotos podem usar o fallback configurado, incluindo busca somente se implementar a interface correspondente. Não exponha caminhos privados em descrição, cobertura ou erros; preserve sentinelas seguros de ausência de manifesto e cancelamento. Mantenha os limites e confinamento do Client.
+
+Metadados retornados devem explicar captura local e falta de autenticação Git. Nunca invente BaseCommit nem transfira metadados Git da origem. Extração deve declarar git_base_metadata indisponível, mesmo se um diretório fornecido contiver .git. Captura consistente não equivale a snapshot atômico do filesystem original. Não altere client.go, roteador ou CLI nesta unidade.

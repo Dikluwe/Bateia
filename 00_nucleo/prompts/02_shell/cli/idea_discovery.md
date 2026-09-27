@@ -17,3 +17,5 @@ Aceite `--timeout` e `--attempt-timeout`, valide-os antes da rede, trate sinais 
 sistema como cancelamento estruturado, mostre progresso em stderr e grave
 atomicamente snapshots completos, parciais ou falhos antes de retornar o erro.
 Registre `NO_SEMANTIC_EXPANSION` quando a estratégia lexical não propuser nada.
+
+Segurança: planos/corpus de descoberta usam readIdeaJSONInput antes de Unmarshal, conforme security_json_input.md; validar antes de acessar provedores e preservar saídas válidas.

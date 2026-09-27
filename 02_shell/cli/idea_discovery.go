@@ -61,7 +61,7 @@ func RunIdeaDiscoverCommand(args []string, stdout, stderr io.Writer, lexical use
 	var plan domain.ExpansionPlan
 	proposedCount := 0
 	if *planPath != "" {
-		data, err := os.ReadFile(*planPath)
+		data, err := readIdeaJSONInput(*planPath)
 		if err != nil {
 			return fmt.Errorf("não foi possível ler plano %s: %w", *planPath, err)
 		}
@@ -135,7 +135,7 @@ func runIdeaDiscoveryEvaluate(args []string, stdout io.Writer) error {
 		return fmt.Errorf("replay exige --snapshot e --judgments")
 	}
 	readJSON := func(path string, destination any) error {
-		data, err := os.ReadFile(path)
+		data, err := readIdeaJSONInput(path)
 		if err != nil {
 			return fmt.Errorf("não foi possível ler %s: %w", path, err)
 		}

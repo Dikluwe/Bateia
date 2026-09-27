@@ -38,17 +38,10 @@ func TestStep0072LocalTreeDoesNotSilentlyStopAtTwentyThousandEntries(t *testing.
 	tree, err := localinfra.NewClient().FetchTree(context.Background(), domain.RepositoryCandidate{
 		Owner: "local", Repo: "libstdcxx", CommitID: "immutable-13", URL: "file://" + root,
 	})
-	if err != nil {
-		t.Fatal(err)
+	if err == nil {
+		t.Fatalf("árvore acima do teto devolvida como sucesso: entries=%d", len(tree))
 	}
-	seenSpan := false
-	for _, node := range tree {
-		if node.Path == "span" && node.Type == "file" {
-			seenSpan = true
-			break
-		}
-	}
-	if !seenSpan || len(tree) < distractors+1 {
-		t.Fatalf("árvore devolvida como sucesso foi truncada: entries=%d span=%v", len(tree), seenSpan)
+	if tree != nil {
+		t.Fatalf("árvore incompleta não deve parecer resultado íntegro: entries=%d err=%v", len(tree), err)
 	}
 }

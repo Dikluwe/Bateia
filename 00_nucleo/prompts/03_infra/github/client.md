@@ -9,14 +9,14 @@
 
 ## Contexto
 
-Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utilizam a Contents API autenticada do GitHub (5.000 req/h). Se ocorrer bloqueio ou requisição não-autenticada, o adaptador ativa o fallback interno para `raw.githubusercontent.com` ou clone local shallow (`git clone --depth 1`).
+Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utilizam a Contents API autenticada do GitHub (5.000 req/h). Se ocorrer bloqueio ou requisição não-autenticada, o adaptador ativa o fallback interno para `raw.githubusercontent.com` limitado. O fallback por clone foi removido na revisão de segurança de 2026-09-26.
 
 ---
 
 ## Restrições Estruturais
 
 - **L₃ (Infraestrutura)**: Implementa a interface `domain.ContentProvider` de $L_1$.
-- Realiza requisições HTTP REST (`api.github.com`), requisições raw (`raw.githubusercontent.com`) e execuções de comandos git locais (`os/exec`).
+- Realiza requisições HTTP REST (`api.github.com`), requisições raw (`raw.githubusercontent.com`) limitadas; não executa Git, checkout, hooks ou filtros locais.
 - Proibido importar $L_2$ ou $L_4$.
 
 ---
@@ -41,7 +41,7 @@ Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utiliz
    - Sem SHA, preservar a leitura da raiz para o funil legado.
    - Propagar falhas; nunca fabricar uma árvore substituta.
 5. Implementar `ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error)`:
-   - Tentar via HTTP (Contents API / Raw fallback). Se falhar ou for leitura ampla, executar clone shallow local `git clone --depth 1` em diretório temporário isolado.
+   - Validar candidatos e caminhos, conferir modos regulares na árvore Git e tentar HTTP (Contents API / Raw fallback). Symlinks, submodules, árvore incompleta e limites excedidos são terminais. Nunca clonar nem executar Git; indisponibilidade de HTTP permanece erro.
 6. Implementar `FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error)`:
    - Consultar `GET https://api.github.com/repos/{owner}/{repo}`.
    - Atualizar `Stars`, `Description`, estado arquivado, branch e atividade.
@@ -61,3 +61,7 @@ Conforme ADR-0001 (rev 1), o meio e fundo do funil (Triagem e Extração) utiliz
 ## Revisão 2026-09-07 — Evidência proporcional
 
 Consulta original é a autoridade de relevância; identidade candidato/módulo não prova pertinência. README exige origem explícita e termos literais. Extração depende da consulta, suporta caminhos C/C++/shaders, penaliza temporários e declara cobertura insuficiente. Registrar tentativas e relaxamentos, hashes dos bytes e intervalos examinados, parâmetros, versão e commit-base local. Pontuação heurística não demonstra solução nem saúde arquitetural. Separar fato observado, inferência, hipótese e não verificado; telemetria é do Bateia. Não inventar padrões com zero candidatos nem convenções Go para outras linguagens. Classificar dependências por identidade. Testar OIT/USalign/BinDiff, Coin, cobertura ausente e mudanças rastreadas/não rastreadas do worktree.
+
+## Revisão de segurança 2026-09-26
+
+Aplicar `security.go`: redirect bloqueado, envelopes JSON limitados antes de decodificar (Contents 4 MiB, árvores/descoberta 8 MiB, metadados 1 MiB), arquivo 2 MiB, até 100 arquivos e 8 MiB por extração. Falhas de limite e JSON inválido não podem ativar fallback mais permissivo. Validar identidade, revisão, caminho, cardinalidade e modo regular antes de admitir evidência. Clone fallback desabilitado: indisponibilidade de API/árvore/raw produz coleta inconclusiva; nenhuma execução Git, herança de ambiente/configuração, hook/filtro ou leitura de worktree ocorre no provedor. O legado aceita HEAD mas o preserva como mutável.

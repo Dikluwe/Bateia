@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision_test.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-24
  */
 
 package usecase
@@ -99,7 +99,7 @@ func TestDecideReuseCompose(t *testing.T) {
 	b.ProblemAlignment.Status = domain.EvidencePartial
 	b.ReusableParts = []domain.ReusableComponent{{Name: "io", Kind: "package", Path: "io", Capabilities: []string{"export", "sync"}, Evidence: []domain.EvidenceSource{decisionSource("b", "cap-export"), decisionSource("b", "cap-sync")}}}
 	r, _ := DecideReuse(decisionRequest(b, a))
-	if r.Decision != domain.DecisionCompose || len(r.Components) != 2 {
+	if r.Decision != domain.DecisionUnknown || r.Composition == nil || len(r.Composition.Candidates) != 1 || r.Composition.Candidates[0].Status != domain.CompositionProposed {
 		t.Fatalf("got %#v", r)
 	}
 }

@@ -40,11 +40,23 @@ func investigationRequirements(idea domain.IdeaSpec) []domain.InvestigationRequi
 		if kind == "preference" {
 			acceptance = "Registrar compatibilidade observada; preferência não é gate eliminatório."
 		}
+		if kind == "quality" {
+			acceptance = "Definir e observar critério mensurável sob condições declaradas; não inferir limiar da formulação textual."
+		}
+		if kind == "operating_condition" {
+			acceptance = "Verificar a condição no ambiente de execução declarado; documentação e código isolados não comprovam operação."
+		}
 		out = append(out, domain.InvestigationRequirement{ID: id, Kind: kind, Text: text, Question: "Que evidência responde a: " + text + "?", Acceptance: acceptance})
 	}
 	add("problem", idea.Problem)
 	for _, v := range idea.Capabilities {
 		add("capability", v)
+	}
+	for _, v := range idea.Qualities {
+		add("quality", v)
+	}
+	for _, v := range idea.OperatingConditions {
+		add("operating_condition", v)
 	}
 	for _, v := range idea.Constraints {
 		add("constraint", v)

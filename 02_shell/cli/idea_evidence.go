@@ -13,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"time"
 
@@ -23,7 +22,7 @@ import (
 
 func runIdeaEvidence(args []string, stdout io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate|diagnose|calibrate>")
+		return fmt.Errorf("uso: bateia idea evidence <plan|collect|assess|evaluate|diagnose|calibrate|reconcile|verify|recheck>")
 	}
 	switch args[0] {
 	case "plan":
@@ -38,6 +37,12 @@ func runIdeaEvidence(args []string, stdout io.Writer) error {
 		return runIdeaEvidenceDiagnose(args[1:], stdout)
 	case "calibrate":
 		return runIdeaEvidenceCalibrate(args[1:], stdout)
+	case "reconcile":
+		return runIdeaEvidenceReconcile(args[1:], stdout)
+	case "verify":
+		return runIdeaEvidenceVerify(args[1:], stdout)
+	case "recheck":
+		return fmt.Errorf("evidence recheck requer provedor GitHub configurado pelo executável")
 	default:
 		return fmt.Errorf("subcomando evidence desconhecido %q", args[0])
 	}
@@ -96,7 +101,7 @@ func RunIdeaEvidenceCollectCommand(args []string, stdout io.Writer, provider dom
 	if *planPath == "" {
 		return fmt.Errorf("evidence collect exige --plan")
 	}
-	data, err := os.ReadFile(*planPath)
+	data, err := readIdeaJSONInput(*planPath)
 	if err != nil {
 		return fmt.Errorf("não foi possível ler %s: %w", *planPath, err)
 	}
@@ -171,7 +176,7 @@ func runIdeaEvidenceAssess(args []string, stdout io.Writer) error {
 	if err := readJSONFile(*screeningPath, &screening); err != nil {
 		return err
 	}
-	data, err := os.ReadFile(*evidencePath)
+	data, err := readIdeaJSONInput(*evidencePath)
 	if err != nil {
 		return fmt.Errorf("não foi possível ler %s: %w", *evidencePath, err)
 	}

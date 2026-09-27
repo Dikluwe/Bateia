@@ -11,6 +11,7 @@ quando presentes.
 - Camada L1, pacote `usecase`.
 - Zero I/O, rede, filesystem, relógio ou aleatoriedade.
 - Normalização e deduplicação determinísticas.
+- Preservar qualidades e condições operacionais normalizadas sem convertê-las em buscas não autorizadas.
 - IDs estáveis derivados do conteúdo normalizado.
 - Cada expansão declara faceta, justificativa e campos cobertos.
 - Não inventar sinônimos e não transformar `NonGoals` em buscas positivas.

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/reuse_decision.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-09-24
  */
 
 package domain
@@ -42,6 +42,7 @@ type ReuseDecisionRequest struct {
 	Idea        IdeaSpec              `json:"idea"`
 	Assessments []CandidateAssessment `json:"assessments"`
 	Policy      ReuseDecisionPolicy   `json:"policy"`
+	Composition *CompositionInput     `json:"composition,omitempty"`
 }
 
 type CandidateCapabilityStatus struct {
@@ -84,17 +85,19 @@ type EffortAssessment struct {
 }
 
 type ReuseDecisionReport struct {
-	Investigation *InvestigationPlan     `json:"investigation_plan,omitempty"`
-	SchemaVersion string                 `json:"schema_version"`
-	Policy        ReuseDecisionPolicy    `json:"policy"`
-	PolicyHash    string                 `json:"policy_hash"`
-	Decision      ReuseDecision          `json:"decision"`
-	Primary       *ResolvedRepository    `json:"primary,omitempty"`
-	Components    []ReusableComponent    `json:"components,omitempty"`
-	Matrix        []CapabilityComparison `json:"matrix"`
-	Gaps          []string               `json:"gaps"`
-	Blockers      []DecisionReason       `json:"blockers,omitempty"`
-	Reasons       []DecisionReason       `json:"reasons"`
-	Alternatives  []DecisionAlternative  `json:"alternatives"`
-	Effort        EffortAssessment       `json:"effort"`
+	Investigation     *InvestigationPlan       `json:"investigation_plan,omitempty"`
+	Composition       *CompositionReport       `json:"composition,omitempty"`
+	TechnicalEvidence *TechnicalEvidenceReview `json:"technical_evidence,omitempty"`
+	SchemaVersion     string                   `json:"schema_version"`
+	Policy            ReuseDecisionPolicy      `json:"policy"`
+	PolicyHash        string                   `json:"policy_hash"`
+	Decision          ReuseDecision            `json:"decision"`
+	Primary           *ResolvedRepository      `json:"primary,omitempty"`
+	Components        []ReusableComponent      `json:"components,omitempty"`
+	Matrix            []CapabilityComparison   `json:"matrix"`
+	Gaps              []string                 `json:"gaps"`
+	Blockers          []DecisionReason         `json:"blockers,omitempty"`
+	Reasons           []DecisionReason         `json:"reasons"`
+	Alternatives      []DecisionAlternative    `json:"alternatives"`
+	Effort            EffortAssessment         `json:"effort"`
 }

@@ -14,7 +14,6 @@ import (
 	"io"
 	"io/fs"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -120,6 +119,10 @@ func resolveRootAlias(root *os.Root, name string) (string, error) {
 }
 
 func readLocalFile(root *os.Root, name string) ([]byte, error) {
+	return readLocalFileLimit(root, name, maxLocalFileSize)
+}
+
+func readLocalFileLimit(root *os.Root, name string, limit int64) ([]byte, error) {
 	f, err := root.OpenFile(name, os.O_RDONLY|syscall.O_NONBLOCK, 0)
 	if err != nil {
 		resolved, resolveErr := resolveRootAlias(root, name)
@@ -136,15 +139,19 @@ func readLocalFile(root *os.Root, name string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !info.Mode().IsRegular() || info.Size() > maxLocalFileSize {
-		return nil, fmt.Errorf("arquivo local não regular ou acima de %d bytes: %s", maxLocalFileSize, name)
+	if !singleLinkRegular(info) || info.Size() < 0 || info.Size() > limit {
+		return nil, fmt.Errorf("arquivo local não regular, hardlink ou acima de %d bytes: %s", limit, name)
 	}
-	data, err := io.ReadAll(io.LimitReader(f, maxLocalFileSize+1))
+	data, err := io.ReadAll(io.LimitReader(f, limit+1))
 	if err != nil {
 		return nil, err
 	}
-	if len(data) > maxLocalFileSize {
+	if int64(len(data)) > limit {
 		return nil, fmt.Errorf("arquivo local excedeu limite durante leitura: %s", name)
+	}
+	after, err := f.Stat()
+	if err != nil || !singleLinkRegular(after) || after.Size() != int64(len(data)) || !after.ModTime().Equal(info.ModTime()) {
+		return nil, fmt.Errorf("arquivo local alterado/hardlink durante leitura: %s", name)
 	}
 	return data, nil
 }
@@ -159,7 +166,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		return nil, err
 	}
 	defer scoped.Close()
-	entries, err := fs.ReadDir(scoped.FS(), ".")
+	entries, err := readLocalRootEntries(ctx, scoped)
 	if err != nil {
 		return nil, err
 	}
@@ -171,6 +178,9 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		if !entry.IsDir() && parser.DetectManifestType(entry.Name()) != "" {
 			manifests = append(manifests, entry.Name())
 		}
+	}
+	if len(manifests) > maxLocalExtractionFiles {
+		return nil, fmt.Errorf("manifestos locais excedem limite de probes")
 	}
 	sort.Strings(manifests)
 	for _, name := range manifests {
@@ -205,32 +215,47 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 	}
 	defer scoped.Close()
 	nodes := make([]domain.DirectoryNode, 0, 512)
-	err = fs.WalkDir(scoped.FS(), ".", func(path string, entry os.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			return walkErr
-		}
+	err = walkLocalTree(ctx, scoped, func(path string, entry fs.DirEntry) error {
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
 		if path == "." {
 			return nil
 		}
-		if entry.IsDir() && ignoredDirectories[entry.Name()] {
+		if entry.Name() == ".git" || entry.IsDir() && ignoredDirectories[entry.Name()] {
 			return fs.SkipDir
 		}
 		node := domain.DirectoryNode{Path: path, Type: "file"}
 		if entry.IsDir() {
 			node.Type = "dir"
-		} else if info, infoErr := entry.Info(); infoErr == nil {
+		} else {
+			info, infoErr := scoped.Lstat(filepath.FromSlash(path))
+			if infoErr != nil {
+				return infoErr
+			}
 			node.Size = info.Size()
+			if info.Mode()&os.ModeSymlink != 0 {
+				node.Type = "symlink"
+			} else if !info.Mode().IsRegular() {
+				node.Type = "nonregular"
+			} else if !singleLinkRegular(info) {
+				node.Type = "hardlink"
+			}
 		}
 		nodes = append(nodes, node)
 		return nil
 	})
-	return nodes, err
+	if err != nil {
+		return nil, err
+	}
+	sort.Slice(nodes, func(i, j int) bool { return nodes[i].Path < nodes[j].Path })
+	return nodes, nil
 }
 
 func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
+	if len(paths) > maxLocalExtractionFiles {
+		return nil, fmt.Errorf("extração local excede limite de %d arquivos", maxLocalExtractionFiles)
+	}
 	root, err := candidateRoot(candidate)
 	if err != nil {
 		return nil, err
@@ -244,13 +269,15 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 		Ref:       domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID},
 		Candidate: candidate, Files: make([]domain.ExtractedFile, 0), ConsultadoEm: time.Now().UTC(),
 	}
-	cmd := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
-	cmd.Dir = root
-	if base, err := cmd.Output(); err == nil {
-		extracted.BaseCommit = strings.TrimSpace(string(base))
+	if base, metadataErr := readLocalBaseCommit(scoped); metadataErr == nil {
+		extracted.BaseCommit = base
+	} else {
+		extracted.Coverage.ChecksNotRun = append(extracted.Coverage.ChecksNotRun, "git_base_metadata")
+		extracted.Coverage.Reason = "Metadados Git consultivos indisponíveis sem execução de comandos: " + metadataErr.Error()
 	}
 	seen := make(map[string]bool)
 	var hashes []string
+	var total int64
 	for _, relative := range paths {
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
@@ -261,10 +288,22 @@ func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.Reposito
 			continue
 		}
 		seen[name] = true
-		data, readErr := readLocalFile(scoped, name)
+		remaining := int64(maxLocalExtractionBytes) - total
+		if remaining <= 0 {
+			return nil, fmt.Errorf("extração local esgotou orçamento total de bytes")
+		}
+		limit := int64(maxLocalFileSize)
+		if remaining < limit {
+			limit = remaining
+		}
+		data, readErr := readLocalFileLimit(scoped, name, limit)
 		if readErr != nil {
+			if limit < maxLocalFileSize {
+				return nil, fmt.Errorf("orçamento total impede leitura de %s: %w", name, readErr)
+			}
 			continue
 		}
+		total += int64(len(data))
 		normalized := filepath.ToSlash(name)
 		hash := fmt.Sprintf("%x", sha256.Sum256(data))
 		evidence := domain.FileEvidence{SHA256: hash, State: "content_inspected", Method: "leitura local confinada; sem verificação semântica"}
@@ -289,15 +328,22 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 		return candidate, err
 	}
 	candidate.Description = "Worktree local em " + root
-	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") || candidate.CommitID == "WORKTREE" {
-		cmd := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
-		cmd.Dir = root
-		output, resolveErr := cmd.Output()
-		if resolveErr != nil {
-			return candidate, fmt.Errorf("não foi possível resolver commit da worktree local: %w", resolveErr)
-		}
-		candidate.CommitID = strings.TrimSpace(string(output))
+	if err := ctx.Err(); err != nil {
+		return candidate, err
 	}
+	if candidate.CommitID == "" || strings.EqualFold(candidate.CommitID, "HEAD") || candidate.CommitID == "WORKTREE" {
+		scoped, err := os.OpenRoot(root)
+		if err != nil {
+			return candidate, err
+		}
+		defer scoped.Close()
+		base, resolveErr := readLocalBaseCommit(scoped)
+		if resolveErr != nil {
+			return candidate, fmt.Errorf("não foi possível resolver metadata consultiva da worktree local: %w", resolveErr)
+		}
+		candidate.CommitID = base
+	}
+	candidate.Description += " (metadata Git consultiva; bytes da worktree não autenticados pelo commit)"
 	candidate.ConsultadoEm = time.Now().UTC()
 	return candidate, nil
 }

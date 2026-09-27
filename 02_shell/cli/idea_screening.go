@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -22,7 +21,7 @@ import (
 )
 
 func readJSONFile(path string, destination any) error {
-	data, err := os.ReadFile(path)
+	data, err := readIdeaJSONInput(path)
 	if err != nil {
 		return fmt.Errorf("não foi possível ler %s: %w", path, err)
 	}
@@ -51,7 +50,7 @@ func runIdeaScreen(args []string, stdout io.Writer) error {
 	}
 	model := usecase.DefaultScreeningModel()
 	if *modelPath != "" {
-		data, err := os.ReadFile(*modelPath)
+		data, err := readIdeaJSONInput(*modelPath)
 		if err != nil {
 			return err
 		}

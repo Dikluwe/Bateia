@@ -144,6 +144,7 @@ type ExtractedRepository struct {
 	Symbols              []ASTSymbol                 `json:"symbols,omitempty"`
 	ArchViolations       []ArchViolation             `json:"arch_violations,omitempty"`
 	SecurityAdvisories   []SecurityAdvisory          `json:"security_advisories,omitempty"`
+	SecurityScan         *SecurityScanReport         `json:"security_scan,omitempty"`
 	ConsultadoEm         time.Time                   `json:"consultado_em"`
 	Stale                bool                        `json:"stale"`
 	RelevanceScore       int                         `json:"relevance_score"`
@@ -480,4 +481,10 @@ type FlowBlock struct {
 	Successors []*int         `json:"successors"`
 	Statements []FlowLocation `json:"statements"`
 	Terminator *FlowLocation  `json:"terminator,omitempty"`
+}
+
+// SnapshotBinding associates a source identity with a caller-owned private capture.
+type SnapshotBinding struct {
+	Candidate RepositoryCandidate `json:"candidate"`
+	Directory string              `json:"directory"`
 }

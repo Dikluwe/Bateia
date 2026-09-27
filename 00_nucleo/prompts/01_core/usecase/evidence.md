@@ -1,3 +1,16 @@
+## Passo 0095 — autoridade do inventário
+
+Contar todo path raiz autoritativo de licença independentemente do Kind importado.
+Somente documento único com Kind license pode ser reconhecido: rótulo file não
+oculta COPYing adicional e não transforma o único documento em fonte de licença.
+
+## Passo 0094 — licença conservadora
+
+Reconhecer automaticamente somente template MIT integral normalizado. Marcadores
+isolados e coleta incompleta não são prova. Exigir documento raiz único e registrar
+base de reconhecimento e identificadores apenas consultivos. Reconhecimento textual
+não estabelece titularidade, escopo nem compatibilidade jurídica de composição.
+
 # Deterministic evidence use case
 
 Selecionar candidatos da peneira, criar planos limitados, coletar bundles por uma

@@ -163,7 +163,7 @@ func m20ReplayBundle(t *testing.T, candidate domain.RepositoryCandidate, include
 		add(domain.EvidenceDocumentation, "docs/recipes.md", "Recipe Keeper supports recipe organization and imports recipes for family meal planning.")
 	}
 	if includeLicense {
-		add(domain.EvidenceLicense, "LICENSE", "MIT License\nPermission is hereby granted, free of charge")
+		add(domain.EvidenceLicense, "LICENSE", securityMITLicense)
 	}
 	metadata, err := json.Marshal(candidate)
 	if err != nil {

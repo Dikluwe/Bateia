@@ -1958,35 +1958,30 @@ func authoritativeLicensePath(path string) bool {
 }
 
 func assessLicense(b domain.EvidenceBundle) domain.LicenseAssessment {
-	for _, i := range b.Items {
-		if i.Kind != domain.EvidenceLicense || !authoritativeLicensePath(i.Path) {
-			continue
-		}
-		n := strings.ToLower(i.Content)
-		id := ""
-		for _, candidate := range []struct {
-			id      string
-			markers []string
-		}{
-			{"MIT", []string{"mit license", "permission is hereby granted, free of charge"}},
-			{"Apache-2.0", []string{"apache license", "version 2.0"}},
-			{"MPL-2.0", []string{"mozilla public license version 2.0", "mpl-2.0"}},
-			{"GPL-3.0", []string{"gnu general public license", "version 3"}},
-		} {
-			if allMarkers(n, candidate.markers) {
-				id = candidate.id
-				break
-			}
-		}
-		s := sourceFromItem(i, domain.EvidenceLicense, "license-detect", .7, firstLine(i.Content, []string{"license", "copyright"}))
-		if id != "" {
-			return domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: id, Sources: []domain.EvidenceSource{s}, Caveat: "identificação automática; não é aconselhamento jurídico"}
-		}
-	}
 	if !b.Complete || len(b.Failures) > 0 {
 		return domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "coleta incompleta"}
 	}
-	return domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "licença ausente ou ambígua"}
+	var roots []domain.CollectedEvidence
+	for _, i := range b.Items {
+		// Inventory authority is path-based. A caller-supplied Kind must not
+		// hide another root document from the ambiguity check.
+		if authoritativeLicensePath(i.Path) {
+			roots = append(roots, i)
+		}
+	}
+	if len(roots) != 1 {
+		return domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "licença ausente ou múltiplos documentos raiz; revisão de escopo necessária"}
+	}
+	i := roots[0]
+	if i.Kind != domain.EvidenceLicense {
+		return domain.LicenseAssessment{Status: domain.EvidenceInconclusive, Caveat: "classificação do documento raiz de licença incoerente"}
+	}
+	id := recognizedLicenseText(i.Content)
+	s := sourceFromItem(i, domain.EvidenceLicense, "license-full-text", .7, firstLine(i.Content, []string{"license", "copyright", "permission"}))
+	if id != "" {
+		return domain.LicenseAssessment{Status: domain.EvidenceProven, Identifier: id, RecognitionBasis: "FULL_TEXT_TEMPLATE", Sources: []domain.EvidenceSource{s}, Caveat: "texto MIT completo reconhecido; compatibilidade, titularidade e escopo jurídico não inferidos"}
+	}
+	return domain.LicenseAssessment{Status: domain.EvidenceInconclusive, RecognitionBasis: "UNVERIFIED_TEXT", DetectedIdentifiers: detectedLicenseMarkers(i.Content), Sources: []domain.EvidenceSource{s}, Caveat: "marcadores são consultivos; texto incompleto, alterado ou licença sem verificador de texto completo"}
 }
 func allMarkers(content string, markers []string) bool {
 	for _, marker := range markers {

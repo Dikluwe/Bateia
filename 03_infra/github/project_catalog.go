@@ -8,7 +8,6 @@ package github
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -46,7 +45,7 @@ func (c *Client) SearchCatalog(ctx context.Context, request domain.CatalogSearch
 	started := time.Now()
 	query := strings.TrimSpace(request.Query)
 	result.Attempt = domain.CatalogAttempt{ExpansionID: request.ExpansionID, Query: query, Status: "FAILED"}
-	if query == "" || request.MaxResults < 1 {
+	if query == "" || len(query) > 4096 || request.MaxResults < 1 || request.MaxResults > 100 {
 		return result, fmt.Errorf("consulta de catálogo inválida")
 	}
 	searchCtx := ctx
@@ -85,11 +84,17 @@ func (c *Client) SearchCatalog(ctx context.Context, request domain.CatalogSearch
 		return result, fmt.Errorf("GitHub search retornou status %d", resp.StatusCode)
 	}
 	var payload catalogSearchResponse
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+	if err := decodeBounded(resp, maxTreeEnvelopeBytes, &payload); err != nil {
 		return result, fmt.Errorf("resposta GitHub inválida: %w", err)
+	}
+	if len(payload.Items) > request.MaxResults {
+		return result, unsafeRemote("catálogo retornou mais itens que o limite solicitado")
 	}
 	for _, item := range payload.Items {
 		repo := domain.RepositoryCandidate{Owner: item.Owner.Login, Repo: item.Name, URL: item.HTMLURL, Description: item.Description, Stars: item.Stargazers, Archived: item.Archived, DefaultBranch: item.DefaultBranch, UpdatedAt: item.PushedAt, ConsultadoEm: time.Now().UTC()}
+		if err := validateRemoteCandidate(repo); err != nil {
+			return result, err
+		}
 		resolved, _ := c.FetchRepoMetadata(searchCtx, repo)
 		repo = resolved
 		fields := matchedCatalogFields(request.Discriminators, repo, item.Topics)

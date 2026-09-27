@@ -8,6 +8,7 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"bateia/01_core/domain"
 	"bateia/02_shell/report"
@@ -31,9 +33,16 @@ func RunIdeaRadarExportCommand(args []string, stdout io.Writer) error {
 		return err
 	}
 	defer inputFile.Close()
+	data, err := readIdeaDescriptor(inputFile)
+	if err != nil {
+		return fmt.Errorf("read idea radar input %s: %w", inputPath, err)
+	}
+	if err := validateIdeaJSONStructure(data); err != nil {
+		return fmt.Errorf("invalid idea radar JSON in %s: %w", inputPath, err)
+	}
 
 	var input domain.IdeaRadarInput
-	decoder := json.NewDecoder(inputFile)
+	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&input); err != nil {
 		return fmt.Errorf("invalid idea radar JSON in %s: %w", inputPath, err)
@@ -118,7 +127,7 @@ func openIdeaRadarExportInput(inputPath, outputPath string) (*os.File, os.FileIn
 		}
 	}
 
-	inputFile, err := os.Open(inputPath)
+	inputFile, err := os.OpenFile(inputPath, os.O_RDONLY|syscall.O_NONBLOCK, 0)
 	if err != nil {
 		return nil, nil, fmt.Errorf("read idea radar input %s: %w", inputPath, err)
 	}

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-09-19
+ * @updated 2026-09-24
  */
 
 package cli
@@ -55,7 +55,7 @@ func (a *CLIApp) Run(args []string) error {
 		case "benchmark":
 			return RunBenchmarkCommand(args[1:], os.Stdout)
 		case "mcp":
-			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns)
+			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns).WithAdvancedIntake()
 			return mcpServer.Serve(context.Background())
 		case "tui":
 			return RunTUI(a.funnel, "", "go")
@@ -68,6 +68,7 @@ func (a *CLIApp) Run(args []string) error {
 }
 
 func (a *CLIApp) PrintUsage() {
+	fmt.Println("  security scan --binary /caminho/binario-go [--output scan.json] Consulta govulncheck instalado; não executa o candidato")
 	fmt.Println("  effects verify Verifica offline sort-preserve-v1 em casos limitados; effects --help para limites")
 	fmt.Println("🔍 Bateia — Motor de Busca de Código, Análise Arquitetural & Inteligência Ontológica")
 	fmt.Println("\nSubcomandos Disponíveis:")
@@ -83,12 +84,15 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
 	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
-	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose Comprova e diagnostica evidências, sem LLM")
-	fmt.Println("  idea decide   Decide offline entre reusar, compor, referenciar ou construir")
+	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose|reconcile|verify|recheck Comprova e audita evidências, sem LLM")
+	fmt.Println("  idea decide   Decide offline; `decide frontier` expõe Pareto e `decide evaluate` mede risco-cobertura")
 	fmt.Println("  idea recommend Orquestra o funil e ranqueia alternativas com evidência")
-	fmt.Println("  idea recover diagnose|plan|execute Recupera evidências de decisões inconclusivas")
+	fmt.Println("  idea intake prepare|apply|diagnose Estrutura entradas e abstenções avançadas sem executar efeitos")
+	fmt.Println("  idea review protocol|synthesize|update|prioritize|evaluate Mantém revisão auditável e viva sem alterar a busca simples")
+	fmt.Println("  idea recover diagnose|plan|value|execute Recupera evidências e prioriza ações por valor decisório")
 	fmt.Println("  idea autofagia|katamari Audita capacidades internas e compõe somente lacunas comprovadas")
 	fmt.Println("  idea radar export Exporta o radar offline como Archify Dataflow v1")
+	fmt.Println("  idea landscape analyze Classifica substitutos, complementos e analogias; compara snapshots")
 	fmt.Println("  algorithm history analyze Reconstrói alegações históricas com proveniência")
 	fmt.Println("  benchmark validate|mutate|run Audita offline o benchmark ponta a ponta")
 	fmt.Println("  mcp           Inicia o Bateia como Servidor MCP (Model Context Protocol) via stdio")
@@ -104,8 +108,17 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea ontology expand --input ideia.json --ontology discovery-ontology.json --plan-output plano.json")
 	fmt.Println("  bateia idea catalog discover --plan plano.json --provider github --output catalogo.json")
 	fmt.Println("  bateia idea decide --idea ideia.json --assessment assessment.json --policy reuse-policy.json")
+	fmt.Println("  bateia idea evidence reconcile --input achados-tecnicos.json --as-of 2026-09-24T00:00:00Z")
+	fmt.Println("  bateia idea evidence verify --input achados-tecnicos.json --bundles bundle.json --as-of 2026-09-24T00:00:00Z")
+	fmt.Println("  bateia idea evidence recheck --input releitura.json --output releitura-report.json --bundles-output bundles-relidos.json")
+	fmt.Println("  bateia idea decide frontier --input multicriteria-request.json --output frontier.json")
+	fmt.Println("  bateia idea decide evaluate --input selective-decisions.json --output risk-coverage.json")
 	fmt.Println("  bateia idea recommend --idea ideia.json --policy reuse-policy.json --target-name Software --target-repo owner/repo --output dossie")
+	fmt.Println("  bateia idea intake prepare --input intake-draft.json --output intake.json")
+	fmt.Println("  bateia idea review protocol --input review-protocol-draft.json --output review-protocol.json")
+	fmt.Println("  bateia idea recover value --input decision-value-request.json --output decision-value-plan.json")
 	fmt.Println("  bateia idea radar export --input radar-input.json --output radar.archify.json")
+	fmt.Println("  bateia idea landscape analyze --input landscape.json --output landscape-report.json")
 	fmt.Println("  bateia algorithm history analyze --input history.json --output history-report.json")
 }
 
@@ -136,7 +149,7 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 	}
 
 	if *mcpFlag {
-		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns)
+		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns).WithAdvancedIntake()
 		return mcpServer.Serve(context.Background())
 	}
 

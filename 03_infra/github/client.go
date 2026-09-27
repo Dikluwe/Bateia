@@ -9,14 +9,11 @@ package github
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
-	"os/exec"
-	"path/filepath"
+	neturl "net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -26,7 +23,7 @@ import (
 	"bateia/01_core/parser"
 )
 
-// Client é o adaptador para acesso à API do GitHub (Contents API, Raw HTTP e Git Clone) satisfazendo domain.ContentProvider.
+// Client acessa Contents API e Raw HTTP com limites; nunca clona ou executa código remoto.
 type Client struct {
 	token      string
 	baseURL    string
@@ -38,7 +35,8 @@ func NewClient(token string) *Client {
 		token:   token,
 		baseURL: "https://api.github.com",
 		httpClient: &http.Client{
-			Timeout: 20 * time.Second,
+			Timeout:       20 * time.Second,
+			CheckRedirect: denyRedirect,
 		},
 	}
 }
@@ -49,7 +47,8 @@ func NewClientWithBaseURL(token string, baseURL string) *Client {
 		token:   token,
 		baseURL: baseURL,
 		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout:       10 * time.Second,
+			CheckRedirect: denyRedirect,
 		},
 	}
 }
@@ -80,6 +79,7 @@ type githubContentItem struct {
 	Content     string `json:"content"`
 	Encoding    string `json:"encoding"`
 	DownloadURL string `json:"download_url"`
+	Target      string `json:"target"`
 }
 
 type githubTreeResponse struct {
@@ -87,12 +87,16 @@ type githubTreeResponse struct {
 	Tree      []struct {
 		Path string `json:"path"`
 		Type string `json:"type"`
+		Mode string `json:"mode"`
 		Size int64  `json:"size"`
 	} `json:"tree"`
 }
 
 // FetchManifest lê o manifesto (ex: go.mod ou package.json) via Contents API ou fallback raw (ADR-0001).
 func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryCandidate) (*domain.Manifest, error) {
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return nil, err
+	}
 	refCommit := candidate.CommitID
 	if refCommit == "" {
 		refCommit = "HEAD"
@@ -104,16 +108,25 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		if len(manifestFiles) == 0 {
 			return nil, domain.ErrManifestNotFound
 		}
+	} else if errors.Is(err, errUnsafeRemote) {
+		return nil, err
+	}
+	if len(manifestFiles) > maxExtractionFiles {
+		return nil, unsafeRemote("quantidade de manifestos excede orçamento de probes")
 	}
 	var lastErr error
 
 	for _, targetFile := range manifestFiles {
-		url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, targetFile)
+		escaped, err := remotePath(targetFile)
+		if err != nil {
+			return nil, err
+		}
+		endpoint := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, escaped)
 		if refCommit != "HEAD" {
-			url += "?ref=" + refCommit
+			endpoint += "?ref=" + neturl.QueryEscape(refCommit)
 		}
 
-		req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+		req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -128,9 +141,12 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			lastErr = err
 			continue
 		}
-		body, readErr := io.ReadAll(resp.Body)
+		body, readErr := readBounded(resp, maxContentEnvelopeBytes)
 		resp.Body.Close()
 		if readErr != nil {
+			if errors.Is(readErr, errUnsafeRemote) {
+				return nil, readErr
+			}
 			lastErr = readErr
 			continue
 		}
@@ -145,6 +161,9 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode == http.StatusUnauthorized {
 			raw, errRaw := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, targetFile)
 			if errRaw != nil {
+				if errors.Is(errRaw, errUnsafeRemote) {
+					return nil, errRaw
+				}
 				rateInfo := c.parseRateLimit(&resp.Header)
 				lastErr = fmt.Errorf("cota de API atingida (%d restantes, reseta %v) e fallback raw falhou: %w", rateInfo.Remaining, rateInfo.ResetAt, errRaw)
 				continue
@@ -156,16 +175,12 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		} else {
 			var item githubContentItem
 			if err := json.Unmarshal(body, &item); err != nil {
-				lastErr = err
-				continue
+				return nil, unsafeRemote("JSON de conteúdo inválido: " + err.Error())
 			}
 
-			rawContent = item.Content
-			if item.Encoding == "base64" {
-				decoded, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(rawContent, "\n", ""))
-				if err == nil {
-					rawContent = string(decoded)
-				}
+			rawContent, err = decodeRegularContent(item, targetFile)
+			if err != nil {
+				return nil, err
 			}
 		}
 
@@ -235,9 +250,12 @@ func selectManifestFiles(items []githubContentItem, priority []string) []string 
 }
 
 func (c *Client) fetchRootItems(ctx context.Context, candidate domain.RepositoryCandidate) ([]githubContentItem, error) {
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return nil, err
+	}
 	url := fmt.Sprintf("%s/repos/%s/%s/contents", c.baseURL, candidate.Owner, candidate.Repo)
 	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
-		url += "?ref=" + candidate.CommitID
+		url += "?ref=" + queryRef(candidate.CommitID)
 	}
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -256,8 +274,16 @@ func (c *Client) fetchRootItems(ctx context.Context, candidate domain.Repository
 		return nil, fmt.Errorf("status %d ao listar raiz", resp.StatusCode)
 	}
 	var items []githubContentItem
-	if err := json.NewDecoder(resp.Body).Decode(&items); err != nil {
+	if err := decodeBounded(resp, maxTreeEnvelopeBytes, &items); err != nil {
 		return nil, err
+	}
+	if len(items) > 20_000 {
+		return nil, unsafeRemote("raiz excede limite de nós")
+	}
+	for _, item := range items {
+		if !implementationSafePath(item.Path) || item.Size < 0 {
+			return nil, unsafeRemote("entrada de árvore inválida")
+		}
 	}
 	return items, nil
 }
@@ -296,7 +322,14 @@ func parseGoSumDependencies(content string) []domain.Dependency {
 }
 
 func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, path string) (string, error) {
-	rawURL := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s", owner, repo, refCommit, path)
+	if err := validateRemoteCandidate(domain.RepositoryCandidate{Owner: owner, Repo: repo, CommitID: refCommit}); err != nil {
+		return "", err
+	}
+	escaped, err := remotePath(path)
+	if err != nil {
+		return "", err
+	}
+	rawURL := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s", owner, repo, neturl.PathEscape(refCommit), escaped)
 	req, err := http.NewRequestWithContext(ctx, "GET", rawURL, nil)
 	if err != nil {
 		return "", err
@@ -312,7 +345,7 @@ func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, p
 		return "", fmt.Errorf("status raw: %d", resp.StatusCode)
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := readBounded(resp, maxFileBytes)
 	if err != nil {
 		return "", err
 	}
@@ -322,8 +355,11 @@ func (c *Client) fetchRawFallback(ctx context.Context, owner, repo, refCommit, p
 
 // FetchTree recupera a lista de nós do diretório raiz.
 func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return nil, err
+	}
 	if candidate.CommitID != "" && !strings.EqualFold(candidate.CommitID, "HEAD") {
-		url := fmt.Sprintf("%s/repos/%s/%s/git/trees/%s?recursive=1", c.baseURL, candidate.Owner, candidate.Repo, candidate.CommitID)
+		url := fmt.Sprintf("%s/repos/%s/%s/git/trees/%s?recursive=1", c.baseURL, candidate.Owner, candidate.Repo, neturl.PathEscape(candidate.CommitID))
 		req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 		if err != nil {
 			return nil, err
@@ -341,7 +377,7 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 			return nil, fmt.Errorf("status %d ao listar árvore no commit", resp.StatusCode)
 		}
 		var tree githubTreeResponse
-		if err := json.NewDecoder(resp.Body).Decode(&tree); err != nil {
+		if err := decodeBounded(resp, maxTreeEnvelopeBytes, &tree); err != nil {
 			return nil, err
 		}
 		if tree.Truncated {
@@ -352,9 +388,18 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 			if len(nodes) >= 20_000 {
 				return nil, fmt.Errorf("árvore excede limite seguro de 20000 nós")
 			}
+			if !implementationSafePath(item.Path) || item.Size < 0 {
+				return nil, unsafeRemote("entrada de árvore inválida")
+			}
 			typeName := "file"
 			if item.Type == "tree" {
 				typeName = "dir"
+			} else if item.Type == "commit" || item.Mode == "160000" {
+				typeName = "submodule"
+			} else if item.Mode == "120000" {
+				typeName = "symlink"
+			} else if item.Type != "blob" || item.Mode != "" && item.Mode != "100644" && item.Mode != "100755" {
+				return nil, unsafeRemote("tipo de árvore não suportado")
 			}
 			nodes = append(nodes, domain.DirectoryNode{Path: item.Path, Type: typeName, Size: item.Size})
 		}
@@ -377,107 +422,81 @@ func (c *Client) FetchTree(ctx context.Context, candidate domain.RepositoryCandi
 	return nodes, nil
 }
 
-// ExtractRepoFiles realiza a extração do repositório no fundo do funil.
+// ExtractRepoFiles reads only regular Git files. Clone fallback is deliberately disabled:
+// HTTP failure must not become an unbounded clone, checkout, hook or filesystem read.
 func (c *Client) ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
-	ref := domain.CommitRef{
-		Owner:  candidate.Owner,
-		Repo:   candidate.Repo,
-		Commit: candidate.CommitID,
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return nil, err
 	}
-
-	extracted := &domain.ExtractedRepository{
-		Ref:          ref,
-		Candidate:    candidate,
-		Files:        make([]domain.ExtractedFile, 0),
-		ConsultadoEm: time.Now().UTC(),
+	if len(paths) > maxExtractionFiles {
+		return nil, unsafeRemote("extração excede limite de arquivos")
 	}
-
+	seen := map[string]bool{}
 	for _, p := range paths {
-		content, err := c.fetchSingleFile(ctx, candidate, p)
-		if err != nil {
-			refCommit := candidate.CommitID
-			if refCommit == "" {
-				refCommit = "HEAD"
-			}
-			raw, errRaw := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, refCommit, p)
-			if errRaw == nil {
-				extracted.Files = append(extracted.Files, domain.ExtractedFile{
-					Path:    p,
-					Content: raw,
-					Size:    int64(len(raw)),
-				})
-			}
-		} else {
-			extracted.Files = append(extracted.Files, *content)
+		if _, err := remotePath(p); err != nil {
+			return nil, err
 		}
+		if seen[p] {
+			return nil, unsafeRemote("caminho duplicado")
+		}
+		seen[p] = true
 	}
-
-	if len(extracted.Files) > 0 {
+	extracted := &domain.ExtractedRepository{
+		Ref:       domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID},
+		Candidate: candidate, Files: []domain.ExtractedFile{}, ConsultadoEm: time.Now().UTC(),
+	}
+	if len(paths) == 0 {
 		return extracted, nil
 	}
-
-	tempDir, err := os.MkdirTemp("", "bateia_clone_*")
-	if err != nil {
-		return nil, fmt.Errorf("falha ao criar diretório temporário para clone: %w", err)
+	if err := c.requireRegularRemotePaths(ctx, candidate, paths); err != nil {
+		return nil, err
 	}
-	defer os.RemoveAll(tempDir)
-
-	cleanEnv := func() []string {
-		var env []string
-		for _, e := range os.Environ() {
-			if !strings.HasPrefix(e, "GITHUB_TOKEN=") {
-				env = append(env, e)
+	var total int64
+	for _, p := range paths {
+		if total >= maxExtractionBytes {
+			return nil, unsafeRemote("extração esgotou orçamento total de bytes")
+		}
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		content, err := c.fetchSingleFile(ctx, candidate, p)
+		if err != nil {
+			if errors.Is(err, errUnsafeRemote) || ctx.Err() != nil {
+				return nil, err
 			}
+			revision := candidate.CommitID
+			if revision == "" {
+				revision = "HEAD"
+			}
+			raw, rawErr := c.fetchRawFallback(ctx, candidate.Owner, candidate.Repo, revision, p)
+			if rawErr != nil {
+				return nil, fmt.Errorf("Contents API e raw indisponíveis para %s (clone desabilitado): %w", p, rawErr)
+			}
+			content = &domain.ExtractedFile{Path: p, Content: raw, Size: int64(len(raw))}
 		}
-		return env
-	}
-
-	publicURL := fmt.Sprintf("https://github.com/%s/%s.git", candidate.Owner, candidate.Repo)
-	cmd := exec.CommandContext(ctx, "git", "clone", "--depth", "1", "--filter=blob:none", publicURL, tempDir)
-	cmd.Env = cleanEnv()
-	if err := cmd.Run(); err != nil {
-		cmdSimple := exec.CommandContext(ctx, "git", "clone", "--depth", "1", publicURL, tempDir)
-		cmdSimple.Env = cleanEnv()
-		if err := cmdSimple.Run(); err != nil {
-			return nil, fmt.Errorf("falha ao clonar repositório %s: %w", candidate.URL, err)
+		total += int64(len(content.Content))
+		if total > maxExtractionBytes {
+			return nil, unsafeRemote("extração excede orçamento total de bytes")
 		}
+		extracted.Files = append(extracted.Files, *content)
 	}
-
-	// Pin the fallback clone to the requested revision before reading evidence.
-	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
-		checkout := exec.CommandContext(ctx, "git", "checkout", "--detach", candidate.CommitID)
-		checkout.Dir = tempDir
-		if err := checkout.Run(); err != nil {
-			return nil, fmt.Errorf("clone não contém commit solicitado: %w", err)
-		}
-	}
-	resolve := exec.CommandContext(ctx, "git", "rev-parse", "HEAD")
-	resolve.Dir = tempDir
-	if base, err := resolve.Output(); err == nil {
-		extracted.Ref.Commit = strings.TrimSpace(string(base))
-	}
-	targetFiles := paths
-	for _, tf := range targetFiles {
-		filePath := filepath.Join(tempDir, tf)
-		if data, err := os.ReadFile(filePath); err == nil {
-			extracted.Files = append(extracted.Files, domain.ExtractedFile{
-				Path:    tf,
-				Content: string(data),
-				Size:    int64(len(data)),
-			})
-		}
-	}
-
 	return extracted, nil
 }
 
 func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.RepositoryCandidate, path string) (*domain.ExtractedFile, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, path)
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return nil, err
+	}
+	escaped, err := remotePath(path)
+	if err != nil {
+		return nil, err
+	}
+	endpoint := fmt.Sprintf("%s/repos/%s/%s/contents/%s", c.baseURL, candidate.Owner, candidate.Repo, escaped)
 	if candidate.CommitID != "" && candidate.CommitID != "HEAD" {
-		url += "?ref=" + candidate.CommitID
+		endpoint += "?ref=" + neturl.QueryEscape(candidate.CommitID)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -498,22 +517,19 @@ func (c *Client) fetchSingleFile(ctx context.Context, candidate domain.Repositor
 	}
 
 	var item githubContentItem
-	if err := json.NewDecoder(resp.Body).Decode(&item); err != nil {
+	if err := decodeBounded(resp, maxContentEnvelopeBytes, &item); err != nil {
 		return nil, err
 	}
 
-	rawContent := item.Content
-	if item.Encoding == "base64" {
-		decoded, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(rawContent, "\n", ""))
-		if err == nil {
-			rawContent = string(decoded)
-		}
+	rawContent, err := decodeRegularContent(item, path)
+	if err != nil {
+		return nil, err
 	}
 
 	return &domain.ExtractedFile{
 		Path:    item.Path,
 		Content: rawContent,
-		Size:    item.Size,
+		Size:    int64(len(rawContent)),
 	}, nil
 }
 
@@ -531,6 +547,9 @@ type githubCommitResponse struct {
 
 // FetchRepoMetadata realiza o sanity check de metadados na API REST do GitHub obtendo número de estrelas reais e descrição.
 func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
+	if err := validateRemoteCandidate(candidate); err != nil {
+		return candidate, err
+	}
 	url := fmt.Sprintf("%s/repos/%s/%s", c.baseURL, candidate.Owner, candidate.Repo)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
@@ -554,8 +573,8 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 	}
 
 	var repoResp githubRepoResponse
-	if err := json.NewDecoder(resp.Body).Decode(&repoResp); err != nil {
-		return candidate, nil
+	if err := decodeBounded(resp, maxMetadataEnvelopeBytes, &repoResp); err != nil {
+		return candidate, err
 	}
 
 	candidate.Stars = repoResp.StargazersCount
@@ -571,7 +590,12 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 		if branch == "" {
 			branch = "HEAD"
 		}
-		commitURL := fmt.Sprintf("%s/repos/%s/%s/commits/%s", c.baseURL, candidate.Owner, candidate.Repo, branch)
+		branchCandidate := candidate
+		branchCandidate.CommitID = branch
+		if err := validateRemoteCandidate(branchCandidate); err != nil {
+			return candidate, err
+		}
+		commitURL := fmt.Sprintf("%s/repos/%s/%s/commits/%s", c.baseURL, candidate.Owner, candidate.Repo, neturl.PathEscape(branch))
 		commitReq, requestErr := http.NewRequestWithContext(ctx, "GET", commitURL, nil)
 		if requestErr == nil {
 			commitReq.Header.Set("Accept", "application/vnd.github.v3+json")
@@ -582,7 +606,18 @@ func (c *Client) FetchRepoMetadata(ctx context.Context, candidate domain.Reposit
 				defer commitResp.Body.Close()
 				if commitResp.StatusCode == http.StatusOK {
 					var commit githubCommitResponse
-					if json.NewDecoder(commitResp.Body).Decode(&commit) == nil && commit.SHA != "" {
+					if err := decodeBounded(commitResp, maxMetadataEnvelopeBytes, &commit); err != nil {
+						return candidate, err
+					}
+					if commit.SHA != "" {
+						if !implementationSHA(commit.SHA) {
+							return candidate, unsafeRemote("API de commits não retornou SHA completo")
+						}
+						pinned := candidate
+						pinned.CommitID = commit.SHA
+						if err := validateRemoteCandidate(pinned); err != nil {
+							return candidate, err
+						}
 						candidate.CommitID = commit.SHA
 					}
 				}

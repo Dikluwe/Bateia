@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"bateia/01_core/domain"
@@ -137,7 +136,7 @@ func runIdeaCatalogScreen(args []string, stdout io.Writer) error {
 	if *snapshotPath == "" {
 		return fmt.Errorf("catalog screen exige --snapshot")
 	}
-	b, err := os.ReadFile(*snapshotPath)
+	b, err := readIdeaJSONInput(*snapshotPath)
 	if err != nil {
 		return err
 	}

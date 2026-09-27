@@ -36,12 +36,14 @@ func normalizeIdeaList(values []string) []string {
 
 func normalizeIdea(spec domain.IdeaSpec) domain.IdeaSpec {
 	return domain.IdeaSpec{
-		Problem:        normalizeIdeaText(spec.Problem),
-		Users:          normalizeIdeaList(spec.Users),
-		Capabilities:   normalizeIdeaList(spec.Capabilities),
-		Constraints:    normalizeIdeaList(spec.Constraints),
-		NonGoals:       normalizeIdeaList(spec.NonGoals),
-		PreferredStack: normalizeIdeaList(spec.PreferredStack),
+		Problem:             normalizeIdeaText(spec.Problem),
+		Users:               normalizeIdeaList(spec.Users),
+		Capabilities:        normalizeIdeaList(spec.Capabilities),
+		Qualities:           normalizeIdeaList(spec.Qualities),
+		OperatingConditions: normalizeIdeaList(spec.OperatingConditions),
+		Constraints:         normalizeIdeaList(spec.Constraints),
+		NonGoals:            normalizeIdeaList(spec.NonGoals),
+		PreferredStack:      normalizeIdeaList(spec.PreferredStack),
 	}
 }
 

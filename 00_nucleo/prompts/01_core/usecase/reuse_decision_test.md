@@ -9,3 +9,7 @@ compare a entrada antes/depois; exija regra e evidência nas decisões positivas
 Preservar decisões positivas/negativas e assertions existentes. Os positivos agora carregam fontes com identidade, hash SHA256 dos snippets literais, linha, caminho, regra e kind compatível. Symbol demonstra implementação estática delimitada; teste independente auxilia capacidade/operação. Gates licença e manutenção recebem license e repository_metadata. Não basta Status=PROVEN sem fonte. Esta migração altera validade das entradas, não a política esperada dos cenários históricos.
 
 Os componentes dos controles positivos vinculam as mesmas fontes das capacidades que alegam cobrir. Uma fonte genérica "component" sem correspondente avaliação não demonstra parte reutilizável; corrigir essa ligação preservando EXTEND/COMPOSE/INTEGRATE esperados.
+
+## Passo 0088
+
+A antiga composição por cobertura isolada deve agora abster-se. COMPOSE positivo exige conexões e atestado de ensaio do conjunto exato; conflito explícito bloqueia seleção.

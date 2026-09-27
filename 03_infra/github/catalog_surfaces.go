@@ -9,7 +9,6 @@ package github
 import (
 	"bateia/01_core/domain"
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -32,6 +31,9 @@ func (s *SurfaceClient) SurfaceCapabilities() domain.CatalogSurfaceCapabilities 
 	return domain.CatalogSurfaceCapabilities{ID: s.surface, Provider: "github", Unit: map[domain.CatalogSurfaceID]string{domain.SurfaceReadme: "root_document", domain.SurfaceTopics: "structured_topic"}[s.surface], SupportsExactPhrase: true, ResolvesRepository: true, ResolvesRevision: true}
 }
 func (s *SurfaceClient) SearchSurface(ctx context.Context, r domain.SurfaceSearchRequest) (domain.SurfaceDiscovery, error) {
+	if r.MaxResults < 1 || r.MaxResults > 100 || len(r.Query) > 4096 || strings.TrimSpace(r.Query) == "" {
+		return domain.SurfaceDiscovery{}, unsafeRemote("consulta de superfície inválida")
+	}
 	if r.Surface != s.surface {
 		return domain.SurfaceDiscovery{}, fmt.Errorf("superfície incompatível")
 	}
@@ -76,8 +78,11 @@ func (s *SurfaceClient) searchReadme(ctx context.Context, r domain.SurfaceSearch
 			} `json:"text_matches"`
 		} `json:"items"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+	if err := decodeBounded(resp, maxTreeEnvelopeBytes, &payload); err != nil {
 		return out, err
+	}
+	if len(payload.Items) > r.MaxResults {
+		return out, unsafeRemote("superfície retornou itens acima do limite solicitado")
 	}
 	for _, item := range payload.Items {
 		if !isRootReadme(item.Path) {
@@ -87,7 +92,11 @@ func (s *SurfaceClient) searchReadme(ctx context.Context, r domain.SurfaceSearch
 		if len(parts) != 2 {
 			continue
 		}
-		repo, _ := s.client.FetchRepoMetadata(ctx, domain.RepositoryCandidate{Owner: parts[0], Repo: parts[1]})
+		candidate := domain.RepositoryCandidate{Owner: parts[0], Repo: parts[1]}
+		if err := validateRemoteCandidate(candidate); err != nil {
+			return out, err
+		}
+		repo, _ := s.client.FetchRepoMetadata(ctx, candidate)
 		snippet := ""
 		if len(item.TextMatches) > 0 {
 			snippet = strings.Join(strings.Fields(item.TextMatches[0].Fragment), " ")
@@ -130,8 +139,11 @@ func (s *SurfaceClient) searchTopics(ctx context.Context, r domain.SurfaceSearch
 		return out, fmt.Errorf("GitHub topic search status %d", resp.StatusCode)
 	}
 	var payload catalogSearchResponse
-	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+	if err := decodeBounded(resp, maxTreeEnvelopeBytes, &payload); err != nil {
 		return out, err
+	}
+	if len(payload.Items) > r.MaxResults {
+		return out, unsafeRemote("superfície retornou itens acima do limite solicitado")
 	}
 	for _, item := range payload.Items {
 		exact := false
@@ -143,7 +155,11 @@ func (s *SurfaceClient) searchTopics(ctx context.Context, r domain.SurfaceSearch
 		if !exact {
 			continue
 		}
-		repo, _ := s.client.FetchRepoMetadata(ctx, domain.RepositoryCandidate{Owner: item.Owner.Login, Repo: item.Name})
+		candidate := domain.RepositoryCandidate{Owner: item.Owner.Login, Repo: item.Name}
+		if err := validateRemoteCandidate(candidate); err != nil {
+			return out, err
+		}
+		repo, _ := s.client.FetchRepoMetadata(ctx, candidate)
 		out.Matches = append(out.Matches, domain.SurfaceMatch{Surface: domain.SurfaceTopics, Provider: "github", Repository: item.Owner.Login + "/" + item.Name, Field: "topics", Snippet: topic, Discriminators: append([]string(nil), r.Discriminators...), Query: r.Query, ExpansionID: r.ExpansionID, CommitID: repo.CommitID})
 	}
 	out.Attempt.Status = "SUCCEEDED"

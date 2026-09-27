@@ -28,7 +28,7 @@ func TestStep0040EchoDoesNotProveAsynchronousBehavior(t *testing.T) {
 }
 
 func TestStep0040LicenseAuthorityAndScope(t *testing.T) {
-	content := "MIT License\nPermission is hereby granted, free of charge"
+	content := step0025MITLicense
 	for _, path := range []string{"license_checker_test.go", "src/LICENSE", "vendor/LICENSE", "examples/LICENSE", "docs/LICENSE"} {
 		// Even an incorrectly tagged item from a saved bundle must not establish authority.
 		b := testBundle(true, domain.CollectedEvidence{Kind: domain.EvidenceLicense, Path: path, Content: content})

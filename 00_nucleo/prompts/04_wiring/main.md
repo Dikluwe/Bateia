@@ -1,3 +1,9 @@
+## Passo 0094 — scanner opcional
+
+Despachar security scan antes de .env, caches ou clientes de pesquisa; argumentos
+após scan seguem para RunSecurityScanCommand e vulnerability.NewRunner. Não instalar
+scanner, compilar ou executar candidato. O scanner pode consultar a base oficial.
+
 # Prompt: Ponto de Entrada e Fiação (wiring/main)
 
 **Camada**: L₄ — Fiação  
@@ -84,3 +90,17 @@ Despachar `algorithm history analyze` antes de carregar `.env`, cache, expansore
 clientes L3. L4 apenas encaminha argumentos e stdout para
 `cli.RunAlgorithmHistoryCommand`; a análise histórica permanece em L1 e a casca offline
 em L2.
+
+## Passo 0093
+
+Despachar `idea evidence recheck` para CLI com cliente GitHub existente e
+credencial opcional. Não usar o roteador local neste comando: worktree não
+autentica bytes de um commit declarado. Preservar despacho e busca legados.
+
+
+## Passo 0098 — Trace offline
+
+Despachar idea trace antes da criação do expansor lexical e antes de .env,
+cache ou clientes remotos. Encaminhar apenas os argumentos e stdout a
+cli.RunIdeaCommand, sem injetar provedor ou executar candidatos. Preservar
+os caminhos existentes dos demais subcomandos.

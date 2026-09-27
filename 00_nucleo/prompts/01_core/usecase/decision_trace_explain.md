@@ -1,0 +1,7 @@
+# Explicar dependências registradas sem reabrir a decisão
+
+Implemente `ExplainDecisionTrace` como núcleo puro com entrada esquema `1`: grafo congelado, entrada exata de construção e seleção opcional de IDs. Aplique o orçamento estrutural antes de serializar. Verifique o hash congelado e reconstrua o grafo usando `BuildDecisionTrace`; só aceite igualdade exata do hash canônico. Não altere schema, bytes ou identidade do grafo histórico.
+
+Espelhe as identidades estruturadas do construtor: entradas report/policy/idea/rule_versions, decisão, capacidades, razões, bloqueadores, componentes, composições e revisões/verificações técnicas. Cada ocorrência deve coincidir em ID, tipo e fingerprint. Indexe todos os locais de fontes nas matrizes, razões, componentes, evidências de composição e membros e fontes de verificações. Cada local contém documento separado e JSON Pointer RFC 6901, com raiz representada por string vazia. Remova localizadores duplicados e ordene entradas/localizadores. Recuse seleções desconhecidas ou duplicadas e nós sem correspondência.
+
+Produza projeções legíveis de status/mensagem, não payloads integrais. Limite statements a 1024 bytes UTF-8 válidos e declare truncamento explicitamente. Localizadores apontam para registros originais não truncados. Aplique o orçamento à saída. Limite o escopo a dependências registradas: hashes vinculam declarações exatas, não autenticam fontes nem provam alegações; nenhuma regra decisória, I/O ou coleta é executada.

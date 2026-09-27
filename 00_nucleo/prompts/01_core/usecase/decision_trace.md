@@ -1,0 +1,15 @@
+# Núcleo consultivo de rastreabilidade — 0098
+
+Implementar `FreezeDecisionTrace`, `BuildDecisionTrace` e `PlanDecisionTraceImpact` exclusivamente sobre declarações tipadas, sem execução externa, interpretação de instruções em fontes ou chamada a regras de decisão.
+
+O construtor registra a decisão histórica, entradas report/policy e idea/rule_versions opcionais, alegações da matriz/razões/bloqueadores/componentes/composições/revisão técnica e as fontes referenciadas. IDs são SHA-256 de chaves JSON estruturadas, nunca concatenação ambígua. Identidade de fonte contém Kind, Ref, Path, Symbol, Line, RuleID, MatchedPattern e MatchClass; conteúdo, snippet e força pertencem ao fingerprint integral. Declarações divergentes da mesma identidade são erro. Fontes sem content_hash continuam declarações, nunca evidência autenticada. SOURCE → CLAIM é INFORMS por padrão: não inventar suporte/refutação ou força. Inputs ligam-se a consumidores; report → decision preserva uma dependência global conservadora para campos não modelados.
+
+Congelamento valida schema/scope/decisão, IDs únicos e não vazios, fingerprints SHA-256 lowercase completos, kinds/relations, exatamente uma decisão, referências, duplicação/selfedges/ciclos. O fingerprint do nó DECISION deve corresponder à declaração graph.Decision. Preservar a declaração completa de fonte e validar seu fingerprint; rejeitar identidade de fonte duplicada sob IDs diferentes. Normalizar arrays, acrescentar limitações consultivas obrigatórias, ordenar nós/arestas/limitações e calcular SHA-256 do JSON canonical com graph_hash vazio. Hash fornecido divergente é erro. Não modificar dados do chamador.
+
+Fingerprints selam a representação JSON registrada, inclusive ordem dos vetores internos do relatório. O congelamento canonicaliza a ordem dos nós e das arestas, não declara equivalência semântica de relatórios reordenados.
+
+Guardas antes de alocar JSON integral: 1000 nós, 4000 arestas, 100 alterações, 8192 bytes/string, 2 MiB texto/JSON, profundidade e tamanho agregado de estruturas limitados. Aplicar a mesma travessia limitada ao plano de impacto antes do retorno, pois múltiplos ancestrais podem amplificar sua representação de saída além do tamanho da entrada. Rejeitar números não finitos e UTF-8 inválido. Erros retornam artefato vazio, não saída parcial.
+
+Impacto exige grafo previamente congelado e revalida integralmente hash/DAG. Rejeitar alterações de ID desconhecido/duplicado, reason desconhecida e fingerprint inválido. CONTENT_CHANGED com fingerprint igual é noop; EXPIRED/REVOKED exigem revisão mesmo sem mudança de bytes. Percorrer transitivamente todas as relações, inclusive REFUTES, com custo limitado a changes*(nodes+edges). Tasks identificam ancestrais alterados em ordem estável. Nunca modificar grafo nem recalcular veredito: DecisionBefore == DecisionAfter, DecisionImpact NONE. Status REVIEW_REQUIRED ou NO_RECORDED_IMPACT.
+
+Limitações explícitas: grafo/fontes não autenticados; dependências apenas registradas; ausência de impacto registrado não prova ausência de impacto real; decisão histórica preservada.

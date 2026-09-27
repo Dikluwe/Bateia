@@ -31,6 +31,7 @@ import (
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
 	"bateia/03_infra/sourcegraph"
+	"bateia/03_infra/vulnerability"
 	webinfra "bateia/03_infra/web"
 )
 
@@ -64,6 +65,15 @@ func loadEnvFile(filepath string) {
 }
 
 func main() {
+	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "security") {
+		if len(os.Args) < 3 || !strings.EqualFold(os.Args[2], "scan") {
+			log.Fatal("Uso: bateia security scan --binary CAMINHO_ABSOLUTO [--output arquivo.json] [--timeout 1m]")
+		}
+		if err := cli.RunSecurityScanCommand(os.Args[3:], os.Stdout, vulnerability.NewRunner()); err != nil {
+			log.Fatalf("Erro no scanner de segurança: %v", err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "effects") {
 		if err := cli.RunEffectsCommand(os.Args[2:], os.Stdout, effects.NewRunner()); err != nil {
 			log.Fatalf("Erro na execução effects: %v", err)
@@ -84,6 +94,13 @@ func main() {
 		return
 	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
+		// Trace is entirely offline: no .env, vocabulary, cache or remote clients.
+		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "trace") {
+			if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout); err != nil {
+				log.Fatalf("Erro na rastreabilidade consultiva: %v", err)
+			}
+			return
+		}
 		lexicalExpander, err := lexical.NewDefault(3)
 		if err != nil {
 			log.Fatalf("Erro ao carregar vocabulário lexical: %v", err)
@@ -103,6 +120,14 @@ func main() {
 			}
 			return
 		}
+		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "evidence") && strings.EqualFold(os.Args[3], "recheck") {
+			loadEnvFile(".env")
+			provider := github.NewClient(os.Getenv("GITHUB_TOKEN"))
+			if err := cli.RunIdeaEvidenceRecheckCommand(os.Args[4:], os.Stdout, provider); err != nil {
+				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
+			}
+			return
+		}
 		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "evidence") && strings.EqualFold(os.Args[3], "collect") {
 			loadEnvFile(".env")
 			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
@@ -113,6 +138,9 @@ func main() {
 		}
 		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "recommend") {
 			loadEnvFile(".env")
+			cli.SetSnapshotProviderFactory(func(fallback domain.ContentProvider, bindings []domain.SnapshotBinding) (domain.ContentProvider, error) {
+				return localrepo.NewSnapshotProvider(fallback, bindings)
+			})
 			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
 			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
 			recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, provider)
@@ -204,6 +232,7 @@ func main() {
 		if serverErr != nil {
 			log.Fatalf("Erro ao inicializar descoberta de mercado MCP: %v", serverErr)
 		}
+		server.WithAdvancedIntake()
 		server.WithToolCallBudget(toolCallBudget)
 		serveErr := server.Serve(context.Background())
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)

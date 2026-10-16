@@ -1,0 +1,107 @@
+{
+  "schema_version": "concurrency-observation-v1",
+  "analyzer": "go-concurrency-syntax-0109-v1",
+  "input_sha256": "28898b1ea8b605f4e29337e85065d7fb88f602e35f7b0e3449bc204a7498944d",
+  "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+  "declared_build": {},
+  "scope": "FILES_AS_SUPPLIED_NOT_BUILD_SELECTED",
+  "status": "OBSERVED_SYNTAX",
+  "observations": [
+    {
+      "property": "channel_buffer_syntax",
+      "value": "CAPACITY_LITERAL:3",
+      "resource": "chan int",
+      "function": "f@10",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "sample.go",
+        "line": 2,
+        "column": 14,
+        "offset": 23,
+        "end_offset": 39,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "f@10",
+      "location": {
+        "path": "sample.go",
+        "line": 2,
+        "column": 9,
+        "offset": 18,
+        "end_offset": 46,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "sample.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "f@10",
+      "location": {
+        "path": "sample.go",
+        "line": 2,
+        "column": 9,
+        "offset": 18,
+        "end_offset": 46,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    },
+    {
+      "code": "CAPACITY_VALIDITY_NOT_TYPECHECKED",
+      "function": "f@10",
+      "location": {
+        "path": "sample.go",
+        "line": 2,
+        "column": 14,
+        "offset": 23,
+        "end_offset": 39,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    },
+    {
+      "code": "TYPECHECK_NOT_PERFORMED",
+      "location": {
+        "path": "sample.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "f@10",
+      "location": {
+        "path": "sample.go",
+        "line": 2,
+        "column": 9,
+        "offset": 18,
+        "end_offset": 46,
+        "content_sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+      }
+    }
+  ],
+  "limitations": [
+    "Only syntax is observed; sources are not compiled, type checked or executed.",
+    "Build context and origin are declarations, not independently verified receipts.",
+    "Names and channel expressions do not establish resolved object identity.",
+    "Buffer capacity does not establish a bound on workers or admitted work.",
+    "A Done selector does not establish context identity or completion of cancellation.",
+    "No mechanism, absence of defects or benefit to a target is certified."
+  ]
+}

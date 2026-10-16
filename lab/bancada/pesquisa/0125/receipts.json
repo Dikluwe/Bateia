@@ -1,0 +1,97 @@
+{
+  "compile_database": "build/compile_commands.json in mesa-sources.zip",
+  "queries": [
+    {
+      "query": "clip distance edge flag polygon mode GL_POLYGON",
+      "output": "mesa-clipping.json.gz",
+      "command": "/tmp/bateia-mesa-0125-bounded analyze -path <mesa-root> -query <query> -lang cpp -format json -output <output>"
+    },
+    {
+      "query": "si_bind_gs_shader si_update_shaders dirty_shaders_mask VGT_GS_MODE",
+      "output": "mesa-gs-transition.json.gz",
+      "command": "/tmp/bateia-mesa-0125-bounded analyze -path <mesa-root> -query <query> -lang cpp -format json -output <output>"
+    },
+    {
+      "query": "Clipper::Clip setupLine setupPoint polygon clipping",
+      "output": "swiftshader-clipping.json",
+      "source": "partial source snapshot in external/sources.zip"
+    },
+    {
+      "query": "setGeometryShader invalidateShaders setDrawShaders GSSetShader",
+      "output": "angle-gs-transition.json",
+      "source": "partial source snapshot in external/sources.zip"
+    }
+  ],
+  "verification": {
+    "lint": {
+      "command": "crystalline-lint --fail-on warning .",
+      "exit_code": 0,
+      "log": "lint.log"
+    },
+    "vet": {
+      "command": "GOCACHE=/tmp/bateia-go-cache-0125 go vet ./...",
+      "exit_code": 0,
+      "log": "go-vet.log"
+    },
+    "build": {
+      "command": "GOCACHE=/tmp/bateia-go-cache-0125 go build -o /tmp/bateia-mesa-0125-bounded ./04_wiring",
+      "exit_code": 0
+    },
+    "test": {
+      "command": "GOCACHE=/tmp/bateia-go-cache-0125 GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false go test ./...",
+      "exit_code": 0,
+      "log": "go-test.log",
+      "environment": "loopback enabled after sandbox fixture failure"
+    },
+    "sealed_gates": "not executed"
+  },
+  "gpu_draws": 0,
+  "superseded_binary": {
+    "path": "/tmp/bateia-mesa-0125",
+    "sha256": "d24d277c8cc46034a2abaf40be61e855aabdb51c60131da74da9c9d44898f9d9"
+  },
+  "binary": {
+    "path": "/tmp/bateia-mesa-0125-bounded",
+    "sha256": "4e0947f5e1a56a9fd9341d33faac516a9fee3841a5238c085e5cd2f56aa3fc5a"
+  },
+  "output_bound_fix": "bounded.ReadFrom no longer delegates to embedded bytes.Buffer.ReadFrom; real output bound remains 32 MiB",
+  "interrupted_run": {
+    "status": "interrupted",
+    "reason": "complementary GS AST decoding consumed minutes of CPU; SIGQUIT stack captured; no GPU execution",
+    "log": "focused-gs-interrupted.log"
+  },
+  "final_queries": {
+    "mesa-clipping": {
+      "status": "not_evaluated",
+      "selected_units": 12,
+      "completed_units": 0,
+      "configuration_hash": "5ed538cf999e09364a4aa0221ec6a9d9063b75b6a373b8cd13cded59e0f14725"
+    },
+    "mesa-gs-transition": {
+      "status": "not_evaluated",
+      "selected_units": 12,
+      "completed_units": 0,
+      "configuration_hash": "5ed538cf999e09364a4aa0221ec6a9d9063b75b6a373b8cd13cded59e0f14725"
+    },
+    "mesa-clipping-focused": {
+      "status": "not_evaluated",
+      "selected_units": 5,
+      "completed_units": 0,
+      "configuration_hash": "5ed538cf999e09364a4aa0221ec6a9d9063b75b6a373b8cd13cded59e0f14725"
+    },
+    "mesa-gs-focused": {
+      "status": "not_evaluated",
+      "selected_units": 11,
+      "completed_units": 0,
+      "configuration_hash": "5ed538cf999e09364a4aa0221ec6a9d9063b75b6a373b8cd13cded59e0f14725"
+    }
+  },
+  "focused_request_outputs": [
+    "mesa-clipping-focused.json.gz",
+    "mesa-gs-focused.json.gz"
+  ],
+  "external_queries_binary": {
+    "path": "/tmp/bateia-mesa-0125",
+    "sha256": "d24d277c8cc46034a2abaf40be61e855aabdb51c60131da74da9c9d44898f9d9"
+  }
+}

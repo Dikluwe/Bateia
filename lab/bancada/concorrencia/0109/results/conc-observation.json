@@ -1,0 +1,298 @@
+{
+  "schema_version": "concurrency-observation-v1",
+  "analyzer": "go-concurrency-syntax-0109-v1",
+  "input_sha256": "7d3f394c9d33dcd08ca835bd9a18996364430c87c096ac4b126e7b95fdb67bae",
+  "origin": "sourcegraph/conc@5f936abd7ae87036af1f75c95fb9d0daaf00116b; frozen collector evidence from step 0106",
+  "declared_build": {},
+  "scope": "FILES_AS_SUPPLIED_NOT_BUILD_SELECTED",
+  "status": "OBSERVED_SYNTAX",
+  "observations": [
+    {
+      "property": "select_shape",
+      "value": "SELECT_WITH_DEFAULT",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "if(p.limiter == nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 44,
+        "column": 3,
+        "offset": 1195,
+        "end_offset": 1434,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "SELECT_WITH_DEFAULT",
+      "resource": "p.tasks",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "if(p.limiter == nil)",
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 45,
+        "column": 8,
+        "offset": 1211,
+        "end_offset": 1223,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 55,
+        "column": 3,
+        "offset": 1447,
+        "end_offset": 1730,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "p.limiter",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)",
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 56,
+        "column": 8,
+        "offset": 1463,
+        "end_offset": 1486,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "p.tasks",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)",
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 62,
+        "column": 8,
+        "offset": 1648,
+        "end_offset": 1660,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_buffer_syntax",
+      "value": "UNBUFFERED_FORM",
+      "resource": "chan func()",
+      "function": "*Pool.init@2617/literal@2656",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 104,
+        "column": 13,
+        "offset": 2677,
+        "end_offset": 2694,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "DIRECT_RECEIVE",
+      "resource": "l",
+      "function": "limiter.release@4425",
+      "conditions": [
+        "if(l != nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 172,
+        "column": 3,
+        "offset": 4471,
+        "end_offset": 4474,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/pool_test.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "TYPECHECK_NOT_PERFORMED",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "TYPECHECK_NOT_PERFORMED",
+      "location": {
+        "path": "pool/pool_test.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    }
+  ],
+  "limitations": [
+    "Only syntax is observed; sources are not compiled, type checked or executed.",
+    "Build context and origin are declarations, not independently verified receipts.",
+    "Names and channel expressions do not establish resolved object identity.",
+    "Buffer capacity does not establish a bound on workers or admitted work.",
+    "A Done selector does not establish context identity or completion of cancellation.",
+    "No mechanism, absence of defects or benefit to a target is certified."
+  ]
+}

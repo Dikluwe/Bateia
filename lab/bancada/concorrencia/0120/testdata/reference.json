@@ -1,0 +1,168 @@
+{
+  "schema_version": "external-configuration-reference-v1",
+  "phase": "REFERENCE_FROZEN_BEFORE_OBSERVER_RESPONSES",
+  "reference_origin": "UPSTREAM_DECLARATIONS_WITH_AUTHOR_INTERPRETATION",
+  "independent_semantic_review": false,
+  "candidate_code_executed": false,
+  "projects": 2,
+  "representative_sample": false,
+  "questions": [
+    {
+      "id": "tunny_dynamic",
+      "project": "tunny",
+      "axis": "USAGE_CONTRACT",
+      "question": "SetSize pode ser chamado enquanto outras goroutines processam?",
+      "reference_label": "DECLARED_SUPPORTED_WITH_STOPPED_POOL_EXCEPTION",
+      "evidence": [
+        {
+          "path": "README.md",
+          "first_line": 92,
+          "last_line": 101,
+          "source_sha256": "daac03434e0a318c21400e9a00c8e8bd9ad2b39239664703c545a6b5e49e753d",
+          "segment_sha256": "039ebeb74e995b02649d95e9e137f4aa95a5fc745fc17f77b84a368aa9083c6b",
+          "url": "https://raw.githubusercontent.com/Jeffail/tunny/a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9/README.md",
+          "role": "UPSTREAM_DECLARATION"
+        },
+        {
+          "path": "tunny.go",
+          "first_line": 263,
+          "last_line": 268,
+          "source_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672",
+          "segment_sha256": "bb2714759b7d2d61c54324cc22baa251a5c2b6e4bf179253ef69186f36df1e3e",
+          "url": "https://raw.githubusercontent.com/Jeffail/tunny/a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9/tunny.go",
+          "role": "UPSTREAM_DECLARATION"
+        }
+      ],
+      "limit": "Contrato declarado, sem prova de execução ou garantia universal."
+    },
+    {
+      "id": "tunny_initialization",
+      "project": "tunny",
+      "axis": "STATIC_RELATION",
+      "question": "New chama SetSize para a configuração inicial?",
+      "reference_label": "DIRECT_CALL_IN_SUPPLIED_SOURCE",
+      "call_path": "tunny.go",
+      "call_line": 125,
+      "target_line": 266,
+      "evidence": [
+        {
+          "path": "tunny.go",
+          "first_line": 116,
+          "last_line": 128,
+          "source_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672",
+          "segment_sha256": "4a01e3cc19101b6a7fe290ab8b46ed6fec7de1b27ccf6d6429cf79c038b12039",
+          "url": "https://raw.githubusercontent.com/Jeffail/tunny/a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9/tunny.go",
+          "role": "STATIC_SOURCE"
+        },
+        {
+          "path": "tunny.go",
+          "first_line": 263,
+          "last_line": 268,
+          "source_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672",
+          "segment_sha256": "bb2714759b7d2d61c54324cc22baa251a5c2b6e4bf179253ef69186f36df1e3e",
+          "url": "https://raw.githubusercontent.com/Jeffail/tunny/a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9/tunny.go",
+          "role": "STATIC_SOURCE"
+        }
+      ],
+      "limit": "Chamada estrutural não certifica inicialização concluída."
+    },
+    {
+      "id": "tunny_atomicity",
+      "project": "tunny",
+      "axis": "UNIVERSAL_ATOMICITY",
+      "question": "O recorte comprova atomicidade de todas as interações de configuração?",
+      "reference_label": "NOT_PROVEN_BY_BOUNDED_SOURCE_REVIEW",
+      "evidence": [
+        {
+          "path": "tunny.go",
+          "first_line": 263,
+          "last_line": 293,
+          "source_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672",
+          "segment_sha256": "4661cc9f8ba2ae1ea3a8b874206629c4da56a31587fae4b197bf04073ea782e5",
+          "url": "https://raw.githubusercontent.com/Jeffail/tunny/a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9/tunny.go",
+          "role": "STATIC_SOURCE"
+        }
+      ],
+      "limit": "Mutex e contrato publicado não substituem prova de todas as interações."
+    },
+    {
+      "id": "pond_dynamic",
+      "project": "pond",
+      "axis": "USAGE_CONTRACT",
+      "question": "Resize é apresentado como operação de ajuste durante o uso?",
+      "reference_label": "DECLARED_DYNAMIC_RECONFIGURATION",
+      "evidence": [
+        {
+          "path": "README.md",
+          "first_line": 488,
+          "last_line": 520,
+          "source_sha256": "40ab0d7f80d589c428595360d035a7c6797b405776229456d7444eb86c404b7e",
+          "segment_sha256": "298c2c8516dc2ac9c43ae77a8a46aaa4ca074908683abf43790ea7f95df3ba0e",
+          "url": "https://raw.githubusercontent.com/alitto/pond/7b7c16ad4903c9d7014beac3ed3d2533b410f170/README.md",
+          "role": "UPSTREAM_DECLARATION"
+        }
+      ],
+      "limit": "Exemplo/declaração não demonstram todas as intercalacões."
+    },
+    {
+      "id": "pond_zero_declarations",
+      "project": "pond",
+      "axis": "USAGE_CONTRACT",
+      "question": "As declarações de contrato concordam sobre Resize(0)?",
+      "reference_label": "CONFLICTING_DECLARATIONS_ZERO_BOUNDARY",
+      "evidence": [
+        {
+          "path": "README.md",
+          "first_line": 517,
+          "last_line": 520,
+          "source_sha256": "40ab0d7f80d589c428595360d035a7c6797b405776229456d7444eb86c404b7e",
+          "segment_sha256": "889312e25aeb37a00a5dd72796e04a76e1c81d2de546425151f61a13e430ee48",
+          "url": "https://raw.githubusercontent.com/alitto/pond/7b7c16ad4903c9d7014beac3ed3d2533b410f170/README.md",
+          "role": "UPSTREAM_DECLARATION"
+        },
+        {
+          "path": "pool.go",
+          "first_line": 89,
+          "last_line": 92,
+          "source_sha256": "0175a29f921270f5d10733f919dd251553fefcbc0a09a22e42f697cc4bf6d45f",
+          "segment_sha256": "399cbba5259d7b8be7e497ef8c712463da3074783121934e352aebc523f5c5fe",
+          "url": "https://raw.githubusercontent.com/alitto/pond/7b7c16ad4903c9d7014beac3ed3d2533b410f170/pool.go",
+          "role": "UPSTREAM_DECLARATION"
+        },
+        {
+          "path": "pool.go",
+          "first_line": 174,
+          "last_line": 181,
+          "source_sha256": "0175a29f921270f5d10733f919dd251553fefcbc0a09a22e42f697cc4bf6d45f",
+          "segment_sha256": "3ccaf4bea1444afb71e0182794ff46f4dee0316bf9a2353c68543083dca4fbde",
+          "url": "https://raw.githubusercontent.com/alitto/pond/7b7c16ad4903c9d7014beac3ed3d2533b410f170/pool.go",
+          "role": "STATIC_SOURCE"
+        }
+      ],
+      "limit": "README admite zero, interface diz maior que zero; implementação trata zero. Não é defeito de execução demonstrado."
+    },
+    {
+      "id": "pond_atomicity",
+      "project": "pond",
+      "axis": "UNIVERSAL_ATOMICITY",
+      "question": "O recorte comprova atomicidade de todas as interações de configuração?",
+      "reference_label": "NOT_PROVEN_BY_BOUNDED_SOURCE_REVIEW",
+      "evidence": [
+        {
+          "path": "pool.go",
+          "first_line": 174,
+          "last_line": 205,
+          "source_sha256": "0175a29f921270f5d10733f919dd251553fefcbc0a09a22e42f697cc4bf6d45f",
+          "segment_sha256": "e12a6fb189931dc161e9921706d23e43800a892a3c381c0a37ebab087934ccb5",
+          "url": "https://raw.githubusercontent.com/alitto/pond/7b7c16ad4903c9d7014beac3ed3d2533b410f170/pool.go",
+          "role": "STATIC_SOURCE"
+        }
+      ],
+      "limit": "Lock observado e execução posterior de workers não fornecem prova universal."
+    }
+  ],
+  "snapshots_sha256": {
+    "tunny": "92056466a1afd1aa98531ea288ee856790a6f3acd563d1583c7a77af10d5aa0a",
+    "pond": "90f1768c5a007b3265aef368583f257b1f0e6b425bbc1a702f0a906a9c45961a"
+  }
+}

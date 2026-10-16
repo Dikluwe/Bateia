@@ -84,3 +84,8 @@ Inclua ajuda e exemplo para `idea landscape analyze`, mantendo o comando opciona
 
 Adicionar ajuda e exemplo para `idea evidence recheck`, releitura opcional
 no provedor GitHub com entrada explícita e bundles exportáveis.
+
+
+## Passo 0105
+
+Acrescentar na ajuda o comando idea insights analyze, sem alterar comandos ou defaults existentes.

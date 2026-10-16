@@ -35,3 +35,7 @@ goldens permanecem intactas, além de novas regressões de segurança.
 
 Isso é uma correção de segurança com evidência local, não recertificação histórica
 nem afirmação de que o novo código corresponde aos snapshots anteriores.
+
+## Projeção do registro no passo 0104
+
+A lista pública de ferramentas deve usar o registro de descoberta injetado, inclusive quando síntese estiver habilitada. Projetar enum dos IDs configurados e limite de seleção de até dez. Preservar schema basal quando o registro contiver exatamente Apple/GitHub/Sourcegraph e comportamento legado quando não houver registro. O dispatcher continua único, com orçamento/contexto existentes; não adicionar parsing ou política de negócio.

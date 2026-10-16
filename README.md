@@ -1,14 +1,37 @@
 # 🔍 Bateia — Motor de Inteligência Arquitetural Multi-Linguagem
 
-**Bateia existe para ajudar a decidir o que reutilizar antes de começar um software do zero.** A partir de uma ideia ou de um software conhecido, descobre alternativas, compara capacidades e restrições e reúne evidências para uma decisão de engenharia.
+**Bateia existe para produzir oportunidades de reúso e insights de engenharia a partir da investigação de software.** Uma ideia ou um projeto conhecido orienta a descoberta de alternativas, mecanismos, restrições e evidências úteis para decidir como construir ou evoluir uma solução.
 
-A jornada principal recebe uma `IdeaSpec` e produz uma decisão entre `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`. O dossiê deve explicar o que cada candidato resolve, o que pode ser aproveitado, quais lacunas e bloqueios permanecem e por que uma alternativa é preferível às outras.
+A decisão entre `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE` é uma saída. O projeto também possui extração de mecanismos e síntese de hipóteses de melhoria com premissas, lacunas e planos de validação. Uma hipótese não comprova efeito no alvo nem autoriza adoção; essas capacidades ainda têm dependências e limites descritos no mapa arquitetural.
 
 O funil **Descoberta → Triagem → Extração**, os parsers de manifestos, os coletores de código e os adaptadores AST/CFG são meios de obter evidência para essa jornada. Um repositório analisado é um candidato ou corpus de validação; não define a identidade do Bateia. Evidências de dependências sugerem aspectos a investigar, sem comprovar automaticamente capacidades ou necessidades.
 
 A qualidade do produto deve ser avaliada pela utilidade e fundamentação das decisões em diferentes ideias, projetos e ecossistemas. Quantidade de arquivos, símbolos ou grafos extraídos e aprovação de testes de infraestrutura não substituem essa avaliação.
 
 Intenção de origem: [D-001 — Da ideia à decisão de reúso](00_nucleo/desejos/D-001-da-ideia-a-decisao-de-reuso.md) e [D-002 — Alternativas de software com evidência](00_nucleo/desejos/D-002-alternativas-de-software-com-evidencia.md).
+
+## Organização arquitetural
+
+Tekt governa o programa. O [mapa de responsabilidades](00_nucleo/arquitetura/README.md) liga capacidade, código, contrato e verificação. O [ADR-0008](00_nucleo/ADR/ADR-0008-hierarquia-de-arquiteturas-sob-tekt.md) delimita organizações locais candidatas; a primeira separação distingue análise de insights de seu protocolo de execução durável. A composição de descoberta usa um registro validado em L1 e o MCP anuncia suas fontes configuradas ([ADR-0009](00_nucleo/ADR/ADR-0009-admissao-de-conectores-e-projecao-mcp.md)). Para agentes, comece por [AGENTS.md](AGENTS.md).
+
+## Documentação do projeto
+
+Comece pelo [mapa de documentação](00_nucleo/documentacao/README.md), que reúne a [visão do produto](00_nucleo/documentacao/produto.md), a [arquitetura atual](00_nucleo/documentacao/arquitetura.md), o [guia de engenharia](00_nucleo/documentacao/engenharia.md) e o [plano de organização](00_nucleo/documentacao/organizacao.md).
+
+## Investigação de insights sem decisão de reúso
+
+A jornada offline recebe pergunta, contexto do alvo e evidências congeladas, sem exigir política, decisão ou run de recomendação:
+
+```bash
+go build -o /tmp/bateia-insights ./04_wiring
+/tmp/bateia-insights idea insights analyze \
+  --input lab/bancada/insights/0105/queue-documentation-input.json \
+  --output /tmp/insight.json
+```
+
+O [exemplo de bancada](lab/bancada/insights/0105/README.md) é ilustrativo e não representa fonte remota autenticada. Produz hipótese, proveniência, lacunas e plano de baseline/aplicabilidade/experimento. A jornada usa avaliações fornecidas e verifica seu vínculo com os bytes; não reavalia automaticamente sua semântica nem comprova benefício no alvo. As classes suportadas são log append-only, fila limitada/backpressure, armazenamento por conteúdo e isolamento de portas/adaptadores. Adoção de código continua exigindo investigação e decisão próprias ([contrato 0105](00_nucleo/passos/0105-investigar-insights-sem-decisao-de-reuso.md)).
+
+O [ensaio com fonte real no GitHub](lab/bancada/insights/0106/README.md) coleta `sourcegraph/conc` em commit fixado, registra avaliações manuais e verifica replay/integridade. A coleta online passou; o mecanismo permanece PARTIAL e a hipótese INCONCLUSIVE. Consulte o [laudo 0106](00_nucleo/laudos/0106-correcoes-e-ensaio-github.md).
 
 ## Da ideia à decisão de reúso
 
@@ -43,7 +66,7 @@ O Bateia é construído sobre os princípios da **Arquitetura Cristalina / Tekt*
 
 | Camada | Diretório | Responsabilidade | Restrições |
 |--------|-----------|------------------|------------|
-| **$L_0$** | `00_nucleo/` | Intenção, prompts, ADRs, laudos e evidência passiva | Regime declarativo: sem código ou executores. |
+| **$L_0$** | `00_nucleo/` | Intenção, prompts, ADRs, laudos e sínteses declarativas | Regime declarativo: sem código ou executores. |
 | **$L_1$** | `01_core/` | Domínio, parsers e casos de uso | Sem adaptadores concretos; orquestração por interfaces. Há consultas ao relógio em parsers, portanto nem todas as funções são puras. |
 | **$L_2$** | `02_shell/` | CLI e Gerador de Relatórios | Conhece apenas $L_1$. Formatadores de saída. |
 | **$L_3$** | `03_infra/` | Adaptadores de Infraestrutura | I/O, GitHub API, Sourcegraph e Cache em disco. |
@@ -134,6 +157,32 @@ O relatório do funil pode agrupar dependências e arquivos encontrados nas cate
 go build -o bateia ./04_wiring
 ```
 
+### **Busca em workspaces públicos do Bitbucket**
+
+Defina `BATEIA_BITBUCKET_WORKSPACES` com os IDs dos workspaces separados por vírgula antes de iniciar `./bateia mcp` (ou no arquivo `.env`):
+
+```bash
+BATEIA_BITBUCKET_WORKSPACES=atlassian,example ./bateia mcp
+```
+
+O conector `bitbucket-repository-catalog` entra na descoberta de mercado quando essa variável está definida. Ele consulta nome e descrição dos repositórios públicos nesses workspaces pela API Bitbucket Cloud. A busca não cobre todos os workspaces do Bitbucket nem usa a API de busca de código.
+
+### **Pesquisa de software acadêmico**
+
+O Bateia consulta dois catálogos públicos além dos repositórios convencionais:
+
+- **zbMATH Open / swMATH** indexa software matemático e informa referências bibliográficas. O sinal `INDEXED` registra apenas a presença no catálogo; não representa revisão de código.
+- **JOSS** publica software de pesquisa após revisão aberta. O sinal `PEER_REVIEWED` inclui DOI e link para a revisão. O endereço do código é mantido como vínculo não verificado até uma comprovação posterior.
+
+```bash
+./bateia idea research discover --query "computer algebra" --output pesquisa.json
+./bateia idea research discover --input ideia.json --provider zbmath --output pesquisa.json
+```
+
+O snapshot guarda consulta, fonte, hash da resposta, URL do registro e candidatos. `--provider` aceita `all`, `zbmath` ou `joss`; `--max-per-query` limita os resultados por fonte. Os dois conectores também estão disponíveis na descoberta de mercado do MCP, sem credenciais. Consultas sem resultado e falhas do provedor são registradas separadamente.
+
+Registros do zbMATH também podem trazer `related_software`, uma lista limitada de pistas com nome e URL do catálogo. Essa relação é declarada pelo catálogo; não confirma dependência, equivalência nem revisão do código. Por exemplo, a consulta `symbolic calculator` retorna Symja, cujo registro relaciona Giac.
+
 ### **Exemplos de Uso**
 
 #### Analisar uma worktree local (incluindo alterações não commitadas)
@@ -222,3 +271,49 @@ A [execução 0051](00_nucleo/relatorios/documentacao-declaracoes-0051.md) recup
 A [execução 0052](00_nucleo/relatorios/expansao-com-admissao-0052.md) registra expansões lexicais portuguesas como hipóteses e exige ação/contexto para admitir alternativas ambíguas. A pergunta original de descompressão recuperou Decode no Snappy local/remoto; uma versão irrestrita trouxe falsos indícios no UUID e foi substituída após controle negativo. O filtro continua lexical e o catálogo finito não demonstra compreensão geral.
 
 A [avaliação 0053](00_nucleo/relatorios/avaliacao-jornada-0053.md) congelou nove perguntas de três novos domínios. O Bateia leu 6/6 arquivos-alvo e extraiu 5/6, mas recuperou somente1/6 funções esperadas. Descoberta pública:0/2 projetos esperados nas buscas avaliáveis e uma desconhecida. Nenhum algoritmo foi alterado; os dados priorizam correção de consulta/fallback e seleção de símbolos pertinentes.
+
+## Piloto de observação de concorrência no Lab
+
+O [piloto 0109](lab/bancada/concorrencia/0109/README.md) observa sintaxe Go por
+propriedade, condição e escopo, com hashes/localizadores e lacunas explícitas.
+Não promove mecanismos nem comprova limite global ou cancelamento completo.
+
+```sh
+go build -o /tmp/bateia-observer ./lab/bancada/concorrencia/0109/cmd/observer
+/tmp/bateia-observer observe --input lab/bancada/concorrencia/0109/testdata/conc-input.json
+/tmp/bateia-observer evaluate --corpus lab/bancada/concorrencia/0109/testdata/corpus.json
+```
+
+A CLI é experimental e permanece isolada do produto. Consulte o
+[laudo 0109](00_nucleo/laudos/0109-observador-de-concorrencia-no-lab.md) para
+verificação e limites do corpus.
+
+O piloto de concorrência evoluiu para [resolução limitada de canais nomeados](lab/bancada/concorrencia/0110/README.md), com tipos em memória, casos de contraste e lacunas explícitas para pacotes incompletos.
+
+O [passo 0111](lab/bancada/concorrencia/0111/README.md) fornece dependências congeladas ao observador: o tipo limiter de conc é resolvido offline, com hashes e controles de ausência/integridade. Análise de fluxo permanece pendente.
+
+O [passo 0112](lab/bancada/concorrencia/0112/README.md) acrescenta relações tipadas entre envio no case, lançador e defer/receive, com ramos e lacunas explícitos. O grafo ainda não certifica limite global de concorrência.
+
+O [passo 0113](lab/bancada/concorrencia/0113/README.md) rastreia parâmetros de callback até sua invocação em Catcher.Try, com identidade de tipos, escopos e controles de mutação. A cadeia estrutural mantém lacunas de execução/alcance.
+
+O [passo 0114](lab/bancada/concorrencia/0114/README.md) distingue sites após terminadores e ordem de registro de defer, com alcance limitado e lacunas globais preservadas.
+
+O [passo 0115](lab/bancada/concorrencia/0115/README.md) audita escritas, exposições e capturas do campo de canal, mantendo identidade de instância inconclusiva e distinguindo inventário de defeito.
+
+O [passo 0116](lab/bancada/concorrencia/0116/README.md) localiza a guarda anterior à escrita de configuração de conc, separando checagem sequencial de atomicidade concorrente.
+
+O [passo 0117](lab/bancada/concorrencia/0117/README.md) executa um modelo autoral que separa checagem sequencial, ausência de data race e atomicidade, sem executar conc ou promover garantias do candidato.
+
+O [passo 0118](lab/bancada/concorrencia/0118/README.md) confronta oito alegações com documentação e testes congelados: reutilizar o pool após Wait não implica reconfigurá-lo. A revisão é autoral e mantém inconclusivos o suporte à sobreposição e a atomicidade.
+
+O [passo 0119](lab/bancada/concorrencia/0119/README.md) executa os testes originais de conc com detector de race e confirma quatro comportamentos da revisão no recorte selecionado. Essa referência externa de execução não mede a precisão semântica geral do classificador.
+
+O [passo 0120](lab/bancada/concorrencia/0120/README.md) avalia configuração/inicialização em tunny e pond com observador congelado. Localiza uma referência estrutural, mantém atomicidade sem promoção e revela que vereditos de contrato ainda não são implementados; referência anterior às respostas permanece autoral.
+
+O [passo 0121](lab/bancada/concorrencia/0121/README.md) acrescenta uma vista documental: Go Doc é localizado automaticamente por dono AST e README pode receber associações fornecidas e validadas. Evidências ficam ligadas por contenção lexical, sem classificar contratos ou alterar o observador v8.
+
+A [pesquisa 0122](00_nucleo/relatorios/pesquisa-modelos-de-decisao-0122.md) usa o coletor do Bateia para investigar Laya, Arbiter e avaliação de decisões tipadas. Recomenda piloto local por HTTP e prepara quatro pedidos diagnósticos, sem inferência ou calibração executadas.
+
+O [passo 0123](lab/bancada/decisoes/0123/README.md) executa Laya real em CPU isolada com pesos fixados: três concordâncias em quatro diagnósticos autorais, estabilidade de opções/repetição e plano de treinamento por famílias de projetos. Ainda não há treino, calibração ou avaliação independente.
+
+Pesquisa do Laya com o produto atual: [passo 0124](00_nucleo/passos/0124-investigar-melhorias-do-laya-com-bateia.md) e [laudo](00_nucleo/laudos/0124-pesquisa-do-laya-com-bateia.md). Coleta rastreável, limites do catálogo e controles de contexto/calibração, sem treino ou promoção produtiva.

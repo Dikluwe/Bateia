@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-09-24
+ * @updated 2026-10-06
  */
 
 package cli
@@ -81,11 +81,13 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea discover Executa expansões num provedor e grava snapshot rastreável")
 	fmt.Println("  idea ontology Expande, avalia e audita a ontologia lexical offline")
 	fmt.Println("  idea catalog Descobre projetos no GitHub e executa a peneira offline")
+	fmt.Println("  idea research discover Busca software de pesquisa em zbMATH e JOSS com proveniência")
 	fmt.Println("  idea discovery evaluate Avalia offline um snapshot com julgamentos")
 	fmt.Println("  idea screen   Aplica a peneira explicável a um snapshot")
 	fmt.Println("  idea screening calibrate|audit Calibra ou audita a peneira offline")
 	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose|reconcile|verify|recheck Comprova e audita evidências, sem LLM")
 	fmt.Println("  idea decide   Decide offline; `decide frontier` expõe Pareto e `decide evaluate` mede risco-cobertura")
+	fmt.Println("  idea insights analyze Investiga mecanismos em evidências congeladas sem decisão de reúso")
 	fmt.Println("  idea recommend Orquestra o funil e ranqueia alternativas com evidência")
 	fmt.Println("  idea intake prepare|apply|diagnose Estrutura entradas e abstenções avançadas sem executar efeitos")
 	fmt.Println("  idea review protocol|synthesize|update|prioritize|evaluate Mantém revisão auditável e viva sem alterar a busca simples")
@@ -107,6 +109,7 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  bateia idea discover --input ideia.json --strategy lexical --output snapshot.json")
 	fmt.Println("  bateia idea ontology expand --input ideia.json --ontology discovery-ontology.json --plan-output plano.json")
 	fmt.Println("  bateia idea catalog discover --plan plano.json --provider github --output catalogo.json")
+	fmt.Println("  bateia idea research discover --query \"computer algebra\" --output pesquisa.json")
 	fmt.Println("  bateia idea decide --idea ideia.json --assessment assessment.json --policy reuse-policy.json")
 	fmt.Println("  bateia idea evidence reconcile --input achados-tecnicos.json --as-of 2026-09-24T00:00:00Z")
 	fmt.Println("  bateia idea evidence verify --input achados-tecnicos.json --bundles bundle.json --as-of 2026-09-24T00:00:00Z")

@@ -104,3 +104,8 @@ Despachar idea trace antes da criação do expansor lexical e antes de .env,
 cache ou clientes remotos. Encaminhar apenas os argumentos e stdout a
 cli.RunIdeaCommand, sem injetar provedor ou executar candidatos. Preservar
 os caminhos existentes dos demais subcomandos.
+
+
+## Passo 0105
+
+Despache idea insights antes de carregar .env, vocabulário, caches e clientes, como trace. Não criar runtime para este comando offline.

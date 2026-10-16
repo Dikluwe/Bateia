@@ -1,0 +1,78 @@
+{
+  "schema_version": "1",
+  "question": "Como tornar a sobrecarga de investigações explícita no Bateia?",
+  "target": {
+    "name": "Bateia",
+    "context": "Investigações concorrentes com recursos limitados",
+    "property": "trabalho admitido e rejeitado",
+    "desired_effect": "Controlar sobrecarga preservando cancelamento",
+    "constraints": [
+      "manter as fronteiras Tekt",
+      "não executar candidatos nesta investigação"
+    ]
+  },
+  "mechanism_classes": [
+    "BOUNDED_QUEUE_BACKPRESSURE"
+  ],
+  "sources": [
+    {
+      "bundle": {
+        "schema_version": "1",
+        "repository": {
+          "owner": "illustrative",
+          "repo": "queue-library",
+          "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "items": [
+          {
+            "kind": "documentation",
+            "ref": {
+              "owner": "illustrative",
+              "repo": "queue-library",
+              "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "path": "README.md",
+            "content": "A bounded queue limits admitted work and exposes backpressure when capacity is exhausted.",
+            "content_hash": "sha256:68791888eb666b5834152383a5eeeb4b262fd36c4d2f69a5f8ce9959e3beba14"
+          }
+        ],
+        "complete": true
+      },
+      "assessments": [
+        {
+          "repository": {
+            "owner": "illustrative",
+            "repo": "queue-library",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "capabilities": [
+            {
+              "capability": "bounded queue",
+              "status": "PARTIAL",
+              "sources": [
+                {
+                  "kind": "documentation",
+                  "ref": {
+                    "owner": "illustrative",
+                    "repo": "queue-library",
+                    "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  },
+                  "path": "README.md",
+                  "line": 1,
+                  "snippet": "A bounded queue limits admitted work and exposes backpressure when capacity is exhausted.",
+                  "rule_id": "bounded-queue-architecture-documentation",
+                  "content_hash": "sha256:68791888eb666b5834152383a5eeeb4b262fd36c4d2f69a5f8ce9959e3beba14"
+                }
+              ]
+            }
+          ],
+          "license": {
+            "status": "PROVEN",
+            "identifier": "GPL-3.0-only"
+          }
+        }
+      ]
+    }
+  ],
+  "max_hypotheses": 1
+}

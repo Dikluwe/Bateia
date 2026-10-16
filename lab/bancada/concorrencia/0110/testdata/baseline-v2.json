@@ -1,0 +1,464 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "empty",
+      "family": "empty",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f() {}",
+            "sha256": "5dc3c6b3662d1373492d2be74e7442fb70db35d1ace5a518cef8c94ae83b4842"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED"
+      ]
+    },
+    {
+      "id": "unbuffered",
+      "family": "channel",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(){ c:=make(chan int); _=c }",
+            "sha256": "bb50fa992957f3180cfb0b4f0e30ee2a412cd434676c1d236261a35e1e390781"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "UNBUFFERED_FORM",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "buffered",
+      "family": "channel",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(){ c:=make(chan int,3); _=c }",
+            "sha256": "96a117a4132103c129a8bde86dc436d3caaaae9e4c870e6dcd9cacad77fab748"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "capacity-expression",
+      "family": "capacity-expression",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(n int){ c:=make(chan int,n); _=c }",
+            "sha256": "565c8a7cdb775c7716eec2780fc4cbbe112367f26a4587d3c9047b5689ceaa0e"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_EXPRESSION",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "direct-send",
+      "family": "send",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(c chan int){ c<-1 }",
+            "sha256": "9e9cf4355859cccb51f2c4f3a6d34fd5917c9c6d9b1e64cfb45fc16375c0c102"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_send",
+          "value": "DIRECT_SEND",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "default-send",
+      "family": "select-send",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(c chan int){ select { case c<-1: default: return } }",
+            "sha256": "df3bef9fe9f1a21a0e952618ea26ff2725f054f2ac60011af3fa655036343ef1"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "select_shape",
+          "value": "SELECT_WITH_DEFAULT",
+          "count": 1
+        },
+        {
+          "property": "channel_send",
+          "value": "SELECT_WITH_DEFAULT",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "waiting-send",
+      "family": "select-wait",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(c chan int){ select { case c<-1: } }",
+            "sha256": "1e07a9a2e43d5615402293de52d162fc786cab4cff1128ace26ccfbc5bcf5710"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "select_shape",
+          "value": "WAITING_SELECT",
+          "count": 1
+        },
+        {
+          "property": "channel_send",
+          "value": "WAITING_SELECT",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "receive",
+      "family": "receive",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(c chan int){ <-c }",
+            "sha256": "075724c548e1d14f73e4e6200e50cc01da6f11bdbd8c3a9a70f0709744b626da"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_receive",
+          "value": "DIRECT_RECEIVE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "done-selector",
+      "family": "done",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nimport \"context\"\nfunc f(c chan int,ctx context.Context){ select { case c<-1: case <-ctx.Done(): return } }",
+            "sha256": "39a9711605189d7bfbd60c8e352c11c55dae9c6dcc91c2e77257e06f74fa432c"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "select_shape",
+          "value": "WAITING_SELECT",
+          "count": 1
+        },
+        {
+          "property": "channel_send",
+          "value": "WAITING_SELECT",
+          "count": 1
+        },
+        {
+          "property": "channel_receive",
+          "value": "WAITING_SELECT",
+          "count": 1
+        },
+        {
+          "property": "cancellation_candidate",
+          "value": "DONE_SELECTOR_RECEIVE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED",
+        "DONE_RECEIVER_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "loop-launch",
+      "family": "launch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(c chan int){ for i:=0;i<4;i++ { go func(){ c<-1 }() } }",
+            "sha256": "847d2fd5ea56eb72b298951e877d00bc67265f890713e1e7e5f83db6114669e1"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "goroutine_launch",
+          "value": "GO_STATEMENT",
+          "count": 1
+        },
+        {
+          "property": "channel_send",
+          "value": "DIRECT_SEND",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "documentation-decoy",
+      "family": "decoy",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\n// go func(){ make(chan int,3) }()\nfunc f(){ _=\"ctx.Done() select case c <- 1\" }",
+            "sha256": "9644e29c188e34889db96cd05cf59a956da980e538549377a96022f4ff9d4284"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED"
+      ]
+    },
+    {
+      "id": "conditional-buffer",
+      "family": "conditional",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(enabled bool){ if enabled { c:=make(chan int,4); _=c } }",
+            "sha256": "8a9d2b672301457e382bbb480c1c55a310a48033ebf6ffaabfde15a1212587e4"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:4",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "renamed-send",
+      "family": "select-send",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc renamed(pipe chan int){ select { case pipe<-1: default: return } }",
+            "sha256": "50ee0d49c0d21b1e1fb648d45348f71b751f828c035f3b35ff316b6e9c2367cb"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "select_shape",
+          "value": "SELECT_WITH_DEFAULT",
+          "count": 1
+        },
+        {
+          "property": "channel_send",
+          "value": "SELECT_WITH_DEFAULT",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "zero-buffer",
+      "family": "channel",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f(){ c:=make(chan int,0); _=c }",
+            "sha256": "798fdd6f9ff9c5efd0028bd915990002557dac499866d11809b1f9547fd9d02e"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:0",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "WORKER_BOUND_UNRESOLVED",
+        "ADMISSION_BOUND_UNRESOLVED",
+        "CANCELLATION_COMPLETION_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "malformed",
+      "family": "parse",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_NOT_EXTERNAL_SOURCE",
+        "build": {},
+        "files": [
+          {
+            "path": "sample.go",
+            "content": "package p\nfunc f( {",
+            "sha256": "0712d2b004254e542609a30637531c8a33020679abf3d48717fe81bd018f15f1"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "GO_PARSE_FAILED"
+      ]
+    }
+  ]
+}

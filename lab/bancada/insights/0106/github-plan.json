@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "repository": {
+    "owner": "sourcegraph",
+    "repo": "conc",
+    "commit": "HEAD"
+  },
+  "candidate": {
+    "owner": "sourcegraph",
+    "repo": "conc",
+    "url": "https://github.com/sourcegraph/conc",
+    "commit_id": "HEAD"
+  },
+  "screening_decision": {
+    "repository": "sourcegraph/conc",
+    "status": "KEEP"
+  },
+  "targets": [
+    {
+      "path": "pool/pool.go",
+      "kind": "file",
+      "reason": "limite de concorrência e admissão"
+    },
+    {
+      "path": "pool/pool_test.go",
+      "kind": "test",
+      "reason": "teste independente do limite"
+    }
+  ],
+  "budget": {
+    "documents": 20,
+    "manifests": 10,
+    "code_files": 128,
+    "requirement_files": 0,
+    "tests_examples": 128,
+    "total_bytes": 1048576,
+    "tree_depth": 8
+  },
+  "requirement_queries": []
+}

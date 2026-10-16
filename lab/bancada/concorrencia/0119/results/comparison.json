@@ -1,0 +1,65 @@
+{
+  "schema_version": "bounded-behavioral-comparison-v1",
+  "reference_origin": "UPSTREAM_TESTS_UNMODIFIED",
+  "candidate_code_executed": true,
+  "independent_semantic_accuracy_measured": false,
+  "evaluated_behavioral_claims": 4,
+  "unassessed_claims": 4,
+  "selection": "PURPOSEFUL_EXISTING_CLAIMS_NOT_REPRESENTATIVE_CORPUS",
+  "claims_sha256": "975d03ad04af3eb515b2b1b34711fff4593e3e65485346ea758194a043e9ea0f",
+  "execution_sha256": "4c35e4b71a9aa39868cca53f5923022c5f3d18ff1a3b890285e14099ff3c4bed",
+  "comparisons": [
+    {
+      "claim_id": "CONFIGURE_BEFORE_GO",
+      "prior_judgment": "DOCUMENTED_USAGE_ORDER",
+      "upstream_test": "ExamplePool",
+      "passes": 1,
+      "status": "CONSISTENT_WITH_PRIOR_REVIEW_IN_EXECUTED_CASE",
+      "observed_behavior": "CONFIGURE_BEFORE_GO_SUCCEEDS_IN_EXAMPLE"
+    },
+    {
+      "claim_id": "CONFIGURE_AFTER_GO",
+      "prior_judgment": "DECLARED_CONTRACT_WITH_UNEXECUTED_TEST_EXPECTATION",
+      "upstream_test": "TestPool/panics_on_configuration_after_init/before_wait",
+      "passes": 3,
+      "status": "CONSISTENT_WITH_PRIOR_REVIEW_IN_EXECUTED_CASE",
+      "observed_behavior": "EXPECTED_PANIC_OBSERVED"
+    },
+    {
+      "claim_id": "CONFIGURE_AFTER_WAIT",
+      "prior_judgment": "CONTRADICTED_BY_UNEXECUTED_TEST_EXPECTATION",
+      "upstream_test": "TestPool/panics_on_configuration_after_init/after_wait",
+      "passes": 3,
+      "status": "CONSISTENT_WITH_PRIOR_REVIEW_IN_EXECUTED_CASE",
+      "observed_behavior": "EXPECTED_PANIC_OBSERVED_CLAIM_CONTRADICTED"
+    },
+    {
+      "claim_id": "REUSE_AFTER_WAIT",
+      "prior_judgment": "UNEXECUTED_TEST_EXPECTATION",
+      "upstream_test": "TestPool/is_reusable",
+      "passes": 3,
+      "status": "CONSISTENT_WITH_PRIOR_REVIEW_IN_EXECUTED_CASE",
+      "observed_behavior": "TWO_BATCHES_COMPLETE_IN_UPSTREAM_TEST"
+    },
+    {
+      "claim_id": "OVERLAP_SUPPORTED",
+      "prior_judgment": "NOT_ESTABLISHED_IN_REVIEWED_SOURCES",
+      "status": "NOT_EVALUATED_BY_SELECTED_TESTS"
+    },
+    {
+      "claim_id": "GUARD_IMPLIES_ATOMICITY",
+      "prior_judgment": "UNSUPPORTED_INFERENCE",
+      "status": "NOT_EVALUATED_BY_SELECTED_TESTS"
+    },
+    {
+      "claim_id": "MODEL_IMPLIES_DEFECT",
+      "prior_judgment": "UNSUPPORTED_MODEL_TO_CANDIDATE_TRANSFER",
+      "status": "NOT_EVALUATED_BY_SELECTED_TESTS"
+    },
+    {
+      "claim_id": "SENTINEL_IS_SPAWN_COUNT",
+      "prior_judgment": "COMMENT_AND_PREDICATE_HAVE_DIFFERENT_SCOPES",
+      "status": "NOT_EVALUATED_BY_SELECTED_TESTS"
+    }
+  ]
+}

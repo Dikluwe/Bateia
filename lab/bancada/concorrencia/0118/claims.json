@@ -1,0 +1,198 @@
+{
+  "schema_version": "contract-review-v1",
+  "review_date": "2026-10-07",
+  "reference_origin": "AUTHOR_REVIEW_NOT_INDEPENDENT",
+  "semantic_judgments_automatically_derived": false,
+  "candidate_code_executed": false,
+  "independent_semantic_accuracy_measured": false,
+  "repository_commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+  "source_bundle_sha256": "a6d1900e9354b8188b1b3de4fb1d24566b6cfae55a55cded4662c1b585596ee7",
+  "scope": "BOUNDED_FROZEN_SOURCE_REVIEW",
+  "claims": [
+    {
+      "id": "CONFIGURE_BEFORE_GO",
+      "claim": "Configurar antes de enviar tarefas é a ordem demonstrada de uso.",
+      "judgment": "DOCUMENTED_USAGE_ORDER",
+      "evidence": [
+        {
+          "path": "pool/pool_test.go",
+          "first_line": 15,
+          "last_line": 22,
+          "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+          "segment_sha256": "aac61b1aac31076b5a544456a7fb82e618a786e85318d95dbc6304727839985a",
+          "role": "SOURCE_EXAMPLE_NOT_EXECUTED"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 24,
+          "last_line": 25,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "d97daf7a3461dc7e582ee0f18ad14c512ce1cbf72fd20852e1e8d79f45799107",
+          "role": "SOURCE_CONTRACT_DECLARATION"
+        }
+      ],
+      "limit": "Exemplo e declaração não provam todos os cenários de execução."
+    },
+    {
+      "id": "CONFIGURE_AFTER_GO",
+      "claim": "Configuração após a primeira chamada Go deve provocar panic.",
+      "judgment": "DECLARED_CONTRACT_WITH_UNEXECUTED_TEST_EXPECTATION",
+      "evidence": [
+        {
+          "path": "pool/pool.go",
+          "first_line": 24,
+          "last_line": 25,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "d97daf7a3461dc7e582ee0f18ad14c512ce1cbf72fd20852e1e8d79f45799107",
+          "role": "SOURCE_CONTRACT_DECLARATION"
+        },
+        {
+          "path": "pool/pool_test.go",
+          "first_line": 49,
+          "last_line": 55,
+          "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+          "segment_sha256": "82a0d0b741f78198617dfd36dce0f6ecca956045ef1e5a673085458b2b549a74",
+          "role": "SOURCE_TEST_ASSERTION_NOT_EXECUTED"
+        }
+      ],
+      "limit": "Teste da fonte foi lido, não executado."
+    },
+    {
+      "id": "CONFIGURE_AFTER_WAIT",
+      "claim": "Wait após Go permite reconfigurar o mesmo pool.",
+      "judgment": "CONTRADICTED_BY_UNEXECUTED_TEST_EXPECTATION",
+      "evidence": [
+        {
+          "path": "pool/pool_test.go",
+          "first_line": 57,
+          "last_line": 63,
+          "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+          "segment_sha256": "51b88f3b187c2d9c45e43e38c5d000e6a1983f98ef2c755c69886046c3b03bbb",
+          "role": "SOURCE_TEST_ASSERTION_NOT_EXECUTED"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 108,
+          "last_line": 114,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "de86e969205202516d531caefd50f06f58a167c65473e5cb15dea4fc857a840f",
+          "role": "SOURCE_CONTRACT_DECLARATION"
+        }
+      ],
+      "limit": "A expectativa explícita é panic; execução real não foi verificada."
+    },
+    {
+      "id": "REUSE_AFTER_WAIT",
+      "claim": "O mesmo pool pode receber outro lote depois de Wait.",
+      "judgment": "UNEXECUTED_TEST_EXPECTATION",
+      "evidence": [
+        {
+          "path": "pool/pool_test.go",
+          "first_line": 129,
+          "last_line": 145,
+          "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+          "segment_sha256": "df2f4b88380a096e720548e616bf5a6bc0e65d4b6992987e9264b4d3f445f3c8",
+          "role": "SOURCE_TEST_ASSERTION_NOT_EXECUTED"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 72,
+          "last_line": 81,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "54eae791511a36d7e30bcad755501e716f260502a8d69df5526b67640f324148",
+          "role": "STATIC_SOURCE_RELATION"
+        }
+      ],
+      "limit": "Reúso de execução não estabelece direito de reconfiguração."
+    },
+    {
+      "id": "OVERLAP_SUPPORTED",
+      "claim": "Configuração simultânea com a primeira chamada Go é uso suportado.",
+      "judgment": "NOT_ESTABLISHED_IN_REVIEWED_SOURCES",
+      "evidence": [
+        {
+          "path": "pool/pool.go",
+          "first_line": 15,
+          "last_line": 25,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "ed98cdb08e1576006ce575ab8252478ef51b4a47019b1db59e024559b9d967b6",
+          "role": "BOUNDED_CONTRACT_REVIEW"
+        },
+        {
+          "path": "pool/pool_test.go",
+          "first_line": 49,
+          "last_line": 63,
+          "content_sha256": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+          "segment_sha256": "6f598ec675a157ad7158c6d08a2acc58d1c36764180ad35c6af382570fe3f803",
+          "role": "BOUNDED_CONTRACT_REVIEW"
+        }
+      ],
+      "limit": "Silêncio não prova suporte nem proibição; nenhuma hipótese sobre operações permitidas foi autenticada."
+    },
+    {
+      "id": "GUARD_IMPLIES_ATOMICITY",
+      "claim": "A guarda antes da escrita comprova proteção atômica concorrente.",
+      "judgment": "UNSUPPORTED_INFERENCE",
+      "evidence": [
+        {
+          "path": "pool/pool.go",
+          "first_line": 91,
+          "last_line": 104,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "59942dab262e16c060fe157d5bb0f31b6b046e32d5a99eee84053fd7ce00496c",
+          "role": "STATIC_SOURCE_RELATION"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 108,
+          "last_line": 114,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "de86e969205202516d531caefd50f06f58a167c65473e5cb15dea4fc857a840f",
+          "role": "STATIC_SOURCE_RELATION"
+        }
+      ],
+      "model_reference": "CHECK_THEN_INITIALIZE_THEN_WRITE",
+      "limit": "Check anterior é observado; atomicidade do candidato permanece desconhecida."
+    },
+    {
+      "id": "MODEL_IMPLIES_DEFECT",
+      "claim": "A intercalação no modelo demonstra um defeito em conc.",
+      "judgment": "UNSUPPORTED_MODEL_TO_CANDIDATE_TRANSFER",
+      "evidence": [],
+      "model_reference": "CHECK_THEN_INITIALIZE_THEN_WRITE",
+      "limit": "Modelo omite partes do candidato e sua operação permitida não foi estabelecida."
+    },
+    {
+      "id": "SENTINEL_IS_SPAWN_COUNT",
+      "claim": "A sentinela tasks indica necessariamente que goroutines já foram iniciadas.",
+      "judgment": "COMMENT_AND_PREDICATE_HAVE_DIFFERENT_SCOPES",
+      "evidence": [
+        {
+          "path": "pool/pool.go",
+          "first_line": 108,
+          "last_line": 114,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "de86e969205202516d531caefd50f06f58a167c65473e5cb15dea4fc857a840f",
+          "role": "SOURCE_CONTRACT_DECLARATION"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 72,
+          "last_line": 75,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "bd2f2e17c8821adac5e6a6326ce81f6994eabcd87a31b5b87adf546831387ad2",
+          "role": "STATIC_SOURCE_RELATION"
+        },
+        {
+          "path": "pool/pool.go",
+          "first_line": 100,
+          "last_line": 105,
+          "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "segment_sha256": "5b82aad32b57d32d8884f2e7e0a85c2ee47bac1de6f1968ec7c14d04d7d0db48",
+          "role": "STATIC_SOURCE_RELATION"
+        }
+      ],
+      "limit": "Wait também chama init; não foi executado o caso Wait antes de Go. É uma obrigação de investigação, não bug demonstrado."
+    }
+  ]
+}

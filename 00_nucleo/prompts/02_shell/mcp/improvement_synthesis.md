@@ -21,3 +21,7 @@ A extensão agora registra handlers no dispatcher comum; não usa readers que
 interceptam chamadas. Todas as ferramentas/artefatos atravessam o orçamento
 comum exatamente uma vez e recebem o contexto da sessão. Framing limitado é
 aplicado antes de qualquer parsing. Ver `request_dispatch.md` para a supersessão.
+
+## Projeção do registro no passo 0104
+
+A lista pública de ferramentas deve usar o registro de descoberta injetado, inclusive quando síntese estiver habilitada. Projetar enum dos IDs configurados e limite de seleção de até dez. Preservar schema basal quando o registro contiver exatamente Apple/GitHub/Sourcegraph e comportamento legado quando não houver registro. O dispatcher continua único, com orçamento/contexto existentes; não adicionar parsing ou política de negócio.

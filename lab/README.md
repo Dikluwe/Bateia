@@ -28,3 +28,9 @@ promova seu resultado, preserve apenas a evidência consumida em `history/` ou e
 Compilações, caches, mutantes gerados, variações intermediárias e saídas descartáveis
 usam `/dev/shm` e não são versionados. Material histórico preserva nomes cronológicos
 somente para localização; ele não governa o produto atual.
+
+## Bancada ativa de concorrência
+
+[0109 — Observador sintático](bancada/concorrencia/0109/README.md) contém piloto,
+CLI, corpus exploratório e ensaios. Nenhuma camada produtiva importa o pacote;
+concordância do corpus não mede qualidade semântica independente.

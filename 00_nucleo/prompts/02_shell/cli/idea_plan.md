@@ -33,3 +33,8 @@ Segurança: IdeaSpec usa leitura limitada seguida de validateIdeaJSONStructure a
 Roteie idea trace build/impact para a casca offline própria, sem alterar plan
 ou a busca simples. Erros de subcomandos e uso incluem trace. Writer trace não
 reutiliza o writer legado não atômico; o contrato está em idea_trace.md.
+
+
+## Passo 0105
+
+Roteie idea insights analyze para a casca offline específica, preservando demais comandos e mensagens legadas.

@@ -37,3 +37,13 @@ mais o teste real TestStep0025LegacySuccessfulSearchUsesEvidenceContract
 goldens, expectativas, mutantes ou classificação dos casos. Essa correção é de
 invocação: recompõe helpers ausentes e impede seletor legado vazio; não credita
 qualidade do produto ou nova prova aos testes de infraestrutura.
+
+## Adendo 0106 — Observação determinística de M28
+
+No gate ativo do Lab, substituir a janela de 100 ms por um rendezvous no
+caminho que efetivamente espera recovery: observar bloqueio de Start antes da
+abertura da barreira OU conclusão de Start com a barreira fechada. O watchdog
+só pode produzir falha de infraestrutura, nunca classificar Preserved/Violated.
+O veredito continua comparando observáveis referência/mutante, sem consultar
+o ID do defeito. Manter accepted-before-recovery e a persistência real; não
+alterar recibos históricos nem gates selados.

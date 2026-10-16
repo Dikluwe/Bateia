@@ -98,3 +98,49 @@ Cada passo deve declarar:
 - [0063 — Vincular fonte ao efeito](0063-vincular-fonte-ao-efeito.md) — [Execução e rastreabilidade](../relatorios/vinculo-fonte-efeito-0063.md).
 
 - [0064 — Identificar analisador e parâmetros](0064-identificar-analisador-e-parametros.md) — [Recibos e limites](../relatorios/rastreabilidade-analisador-0064.md).
+
+## Organização arquitetural em preparação
+
+- [0103 — Testar a hierarquia de arquiteturas sob Tekt](0103-testar-hierarquia-de-arquiteturas-sob-tekt.md) — mapa inicial e primeira separação materializados; avaliação da hierarquia em andamento.
+
+- [0104 — Compor descoberta por registro validado](0104-compor-descoberta-por-registro-validado.md) — implementado e verificado localmente: admissão em L1, composição em L4 e schema do registro em L2.
+
+- [0105 — Investigar insights sem decisão de reúso](0105-investigar-insights-sem-decisao-de-reuso.md) — implementado e verificado no recorte offline; utilidade real ainda não avaliada.
+
+- [0106 — Corrigir esperas e investigar GitHub](0106-corrigir-esperas-e-investigar-github.md) — suíte concorrente aprovada e fonte real coletada; aplicabilidade ainda pendente.
+
+- [0107 — Pesquisar qualidade do classificador com Bateia](0107-pesquisar-qualidade-do-classificador-com-bateia.md) — pesquisa exploratória concluída; avaliação semântica independente proposta.
+
+- [0108 — Refinar pesquisa antes do avaliador](0108-refinar-pesquisa-antes-do-avaliador.md) — propriedades, configuração, referência e escopo do piloto refinados.
+
+- [0109 — Observar propriedades de concorrência no Lab](0109-observar-propriedades-de-concorrencia-no-lab.md) — piloto sintático, CLI e corpus verificados; qualidade semântica pendente.
+
+- [0110 — Resolver canais nomeados no Lab](0110-resolver-canais-nomeados-no-lab.md) — checagem restrita em memória; dependências de conc ainda incompletas.
+
+- [0111 — Fornecer dependências rastreáveis no Lab](0111-fornecer-dependencias-rastreaveis-no-lab.md) — limiter resolvido com ambiente congelado; fluxo global pendente.
+
+- [0112 — Relacionar reserva, lançamento e liberação](0112-relacionar-reserva-lancamento-e-liberacao.md) — relações tipadas e contrastes; alcance/callback/instância pendentes.
+
+- [0113 — Rastrear parâmetros de callback](0113-rastrear-parametros-de-callback.md) — cadeia estrutural até Try/f(); execução e alcance pendentes.
+
+- [0114 — Verificar alcance e ordem limitados](0114-verificar-alcance-e-ordem-limitados.md) — retorno/prefixo de defer distinguidos; alcance global e instância pendentes.
+
+- [0115 — Auditar identidade e mutação do canal](0115-auditar-identidade-e-mutacao-do-canal.md) — writes/captures localizados; identidade de instância ainda inconclusiva.
+
+- [0116 — Observar guarda da configuração](0116-observar-guarda-da-configuracao.md) — checagem anterior localizada; atomicidade/instância pendentes.
+
+- [0117 — Testar ordem sequencial e intercalação](0117-testar-ordem-sequencial-e-intercalacao.md) — quatro testemunhos autorais; resultados restritos ao modelo.
+
+- [0118 — Confrontar alegações com contrato](0118-confrontar-alegacoes-com-contrato.md) — revisão autoral rastreável; reutilização e reconfiguração distinguidas, precisão independente pendente.
+
+- [0119 — Executar referência original do candidato](0119-executar-referencia-original-do-candidato.md) — testes originais de conc executados; quatro comportamentos confirmados no recorte, precisão semântica geral pendente.
+
+- [0120 — Avaliar configuração em fontes externas](0120-avaliar-configuracao-em-fontes-externas.md) — observador congelado em dois projetos; referência estrutural localizada, cobertura contratual ausente e precisão independente pendente.
+
+- [0121 — Ligar documentação a evidência estática](0121-ligar-documentacao-a-evidencia-estatica.md) — vista documental no Lab, com donos AST e associações fornecidas explícitas; interpretação contratual pendente.
+
+- [0122 — Pesquisar modelos de decisão tipados](0122-pesquisar-modelos-de-decisao-tipados.md) — coleta com Bateia, alternativas e quatro payloads diagnósticos; inferência/calibração pendentes.
+
+- [0123 — Testar Laya e planejar treinamento](0123-testar-laya-e-planejar-treinamento.md) — inferência real isolada em CPU; três concordâncias diagnósticas, plano de treino sem dataset/ajuste executado.
+
+- [0124 — Investigar melhorias do Laya com Bateia](0124-investigar-melhorias-do-laya-com-bateia.md)

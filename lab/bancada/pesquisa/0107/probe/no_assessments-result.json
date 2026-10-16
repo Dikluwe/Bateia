@@ -1,0 +1,54 @@
+{
+  "schema_version": "insight-investigation-v1",
+  "id": "insight_3b3a7c2084d81b9b86c2a9d2d7395b72e6ddaead251c0fb4d31e0817918ffebd",
+  "scope": "FROZEN_EVALUATED_EVIDENCE",
+  "status": "INCONCLUSIVE",
+  "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+  "target": {
+    "name": "Bateia",
+    "context": "Admissão de investigações concorrentes no runtime durável sob Tekt",
+    "property": "capacidade admitida e tempo de resposta à sobrecarga",
+    "desired_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+    "constraints": [
+      "avaliar a ideia sem transferir código",
+      "não bloquear indefinidamente a entrada MCP",
+      "preservar Tekt L0–L4",
+      "preservar recuperação e fila durável"
+    ]
+  },
+  "input_sha256": "4fd1b2a4226dc1a666a6c903026a06c65f14c284d996e0ff9bb9c24b1d33adeb",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "mechanisms": [],
+  "hypotheses": [],
+  "extraction_gaps": [
+    {
+      "code": "NO_COMPATIBLE_EVIDENCE_OBSERVED",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "rule_id": "",
+      "witness_hash": "",
+      "status_ceiling": "INCONCLUSIVE"
+    }
+  ],
+  "provenance": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "bundle_sha256": "2a8f52756a94a3a00d00ecccde66d767c6a646078b56eda0b84a3a4f4b201aa4",
+      "assessments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "complete": true,
+      "assessment_origin": "DECLARED_NOT_REASSESSED"
+    }
+  ],
+  "limitations": [
+    "As avaliações fornecidas não foram refeitas nem autenticadas externamente.",
+    "Hashes e localizadores verificam vínculo com os bytes fornecidos, não comportamento executado.",
+    "O alvo, suas restrições e o efeito desejado ainda precisam de validação.",
+    "Nenhuma decisão de reúso ou autorização de adoção foi produzida.",
+    "A busca de contraevidência se limita às avaliações e bytes fornecidos; o ecossistema não foi pesquisado."
+  ]
+}

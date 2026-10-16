@@ -1,0 +1,329 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "return-before",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){return;cb()}",
+            "sha256": "377ffaf3522ff77c7d9f399205641ec2014f86e5d592de5750a6341d696ec1ae"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNREACHABLE_AFTER_TERMINATOR",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "both-branches",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func(),ok bool){if ok{return}else{return};cb()}",
+            "sha256": "cb46fc63ae1541b39fcb05bcbe3e647721d11e386f1efde7e5476fd54999f4a7"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNREACHABLE_AFTER_TERMINATOR",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "one-branch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func(),ok bool){if ok{return};cb()}",
+            "sha256": "cd23624d8beacbb593c5b75b3d9226319863d6697703d3a92b63ece6a8f26e69"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "panic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){panic(1);cb()}",
+            "sha256": "5967519c47da8985edf2fb8cea86e9357e975c592b8f46891fde04bc8fe4ffeb"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNREACHABLE_AFTER_TERMINATOR",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "shadow-panic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){panic:=func(int){};panic(1);cb()}",
+            "sha256": "89ba7eb6e70bb4d643f6032af9d82e1465f41058d2385b13158f9cf0353d4131"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "defer-panic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){defer panic(1);cb()}",
+            "sha256": "5b89381e2031ae6f780cf4591c1d70ca29935f9d65b31bf6867115d9b0715c96"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 1
+    },
+    {
+      "id": "go-panic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){go panic(1);cb()}",
+            "sha256": "af2201b67331834080300598469844fc653079215d75a7d979d581eacaa84df5"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "return-expression",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()int)int{return cb()}",
+            "sha256": "081111b7406dff287bd82c4571e8de58f5ead7b562e1fae9b014973056505d72"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "case-return",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func(),c chan int){select{case c<-1:return;cb()}}",
+            "sha256": "8dcde0bc3b7e0df7a7bc13a92fc3df22a41ea2bb92139c1929d2ab3ebf57cdce"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNREACHABLE_AFTER_TERMINATOR",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "closure-after-return",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){return;func(){cb()}()}",
+            "sha256": "bc3cf061c208a7ca9bffff2fb0083b3b553ab26c5741be46fe43bb4d346a697f"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "goto",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){goto target;return;target:cb()}",
+            "sha256": "d7b03dfc88fdf290c152fb8f1857bc745832c254cd74706bd292298e85cf489e"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNSUPPORTED_CONTROL_FLOW",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "break",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){for{break};cb()}",
+            "sha256": "70e3762e0fdd4c53da6b409ac46a902d768ca1c10fae68a1433e9df65815f37c"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNSUPPORTED_CONTROL_FLOW",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "loop-unproved",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(cb func()){for{};cb()}",
+            "sha256": "1b0f8d04c930b8d0125cef9091c95a802d7fd85d9837a00e49a1e741ea27d5ec"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "prefix-defer",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func()){defer done();cb()}",
+            "sha256": "fe4e8a4376518b23847ee3843b7772e80e01a0237e96e6e4661ac8edd02ce1be"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 1
+    },
+    {
+      "id": "conditional-defer",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func(),ok bool){if ok{defer done()};cb()}",
+            "sha256": "2e685cc856ad322e3c49f92c47baffaaee750808fea48df8aa076a953b148f94"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "later-defer",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func()){cb();defer done()}",
+            "sha256": "ff53e640241da118e90fdf85f9a76fb45086f9d47d7aeda5f38b011ec01dce7e"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "prefix-return",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func()){defer done();return;cb()}",
+            "sha256": "5db401a1b38cc7d29174b9e4e705c4440bb638cd331919ff627a4e6b83be4dae"
+          }
+        ]
+      },
+      "expected_callback_site_state": "UNREACHABLE_AFTER_TERMINATOR",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "another-scope",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func()){defer done();go func(){cb()}()}",
+            "sha256": "4e82859d067b3190d7ec4ef5a60201a7b23bb4a96e28dd7ccf5c9e74006416f6"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 0
+    },
+    {
+      "id": "conditional-site",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CONTROL_FIXTURE_0114",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func done(){};func f(cb func(),ok bool){defer done();if ok{cb()}}",
+            "sha256": "181c9b6f057da07dea74a8538359e3b359daf8f22bae5e12a50cd597ccc0f0d9"
+          }
+        ]
+      },
+      "expected_callback_site_state": "POSSIBLY_REACHABLE",
+      "expected_defer_orders": 1
+    }
+  ]
+}

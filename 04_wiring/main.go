@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-09-19
+ * @updated 2026-10-06
  */
 
 package main
@@ -30,6 +30,7 @@ import (
 	"bateia/03_infra/github"
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
+	"bateia/03_infra/research"
 	"bateia/03_infra/sourcegraph"
 	"bateia/03_infra/vulnerability"
 	webinfra "bateia/03_infra/web"
@@ -93,8 +94,20 @@ func main() {
 		}
 		return
 	}
+	if len(os.Args) > 2 && strings.EqualFold(os.Args[1], "idea") && strings.EqualFold(os.Args[2], "research") {
+		if err := cli.RunIdeaResearchCommand(os.Args[3:], os.Stdout, []domain.MarketDiscoveryConnector{research.NewZBMath(nil), research.NewJOSS(nil)}); err != nil {
+			log.Fatalf("Erro na pesquisa acadêmica: %v", err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
 		// Trace is entirely offline: no .env, vocabulary, cache or remote clients.
+		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "insights") {
+			if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout); err != nil {
+				log.Fatalf("Erro na investigação offline de insights: %v", err)
+			}
+			return
+		}
 		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "trace") {
 			if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout); err != nil {
 				log.Fatalf("Erro na rastreabilidade consultiva: %v", err)

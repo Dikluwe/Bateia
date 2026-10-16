@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-06",
+  "origin": "external primary-source research by agent; not automatically discovered or synthesized by Bateia",
+  "sources": [
+    {
+      "id": "go-language",
+      "url": "https://go.dev/ref/spec#Channel_types",
+      "finding": "buffer capacity and nil/unbuffered channel communication rules",
+      "basis": "OFFICIAL_LANGUAGE_CONTRACT"
+    },
+    {
+      "id": "context",
+      "url": "https://pkg.go.dev/context#CancelFunc",
+      "finding": "CancelFunc signals abandonment but does not wait for work to stop",
+      "basis": "OFFICIAL_LIBRARY_CONTRACT"
+    },
+    {
+      "id": "gcatch",
+      "url": "https://songlh.github.io/paper/gcatch.pdf",
+      "finding": "blocking channel analysis needs synchronization models; cancellation can leave child sender blocked; alias/call-graph limitations",
+      "basis": "PRIMARY_PAPER"
+    },
+    {
+      "id": "goat",
+      "url": "https://cs.au.dk/~amoeller/papers/goat/",
+      "finding": "localized abstract interpretation analyzes fragments to control state-space growth",
+      "basis": "PRIMARY_AUTHOR_SOURCE"
+    },
+    {
+      "id": "gobench",
+      "url": "https://github.com/timmyyuan/gobench",
+      "finding": "correct benchmark identity, real bugs and extracted kernels; must not confuse with load-testing namesakes",
+      "basis": "PRIMARY_REPOSITORY_DESCRIPTION"
+    },
+    {
+      "id": "ssa",
+      "url": "https://pkg.go.dev/golang.org/x/tools/go/ssa",
+      "finding": "typed identities and control/data-flow representation, not universal semantic proof",
+      "basis": "OFFICIAL_TOOL_DOCUMENTATION"
+    },
+    {
+      "id": "analysis",
+      "url": "https://pkg.go.dev/golang.org/x/tools/go/analysis",
+      "finding": "analysis facts, passes and analysistest harness; expectations supplied separately",
+      "basis": "OFFICIAL_TOOL_DOCUMENTATION"
+    },
+    {
+      "id": "packages",
+      "url": "https://pkg.go.dev/golang.org/x/tools/go/packages",
+      "finding": "loader uses build tool; build selection/configuration and compiled files matter",
+      "basis": "OFFICIAL_TOOL_DOCUMENTATION"
+    },
+    {
+      "id": "race",
+      "url": "https://go.dev/doc/articles/race_detector",
+      "finding": "detects races on executed paths, not universal correctness or absence of deadlocks",
+      "basis": "OFFICIAL_TOOL_DOCUMENTATION"
+    },
+    {
+      "id": "goleak",
+      "url": "https://github.com/uber-go/goleak",
+      "finding": "runtime leak checks and t.Parallel attribution limitations",
+      "basis": "PRIMARY_REPOSITORY_DESCRIPTION"
+    },
+    {
+      "id": "synctest",
+      "url": "https://pkg.go.dev/testing/synctest",
+      "finding": "virtual time and durable blocking for isolated tests; Test/Wait available locally, external IO and mutex restrictions",
+      "basis": "OFFICIAL_TOOL_DOCUMENTATION"
+    }
+  ],
+  "implementations_executed": false
+}

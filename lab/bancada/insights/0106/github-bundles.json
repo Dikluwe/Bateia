@@ -1,0 +1,730 @@
+[
+  {
+    "implementation_search": {
+      "status": "complete",
+      "method": "go_ast_query_v1",
+      "reason": "ponderação lexical IDF por declarações AST elegíveis do recorte lido, normalização de comprimento e chamadas diretas estáticas v2 limitadas; não representa ecossistema ou comprova comportamento",
+      "hits": [],
+      "examined": [
+        {
+          "path": "iter/iter.go",
+          "sha256": "23cc94f6a72b778379108f605a87491c060791c5d3aa61dd017333efff9f28c9",
+          "bytes": 2580
+        },
+        {
+          "path": "iter/map.go",
+          "sha256": "7462a46d6799897e7b866816ff3a0f24f96446e9adb4f8fc167a425deddd22a9",
+          "bytes": 1848
+        },
+        {
+          "path": "panics/panics.go",
+          "sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371",
+          "bytes": 2957
+        },
+        {
+          "path": "panics/try.go",
+          "sha256": "aae20806df92bd802e61ab4a6dc07f09a3bcdc031d0221a57cf4b3e2b7488447",
+          "bytes": 291
+        },
+        {
+          "path": "pool/context_pool.go",
+          "sha256": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10",
+          "bytes": 3272
+        },
+        {
+          "path": "pool/error_pool.go",
+          "sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82",
+          "bytes": 2505
+        },
+        {
+          "path": "pool/pool.go",
+          "sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+          "bytes": 4480
+        },
+        {
+          "path": "pool/result_context_pool.go",
+          "sha256": "1e711f53415c2510454bf6479355360c8bc6e9cc37a08556c03966d6ac420884",
+          "bytes": 2891
+        },
+        {
+          "path": "pool/result_error_pool.go",
+          "sha256": "47f23cd75ceb50e3eebc55ce5101932ff9c852aa613e41bb2c3defdcc1c52f0c",
+          "bytes": 2670
+        },
+        {
+          "path": "pool/result_pool.go",
+          "sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15",
+          "bytes": 3733
+        },
+        {
+          "path": "stream/stream.go",
+          "sha256": "0541eee616907165e91867e244668f4fa20e20e9d9ab1600deff3358fd02d5a5",
+          "bytes": 4421
+        },
+        {
+          "path": "waitgroup.go",
+          "sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4",
+          "bytes": 1406
+        }
+      ],
+      "files_read": 12,
+      "bytes_read": 33054,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "sourcegraph",
+      "repo": "conc",
+      "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "sourcegraph",
+        "repo": "conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "candidate": {
+        "owner": "sourcegraph",
+        "repo": "conc",
+        "url": "https://github.com/sourcegraph/conc",
+        "description": "Better structured concurrency for go",
+        "stars": 10433,
+        "commit_id": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+        "consultado_em": "2026-10-06T18:42:27.646090646Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-09-01T10:25:09Z"
+      },
+      "screening_decision": {
+        "repository": "sourcegraph/conc@5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "pool/pool.go",
+          "kind": "file",
+          "reason": "limite de concorrência e admissão"
+        },
+        {
+          "path": "pool/pool_test.go",
+          "kind": "test",
+          "reason": "teste independente do limite"
+        }
+      ],
+      "budget": {
+        "documents": 20,
+        "manifests": 10,
+        "code_files": 128,
+        "requirement_files": 0,
+        "tests_examples": 128,
+        "total_bytes": 1048576,
+        "tree_depth": 8
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"sourcegraph\",\"repo\":\"conc\",\"url\":\"https://github.com/sourcegraph/conc\",\"description\":\"Better structured concurrency for go\",\"stars\":10433,\"commit_id\":\"5f936abd7ae87036af1f75c95fb9d0daaf00116b\",\"consultado_em\":\"2026-10-06T18:42:27.646090646Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-09-01T10:25:09Z\"}",
+        "content_hash": "d5bd93272d9b7a2724f79d6f7df1ebd92cb5d6364c829609171af938e4bb0f5e"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n\t\"sync\"\n\n\t\"github.com/sourcegraph/conc\"\n)\n\n// New creates a new Pool.\nfunc New() *Pool {\n\treturn \u0026Pool{}\n}\n\n// Pool is a pool of goroutines used to execute tasks concurrently.\n//\n// Tasks are submitted with Go(). Once all your tasks have been submitted, you\n// must call Wait() to clean up any spawned goroutines and propagate any\n// panics.\n//\n// Goroutines are started lazily, so creating a new pool is cheap. There will\n// never be more goroutines spawned than there are tasks submitted.\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\n//\n// Pool is efficient, but not zero cost. It should not be used for very short\n// tasks. Startup and teardown come with an overhead of around 1µs, and each\n// task has an overhead of around 300ns.\ntype Pool struct {\n\thandle   conc.WaitGroup\n\tlimiter  limiter\n\ttasks    chan func()\n\tinitOnce sync.Once\n}\n\n// Go submits a task to be run in the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *Pool) Go(f func()) {\n\tp.init()\n\n\tif p.limiter == nil {\n\t\t// No limit on the number of goroutines.\n\t\tselect {\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A goroutine was available to handle the task.\n\t\tdefault:\n\t\t\t// No goroutine was available to handle the task.\n\t\t\t// Spawn a new one and send it the task.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\t}\n\t} else {\n\t\tselect {\n\t\tcase p.limiter \u003c- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}\n\t}\n\n}\n\n// Wait cleans up spawned goroutines, propagating any panics that were\n// raised by a tasks.\nfunc (p *Pool) Wait() {\n\tp.init()\n\n\tclose(p.tasks)\n\n\t// After Wait() returns, reset the struct so tasks will be reinitialized on\n\t// next use. This better matches the behavior of sync.WaitGroup\n\tdefer func() { p.initOnce = sync.Once{} }()\n\n\tp.handle.Wait()\n}\n\n// MaxGoroutines returns the maximum size of the pool.\nfunc (p *Pool) MaxGoroutines() int {\n\treturn p.limiter.limit()\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n \u003c 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}\n\n// init ensures that the pool is initialized before use. This makes the\n// zero value of the pool usable.\nfunc (p *Pool) init() {\n\tp.initOnce.Do(func() {\n\t\tp.tasks = make(chan func())\n\t})\n}\n\n// panicIfInitialized will trigger a panic if a configuration method is called\n// after the pool has started any goroutines for the first time. In the case that\n// new settings are needed, a new pool should be created.\nfunc (p *Pool) panicIfInitialized() {\n\tif p.tasks != nil {\n\t\tpanic(\"pool can not be reconfigured after calling Go() for the first time\")\n\t}\n}\n\n// WithErrors converts the pool to an ErrorPool so the submitted tasks can\n// return errors.\nfunc (p *Pool) WithErrors() *ErrorPool {\n\tp.panicIfInitialized()\n\treturn \u0026ErrorPool{\n\t\tpool: p.deref(),\n\t}\n}\n\n// deref is a helper that creates a shallow copy of the pool with the same\n// settings. We don't want to just dereference the pointer because that makes\n// the copylock lint angry.\nfunc (p *Pool) deref() Pool {\n\tp.panicIfInitialized()\n\treturn Pool{\n\t\tlimiter: p.limiter,\n\t}\n}\n\n// WithContext converts the pool to a ContextPool for tasks that should\n// run under the same context, such that they each respect shared cancellation.\n// For example, WithCancelOnError can be configured on the returned pool to\n// signal that all goroutines should be cancelled upon the first error.\nfunc (p *Pool) WithContext(ctx context.Context) *ContextPool {\n\tp.panicIfInitialized()\n\tctx, cancel := context.WithCancel(ctx)\n\treturn \u0026ContextPool{\n\t\terrorPool: p.WithErrors().deref(),\n\t\tctx:       ctx,\n\t\tcancel:    cancel,\n\t}\n}\n\nfunc (p *Pool) worker(initialFunc func()) {\n\t// The only time this matters is if the task panics.\n\t// This makes it possible to spin up new workers in that case.\n\tdefer p.limiter.release()\n\n\tif initialFunc != nil {\n\t\tinitialFunc()\n\t}\n\n\tfor f := range p.tasks {\n\t\tf()\n\t}\n}\n\ntype limiter chan struct{}\n\nfunc (l limiter) limit() int {\n\treturn cap(l)\n}\n\nfunc (l limiter) release() {\n\tif l != nil {\n\t\t\u003c-l\n\t}\n}\n",
+        "content_hash": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExamplePool() {\n\tp := pool.New().WithMaxGoroutines(3)\n\tfor i := 0; i \u003c 5; i++ {\n\t\tp.Go(func() {\n\t\t\tfmt.Println(\"conc\")\n\t\t})\n\t}\n\tp.Wait()\n\t// Output:\n\t// conc\n\t// conc\n\t// conc\n\t// conc\n\t// conc\n}\n\nfunc TestPool(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"basic\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\tg := pool.New()\n\t\tvar completed atomic.Int64\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\tg.Go(func() {\n\t\t\t\ttime.Sleep(1 * time.Millisecond)\n\t\t\t\tcompleted.Add(1)\n\t\t\t})\n\t\t}\n\t\tg.Wait()\n\t\trequire.Equal(t, completed.Load(), int64(100))\n\t})\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New()\n\t\t\tg.Go(func() {})\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New()\n\t\t\tg.Go(func() {})\n\t\t\tg.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrent := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrent), func(t *testing.T) {\n\t\t\t\tg := pool.New().WithMaxGoroutines(maxConcurrent)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tvar errCount atomic.Int64\n\t\t\t\ttaskCount := maxConcurrent * 10\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\tg.Go(func() {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrent) {\n\t\t\t\t\t\t\terrCount.Add(1)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tg.Wait()\n\t\t\t\trequire.Equal(t, int64(0), errCount.Load())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n\n\tt.Run(\"propagate panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New()\n\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\ti := i\n\t\t\tg.Go(func() {\n\t\t\t\tif i == 5 {\n\t\t\t\t\tpanic(i)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, g.Wait)\n\t})\n\n\tt.Run(\"panics do not exhaust goroutines\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New().WithMaxGoroutines(2)\n\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\tg.Go(func() {\n\t\t\t\tpanic(42)\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, g.Wait)\n\t})\n\n\tt.Run(\"panics on invalid WithMaxGoroutines\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\trequire.Panics(t, func() { pool.New().WithMaxGoroutines(0) })\n\t})\n\n\tt.Run(\"returns correct MaxGoroutines\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithMaxGoroutines(42)\n\t\trequire.Equal(t, 42, p.MaxGoroutines())\n\t})\n\n\tt.Run(\"is reusable\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tvar count atomic.Int64\n\t\tp := pool.New()\n\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\tp.Go(func() {\n\t\t\t\tcount.Add(1)\n\t\t\t})\n\t\t}\n\t\tp.Wait()\n\t\trequire.Equal(t, int64(10), count.Load())\n\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\tp.Go(func() {\n\t\t\t\tcount.Add(1)\n\t\t\t})\n\t\t}\n\t\tp.Wait()\n\t\trequire.Equal(t, int64(20), count.Load())\n\t})\n}\n\nfunc BenchmarkPool(b *testing.B) {\n\tb.Run(\"startup and teardown\", func(b *testing.B) {\n\t\tfor i := 0; i \u003c b.N; i++ {\n\t\t\tp := pool.New()\n\t\t\tp.Go(func() {})\n\t\t\tp.Wait()\n\t\t}\n\t})\n\n\tb.Run(\"per task\", func(b *testing.B) {\n\t\tp := pool.New()\n\t\tf := func() {}\n\t\tfor i := 0; i \u003c b.N; i++ {\n\t\t\tp.Go(f)\n\t\t}\n\t\tp.Wait()\n\t})\n}\n",
+        "content_hash": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "iter/iter.go",
+        "content": "package iter\n\nimport (\n\t\"runtime\"\n\t\"sync/atomic\"\n\n\t\"github.com/sourcegraph/conc\"\n)\n\n// defaultMaxGoroutines returns the default maximum number of\n// goroutines to use within this package.\nfunc defaultMaxGoroutines() int { return runtime.GOMAXPROCS(0) }\n\n// Iterator can be used to configure the behaviour of ForEach\n// and ForEachIdx. The zero value is safe to use with reasonable\n// defaults.\n//\n// Iterator is also safe for reuse and concurrent use.\ntype Iterator[T any] struct {\n\t// MaxGoroutines controls the maximum number of goroutines\n\t// to use on this Iterator's methods.\n\t//\n\t// If unset, MaxGoroutines defaults to runtime.GOMAXPROCS(0).\n\tMaxGoroutines int\n}\n\n// ForEach executes f in parallel over each element in input.\n//\n// It is safe to mutate the input parameter, which makes it\n// possible to map in place.\n//\n// ForEach always uses at most runtime.GOMAXPROCS goroutines.\n// It takes roughly 2µs to start up the goroutines and adds\n// an overhead of roughly 50ns per element of input. For\n// a configurable goroutine limit, use a custom Iterator.\nfunc ForEach[T any](input []T, f func(*T)) { Iterator[T]{}.ForEach(input, f) }\n\n// ForEach executes f in parallel over each element in input,\n// using up to the Iterator's configured maximum number of\n// goroutines.\n//\n// It is safe to mutate the input parameter, which makes it\n// possible to map in place.\n//\n// It takes roughly 2µs to start up the goroutines and adds\n// an overhead of roughly 50ns per element of input.\nfunc (iter Iterator[T]) ForEach(input []T, f func(*T)) {\n\titer.ForEachIdx(input, func(_ int, t *T) {\n\t\tf(t)\n\t})\n}\n\n// ForEachIdx is the same as ForEach except it also provides the\n// index of the element to the callback.\nfunc ForEachIdx[T any](input []T, f func(int, *T)) { Iterator[T]{}.ForEachIdx(input, f) }\n\n// ForEachIdx is the same as ForEach except it also provides the\n// index of the element to the callback.\nfunc (iter Iterator[T]) ForEachIdx(input []T, f func(int, *T)) {\n\tif iter.MaxGoroutines == 0 {\n\t\t// iter is a value receiver and is hence safe to mutate\n\t\titer.MaxGoroutines = defaultMaxGoroutines()\n\t}\n\n\tnumInput := len(input)\n\tif iter.MaxGoroutines \u003e numInput {\n\t\t// No more concurrent tasks than the number of input items.\n\t\titer.MaxGoroutines = numInput\n\t}\n\n\tvar idx atomic.Int64\n\t// Create the task outside the loop to avoid extra closure allocations.\n\ttask := func() {\n\t\ti := int(idx.Add(1) - 1)\n\t\tfor ; i \u003c numInput; i = int(idx.Add(1) - 1) {\n\t\t\tf(i, \u0026input[i])\n\t\t}\n\t}\n\n\tvar wg conc.WaitGroup\n\tfor i := 0; i \u003c iter.MaxGoroutines; i++ {\n\t\twg.Go(task)\n\t}\n\twg.Wait()\n}\n",
+        "content_hash": "23cc94f6a72b778379108f605a87491c060791c5d3aa61dd017333efff9f28c9"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "iter/map.go",
+        "content": "package iter\n\nimport (\n\t\"errors\"\n\t\"sync\"\n)\n\n// Mapper is an Iterator with a result type R. It can be used to configure\n// the behaviour of Map and MapErr. The zero value is safe to use with\n// reasonable defaults.\n//\n// Mapper is also safe for reuse and concurrent use.\ntype Mapper[T, R any] Iterator[T]\n\n// Map applies f to each element of input, returning the mapped result.\n//\n// Map always uses at most runtime.GOMAXPROCS goroutines. For a configurable\n// goroutine limit, use a custom Mapper.\nfunc Map[T, R any](input []T, f func(*T) R) []R {\n\treturn Mapper[T, R]{}.Map(input, f)\n}\n\n// Map applies f to each element of input, returning the mapped result.\n//\n// Map uses up to the configured Mapper's maximum number of goroutines.\nfunc (m Mapper[T, R]) Map(input []T, f func(*T) R) []R {\n\tres := make([]R, len(input))\n\tIterator[T](m).ForEachIdx(input, func(i int, t *T) {\n\t\tres[i] = f(t)\n\t})\n\treturn res\n}\n\n// MapErr applies f to each element of the input, returning the mapped result\n// and a combined error of all returned errors.\n//\n// Map always uses at most runtime.GOMAXPROCS goroutines. For a configurable\n// goroutine limit, use a custom Mapper.\nfunc MapErr[T, R any](input []T, f func(*T) (R, error)) ([]R, error) {\n\treturn Mapper[T, R]{}.MapErr(input, f)\n}\n\n// MapErr applies f to each element of the input, returning the mapped result\n// and a combined error of all returned errors.\n//\n// Map uses up to the configured Mapper's maximum number of goroutines.\nfunc (m Mapper[T, R]) MapErr(input []T, f func(*T) (R, error)) ([]R, error) {\n\tvar (\n\t\tres    = make([]R, len(input))\n\t\terrMux sync.Mutex\n\t\terrs   []error\n\t)\n\tIterator[T](m).ForEachIdx(input, func(i int, t *T) {\n\t\tvar err error\n\t\tres[i], err = f(t)\n\t\tif err != nil {\n\t\t\terrMux.Lock()\n\t\t\terrs = append(errs, err)\n\t\t\terrMux.Unlock()\n\t\t}\n\t})\n\treturn res, errors.Join(errs...)\n}\n",
+        "content_hash": "7462a46d6799897e7b866816ff3a0f24f96446e9adb4f8fc167a425deddd22a9"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "panics/panics.go",
+        "content": "package panics\n\nimport (\n\t\"fmt\"\n\t\"runtime\"\n\t\"runtime/debug\"\n\t\"sync/atomic\"\n)\n\n// Catcher is used to catch panics. You can execute a function with Try,\n// which will catch any spawned panic. Try can be called any number of times,\n// from any number of goroutines. Once all calls to Try have completed, you can\n// get the value of the first panic (if any) with Recovered(), or you can just\n// propagate the panic (re-panic) with Repanic().\ntype Catcher struct {\n\trecovered atomic.Pointer[Recovered]\n}\n\n// Try executes f, catching any panic it might spawn. It is safe\n// to call from multiple goroutines simultaneously.\nfunc (p *Catcher) Try(f func()) {\n\tdefer p.tryRecover()\n\tf()\n}\n\nfunc (p *Catcher) tryRecover() {\n\tif val := recover(); val != nil {\n\t\trp := NewRecovered(1, val)\n\t\tp.recovered.CompareAndSwap(nil, \u0026rp)\n\t}\n}\n\n// Repanic panics if any calls to Try caught a panic. It will panic with the\n// value of the first panic caught, wrapped in a panics.Recovered with caller\n// information.\nfunc (p *Catcher) Repanic() {\n\tif val := p.Recovered(); val != nil {\n\t\tpanic(val)\n\t}\n}\n\n// Recovered returns the value of the first panic caught by Try, or nil if\n// no calls to Try panicked.\nfunc (p *Catcher) Recovered() *Recovered {\n\treturn p.recovered.Load()\n}\n\n// NewRecovered creates a panics.Recovered from a panic value and a collected\n// stacktrace. The skip parameter allows the caller to skip stack frames when\n// collecting the stacktrace. Calling with a skip of 0 means include the call to\n// NewRecovered in the stacktrace.\nfunc NewRecovered(skip int, value any) Recovered {\n\t// 64 frames should be plenty\n\tvar callers [64]uintptr\n\tn := runtime.Callers(skip+1, callers[:])\n\treturn Recovered{\n\t\tValue:   value,\n\t\tCallers: callers[:n],\n\t\tStack:   debug.Stack(),\n\t}\n}\n\n// Recovered is a panic that was caught with recover().\ntype Recovered struct {\n\t// The original value of the panic.\n\tValue any\n\t// The caller list as returned by runtime.Callers when the panic was\n\t// recovered. Can be used to produce a more detailed stack information with\n\t// runtime.CallersFrames.\n\tCallers []uintptr\n\t// The formatted stacktrace from the goroutine where the panic was recovered.\n\t// Easier to use than Callers.\n\tStack []byte\n}\n\n// String renders a human-readable formatting of the panic.\nfunc (p *Recovered) String() string {\n\treturn fmt.Sprintf(\"panic: %v\\nstacktrace:\\n%s\\n\", p.Value, p.Stack)\n}\n\n// AsError casts the panic into an error implementation. The implementation\n// is unwrappable with the cause of the panic, if the panic was provided one.\nfunc (p *Recovered) AsError() error {\n\tif p == nil {\n\t\treturn nil\n\t}\n\treturn \u0026ErrRecovered{*p}\n}\n\n// ErrRecovered wraps a panics.Recovered in an error implementation.\ntype ErrRecovered struct{ Recovered }\n\nvar _ error = (*ErrRecovered)(nil)\n\nfunc (p *ErrRecovered) Error() string { return p.String() }\n\nfunc (p *ErrRecovered) Unwrap() error {\n\tif err, ok := p.Value.(error); ok {\n\t\treturn err\n\t}\n\treturn nil\n}\n",
+        "content_hash": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "panics/try.go",
+        "content": "package panics\n\n// Try executes f, catching and returning any panic it might spawn.\n//\n// The recovered panic can be propagated with panic(), or handled as a normal error with\n// (*panics.Recovered).AsError().\nfunc Try(f func()) *Recovered {\n\tvar c Catcher\n\tc.Try(f)\n\treturn c.Recovered()\n}\n",
+        "content_hash": "aae20806df92bd802e61ab4a6dc07f09a3bcdc031d0221a57cf4b3e2b7488447"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/context_pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n)\n\n// ContextPool is a pool that runs tasks that take a context.\n// A new ContextPool should be created with `New().WithContext(ctx)`.\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\ntype ContextPool struct {\n\terrorPool ErrorPool\n\n\tctx    context.Context\n\tcancel context.CancelFunc\n\n\tcancelOnError bool\n}\n\n// Go submits a task. If it returns an error, the error will be\n// collected and returned by Wait(). If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *ContextPool) Go(f func(ctx context.Context) error) {\n\tp.errorPool.Go(func() error {\n\t\tif p.cancelOnError {\n\t\t\t// If we are cancelling on error, then we also want to cancel if a\n\t\t\t// panic is raised. To do this, we need to recover, cancel, and then\n\t\t\t// re-throw the caught panic.\n\t\t\tdefer func() {\n\t\t\t\tif r := recover(); r != nil {\n\t\t\t\t\tp.cancel()\n\t\t\t\t\tpanic(r)\n\t\t\t\t}\n\t\t\t}()\n\t\t}\n\n\t\terr := f(p.ctx)\n\t\tif err != nil \u0026\u0026 p.cancelOnError {\n\t\t\t// Leaky abstraction warning: We add the error directly because\n\t\t\t// otherwise, canceling could cause another goroutine to exit and\n\t\t\t// return an error before this error was added, which breaks the\n\t\t\t// expectations of WithFirstError().\n\t\t\tp.errorPool.addErr(err)\n\t\t\tp.cancel()\n\t\t\treturn nil\n\t\t}\n\t\treturn err\n\t})\n}\n\n// Wait cleans up all spawned goroutines, propagates any panics, and\n// returns an error if any of the tasks errored.\nfunc (p *ContextPool) Wait() error {\n\t// Make sure we call cancel after pool is done to avoid memory leakage.\n\tdefer p.cancel()\n\treturn p.errorPool.Wait()\n}\n\n// WithFirstError configures the pool to only return the first error\n// returned by a task. By default, Wait() will return a combined error.\n// This is particularly useful for (*ContextPool).WithCancelOnError(),\n// where all errors after the first are likely to be context.Canceled.\nfunc (p *ContextPool) WithFirstError() *ContextPool {\n\tp.panicIfInitialized()\n\tp.errorPool.WithFirstError()\n\treturn p\n}\n\n// WithCancelOnError configures the pool to cancel its context as soon as\n// any task returns an error or panics. By default, the pool's context is not\n// canceled until the parent context is canceled.\n//\n// In this case, all errors returned from the pool after the first will\n// likely be context.Canceled - you may want to also use\n// (*ContextPool).WithFirstError() to configure the pool to only return\n// the first error.\nfunc (p *ContextPool) WithCancelOnError() *ContextPool {\n\tp.panicIfInitialized()\n\tp.cancelOnError = true\n\treturn p\n}\n\n// WithFailFast is an alias for the combination of WithFirstError and\n// WithCancelOnError. By default, the errors from all tasks are returned and\n// the pool's context is not canceled until the parent context is canceled.\nfunc (p *ContextPool) WithFailFast() *ContextPool {\n\tp.panicIfInitialized()\n\tp.WithFirstError()\n\tp.WithCancelOnError()\n\treturn p\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *ContextPool) WithMaxGoroutines(n int) *ContextPool {\n\tp.panicIfInitialized()\n\tp.errorPool.WithMaxGoroutines(n)\n\treturn p\n}\n\nfunc (p *ContextPool) panicIfInitialized() {\n\tp.errorPool.panicIfInitialized()\n}\n",
+        "content_hash": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/error_pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"sync\"\n)\n\n// ErrorPool is a pool that runs tasks that may return an error.\n// Errors are collected and returned by Wait().\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\n//\n// A new ErrorPool should be created using `New().WithErrors()`.\ntype ErrorPool struct {\n\tpool Pool\n\n\tonlyFirstError bool\n\n\tmu   sync.Mutex\n\terrs []error\n}\n\n// Go submits a task to the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *ErrorPool) Go(f func() error) {\n\tp.pool.Go(func() {\n\t\tp.addErr(f())\n\t})\n}\n\n// Wait cleans up any spawned goroutines, propagating any panics and\n// returning any errors from tasks.\nfunc (p *ErrorPool) Wait() error {\n\tp.pool.Wait()\n\n\terrs := p.errs\n\tp.errs = nil // reset errs\n\n\tif len(errs) == 0 {\n\t\treturn nil\n\t} else if p.onlyFirstError {\n\t\treturn errs[0]\n\t} else {\n\t\treturn errors.Join(errs...)\n\t}\n}\n\n// WithContext converts the pool to a ContextPool for tasks that should\n// run under the same context, such that they each respect shared cancellation.\n// For example, WithCancelOnError can be configured on the returned pool to\n// signal that all goroutines should be cancelled upon the first error.\nfunc (p *ErrorPool) WithContext(ctx context.Context) *ContextPool {\n\tp.panicIfInitialized()\n\tctx, cancel := context.WithCancel(ctx)\n\treturn \u0026ContextPool{\n\t\terrorPool: p.deref(),\n\t\tctx:       ctx,\n\t\tcancel:    cancel,\n\t}\n}\n\n// WithFirstError configures the pool to only return the first error\n// returned by a task. By default, Wait() will return a combined error.\nfunc (p *ErrorPool) WithFirstError() *ErrorPool {\n\tp.panicIfInitialized()\n\tp.onlyFirstError = true\n\treturn p\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *ErrorPool) WithMaxGoroutines(n int) *ErrorPool {\n\tp.panicIfInitialized()\n\tp.pool.WithMaxGoroutines(n)\n\treturn p\n}\n\n// deref is a helper that creates a shallow copy of the pool with the same\n// settings. We don't want to just dereference the pointer because that makes\n// the copylock lint angry.\nfunc (p *ErrorPool) deref() ErrorPool {\n\treturn ErrorPool{\n\t\tpool:           p.pool.deref(),\n\t\tonlyFirstError: p.onlyFirstError,\n\t}\n}\n\nfunc (p *ErrorPool) panicIfInitialized() {\n\tp.pool.panicIfInitialized()\n}\n\nfunc (p *ErrorPool) addErr(err error) {\n\tif err != nil {\n\t\tp.mu.Lock()\n\t\tp.errs = append(p.errs, err)\n\t\tp.mu.Unlock()\n\t}\n}\n",
+        "content_hash": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_context_pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n)\n\n// ResultContextPool is a pool that runs tasks that take a context and return a\n// result. The context passed to the task will be canceled if any of the tasks\n// return an error, which makes its functionality different than just capturing\n// a context with the task closure.\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\ntype ResultContextPool[T any] struct {\n\tcontextPool    ContextPool\n\tagg            resultAggregator[T]\n\tcollectErrored bool\n}\n\n// Go submits a task to the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *ResultContextPool[T]) Go(f func(context.Context) (T, error)) {\n\tidx := p.agg.nextIndex()\n\tp.contextPool.Go(func(ctx context.Context) error {\n\t\tres, err := f(ctx)\n\t\tp.agg.save(idx, res, err != nil)\n\t\treturn err\n\t})\n}\n\n// Wait cleans up all spawned goroutines, propagates any panics, and\n// returns an error if any of the tasks errored.\nfunc (p *ResultContextPool[T]) Wait() ([]T, error) {\n\terr := p.contextPool.Wait()\n\tresults := p.agg.collect(p.collectErrored)\n\tp.agg = resultAggregator[T]{}\n\treturn results, err\n}\n\n// WithCollectErrored configures the pool to still collect the result of a task\n// even if the task returned an error. By default, the result of tasks that errored\n// are ignored and only the error is collected.\nfunc (p *ResultContextPool[T]) WithCollectErrored() *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\tp.collectErrored = true\n\treturn p\n}\n\n// WithFirstError configures the pool to only return the first error\n// returned by a task. By default, Wait() will return a combined error.\nfunc (p *ResultContextPool[T]) WithFirstError() *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\tp.contextPool.WithFirstError()\n\treturn p\n}\n\n// WithCancelOnError configures the pool to cancel its context as soon as\n// any task returns an error. By default, the pool's context is not\n// canceled until the parent context is canceled.\nfunc (p *ResultContextPool[T]) WithCancelOnError() *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\tp.contextPool.WithCancelOnError()\n\treturn p\n}\n\n// WithFailFast is an alias for the combination of WithFirstError and\n// WithCancelOnError. By default, the errors from all tasks are returned and\n// the pool's context is not canceled until the parent context is canceled.\nfunc (p *ResultContextPool[T]) WithFailFast() *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\tp.contextPool.WithFailFast()\n\treturn p\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *ResultContextPool[T]) WithMaxGoroutines(n int) *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\tp.contextPool.WithMaxGoroutines(n)\n\treturn p\n}\n\nfunc (p *ResultContextPool[T]) panicIfInitialized() {\n\tp.contextPool.panicIfInitialized()\n}\n",
+        "content_hash": "1e711f53415c2510454bf6479355360c8bc6e9cc37a08556c03966d6ac420884"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_error_pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n)\n\n// ResultErrorPool is a pool that executes tasks that return a generic result\n// type and an error. Tasks are executed in the pool with Go(), then the\n// results of the tasks are returned by Wait().\n//\n// The order of the results is guaranteed to be the same as the order the\n// tasks were submitted.\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\ntype ResultErrorPool[T any] struct {\n\terrorPool      ErrorPool\n\tagg            resultAggregator[T]\n\tcollectErrored bool\n}\n\n// Go submits a task to the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *ResultErrorPool[T]) Go(f func() (T, error)) {\n\tidx := p.agg.nextIndex()\n\tp.errorPool.Go(func() error {\n\t\tres, err := f()\n\t\tp.agg.save(idx, res, err != nil)\n\t\treturn err\n\t})\n}\n\n// Wait cleans up any spawned goroutines, propagating any panics and\n// returning the results and any errors from tasks.\nfunc (p *ResultErrorPool[T]) Wait() ([]T, error) {\n\terr := p.errorPool.Wait()\n\tresults := p.agg.collect(p.collectErrored)\n\tp.agg = resultAggregator[T]{} // reset for reuse\n\treturn results, err\n}\n\n// WithCollectErrored configures the pool to still collect the result of a task\n// even if the task returned an error. By default, the result of tasks that errored\n// are ignored and only the error is collected.\nfunc (p *ResultErrorPool[T]) WithCollectErrored() *ResultErrorPool[T] {\n\tp.panicIfInitialized()\n\tp.collectErrored = true\n\treturn p\n}\n\n// WithContext converts the pool to a ResultContextPool for tasks that should\n// run under the same context, such that they each respect shared cancellation.\n// For example, WithCancelOnError can be configured on the returned pool to\n// signal that all goroutines should be cancelled upon the first error.\nfunc (p *ResultErrorPool[T]) WithContext(ctx context.Context) *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\treturn \u0026ResultContextPool[T]{\n\t\tcontextPool: *p.errorPool.WithContext(ctx),\n\t}\n}\n\n// WithFirstError configures the pool to only return the first error\n// returned by a task. By default, Wait() will return a combined error.\nfunc (p *ResultErrorPool[T]) WithFirstError() *ResultErrorPool[T] {\n\tp.panicIfInitialized()\n\tp.errorPool.WithFirstError()\n\treturn p\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *ResultErrorPool[T]) WithMaxGoroutines(n int) *ResultErrorPool[T] {\n\tp.panicIfInitialized()\n\tp.errorPool.WithMaxGoroutines(n)\n\treturn p\n}\n\nfunc (p *ResultErrorPool[T]) panicIfInitialized() {\n\tp.errorPool.panicIfInitialized()\n}\n",
+        "content_hash": "47f23cd75ceb50e3eebc55ce5101932ff9c852aa613e41bb2c3defdcc1c52f0c"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_pool.go",
+        "content": "package pool\n\nimport (\n\t\"context\"\n\t\"sort\"\n\t\"sync\"\n)\n\n// NewWithResults creates a new ResultPool for tasks with a result of type T.\n//\n// The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\nfunc NewWithResults[T any]() *ResultPool[T] {\n\treturn \u0026ResultPool[T]{\n\t\tpool: *New(),\n\t}\n}\n\n// ResultPool is a pool that executes tasks that return a generic result type.\n// Tasks are executed in the pool with Go(), then the results of the tasks are\n// returned by Wait().\n//\n// The order of the results is guaranteed to be the same as the order the\n// tasks were submitted.\ntype ResultPool[T any] struct {\n\tpool Pool\n\tagg  resultAggregator[T]\n}\n\n// Go submits a task to the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *ResultPool[T]) Go(f func() T) {\n\tidx := p.agg.nextIndex()\n\tp.pool.Go(func() {\n\t\tp.agg.save(idx, f(), false)\n\t})\n}\n\n// Wait cleans up all spawned goroutines, propagating any panics, and returning\n// a slice of results from tasks that did not panic.\nfunc (p *ResultPool[T]) Wait() []T {\n\tp.pool.Wait()\n\tresults := p.agg.collect(true)\n\tp.agg = resultAggregator[T]{} // reset for reuse\n\treturn results\n}\n\n// MaxGoroutines returns the maximum size of the pool.\nfunc (p *ResultPool[T]) MaxGoroutines() int {\n\treturn p.pool.MaxGoroutines()\n}\n\n// WithErrors converts the pool to an ResultErrorPool so the submitted tasks\n// can return errors.\nfunc (p *ResultPool[T]) WithErrors() *ResultErrorPool[T] {\n\tp.panicIfInitialized()\n\treturn \u0026ResultErrorPool[T]{\n\t\terrorPool: *p.pool.WithErrors(),\n\t}\n}\n\n// WithContext converts the pool to a ResultContextPool for tasks that should\n// run under the same context, such that they each respect shared cancellation.\n// For example, WithCancelOnError can be configured on the returned pool to\n// signal that all goroutines should be cancelled upon the first error.\nfunc (p *ResultPool[T]) WithContext(ctx context.Context) *ResultContextPool[T] {\n\tp.panicIfInitialized()\n\treturn \u0026ResultContextPool[T]{\n\t\tcontextPool: *p.pool.WithContext(ctx),\n\t}\n}\n\n// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *ResultPool[T]) WithMaxGoroutines(n int) *ResultPool[T] {\n\tp.panicIfInitialized()\n\tp.pool.WithMaxGoroutines(n)\n\treturn p\n}\n\nfunc (p *ResultPool[T]) panicIfInitialized() {\n\tp.pool.panicIfInitialized()\n}\n\n// resultAggregator is a utility type that lets us safely append from multiple\n// goroutines. The zero value is valid and ready to use.\ntype resultAggregator[T any] struct {\n\tmu      sync.Mutex\n\tlen     int\n\tresults []T\n\terrored []int\n}\n\n// nextIndex reserves a slot for a result. The returned value should be passed\n// to save() when adding a result to the aggregator.\nfunc (r *resultAggregator[T]) nextIndex() int {\n\tr.mu.Lock()\n\tdefer r.mu.Unlock()\n\n\tnextIdx := r.len\n\tr.len += 1\n\treturn nextIdx\n}\n\nfunc (r *resultAggregator[T]) save(i int, res T, errored bool) {\n\tr.mu.Lock()\n\tdefer r.mu.Unlock()\n\n\tif i \u003e= len(r.results) {\n\t\told := r.results\n\t\tr.results = make([]T, r.len)\n\t\tcopy(r.results, old)\n\t}\n\n\tr.results[i] = res\n\n\tif errored {\n\t\tr.errored = append(r.errored, i)\n\t}\n}\n\n// collect returns the set of aggregated results.\nfunc (r *resultAggregator[T]) collect(collectErrored bool) []T {\n\tif !r.mu.TryLock() {\n\t\tpanic(\"collect should not be called until all goroutines have exited\")\n\t}\n\n\tif collectErrored || len(r.errored) == 0 {\n\t\treturn r.results\n\t}\n\n\tfiltered := r.results[:0]\n\tsort.Ints(r.errored)\n\tfor i, e := range r.errored {\n\t\tif i == 0 {\n\t\t\tfiltered = append(filtered, r.results[:e]...)\n\t\t} else {\n\t\t\tfiltered = append(filtered, r.results[r.errored[i-1]+1:e]...)\n\t\t}\n\t}\n\treturn filtered\n}\n",
+        "content_hash": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "stream/stream.go",
+        "content": "// Package stream provides a concurrent, ordered stream implementation.\npackage stream\n\nimport (\n\t\"sync\"\n\n\t\"github.com/sourcegraph/conc\"\n\t\"github.com/sourcegraph/conc/panics\"\n\t\"github.com/sourcegraph/conc/pool\"\n)\n\n// New creates a new Stream with default settings.\nfunc New() *Stream {\n\treturn \u0026Stream{\n\t\tpool: *pool.New(),\n\t}\n}\n\n// Stream is used to execute a stream of tasks concurrently while maintaining\n// the order of the results.\n//\n// To use a stream, you submit some number of `Task`s, each of which\n// return a callback. Each task will be executed concurrently in the stream's\n// associated Pool, and the callbacks will be executed sequentially in the\n// order the tasks were submitted.\n//\n// Once all your tasks have been submitted, Wait() must be called to clean up\n// running goroutines and propagate any panics.\n//\n// In the case of panic during execution of a task or a callback, all other\n// tasks and callbacks will still execute. The panic will be propagated to the\n// caller when Wait() is called.\n//\n// A Stream is efficient, but not zero cost. It should not be used for very\n// short tasks. Startup and teardown adds an overhead of a couple of\n// microseconds, and the overhead for each task is roughly 500ns. It should be\n// good enough for any task that requires a network call.\ntype Stream struct {\n\tpool             pool.Pool\n\tcallbackerHandle conc.WaitGroup\n\tqueue            chan callbackCh\n\n\tinitOnce sync.Once\n}\n\n// Task is a task that is submitted to the stream. Submitted tasks will\n// be executed concurrently. It returns a callback that will be called after\n// the task has completed.\ntype Task func() Callback\n\n// Callback is a function that is returned by a Task. Callbacks are\n// called in the same order that tasks are submitted.\ntype Callback func()\n\n// Go schedules a task to be run in the stream's pool. All submitted tasks\n// will be executed concurrently in worker goroutines. Then, the callbacks\n// returned by the tasks will be executed in the order that the tasks were\n// submitted. All callbacks will be executed by the same goroutine, so no\n// synchronization is necessary between callbacks. If all goroutines in the\n// stream's pool are busy, a call to Go() will block until the task can be\n// started.\nfunc (s *Stream) Go(f Task) {\n\ts.init()\n\n\t// Get a channel from the cache.\n\tch := getCh()\n\n\t// Queue the channel for the callbacker.\n\ts.queue \u003c- ch\n\n\t// Submit the task for execution.\n\ts.pool.Go(func() {\n\t\tdefer func() {\n\t\t\t// In the case of a panic from f, we don't want the callbacker to\n\t\t\t// starve waiting for a callback from this channel, so give it an\n\t\t\t// empty callback.\n\t\t\tif r := recover(); r != nil {\n\t\t\t\tch \u003c- func() {}\n\t\t\t\tpanic(r)\n\t\t\t}\n\t\t}()\n\n\t\t// Run the task, sending its callback down this task's channel.\n\t\tcallback := f()\n\t\tch \u003c- callback\n\t})\n}\n\n// Wait signals to the stream that all tasks have been submitted. Wait will\n// not return until all tasks and callbacks have been run.\nfunc (s *Stream) Wait() {\n\ts.init()\n\n\t// Defer the callbacker cleanup so that it occurs even in the case\n\t// that one of the tasks panics and is propagated up by s.pool.Wait().\n\tdefer func() {\n\t\tclose(s.queue)\n\t\ts.callbackerHandle.Wait()\n\t}()\n\n\t// Wait for all the workers to exit.\n\ts.pool.Wait()\n}\n\nfunc (s *Stream) WithMaxGoroutines(n int) *Stream {\n\ts.pool.WithMaxGoroutines(n)\n\treturn s\n}\n\nfunc (s *Stream) init() {\n\ts.initOnce.Do(func() {\n\t\ts.queue = make(chan callbackCh, s.pool.MaxGoroutines()+1)\n\n\t\t// Start the callbacker.\n\t\ts.callbackerHandle.Go(s.callbacker)\n\t})\n}\n\n// callbacker is responsible for calling the returned callbacks in the order\n// they were submitted. There is only a single instance of callbacker running.\nfunc (s *Stream) callbacker() {\n\tvar panicCatcher panics.Catcher\n\tdefer panicCatcher.Repanic()\n\n\t// For every scheduled task, read that tasks channel from the queue.\n\tfor callbackCh := range s.queue {\n\t\t// Wait for the task to complete and get its callback from the channel.\n\t\tcallback := \u003c-callbackCh\n\n\t\t// Execute the callback (with panic protection).\n\t\tif callback != nil {\n\t\t\tpanicCatcher.Try(callback)\n\t\t}\n\n\t\t// Return the channel to the pool of unused channels.\n\t\tputCh(callbackCh)\n\t}\n}\n\ntype callbackCh chan func()\n\nvar callbackChPool = sync.Pool{\n\tNew: func() any {\n\t\treturn make(callbackCh, 1)\n\t},\n}\n\nfunc getCh() callbackCh {\n\treturn callbackChPool.Get().(callbackCh)\n}\n\nfunc putCh(ch callbackCh) {\n\tcallbackChPool.Put(ch)\n}\n",
+        "content_hash": "0541eee616907165e91867e244668f4fa20e20e9d9ab1600deff3358fd02d5a5"
+      },
+      {
+        "kind": "file",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "waitgroup.go",
+        "content": "package conc\n\nimport (\n\t\"sync\"\n\n\t\"github.com/sourcegraph/conc/panics\"\n)\n\n// NewWaitGroup creates a new WaitGroup.\nfunc NewWaitGroup() *WaitGroup {\n\treturn \u0026WaitGroup{}\n}\n\n// WaitGroup is the primary building block for scoped concurrency.\n// Goroutines can be spawned in the WaitGroup with the Go method,\n// and calling Wait() will ensure that each of those goroutines exits\n// before continuing. Any panics in a child goroutine will be caught\n// and propagated to the caller of Wait().\n//\n// The zero value of WaitGroup is usable, just like sync.WaitGroup.\n// Also like sync.WaitGroup, it must not be copied after first use.\ntype WaitGroup struct {\n\twg sync.WaitGroup\n\tpc panics.Catcher\n}\n\n// Go spawns a new goroutine in the WaitGroup.\nfunc (h *WaitGroup) Go(f func()) {\n\th.wg.Add(1)\n\tgo func() {\n\t\tdefer h.wg.Done()\n\t\th.pc.Try(f)\n\t}()\n}\n\n// Wait will block until all goroutines spawned with Go exit and will\n// propagate any panics spawned in a child goroutine.\nfunc (h *WaitGroup) Wait() {\n\th.wg.Wait()\n\n\t// Propagate a panic if we caught one from a child goroutine.\n\th.pc.Repanic()\n}\n\n// WaitAndRecover will block until all goroutines spawned with Go exit and\n// will return a *panics.Recovered if one of the child goroutines panics.\nfunc (h *WaitGroup) WaitAndRecover() *panics.Recovered {\n\th.wg.Wait()\n\n\t// Return a recovered panic if we caught one from a child goroutine.\n\treturn h.pc.Recovered()\n}\n",
+        "content_hash": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      },
+      {
+        "kind": "license",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "LICENSE",
+        "content": "MIT License\n\nCopyright (c) 2023 Sourcegraph\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+        "content_hash": "e3dfc7ac698a5b64eefc720531595b9d6e3f6c5da7f741ef15e453709e173ee2"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "README.md",
+        "content": "![conch](https://user-images.githubusercontent.com/12631702/210295964-785cc63d-d697-420c-99ff-f492eb81dec9.svg)\n\n# `conc`: better structured concurrency for go\n\n[![Go Reference](https://pkg.go.dev/badge/github.com/sourcegraph/conc.svg)](https://pkg.go.dev/github.com/sourcegraph/conc)\n[![Sourcegraph](https://img.shields.io/badge/view%20on-sourcegraph-A112FE?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAEZklEQVRoQ+2aXWgUZxSG3292sxtNN43BhBakFPyhxSujRSxiU1pr7SaGXqgUxOIEW0IFkeYighYUxAuLUlq0lrq2iCDpjWtmFVtoG6QVNOCFVShVLyxIk0DVjZLMxt3xTGTccd2ZOd/8JBHci0CY9zvnPPN+/7sCIXwKavOwAcy2QgngQiIztDSE0OwQlDPYR1ebiaH6J5kZChyfW12gRG4QVgGTBfMchMbFP9Sn5nlZL2D0JjLD6710lc+z0NfqSGTXQRQ4bX07Mq423yoBL3OSyHSvUxirMuaEvgbJWrdcvkHMoJwxYuq4INUhyuWvQa1jvdMGxAvCxJlyEC9XOBCWL04wwRzpbDoDQ7wfZJzIQLi5Eggk6DiRhZgWIAbE3NrM4A3LPT8Q7UgqAqLqTmLSHLGPkyzG/qXEczhd0q6RH+zaSBfaUoc4iQx19pIClIscrTkNZzG6gd7qMY6eC2Hqyo705ZfTf+eqJmhMzcSbYtQpOXc92ZsZjLVAL4YNUQbJ5Ttg4CQrQdGYj44Xr9m1XJCzmZusFDJOWNpHjmh5x624a2ZFtOKDVL+uNo2TuXE3bZQQZUf8gtgqP31uI94Z/rMqix+IGiRfWw3xN9dCgVx+L3WrHm4Dju6PXz/EkjuXJ6R+IGgyOE1TbZqTq9y1eo0EZo7oMo1ktPu3xjHvuiLT5AFNszUyDULtWpzE2/fEsey8O5TbWuGWwxrs5rS7nFNMWJrNh2No74s9Ec4vRNmRRzPXMP19fBMSVsGcOJ98G8N3Wl2gXcbTjbX7vUBxLaeASDQCm5Cu/0E2tvtb0Ea+BowtskFD0wvlc6Rf2M+Jx7dTu7ubFr2dnKDRaMQe2v/tcIrNB7FH0O50AcrBaApmRDVwFO31ql3pD8QW4dP0feNwl/Q+kFEtRyIGyaWXnpy1OO0qNJWHo1y6iCmAGkBb/Ru+HenDWIF2mo4r8G+tRRzoniSn2uqFLxANhe9LKHVyTbz6egk9+x5w5fK6ulSNNMhZ/Feno+GebLZV6isTTa6k5qNl5RnZ5u56Ib6SBvFzaWBBVFZzvnERWlt/Cg4l27XChLCqFyLekjhy6xJyoytgjPf7opIB8QPx7sYFiMXHPGt76m741MhCKMZfng0nBOIjmoJPsLqWHwgFpe6V6qtfcopxveR2Oy+J0ntIN/zCWkf8QNAJ7y6d8Bq4lxLc2/qJl5K7t432XwcqX5CrI34gzATWuYILQtdQPyePDK3iuOekCR3Efjhig1B1Uq5UoXEEoZX7d1q535J5S9VOeFyYyEBku5XTMXXKQTToX5Rg7OI44nbW5oKYeYK4EniMeF0YFNSmb+grhc84LyRCEP1/OurOcipCQbKxDeK2V5FcVyIDMQvsgz5gwFhcWWwKyRlvQ3gv29RwWoDYAbIofNyBxI9eDlQ+n3YgsgCWnr4MStGXQXmv9pF2La/k3OccV54JEBM4yp9EsXa/3LfO0dGPcYq0Y7DfZB8nJzZw2rppHgKgVHs8L5wvRwAAAABJRU5ErkJggg==)](https://sourcegraph.com/github.com/sourcegraph/conc)\n[![Go Report Card](https://goreportcard.com/badge/github.com/sourcegraph/conc)](https://goreportcard.com/report/github.com/sourcegraph/conc)\n[![codecov](https://codecov.io/gh/sourcegraph/conc/branch/main/graph/badge.svg?token=MQZTEA1QWT)](https://codecov.io/gh/sourcegraph/conc)\n[![Discord](https://img.shields.io/badge/discord-chat-%235765F2)](https://discord.gg/bvXQXmtRjN)\n\n`conc` is your toolbelt for structured concurrency in go, making common tasks\neasier and safer.\n\n```sh\ngo get github.com/sourcegraph/conc\n```\n\n# At a glance\n\n- Use [`conc.WaitGroup`](https://pkg.go.dev/github.com/sourcegraph/conc#WaitGroup) if you just want a safer version of `sync.WaitGroup`\n- Use [`pool.Pool`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#Pool) if you want a concurrency-limited task runner\n- Use [`pool.ResultPool`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#ResultPool) if you want a concurrent task runner that collects task results\n- Use [`pool.(Result)?ErrorPool`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#ErrorPool) if your tasks are fallible\n- Use [`pool.(Result)?ContextPool`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#ContextPool) if your tasks should be canceled on failure\n- Use [`stream.Stream`](https://pkg.go.dev/github.com/sourcegraph/conc/stream#Stream) if you want to process an ordered stream of tasks in parallel with serial callbacks\n- Use [`iter.Map`](https://pkg.go.dev/github.com/sourcegraph/conc/iter#Map) if you want to concurrently map a slice\n- Use [`iter.ForEach`](https://pkg.go.dev/github.com/sourcegraph/conc/iter#ForEach) if you want to concurrently iterate over a slice\n- Use [`panics.Catcher`](https://pkg.go.dev/github.com/sourcegraph/conc/panics#Catcher) if you want to catch panics in your own goroutines\n\nAll pools are created with\n[`pool.New()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#New)\nor\n[`pool.NewWithResults[T]()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#NewWithResults),\nthen configured with methods:\n\n- [`p.WithMaxGoroutines()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#Pool.MaxGoroutines) configures the maximum number of goroutines in the pool\n- [`p.WithErrors()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#Pool.WithErrors) configures the pool to run tasks that return errors\n- [`p.WithContext(ctx)`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#Pool.WithContext) configures the pool to run tasks that should be canceled on first error\n- [`p.WithFirstError()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#ErrorPool.WithFirstError) configures error pools to only keep the first returned error rather than an aggregated error\n- [`p.WithCollectErrored()`](https://pkg.go.dev/github.com/sourcegraph/conc/pool#ResultContextPool.WithCollectErrored) configures result pools to collect results even when the task errored\n\n# Goals\n\nThe main goals of the package are:\n1) Make it harder to leak goroutines\n2) Handle panics gracefully\n3) Make concurrent code easier to read\n\n## Goal #1: Make it harder to leak goroutines\n\nA common pain point when working with goroutines is cleaning them up. It's\nreally easy to fire off a `go` statement and fail to properly wait for it to\ncomplete.\n\n`conc` takes the opinionated stance that all concurrency should be scoped.\nThat is, goroutines should have an owner and that owner should always\nensure that its owned goroutines exit properly.\n\nIn `conc`, the owner of a goroutine is always a `conc.WaitGroup`. Goroutines\nare spawned in a `WaitGroup` with `(*WaitGroup).Go()`, and\n`(*WaitGroup).Wait()` should always be called before the `WaitGroup` goes out\nof scope.\n\nIn some cases, you might want a spawned goroutine to outlast the scope of the\ncaller. In that case, you could pass a `WaitGroup` into the spawning function.\n\n```go\nfunc main() {\n    var wg conc.WaitGroup\n    defer wg.Wait()\n\n    startTheThing(\u0026wg)\n}\n\nfunc startTheThing(wg *conc.WaitGroup) {\n    wg.Go(func() { ... })\n}\n```\n\nFor some more discussion on why scoped concurrency is nice, check out [this\nblog\npost](https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/).\n\n## Goal #2: Handle panics gracefully\n\nA frequent problem with goroutines in long-running applications is handling\npanics. A goroutine spawned without a panic handler will crash the whole process\non panic. This is usually undesirable.\n\nHowever, if you do add a panic handler to a goroutine, what do you do with the\npanic once you catch it? Some options:\n1) Ignore it\n2) Log it\n3) Turn it into an error and return that to the goroutine spawner\n4) Propagate the panic to the goroutine spawner\n\nIgnoring panics is a bad idea since panics usually mean there is actually\nsomething wrong and someone should fix it.\n\nJust logging panics isn't great either because then there is no indication to the spawner\nthat something bad happened, and it might just continue on as normal even though your\nprogram is in a really bad state.\n\nBoth (3) and (4) are reasonable options, but both require the goroutine to have\nan owner that can actually receive the message that something went wrong. This\nis generally not true with a goroutine spawned with `go`, but in the `conc`\npackage, all goroutines have an owner that must collect the spawned goroutine.\nIn the conc package, any call to `Wait()` will panic if any of the spawned goroutines\npanicked. Additionally, it decorates the panic value with a stacktrace from the child\ngoroutine so that you don't lose information about what caused the panic.\n\nDoing this all correctly every time you spawn something with `go` is not\ntrivial and it requires a lot of boilerplate that makes the important parts of\nthe code more difficult to read, so `conc` does this for you.\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\ntype caughtPanicError struct {\n    val   any\n    stack []byte\n}\n\nfunc (e *caughtPanicError) Error() string {\n    return fmt.Sprintf(\n        \"panic: %q\\n%s\",\n        e.val,\n        string(e.stack)\n    )\n}\n\nfunc main() {\n    done := make(chan error)\n    go func() {\n        defer func() {\n            if v := recover(); v != nil {\n                done \u003c- \u0026caughtPanicError{\n                    val: v,\n                    stack: debug.Stack()\n                }\n            } else {\n                done \u003c- nil\n            }\n        }()\n        doSomethingThatMightPanic()\n    }()\n    err := \u003c-done\n    if err != nil {\n        panic(err)\n    }\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc main() {\n    var wg conc.WaitGroup\n    wg.Go(doSomethingThatMightPanic)\n    // panics with a nice stacktrace\n    wg.Wait()\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\n## Goal #3: Make concurrent code easier to read\n\nDoing concurrency correctly is difficult. Doing it in a way that doesn't\nobfuscate what the code is actually doing is more difficult. The `conc` package\nattempts to make common operations easier by abstracting as much boilerplate\ncomplexity as possible.\n\nWant to run a set of concurrent tasks with a bounded set of goroutines? Use\n`pool.New()`. Want to process an ordered stream of results concurrently, but\nstill maintain order? Try `stream.New()`. What about a concurrent map over\na slice? Take a peek at `iter.Map()`.\n\nBrowse some examples below for some comparisons with doing these by hand.\n\n# Examples\n\nEach of these examples forgoes propagating panics for simplicity. To see\nwhat kind of complexity that would add, check out the \"Goal #2\" header above.\n\nSpawn a set of goroutines and waiting for them to finish:\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\nfunc main() {\n    var wg sync.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        wg.Add(1)\n        go func() {\n            defer wg.Done()\n            // crashes on panic!\n            doSomething()\n        }()\n    }\n    wg.Wait()\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc main() {\n    var wg conc.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        wg.Go(doSomething)\n    }\n    wg.Wait()\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\nProcess each element of a stream in a static pool of goroutines:\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\nfunc process(stream chan int) {\n    var wg sync.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        wg.Add(1)\n        go func() {\n            defer wg.Done()\n            for elem := range stream {\n                handle(elem)\n            }\n        }()\n    }\n    wg.Wait()\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc process(stream chan int) {\n    p := pool.New().WithMaxGoroutines(10)\n    for elem := range stream {\n        elem := elem\n        p.Go(func() {\n            handle(elem)\n        })\n    }\n    p.Wait()\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\nProcess each element of a slice in a static pool of goroutines:\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\nfunc process(values []int) {\n    feeder := make(chan int, 8)\n\n    var wg sync.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        wg.Add(1)\n        go func() {\n            defer wg.Done()\n            for elem := range feeder {\n                handle(elem)\n            }\n        }()\n    }\n\n    for _, value := range values {\n        feeder \u003c- value\n    }\n    close(feeder)\n    wg.Wait()\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc process(values []int) {\n    iter.ForEach(values, handle)\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\nConcurrently map a slice:\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\nfunc concMap(\n    input []int,\n    f func(int) int,\n) []int {\n    res := make([]int, len(input))\n    var idx atomic.Int64\n\n    var wg sync.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        wg.Add(1)\n        go func() {\n            defer wg.Done()\n\n            for {\n                i := int(idx.Add(1) - 1)\n                if i \u003e= len(input) {\n                    return\n                }\n\n                res[i] = f(input[i])\n            }\n        }()\n    }\n    wg.Wait()\n    return res\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc concMap(\n    input []int,\n    f func(*int) int,\n) []int {\n    return iter.Map(input, f)\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\nProcess an ordered stream concurrently:\n\n\n\u003ctable\u003e\n\u003ctr\u003e\n\u003cth\u003e\u003ccode\u003estdlib\u003c/code\u003e\u003c/th\u003e\n\u003cth\u003e\u003ccode\u003econc\u003c/code\u003e\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n\u003ctd\u003e\n\n```go\nfunc mapStream(\n    in chan int,\n    out chan int,\n    f func(int) int,\n) {\n    tasks := make(chan func())\n    taskResults := make(chan chan int)\n\n    // Worker goroutines\n    var workerWg sync.WaitGroup\n    for i := 0; i \u003c 10; i++ {\n        workerWg.Add(1)\n        go func() {\n            defer workerWg.Done()\n            for task := range tasks {\n                task()\n            }\n        }()\n    }\n\n    // Ordered reader goroutines\n    var readerWg sync.WaitGroup\n    readerWg.Add(1)\n    go func() {\n        defer readerWg.Done()\n        for result := range taskResults {\n            item := \u003c-result\n            out \u003c- item\n        }\n    }()\n\n    // Feed the workers with tasks\n    for elem := range in {\n        resultCh := make(chan int, 1)\n        taskResults \u003c- resultCh\n        tasks \u003c- func() {\n            resultCh \u003c- f(elem)\n        }\n    }\n\n    // We've exhausted input.\n    // Wait for everything to finish\n    close(tasks)\n    workerWg.Wait()\n    close(taskResults)\n    readerWg.Wait()\n}\n```\n\u003c/td\u003e\n\u003ctd\u003e\n\n```go\nfunc mapStream(\n    in chan int,\n    out chan int,\n    f func(int) int,\n) {\n    s := stream.New().WithMaxGoroutines(10)\n    for elem := range in {\n        elem := elem\n        s.Go(func() stream.Callback {\n            res := f(elem)\n            return func() { out \u003c- res }\n        })\n    }\n    s.Wait()\n}\n```\n\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/table\u003e\n\n# Status\n\nThis package is currently pre-1.0. There are likely to be minor breaking\nchanges before a 1.0 release as we stabilize the APIs and tweak defaults.\nPlease open an issue if you have questions, concerns, or requests that you'd\nlike addressed before the 1.0 release. Currently, a 1.0 is targeted for \nMarch 2023.\n",
+        "content_hash": "31eafa8eb7ac41eb8f678022ffb26f76cd87d1a0e3388e91e117bfd400186fd5"
+      },
+      {
+        "kind": "manifest",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "go.mod",
+        "content": "module github.com/sourcegraph/conc\n\ngo 1.20\n\nrequire github.com/stretchr/testify v1.8.1\n\nrequire (\n\tgithub.com/davecgh/go-spew v1.1.1 // indirect\n\tgithub.com/kr/pretty v0.3.0 // indirect\n\tgithub.com/pmezard/go-difflib v1.0.0 // indirect\n\tgithub.com/rogpeppe/go-internal v1.9.0 // indirect\n\tgopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect\n\tgopkg.in/yaml.v3 v3.0.1 // indirect\n)\n",
+        "content_hash": "1a03e9553a071b4371a6e72483b440fda7b591693403531d090286da73c7d1fc"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "iter/export_test.go",
+        "content": "package iter\n\nvar DefaultMaxGoroutines = defaultMaxGoroutines\n",
+        "content_hash": "c3e79f4b29f98b27e1eae24a99042e48b0b34202b93553b193bc4ec68c17bdfc"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "iter/iter_test.go",
+        "content": "package iter_test\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\n\t\"github.com/sourcegraph/conc/iter\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleIterator() {\n\tinput := []int{1, 2, 3, 4}\n\titerator := iter.Iterator[int]{\n\t\tMaxGoroutines: len(input) / 2,\n\t}\n\n\titerator.ForEach(input, func(v *int) {\n\t\tif *v%2 != 0 {\n\t\t\t*v = -1\n\t\t}\n\t})\n\n\tfmt.Println(input)\n\t// Output:\n\t// [-1 2 -1 4]\n}\n\nfunc TestIterator(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"safe for reuse\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\titerator := iter.Iterator[int]{MaxGoroutines: 999}\n\n\t\t// iter.Concurrency \u003e numInput case that updates iter.Concurrency\n\t\titerator.ForEachIdx([]int{1, 2, 3}, func(i int, t *int) {})\n\n\t\trequire.Equal(t, iterator.MaxGoroutines, 999)\n\t})\n\n\tt.Run(\"allows more than defaultMaxGoroutines() concurrent tasks\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\twantConcurrency := 2 * iter.DefaultMaxGoroutines()\n\n\t\tmaxConcurrencyHit := make(chan struct{})\n\n\t\ttasks := make([]int, wantConcurrency)\n\t\titerator := iter.Iterator[int]{MaxGoroutines: wantConcurrency}\n\n\t\tvar concurrentTasks atomic.Int64\n\t\titerator.ForEach(tasks, func(t *int) {\n\t\t\tn := concurrentTasks.Add(1)\n\t\t\tdefer concurrentTasks.Add(-1)\n\n\t\t\tif int(n) == wantConcurrency {\n\t\t\t\t// All our tasks are running concurrently.\n\t\t\t\t// Signal to the rest of the tasks to stop.\n\t\t\t\tclose(maxConcurrencyHit)\n\t\t\t} else {\n\t\t\t\t// Wait until we hit max concurrency before exiting.\n\t\t\t\t// This ensures that all tasks have been started\n\t\t\t\t// in parallel, despite being a larger input set than\n\t\t\t\t// defaultMaxGoroutines().\n\t\t\t\t\u003c-maxConcurrencyHit\n\t\t\t}\n\t\t})\n\t})\n}\n\nfunc TestForEachIdx(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"empty\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{}\n\t\t\titer.ForEachIdx(ints, func(i int, val *int) {\n\t\t\t\tpanic(\"this should never be called\")\n\t\t\t})\n\t\t}\n\t\trequire.NotPanics(t, f)\n\t})\n\n\tt.Run(\"panic is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{1}\n\t\t\titer.ForEachIdx(ints, func(i int, val *int) {\n\t\t\t\tpanic(\"super bad thing happened\")\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, f)\n\t})\n\n\tt.Run(\"mutating inputs is fine\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\titer.ForEachIdx(ints, func(i int, val *int) {\n\t\t\t*val += 1\n\t\t})\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, ints)\n\t})\n\n\tt.Run(\"huge inputs\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := make([]int, 10000)\n\t\titer.ForEachIdx(ints, func(i int, val *int) {\n\t\t\t*val = i\n\t\t})\n\t\texpected := make([]int, 10000)\n\t\tfor i := 0; i \u003c 10000; i++ {\n\t\t\texpected[i] = i\n\t\t}\n\t\trequire.Equal(t, expected, ints)\n\t})\n}\n\nfunc TestForEach(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"empty\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{}\n\t\t\titer.ForEach(ints, func(val *int) {\n\t\t\t\tpanic(\"this should never be called\")\n\t\t\t})\n\t\t}\n\t\trequire.NotPanics(t, f)\n\t})\n\n\tt.Run(\"panic is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{1}\n\t\t\titer.ForEach(ints, func(val *int) {\n\t\t\t\tpanic(\"super bad thing happened\")\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, f)\n\t})\n\n\tt.Run(\"mutating inputs is fine\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\titer.ForEach(ints, func(val *int) {\n\t\t\t*val += 1\n\t\t})\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, ints)\n\t})\n\n\tt.Run(\"huge inputs\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := make([]int, 10000)\n\t\titer.ForEach(ints, func(val *int) {\n\t\t\t*val = 1\n\t\t})\n\t\texpected := make([]int, 10000)\n\t\tfor i := 0; i \u003c 10000; i++ {\n\t\t\texpected[i] = 1\n\t\t}\n\t\trequire.Equal(t, expected, ints)\n\t})\n}\n\nfunc BenchmarkForEach(b *testing.B) {\n\tfor _, count := range []int{0, 1, 8, 100, 1000, 10000, 100000} {\n\t\tb.Run(strconv.Itoa(count), func(b *testing.B) {\n\t\t\tints := make([]int, count)\n\t\t\tfor i := 0; i \u003c b.N; i++ {\n\t\t\t\titer.ForEach(ints, func(i *int) {\n\t\t\t\t\t*i = 0\n\t\t\t\t})\n\t\t\t}\n\t\t})\n\t}\n}\n",
+        "content_hash": "89dc8f75fef7eb6bb8e639ebd941c781a8ca4936016fb8c5a6ffbce8b5f0e039"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "iter/map_test.go",
+        "content": "package iter_test\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"testing\"\n\n\t\"github.com/sourcegraph/conc/iter\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleMapper() {\n\tinput := []int{1, 2, 3, 4}\n\tmapper := iter.Mapper[int, bool]{\n\t\tMaxGoroutines: len(input) / 2,\n\t}\n\n\tresults := mapper.Map(input, func(v *int) bool { return *v%2 == 0 })\n\tfmt.Println(results)\n\t// Output:\n\t// [false true false true]\n}\n\nfunc TestMap(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"empty\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{}\n\t\t\titer.Map(ints, func(val *int) int {\n\t\t\t\tpanic(\"this should never be called\")\n\t\t\t})\n\t\t}\n\t\trequire.NotPanics(t, f)\n\t})\n\n\tt.Run(\"panic is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{1}\n\t\t\titer.Map(ints, func(val *int) int {\n\t\t\t\tpanic(\"super bad thing happened\")\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, f)\n\t})\n\n\tt.Run(\"mutating inputs is fine, though not recommended\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\titer.Map(ints, func(val *int) int {\n\t\t\t*val += 1\n\t\t\treturn 0\n\t\t})\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, ints)\n\t})\n\n\tt.Run(\"basic increment\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\tres := iter.Map(ints, func(val *int) int {\n\t\t\treturn *val + 1\n\t\t})\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, res)\n\t\trequire.Equal(t, []int{1, 2, 3, 4, 5}, ints)\n\t})\n\n\tt.Run(\"huge inputs\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := make([]int, 10000)\n\t\tres := iter.Map(ints, func(val *int) int {\n\t\t\treturn 1\n\t\t})\n\t\texpected := make([]int, 10000)\n\t\tfor i := 0; i \u003c 10000; i++ {\n\t\t\texpected[i] = 1\n\t\t}\n\t\trequire.Equal(t, expected, res)\n\t})\n}\n\nfunc TestMapErr(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"empty\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{}\n\t\t\tres, err := iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\t\tpanic(\"this should never be called\")\n\t\t\t})\n\t\t\trequire.NoError(t, err)\n\t\t\trequire.Equal(t, ints, res)\n\t\t}\n\t\trequire.NotPanics(t, f)\n\t})\n\n\tt.Run(\"panic is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tf := func() {\n\t\t\tints := []int{1}\n\t\t\t_, _ = iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\t\tpanic(\"super bad thing happened\")\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, f)\n\t})\n\n\tt.Run(\"mutating inputs is fine, though not recommended\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\tres, err := iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\t*val += 1\n\t\t\treturn 0, nil\n\t\t})\n\t\trequire.NoError(t, err)\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, ints)\n\t\trequire.Equal(t, []int{0, 0, 0, 0, 0}, res)\n\t})\n\n\tt.Run(\"basic increment\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\tres, err := iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\treturn *val + 1, nil\n\t\t})\n\t\trequire.NoError(t, err)\n\t\trequire.Equal(t, []int{2, 3, 4, 5, 6}, res)\n\t\trequire.Equal(t, []int{1, 2, 3, 4, 5}, ints)\n\t})\n\n\terr1 := errors.New(\"error1\")\n\terr2 := errors.New(\"error1\")\n\n\tt.Run(\"error is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\tres, err := iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\tif *val == 3 {\n\t\t\t\treturn 0, err1\n\t\t\t}\n\t\t\treturn *val + 1, nil\n\t\t})\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.Equal(t, []int{2, 3, 0, 5, 6}, res)\n\t\trequire.Equal(t, []int{1, 2, 3, 4, 5}, ints)\n\t})\n\n\tt.Run(\"multiple errors are propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := []int{1, 2, 3, 4, 5}\n\t\tres, err := iter.MapErr(ints, func(val *int) (int, error) {\n\t\t\tif *val == 3 {\n\t\t\t\treturn 0, err1\n\t\t\t}\n\t\t\tif *val == 4 {\n\t\t\t\treturn 0, err2\n\t\t\t}\n\t\t\treturn *val + 1, nil\n\t\t})\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.ErrorIs(t, err, err2)\n\t\trequire.ElementsMatch(t, err.(interface{ Unwrap() []error }).Unwrap(), []error{err1, err2})\n\t\trequire.Equal(t, []int{2, 3, 0, 0, 6}, res)\n\t\trequire.Equal(t, []int{1, 2, 3, 4, 5}, ints)\n\t})\n\n\tt.Run(\"huge inputs\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tints := make([]int, 10000)\n\t\tres := iter.Map(ints, func(val *int) int {\n\t\t\treturn 1\n\t\t})\n\t\texpected := make([]int, 10000)\n\t\tfor i := 0; i \u003c 10000; i++ {\n\t\t\texpected[i] = 1\n\t\t}\n\t\trequire.Equal(t, expected, res)\n\t})\n}\n",
+        "content_hash": "627fff95b1b9d5845ec8d01e4c7be204f6b08a5997194c36ceb8a09c64f1ba32"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "panics/panics_test.go",
+        "content": "package panics_test\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"runtime\"\n\t\"sync\"\n\t\"testing\"\n\n\t\"github.com/sourcegraph/conc/panics\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleCatcher() {\n\tvar pc panics.Catcher\n\ti := 0\n\tpc.Try(func() { i += 1 })\n\tpc.Try(func() { panic(\"abort!\") })\n\tpc.Try(func() { i += 1 })\n\n\trc := pc.Recovered()\n\n\tfmt.Println(i)\n\tfmt.Println(rc.Value.(string))\n\t// Output:\n\t// 2\n\t// abort!\n}\n\nfunc ExampleCatcher_callers() {\n\tvar pc panics.Catcher\n\tpc.Try(func() { panic(\"mayday!\") })\n\n\trecovered := pc.Recovered()\n\n\t// For debugging, the pre-formatted recovered.Stack is easier to use than\n\t// rc.Callers. This is not used in the example because its output is\n\t// machine-specific.\n\n\tframes := runtime.CallersFrames(recovered.Callers)\n\tfor {\n\t\tframe, more := frames.Next()\n\n\t\tfmt.Println(frame.Function)\n\n\t\tif !more {\n\t\t\tbreak\n\t\t}\n\t}\n\t// Output:\n\t// github.com/sourcegraph/conc/panics.(*Catcher).tryRecover\n\t// runtime.gopanic\n\t// github.com/sourcegraph/conc/panics_test.ExampleCatcher_callers.func1\n\t// github.com/sourcegraph/conc/panics.(*Catcher).Try\n\t// github.com/sourcegraph/conc/panics_test.ExampleCatcher_callers\n\t// testing.runExample\n\t// testing.runExamples\n\t// testing.(*M).Run\n\t// main.main\n\t// runtime.main\n\t// runtime.goexit\n}\n\nfunc ExampleCatcher_error() {\n\thelper := func() error {\n\t\tvar pc panics.Catcher\n\t\tpc.Try(func() { panic(errors.New(\"error\")) })\n\t\treturn pc.Recovered().AsError()\n\t}\n\n\tif err := helper(); err != nil {\n\t\t// In normal use cases, you can use err.Error() output directly to\n\t\t// dump the panic's stack. This is not used in the example because\n\t\t// its output is machine-specific - instead, we demonstrate getting\n\t\t// the underlying error that was used for the panic.\n\t\tif cause := errors.Unwrap(err); cause != nil {\n\t\t\tfmt.Printf(\"helper panicked with an error: %s\", cause)\n\t\t}\n\t}\n\t// Output:\n\t// helper panicked with an error: error\n}\n\nfunc TestCatcher(t *testing.T) {\n\tt.Parallel()\n\n\terr1 := errors.New(\"SOS\")\n\n\tt.Run(\"error\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tvar pc panics.Catcher\n\t\tpc.Try(func() { panic(err1) })\n\t\trecovered := pc.Recovered()\n\t\trequire.ErrorIs(t, recovered.AsError(), err1)\n\t\trequire.ErrorAs(t, recovered.AsError(), \u0026err1)\n\t\t// The exact contents aren't tested because the stacktrace contains local file paths\n\t\t// and even the structure of the stacktrace is bound to be unstable over time. Just\n\t\t// test a couple of basics.\n\t\trequire.Contains(t, recovered.String(), \"SOS\", \"formatted panic should contain the panic message\")\n\t\trequire.Contains(t, recovered.String(), \"panics.(*Catcher).Try\", recovered.String(), \"formatted panic should contain the stack trace\")\n\t})\n\n\tt.Run(\"not error\", func(t *testing.T) {\n\t\tvar pc panics.Catcher\n\t\tpc.Try(func() { panic(\"definitely not an error\") })\n\t\trecovered := pc.Recovered()\n\t\trequire.NotErrorIs(t, recovered.AsError(), err1)\n\t\trequire.Nil(t, errors.Unwrap(recovered.AsError()))\n\t})\n\n\tt.Run(\"repanic panics\", func(t *testing.T) {\n\t\tvar pc panics.Catcher\n\t\tpc.Try(func() { panic(err1) })\n\t\trequire.Panics(t, pc.Repanic)\n\t})\n\n\tt.Run(\"repanic does not panic without child panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tvar pc panics.Catcher\n\t\tpc.Try(func() { _ = 1 })\n\t\trequire.NotPanics(t, pc.Repanic)\n\t})\n\n\tt.Run(\"is goroutine safe\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tvar wg sync.WaitGroup\n\t\tvar pc panics.Catcher\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\ti := i\n\t\t\twg.Add(1)\n\t\t\tfunc() {\n\t\t\t\tdefer wg.Done()\n\t\t\t\tpc.Try(func() {\n\t\t\t\t\tif i == 50 {\n\t\t\t\t\t\tpanic(\"50\")\n\t\t\t\t\t}\n\n\t\t\t\t})\n\t\t\t}()\n\t\t}\n\t\twg.Wait()\n\t\trequire.Equal(t, \"50\", pc.Recovered().Value)\n\t})\n}\n\nfunc TestRecoveredAsError(t *testing.T) {\n\tt.Parallel()\n\tt.Run(\"as error is nil\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfn := func() error {\n\t\t\tvar c panics.Catcher\n\t\t\tc.Try(func() {})\n\t\t\treturn c.Recovered().AsError()\n\t\t}\n\t\terr := fn()\n\t\tassert.Nil(t, err)\n\t})\n\n\tt.Run(\"as error is not nil\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfn := func() error {\n\t\t\tvar c panics.Catcher\n\t\t\tc.Try(func() { panic(\"oh dear!\") })\n\t\t\treturn c.Recovered().AsError()\n\t\t}\n\t\terr := fn()\n\t\tassert.NotNil(t, err)\n\t})\n}\n",
+        "content_hash": "f526097bbe7643bb07bf0e0388772a642f59e478e8f1e0f24300d38fe9b5076b"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "panics/try_test.go",
+        "content": "package panics_test\n\nimport (\n\t\"errors\"\n\t\"testing\"\n\n\t\"github.com/sourcegraph/conc/panics\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc TestTry(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"panics\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\terr := errors.New(\"SOS\")\n\t\trecovered := panics.Try(func() { panic(err) })\n\t\trequire.ErrorIs(t, recovered.AsError(), err)\n\t\trequire.ErrorAs(t, recovered.AsError(), \u0026err)\n\t\t// The exact contents aren't tested because the stacktrace contains local file paths\n\t\t// and even the structure of the stacktrace is bound to be unstable over time. Just\n\t\t// test a couple of basics.\n\t\trequire.Contains(t, recovered.String(), \"SOS\", \"formatted panic should contain the panic message\")\n\t\trequire.Contains(t, recovered.String(), \"panics.(*Catcher).Try\", recovered.String(), \"formatted panic should contain the stack trace\")\n\t})\n\n\tt.Run(\"no panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\trecovered := panics.Try(func() {})\n\t\trequire.Nil(t, recovered)\n\t})\n}\n",
+        "content_hash": "8ee30dd4605ca1792aa1e7691dc1acb0716213138705c9717670aa7b11508f0d"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/context_pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleContextPool_WithCancelOnError() {\n\tp := pool.New().\n\t\tWithMaxGoroutines(4).\n\t\tWithContext(context.Background()).\n\t\tWithCancelOnError()\n\tfor i := 0; i \u003c 3; i++ {\n\t\ti := i\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\tif i == 2 {\n\t\t\t\treturn errors.New(\"I will cancel all other tasks!\")\n\t\t\t}\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn nil\n\t\t})\n\t}\n\terr := p.Wait()\n\tfmt.Println(err)\n\t// Output:\n\t// I will cancel all other tasks!\n}\n\nfunc TestContextPool(t *testing.T) {\n\tt.Parallel()\n\n\terr1 := errors.New(\"err1\")\n\terr2 := errors.New(\"err2\")\n\tbgctx := context.Background()\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New().WithContext(context.Background())\n\t\t\tg.Go(func(context.Context) error { return nil })\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New().WithContext(context.Background())\n\t\t\tg.Go(func(context.Context) error { return nil })\n\t\t\t_ = g.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"behaves the same as ErrorGroup\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\tt.Run(\"wait returns no error if no errors\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tp := pool.New().WithContext(bgctx)\n\t\t\tp.Go(func(context.Context) error { return nil })\n\t\t\trequire.NoError(t, p.Wait())\n\t\t})\n\n\t\tt.Run(\"wait errors if func returns error\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tp := pool.New().WithContext(bgctx)\n\t\t\tp.Go(func(context.Context) error { return err1 })\n\t\t\trequire.ErrorIs(t, p.Wait(), err1)\n\t\t})\n\n\t\tt.Run(\"wait error is all returned errors\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tp := pool.New().WithErrors().WithContext(bgctx)\n\t\t\tp.Go(func(context.Context) error { return err1 })\n\t\t\tp.Go(func(context.Context) error { return nil })\n\t\t\tp.Go(func(context.Context) error { return err2 })\n\t\t\terr := p.Wait()\n\t\t\trequire.ErrorIs(t, err, err1)\n\t\t\trequire.ErrorIs(t, err, err2)\n\t\t})\n\t})\n\n\tt.Run(\"context error propagates\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\tt.Run(\"canceled\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tctx, cancel := context.WithCancel(bgctx)\n\t\t\tp := pool.New().WithContext(ctx)\n\t\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\t\u003c-ctx.Done()\n\t\t\t\treturn ctx.Err()\n\t\t\t})\n\t\t\tcancel()\n\t\t\trequire.ErrorIs(t, p.Wait(), context.Canceled)\n\t\t})\n\n\t\tt.Run(\"timed out\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tctx, cancel := context.WithTimeout(bgctx, time.Millisecond)\n\t\t\tdefer cancel()\n\t\t\tp := pool.New().WithContext(ctx)\n\t\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\t\u003c-ctx.Done()\n\t\t\t\treturn ctx.Err()\n\t\t\t})\n\t\t\trequire.ErrorIs(t, p.Wait(), context.DeadlineExceeded)\n\t\t})\n\n\t\tt.Run(\"return before timed out\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tp := pool.New().WithContext(context.Background())\n\t\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\tselect {\n\t\t\t\tcase \u003c-ctx.Done():\n\t\t\t\t\treturn ctx.Err()\n\t\t\t\tcase \u003c-time.After(1 * time.Millisecond):\n\t\t\t\t\treturn nil\n\t\t\t\t}\n\t\t\t})\n\t\t\trequire.NoError(t, p.Wait())\n\t\t})\n\t})\n\n\tt.Run(\"WithCancelOnError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithContext(bgctx).WithCancelOnError()\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn ctx.Err()\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\treturn err1\n\t\t})\n\t\terr := p.Wait()\n\t\trequire.ErrorIs(t, err, context.Canceled)\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"no WithCancelOnError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithContext(bgctx)\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\tselect {\n\t\t\tcase \u003c-ctx.Done():\n\t\t\t\treturn ctx.Err()\n\t\t\tcase \u003c-time.After(10 * time.Millisecond):\n\t\t\t\treturn nil\n\t\t\t}\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\treturn err1\n\t\t})\n\t\terr := p.Wait()\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.NotErrorIs(t, err, context.Canceled)\n\t})\n\n\tt.Run(\"WithFirstError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithContext(bgctx).WithFirstError()\n\t\tsync := make(chan struct{})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\tdefer close(sync)\n\t\t\treturn err1\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\t// This test has a race condition. After the first goroutine\n\t\t\t// completes, this goroutine is woken up because sync is closed.\n\t\t\t// However, this goroutine might be woken up before the error from\n\t\t\t// the first goroutine is registered. To prevent that, we sleep for\n\t\t\t// another 10 milliseconds, giving the other goroutine time to return\n\t\t\t// and register its error before this goroutine returns its error.\n\t\t\t\u003c-sync\n\t\t\ttime.Sleep(10 * time.Millisecond)\n\t\t\treturn err2\n\t\t})\n\t\terr := p.Wait()\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.NotErrorIs(t, err, err2)\n\t})\n\n\tt.Run(\"WithFailFast\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithContext(bgctx).WithFailFast()\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\treturn err1\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn ctx.Err()\n\t\t})\n\t\terr := p.Wait()\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.NotErrorIs(t, err, context.Canceled)\n\t})\n\n\tt.Run(\"WithCancelOnError and panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.New().WithContext(bgctx).WithCancelOnError()\n\t\tvar cancelledTasks atomic.Int64\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\u003c-ctx.Done()\n\t\t\tcancelledTasks.Add(1)\n\t\t\treturn ctx.Err()\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\t\u003c-ctx.Done()\n\t\t\tcancelledTasks.Add(1)\n\t\t\treturn ctx.Err()\n\t\t})\n\t\tp.Go(func(ctx context.Context) error {\n\t\t\tpanic(\"abort!\")\n\t\t})\n\t\tassert.Panics(t, func() { _ = p.Wait() })\n\t\tassert.EqualValues(t, 2, cancelledTasks.Load())\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrent := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrent), func(t *testing.T) {\n\t\t\t\tmaxConcurrent := maxConcurrent // copy\n\n\t\t\t\tt.Parallel()\n\t\t\t\tp := pool.New().WithContext(bgctx).WithMaxGoroutines(maxConcurrent)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\t\t\tp.Go(func(context.Context) error {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrent) {\n\t\t\t\t\t\t\treturn fmt.Errorf(\"expected no more than %d concurrent goroutine\", maxConcurrent)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t\treturn nil\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\trequire.NoError(t, p.Wait())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n}\n",
+        "content_hash": "59baaf77d956998e937ad45beec88acc4598ef98ecd12f83ff4a35ec49069aa9"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/error_pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleErrorPool() {\n\tp := pool.New().WithErrors()\n\tfor i := 0; i \u003c 3; i++ {\n\t\ti := i\n\t\tp.Go(func() error {\n\t\t\tif i == 2 {\n\t\t\t\treturn errors.New(\"oh no!\")\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\t}\n\terr := p.Wait()\n\tfmt.Println(err)\n\t// Output:\n\t// oh no!\n}\n\nfunc TestErrorPool(t *testing.T) {\n\tt.Parallel()\n\n\terr1 := errors.New(\"err1\")\n\terr2 := errors.New(\"err2\")\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New().WithErrors()\n\t\t\tg.Go(func() error { return nil })\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.New().WithErrors()\n\t\t\tg.Go(func() error { return nil })\n\t\t\t_ = g.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"wait returns no error if no errors\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New().WithErrors()\n\t\tg.Go(func() error { return nil })\n\t\trequire.NoError(t, g.Wait())\n\t})\n\n\tt.Run(\"wait error if func returns error\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New().WithErrors()\n\t\tg.Go(func() error { return err1 })\n\t\trequire.ErrorIs(t, g.Wait(), err1)\n\t})\n\n\tt.Run(\"wait error is all returned errors\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New().WithErrors()\n\t\tg.Go(func() error { return err1 })\n\t\tg.Go(func() error { return nil })\n\t\tg.Go(func() error { return err2 })\n\t\terr := g.Wait()\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.ErrorIs(t, err, err2)\n\t})\n\n\tt.Run(\"propagates panics\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.New().WithErrors()\n\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\ti := i\n\t\t\tg.Go(func() error {\n\t\t\t\tif i == 5 {\n\t\t\t\t\tpanic(\"fatal\")\n\t\t\t\t}\n\t\t\t\treturn nil\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, func() { _ = g.Wait() })\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxGoroutines := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxGoroutines), func(t *testing.T) {\n\t\t\t\tg := pool.New().WithErrors().WithMaxGoroutines(maxGoroutines)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\ttaskCount := maxGoroutines * 10\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\tg.Go(func() error {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxGoroutines) {\n\t\t\t\t\t\t\treturn fmt.Errorf(\"expected no more than %d concurrent goroutine\", maxGoroutines)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t\treturn nil\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\trequire.NoError(t, g.Wait())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n\n\tt.Run(\"reuse\", func(t *testing.T) {\n\t\t// Test for https://github.com/sourcegraph/conc/issues/128\n\t\tp := pool.New().WithErrors()\n\n\t\tp.Go(func() error { return err1 })\n\t\twait1 := p.Wait()\n\t\trequire.ErrorIs(t, wait1, err1)\n\n\t\tp.Go(func() error { return err2 })\n\t\twait2 := p.Wait()\n\t\t// On reuse, only the new error should be returned\n\t\trequire.ErrorIs(t, wait2, err2)\n\t\trequire.NotErrorIs(t, wait1, err2)\n\t})\n}\n",
+        "content_hash": "2504c19a6f3878e3ea1de77e628a16774f67395c77efbcf60267473878b0ca34"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_context_pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc TestResultContextPool(t *testing.T) {\n\tt.Parallel()\n\n\terr1 := errors.New(\"err1\")\n\terr2 := errors.New(\"err2\")\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithContext(context.Background())\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, nil })\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithContext(context.Background())\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, nil })\n\t\t\t_, _ = g.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"behaves the same as ErrorGroup\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tbgctx := context.Background()\n\t\tt.Run(\"wait returns no error if no errors\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithContext(bgctx)\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, nil })\n\t\t\tres, err := g.Wait()\n\t\t\trequire.Len(t, res, 1)\n\t\t\trequire.NoError(t, err)\n\t\t})\n\n\t\tt.Run(\"wait error if func returns error\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithContext(bgctx)\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, err1 })\n\t\t\tres, err := g.Wait()\n\t\t\trequire.Len(t, res, 0)\n\t\t\trequire.ErrorIs(t, err, err1)\n\t\t})\n\n\t\tt.Run(\"wait error is all returned errors\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithErrors().WithContext(bgctx)\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, err1 })\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, nil })\n\t\t\tg.Go(func(context.Context) (int, error) { return 0, err2 })\n\t\t\tres, err := g.Wait()\n\t\t\trequire.Len(t, res, 1)\n\t\t\trequire.ErrorIs(t, err, err1)\n\t\t\trequire.ErrorIs(t, err, err2)\n\t\t})\n\t})\n\n\tt.Run(\"context cancel propagates\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tctx, cancel := context.WithCancel(context.Background())\n\t\tg := pool.NewWithResults[int]().WithContext(ctx)\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn 0, ctx.Err()\n\t\t})\n\t\tcancel()\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 0)\n\t\trequire.ErrorIs(t, err, context.Canceled)\n\t})\n\n\tt.Run(\"WithCancelOnError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithContext(context.Background()).WithCancelOnError()\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn 0, ctx.Err()\n\t\t})\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\treturn 0, err1\n\t\t})\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 0)\n\t\trequire.ErrorIs(t, err, context.Canceled)\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"WithFailFast\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.NewWithResults[int]().WithContext(context.Background()).WithFailFast()\n\t\tp.Go(func(ctx context.Context) (int, error) {\n\t\t\treturn 0, err1\n\t\t})\n\t\tp.Go(func(ctx context.Context) (int, error) {\n\t\t\t\u003c-ctx.Done()\n\t\t\treturn 1, ctx.Err()\n\t\t})\n\t\tresults, err := p.Wait()\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.NotErrorIs(t, err, context.Canceled)\n\t\trequire.Empty(t, results)\n\t})\n\n\tt.Run(\"WithCancelOnError and panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.NewWithResults[int]().\n\t\t\tWithContext(context.Background()).\n\t\t\tWithCancelOnError()\n\t\tvar cancelledTasks atomic.Int64\n\t\tp.Go(func(ctx context.Context) (int, error) {\n\t\t\t\u003c-ctx.Done()\n\t\t\tcancelledTasks.Add(1)\n\t\t\treturn 0, ctx.Err()\n\t\t})\n\t\tp.Go(func(ctx context.Context) (int, error) {\n\t\t\t\u003c-ctx.Done()\n\t\t\tcancelledTasks.Add(1)\n\t\t\treturn 0, ctx.Err()\n\t\t})\n\t\tp.Go(func(ctx context.Context) (int, error) {\n\t\t\tpanic(\"abort!\")\n\t\t})\n\t\tassert.Panics(t, func() { _, _ = p.Wait() })\n\t\tassert.EqualValues(t, 2, cancelledTasks.Load())\n\t})\n\n\tt.Run(\"no WithCancelOnError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithContext(context.Background())\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\tselect {\n\t\t\tcase \u003c-ctx.Done():\n\t\t\t\treturn 0, ctx.Err()\n\t\t\tcase \u003c-time.After(10 * time.Millisecond):\n\t\t\t\treturn 0, nil\n\t\t\t}\n\t\t})\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\treturn 0, err1\n\t\t})\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 1)\n\t\trequire.NotErrorIs(t, err, context.Canceled)\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"WithCollectErrored\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithContext(context.Background()).WithCollectErrored()\n\t\tg.Go(func(context.Context) (int, error) { return 0, err1 })\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 1) // errored value is collected\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"WithFirstError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithContext(context.Background()).WithFirstError()\n\t\tsync := make(chan struct{})\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\tdefer close(sync)\n\t\t\treturn 0, err1\n\t\t})\n\t\tg.Go(func(ctx context.Context) (int, error) {\n\t\t\t// This test has a race condition. After the first goroutine\n\t\t\t// completes, this goroutine is woken up because sync is closed.\n\t\t\t// However, this goroutine might be woken up before the error from\n\t\t\t// the first goroutine is registered. To prevent that, we sleep for\n\t\t\t// another 10 milliseconds, giving the other goroutine time to return\n\t\t\t// and register its error before this goroutine returns its error.\n\t\t\t\u003c-sync\n\t\t\ttime.Sleep(10 * time.Millisecond)\n\t\t\treturn 0, err2\n\t\t})\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 0)\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.NotErrorIs(t, err, err2)\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrency := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrency), func(t *testing.T) {\n\t\t\t\tmaxConcurrency := maxConcurrency // copy\n\n\t\t\t\tt.Parallel()\n\t\t\t\tctx := context.Background()\n\t\t\t\tg := pool.NewWithResults[int]().WithContext(ctx).WithMaxGoroutines(maxConcurrency)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\ttaskCount := maxConcurrency * 10\n\t\t\t\texpected := make([]int, taskCount)\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\ti := i\n\t\t\t\t\texpected[i] = i\n\t\t\t\t\tg.Go(func(context.Context) (int, error) {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrency) {\n\t\t\t\t\t\t\treturn 0, fmt.Errorf(\"expected no more than %d concurrent goroutines\", maxConcurrency)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t\treturn i, nil\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tres, err := g.Wait()\n\t\t\t\trequire.Equal(t, expected, res)\n\t\t\t\trequire.NoError(t, err)\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n\n\tt.Run(\"reuse\", func(t *testing.T) {\n\t\t// Test for https://github.com/sourcegraph/conc/issues/128\n\t\tp := pool.NewWithResults[int]().WithContext(context.Background())\n\n\t\tp.Go(func(context.Context) (int, error) { return 1, err1 })\n\t\tresults1, errs1 := p.Wait()\n\t\trequire.Empty(t, results1)\n\t\trequire.ErrorIs(t, errs1, err1)\n\n\t\tp.Go(func(context.Context) (int, error) { return 2, err2 })\n\t\tresults2, errs2 := p.Wait()\n\t\trequire.Empty(t, results2)\n\t\trequire.ErrorIs(t, errs2, err2)\n\t\trequire.NotErrorIs(t, errs2, err1)\n\t})\n}\n",
+        "content_hash": "dd5db43e37f5b2956c3399ecd610b164a567fc134463a70ede63f0abf3c4a546"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_error_pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc TestResultErrorPool(t *testing.T) {\n\tt.Parallel()\n\n\terr1 := errors.New(\"err1\")\n\terr2 := errors.New(\"err2\")\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithErrors()\n\t\t\tg.Go(func() (int, error) { return 0, nil })\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]().WithErrors()\n\t\t\tg.Go(func() (int, error) { return 0, nil })\n\t\t\t_, _ = g.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"wait returns no error if no errors\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithErrors()\n\t\tg.Go(func() (int, error) { return 1, nil })\n\t\tres, err := g.Wait()\n\t\trequire.NoError(t, err)\n\t\trequire.Equal(t, []int{1}, res)\n\t})\n\n\tt.Run(\"wait error if func returns error\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithErrors()\n\t\tg.Go(func() (int, error) { return 0, err1 })\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 0) // errored value is ignored\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"WithCollectErrored\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithErrors().WithCollectErrored()\n\t\tg.Go(func() (int, error) { return 0, err1 })\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 1) // errored value is collected\n\t\trequire.ErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"WithFirstError\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithErrors().WithFirstError()\n\t\tsynchronizer := make(chan struct{})\n\t\tg.Go(func() (int, error) {\n\t\t\t\u003c-synchronizer\n\t\t\t// This test has an intrinsic race condition that can be reproduced\n\t\t\t// by adding a `defer time.Sleep(time.Second)` before the `defer\n\t\t\t// close(synchronizer)`. We cannot guarantee that the group processes\n\t\t\t// the return value of the second goroutine before the first goroutine\n\t\t\t// exits in response to synchronizer, so we add a sleep here to make\n\t\t\t// this race condition vanishingly unlikely. Note that this is a race\n\t\t\t// in the test, not in the library.\n\t\t\ttime.Sleep(100 * time.Millisecond)\n\t\t\treturn 0, err1\n\t\t})\n\t\tg.Go(func() (int, error) {\n\t\t\tdefer close(synchronizer)\n\t\t\treturn 0, err2\n\t\t})\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 0)\n\t\trequire.ErrorIs(t, err, err2)\n\t\trequire.NotErrorIs(t, err, err1)\n\t})\n\n\tt.Run(\"wait error is all returned errors\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]().WithErrors()\n\t\tg.Go(func() (int, error) { return 0, err1 })\n\t\tg.Go(func() (int, error) { return 0, nil })\n\t\tg.Go(func() (int, error) { return 0, err2 })\n\t\tres, err := g.Wait()\n\t\trequire.Len(t, res, 1)\n\t\trequire.ErrorIs(t, err, err1)\n\t\trequire.ErrorIs(t, err, err2)\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrency := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrency), func(t *testing.T) {\n\t\t\t\tmaxConcurrency := maxConcurrency // copy\n\n\t\t\t\tt.Parallel()\n\t\t\t\tg := pool.NewWithResults[int]().WithErrors().WithMaxGoroutines(maxConcurrency)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\ttaskCount := maxConcurrency * 10\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\tg.Go(func() (int, error) {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrency) {\n\t\t\t\t\t\t\treturn 0, fmt.Errorf(\"expected no more than %d concurrent goroutine\", maxConcurrency)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t\treturn 0, nil\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tres, err := g.Wait()\n\t\t\t\trequire.Len(t, res, taskCount)\n\t\t\t\trequire.NoError(t, err)\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n\n\tt.Run(\"reuse\", func(t *testing.T) {\n\t\t// Test for https://github.com/sourcegraph/conc/issues/128\n\t\tp := pool.NewWithResults[int]().WithErrors()\n\n\t\tp.Go(func() (int, error) { return 1, err1 })\n\t\tresults1, errs1 := p.Wait()\n\t\trequire.Empty(t, results1)\n\t\trequire.ErrorIs(t, errs1, err1)\n\n\t\tp.Go(func() (int, error) { return 2, err2 })\n\t\tresults2, errs2 := p.Wait()\n\t\trequire.Empty(t, results2)\n\t\trequire.ErrorIs(t, errs2, err2)\n\t\trequire.NotErrorIs(t, errs2, err1)\n\t})\n}\n",
+        "content_hash": "bcaedabe08eb8449202ff04ef1b8044f8a8f0b7b4ecaa204229f1cac42989636"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "pool/result_pool_test.go",
+        "content": "package pool_test\n\nimport (\n\t\"fmt\"\n\t\"math/rand\"\n\t\"strconv\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/pool\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleResultPool() {\n\tp := pool.NewWithResults[int]()\n\tfor i := 0; i \u003c 10; i++ {\n\t\ti := i\n\t\tp.Go(func() int {\n\t\t\treturn i * 2\n\t\t})\n\t}\n\tres := p.Wait()\n\tfmt.Println(res)\n\n\t// Output:\n\t// [0 2 4 6 8 10 12 14 16 18]\n}\n\nfunc TestResultGroup(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"panics on configuration after init\", func(t *testing.T) {\n\t\tt.Run(\"before wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]()\n\t\t\tg.Go(func() int { return 0 })\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\n\t\tt.Run(\"after wait\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tg := pool.NewWithResults[int]()\n\t\t\tg.Go(func() int { return 0 })\n\t\t\t_ = g.Wait()\n\t\t\trequire.Panics(t, func() { g.WithMaxGoroutines(10) })\n\t\t})\n\t})\n\n\tt.Run(\"basic\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tg := pool.NewWithResults[int]()\n\t\texpected := []int{}\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\ti := i\n\t\t\texpected = append(expected, i)\n\t\t\tg.Go(func() int {\n\t\t\t\treturn i\n\t\t\t})\n\t\t}\n\t\tres := g.Wait()\n\t\trequire.Equal(t, expected, res)\n\t})\n\n\tt.Run(\"deterministic order\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tp := pool.NewWithResults[int]()\n\t\tresults := make([]int, 100)\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\tresults[i] = i\n\t\t}\n\t\tfor _, result := range results {\n\t\t\tresult := result\n\t\t\tp.Go(func() int {\n\t\t\t\t// Add a random sleep to make it exceedingly unlikely that the\n\t\t\t\t// results are returned in the order they are submitted.\n\t\t\t\ttime.Sleep(time.Duration(rand.Int()%100) * time.Millisecond)\n\t\t\t\treturn result\n\t\t\t})\n\t\t}\n\t\tgot := p.Wait()\n\t\trequire.Equal(t, results, got)\n\t})\n\n\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxGoroutines := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxGoroutines), func(t *testing.T) {\n\t\t\t\tg := pool.NewWithResults[int]().WithMaxGoroutines(maxGoroutines)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tvar errCount atomic.Int64\n\t\t\t\ttaskCount := maxGoroutines * 10\n\t\t\t\texpected := make([]int, taskCount)\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\ti := i\n\t\t\t\t\texpected[i] = i\n\t\t\t\t\tg.Go(func() int {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxGoroutines) {\n\t\t\t\t\t\t\terrCount.Add(1)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t\treturn i\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tres := g.Wait()\n\t\t\t\trequire.Equal(t, expected, res)\n\t\t\t\trequire.Equal(t, int64(0), errCount.Load())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})\n\n\tt.Run(\"reuse\", func(t *testing.T) {\n\t\t// Test for https://github.com/sourcegraph/conc/issues/128\n\t\tp := pool.NewWithResults[int]()\n\n\t\tp.Go(func() int { return 1 })\n\t\tresults1 := p.Wait()\n\t\trequire.Equal(t, []int{1}, results1)\n\n\t\tp.Go(func() int { return 2 })\n\t\tresults2 := p.Wait()\n\t\trequire.Equal(t, []int{2}, results2)\n\t})\n}\n",
+        "content_hash": "97b321afdf69ae2551db54d53e811bd8a676588a090c7d6f47965a5df428efc9"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "stream/stream_test.go",
+        "content": "package stream_test\n\nimport (\n\t\"fmt\"\n\t\"sync/atomic\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/sourcegraph/conc/stream\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleStream() {\n\ttimes := []int{20, 52, 16, 45, 4, 80}\n\n\ts := stream.New()\n\tfor _, millis := range times {\n\t\tdur := time.Duration(millis) * time.Millisecond\n\t\ts.Go(func() stream.Callback {\n\t\t\ttime.Sleep(dur)\n\t\t\t// This will print in the order the tasks were submitted\n\t\t\treturn func() { fmt.Println(dur) }\n\t\t})\n\t}\n\ts.Wait()\n\n\t// Output:\n\t// 20ms\n\t// 52ms\n\t// 16ms\n\t// 45ms\n\t// 4ms\n\t// 80ms\n}\n\nfunc TestStream(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"simple\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New()\n\t\tvar res []int\n\t\tfor i := 0; i \u003c 5; i++ {\n\t\t\ti := i\n\t\t\ts.Go(func() stream.Callback {\n\t\t\t\ti *= 2\n\t\t\t\treturn func() {\n\t\t\t\t\tres = append(res, i)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\ts.Wait()\n\t\trequire.Equal(t, []int{0, 2, 4, 6, 8}, res)\n\t})\n\n\tt.Run(\"nil callback\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New()\n\t\tvar totalCount atomic.Int64\n\t\tfor i := 0; i \u003c 5; i++ {\n\t\t\ts.Go(func() stream.Callback {\n\t\t\t\ttotalCount.Add(1)\n\t\t\t\treturn nil\n\t\t\t})\n\t\t}\n\t\ts.Wait()\n\t\trequire.Equal(t, int64(5), totalCount.Load())\n\t})\n\n\tt.Run(\"max goroutines\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New().WithMaxGoroutines(5)\n\t\tvar currentTaskCount atomic.Int64\n\t\tvar currentCallbackCount atomic.Int64\n\t\tfor i := 0; i \u003c 50; i++ {\n\t\t\ts.Go(func() stream.Callback {\n\t\t\t\tcurr := currentTaskCount.Add(1)\n\t\t\t\tif curr \u003e 5 {\n\t\t\t\t\tt.Fatal(\"too many concurrent tasks being executed\")\n\t\t\t\t}\n\t\t\t\tdefer currentTaskCount.Add(-1)\n\n\t\t\t\ttime.Sleep(time.Millisecond)\n\n\t\t\t\treturn func() {\n\t\t\t\t\tcurr := currentCallbackCount.Add(1)\n\t\t\t\t\tif curr \u003e 1 {\n\t\t\t\t\t\tt.Fatal(\"too many concurrent callbacks being executed\")\n\t\t\t\t\t}\n\n\t\t\t\t\ttime.Sleep(time.Millisecond)\n\n\t\t\t\t\tdefer currentCallbackCount.Add(-1)\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\ts.Wait()\n\t})\n\n\tt.Run(\"panic in task is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New().WithMaxGoroutines(5)\n\t\ts.Go(func() stream.Callback {\n\t\t\tpanic(\"something really bad happened in the task\")\n\t\t})\n\t\trequire.Panics(t, s.Wait)\n\t})\n\n\tt.Run(\"panic in callback is propagated\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New().WithMaxGoroutines(5)\n\t\ts.Go(func() stream.Callback {\n\t\t\treturn func() {\n\t\t\t\tpanic(\"something really bad happened in the callback\")\n\t\t\t}\n\t\t})\n\t\trequire.Panics(t, s.Wait)\n\t})\n\n\tt.Run(\"panic in callback does not block producers\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\ts := stream.New().WithMaxGoroutines(5)\n\t\ts.Go(func() stream.Callback {\n\t\t\treturn func() {\n\t\t\t\tpanic(\"something really bad happened in the callback\")\n\t\t\t}\n\t\t})\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\ts.Go(func() stream.Callback {\n\t\t\t\treturn func() {}\n\t\t\t})\n\t\t}\n\t\trequire.Panics(t, s.Wait)\n\t})\n}\n\nfunc BenchmarkStream(b *testing.B) {\n\tb.Run(\"startup and teardown\", func(b *testing.B) {\n\t\tfor i := 0; i \u003c b.N; i++ {\n\t\t\ts := stream.New()\n\t\t\ts.Go(func() stream.Callback { return func() {} })\n\t\t\ts.Wait()\n\t\t}\n\t})\n\n\tb.Run(\"per task\", func(b *testing.B) {\n\t\tn := 0\n\t\ts := stream.New()\n\t\tfor i := 0; i \u003c b.N; i++ {\n\t\t\ts.Go(func() stream.Callback {\n\t\t\t\treturn func() {\n\t\t\t\t\tn += 1\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\ts.Wait()\n\t})\n}\n",
+        "content_hash": "4c4634e31d22c40e6c3139975da369fffdb834e66e45c80be132a054ef74b501"
+      },
+      {
+        "kind": "test",
+        "ref": {
+          "owner": "sourcegraph",
+          "repo": "conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+        },
+        "path": "waitgroup_test.go",
+        "content": "package conc_test\n\nimport (\n\t\"fmt\"\n\t\"sync/atomic\"\n\t\"testing\"\n\n\t\"github.com/sourcegraph/conc\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc ExampleWaitGroup() {\n\tvar count atomic.Int64\n\n\tvar wg conc.WaitGroup\n\tfor i := 0; i \u003c 10; i++ {\n\t\twg.Go(func() {\n\t\t\tcount.Add(1)\n\t\t})\n\t}\n\twg.Wait()\n\n\tfmt.Println(count.Load())\n\t// Output:\n\t// 10\n}\n\nfunc ExampleWaitGroup_WaitAndRecover() {\n\tvar wg conc.WaitGroup\n\n\twg.Go(func() {\n\t\tpanic(\"super bad thing\")\n\t})\n\n\trecoveredPanic := wg.WaitAndRecover()\n\tfmt.Println(recoveredPanic.Value)\n\t// Output:\n\t// super bad thing\n}\n\nfunc TestWaitGroup(t *testing.T) {\n\tt.Parallel()\n\n\tt.Run(\"ctor\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\twg := conc.NewWaitGroup()\n\t\trequire.IsType(t, \u0026conc.WaitGroup{}, wg)\n\t})\n\n\tt.Run(\"all spawned run\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tvar count atomic.Int64\n\t\tvar wg conc.WaitGroup\n\t\tfor i := 0; i \u003c 100; i++ {\n\t\t\twg.Go(func() {\n\t\t\t\tcount.Add(1)\n\t\t\t})\n\t\t}\n\t\twg.Wait()\n\t\trequire.Equal(t, count.Load(), int64(100))\n\t})\n\n\tt.Run(\"panic\", func(t *testing.T) {\n\t\tt.Parallel()\n\n\t\tt.Run(\"is propagated\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\trequire.Panics(t, wg.Wait)\n\t\t})\n\n\t\tt.Run(\"one is propagated\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super badder thing\")\n\t\t\t})\n\t\t\trequire.Panics(t, wg.Wait)\n\t\t})\n\n\t\tt.Run(\"non-panics do not overwrite panic\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\tfor i := 0; i \u003c 10; i++ {\n\t\t\t\twg.Go(func() {})\n\t\t\t}\n\t\t\trequire.Panics(t, wg.Wait)\n\t\t})\n\n\t\tt.Run(\"non-panics run successfully\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\tvar i atomic.Int64\n\t\t\twg.Go(func() {\n\t\t\t\ti.Add(1)\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\ti.Add(1)\n\t\t\t})\n\t\t\trequire.Panics(t, wg.Wait)\n\t\t\trequire.Equal(t, int64(2), i.Load())\n\t\t})\n\n\t\tt.Run(\"is caught by waitandrecover\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\tp := wg.WaitAndRecover()\n\t\t\trequire.Equal(t, p.Value, \"super bad thing\")\n\t\t})\n\n\t\tt.Run(\"one is caught by waitandrecover\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super badder thing\")\n\t\t\t})\n\t\t\tp := wg.WaitAndRecover()\n\t\t\trequire.NotNil(t, p)\n\t\t})\n\n\t\tt.Run(\"nonpanics run successfully with waitandrecover\", func(t *testing.T) {\n\t\t\tt.Parallel()\n\t\t\tvar wg conc.WaitGroup\n\t\t\tvar i atomic.Int64\n\t\t\twg.Go(func() {\n\t\t\t\ti.Add(1)\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\tpanic(\"super bad thing\")\n\t\t\t})\n\t\t\twg.Go(func() {\n\t\t\t\ti.Add(1)\n\t\t\t})\n\t\t\tp := wg.WaitAndRecover()\n\t\t\trequire.Equal(t, p.Value, \"super bad thing\")\n\t\t\trequire.Equal(t, int64(2), i.Load())\n\t\t})\n\t})\n}\n",
+        "content_hash": "46f7fab80042ac15c1298fd9068108c1949d83ffe649e5ad0e6f3a5e546a91f4"
+      }
+    ],
+    "complete": true,
+    "bytes_read": 95340,
+    "target_results": [
+      {
+        "target": {
+          "path": "pool/pool.go",
+          "kind": "file",
+          "reason": "limite de concorrência e admissão"
+        },
+        "status": "COLLECTED",
+        "bytes": 4480
+      },
+      {
+        "target": {
+          "path": "pool/pool_test.go",
+          "kind": "test",
+          "reason": "teste independente do limite"
+        },
+        "status": "COLLECTED",
+        "bytes": 3209
+      },
+      {
+        "target": {
+          "path": "iter/iter.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2580
+      },
+      {
+        "target": {
+          "path": "iter/map.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 1848
+      },
+      {
+        "target": {
+          "path": "panics/panics.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2957
+      },
+      {
+        "target": {
+          "path": "panics/try.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 291
+      },
+      {
+        "target": {
+          "path": "pool/context_pool.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 3272
+      },
+      {
+        "target": {
+          "path": "pool/error_pool.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2505
+      },
+      {
+        "target": {
+          "path": "pool/result_context_pool.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2891
+      },
+      {
+        "target": {
+          "path": "pool/result_error_pool.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2670
+      },
+      {
+        "target": {
+          "path": "pool/result_pool.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 3733
+      },
+      {
+        "target": {
+          "path": "stream/stream.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 4421
+      },
+      {
+        "target": {
+          "path": "waitgroup.go",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 1406
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 1068
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 13931
+      },
+      {
+        "target": {
+          "path": "go.mod",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 394
+      },
+      {
+        "target": {
+          "path": "iter/export_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 62
+      },
+      {
+        "target": {
+          "path": "iter/iter_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 3846
+      },
+      {
+        "target": {
+          "path": "iter/map_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 4108
+      },
+      {
+        "target": {
+          "path": "panics/panics_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 4106
+      },
+      {
+        "target": {
+          "path": "panics/try_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 975
+      },
+      {
+        "target": {
+          "path": "pool/context_pool_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 6562
+      },
+      {
+        "target": {
+          "path": "pool/error_pool_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 3100
+      },
+      {
+        "target": {
+          "path": "pool/result_context_pool_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 7264
+      },
+      {
+        "target": {
+          "path": "pool/result_error_pool_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 4342
+      },
+      {
+        "target": {
+          "path": "pool/result_pool_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2907
+      },
+      {
+        "target": {
+          "path": "stream/stream_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 3155
+      },
+      {
+        "target": {
+          "path": "waitgroup_test.go",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "COLLECTED",
+        "bytes": 2931
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 3,
+    "requirement_coverage": null
+  }
+]

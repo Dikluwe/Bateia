@@ -8,3 +8,8 @@ No sucessor explícito do Passo 0031, leia a captura versionada em
 `00_nucleo/benchmark/0031/basal-tools-successor.json`. Preserve os nove nomes e
 a ordem; a única diferença autorizada no digest é o contrato de defaults das
 tools de recomendação síncrona e durável.
+
+
+## Fixture basal no passo 0104
+
+A captura que exige o schema basal de três IDs deve configurar explicitamente Apple/GitHub/Sourcegraph. Um único stub Apple deixa de representar essa composição quando o schema passa a refletir o registro. Ajustar somente o preparo dos testes de contrato basal, preservando hashes, goldens, nomes, posições e comparações profundas. Outros cenários de registro unitário permanecem com sua fixture original e verificações próprias. Não reescrever capturas históricas.

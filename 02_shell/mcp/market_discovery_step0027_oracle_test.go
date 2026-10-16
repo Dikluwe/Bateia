@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/market_discovery_step0027_oracle_test.md
  * @layer L2
- * @updated 2026-09-03
+ * @updated 2026-10-06
  */
 
 package mcp
@@ -76,10 +76,31 @@ func (s *step0027StarterStub) StartMarketDiscovery(_ context.Context, key string
 
 func step0027RunMCP(t *testing.T, withMarket bool, requests string, connector *step0027ConnectorStub, starter *step0027StarterStub) []JSONRPCResponse {
 	t.Helper()
+	return step0027RunMCPWithConnectors(t, withMarket, requests, []domain.MarketDiscoveryConnector{connector}, starter)
+}
+
+// The frozen basal schema describes three configured sources. Keep this fixture
+// distinct from the single-source scenarios; do not change historical captures.
+func step0027RunBasalMCP(t *testing.T, withMarket bool, requests string, apple *step0027ConnectorStub, starter *step0027StarterStub) []JSONRPCResponse {
+	t.Helper()
+	repository := func(id string) domain.MarketDiscoveryConnector {
+		return &step0027ConnectorStub{cap: domain.DiscoveryConnectorCapabilities{
+			ID: id, Version: "baseline-21c48e357180", Kind: domain.ConnectorRepositoryCatalog,
+			QueryLocales: []string{"en-US"}, Markets: []string{}, IdentityLevels: []string{"owner_repo"},
+			EvidenceSurfaces: []string{"repository_identity"}, Replayable: true, PublicOnly: true,
+		}}
+	}
+	return step0027RunMCPWithConnectors(t, withMarket, requests, []domain.MarketDiscoveryConnector{
+		apple, repository("github-repository-catalog"), repository("sourcegraph-repository-catalog"),
+	}, starter)
+}
+
+func step0027RunMCPWithConnectors(t *testing.T, withMarket bool, requests string, connectors []domain.MarketDiscoveryConnector, starter *step0027StarterStub) []JSONRPCResponse {
+	t.Helper()
 	var output bytes.Buffer
 	server := NewMCPServer(nil, strings.NewReader(requests), &output).WithDurableRuns(step0027DurableStub{})
 	if withMarket {
-		server = server.WithMarketDiscovery([]domain.MarketDiscoveryConnector{connector}, starter)
+		server = server.WithMarketDiscovery(connectors, starter)
 	}
 	if err := server.Serve(context.Background()); err != nil {
 		t.Fatalf("Serve: %v", err)
@@ -135,7 +156,7 @@ func TestStep0027OracleToolsOneThroughSevenAreCertifiedAndEightNineAreExact(t *t
 	starter := &step0027StarterStub{}
 	request := "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}\n"
 	basal := step0027Tools(t, step0027RunMCP(t, false, request, connector, starter)[0])
-	got := step0027Tools(t, step0027RunMCP(t, true, request, connector, starter)[0])
+	got := step0027Tools(t, step0027RunBasalMCP(t, true, request, connector, starter)[0])
 	if len(basal) != 7 || len(got) != 9 {
 		t.Fatalf("tool refinement is not exact: basal=%d candidate=%d", len(basal), len(got))
 	}

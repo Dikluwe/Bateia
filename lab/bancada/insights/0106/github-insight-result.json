@@ -1,0 +1,213 @@
+{
+  "schema_version": "insight-investigation-v1",
+  "id": "insight_981ad20ae956633e526a3841319f70079d20ab4a8f23d3e18e2d842d577b565c",
+  "scope": "FROZEN_EVALUATED_EVIDENCE",
+  "status": "PARTIAL",
+  "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+  "target": {
+    "name": "Bateia",
+    "context": "Admissão de investigações concorrentes no runtime durável sob Tekt",
+    "property": "capacidade admitida e tempo de resposta à sobrecarga",
+    "desired_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+    "constraints": [
+      "avaliar a ideia sem transferir código",
+      "não bloquear indefinidamente a entrada MCP",
+      "preservar Tekt L0–L4",
+      "preservar recuperação e fila durável"
+    ]
+  },
+  "input_sha256": "cebf6dc3a233ad9cbaa8b99ba877764d6506cd5ef8ddfa9b4933865570b47e88",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "mechanisms": [
+    {
+      "id": "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc",
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "name": "bounded queue with backpressure",
+      "purpose": "bound admitted work and make overload behavior explicit",
+      "trigger": "bound admitted work and make overload behavior explicit",
+      "strategy": "reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable",
+      "components": [],
+      "data_flow": [
+        "reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable"
+      ],
+      "state_model": [],
+      "failure_model": [],
+      "boundaries": [
+        "repository-backed source bundle"
+      ],
+      "preconditions": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "tradeoffs": [],
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "evidence": [
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 56,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-reserve-before-commit",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 96,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "bounded-queue-capacity",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 70,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 86,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        }
+      ],
+      "counter_evidence": [],
+      "status": "PARTIAL",
+      "novelty": "UNKNOWN",
+      "extraction_rule_ids": [
+        "bounded-queue-capacity",
+        "queue-capacity-test",
+        "queue-reserve-before-commit"
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hyp_6a477f6f9302bb43b19dcb716746113ffb9632ae84341b2f5eb9c3772be1b06c",
+      "title": "Investigar bounded queue with backpressure em Bateia",
+      "target_property": "capacidade admitida e tempo de resposta à sobrecarga",
+      "target_state": "UNKNOWN",
+      "target_gap_refs": [
+        "TARGET_BASELINE_NOT_OBSERVED",
+        "TARGET_APPLICABILITY_NOT_VERIFIED"
+      ],
+      "expected_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+      "mechanism_refs": [
+        "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc"
+      ],
+      "product_observation_refs": [],
+      "transfer_mode": "REFERENCE_ONLY",
+      "license": "UNRECOGNIZED",
+      "assumptions": [
+        "O efeito desejado é uma intenção do pedido, não uma observação.",
+        "A estratégia do mecanismo pode ser investigada sem presumir adoção de código."
+      ],
+      "preconditions": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "integration_unknowns": [
+        "Compatibilidade com o contexto e as restrições do alvo.",
+        "Licença e direitos de eventual transferência de código não avaliados."
+      ],
+      "risks": [
+        "O mecanismo pode não ser relevante à pergunta ou não produzir o efeito desejado no alvo."
+      ],
+      "tradeoffs": [
+        "O custo de adaptação e a utilidade no alvo ainda precisam de medição."
+      ],
+      "evidence_refs": [
+        "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc"
+      ],
+      "counter_evidence_refs": [],
+      "counterevidence_search": {
+        "status": "NONE_FOUND_IN_SCOPE",
+        "scope_refs": [
+          "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc"
+        ],
+        "result_refs": []
+      },
+      "validation_plan": [
+        {
+          "question": "Qual é o estado atual de capacidade admitida e tempo de resposta à sobrecarga?",
+          "observable": "capacidade admitida e tempo de resposta à sobrecarga",
+          "safe_procedure": "Medir o alvo atual sem modificá-lo, registrando casos e configuração.",
+          "pass_criterion": "Baseline repetível registrado.",
+          "reject_criterion": "A medição não é repetível ou não representa a propriedade desejada.",
+          "relative_cost": "LOW",
+          "missing_evidence": "baseline do alvo"
+        },
+        {
+          "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+          "observable": "Compatibilidade da estratégia com contexto e restrições",
+          "safe_procedure": "Comparar a estratégia observada com o contexto fornecido e conferir cada restrição antes de propor transferência.",
+          "pass_criterion": "Premissas e restrições verificadas com evidência localizada.",
+          "reject_criterion": "Uma premissa ou restrição necessária é incompatível.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "aplicabilidade ao alvo"
+        },
+        {
+          "question": "O mecanismo produz o efeito desejado?",
+          "observable": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+          "safe_procedure": "Planejar experimento isolado comparando baseline e variante; não executar nem modificar o alvo nesta investigação.",
+          "pass_criterion": "Definir antes do experimento uma métrica e um limiar de ganho, mantendo as restrições.",
+          "reject_criterion": "Efeito abaixo do limiar, regressão ou violação de restrição.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "experimento comparativo e limiares pré-definidos"
+        }
+      ],
+      "derivation": "RULE_DERIVED",
+      "status": "INCONCLUSIVE",
+      "adoption_disposition": "NOT_AN_ADOPTION_DECISION"
+    }
+  ],
+  "extraction_gaps": [],
+  "provenance": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "bundle_sha256": "2a8f52756a94a3a00d00ecccde66d767c6a646078b56eda0b84a3a4f4b201aa4",
+      "assessments_sha256": "a89515cf7c8d1a665d42b04899754f029083786d88e4bb998974922a1bb0fd61",
+      "complete": true,
+      "assessment_origin": "DECLARED_NOT_REASSESSED"
+    }
+  ],
+  "limitations": [
+    "As avaliações fornecidas não foram refeitas nem autenticadas externamente.",
+    "Hashes e localizadores verificam vínculo com os bytes fornecidos, não comportamento executado.",
+    "O alvo, suas restrições e o efeito desejado ainda precisam de validação.",
+    "Nenhuma decisão de reúso ou autorização de adoção foi produzida.",
+    "A busca de contraevidência se limita às avaliações e bytes fornecidos; o ecossistema não foi pesquisado."
+  ]
+}

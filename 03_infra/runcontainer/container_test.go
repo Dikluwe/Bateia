@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/runcontainer/container_test.md
  * @layer L3
- * @updated 2026-09-19
+ * @updated 2026-10-06
  */
 
 package runcontainer_test
@@ -263,7 +263,10 @@ func step0079WaitForLifecycle(
 	want domain.RecommendationLifecycle,
 ) domain.RecommendationRunView {
 	t.Helper()
-	deadline := time.Now().Add(2 * time.Second)
+	deadline := time.Now().Add(30 * time.Second)
+	if testDeadline, ok := t.Deadline(); ok && testDeadline.Before(deadline) {
+		deadline = testDeadline.Add(-time.Second)
+	}
 	var last domain.RecommendationRunView
 	for time.Now().Before(deadline) {
 		view, err := get(context.Background(), id)
@@ -274,7 +277,11 @@ func step0079WaitForLifecycle(
 		if view.Lifecycle == want {
 			return view
 		}
-		time.Sleep(time.Millisecond)
+		if view.Lifecycle == domain.RunFailed || view.Lifecycle == domain.RunCancelled || view.Lifecycle == domain.RunInterrupted {
+			t.Fatalf("unexpected terminal run while waiting for %s: %+v", want, view)
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
+	t.Fatalf("timed out waiting for %s: last run=%+v", want, last)
 	return last
 }

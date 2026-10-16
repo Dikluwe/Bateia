@@ -1,0 +1,56 @@
+{
+  "schema_version": "phase-scenario-evaluation-v1",
+  "reference_origin": "AUTHOR_MODEL_NOT_INDEPENDENT",
+  "model_code_executed": true,
+  "candidate_code_executed": false,
+  "independent_semantic_accuracy_measured": false,
+  "race_free_model_implies_candidate_race_free": false,
+  "same_source_observation_applies_to_sequential_and_concurrent_hypotheses": true,
+  "atomicity_in_candidate_verified": false,
+  "normalized_witness_replay_identical": true,
+  "raw_test_logs_expected_to_differ_in_timing": true,
+  "source_analyzer": "go-concurrency-syntax-0116-v8",
+  "source_input_sha256": "26c52bfa7ea3bb5d844e9ddd311237594f3607409e3e0f534e4e3c35cdc558d8",
+  "environment_sha256": "9a6ca69a40d36905a4362ba253e346fde9433097a5e5d54f2786afeb20ec0608",
+  "witnesses": [
+    {
+      "scenario": "CHECK_THEN_INITIALIZE_THEN_WRITE",
+      "scope": "AUTHOR_MODEL_ONLY",
+      "accepted": true,
+      "initialized": true,
+      "limit": 7,
+      "artificial_interleaving": true
+    },
+    {
+      "scenario": "CONFIGURE_THEN_INITIALIZE",
+      "scope": "AUTHOR_MODEL_ONLY",
+      "accepted": true,
+      "initialized": true,
+      "limit": 3,
+      "artificial_interleaving": false
+    },
+    {
+      "scenario": "INITIALIZE_BEFORE_CONCURRENT_CHECK",
+      "scope": "AUTHOR_MODEL_ONLY",
+      "accepted": false,
+      "initialized": true,
+      "limit": 0,
+      "artificial_interleaving": false
+    },
+    {
+      "scenario": "INITIALIZE_THEN_CONFIGURE",
+      "scope": "AUTHOR_MODEL_ONLY",
+      "accepted": false,
+      "initialized": true,
+      "limit": 3,
+      "artificial_interleaving": false
+    }
+  ],
+  "assumptions": [
+    "The initialization marker and configured limit are represented by separate atomic variables.",
+    "A test-only rendezvous pauses the writer after its guard and before its store.",
+    "The model omits candidate channels, sync.Once, worker execution, callbacks and receiver aliases.",
+    "Only model witnesses are executed; candidate sources are observed statically."
+  ],
+  "candidate_supported_usage_contract_reviewed": false
+}

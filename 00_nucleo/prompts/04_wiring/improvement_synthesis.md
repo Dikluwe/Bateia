@@ -14,3 +14,7 @@ confere com o contrato; falha impede inicialização. Apenas composição: nenhu
 regra, validação, hash, resolução de source, ranking, status, parsing de conteúdo
 ou política em L4. O pacote multifile deve compilar com
 `go build -o /tmp/bateia-step0028 ./04_wiring`.
+
+## Admissão por registro no passo 0104
+
+Delegar a admissão não vazia e a validação de capacidades/IDs ao construtor L1 NewMarketDiscoveryRegistry. Não impor cardinalidade fixa em L4. Aceitar conjuntos válidos unitários ou ampliados, mantendo a mesma configuração e lifecycle; recusar configuração inválida antes de criar recursos.

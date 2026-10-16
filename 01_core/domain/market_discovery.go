@@ -141,15 +141,36 @@ type FOSSLinkage struct {
 }
 
 const (
-	ConnectorAppleItunes     = "apple-itunes-search-software"
-	ConnectorGooglePlay      = "google-play-store-apps"
-	ConnectorFDroid          = "fdroid-foss-apps"
-	ConnectorGiteeCatalog    = "gitee-repository-catalog"
-	ConnectorCodebergCatalog = "codeberg-repository-catalog"
-	ConnectorGitLabCatalog   = "gitlab-repository-catalog"
-	ConnectorGitHubCatalog   = "github-repository-catalog"
-	ConnectorSourcegraph     = "sourcegraph-repository-catalog"
+	ConnectorAppleItunes      = "apple-itunes-search-software"
+	ConnectorGooglePlay       = "google-play-store-apps"
+	ConnectorFDroid           = "fdroid-foss-apps"
+	ConnectorGiteeCatalog     = "gitee-repository-catalog"
+	ConnectorCodebergCatalog  = "codeberg-repository-catalog"
+	ConnectorGitLabCatalog    = "gitlab-repository-catalog"
+	ConnectorBitbucketCatalog = "bitbucket-repository-catalog"
+	ConnectorGitHubCatalog    = "github-repository-catalog"
+	ConnectorSourcegraph      = "sourcegraph-repository-catalog"
+	ConnectorZBMath           = "zbmath-research-software"
+	ConnectorJOSS             = "joss-reviewed-software"
 )
+
+// ScholarlyEvidence records the claim made by a research catalogue.
+// INDEXED is bibliographic indexing; PEER_REVIEWED is JOSS acceptance.
+type ScholarlyEvidence struct {
+	Catalogue       string                     `json:"catalogue"`
+	RecordURL       string                     `json:"record_url"`
+	DOI             string                     `json:"doi,omitempty"`
+	ReviewURL       string                     `json:"review_url,omitempty"`
+	Assessment      string                     `json:"assessment"`
+	ReferenceCount  int                        `json:"reference_count,omitempty"`
+	RelatedSoftware []ScholarlyRelatedSoftware `json:"related_software,omitempty"`
+}
+
+// ScholarlyRelatedSoftware is a catalogue link, not a verified dependency or equivalent product.
+type ScholarlyRelatedSoftware struct {
+	Name      string `json:"name"`
+	RecordURL string `json:"record_url"`
+}
 
 type ProductRepositoryLink struct {
 	OwnerRepo string               `json:"owner_repo"`
@@ -188,6 +209,7 @@ type ProductCandidate struct {
 	Resolution         IdentityResolution      `json:"resolution"`
 	Witnesses          []IdentityWitness       `json:"witnesses"`
 	FOSSLink           *FOSSLinkage            `json:"foss_link,omitempty"`
+	ScholarlyEvidence  *ScholarlyEvidence      `json:"scholarly_evidence,omitempty"`
 }
 
 type MarketDiscoveryAttempt struct {

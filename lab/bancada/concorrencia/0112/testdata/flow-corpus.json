@@ -1,0 +1,299 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "baseline",
+      "family": "baseline",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "7e0e6963c517c794949fed4a8b8def6595ed8bee4cc3d222f29580496e3c7da5"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "renamed",
+      "family": "baseline",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Permit chan struct{}\n type Launcher struct{}\n func(r *Launcher) Launch(f func()){go f()}\n type P struct{permits Permit;other Permit;runner Launcher}\n func(p *P) Submit(f func()){\n  select{case p.permits<-struct{}{}:p.runner.Launch(func(){p.execute(f)})}\n }\n func(p *P) execute(f func()){defer p.permits.giveBack();f()}\n func(l Permit) giveBack(){if l!=nil{<-l}}\n",
+            "sha256": "14a60fcc3a9047eebe0ef87067c130d51c14bcef60965eb98c36f95db9734a3a"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "no-go",
+      "family": "no-go",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "a24995a071b1c42f4e26d9fd526dd8a889acac505589d4c89fe748ae76c44cbe"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "other-receive",
+      "family": "other-receive",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{var x Gate;<-x}}\n",
+            "sha256": "49112ad70138bacbf929fcad0fb386a0eb07de096bb0db580ae464c13a9cb067"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1
+      }
+    },
+    {
+      "id": "other-field",
+      "family": "other-field",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.other<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "a9fa4b9b97975d56437e7e3809df6a9da8ff023f903edde7df9f1a5d392fcfed"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1
+      }
+    },
+    {
+      "id": "other-case",
+      "family": "other-case",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:return;default:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "a472aa6dd41cce1ec96b4a21218d61346b0af51957d85b17cc7216357ddf56fd"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "nested-launch",
+      "family": "nested-launch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:func(){p.runner.Start(func(){p.work(f)})}()}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "0c6c05317fac81e290deda38ee18bbf1ea9d96d6dc0485a6eabefef274fa87b3"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "conditional-defer",
+      "family": "conditional-defer",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){if f!=nil {defer p.tokens.release()};f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "6bd522211c0ce566eb26a7a9d5e1aaa9d0638a6dc71698da3baae08f99582d57"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "deferred-launch",
+      "family": "deferred-launch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:defer p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "2499572a52f03f4a9e7a8d4521abff51f13719e2ce7716d9fec1a41f2941a857"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "unreachable-launch",
+      "family": "unreachable-launch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:return;p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "45fc0735e417660b97fa451c98a06df002e946acd8370ffe2bb6724c1eaeeb7b"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 3,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "SEND_CASE_CONTAINS_GO_CALL": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "indirect",
+      "family": "indirect",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:launch:=p.runner.Start;launch(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n",
+            "sha256": "ec9d97de6249c0151416f14e4f406ab4379bd054caeea90f28f11451970e1575"
+          }
+        ]
+      },
+      "expected_relations": {
+        "STATIC_CALL_TARGET": 2,
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1,
+        "DEFERRED_RECEIVER_RECEIVE": 1,
+        "SAME_DECLARED_CHANNEL_FIELD": 1
+      }
+    },
+    {
+      "id": "interface",
+      "family": "interface",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p; type I interface{Start(func())};type R struct{};func(r R)Start(f func()){go f()};func submit(i I,c chan struct{}){select{case c<-struct{}{}:i.Start(func(){})}}",
+            "sha256": "86655226b94817c09af17d31e6a5d0a359bae60a7a0f5b44826c9bcd632b4802"
+          }
+        ]
+      },
+      "expected_relations": {
+        "FUNCTION_CONTAINS_GO": 1,
+        "CALL_ARGUMENT_FUNCTION": 1
+      }
+    },
+    {
+      "id": "type-error",
+      "family": "type-error",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FLOW_FIXTURE_0112",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan struct{}\n type Runner struct{}\n func(r *Runner) Start(f func()){go f()}\n type P struct{tokens Gate;other Gate;runner Runner}\n func(p *P) Submit(f func()){\n  select{case p.tokens<-struct{}{}:p.runner.Start(func(){p.work(f)})}\n }\n func(p *P) work(f func()){defer p.tokens.release();f()}\n func(l Gate) release(){if l!=nil{<-l}}\n\nvar bad=missing\n",
+            "sha256": "b4bebcacde3beeed444996643922d5441c060215bbef32d03bd09b3547f3b6b6"
+          }
+        ]
+      },
+      "expected_relations": {}
+    }
+  ]
+}

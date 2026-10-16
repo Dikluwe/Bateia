@@ -1,0 +1,440 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "named",
+      "family": "named",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){_=make(C,3)}",
+            "sha256": "e4956a22632223628671f6b8e1283e3e709816fbe391fd70af38a49aa8d46dd9"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "alias",
+      "family": "alias",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C = chan int;type D = C;func f(){_=make(D,3)}",
+            "sha256": "22d0eb24987c3428421e0b5eb7fcf984dfcee404b984d6cb7ad59aaae72b9c21"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "local",
+      "family": "local",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func f(){type C chan int;_=make(C,3)}",
+            "sha256": "b95b0ae8e1a2a9f7c94754fd2ed4a9740028fd1961a54b69065760bc5c49389c"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "rename",
+      "family": "named",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Renamed chan int;func other(){_=make(Renamed,3)}",
+            "sha256": "b8f2c3aad967851c639846323c89baafc3402436769bcbd3ccabe281f1b94223"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "slice",
+      "family": "slice",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C []int;func f(){_=make(C,3)}",
+            "sha256": "13bd9d51cece7fd4f6e82e7657df1924200b3571c1acba052e159a2e9f1b586c"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "map",
+      "family": "map",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C map[int]int;func f(){_=make(C,3)}",
+            "sha256": "586fe665435e71f2bef1ad6ff41b307e917040f3037732d90b2320b186536928"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "shadow-make",
+      "family": "shadow-make",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){make:=func(int,int)int{return 0};_=make(1,3)}",
+            "sha256": "fb59ff5fdfe3557b67f6641b5b303f930d565c63317fd7a3c38bff511612faae"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED"
+      ]
+    },
+    {
+      "id": "shadow-type",
+      "family": "shadow-type",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){C:=0;_=make(C,3)}",
+            "sha256": "9cc30c62f40ffbcfba1d26ea7ead6a424079d7e416922db94c70c1511a8e62b1"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+        "NAMED_CHANNEL_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "cycle",
+      "family": "cycle",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C = D;type D = C;func f(){_=make(C,3)}",
+            "sha256": "43c3d2991fb458ebd1fce75411db0cc062cf0270a719a9a9b1334e25a6258a3f"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+        "NAMED_CHANNEL_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "missing-import",
+      "family": "missing-import",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;import \"missing.invalid/package\";type C chan int;func f(){_=make(C,3)}",
+            "sha256": "d7149b2649244fa91748aa749576844570f941f036d114a2e42ede7ee9f6bb96"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+        "NAMED_CHANNEL_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "unrelated-error",
+      "family": "unrelated-error",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){_=make(C,3);_=missing}",
+            "sha256": "0582e29ad7fb41e44e1d98154951768755632cae2752d032dc81157da53c7308"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+        "NAMED_CHANNEL_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "invalid-capacity",
+      "family": "invalid-capacity",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){_=make(C,-3)}",
+            "sha256": "f5e48e92261f088155579c223b1bf356fddbc97b3febdb2ce3271d730b6bec5e"
+          }
+        ]
+      },
+      "expected": [],
+      "required_gaps": [
+        "BUILD_SELECTION_NOT_VERIFIED",
+        "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+        "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+        "NAMED_CHANNEL_TYPE_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "dynamic",
+      "family": "dynamic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(n int){_=make(C,n)}",
+            "sha256": "6c6a7eaa3a4d40a5d86d7441a4174560c29fa8006ce80f9c7f558546ab6d8cd4"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_EXPRESSION",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "ADMISSION_BOUND_UNRESOLVED",
+        "WORKER_BOUND_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "unbuffered",
+      "family": "unbuffered",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){_=make(C)}",
+            "sha256": "ce0917a98ec13a1b3da22ddf1be5e437b4299cc97c882bd0e4d755fa3b0725dd"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "UNBUFFERED_FORM",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "ADMISSION_BOUND_UNRESOLVED",
+        "WORKER_BOUND_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "zero",
+      "family": "zero",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan int;func f(){_=make(C,0)}",
+            "sha256": "fe85b90a55acc0b2cbb3b1e6c19638e66ec8a8983023de9c6a3e07c506f8bcbe"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:0",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "ADMISSION_BOUND_UNRESOLVED",
+        "WORKER_BOUND_UNRESOLVED"
+      ]
+    },
+    {
+      "id": "directional",
+      "family": "directional",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_FIXTURE_0110",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type C chan<- int;func f(){_=make(C,3)}",
+            "sha256": "f518dc0423296336c5355f87971ab2dca1b72b9d388a4311e0067f18ac01312e"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "property": "channel_buffer_syntax",
+          "value": "CAPACITY_LITERAL:3",
+          "count": 1
+        },
+        {
+          "property": "channel_type_identity",
+          "value": "RESOLVED_CHANNEL_TYPE",
+          "count": 1
+        }
+      ],
+      "required_gaps": [
+        "ADMISSION_BOUND_UNRESOLVED",
+        "WORKER_BOUND_UNRESOLVED"
+      ]
+    }
+  ]
+}

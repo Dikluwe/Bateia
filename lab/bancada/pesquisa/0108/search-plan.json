@@ -1,0 +1,101 @@
+{
+  "idea": {
+    "problem": "Delimitar um avaliador estrutural de propriedades de concorrência em Go para o Bateia sem promover indícios sintáticos a prova de comportamento",
+    "capabilities": [
+      "Go channel analysis",
+      "static single assignment",
+      "concurrency bug benchmarks",
+      "goroutine leak detection",
+      "cancellation scope"
+    ],
+    "constraints": [
+      "preservar Tekt e análise pura quando possível",
+      "não executar candidatos nesta pesquisa",
+      "registrar configuração de build e limites de análise",
+      "não usar bugs conhecidos como referência de todas as propriedades"
+    ],
+    "non_goals": [
+      "provar ausência universal de deadlocks",
+      "implantar analisador completo",
+      "mudar o classificador produtivo"
+    ]
+  },
+  "expansions": [
+    {
+      "id": "q1",
+      "facet": "capability",
+      "query": "GCatch concurrency",
+      "discriminators": [
+        "GCatch"
+      ],
+      "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+      "covers": [
+        "GCatch"
+      ],
+      "derivation": {
+        "strategy": "manual-research-0108",
+        "rule_ids": [],
+        "source_ids": [
+          "research-0107-proposed-pilot"
+        ]
+      }
+    },
+    {
+      "id": "q2",
+      "facet": "capability",
+      "query": "\"localized abstract interpretation\" Go",
+      "discriminators": [
+        "localized abstract interpretation"
+      ],
+      "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+      "covers": [
+        "localized abstract interpretation"
+      ],
+      "derivation": {
+        "strategy": "manual-research-0108",
+        "rule_ids": [],
+        "source_ids": [
+          "research-0107-proposed-pilot"
+        ]
+      }
+    },
+    {
+      "id": "q3",
+      "facet": "capability",
+      "query": "\"GoBench\" \"concurrency\"",
+      "discriminators": [
+        "GoBench"
+      ],
+      "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+      "covers": [
+        "GoBench"
+      ],
+      "derivation": {
+        "strategy": "manual-research-0108",
+        "rule_ids": [],
+        "source_ids": [
+          "research-0107-proposed-pilot"
+        ]
+      }
+    },
+    {
+      "id": "q4",
+      "facet": "capability",
+      "query": "\"goroutine leak\" detection",
+      "discriminators": [
+        "goroutine leak"
+      ],
+      "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+      "covers": [
+        "goroutine leak"
+      ],
+      "derivation": {
+        "strategy": "manual-research-0108",
+        "rule_ids": [],
+        "source_ids": [
+          "research-0107-proposed-pilot"
+        ]
+      }
+    }
+  ]
+}

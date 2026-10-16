@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/r5_gate/discriminatory_step0026_r5_test.md
  * @layer L4
- * @updated 2026-09-01
+ * @updated 2026-10-06
  */
 package r5gate
 
@@ -112,6 +112,7 @@ type runtimeSubject struct {
 	recoveryGate         chan struct{}
 	startEntered         chan struct{}
 	startProceed         chan struct{}
+	startRecoveryBlocked chan struct{}
 	logs                 strings.Builder
 }
 
@@ -176,6 +177,9 @@ func (s *runtimeSubject) Start(_ context.Context, key string, req Request) (Rece
 		}
 	}
 	if s.recoveryGate != nil && s.defect != "M28" {
+		if s.startRecoveryBlocked != nil {
+			s.startRecoveryBlocked <- struct{}{}
+		}
 		<-s.recoveryGate
 	}
 	if s.defect != "M09" && s.defect != "M43" && (!validKey(key) || !validRequest(req)) {

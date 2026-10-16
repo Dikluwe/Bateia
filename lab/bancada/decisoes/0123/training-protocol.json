@@ -1,0 +1,71 @@
+{
+  "schema_version": "declaration-relation-training-plan-v1",
+  "status": "PLANNED_NOT_TRAINED",
+  "task": "Classify relation between a scoped claim and supplied API documentation, not runtime correctness.",
+  "labels": {
+    "supports": "Declaration explicitly supports claim under stated conditions.",
+    "contradicts": "Declaration explicitly rules out claim under stated conditions.",
+    "undetermined": "Missing information, ambiguous conditions, unrelated declaration or incompatible statements."
+  },
+  "dataset_target_not_collected": {
+    "initial_examples": 600,
+    "repository_families": 12,
+    "train_families": 6,
+    "development_families": 2,
+    "calibration_families": 2,
+    "final_test_families": 2,
+    "representative_of_production": false
+  },
+  "native_training_row": {
+    "state": "CLAIM: ...\nCONDITIONS: ...\nSOURCE: ...",
+    "questions": "Same frozen declaration_relation schema as the diagnostic pilot; not rewritten per example.",
+    "expected": {"declaration_relation": "Reviewed label"}
+  },
+  "provenance_sidecar_required": [
+    "example_id", "repository_family_id", "repository", "commit",
+    "source_path", "source_span", "source_sha256", "source_authority",
+    "api_symbol", "claim_scope", "conditions", "question_schema_sha256",
+    "label_review_status", "reviewer_labels", "adjudication", "split",
+    "source_license", "paraphrase_parent_id"
+  ],
+  "annotation": {
+    "reviewers_blind_to_model_predictions": true,
+    "two_independent_reviews_before_adjudication": true,
+    "unresolved_reviewer_disagreement_is_not_an_undetermined_gold_label": true,
+    "model_labels_are_not_gold": true,
+    "generated_paraphrases_require_review": true,
+    "test_assertion_not_executed_is_not_runtime_verification": true
+  },
+  "leakage_controls": {
+    "assign_family_split_before_augmentation": true,
+    "all_versions_forks_and_paraphrases_same_split": true,
+    "exact_and_near_duplicate_review": true,
+    "known_diagnostic_repositories_excluded_from_final_test": ["sourcegraph/conc", "Jeffail/tunny", "alitto/pond"],
+    "final_test_is_not_used_for_prompt_selection_checkpoint_selection_or_temperature_fitting": true
+  },
+  "challenge_slices": [
+    "explicit_permission", "explicit_prohibition", "missing_evidence",
+    "negation_and_double_negation", "before_after_initialization",
+    "after_wait_vs_after_close", "stopped_pool_exception",
+    "method_family_With_star_vs_specific_method",
+    "interface_vs_implementation_scope", "zero_vs_positive_boundary",
+    "documentation_vs_unexecuted_test_vs_executed_behavior",
+    "irrelevant_or_injected_instruction_in_source"
+  ],
+  "experiment_order": [
+    "Frozen base model and simple rule baseline on development data",
+    "Small supervised labeled-data fine-tune using native Laya trainer, initially freeze_encoder=true",
+    "Compare unfreezing encoder only if development results justify the cost",
+    "Fit temperatures and abstention policy on repository-separated calibration data",
+    "Freeze checkpoint, prompt, tokenizer, dtype, budgets and policy",
+    "Run final test once and report uncertainty and challenge slices"
+  ],
+  "native_trainer_note": "TrainConfig normally splits calibration items internally at random. Set calib_frac=0.0 for the already grouped train set, pass eval_data from development only, then perform separate fitting on the reserved calibration set. Validate this path before training. No trained checkpoint or fitted policy exists yet.",
+  "metrics": [
+    "confusion_matrix", "false_support_on_contradicts_or_undetermined",
+    "per_label_precision_recall", "Brier_score", "calibration_by_confidence",
+    "coverage_vs_selective_error", "option_order_stability", "token_coverage",
+    "cold_and_warm_latency", "memory", "review_rate"
+  ],
+  "promotion": "Do not set a confidence threshold from these four diagnostics. Compare improvement against frozen base/rule, including false-support and coverage uncertainty. Model confidence never upgrades source authority."
+}

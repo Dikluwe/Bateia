@@ -1,0 +1,212 @@
+{
+  "checkpoint_revision": "7b928d828b7b0e022f929d9bd2e44165aa270148",
+  "question_sha256": "3ccbfeffe3dcf9b488beb2ccac9bdbf8f9bb4f7bf041e0ba1d7df0a41bc544c7",
+  "training_performed": false,
+  "independent_accuracy_measured": false,
+  "cases": [
+    {
+      "id": "original",
+      "state": "CLAIM: WithMaxGoroutines may reconfigure this pool after its first Go call.\nSOURCE: // The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.",
+      "origin": "KNOWN_AUTHOR_REFERENCE",
+      "expected_author_only": "contradicts",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "undetermined",
+            "probabilities": {
+              "supports": 0.2293,
+              "contradicts": 0.1514,
+              "undetermined": 0.6194
+            },
+            "confidence": 0.1624,
+            "answer_confidence": 0.6194,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 146,
+          "output_tokens": 0,
+          "state_tokens": 46,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.5353955279570073
+    },
+    {
+      "id": "family_claim",
+      "state": "CLAIM: Configuration methods (With*) may reconfigure this pool after its first Go call.\nSOURCE: // The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.",
+      "origin": "SYNTHETIC_CLAIM_SAME_SOURCE",
+      "expected_author_only": "contradicts",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "undetermined",
+            "probabilities": {
+              "supports": 0.1944,
+              "contradicts": 0.1502,
+              "undetermined": 0.6555
+            },
+            "confidence": 0.199,
+            "answer_confidence": 0.6555,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 145,
+          "output_tokens": 0,
+          "state_tokens": 45,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.5080516960006207
+    },
+    {
+      "id": "named_source",
+      "state": "CLAIM: WithMaxGoroutines may reconfigure this pool after its first Go call.\nSOURCE: WithMaxGoroutines will panic if it is used after calling Go() for the first time.",
+      "origin": "SYNTHETIC_SOURCE_NOT_UPSTREAM",
+      "expected_author_only": "contradicts",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "undetermined",
+            "probabilities": {
+              "supports": 0.2818,
+              "contradicts": 0.3269,
+              "undetermined": 0.3913
+            },
+            "confidence": 0.0082,
+            "answer_confidence": 0.3913,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 143,
+          "output_tokens": 0,
+          "state_tokens": 43,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.5146739640040323
+    },
+    {
+      "id": "family_binding",
+      "state": "CLAIM: WithMaxGoroutines may reconfigure this pool after its first Go call.\nSOURCE: // The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.\nCONTEXT: WithMaxGoroutines is one of the configuration methods named With*.",
+      "origin": "AUTHOR_EXPLICIT_FAMILY_BINDING_NOT_UPSTREAM_QUOTE",
+      "expected_author_only": "contradicts",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "supports",
+            "probabilities": {
+              "supports": 0.787,
+              "contradicts": 0.0771,
+              "undetermined": 0.1359
+            },
+            "confidence": 0.4017,
+            "answer_confidence": 0.787,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 165,
+          "output_tokens": 0,
+          "state_tokens": 65,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.6789586840895936
+    },
+    {
+      "id": "missing_source",
+      "state": "CLAIM: WithMaxGoroutines may reconfigure this pool after its first Go call.\nSOURCE: This package provides a pool.",
+      "origin": "SYNTHETIC_INSUFFICIENT_SOURCE",
+      "expected_author_only": "undetermined",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "undetermined",
+            "probabilities": {
+              "supports": 0.1342,
+              "contradicts": 0.15,
+              "undetermined": 0.7158
+            },
+            "confidence": 0.2778,
+            "answer_confidence": 0.7158,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 128,
+          "output_tokens": 0,
+          "state_tokens": 28,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.41000832593999803
+    },
+    {
+      "id": "original_repeat",
+      "state": "CLAIM: WithMaxGoroutines may reconfigure this pool after its first Go call.\nSOURCE: // The configuration methods (With*) will panic if they are used after calling\n// Go() for the first time.",
+      "origin": "REPEAT",
+      "expected_author_only": "contradicts",
+      "raw_result": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "declaration_relation": {
+            "type": "choice",
+            "choice": "undetermined",
+            "probabilities": {
+              "supports": 0.2293,
+              "contradicts": 0.1514,
+              "undetermined": 0.6194
+            },
+            "confidence": 0.1624,
+            "answer_confidence": 0.6194,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 146,
+          "output_tokens": 0,
+          "state_tokens": 46,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "elapsed_seconds": 0.3958706590346992
+    }
+  ]
+}

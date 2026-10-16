@@ -1,0 +1,243 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "no-event",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()}",
+            "sha256": "28d2c7724f83d135a26ddd37a22ae86200d4ed52d81ff60d503ebcffed275e06"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {}
+    },
+    {
+      "id": "write",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){p.tokens=make(Gate,2)}",
+            "sha256": "2363097e108f6c3820765e7e6b7c92871ac582437d618230ee1a4d8110d1fa66"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "FIELD_WRITE": 1
+      }
+    },
+    {
+      "id": "alias-write",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){alias:=p;alias.tokens=make(Gate,2)}",
+            "sha256": "9010f5f41354f32ad21bbef88a465432beced27fa8ec2f690951b1f640e022e5"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "FIELD_WRITE": 1
+      }
+    },
+    {
+      "id": "paren-write",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){(p.tokens)=make(Gate,2)}",
+            "sha256": "ab5e5f0337fdc07a5f81305e721eeb2de65d7c71dd03a13fc024e2dfea377ade"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "FIELD_WRITE": 1
+      }
+    },
+    {
+      "id": "aggregate",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){*p=P{}}",
+            "sha256": "18e130810cd9e892aa006d649a5e9d9855e7d165309a2bf0b723580f2daab796"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "AGGREGATE_OR_BASE_WRITE": 1
+      }
+    },
+    {
+      "id": "rebind",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){p=&P{};_=p}",
+            "sha256": "e66a2b7faad35cb061ee5388e110fd3eb5d03cce3a6b7d90f80d4da520a5fb29"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "AGGREGATE_OR_BASE_WRITE": 1
+      }
+    },
+    {
+      "id": "address",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func(p *P)configure(){_ = &(p.tokens)}",
+            "sha256": "a1f92c556943651704e1cdb811ec256ab67d3aaa703c6170168298cb533e5766"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "FIELD_ADDRESS_EXPOSED": 1
+      }
+    },
+    {
+      "id": "argument",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};func consume(*P){};func(p *P)configure(){consume(p)}",
+            "sha256": "04d172129b923993131cf46f39e325d946a6234de8b79e840728a881d82d724b"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "RECEIVER_ARGUMENT_EXPOSURE": 1
+      }
+    },
+    {
+      "id": "capture",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;go func(){defer p.tokens.release()}()}",
+            "sha256": "f2807136a3a3382fe8f0d23c8600b23baee77d0b9e2b196aa1095af76148e1fe"
+          }
+        ]
+      },
+      "expected_base_link": "SAME_BASE_OBJECT",
+      "expected_events": {
+        "RECEIVER_CAPTURE": 1
+      }
+    },
+    {
+      "id": "distinct-base",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1};func(q *P)work(){defer q.tokens.release()}",
+            "sha256": "c92f3d269929d29e00795f2fd56e1805b8084d2627bc87309b41c0c3007eba2b"
+          }
+        ]
+      },
+      "expected_base_link": "DISTINCT_BASE_OBJECTS",
+      "expected_events": {}
+    },
+    {
+      "id": "unknown-base",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func get()*P{return nil};func run(){get().tokens<-1;defer get().tokens.release()}",
+            "sha256": "01f8bb4e492404c54fb614cbeca7e2d6c0912092d3212ebb30c9ee76da308a17"
+          }
+        ]
+      },
+      "expected_base_link": "UNRESOLVED_BASE_EXPRESSION",
+      "expected_events": {}
+    },
+    {
+      "id": "different-field",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.other.release()}",
+            "sha256": "e4fabe84d117d2cb2e8ecf859521bce2a12f33501ea854b924b3b13c7a6034e3"
+          }
+        ]
+      },
+      "expected_base_link": null,
+      "expected_events": {}
+    },
+    {
+      "id": "invalid-type",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_IDENTITY_FIXTURE_0115",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;type Gate chan int;type P struct{tokens Gate;other Gate};func(l Gate)release(){<-l};func(p *P)run(){p.tokens<-1;defer p.tokens.release()};var bad=missing",
+            "sha256": "cd657646b869105a63c57f7c02da2fab79e843c82aeec13c9aa582af41af6e5c"
+          }
+        ]
+      },
+      "expected_base_link": null,
+      "expected_events": {}
+    }
+  ]
+}

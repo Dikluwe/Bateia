@@ -208,8 +208,8 @@ func TestStep0034FederatedConnectorsComposition(t *testing.T) {
 	if err != nil {
 		t.Fatalf("erro ao compor conectores federados: %v", err)
 	}
-	if len(connectors) != 8 {
-		t.Fatalf("esperados 8 conectores federados, obtidos: %d", len(connectors))
+	if len(connectors) != 10 {
+		t.Fatalf("esperados 10 conectores federados, obtidos: %d", len(connectors))
 	}
 
 	foundIDs := map[string]bool{}
@@ -226,11 +226,32 @@ func TestStep0034FederatedConnectorsComposition(t *testing.T) {
 		"gitee-repository-catalog",
 		"codeberg-repository-catalog",
 		"gitlab-repository-catalog",
+		domain.ConnectorZBMath,
+		domain.ConnectorJOSS,
 	}
 
 	for _, wantID := range expectedIDs {
 		if !foundIDs[wantID] {
 			t.Fatalf("conector esperado %s não encontrado no conjunto federado", wantID)
+		}
+	}
+}
+
+func TestBitbucketConfiguredInDefaultAndFederatedDiscovery(t *testing.T) {
+	t.Setenv("BATEIA_BITBUCKET_WORKSPACES", "example,another")
+	for _, build := range []func() ([]domain.MarketDiscoveryConnector, error){defaultMarketDiscoveryConnectors, federatedMarketDiscoveryConnectors} {
+		connectors, err := build()
+		if err != nil {
+			t.Fatal(err)
+		}
+		found := false
+		for _, connector := range connectors {
+			if connector.Capabilities().ID == domain.ConnectorBitbucketCatalog {
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("Bitbucket connector missing")
 		}
 	}
 }

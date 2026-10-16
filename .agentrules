@@ -6,7 +6,7 @@ Este arquivo é a **Fonte Única da Verdade (SSOT)** de regras e restrições es
 
 ## 1. O Que É Este Projeto
 
-**Bateia** transforma uma ideia de software em uma decisão de reúso fundamentada: `FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`. Descoberta, triagem, extração e análise são meios de produzir evidência; não são, isoladamente, a promessa do produto.
+**Bateia** investiga software para produzir oportunidades de reúso e insights de engenharia sustentados por evidências. A decisão de reúso (`FORK`, `EXTEND`, `COMPOSE`, `INTEGRATE`, `REFERENCE`, `BUILD` ou `INCONCLUSIVE`) é uma saída; mecanismos observados, comparações, hipóteses e planos de validação também compõem o propósito. Descoberta, triagem e extração alimentam essas capacidades sem promover hipóteses a fatos.
 
 ---
 
@@ -92,3 +92,10 @@ ou equivalentes, que L4 não contém bancadas e que o produto não importa `lab/
 Faça exegese antes de mover ou renomear código herdado. Prefira fatias pequenas e reversíveis por capacidade. Dentro de uma capacidade, separe `phase` (transição), `container` (estado e invariantes) e `facade` (API pública) quando isso reduzir acoplamento. Nomes brownfield podem permanecer até existir obrigação e ADR que justifiquem a migração: limpeza Tekt é compressão causal e contenção, não renomeação estética em massa.
 
 Gates selados preservam recibos, hashes e caminhos históricos. Sua reprodução usa o commit registrado no próprio gate; não reescreva evidência antiga para fazê-la parecer emitida pela árvore atual.
+
+
+## 8. Organização arquitetural para agentes
+
+Tekt é A0, a arquitetura governante. Organizações locais candidatas A1 (investigação, execução durável e rastreabilidade/revisão) e seus mecanismos A2 devem preservar L0–L4. Não confundir nível de autoridade com camada, import ou sequência de execução. Antes de alterar, localizar ownership no [mapa](00_nucleo/arquitetura/README.md) e ler o contrato proprietário. O ADR-0008 e o passo 0103 registram a hierarquia em experimentação; não atestam conformidade completa do código.
+
+Na síntese de insights, `improvement_analysis.go` possui derivação, projeções e estado de negócio. `improvement_synthesis.go` possui admissão, resolução validada de fontes, lifecycle e publicação. Ambos permanecem em L1; I/O concreto continua nas portas implementadas em L3. Sucesso do job nunca equivale a hipótese sustentada ou adoção aprovada.

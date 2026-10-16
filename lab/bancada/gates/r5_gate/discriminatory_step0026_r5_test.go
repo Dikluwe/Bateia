@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/r5_gate/discriminatory_step0026_r5_test.md
  * @layer L4
- * @updated 2026-09-01
+ * @updated 2026-10-06
  */
 package r5gate
 
@@ -363,6 +363,7 @@ func observeMutation(t *testing.T, id, defect string) observation {
 		s.recoveryGate = make(chan struct{})
 		s.startEntered = make(chan struct{})
 		s.startProceed = make(chan struct{})
+		s.startRecoveryBlocked = make(chan struct{})
 		recovered := make(chan error, 1)
 		started := make(chan string, 1)
 		go func() { recovered <- s.Recover(ctx) }()
@@ -373,14 +374,16 @@ func observeMutation(t *testing.T, id, defect string) observation {
 		select {
 		case <-started:
 			early = true
-		case <-time.After(100 * time.Millisecond):
+		case <-s.startRecoveryBlocked:
+		case <-time.After(30 * time.Second):
+			t.Fatal("Start neither waited for recovery nor completed")
 		}
 		o.Calls = append(o.Calls, fmt.Sprintf("accepted-before-recovery=%t", early))
 		close(s.recoveryGate)
 		if !early {
 			select {
 			case <-started:
-			case <-time.After(time.Second):
+			case <-time.After(30 * time.Second):
 				t.Fatal("Start did not resume after recovery")
 			}
 		}

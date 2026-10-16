@@ -1,0 +1,732 @@
+{
+  "type_diagnostics": [
+    {
+      "message": "undefined: workerWrapper",
+      "location": {
+        "path": "tunny.go",
+        "line": 110,
+        "column": 13,
+        "offset": 4017,
+        "end_offset": 4017,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "message": "undefined: workRequest",
+      "location": {
+        "path": "tunny.go",
+        "line": 111,
+        "column": 15,
+        "offset": 4045,
+        "end_offset": 4045,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "message": "undefined: workRequest",
+      "location": {
+        "path": "tunny.go",
+        "line": 123,
+        "column": 22,
+        "offset": 4421,
+        "end_offset": 4421,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "message": "undefined: workRequest",
+      "location": {
+        "path": "tunny.go",
+        "line": 185,
+        "column": 14,
+        "offset": 6051,
+        "end_offset": 6051,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "message": "undefined: workRequest",
+      "location": {
+        "path": "tunny.go",
+        "line": 226,
+        "column": 14,
+        "offset": 7004,
+        "end_offset": 7004,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "message": "undefined: newWorkerWrapper",
+      "location": {
+        "path": "tunny.go",
+        "line": 277,
+        "column": 33,
+        "offset": 8066,
+        "end_offset": 8066,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    }
+  ],
+  "environment_sha256": "2a3329077e932e9ba90b9789fceba67fdc7665a9ff2335fb8c54f1ac6cefab0f",
+  "schema_version": "concurrency-observation-v1",
+  "analyzer": "go-concurrency-syntax-0116-v8",
+  "input_sha256": "87b476bcf98fe190c34c0ad88619b4aff77a3f73de09e39140e4f77f10d93b09",
+  "origin": "Jeffail/tunny@a274c3ce48a6dc4f7b5fb5b8eaefbbd9e23574b9; source_fragment",
+  "declared_build": {
+    "go_version": "go version go1.26.5 linux/amd64",
+    "goos": "linux",
+    "goarch": "amd64"
+  },
+  "scope": "FILES_AS_SUPPLIED_NOT_BUILD_SELECTED",
+  "status": "OBSERVED_SYNTAX",
+  "observations": [
+    {
+      "property": "channel_buffer_syntax",
+      "value": "UNBUFFERED_FORM",
+      "resource": "chan workRequest",
+      "function": "New@4326",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 123,
+        "column": 12,
+        "offset": 4411,
+        "end_offset": 4433,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "DIRECT_RECEIVE",
+      "resource": "p.reqChan",
+      "function": "*Pool.Process@5228",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 156,
+        "column": 19,
+        "offset": 5340,
+        "end_offset": 5351,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "DIRECT_SEND",
+      "resource": "request.jobChan",
+      "function": "*Pool.Process@5228",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 161,
+        "column": 2,
+        "offset": 5396,
+        "end_offset": 5422,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "DIRECT_RECEIVE",
+      "resource": "request.retChan",
+      "function": "*Pool.Process@5228",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 163,
+        "column": 18,
+        "offset": 5441,
+        "end_offset": 5458,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 188,
+        "column": 2,
+        "offset": 6080,
+        "end_offset": 6221,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "p.reqChan",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 189,
+        "column": 23,
+        "offset": 6111,
+        "end_offset": 6122,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "tout.C",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 193,
+        "column": 7,
+        "offset": 6180,
+        "end_offset": 6188,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 197,
+        "column": 2,
+        "offset": 6224,
+        "end_offset": 6340,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "request.jobChan",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 198,
+        "column": 7,
+        "offset": 6239,
+        "end_offset": 6265,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "tout.C",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 199,
+        "column": 7,
+        "offset": 6273,
+        "end_offset": 6281,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 204,
+        "column": 2,
+        "offset": 6343,
+        "end_offset": 6514,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "request.retChan",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 205,
+        "column": 23,
+        "offset": 6374,
+        "end_offset": 6391,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "tout.C",
+      "function": "*Pool.ProcessTimed@5827",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 209,
+        "column": 7,
+        "offset": 6447,
+        "end_offset": 6455,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 229,
+        "column": 2,
+        "offset": 7033,
+        "end_offset": 7173,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "p.reqChan",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 230,
+        "column": 23,
+        "offset": 7064,
+        "end_offset": 7075,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "cancellation_candidate",
+      "value": "DONE_SELECTOR_RECEIVE",
+      "resource": "ctx",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 234,
+        "column": 7,
+        "offset": 7133,
+        "end_offset": 7145,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "ctx.Done()",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 234,
+        "column": 7,
+        "offset": 7133,
+        "end_offset": 7145,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 238,
+        "column": 2,
+        "offset": 7176,
+        "end_offset": 7291,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "request.jobChan",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 239,
+        "column": 7,
+        "offset": 7191,
+        "end_offset": 7217,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "cancellation_candidate",
+      "value": "DONE_SELECTOR_RECEIVE",
+      "resource": "ctx",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 240,
+        "column": 7,
+        "offset": 7225,
+        "end_offset": 7237,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "ctx.Done()",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 240,
+        "column": 7,
+        "offset": 7225,
+        "end_offset": 7237,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 245,
+        "column": 2,
+        "offset": 7294,
+        "end_offset": 7464,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "request.retChan",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 246,
+        "column": 23,
+        "offset": 7325,
+        "end_offset": 7342,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "cancellation_candidate",
+      "value": "DONE_SELECTOR_RECEIVE",
+      "resource": "ctx",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 250,
+        "column": 7,
+        "offset": 7398,
+        "end_offset": 7410,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "WAITING_SELECT",
+      "resource": "ctx.Done()",
+      "function": "*Pool.ProcessCtx@6822",
+      "conditions": [
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "tunny.go",
+        "line": 250,
+        "column": 7,
+        "offset": 7398,
+        "end_offset": 7410,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.Process@5228",
+      "location": {
+        "path": "tunny.go",
+        "line": 153,
+        "column": 57,
+        "offset": 5284,
+        "end_offset": 5553,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 222,
+        "column": 90,
+        "offset": 6911,
+        "end_offset": 7488,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.ProcessTimed@5827",
+      "location": {
+        "path": "tunny.go",
+        "line": 179,
+        "column": 24,
+        "offset": 5925,
+        "end_offset": 6551,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "New@4326",
+      "location": {
+        "path": "tunny.go",
+        "line": 120,
+        "column": 43,
+        "offset": 4368,
+        "end_offset": 4464,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "tunny.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.Process@5228",
+      "location": {
+        "path": "tunny.go",
+        "line": 153,
+        "column": 57,
+        "offset": 5284,
+        "end_offset": 5553,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 222,
+        "column": 90,
+        "offset": 6911,
+        "end_offset": 7488,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.ProcessTimed@5827",
+      "location": {
+        "path": "tunny.go",
+        "line": 179,
+        "column": 24,
+        "offset": 5925,
+        "end_offset": 6551,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "New@4326",
+      "location": {
+        "path": "tunny.go",
+        "line": 120,
+        "column": 43,
+        "offset": 4368,
+        "end_offset": 4464,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "DONE_RECEIVER_TYPE_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 234,
+        "column": 7,
+        "offset": 7133,
+        "end_offset": 7145,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "DONE_RECEIVER_TYPE_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 240,
+        "column": 7,
+        "offset": 7225,
+        "end_offset": 7237,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "DONE_RECEIVER_TYPE_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 250,
+        "column": 7,
+        "offset": 7398,
+        "end_offset": 7410,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "tunny.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "tunny.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.Process@5228",
+      "location": {
+        "path": "tunny.go",
+        "line": 153,
+        "column": 57,
+        "offset": 5284,
+        "end_offset": 5553,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.ProcessCtx@6822",
+      "location": {
+        "path": "tunny.go",
+        "line": 222,
+        "column": 90,
+        "offset": 6911,
+        "end_offset": 7488,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.ProcessTimed@5827",
+      "location": {
+        "path": "tunny.go",
+        "line": 179,
+        "column": 24,
+        "offset": 5925,
+        "end_offset": 6551,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "New@4326",
+      "location": {
+        "path": "tunny.go",
+        "line": 120,
+        "column": 43,
+        "offset": 4368,
+        "end_offset": 4464,
+        "content_sha256": "de3ded1d243c07cd9aef335fd66773789bbfcfb9a794b060b49f1ee24d282672"
+      }
+    }
+  ],
+  "limitations": [
+    "Syntax and closed supplied-package types are observed; sources are not built or executed.",
+    "Build context and origin are declarations, not independently verified receipts.",
+    "Type resolution requires error-free supplied packages; imports need supplied sources/export data. Sizes are fixed gc/amd64, not a verified build.",
+    "Buffer capacity does not establish a bound on workers or admitted work.",
+    "A Done selector does not establish context identity or completion of cancellation.",
+    "No mechanism, absence of defects or benefit to a target is certified.",
+    "Relations describe typed targets and lexical containment, not feasible paths, callback execution or shared channel instances."
+  ]
+}

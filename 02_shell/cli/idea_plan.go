@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_plan.md
  * @layer L2
- * @updated 2026-09-12
+ * @updated 2026-10-06
  */
 
 package cli
@@ -58,6 +58,8 @@ func runIdeaCommand(args []string, stdout io.Writer, semantic usecase.SemanticEx
 		return runIdeaIntake(args[1:], stdout)
 	case "review":
 		return runIdeaReview(args[1:], stdout)
+	case "insights":
+		return runIdeaInsights(args[1:], stdout)
 	case "trace":
 		return runIdeaTrace(args[1:], stdout)
 	case "recover":

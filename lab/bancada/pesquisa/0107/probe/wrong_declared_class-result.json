@@ -1,0 +1,212 @@
+{
+  "schema_version": "insight-investigation-v1",
+  "id": "insight_458673c16984f7fc9d1421c8d76c3e7daea639f7345011749d28f3cfe1c0911d",
+  "scope": "FROZEN_EVALUATED_EVIDENCE",
+  "status": "PARTIAL",
+  "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+  "target": {
+    "name": "Bateia",
+    "context": "Admissão de investigações concorrentes no runtime durável sob Tekt",
+    "property": "capacidade admitida e tempo de resposta à sobrecarga",
+    "desired_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+    "constraints": [
+      "avaliar a ideia sem transferir código",
+      "não bloquear indefinidamente a entrada MCP",
+      "preservar Tekt L0–L4",
+      "preservar recuperação e fila durável"
+    ]
+  },
+  "input_sha256": "b3f5f466b08344f39b63415608b9bd4a64ef1f619e5d4c1c3d6c9a923348dfcf",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "mechanisms": [
+    {
+      "id": "mech_4d493b6403a2bb96c93aafc75caa492e8709057936e6a949981b2b4f7f1961f7",
+      "mechanism_class": "APPEND_ONLY_LOG_RECOVERY",
+      "name": "append-only log with explicit recovery",
+      "purpose": "preserve an ordered history that can reconstruct confirmed state after interruption",
+      "trigger": "preserve an ordered history that can reconstruct confirmed state after interruption",
+      "strategy": "append immutable records and rebuild state by deterministic replay with explicit integrity handling",
+      "components": [],
+      "data_flow": [
+        "append immutable records and rebuild state by deterministic replay with explicit integrity handling"
+      ],
+      "state_model": [],
+      "failure_model": [],
+      "boundaries": [
+        "repository-backed source bundle"
+      ],
+      "preconditions": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "tradeoffs": [],
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "evidence": [
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 56,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PROVEN",
+          "rule_id": "append-only-write",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 96,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PROVEN",
+          "rule_id": "append-only-write",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 70,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PROVEN",
+          "rule_id": "append-only-recovery-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 86,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PROVEN",
+          "rule_id": "append-only-recovery-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        }
+      ],
+      "counter_evidence": [],
+      "status": "PROVEN",
+      "novelty": "UNKNOWN",
+      "extraction_rule_ids": [
+        "append-only-recovery-test",
+        "append-only-write"
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hyp_b578d233e0befd9caf08bd22a5fc4bc192322ef408241c2db7c165ccd0947a23",
+      "title": "Investigar append-only log with explicit recovery em Bateia",
+      "target_property": "capacidade admitida e tempo de resposta à sobrecarga",
+      "target_state": "UNKNOWN",
+      "target_gap_refs": [
+        "TARGET_BASELINE_NOT_OBSERVED",
+        "TARGET_APPLICABILITY_NOT_VERIFIED"
+      ],
+      "expected_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+      "mechanism_refs": [
+        "mech_4d493b6403a2bb96c93aafc75caa492e8709057936e6a949981b2b4f7f1961f7"
+      ],
+      "product_observation_refs": [],
+      "transfer_mode": "REFERENCE_ONLY",
+      "license": "UNRECOGNIZED",
+      "assumptions": [
+        "O efeito desejado é uma intenção do pedido, não uma observação.",
+        "A estratégia do mecanismo pode ser investigada sem presumir adoção de código."
+      ],
+      "preconditions": [
+        "go",
+        "java",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "integration_unknowns": [
+        "Compatibilidade com o contexto e as restrições do alvo.",
+        "Licença e direitos de eventual transferência de código não avaliados."
+      ],
+      "risks": [
+        "O mecanismo pode não ser relevante à pergunta ou não produzir o efeito desejado no alvo."
+      ],
+      "tradeoffs": [
+        "O custo de adaptação e a utilidade no alvo ainda precisam de medição."
+      ],
+      "evidence_refs": [
+        "mech_4d493b6403a2bb96c93aafc75caa492e8709057936e6a949981b2b4f7f1961f7"
+      ],
+      "counter_evidence_refs": [],
+      "counterevidence_search": {
+        "status": "NONE_FOUND_IN_SCOPE",
+        "scope_refs": [
+          "mech_4d493b6403a2bb96c93aafc75caa492e8709057936e6a949981b2b4f7f1961f7"
+        ],
+        "result_refs": []
+      },
+      "validation_plan": [
+        {
+          "question": "Qual é o estado atual de capacidade admitida e tempo de resposta à sobrecarga?",
+          "observable": "capacidade admitida e tempo de resposta à sobrecarga",
+          "safe_procedure": "Medir o alvo atual sem modificá-lo, registrando casos e configuração.",
+          "pass_criterion": "Baseline repetível registrado.",
+          "reject_criterion": "A medição não é repetível ou não representa a propriedade desejada.",
+          "relative_cost": "LOW",
+          "missing_evidence": "baseline do alvo"
+        },
+        {
+          "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+          "observable": "Compatibilidade da estratégia com contexto e restrições",
+          "safe_procedure": "Comparar a estratégia observada com o contexto fornecido e conferir cada restrição antes de propor transferência.",
+          "pass_criterion": "Premissas e restrições verificadas com evidência localizada.",
+          "reject_criterion": "Uma premissa ou restrição necessária é incompatível.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "aplicabilidade ao alvo"
+        },
+        {
+          "question": "O mecanismo produz o efeito desejado?",
+          "observable": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+          "safe_procedure": "Planejar experimento isolado comparando baseline e variante; não executar nem modificar o alvo nesta investigação.",
+          "pass_criterion": "Definir antes do experimento uma métrica e um limiar de ganho, mantendo as restrições.",
+          "reject_criterion": "Efeito abaixo do limiar, regressão ou violação de restrição.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "experimento comparativo e limiares pré-definidos"
+        }
+      ],
+      "derivation": "RULE_DERIVED",
+      "status": "PROPOSED",
+      "adoption_disposition": "NOT_AN_ADOPTION_DECISION"
+    }
+  ],
+  "extraction_gaps": [],
+  "provenance": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "bundle_sha256": "2a8f52756a94a3a00d00ecccde66d767c6a646078b56eda0b84a3a4f4b201aa4",
+      "assessments_sha256": "11d1569d47d8726cf3f83200d7006bf64e1dd91c5204a49399b7f1087d5801f0",
+      "complete": true,
+      "assessment_origin": "DECLARED_NOT_REASSESSED"
+    }
+  ],
+  "limitations": [
+    "As avaliações fornecidas não foram refeitas nem autenticadas externamente.",
+    "Hashes e localizadores verificam vínculo com os bytes fornecidos, não comportamento executado.",
+    "O alvo, suas restrições e o efeito desejado ainda precisam de validação.",
+    "Nenhuma decisão de reúso ou autorização de adoção foi produzida.",
+    "A busca de contraevidência se limita às avaliações e bytes fornecidos; o ecossistema não foi pesquisado."
+  ]
+}

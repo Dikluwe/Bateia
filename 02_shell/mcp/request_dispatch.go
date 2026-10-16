@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/request_dispatch.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-06
  */
 package mcp
 
@@ -61,7 +61,7 @@ func (s *MCPServer) extensionToolsList() (map[string]interface{}, error) {
 	var err error
 	switch {
 	case s.improvementSynthesis != nil:
-		result, err = improvementToolsList()
+		result, err = s.improvementToolsList()
 	case s.marketDiscovery != nil:
 		result, err = s.marketDiscovery.marketToolsList()
 	case s.durableRuns != nil:

@@ -1,0 +1,347 @@
+{
+  "schema_version": "1",
+  "idea": {
+    "problem": "Delimitar um avaliador estrutural de propriedades de concorrência em Go para o Bateia sem promover indícios sintáticos a prova de comportamento",
+    "capabilities": [
+      "Go channel analysis",
+      "static single assignment",
+      "concurrency bug benchmarks",
+      "goroutine leak detection",
+      "cancellation scope"
+    ],
+    "constraints": [
+      "preservar Tekt e análise pura quando possível",
+      "não executar candidatos nesta pesquisa",
+      "registrar configuração de build e limites de análise",
+      "não usar bugs conhecidos como referência de todas as propriedades"
+    ],
+    "non_goals": [
+      "provar ausência universal de deadlocks",
+      "implantar analisador completo",
+      "mudar o classificador produtivo"
+    ]
+  },
+  "plan": {
+    "idea": {
+      "problem": "Delimitar um avaliador estrutural de propriedades de concorrência em Go para o Bateia sem promover indícios sintáticos a prova de comportamento",
+      "capabilities": [
+        "Go channel analysis",
+        "static single assignment",
+        "concurrency bug benchmarks",
+        "goroutine leak detection",
+        "cancellation scope"
+      ],
+      "constraints": [
+        "preservar Tekt e análise pura quando possível",
+        "não executar candidatos nesta pesquisa",
+        "registrar configuração de build e limites de análise",
+        "não usar bugs conhecidos como referência de todas as propriedades"
+      ],
+      "non_goals": [
+        "provar ausência universal de deadlocks",
+        "implantar analisador completo",
+        "mudar o classificador produtivo"
+      ]
+    },
+    "expansions": [
+      {
+        "id": "q1",
+        "facet": "capability",
+        "query": "GCatch concurrency",
+        "discriminators": [
+          "GCatch"
+        ],
+        "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+        "covers": [
+          "GCatch"
+        ],
+        "derivation": {
+          "strategy": "manual-research-0108",
+          "rule_ids": [],
+          "source_ids": [
+            "research-0107-proposed-pilot"
+          ]
+        }
+      },
+      {
+        "id": "q2",
+        "facet": "capability",
+        "query": "\"localized abstract interpretation\" Go",
+        "discriminators": [
+          "localized abstract interpretation"
+        ],
+        "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+        "covers": [
+          "localized abstract interpretation"
+        ],
+        "derivation": {
+          "strategy": "manual-research-0108",
+          "rule_ids": [],
+          "source_ids": [
+            "research-0107-proposed-pilot"
+          ]
+        }
+      },
+      {
+        "id": "q3",
+        "facet": "capability",
+        "query": "\"GoBench\" \"concurrency\"",
+        "discriminators": [
+          "GoBench"
+        ],
+        "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+        "covers": [
+          "GoBench"
+        ],
+        "derivation": {
+          "strategy": "manual-research-0108",
+          "rule_ids": [],
+          "source_ids": [
+            "research-0107-proposed-pilot"
+          ]
+        }
+      },
+      {
+        "id": "q4",
+        "facet": "capability",
+        "query": "\"goroutine leak\" detection",
+        "discriminators": [
+          "goroutine leak"
+        ],
+        "rationale": "consulta manual de refinamento; nomes pesquisados em fontes primárias são sementes explícitas",
+        "covers": [
+          "goroutine leak"
+        ],
+        "derivation": {
+          "strategy": "manual-research-0108",
+          "rule_ids": [],
+          "source_ids": [
+            "research-0107-proposed-pilot"
+          ]
+        }
+      }
+    ]
+  },
+  "provider": {
+    "provider": "github",
+    "roles": [
+      "PROJECT_CATALOG"
+    ],
+    "search_units": [
+      "repository_name",
+      "description",
+      "topics"
+    ],
+    "identity_levels": [
+      "owner/repo",
+      "commit"
+    ]
+  },
+  "per_expansion": [
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [
+        {
+          "repository": {
+            "owner": "system-pclub",
+            "repo": "GCatch",
+            "url": "https://github.com/system-pclub/GCatch",
+            "description": "Statically Detecting Go Concurrency Bugs ",
+            "stars": 444,
+            "commit_id": "",
+            "consultado_em": "2026-10-06T19:12:06.559362164Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2023-06-23T04:57:47Z"
+          },
+          "license": "GPL-2.0",
+          "matched_fields": [
+            "name"
+          ],
+          "origins": null
+        }
+      ],
+      "attempt": {
+        "expansion_id": "q1",
+        "query": "GCatch concurrency",
+        "status": "SUCCEEDED",
+        "duration": 484170345,
+        "result_count": 1
+      }
+    },
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [],
+      "attempt": {
+        "expansion_id": "q2",
+        "query": "\"localized abstract interpretation\" Go",
+        "status": "SUCCEEDED",
+        "duration": 274366663,
+        "result_count": 0
+      }
+    },
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [
+        {
+          "repository": {
+            "owner": "cmpxchg16",
+            "repo": "gobench",
+            "url": "https://github.com/cmpxchg16/gobench",
+            "description": "HTTP/HTTPS load testing and benchmarking tool",
+            "stars": 442,
+            "commit_id": "",
+            "consultado_em": "2026-10-06T19:12:07.191366627Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2023-01-24T13:48:40Z"
+          },
+          "matched_fields": [
+            "name"
+          ],
+          "origins": null
+        }
+      ],
+      "attempt": {
+        "expansion_id": "q3",
+        "query": "\"GoBench\" \"concurrency\"",
+        "status": "SUCCEEDED",
+        "duration": 360210289,
+        "result_count": 1
+      }
+    },
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [
+        {
+          "repository": {
+            "owner": "mosajjal",
+            "repo": "sniproxy",
+            "url": "https://github.com/mosajjal/sniproxy",
+            "description": "SNI Proxy with Embedded DNS Server",
+            "stars": 275,
+            "commit_id": "",
+            "consultado_em": "2026-10-06T19:12:07.570419793Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2026-10-03T23:09:46Z"
+          },
+          "license": "BSD-2-Clause",
+          "matched_fields": [],
+          "origins": null
+        }
+      ],
+      "attempt": {
+        "expansion_id": "q4",
+        "query": "\"goroutine leak\" detection",
+        "status": "SUCCEEDED",
+        "duration": 380657535,
+        "result_count": 1
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "cmpxchg16",
+        "repo": "gobench",
+        "url": "https://github.com/cmpxchg16/gobench",
+        "description": "HTTP/HTTPS load testing and benchmarking tool",
+        "stars": 442,
+        "commit_id": "",
+        "consultado_em": "2026-10-06T19:12:07.191366627Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2023-01-24T13:48:40Z"
+      },
+      "matched_fields": [
+        "name"
+      ],
+      "origins": [
+        {
+          "expansion_id": "q3",
+          "planned_query": "\"GoBench\" \"concurrency\"",
+          "attempt_index": 0,
+          "effective_query": "\"GoBench\" \"concurrency\""
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "mosajjal",
+        "repo": "sniproxy",
+        "url": "https://github.com/mosajjal/sniproxy",
+        "description": "SNI Proxy with Embedded DNS Server",
+        "stars": 275,
+        "commit_id": "",
+        "consultado_em": "2026-10-06T19:12:07.570419793Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2026-10-03T23:09:46Z"
+      },
+      "license": "BSD-2-Clause",
+      "matched_fields": [],
+      "origins": [
+        {
+          "expansion_id": "q4",
+          "planned_query": "\"goroutine leak\" detection",
+          "attempt_index": 0,
+          "effective_query": "\"goroutine leak\" detection"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "system-pclub",
+        "repo": "GCatch",
+        "url": "https://github.com/system-pclub/GCatch",
+        "description": "Statically Detecting Go Concurrency Bugs ",
+        "stars": 444,
+        "commit_id": "",
+        "consultado_em": "2026-10-06T19:12:06.559362164Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2023-06-23T04:57:47Z"
+      },
+      "license": "GPL-2.0",
+      "matched_fields": [
+        "name"
+      ],
+      "origins": [
+        {
+          "expansion_id": "q1",
+          "planned_query": "GCatch concurrency",
+          "attempt_index": 0,
+          "effective_query": "GCatch concurrency"
+        }
+      ]
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "COMPLETE",
+    "completion_cause": "FINISHED",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 90000000000,
+      "attempt_timeout": 15000000000,
+      "concurrency": 2,
+      "max_attempts": 1
+    },
+    "planned": 4,
+    "started": 4,
+    "completed": 4,
+    "timed_out": 0,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": null
+  }
+}

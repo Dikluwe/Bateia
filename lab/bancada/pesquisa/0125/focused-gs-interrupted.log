@@ -1,0 +1,406 @@
+SIGQUIT: quit
+PC=0x488fe1 m=0 sigcode=0
+
+goroutine 0 gp=0x6cde80 m=0 mp=0x6cec40 [idle]:
+runtime.futex(0x6ced98, 0x80, 0x0, 0x0, 0x0, 0x0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/sys_linux_amd64.s:569 +0x21 fp=0x7fff377d20d8 sp=0x7fff377d20d0 pc=0x488fe1
+runtime.futexsleep(0x5?, 0x377d2150?, 0x45c768?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/os_linux.go:73 +0x30 fp=0x7fff377d2128 sp=0x7fff377d20d8 pc=0x447970
+runtime.notesleep(0x6ced98)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/lock_futex.go:47 +0x87 fp=0x7fff377d2160 sp=0x7fff377d2128 pc=0x41df47
+runtime.mPark(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:1967
+runtime.stopm()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:3008 +0x8c fp=0x7fff377d2190 sp=0x7fff377d2160 pc=0x452a8c
+runtime.findRunnable()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:3796 +0xec8 fp=0x7fff377d2360 sp=0x7fff377d2190 pc=0x454648
+runtime.schedule()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:4164 +0xb1 fp=0x7fff377d23a0 sp=0x7fff377d2360 pc=0x455791
+runtime.park_m(0x2d187666cf00)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:4304 +0x285 fp=0x7fff377d2400 sp=0x7fff377d23a0 pc=0x455c25
+runtime.mcall()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:496 +0x55 fp=0x7fff377d2418 sp=0x7fff377d2400 pc=0x4859d5
+
+goroutine 1 gp=0x2d187666c1e0 m=nil [runnable]:
+runtime.resolveTypeOff(0x54c040?, 0xcc00)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/type.go:328 +0x294 fp=0x2d187a09c530 sp=0x2d187a09c528 pc=0x479e54
+runtime.rtype.typeOff(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/type.go:367
+reflect.resolveTypeOff(0x2d1acee5ef4a?, 0x182?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/runtime1.go:672 +0x13 fp=0x2d187a09c550 sp=0x2d187a09c530 pc=0x482093
+reflect.(*rtype).typeOff(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/reflect/type.go:590
+reflect.(*rtype).ptrTo(0x2d187667a3e8?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/reflect/type.go:1421 +0x99 fp=0x2d187a09c5c8 sp=0x2d187a09c550 pc=0x4bfc99
+reflect.ptrTo(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/reflect/type.go:1463
+reflect.Value.Addr({0x54c040?, 0x2d187a56e5b0?, 0x7478bb044dc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/reflect/value.go:276 +0x34 fp=0x2d187a09c5f8 sp=0x2d187a09c5c8 pc=0x4b9bd4
+encoding/json.indirect({0x54c040?, 0x2d187a56e5b0?, 0xe?}, 0x0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:452 +0xbd fp=0x2d187a09c690 sp=0x2d187a09c5f8 pc=0x4e03fd
+encoding/json.(*decodeState).literalStore(0x2d18772f4000, {0x2d1acee5ff41, 0xd, 0x1f5d2a0bf}, {0x54c040?, 0x2d187a56e5b0?, 0x0?}, 0x0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:864 +0x1dd fp=0x2d187a09ca58 sp=0x2d187a09c690 pc=0x4e2c9d
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x54c040?, 0x2d187a56e5b0?, 0x4?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:394 +0x114 fp=0x2d187a09cac8 sp=0x2d187a09ca58 pc=0x4e0214
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187a4e19d8?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09ce28 sp=0x2d187a09cac8 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187a4e19d8?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09ce98 sp=0x2d187a09ce28 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187a56e580?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09cf38 sp=0x2d187a09ce98 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187a56e580?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09cfa8 sp=0x2d187a09cf38 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187a4e19d0?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09d308 sp=0x2d187a09cfa8 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187a4e19d0?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09d378 sp=0x2d187a09d308 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187a56e460?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09d418 sp=0x2d187a09d378 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187a56e460?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09d488 sp=0x2d187a09d418 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187a4e19c8?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09d7e8 sp=0x2d187a09d488 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187a4e19c8?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09d858 sp=0x2d187a09d7e8 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187a56e340?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09d8f8 sp=0x2d187a09d858 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187a56e340?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09d968 sp=0x2d187a09d8f8 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187a43d418?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09dcc8 sp=0x2d187a09d968 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187a43d418?, 0x43?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09dd38 sp=0x2d187a09dcc8 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187a5448e0?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09ddd8 sp=0x2d187a09dd38 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187a5448e0?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09de48 sp=0x2d187a09ddd8 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187a4cc4a8?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09e1a8 sp=0x2d187a09de48 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187a4cc4a8?, 0x16?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09e218 sp=0x2d187a09e1a8 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187a53d660?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09e2b8 sp=0x2d187a09e218 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187a53d660?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09e328 sp=0x2d187a09e2b8 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d1879e9dcc8?, 0x549bc0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09e688 sp=0x2d187a09e328 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d1879e9dcc8?, 0x399?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09e6f8 sp=0x2d187a09e688 pc=0x4e013e
+encoding/json.(*decodeState).array(0x2d18772f4000, {0x549bc0?, 0x2d187947a100?, 0x1?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:561 +0x4db fp=0x2d187a09e798 sp=0x2d187a09e6f8 pc=0x4e0cbb
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x549bc0?, 0x2d187947a100?, 0x5?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:370 +0x74 fp=0x2d187a09e808 sp=0x2d187a09e798 pc=0x4e0174
+encoding/json.(*decodeState).object(0x2d18772f4000, {0x546340?, 0x2d187947a000?, 0x6ee940?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:767 +0xd65 fp=0x2d187a09eb68 sp=0x2d187a09e808 pc=0x4e1c45
+encoding/json.(*decodeState).value(0x2d18772f4000, {0x546340?, 0x2d187947a000?, 0x47f12c?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:380 +0x3e fp=0x2d187a09ebd8 sp=0x2d187a09eb68 pc=0x4e013e
+encoding/json.(*decodeState).unmarshal(0x2d18772f4000, {0x546340?, 0x2d187947a000?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:183 +0x11e fp=0x2d187a09ec50 sp=0x2d187a09ebd8 pc=0x4dfa3e
+encoding/json.Unmarshal({0x2d1ac4b8a000, 0x102103290, 0x200000000}, {0x546340, 0x2d187947a000})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/encoding/json/decode.go:113 +0xf9 fp=0x2d187a09ec88 sp=0x2d187a09ec50 pc=0x4df619
+bateia/03_infra/clang.decodeAST({0x2d1ac4b8a000, 0x102103290, 0x200000000}, {0x58b8f9, 0x68}, {0x2d187ab266e0, 0x97}, 0x2d187a09f378)
+	/repos/Antigravity/Bateia/03_infra/clang/ast.go:96 +0x98 fp=0x2d187a09f010 sp=0x2d187a09ec88 pc=0x5203d8
+bateia/03_infra/clang.(*Client).analyzeUnit(_, {_, _}, {_, _}, {_, _}, {{0x2d187a6dbce0, 0x62}, {0x2d187ab266e0, ...}, ...}, ...)
+	/repos/Antigravity/Bateia/03_infra/clang/client.go:248 +0x14bf fp=0x2d187a09f4f8 sp=0x2d187a09f010 pc=0x5254df
+bateia/03_infra/clang.(*Client).Analyze(0x2d187a09fd50, {0x58e878, 0x6ed9a0}, {{0x58b8f9, 0x68}, {0x58b006, 0x42}, {0x2d1876838630, 0x3, 0x3}})
+	/repos/Antigravity/Bateia/03_infra/clang/client.go:164 +0x133d fp=0x2d187a09fb48 sp=0x2d187a09f4f8 pc=0x523b7d
+main.main()
+	/tmp/bateia-mesa-focused-0125.go:3 +0x331 fp=0x2d187a09ff48 sp=0x2d187a09fb48 pc=0x528d31
+runtime.main()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:290 +0x2d5 fp=0x2d187a09ffe0 sp=0x2d187a09ff48 pc=0x44dd15
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d187a09ffe8 sp=0x2d187a09ffe0 pc=0x4874a1
+
+goroutine 2 gp=0x2d187666c780 m=nil [force gc (idle), 5 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e2fa8 sp=0x2d18766e2f88 pc=0x480dae
+runtime.goparkunlock(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:468
+runtime.forcegchelper()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:375 +0xb3 fp=0x2d18766e2fe0 sp=0x2d18766e2fa8 pc=0x44e033
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e2fe8 sp=0x2d18766e2fe0 pc=0x4874a1
+created by runtime.init.7 in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:363 +0x1a
+
+goroutine 3 gp=0x2d187666cd20 m=nil [GC sweep wait]:
+runtime.gopark(0x6cd701?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e3788 sp=0x2d18766e3768 pc=0x480dae
+runtime.goparkunlock(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:468
+runtime.bgsweep(0x2d18766fa000)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgcsweep.go:324 +0x151 fp=0x2d18766e37c8 sp=0x2d18766e3788 pc=0x4385f1
+runtime.gcenable.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:214 +0x17 fp=0x2d18766e37e0 sp=0x2d18766e37c8 pc=0x429b57
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e37e8 sp=0x2d18766e37e0 pc=0x4874a1
+created by runtime.gcenable in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:214 +0x66
+
+goroutine 4 gp=0x2d187666cf00 m=nil [GC scavenge wait]:
+runtime.gopark(0x10000?, 0x49991b?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e3f78 sp=0x2d18766e3f58 pc=0x480dae
+runtime.goparkunlock(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:468
+runtime.(*scavengerState).park(0x6cdb80)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgcscavenge.go:425 +0x49 fp=0x2d18766e3fa8 sp=0x2d18766e3f78 pc=0x436069
+runtime.bgscavenge(0x2d18766fa000)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgcscavenge.go:658 +0x59 fp=0x2d18766e3fc8 sp=0x2d18766e3fa8 pc=0x4365f9
+runtime.gcenable.gowrap2()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:215 +0x17 fp=0x2d18766e3fe0 sp=0x2d18766e3fc8 pc=0x429b17
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e3fe8 sp=0x2d18766e3fe0 pc=0x4874a1
+created by runtime.gcenable in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:215 +0xa5
+
+goroutine 17 gp=0x2d187670c3c0 m=nil [GOMAXPROCS updater (idle), 5 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766de788 sp=0x2d18766de768 pc=0x480dae
+runtime.goparkunlock(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:468
+runtime.updateMaxProcsGoroutine()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:7095 +0xe7 fp=0x2d18766de7e0 sp=0x2d18766de788 pc=0x45c427
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766de7e8 sp=0x2d18766de7e0 pc=0x4874a1
+created by runtime.defaultGOMAXPROCSUpdateEnable in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:7083 +0x37
+
+goroutine 18 gp=0x2d187670c5a0 m=nil [finalizer wait, 5 minutes]:
+runtime.gopark(0x45d475?, 0x6ee940?, 0x13?, 0x0?, 0x2d18766e2670?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e2620 sp=0x2d18766e2600 pc=0x480dae
+runtime.runFinalizers()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mfinal.go:210 +0x107 fp=0x2d18766e27e0 sp=0x2d18766e2620 pc=0x428ac7
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e27e8 sp=0x2d18766e27e0 pc=0x4874a1
+created by runtime.createfing in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mfinal.go:172 +0x3d
+
+goroutine 19 gp=0x2d187670c780 m=nil [cleanup wait, 5 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766def68 sp=0x2d18766def48 pc=0x480dae
+runtime.goparkunlock(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:468
+runtime.(*cleanupQueue).dequeue(0x6cdd80)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mcleanup.go:522 +0xd4 fp=0x2d18766defa0 sp=0x2d18766def68 pc=0x425814
+runtime.runCleanups()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mcleanup.go:718 +0x45 fp=0x2d18766defe0 sp=0x2d18766defa0 pc=0x425e85
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766defe8 sp=0x2d18766defe0 pc=0x4874a1
+created by runtime.(*cleanupQueue).createGs in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mcleanup.go:672 +0xa5
+
+goroutine 20 gp=0x2d187670c960 m=nil [GC worker (idle), 5 minutes]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766df740 sp=0x2d18766df720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766df7c8 sp=0x2d18766df740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766df7e0 sp=0x2d18766df7c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766df7e8 sp=0x2d18766df7e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 21 gp=0x2d187670cb40 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f0709b73?, 0x3?, 0x82?, 0xa5?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766dff40 sp=0x2d18766dff20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766dffc8 sp=0x2d18766dff40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766dffe0 sp=0x2d18766dffc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766dffe8 sp=0x2d18766dffe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 22 gp=0x2d187670cd20 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f073ba8e?, 0x3?, 0xc1?, 0xb5?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e0740 sp=0x2d18766e0720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766e07c8 sp=0x2d18766e0740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766e07e0 sp=0x2d18766e07c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e07e8 sp=0x2d18766e07e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 23 gp=0x2d187670cf00 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f067b83d?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e0f40 sp=0x2d18766e0f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766e0fc8 sp=0x2d18766e0f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766e0fe0 sp=0x2d18766e0fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e0fe8 sp=0x2d18766e0fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 24 gp=0x2d187670d0e0 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f0669d90?, 0x3?, 0xd2?, 0x9b?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e1740 sp=0x2d18766e1720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766e17c8 sp=0x2d18766e1740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766e17e0 sp=0x2d18766e17c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e17e8 sp=0x2d18766e17e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 25 gp=0x2d187670d2c0 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f068fcac?, 0x3?, 0xe?, 0x7a?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d18766e1f40 sp=0x2d18766e1f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d18766e1fc8 sp=0x2d18766e1f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d18766e1fe0 sp=0x2d18766e1fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d18766e1fe8 sp=0x2d18766e1fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 26 gp=0x2d187670d4a0 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f06df514?, 0x1?, 0xe2?, 0xc8?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c30740 sp=0x2d1876c30720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c307c8 sp=0x2d1876c30740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c307e0 sp=0x2d1876c307c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c307e8 sp=0x2d1876c307e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 27 gp=0x2d187670d680 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f067513c?, 0x1?, 0xca?, 0x68?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c30f40 sp=0x2d1876c30f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c30fc8 sp=0x2d1876c30f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c30fe0 sp=0x2d1876c30fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c30fe8 sp=0x2d1876c30fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 28 gp=0x2d187670d860 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f06b9f49?, 0x1?, 0x47?, 0x2a?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c31740 sp=0x2d1876c31720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c317c8 sp=0x2d1876c31740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c317e0 sp=0x2d1876c317c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c317e8 sp=0x2d1876c317e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 29 gp=0x2d187670da40 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f072ecb4?, 0x1?, 0xe?, 0x95?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c31f40 sp=0x2d1876c31f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c31fc8 sp=0x2d1876c31f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c31fe0 sp=0x2d1876c31fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c31fe8 sp=0x2d1876c31fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 30 gp=0x2d187670dc20 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f0782eff?, 0x3?, 0xdd?, 0x1a?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c32740 sp=0x2d1876c32720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c327c8 sp=0x2d1876c32740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c327e0 sp=0x2d1876c327c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c327e8 sp=0x2d1876c327e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 31 gp=0x2d187687e000 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f073200c?, 0x1?, 0x2d?, 0xf7?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c32f40 sp=0x2d1876c32f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c32fc8 sp=0x2d1876c32f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c32fe0 sp=0x2d1876c32fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c32fe8 sp=0x2d1876c32fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 32 gp=0x2d187687e1e0 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f069a34f?, 0x1?, 0x17?, 0x6c?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c33740 sp=0x2d1876c33720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c337c8 sp=0x2d1876c33740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c337e0 sp=0x2d1876c337c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c337e8 sp=0x2d1876c337e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 33 gp=0x2d187687e3c0 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f06de2b9?, 0x1?, 0xfd?, 0xb9?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c33f40 sp=0x2d1876c33f20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c33fc8 sp=0x2d1876c33f40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c33fe0 sp=0x2d1876c33fc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c33fe8 sp=0x2d1876c33fe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 34 gp=0x2d187687e5a0 m=nil [GC worker (idle)]:
+runtime.gopark(0x6ee940?, 0x1?, 0x89?, 0xa5?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c2c740 sp=0x2d1876c2c720 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c2c7c8 sp=0x2d1876c2c740 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c2c7e0 sp=0x2d1876c2c7c8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c2c7e8 sp=0x2d1876c2c7e0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+goroutine 35 gp=0x2d187687e780 m=nil [GC worker (idle)]:
+runtime.gopark(0x505f04a0969?, 0x1?, 0xbb?, 0xc?, 0x0?)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/proc.go:462 +0xce fp=0x2d1876c2cf40 sp=0x2d1876c2cf20 pc=0x480dae
+runtime.gcBgMarkWorker(0x2d18767220e0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1791 +0xeb fp=0x2d1876c2cfc8 sp=0x2d1876c2cf40 pc=0x42c42b
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x17 fp=0x2d1876c2cfe0 sp=0x2d1876c2cfc8 pc=0x42c317
+runtime.goexit({})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/asm_amd64.s:1771 +0x1 fp=0x2d1876c2cfe8 sp=0x2d1876c2cfe0 pc=0x4874a1
+created by runtime.gcBgMarkStartWorkers in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/mgc.go:1695 +0x105
+
+rax    0xca
+rbx    0x0
+rcx    0x488fe3
+rdx    0x0
+rdi    0x6ced98
+rsi    0x80
+rbp    0x7fff377d2118
+rsp    0x7fff377d20d0
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x7fff377d2150
+r13    0x1
+r14    0x6cde80
+r15    0x5
+rip    0x488fe1
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+exit status 2
+

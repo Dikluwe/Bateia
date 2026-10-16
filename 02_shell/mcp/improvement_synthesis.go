@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/improvement_synthesis.md
  * @layer L2
- * @updated 2026-09-02
+ * @updated 2026-10-06
  */
 
 package mcp
@@ -15,6 +15,7 @@ import (
 	"io"
 
 	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
 )
 
 func (s *MCPServer) WithImprovementSynthesis(starter domain.ImprovementSynthesisStarter) *MCPServer {
@@ -30,7 +31,18 @@ type improvementInterceptReader struct {
 }
 
 func improvementToolsList() (map[string]interface{}, error) {
-	result, err := marketToolsList()
+	return improvementToolsListWithRegistry(nil)
+}
+
+func (s *MCPServer) improvementToolsList() (map[string]interface{}, error) {
+	if s.marketDiscovery != nil {
+		return improvementToolsListWithRegistry(s.marketDiscovery.registry)
+	}
+	return improvementToolsList()
+}
+
+func improvementToolsListWithRegistry(registry *usecase.DiscoveryConnectorRegistry) (map[string]interface{}, error) {
+	result, err := marketToolsListWithRegistry(registry)
 	if err != nil {
 		return nil, err
 	}

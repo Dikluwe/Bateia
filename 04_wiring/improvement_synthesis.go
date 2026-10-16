@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/improvement_synthesis.md
  * @layer L4
- * @updated 2026-09-19
+ * @updated 2026-10-06
  */
 
 package main
@@ -33,8 +33,8 @@ func NewImprovementSynthesisMCPServer(
 	reader io.Reader,
 	writer io.Writer,
 ) (*mcp.MCPServer, func(context.Context) error, error) {
-	registry, err := usecase.NewDiscoveryConnectorRegistry(connectors)
-	if err != nil || len(registry.Capabilities()) != 3 {
+	registry, err := usecase.NewMarketDiscoveryRegistry(connectors)
+	if err != nil {
 		return nil, nil, domain.ErrInvalidRunInput
 	}
 	extractor := usecase.NewDeterministicMechanismExtractor()

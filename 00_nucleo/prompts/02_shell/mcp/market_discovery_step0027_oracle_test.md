@@ -24,3 +24,8 @@ Aceite os novos hashes de `server.go` e `durable_runs.go` somente quando
 vinculados a `historical-contract-supersession.json`. Preserve por deep-equality
 a relação entre as sete tools basais e as extensões 8–9; a mudança autorizada é
 apenas o perfil de defaults/required das recomendações.
+
+
+## Fixture basal no passo 0104
+
+A captura que exige o schema basal de três IDs deve configurar explicitamente Apple/GitHub/Sourcegraph. Um único stub Apple deixa de representar essa composição quando o schema passa a refletir o registro. Ajustar somente o preparo dos testes de contrato basal, preservando hashes, goldens, nomes, posições e comparações profundas. Outros cenários de registro unitário permanecem com sua fixture original e verificações próprias. Não reescrever capturas históricas.

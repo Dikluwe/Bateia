@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/clang/client.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-10-09
  */
 package clang
 
@@ -28,6 +28,7 @@ import (
 const maxUnits = 12
 const maxOutput = 32 * 1024 * 1024
 const timeout = 20 * time.Second
+const maxDatabaseBytes = 16 * 1024 * 1024
 
 type Client struct {
 	binary   string
@@ -59,13 +60,17 @@ func (c *Client) Analyze(ctx context.Context, req domain.SemanticRequest) (domai
 	}
 	var database []byte
 	var databasePath string
-	for _, p := range []string{"compile_commands.json", "build/compile_commands.json"} {
+	for _, p := range []string{"compile_commands.json", "build/compile_commands.json", "../build/compile_commands.json"} {
 		file := filepath.Join(root, p)
-		data, e := readLimited(file, 4*1024*1024)
+		data, e := readLimited(file, maxDatabaseBytes)
 		if e == nil {
 			database = data
 			databasePath = file
 			break
+		}
+		if !os.IsNotExist(e) {
+			report.Reason = "Configuração de compilação não lida: " + file + ": " + e.Error()
+			return report, nil
 		}
 	}
 	if database == nil {
@@ -99,7 +104,7 @@ func (c *Client) Analyze(ctx context.Context, req domain.SemanticRequest) (domai
 	var selected []compilation
 	for _, entry := range entries {
 		if !filepath.IsAbs(entry.Directory) {
-			entry.Directory = filepath.Join(root, entry.Directory)
+			entry.Directory = filepath.Join(filepath.Dir(databasePath), entry.Directory)
 		}
 		if !filepath.IsAbs(entry.File) {
 			entry.File = filepath.Join(entry.Directory, entry.File)
@@ -166,6 +171,7 @@ func (c *Client) Analyze(ctx context.Context, req domain.SemanticRequest) (domai
 	}
 	if completed == 0 {
 		report.Status = "not_evaluated"
+		report.Reason = "Nenhuma unidade concluiu a análise estática; configuração e inputs capturados não comprovam resolução. Consulte os diagnósticos das unidades."
 	}
 	return report, nil
 }
@@ -229,7 +235,7 @@ func (c *Client) analyzeUnit(ctx context.Context, binary, root string, entry com
 			return unit
 		}
 	}
-	after, e := readLimited(dbPath, 4*1024*1024)
+	after, e := readLimited(dbPath, maxDatabaseBytes)
 	if e != nil || digest(after) != digest(db) {
 		unit.Diagnostics += "\nConfiguração mudou durante análise"
 		if unit.Flow != nil {
@@ -290,6 +296,11 @@ type bounded struct {
 	exceeded bool
 }
 
+// Hide bytes.Buffer.ReadFrom: os/exec's io.Copy would otherwise bypass Write's limit.
+func (b *bounded) ReadFrom(r io.Reader) (int64, error) {
+	return io.Copy(struct{ io.Writer }{b}, r)
+}
+
 func (b *bounded) Write(p []byte) (int, error) {
 	if b.Len()+len(p) > b.limit {
 		b.exceeded = true
@@ -319,10 +330,14 @@ func run(parent context.Context, binary, dir string, args []string, limit int) (
 	return out.Bytes(), stderr.Bytes(), err
 }
 
-// safeFlags accepts compilation context, never the compiler/command or action flags from the repository.
+// safeFlags accepts literal compilation context, never repository compiler execution or action flags.
 func safeFlags(entry compilation) ([]string, error) {
 	if len(entry.Arguments) == 0 {
-		return nil, errors.New("arguments ausente; command não é executado (shell desabilitado)")
+		var err error
+		entry.Arguments, err = splitCompilationCommand(entry.Command)
+		if err != nil {
+			return nil, err
+		}
 	}
 	args := entry.Arguments[1:]
 	var out []string
@@ -357,7 +372,9 @@ func safeFlags(entry compilation) ([]string, error) {
 			continue
 		}
 		switch a {
-		case "-pthread", "-fPIC", "-fpic", "-fPIE", "-fpie", "-fno-exceptions", "-fexceptions", "-fno-rtti", "-frtti", "-m32", "-m64", "-ansi":
+		case "-mtls-dialect=gnu2", "-flifetime-dse=1":
+			continue // GCC code generation only; no compiler action or AST context.
+		case "-pthread", "-fPIC", "-fpic", "-fPIE", "-fpie", "-fno-exceptions", "-fexceptions", "-fno-rtti", "-frtti", "-m32", "-m64", "-ansi", "-fvisibility=hidden", "-fdiagnostics-color=always", "-fno-math-errno", "-fno-trapping-math", "-fno-common", "-ffunction-sections", "-fdata-sections", "-msse4.1", "-fno-lto":
 			out = append(out, a)
 			continue
 		}
@@ -376,6 +393,77 @@ func safeFlags(entry compilation) ([]string, error) {
 		return nil, fmt.Errorf("opção de compilação não suportada: %q", a)
 	}
 	return out, nil
+}
+
+// splitCompilationCommand decodes a literal argv, never a shell program.
+func splitCompilationCommand(command string) ([]string, error) {
+	var args []string
+	var token strings.Builder
+	var quote rune
+	started, escaped := false, false
+	for _, r := range command {
+		if r == 0 || r == '\n' || r == '\r' {
+			return nil, errors.New("command contém controle não permitido")
+		}
+		if escaped {
+			// Within double quotes POSIX only escapes these characters.
+			if quote == '"' && !strings.ContainsRune("$`\"\\", r) {
+				token.WriteRune('\\')
+			}
+			token.WriteRune(r)
+			escaped = false
+			continue
+		}
+		if quote == '\'' {
+			if r == quote {
+				quote = 0
+			} else {
+				token.WriteRune(r)
+			}
+			continue
+		}
+		if r == '\\' {
+			escaped = true
+			started = true
+			continue
+		}
+		if r == '$' || r == '`' || quote == 0 && strings.ContainsRune(";|&<>()*?~#", r) {
+			return nil, errors.New("command contém sintaxe de shell não permitida")
+		}
+		if quote == '"' {
+			if r == quote {
+				quote = 0
+			} else {
+				token.WriteRune(r)
+			}
+			continue
+		}
+		if r == '\'' || r == '"' {
+			quote = r
+			started = true
+			continue
+		}
+		if r == ' ' || r == '\t' {
+			if started {
+				args = append(args, token.String())
+				token.Reset()
+				started = false
+			}
+			continue
+		}
+		started = true
+		token.WriteRune(r)
+	}
+	if quote != 0 || escaped {
+		return nil, errors.New("command com aspas ou escape incompleto")
+	}
+	if started {
+		args = append(args, token.String())
+	}
+	if len(args) == 0 || args[0] == "" || strings.Contains(args[0], "=") {
+		return nil, errors.New("arguments ausente e command literal inválido")
+	}
+	return args, nil
 }
 func dependencyPaths(text, dir string) ([]string, error) {
 	colon := strings.Index(text, ":")

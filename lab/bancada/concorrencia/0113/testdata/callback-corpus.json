@@ -1,0 +1,299 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "baseline",
+      "family": "baseline",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "053685fa9cec66fc16128a84cb2b20b701c3e572caa208295f54fec878c868e4"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "rename",
+      "family": "baseline",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Launch(job func()){go func(){Pass(job)}()}\nfunc Pass(work func()){work()}\nfunc Entry(){Launch(func(){})}\n",
+            "sha256": "3bbe769e8b0e0da55e5c3547d4a5168812572452c17d0b369f3dad3bd81b7a9b"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "no-forward",
+      "family": "no-forward",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){_=cb}()}\nfunc Forward(task func()){task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "3a8f4ed21575fd5d3ff901a43f1785a68db5d2a62317d80cd1f6d96f12811a63"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "no-invocation",
+      "family": "no-invocation",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){_=task}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "024efced8639ea05066020804f0febb43dbfa272ef5c91bc8614d7ee99a3d453"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1
+      }
+    },
+    {
+      "id": "alias",
+      "family": "alias",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){alias:=task;alias()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "a15b47ff460f9d703775f17b133d483a0bae11ef9e6c0fabf3685e1fbd92aa46"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1
+      }
+    },
+    {
+      "id": "overwrite",
+      "family": "overwrite",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){task=func(){};task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "15e93a90eae7945f97d408e3f7dd08a49cd339949bfec1280208f7f4ad1c35f7"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1
+      }
+    },
+    {
+      "id": "parenthesized-overwrite",
+      "family": "parenthesized-overwrite",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){(task)=func(){};task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "64f0e5281e8f129e5921447b0f9d3382f41135adcf260a6c3e3ea205b4e2066f"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1
+      }
+    },
+    {
+      "id": "address",
+      "family": "address",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){_= &(task);task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "5ed78ee71619613e2c19aa16d811303b25a97b712375152db636a542cb6c84eb"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1
+      }
+    },
+    {
+      "id": "shadow",
+      "family": "shadow",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){_=task;{task:=func(){};task()}}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "2671ac3f003e81aa5068f632a2330f08f86c5b73880db85999e53e9d650d4b28"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1
+      }
+    },
+    {
+      "id": "indirect-launch",
+      "family": "indirect-launch",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){task()}\nfunc Entry(){launch:=Start;launch(func(){})}\n",
+            "sha256": "fc3f5261e7439eeb6f8cbc335367abc99c8166768c03eab3e9ce49227a799cc9"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_PARAMETER_FORWARDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "captured-overwrite",
+      "family": "captured-overwrite",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){cb=func(){};Forward(cb)}()}\nfunc Forward(task func()){task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "81dcb33e8a87719907b17d05108affc8440aabdc733bb54bc8f0201e2b701474"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "alias-forward",
+      "family": "alias-forward",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){alias:=cb;Forward(alias)}()}\nfunc Forward(task func()){task()}\nfunc Entry(){Start(func(){})}\n",
+            "sha256": "6f84c55237e5f62c6b64208ff0eb85f2fc9c6c9d36bec858e81ee47bd3613d64"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "conditional",
+      "family": "conditional",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func Start(cb func(),ok bool){if ok {go func(){Forward(cb)}()}};func Forward(task func()){if task!=nil{task()}};func Entry(){Start(func(){},true)}",
+            "sha256": "0ac5d457d93bca36824d40d09d6619181484d56dd5a1070519d04b3cbae21065"
+          }
+        ]
+      },
+      "expected_callbacks": {
+        "CALLBACK_ARGUMENT_BINDING": 1,
+        "CALLBACK_PARAMETER_FORWARDING": 1,
+        "CALLBACK_PARAMETER_INVOCATION": 1
+      }
+    },
+    {
+      "id": "variadic",
+      "family": "variadic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p;func Start(cb func(),values ...int){cb()};func Entry(){Start(func(){},1)}",
+            "sha256": "a8a85867679be5923754a4951c9a713c1c25f92d34a410f86df0718d6ffae494"
+          }
+        ]
+      },
+      "expected_callbacks": {}
+    },
+    {
+      "id": "type-error",
+      "family": "type-error",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_CALLBACK_FIXTURE_0113",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\nfunc Start(cb func()){go func(){Forward(cb)}()}\nfunc Forward(task func()){task()}\nfunc Entry(){Start(func(){})}\n\nvar invalid=missing",
+            "sha256": "cb73bd7d863a46d1284375921002b1fad6a1b591f71eb5481c84660a5789405c"
+          }
+        ]
+      },
+      "expected_callbacks": {}
+    }
+  ]
+}

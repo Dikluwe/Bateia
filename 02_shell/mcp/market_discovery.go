@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/market_discovery.md
  * @layer L2
- * @updated 2026-09-06
+ * @updated 2026-10-06
  */
 
 package mcp
@@ -133,7 +133,7 @@ func marketToolsListWithRegistry(registry *usecase.DiscoveryConnectorRegistry) (
 	artifact["enum"] = []string{"request", "recommendation", "decision", "alternatives", "failures", "provenance", "connector_capabilities", "market_plan", "market_snapshot", "market_candidates", "market_gaps"}
 	tools = append(tools,
 		map[string]interface{}{"name": "bateia_list_connectors", "description": "Lista capacidades estáticas de descoberta", "inputSchema": emptyObjectSchema()},
-		map[string]interface{}{"name": "bateia_start_market_discovery", "description": "Inicia descoberta durável por idioma e mercado", "inputSchema": marketStartSchema()},
+		map[string]interface{}{"name": "bateia_start_market_discovery", "description": "Inicia descoberta durável por idioma e mercado", "inputSchema": schemaForRegistry(registry)},
 	)
 	return map[string]interface{}{"tools": tools}, nil
 }

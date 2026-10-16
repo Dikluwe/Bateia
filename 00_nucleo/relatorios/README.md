@@ -7,6 +7,21 @@ a `lab/bancada/history/reports`.
 Relatórios antigos descrevem o checkout e o recorte observados; não constituem garantia
 da versão atual.
 
+## Organização do projeto
+
+- [0105 — Investigação independente de insights](../laudos/0105-investigacao-independente-de-insights.md)
+
+
+- [0104 — Composição por registro validado e startup MCP](../laudos/0104-composicao-por-registro-validado.md)
+
+
+- [Mapa de responsabilidades sob Tekt](../arquitetura/README.md)
+- [0103 — Primeira separação entre análise e execução](../laudos/0103-organizar-responsabilidades-sob-tekt.md)
+
+
+- [Diagnóstico de organização de 6 de outubro de 2026](diagnostico-organizacao-2026-10-06.md)
+- [Mapa da documentação atual](../documentacao/README.md)
+
 ## Fundamentos atuais
 
 - [Realinhamento ao propósito](realinhamento-proposito-bateia.md)
@@ -53,3 +68,7 @@ da versão atual.
 - [Autoanálise após 0043](autoanalise-pos0043.md)
 - [Gap de documentação Doxygen em headers](gap-documentacao-doxygen-em-headers.md)
 - [0086 — Fronteira multicritério robusta](fronteira-multicriterio-robusta-0086.md)
+
+- [0107 — Pesquisa da qualidade do classificador usando Bateia](pesquisa-classificador-0107.md) — fontes reais, limitações de admissão e proposta de bancada por propriedades.
+
+- [0108 — Refinamento antes do avaliador estrutural](refinamento-avaliador-0108.md) — limites de análise Go, benchmarks e testes de concorrência.

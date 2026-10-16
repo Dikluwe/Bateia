@@ -1,0 +1,326 @@
+{
+  "schema_version": "1",
+  "reference_origin": "AUTHOR_REVIEWED_EXPLORATORY_NOT_INDEPENDENT",
+  "cases": [
+    {
+      "id": "baseline",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "5370f5b8729693a653ffcfed908708ddaaed43e801a00b379695b0aa7293988d"
+          }
+        ]
+      },
+      "expected_guards": 1
+    },
+    {
+      "id": "rename",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{permits Gate;state Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.permits<-1;defer p.permits.release()}\n func(p *P)check(){if p.state!=nil{panic(1)}}\n func(p *P)configure(){p.check();p.permits=make(Gate,2)}\n func(p *P)init(){p.state=make(Gate)}\n",
+            "sha256": "e60561c7768b6874daa2167c6069313faf97a6b31f0bdc7fccda672885c56eb8"
+          }
+        ]
+      },
+      "expected_guards": 1
+    },
+    {
+      "id": "reversed",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if nil!=p.tasks{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "d55d88f9b2b73e8bac0e558cace685619d3001d39ed73f6a020c32e71482a2cc"
+          }
+        ]
+      },
+      "expected_guards": 1
+    },
+    {
+      "id": "absent",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "016b04f98d13177da143aef6d82d36b277bf593a0723d1a97cfdcb180f891e9f"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "conditional",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){if p.tasks==nil{p.guard()};p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "3bb13a3fd9f838afc757aa78ec7f4829c7e1b84c3949a20ff5f0ce26b3c23182"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "deferred",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){defer p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "972e2c9973a63e03e44f616060af1159e0777496a92241ee16a8ee3b6279aed9"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "go-call",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){go p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "89dc5d7fb5401a59bb034dbbd10287b24c3df8791ba7b4150d9c60db98498a34"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "later",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.tokens=make(Gate,2);p.guard()}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "2a2a8b7b0fd9134616211980d09181dd35ab81ea224943cf079594ec974abde5"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "different-base",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(q *P){q.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "09557e29247ac41ad42ca61e28c5a87d4f6ce5787675acf4b3336759880ba5d5"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "rebind",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p=&P{};p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "cb227ed2f6afe64051a30c08d5bf9a3a169d22ac17b9b29db6bf9da7e17630db"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "address",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();_= &p;p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "eec968ba9aae4cf6ca6d96e4d96d1e63994881181030500af9b6afb297fa75b1"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "capture",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();_=func(){_=p};p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "8f1504ab78aaa2f98729d2b2bcf2f0ae197c4dc1604e06b85691d13d65ddc464"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "shadow-panic",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n\nfunc panic(int){}",
+            "sha256": "e4d7b8c6ab40a0907f4b8c4dc730ecb0a015c0e4cfedceb70e24d87a5abad018"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "shadow-nil",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n\nvar nil Gate",
+            "sha256": "7937bbb83b8b933db605350575ca5c967080abe9897b8f72c2a0194315b60bfe"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "recover",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){defer func(){recover()}();if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "c74bd1a799a441c22d0765dfdccb948c06a0b4831c1361b30c695b5286c5aa6b"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "wrong-predicate",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks==nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "8e62030f703634def16f010de3028104a6bfa34d821be259c48f2d6b441806a7"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "closure",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){func(){p.guard();p.tokens=make(Gate,2)}()}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "cbd2f3c4fb015a363a5b5af1710496932fd758b5a29718f58e3fdd5b160107b2"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "jump",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){goto check;check:p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "631d32ee687766c516a78efa1bbaeb941f940a4100557f3b585bd461b8f6427e"
+          }
+        ]
+      },
+      "expected_guards": 0
+    },
+    {
+      "id": "intervening-effect",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tasks=nil;p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n",
+            "sha256": "77c1f090cfe5e4dfe5c8f8fa35edff3ab0dd08b708fc23587f376390b0865451"
+          }
+        ]
+      },
+      "expected_guards": 1
+    },
+    {
+      "id": "invalid-type",
+      "request": {
+        "schema_version": "1",
+        "origin": "AUTHOR_GUARD_FIXTURE_0116",
+        "build": {},
+        "files": [
+          {
+            "path": "source.go",
+            "content": "package p\n type Gate chan int\n type P struct{tokens Gate;tasks Gate}\n func(l Gate)release(){<-l}\n func(p *P)run(){p.tokens<-1;defer p.tokens.release()}\n func(p *P)guard(){if p.tasks!=nil{panic(1)}}\n func(p *P)configure(){p.guard();p.tokens=make(Gate,2)}\n func(p *P)init(){p.tasks=make(Gate)}\n;var bad=missing",
+            "sha256": "f01122a45ecdefed1dbf106a0004c07f9fced0d58349e4234db760c9df8edbc5"
+          }
+        ]
+      },
+      "expected_guards": 0
+    }
+  ]
+}

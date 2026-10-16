@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/mcp/baseline_tools_step0028_oracle_test.md
  * @layer L2
- * @updated 2026-09-03
+ * @updated 2026-10-06
  */
 
 package mcp
@@ -20,7 +20,7 @@ import (
 func TestStep0028OracleFrozenBasalNineCapture(t *testing.T) {
 	connector := &step0027ConnectorStub{}
 	starter := &step0027StarterStub{}
-	response := step0027RunMCP(t, true, "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}\n", connector, starter)[0]
+	response := step0027RunBasalMCP(t, true, "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}\n", connector, starter)[0]
 	tools := step0027Tools(t, response)
 	encoded, err := json.Marshal(tools)
 	if err != nil {

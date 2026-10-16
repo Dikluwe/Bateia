@@ -1,0 +1,755 @@
+{
+  "type_diagnostics": [
+    {
+      "message": "could not import fmt (Config.Importer not installed)",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 4,
+        "column": 2,
+        "offset": 26,
+        "end_offset": 26,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "message": "could not import runtime (Config.Importer not installed)",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 5,
+        "column": 2,
+        "offset": 33,
+        "end_offset": 33,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "message": "could not import runtime/debug (Config.Importer not installed)",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 6,
+        "column": 2,
+        "offset": 44,
+        "end_offset": 44,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "message": "could not import sync/atomic (Config.Importer not installed)",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 7,
+        "column": 2,
+        "offset": 61,
+        "end_offset": 61,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "message": "could not import context (Config.Importer not installed)",
+      "location": {
+        "path": "pool/context_pool.go",
+        "line": 4,
+        "column": 2,
+        "offset": 24,
+        "end_offset": 24,
+        "content_sha256": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10"
+      }
+    },
+    {
+      "message": "could not import errors (Config.Importer not installed)",
+      "location": {
+        "path": "pool/error_pool.go",
+        "line": 5,
+        "column": 2,
+        "offset": 35,
+        "end_offset": 35,
+        "content_sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      }
+    },
+    {
+      "message": "could not import sync (Config.Importer not installed)",
+      "location": {
+        "path": "pool/error_pool.go",
+        "line": 6,
+        "column": 2,
+        "offset": 45,
+        "end_offset": 45,
+        "content_sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      }
+    },
+    {
+      "message": "could not import github.com/sourcegraph/conc (Config.Importer not installed)",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 7,
+        "column": 2,
+        "offset": 44,
+        "end_offset": 44,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "message": "could not import sort (Config.Importer not installed)",
+      "location": {
+        "path": "pool/result_pool.go",
+        "line": 5,
+        "column": 2,
+        "offset": 35,
+        "end_offset": 35,
+        "content_sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      }
+    },
+    {
+      "message": "could not import sync (Config.Importer not installed)",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 4,
+        "column": 2,
+        "offset": 24,
+        "end_offset": 24,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "message": "could not import github.com/sourcegraph/conc/panics (Config.Importer not installed)",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 6,
+        "column": 2,
+        "offset": 33,
+        "end_offset": 33,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    }
+  ],
+  "schema_version": "concurrency-observation-v1",
+  "analyzer": "go-concurrency-syntax-0116-v8",
+  "input_sha256": "26c52bfa7ea3bb5d844e9ddd311237594f3607409e3e0f534e4e3c35cdc558d8",
+  "origin": "sourcegraph/conc@5f936abd7ae87036af1f75c95fb9d0daaf00116b; collector 0106 non-test pool closure",
+  "declared_build": {
+    "go_version": "go version go1.26.5 linux/amd64",
+    "goos": "linux",
+    "goarch": "amd64"
+  },
+  "scope": "FILES_AS_SUPPLIED_NOT_BUILD_SELECTED",
+  "status": "OBSERVED_SYNTAX",
+  "observations": [
+    {
+      "property": "select_shape",
+      "value": "SELECT_WITH_DEFAULT",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "if(p.limiter == nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 44,
+        "column": 3,
+        "offset": 1195,
+        "end_offset": 1434,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "SELECT_WITH_DEFAULT",
+      "resource": "p.tasks",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "if(p.limiter == nil)",
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 45,
+        "column": 8,
+        "offset": 1211,
+        "end_offset": 1223,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "select_shape",
+      "value": "WAITING_SELECT",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 55,
+        "column": 3,
+        "offset": 1447,
+        "end_offset": 1730,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "p.limiter",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)",
+        "select.case:0"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 56,
+        "column": 8,
+        "offset": 1463,
+        "end_offset": 1486,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_send",
+      "value": "WAITING_SELECT",
+      "resource": "p.tasks",
+      "function": "*Pool.Go@1086",
+      "conditions": [
+        "else(p.limiter == nil)",
+        "select.case:1"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 62,
+        "column": 8,
+        "offset": 1648,
+        "end_offset": 1660,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_buffer_syntax",
+      "value": "UNBUFFERED_FORM",
+      "resource": "chan func()",
+      "function": "*Pool.init@2617/literal@2656",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 104,
+        "column": 13,
+        "offset": 2677,
+        "end_offset": 2694,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "channel_receive",
+      "value": "DIRECT_RECEIVE",
+      "resource": "l",
+      "function": "limiter.release@4425",
+      "conditions": [
+        "if(l != nil)"
+      ],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 172,
+        "column": 3,
+        "offset": 4471,
+        "end_offset": 4474,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "property": "goroutine_launch",
+      "value": "GO_STATEMENT",
+      "resource": "func() { defer h.wg.Done() h.pc.Try(f) }",
+      "function": "*WaitGroup.Go@737",
+      "conditions": [],
+      "authority": "SYNTAX_ONLY",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 30,
+        "column": 2,
+        "offset": 786,
+        "end_offset": 836,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "*WaitGroup.Go@737",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 28,
+        "column": 34,
+        "offset": 770,
+        "end_offset": 838,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "ADMISSION_BOUND_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "panics/try.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aae20806df92bd802e61ab4a6dc07f09a3bcdc031d0221a57cf4b3e2b7488447"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/result_context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "1e711f53415c2510454bf6479355360c8bc6e9cc37a08556c03966d6ac420884"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/result_error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "47f23cd75ceb50e3eebc55ce5101932ff9c852aa613e41bb2c3defdcc1c52f0c"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "pool/result_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      }
+    },
+    {
+      "code": "BUILD_SELECTION_NOT_VERIFIED",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "*WaitGroup.Go@737",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 28,
+        "column": 34,
+        "offset": 770,
+        "end_offset": 838,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "CANCELLATION_COMPLETION_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "NAMED_CHANNEL_TYPE_UNRESOLVED",
+      "function": "*Pool.WithMaxGoroutines@2319",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 96,
+        "column": 14,
+        "offset": 2481,
+        "end_offset": 2497,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "NAMED_CHANNEL_TYPE_UNRESOLVED",
+      "function": "*resultAggregator[T].save@2928",
+      "location": {
+        "path": "pool/result_pool.go",
+        "line": 111,
+        "column": 15,
+        "offset": 3087,
+        "end_offset": 3103,
+        "content_sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "panics/try.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aae20806df92bd802e61ab4a6dc07f09a3bcdc031d0221a57cf4b3e2b7488447"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/result_context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "1e711f53415c2510454bf6479355360c8bc6e9cc37a08556c03966d6ac420884"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/result_error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "47f23cd75ceb50e3eebc55ce5101932ff9c852aa613e41bb2c3defdcc1c52f0c"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "pool/result_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      }
+    },
+    {
+      "code": "SUPPLIED_PACKAGE_TYPECHECK_FAILED",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "panics/panics.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aa389995e26a6a0486011750585caa5bfd929728b7514c3b5a8d5056d2a17371"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "panics/try.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "aae20806df92bd802e61ab4a6dc07f09a3bcdc031d0221a57cf4b3e2b7488447"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "beea8831cb758c62b529f04af1df0dbaad6547d24c25a69fe975c1194730cb10"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "67278c56f8e86c53d4caf96b7244b8882b8645cbcb791d4c98de94b90a6ccf82"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/result_context_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "1e711f53415c2510454bf6479355360c8bc6e9cc37a08556c03966d6ac420884"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/result_error_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "47f23cd75ceb50e3eebc55ce5101932ff9c852aa613e41bb2c3defdcc1c52f0c"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "pool/result_pool.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "013dd938a3ec6a7f43562b40103fa4021b9f9b1203fcfcbf06a4b7677d859b15"
+      }
+    },
+    {
+      "code": "SYNTAX_PROPERTIES_NOT_TYPECHECKED",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 1,
+        "column": 1,
+        "offset": 0,
+        "end_offset": 0,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.Go@1086",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 39,
+        "column": 29,
+        "offset": 1114,
+        "end_offset": 1736,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*Pool.init@2617/literal@2656",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 103,
+        "column": 23,
+        "offset": 2663,
+        "end_offset": 2697,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "*WaitGroup.Go@737",
+      "location": {
+        "path": "waitgroup.go",
+        "line": 28,
+        "column": 34,
+        "offset": 770,
+        "end_offset": 838,
+        "content_sha256": "8737f771228c6b3cc61a4281e29b9f5f496bd757d68bc0c8049f99b8354b6fe4"
+      }
+    },
+    {
+      "code": "WORKER_BOUND_UNRESOLVED",
+      "function": "limiter.release@4425",
+      "location": {
+        "path": "pool/pool.go",
+        "line": 170,
+        "column": 28,
+        "offset": 4452,
+        "end_offset": 4479,
+        "content_sha256": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+      }
+    }
+  ],
+  "limitations": [
+    "Syntax and closed supplied-package types are observed; sources are not built or executed.",
+    "Build context and origin are declarations, not independently verified receipts.",
+    "Type resolution requires error-free supplied packages; imports need supplied sources/export data. Sizes are fixed gc/amd64, not a verified build.",
+    "Buffer capacity does not establish a bound on workers or admitted work.",
+    "A Done selector does not establish context identity or completion of cancellation.",
+    "No mechanism, absence of defects or benefit to a target is certified.",
+    "Relations describe typed targets and lexical containment, not feasible paths, callback execution or shared channel instances."
+  ]
+}

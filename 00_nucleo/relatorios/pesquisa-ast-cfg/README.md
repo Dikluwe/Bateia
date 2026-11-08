@@ -41,7 +41,7 @@ clang -std=c++17 -fsyntax-only -Xclang -ast-dump=json /tmp/bateia-ast-research.c
 clang -cc1 -std=c++17 -analyze -analyzer-checker=debug.DumpCFG /tmp/bateia-ast-research.cpp
 ```
 
-A segunda invocação produz um dump de depuração, não uma interface JSON de produção. Saída preservada em `example-cfg.txt`; contagens AST em `example-validation.json`.
+A segunda invocação produz um dump de depuração, não uma interface JSON de produção. Saída preservada em [example-cfg.txt](../../../lab/bancada/pesquisa/ast-cfg/example-cfg.txt); contagens AST em [example-validation.json](../../../lab/bancada/pesquisa/ast-cfg/example-validation.json). Os bytes foram transferidos ao Lab no passo 0131, preservando SHA-256.
 
 Resultados observados: AST com IfStmt, ForStmt, ReturnStmt e três CallExpr; chamada desativada ausente. CFG: B7 bifurca para B6 (fallback e return) ou B5 (inicialização do laço); B4 testa o laço; B3 chama draw_layer; B2 incrementa e retorna a B4; B1 chama compose.
 

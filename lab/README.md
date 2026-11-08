@@ -9,13 +9,20 @@ histórico ainda ligado ao estado declarado do produto.
 
 ```text
 lab/
+├── ferramentas/    # gate e ferramentas de desenvolvimento fixadas
 └── bancada/
-    ├── gates/       # verificadores executáveis ainda relevantes
-    └── history/
-        ├── benchmarks/ # evidências citadas por contratos, testes ou sínteses atuais
-        ├── oracles/    # oráculos supersedidos que explicam gates selados
-        ├── prompts/    # prompts supersedidos por decisão arquitetural explícita
-        └── reports/    # dossiês ainda ligados ao estado atual
+    ├── arquitetura/ # verificadores de fronteiras e ownership
+    ├── insights/    # investigações e avaliação de insights
+    ├── pesquisa/    # estudos de mecanismos, parsers e integrações
+    ├── concorrencia/ # pilotos e observadores de concorrência
+    ├── confiabilidade/ # controles de integridade e falhas
+    ├── decisoes/    # ensaios de decisão
+    ├── forjas/      # integrações com catálogos/forges
+    ├── prompts/    # verificação dos contratos de exploração
+    ├── corpora/    # corpora de bancada
+    ├── culinaria/  # caso de investigação de domínio
+    ├── gates/      # gates ativos e selados, conforme seus módulos
+    └── history/    # acervo histórico referenciado; preservar hashes/caminhos
 ```
 
 Artefatos no Lab não definem a arquitetura do produto. Uma promoção para o sistema
@@ -28,6 +35,16 @@ promova seu resultado, preserve apenas a evidência consumida em `history/` ou e
 Compilações, caches, mutantes gerados, variações intermediárias e saídas descartáveis
 usam `/dev/shm` e não são versionados. Material histórico preserva nomes cronológicos
 somente para localização; ele não governa o produto atual.
+
+## Entradas para uso e verificação
+
+| Tarefa | Entrada |
+| --- | --- |
+| Investigar melhorias para o XERJ com o Bateia | [Caso de 8 de novembro de 2026](bancada/insights/xerj-2026-11-08/README.md) |
+| Preparar contexto para a IA sem avaliações manuais | [Exploração 0136](bancada/insights/0136/README.md) |
+| Entender memória e expansão de trilhas | [0142](bancada/insights/0142/README.md), [0143](bancada/insights/0143/README.md) e [0144](bancada/insights/0144/README.md) |
+| Executar o gate de desenvolvimento | [Ferramentas](ferramentas/README.md) |
+| Reproduzir gates históricos selados | [Regime dos gates selados](bancada/gates/sealed/README.md) |
 
 ## Bancada ativa de concorrência
 

@@ -16,7 +16,7 @@ Essas obrigações derivam de [.agentrules](../../.agentrules). A organização 
 
 ## Verificação técnica
 
-Na raiz do módulo:
+Na raiz, execute `make verify` para a pilha completa ou `make lint` para o lint. O gate usa a fonte/patch fixados em `lab/ferramentas/crystalline-lint/manifest.json`, compilados e validados fora do produto; não exige checkout externo nem altera a instalação global. Pré-requisitos e cache estão em [lab/ferramentas/README.md](../../lab/ferramentas/README.md). Os comandos individuais da pilha são:
 
 ```bash
 crystalline-lint --fail-on warning .
@@ -24,6 +24,8 @@ go test ./...
 go vet ./...
 go build -o /dev/shm/bateia ./04_wiring
 ```
+
+`make architecture` e a etapa arquitetural de `make verify` incluem gravidade/efeitos (0129), ownership anterior (0131) e a guarda da investigação (0145). Esta última verifica proprietários, controles negativos e preservação dos corpos dos consumidores realocados. Gates selados continuam no regime separado descrito abaixo.
 
 Em um ambiente que não permita escrever em `/dev/shm`, use um destino temporário autorizado e registre a substituição. Go deve atender ao `go.mod`; integrações opcionais como Clang, ferramenta de fluxo e govulncheck dependem da capacidade exercitada.
 
@@ -71,3 +73,17 @@ Antes de integrar, verifique fronteiras de importação, ausência de executores
 ## Critério de conclusão
 
 Uma evolução está pronta quando entrega o observável contratado, preserva consumidores, apresenta verificação reproduzível e deixa claros seus limites. A utilidade de uma capacidade exige sua avaliação própria; não deve ser inferida apenas de compilação ou testes de infraestrutura.
+
+## Reprodução histórica das fronteiras — passo 0129
+
+Para reproduzir especificamente o ensaio histórico 0129, use `bash lab/bancada/arquitetura/0129/reproduce-lint.sh` (o gate atual `make verify` já inclui fonte/patch fixados no projeto): ele extrai a revisão declarada do linter para `/tmp`, aplica o patch do parser, executa os testes da ferramenta e 11 controles adversariais e roda `crystalline-lint --fail-on warning .` com o binário validado no PATH somente desse processo. A fonte externa e a instalação global permanecem intactas. Requer Rust/Cargo, crates em cache e o repositório do linter na revisão disponível; o caminho pode ser informado por `BATEIA_LINTER_SOURCE`.
+
+Execute também `go test -v ./lab/bancada/arquitetura/0129/boundaries`. O auditor verifica efeitos concretos, gravidade produtiva, contratos em L4, isolamento do Lab e executáveis em L0, com controles negativos. Não substitui avaliação semântica das regras de negócio.
+
+Ao compor a CLI como biblioteca, instale `cli.ConfigureCommandHost(host.New())` no startup L4. Configure `WithExecutionRuntime` nas fachadas do funil/recomendação, ou use contexto com runtime nas chamadas L1. Não há driver implícito em L1/L2. Os testes externos `cli_test` compõem o mesmo adaptador sem inseri-lo no build produtivo. O seam de configuração da CLI é de startup; não deve ser alterado durante comandos concorrentes.
+
+## Conclusão dos pontos da revisão — 0131
+
+A jornada do dossiê, identidade, manifesto e estágios pertencem a `recommendation_dossier*.go` em L1. A CLI fornece adaptadores de nomes lógicos e apresentação, recebendo o serviço composto em L4; o caminho compatível da biblioteca delega à mesma jornada. A investigação web e o veredicto pertencem a `web_experiment_run.go`; a investigação de mercado implementa a porta de executor em `market_execution.go`, enquanto o runtime publica e controla CAS/lifecycle.
+
+Os testes puros de códigos/locale ficam em L1 e o auditor AST geral em `lab/bancada/arquitetura/0131/contracts`. Resultados brutos Clang ficam em `lab/bancada/pesquisa/ast-cfg`. O gate inclui testes de ownership e recusa material não declarado em L0, além da auditoria de efeitos/imports. Relatórios históricos de 0129/0130 descrevem seus próprios recortes, não a árvore posterior.

@@ -2,7 +2,7 @@
 
 ## Propósito e arquitetura
 
-O Bateia investiga software para produzir oportunidades de reúso e insights de engenharia. Tekt governa todo o programa. Leia as [regras estruturais](.agentrules), os [ADRs de hierarquia](00_nucleo/ADR/ADR-0008-hierarquia-de-arquiteturas-sob-tekt.md) e o [mapa de responsabilidades](00_nucleo/arquitetura/README.md) antes de alterar uma capacidade. As regras históricas em `.agents/AGENTS.md` continuam aplicáveis; esta entrada acrescenta orientação de navegação e o propósito atualizado por instrução do usuário.
+O Bateia investiga software para produzir oportunidades de reúso e insights de engenharia. Tekt governa todo o programa. Leia as [regras estruturais canônicas](.agentrules), os [ADRs de hierarquia](00_nucleo/ADR/ADR-0008-hierarquia-de-arquiteturas-sob-tekt.md) e o [mapa de responsabilidades](00_nucleo/arquitetura/README.md) antes de alterar uma capacidade. A entrada histórica [`.agents/AGENTS.md`](.agents/AGENTS.md) incorpora integralmente as regras de `.agentrules` por referência; esta entrada acrescenta orientação de navegação e o propósito atualizado por instrução do usuário.
 
 ## Como localizar uma mudança
 

@@ -11,10 +11,12 @@ O [mapa de responsabilidades](../arquitetura/README.md) e o [ADR-0008](../ADR/AD
 | Necessidade | Leitura |
 | --- | --- |
 | Entender o problema e o resultado esperado | [Visão do produto](produto.md) |
+| Fazer a primeira investigação | [Investigar software](investigar-software.md) |
 | Localizar responsabilidades, fluxos e interfaces | [Arquitetura atual](arquitetura.md) |
+| Escrever ou revisar especificações de componentes | [Guia de prompts](escrever-prompts.md) e [contratos consolidados](../contratos/README.md) |
 | Desenvolver, verificar e preservar contratos | [Guia de engenharia](engenharia.md) |
 | Planejar a organização e reduzir riscos conhecidos | [Plano de organização](organizacao.md) |
-| Consultar comandos e exemplos | [README principal](../../README.md) |
+| Consultar comandos e exemplos | [Referência de comandos](referencia-comandos.md) |
 | Consultar o diagnóstico desta leitura | [Diagnóstico de 6 de outubro de 2026](../relatorios/diagnostico-organizacao-2026-10-06.md) |
 
 ## Onde cada informação pertence

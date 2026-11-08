@@ -41,3 +41,13 @@ A coleta geral observa contexto após árvore e antes/depois da busca de impleme
 TotalBytes abrange os metadados: JSON que não couber é omitido integralmente com SKIPPED_BUDGET e Complete=false. Nenhum JSON truncado é admitido; BytesRead fica dentro do teto. AdditionalBytes é um saldo compartilhado entre as coletas da rodada, consumido em ordem canônica de repo@commit. Sem saldo, gerar omissão por orçamento, sem portas de coleta e sem contar esses targets como executados. Bytes de bundles originais não são cobrados novamente. Falta de orçamento conserva inconclusão.
 
 Critérios EVD-06 (revisões e isolamento), EVD-07 (interrupção entre portas), EVD-08 (saldo por rodada) e EVD-09 (metadados dentro do teto) são consumidos pelas [regressões0160](../../01_core/usecase/evidence_budget_revision_regression_test.go). Schemas e registros históricos permanecem intactos; somente novas execuções seguem a correção.
+
+## Recuperação ativa, histórico e custo — 0161
+
+O [passo0161](../passos/0161-corrigir-transicoes-historico-e-revalidacao.md) distingue o dossiê preservado dos bundles ativos. Quando a própria tentativa de uma origem vazia/HEAD resolve explicitamente para SHA completo, retirar a origem sem pin da avaliação da nova rodada, sem migrar seus itens/falhas para o SHA. Falha, omissão e leitura de outra revisão fixa não autorizam retirada. O original continua no dossiê e nos objetos de entrada, intacto; revisões fixas distintas continuam separadas.
+
+Histórico de execução inclui COLLECTED/NOT_FOUND/FAILED, exclui SKIPPED_BUDGET/UNSUPPORTED e não presume execução de plano sem resultado. Item legado com path correspondente é testemunho na ausência de resultado. A projeção ativa AttemptedOriginalRecoveryTargets mantém ordem e RuleIDs dos elegíveis, delegando a OriginalRecoveryTargets; esta conserva sua projeção legada para consumidores históricos e não governa a elegibilidade ativa. Rodadas anteriores usam a última ocorrência correspondente nos resultados para selecionar os targets do plano; a CLI lê os bundles e delega essa regra a L1. Não reescrever planos antigos para corrigir a projeção nova.
+
+ProviderCalls contabiliza cada chamada real a ContentProvider, inclusive falhas e preparação de padrões; grupo omitido não chama porta nem aumenta contador. A métrica não mede requisições internas do adaptador ou custo financeiro.
+
+Critérios EVD-10 (transição de origem), EVD-11 (histórico de tentativas) e EVD-12 (chamadas reais) são consumidos pelas [regressões de recuperação](../../01_core/usecase/evidence_recovery_followup_regression_test.go) e [retomada CLI](../../02_shell/cli/idea_recover_history_regression_test.go). A integridade de declarações na busca possui [contrato próprio](revalidacao-de-declaracoes-v1.md).

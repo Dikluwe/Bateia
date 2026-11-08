@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recover.md
  * @layer L2
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package cli
 
@@ -129,10 +129,17 @@ func runRecoverExecute(args []string, stdout io.Writer, provider domain.ContentP
 	}
 	for i := 1; i < round; i++ {
 		var old domain.EvidenceRecoveryPlan
-		if readJSONFile(filepath.Join(*run, "recovery", fmt.Sprintf("round-%02d", i), "plan.json"), &old) == nil {
-			previous = append(previous, old.Targets...)
+		var outcomes []domain.EvidenceBundle
+		dir := filepath.Join(*run, "recovery", fmt.Sprintf("round-%02d", i))
+		if err := readJSONFile(filepath.Join(dir, "plan.json"), &old); err != nil {
+			return err
 		}
+		if err := readJSONFile(filepath.Join(dir, "bundles.json"), &outcomes); err != nil {
+			return err
+		}
+		previous = append(previous, usecase.ExecutedRecoveryTargets(old, outcomes)...)
 	}
+
 	plan, err := usecase.PlanEvidenceRecovery(diagnosis, policy, round, previous)
 	if err != nil {
 		return err
@@ -176,7 +183,7 @@ func recoveryOriginalTargets(run string) ([]domain.RecoveryTarget, error) {
 	if err := readJSONFile(filepath.Join(run, "evidence", "bundles.json"), &bundles); err != nil {
 		return nil, err
 	}
-	return usecase.OriginalRecoveryTargets(bundles), nil
+	return usecase.AttemptedOriginalRecoveryTargets(bundles), nil
 }
 
 func loadRecoveryDiagnosis(run string) (domain.InconclusiveDiagnosis, error) {

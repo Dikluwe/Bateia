@@ -1,0 +1,5 @@
+# Regressões de recuperação observada
+
+L1. Origem ex-ante [passo0161](../../../passos/0161-corrigir-transicoes-historico-e-revalidacao.md). Consumir EVD-10–12 do [contrato ativo](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#recuperação-ativa-histórico-e-custo--0161).
+
+Portas em memória contadas: HEAD/vazio resolve para SHA e deixa de gerar UNRESOLVED_REVISION, sem misturar itens antigos ou alterar JSON de entrada; revisão fixa vizinha conserva-se. Falha e omissão não retiram registro sem pin; coletar outro pin não resolve automaticamente a origem opaca. A projeção ativa AttemptedOriginalRecoveryTargets preserva a projeção legada sob seus consumidores anteriores. Histórico permite LICENSE antes SKIPPED_BUDGET ou UNSUPPORTED e bloqueia COLLECTED/NOT_FOUND/FAILED; plano sozinho não basta, item legado é testemunho; última ocorrência dos resultados governa projeção dos planos de rodadas. Contar três portas no explícito, quatro no derivado, falha e grupos omitidos sem chamadas fictícias. Preservar testes anteriores.

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/implementation_retrieval.md
  * @layer L1
- * @updated 2026-09-08
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -84,6 +84,7 @@ func ValidateImplementationHits(report domain.ImplementationSearchReport, files 
 	hashes := map[string]string{}
 	calls := map[string]map[string]bool{}
 	docs := map[string]map[string]bool{}
+	definitions := map[string]map[string]int{}
 	for _, f := range files {
 		contents[f.Path] = f
 		hashes[f.Path] = fmt.Sprintf("%x", sha256.Sum256([]byte(f.Content)))
@@ -104,6 +105,14 @@ func ValidateImplementationHits(report domain.ImplementationSearchReport, files 
 		if h.Line < 1 || h.EndLine < h.Line || h.EndLine > len(strings.Split(f.Content, "\n")) {
 			out.Status = "partial"
 			out.Issues = append(out.Issues, "intervalo de definição inválido: "+h.Path)
+			continue
+		}
+		if definitions[h.Path] == nil {
+			definitions[h.Path] = implementationDeclarationDefinitions(f.Content, h.Path)
+		}
+		if definitions[h.Path][implementationDeclarationKey(h.Symbol, h.Line, h.EndLine)] != 1 {
+			out.Status = "partial"
+			out.Issues = append(out.Issues, "declaração não confirmada: "+h.Path)
 			continue
 		}
 		if h.Retrieval == "documentation" {
@@ -204,4 +213,41 @@ func implementationDocumentationDefinitions(content, filePath string) map[string
 }
 func implementationDocumentationKey(symbol string, line, end, docLine, docEnd int) string {
 	return fmt.Sprintf("%s\x00%d\x00%d\x00%d\x00%d", symbol, line, end, docLine, docEnd)
+}
+
+// Use the same named declaration nodes as the index, without trusting hit metadata.
+func implementationDeclarationDefinitions(content, filePath string) map[string]int {
+	out := map[string]int{}
+	if !strings.HasSuffix(filePath, ".go") {
+		return out
+	}
+	set := token.NewFileSet()
+	tree, err := goparser.ParseFile(set, filePath, content, goparser.ParseComments|goparser.AllErrors)
+	if err != nil || ast.IsGenerated(tree) {
+		return out
+	}
+	add := func(name string, node ast.Node) {
+		out[implementationDeclarationKey(name, set.Position(node.Pos()).Line, set.Position(node.End()).Line)]++
+	}
+	for _, decl := range tree.Decls {
+		switch d := decl.(type) {
+		case *ast.FuncDecl:
+			add(d.Name.Name, d)
+		case *ast.GenDecl:
+			for _, spec := range d.Specs {
+				switch node := spec.(type) {
+				case *ast.TypeSpec:
+					add(node.Name.Name, node)
+				case *ast.ValueSpec:
+					for _, name := range node.Names {
+						add(name.Name, node)
+					}
+				}
+			}
+		}
+	}
+	return out
+}
+func implementationDeclarationKey(symbol string, line, end int) string {
+	return fmt.Sprintf("%s\x00%d\x00%d", symbol, line, end)
 }

@@ -281,7 +281,12 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		return domain.RecoveryRoundResult{}, fmt.Errorf("plano de recuperação não possui targets")
 	}
 	plans := recoveryExtractionPlans(plan, original)
-	providerCalls := 0
+	counter := &recoveryProviderCounter{provider: provider}
+	observed := provider
+	if provider != nil {
+		observed = counter
+	}
+	resolved := map[string]bool{}
 	collected := []domain.EvidenceBundle{}
 	omitted := []domain.EvidenceBundle{}
 	remaining := plan.Policy.AdditionalBytes
@@ -300,8 +305,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 			omitted = append(omitted, b)
 			continue
 		}
-		prepared, calls, err := prepareRecoveryExtraction(ctx, p, plan.Targets, provider)
-		providerCalls += calls
+		prepared, _, err := prepareRecoveryExtraction(ctx, p, plan.Targets, observed)
 		if err != nil {
 			return domain.RecoveryRoundResult{}, err
 		}
@@ -312,7 +316,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 				executedTargets++
 			}
 		}
-		b, e := collectEvidence(ctx, p, provider, true)
+		b, e := collectEvidence(ctx, p, observed, true)
 		if err := ctx.Err(); err != nil {
 			return domain.RecoveryRoundResult{}, err
 		}
@@ -322,10 +326,20 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		if e != nil {
 			b = domain.EvidenceBundle{SchemaVersion: "1", Repository: p.Repository, Plan: p, Failures: []domain.ExecutionFailure{{Scope: p.Repository.Key(), Stage: "recovery", Message: e.Error()}}}
 		}
+		if e == nil && mutableIdeaRunCommit(p.Repository.Commit) && immutableCommitPattern.MatchString(b.Repository.Commit) {
+			resolved[p.Repository.Owner+"/"+p.Repository.Repo] = true
+		}
 		remaining -= b.BytesRead
 		collected = append(collected, b)
 	}
-	merged, duplicates := mergeRecoveryBundles(original, append(collected, omitted...))
+	activeOriginal := []domain.EvidenceBundle{}
+	for _, b := range original {
+		if mutableIdeaRunCommit(b.Repository.Commit) && resolved[b.Repository.Owner+"/"+b.Repository.Repo] {
+			continue
+		}
+		activeOriginal = append(activeOriginal, b)
+	}
+	merged, duplicates := mergeRecoveryBundles(activeOriginal, append(collected, omitted...))
 	valid := []domain.EvidenceBundle{}
 	failed := []domain.EvidenceBundle{}
 	for _, b := range merged {
@@ -347,7 +361,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		return domain.RecoveryRoundResult{}, err
 	}
 	diagnosis := DiagnoseInconclusive("recovery", recoveryHash(decision), decision, assessment, merged, rules)
-	metrics := recoveryMetrics(plan, before, decision, original, collected, duplicates, diagnosis, providerCalls)
+	metrics := recoveryMetrics(plan, before, decision, original, collected, duplicates, diagnosis, counter.calls)
 	metrics.TargetsExecuted = executedTargets
 	return domain.RecoveryRoundResult{Bundles: merged, Assessment: assessment, Decision: decision, Diagnosis: diagnosis, Metrics: metrics}, nil
 }
@@ -522,7 +536,7 @@ func recoveryMetrics(plan domain.EvidenceRecoveryPlan, before, after domain.Reus
 	for _, b := range collected {
 		bytes += b.BytesRead
 	}
-	m := domain.RecoveryMetrics{Round: plan.Round, FindingsBefore: len(plan.Targets) + len(plan.Skipped), TargetsPlanned: len(plan.Targets), TargetsExecuted: len(plan.Targets), TargetsNew: len(plan.Targets), DuplicateContent: duplicates, AdditionalBytes: bytes, ProviderCalls: calls + len(collected), RemainingFindings: len(d.Findings), DecisionBefore: string(before.Decision), DecisionAfter: string(after.Decision)}
+	m := domain.RecoveryMetrics{Round: plan.Round, FindingsBefore: len(plan.Targets) + len(plan.Skipped), TargetsPlanned: len(plan.Targets), TargetsExecuted: len(plan.Targets), TargetsNew: len(plan.Targets), DuplicateContent: duplicates, AdditionalBytes: bytes, ProviderCalls: calls, RemainingFindings: len(d.Findings), DecisionBefore: string(before.Decision), DecisionAfter: string(after.Decision)}
 	m.ResolvedFindings = m.FindingsBefore - m.RemainingFindings
 	if m.ResolvedFindings < 0 {
 		m.ResolvedFindings = 0
@@ -567,4 +581,95 @@ func firstString(values []string) string {
 		return values[0]
 	}
 	return ""
+}
+
+// ExecutedRecoveryTargets retains planned identities only when outcomes witness an attempt.
+func ExecutedRecoveryTargets(plan domain.EvidenceRecoveryPlan, bundles []domain.EvidenceBundle) []domain.RecoveryTarget {
+	out := []domain.RecoveryTarget{}
+	for _, target := range plan.Targets {
+		matches := []domain.EvidenceBundle{}
+		for _, b := range bundles {
+			if b.Repository.Key() == target.Candidate.Key() {
+				matches = append(matches, b)
+			}
+		}
+		if len(matches) == 0 && mutableIdeaRunCommit(target.Candidate.Commit) {
+			for _, b := range bundles {
+				if b.Repository.Owner == target.Candidate.Owner && b.Repository.Repo == target.Candidate.Repo && immutableCommitPattern.MatchString(b.Repository.Commit) {
+					matches = append(matches, b)
+				}
+			}
+		}
+		if len(matches) == 1 && recoveryTargetAttempted(target, matches[0]) {
+			out = append(out, target)
+		}
+	}
+	return out
+}
+func recoveryAttemptStatus(status domain.CollectionTargetStatus) bool {
+	return status == domain.TargetCollected || status == domain.TargetNotFound || status == domain.TargetFailed
+}
+func recoveryTargetAttempted(target domain.RecoveryTarget, bundle domain.EvidenceBundle) bool {
+	for i := len(bundle.Targets) - 1; i >= 0; i-- {
+		result := bundle.Targets[i]
+		if (target.FindingID != "" && result.Target.Reason == "recovery "+target.FindingID) || (target.Path != "" && result.Target.Path == target.Path) || (target.Path == "" && result.Target.Kind == target.Kind && recoveryPathMatches(result.Target.Path, target)) {
+			return recoveryAttemptStatus(result.Status)
+		}
+	}
+	for _, item := range bundle.Items {
+		if item.Path == target.Path || (target.Path == "" && (item.Path == "@repository-metadata" || recoveryPathMatches(item.Path, target))) {
+			return true
+		}
+	}
+	for _, failure := range bundle.Failures {
+		if failure.Stage == "recovery" {
+			return true
+		}
+	}
+	return false
+}
+
+// The counter observes port invocations; it performs no concrete effects itself.
+type recoveryProviderCounter struct {
+	provider domain.ContentProvider
+	calls    int
+}
+
+func (p *recoveryProviderCounter) FetchManifest(ctx context.Context, c domain.RepositoryCandidate) (*domain.Manifest, error) {
+	p.calls++
+	return p.provider.FetchManifest(ctx, c)
+}
+func (p *recoveryProviderCounter) FetchRepoMetadata(ctx context.Context, c domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
+	p.calls++
+	return p.provider.FetchRepoMetadata(ctx, c)
+}
+func (p *recoveryProviderCounter) FetchTree(ctx context.Context, c domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
+	p.calls++
+	return p.provider.FetchTree(ctx, c)
+}
+func (p *recoveryProviderCounter) ExtractRepoFiles(ctx context.Context, c domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
+	p.calls++
+	return p.provider.ExtractRepoFiles(ctx, c, paths)
+}
+
+// AttemptedOriginalRecoveryTargets is the active history; the legacy projection stays intact.
+func AttemptedOriginalRecoveryTargets(bundles []domain.EvidenceBundle) []domain.RecoveryTarget {
+	observed := []domain.EvidenceBundle{}
+	for _, b := range bundles {
+		filtered := b
+		filtered.Plan.Targets = nil
+		filtered.Targets = nil
+		for _, target := range b.Plan.Targets {
+			if recoveryTargetAttempted(domain.RecoveryTarget{Path: target.Path, Kind: target.Kind}, b) {
+				filtered.Plan.Targets = append(filtered.Plan.Targets, target)
+			}
+		}
+		for _, result := range b.Targets {
+			if recoveryAttemptStatus(result.Status) {
+				filtered.Targets = append(filtered.Targets, result)
+			}
+		}
+		observed = append(observed, filtered)
+	}
+	return OriginalRecoveryTargets(observed)
 }

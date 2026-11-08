@@ -12,3 +12,7 @@ Revisão 0045 após ataque público: intervalo válido deve apontar uma CallExpr
 A validação calcula hashes e índice de chamadas uma vez por arquivo em cada releitura, evitando reparse por referência.
 
 0051: ValidateImplementationHits valida hits documentation contra declaração AST e grupo Doc anexado, incluindo símbolo, intervalos da declaração e documentação, após conferência SHA256. Parse por arquivo com cache local; rejeitar arquivo gerado, sem Doc ou intervalo forjado. Não admitir fonte documental como código lexical.
+
+## 0161 — Identidade da declaração lexical
+
+Aplicar DECL-01–03 do [contrato de revalidação](../../../contratos/revalidacao-de-declaracoes-v1.md), sob [passo0161](../../../passos/0161-corrigir-transicoes-historico-e-revalidacao.md). Depois do hash, confrontar símbolo e faixa exata com FuncDecl/TypeSpec/ValueSpec globais Go, em cache por arquivo. Métodos usam nome simples/faixa própria; campos Kind/Retrieval ausentes legados continuam compatíveis se coincidirem. Rejeitar declaração inventada, arquivo gerado, parse inválido ou linguagem não suportada com partial e sem fonte projetada. Preservar Doc/chamadas/procedência, entradas e registros históricos; não promover localização a prova de comportamento.

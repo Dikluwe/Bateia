@@ -1,0 +1,86 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/012.json
+Exit: 0 Seconds: 0.042
+{
+  "took": 8,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 2,
+      "relation": "eq"
+    },
+    "max_score": 10.705921,
+    "hits": [
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "ff514c9ab3ba41bd0067cd43190b7a09",
+        "_score": 10.705921,
+        "_source": {
+          "title": "raw.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 3008,
+              "start_offset": 108159,
+              "end_offset": 108676,
+              "text": "fn read_postings_range(\n        &mut self,\n        offset: u64,\n        len: u64,\n    ) -> Result<Vec<u8>, RawSegmentFileError> {\n        checked_range(offset, len, self.file_len, \"postings\")?;\n        let bytes = read_exact_at_positional(\n            &mut self.file,\n            segment_file_offset(self.data_offset, offset)?,\n            len,\n        )?;\n        if let Some(checksums) = self.decoded_block_checksums()? {\n            verify_span_blocks(checksums, offset, &bytes)?;\n        }\n        Ok(bytes)\n    }"
+            }
+          ]
+        },
+        "match_line": 3017,
+        "match_lines": [
+          3017
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "5afef521fe8c5c27f97ba57a53d3bc4c",
+        "_score": 10.432927,
+        "_source": {
+          "title": "read_posting_block_range_into",
+          "language": "rust",
+          "start_line": 3036,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code:3036:read_posting_block_range_into",
+          "kind": "function",
+          "line": 3036,
+          "code": "fn read_posting_block_range_into(\n    &mut self,\n    offset: u64,\n    len: u64,\n    bytes: &mut Vec<u8>,\n) -> Result<(), RawSegmentFileError>"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "code",
+              "ordinal": 0,
+              "start_offset": 0,
+              "end_offset": 141,
+              "text": "fn read_posting_block_range_into(\n    &mut self,\n    offset: u64,\n    len: u64,\n    bytes: &mut Vec<u8>,\n) -> Result<(), RawSegmentFileError>"
+            }
+          ]
+        },
+        "match_line": 3036,
+        "match_lines": [
+          3036
+        ]
+      }
+    ]
+  }
+}
+
+

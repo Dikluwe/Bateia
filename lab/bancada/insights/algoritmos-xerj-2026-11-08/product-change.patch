@@ -1,0 +1,181 @@
+--- before/01_core/domain/insight_discovery.go
++++ after/01_core/domain/insight_discovery.go
+@@ -15,6 +15,7 @@
+ var ErrInsightDiscoveryUnavailable = errors.New("insight discovery could not complete any search")
+ 
+ type InsightDiscoveryRequest struct {
++	AlgorithmIdeas     bool          `json:"algorithm_ideas,omitempty"`
+ 	QueryPolicy        string        `json:"query_policy,omitempty"`
+ 	SchemaVersion      string        `json:"schema_version"`
+ 	Question           string        `json:"question"`
+--- before/01_core/domain/insight_exploration.go
++++ after/01_core/domain/insight_exploration.go
+@@ -7,6 +7,7 @@
+ package domain
+ 
+ type InsightExplorationRequest struct {
++	AlgorithmIdeas     bool             `json:"algorithm_ideas,omitempty"`
+ 	ReviewAlternatives bool             `json:"review_alternatives,omitempty"`
+ 	SchemaVersion      string           `json:"schema_version"`
+ 	Question           string           `json:"question"`
+@@ -52,6 +53,7 @@
+ }
+ 
+ type InsightExplorationReport struct {
++	AlgorithmAgenda    []string                      `json:"algorithm_agenda,omitempty"`
+ 	SchemaVersion      string                        `json:"schema_version"`
+ 	ID                 string                        `json:"id"`
+ 	InputSHA256        string                        `json:"input_sha256"`
+--- before/01_core/usecase/insight_discovery.go
++++ after/01_core/usecase/insight_discovery.go
+@@ -138,7 +138,7 @@
+ 		}
+ 	}
+ 	// Preserve completed observations even when the operational deadline has expired.
+-	report.Exploration, err = ExploreInsights(context.Background(), domain.InsightExplorationRequest{SchemaVersion: "1", Question: plan.Request.Question, FamiliarApproaches: plan.Request.FamiliarApproaches, MaxPassages: plan.Request.MaxPassages, Bundles: report.Bundles})
++	report.Exploration, err = ExploreInsights(context.Background(), domain.InsightExplorationRequest{SchemaVersion: "1", AlgorithmIdeas: plan.Request.AlgorithmIdeas, Question: plan.Request.Question, FamiliarApproaches: plan.Request.FamiliarApproaches, MaxPassages: plan.Request.MaxPassages, Bundles: report.Bundles})
+ 	if err != nil {
+ 		return domain.InsightDiscoveryReport{}, err
+ 	}
+--- before/01_core/usecase/insight_discovery_plan.go
++++ after/01_core/usecase/insight_discovery_plan.go
+@@ -16,7 +16,7 @@
+ 	if request.SchemaVersion != "1" || (request.QueryPolicy != "" && request.QueryPolicy != "lexical-v1" && request.QueryPolicy != "context-v2") {
+ 		return domain.InsightDiscoveryPlan{}, domain.ErrInvalidRunInput
+ 	}
+-	base, err := normalizeInsightExploration(domain.InsightExplorationRequest{SchemaVersion: "1", Question: request.Question, FamiliarApproaches: request.FamiliarApproaches, MaxPassages: request.MaxPassages})
++	base, err := normalizeInsightExploration(domain.InsightExplorationRequest{SchemaVersion: "1", AlgorithmIdeas: request.AlgorithmIdeas, Question: request.Question, FamiliarApproaches: request.FamiliarApproaches, MaxPassages: request.MaxPassages})
+ 	if err != nil {
+ 		return domain.InsightDiscoveryPlan{}, err
+ 	}
+--- before/01_core/usecase/insight_exploration.go
++++ after/01_core/usecase/insight_exploration.go
+@@ -115,12 +115,31 @@
+ 		}
+ 		report.AIInstructions = append(report.AIInstructions, "Compare decisões dentro da mesma fonte e entre fontes; nome de projeto não determina a família da alternativa.", "Após nova coleta útil, atualize o contexto e revise a cobertura. Direções não executadas e fontes não lidas continuam lacunas; use descoberta ou expansão quando cabível, respeitando os limites.")
+ 	}
++	if request.AlgorithmIdeas {
++		report.AlgorithmAgenda = []string{"OBSERVATION_TO_PRINCIPLE", "STATE_STEPS_AND_INVARIANTS", "APPLICABILITY_AND_FAILURE", "TARGET_BASELINE_AND_RELATION", "DECISION_CHANGED_AND_COST", "FALSIFIABLE_VALIDATION"}
++		for _, lens := range []struct{ perspective, question, suffix string }{
++			{"ALGORITHM_PRINCIPLE", "Qual ideia de algoritmo ou estratégia os trechos mostram? Explicite entradas, estado, passos, invariantes e resultado, separando observação de abstração. Nome de biblioteca não é princípio; procure outras passagens se faltar mecanismo.", "algorithm steps invariants strategy"},
++			{"APPLICABILITY_BOUNDARY", "Sob quais condições esse princípio funciona e quando falha ou perde para outro caminho? Cite o limite observado e distinga custo/condição da fonte de hipótese de transferência.", "preconditions failure limits tradeoffs"},
++			{"DECISION_DELTA", "Confira o alvo antes de propor novidade: qual decisão atual tem evidência, qual alternativa muda essa decisão, a que custo e sob quais condições? Registre se já existe ou se a relação é desconhecida; proponha observável e critério de rejeição.", "alternative decision applicability counterexample"},
++		} {
++			task := domain.InsightExplorationTask{Perspective: lens.perspective, Question: lens.question, CardRefs: append([]string{}, refs...), Gaps: []string{}}
++			if len(cards) == 0 {
++				task.Gaps = append(task.Gaps, "NO_READING_CARDS")
++			}
++			report.Tasks = append(report.Tasks, task)
++			report.ResearchDirections = append(report.ResearchDirections, domain.InsightResearchDirection{Perspective: lens.perspective, Query: seed + " " + lens.suffix, Status: "PLANNED_NOT_EXECUTED"})
++		}
++		report.AIInstructions = append(report.AIInstructions, "Use idea insights formulate para registrar cada princípio com passos, evidência da fonte e do alvo, condições, falhas, decisão atual/proposta, benefício/custo e experimento de rejeição. O comando confere vínculos, não a validade semântica ou novidade.")
++	}
+ 	return report, nil
+ }
+ 
+ func normalizeInsightExploration(request domain.InsightExplorationRequest) (domain.InsightExplorationRequest, error) {
+ 	invalid := func() (domain.InsightExplorationRequest, error) {
+ 		return domain.InsightExplorationRequest{}, domain.ErrInvalidRunInput
++	}
++	if request.AlgorithmIdeas {
++		request.ReviewAlternatives = true
+ 	}
+ 	raw, err := json.Marshal(request)
+ 	if err != nil || len(raw) > 2<<20 || request.SchemaVersion != "1" || !validSynthesisText(request.Question, 1000) || !validSynthesisTextSet(request.FamiliarApproaches, 8, 120) || len(request.Bundles) > 8 {
+--- before/01_core/usecase/insight_sites.go
++++ after/01_core/usecase/insight_sites.go
+@@ -230,7 +230,7 @@
+ 		}
+ 		report.Readmes = append(report.Readmes, receipt)
+ 	}
+-	report.Exploration, err = ExploreInsights(context.Background(), domain.InsightExplorationRequest{SchemaVersion: "1", Question: plan.Request.Discovery.Question, FamiliarApproaches: plan.Request.Discovery.FamiliarApproaches, MaxPassages: plan.Request.Discovery.MaxPassages, Bundles: report.Bundles})
++	report.Exploration, err = ExploreInsights(context.Background(), domain.InsightExplorationRequest{SchemaVersion: "1", AlgorithmIdeas: plan.Request.Discovery.AlgorithmIdeas, Question: plan.Request.Discovery.Question, FamiliarApproaches: plan.Request.Discovery.FamiliarApproaches, MaxPassages: plan.Request.Discovery.MaxPassages, Bundles: report.Bundles})
+ 	if err != nil {
+ 		return domain.InsightSiteReport{}, err
+ 	}
+--- before/02_shell/cli/idea_evidence.go
++++ after/02_shell/cli/idea_evidence.go
+@@ -94,6 +94,7 @@
+ 	fs.SetOutput(io.Discard)
+ 	planPath := fs.String("plan", "", "Plano de extração")
+ 	question := fs.String("question", "", "Pergunta: emitir bundles com exploração e revisão de alternativas")
++	algorithmIdeas := fs.Bool("algorithm-ideas", false, "Preparar raciocínio de princípios e decisões com --question")
+ 	maximum := fs.Int("max-passages", 8, "Máximo global de cartões na exploração")
+ 	familiar := []string{}
+ 	fs.Func("familiar", "Abordagem inicial; repetível com --question", func(value string) error { familiar = append(familiar, value); return nil })
+@@ -110,7 +111,7 @@
+ 		if f.Name == "question" {
+ 			questionSet = true
+ 		}
+-		if f.Name == "familiar" || f.Name == "max-passages" {
++		if f.Name == "familiar" || f.Name == "max-passages" || f.Name == "algorithm-ideas" {
+ 			contextSet = true
+ 		}
+ 	})
+@@ -140,7 +141,7 @@
+ 	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
+ 	defer cancel()
+ 	if questionSet {
+-		report, err := usecase.CollectInsightEvidence(ctx, plans, provider, domain.InsightExplorationRequest{SchemaVersion: "1", Question: *question, FamiliarApproaches: familiar, MaxPassages: *maximum})
++		report, err := usecase.CollectInsightEvidence(ctx, plans, provider, domain.InsightExplorationRequest{SchemaVersion: "1", Question: *question, FamiliarApproaches: familiar, MaxPassages: *maximum, AlgorithmIdeas: *algorithmIdeas})
+ 		if err != nil {
+ 			return fmt.Errorf("coleta exploratória rejeitada: %w", err)
+ 		}
+--- before/02_shell/cli/idea_insights.go
++++ after/02_shell/cli/idea_insights.go
+@@ -29,7 +29,7 @@
+ 	if len(args) > 0 && args[0] == "explore" {
+ 		return runInsightExploration(args[1:], stdout)
+ 	}
+-	if len(args) == 0 || (args[0] != "analyze" && args[0] != "compare") {
++	if len(args) == 0 || (args[0] != "analyze" && args[0] != "compare" && args[0] != "formulate") {
+ 		return fmt.Errorf("uso: bateia idea insights analyze --input pedido.json [--output resultado.json]")
+ 	}
+ 	input, output, err := parseDecisionTraceArgs(args[1:])
+@@ -38,6 +38,17 @@
+ 	}
+ 	if err := validateDecisionTraceOutput(output, input); err != nil {
+ 		return err
++	}
++	if args[0] == "formulate" {
++		var request domain.AlgorithmInsightRequest
++		if err := readStrictIntakeJSON(input, &request); err != nil {
++			return err
++		}
++		report, err := usecase.FormulateAlgorithmInsights(context.Background(), request)
++		if err != nil {
++			return fmt.Errorf("formulação de ideias rejeitada: %w", err)
++		}
++		return writeDecisionTraceJSON(report, output, stdout, input)
+ 	}
+ 	if args[0] == "compare" {
+ 		var request domain.InsightComparisonRequest
+--- before/02_shell/cli/insight_discovery.go
++++ after/02_shell/cli/insight_discovery.go
+@@ -23,6 +23,7 @@
+ 	fs.SetOutput(io.Discard)
+ 	request := domain.InsightDiscoveryRequest{SchemaVersion: "1", QueryPolicy: "context-v2"}
+ 	output := ""
++	fs.BoolVar(&request.AlgorithmIdeas, "algorithm-ideas", false, "Investigar princípios, condições e decisões")
+ 	sources, locale, maxCalls := "", "", 0
+ 	memoryPath := ""
+ 	var followLinks *int
+--- before/02_shell/cli/insight_exploration.go
++++ after/02_shell/cli/insight_exploration.go
+@@ -40,6 +40,7 @@
+ 		}
+ 		return err
+ 	}))
++	algorithmIdeas := fs.Bool("algorithm-ideas", false, "Investigar princípios, condições e decisões algorítmicas")
+ 	review := fs.Bool("review-alternatives", false, "Comparar decisões na mesma fonte e revisar cobertura")
+ 	familiar := []string{}
+ 	fs.Func("familiar", "Abordagem habitual; flag repetível", func(value string) error { familiar = append(familiar, value); return nil })
+@@ -52,7 +53,7 @@
+ 	if err := validateDecisionTraceOutput(output, bundles); err != nil {
+ 		return err
+ 	}
+-	request := domain.InsightExplorationRequest{SchemaVersion: "1", Question: question, FamiliarApproaches: familiar, MaxPassages: maximum, ReviewAlternatives: *review}
++	request := domain.InsightExplorationRequest{SchemaVersion: "1", Question: question, FamiliarApproaches: familiar, MaxPassages: maximum, ReviewAlternatives: *review, AlgorithmIdeas: *algorithmIdeas}
+ 	if bundles != "" {
+ 		if err := readStrictIntakeJSON(bundles, &request.Bundles); err != nil {
+ 			return err

@@ -1,0 +1,39 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "args": [
+    "ask",
+    "How does admission-compare distinguish evidence admission from a direct threshold and replay counterexamples?",
+    "--corpus",
+    "admission-compare",
+    "--hosted",
+    "off",
+    "--how",
+    "--max-tokens",
+    "3000",
+    "--json",
+    "--url",
+    "http://127.0.0.1:19591"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-cold-0150/xerj/bin/xerj",
+    "ask",
+    "How does admission-compare distinguish evidence admission from a direct threshold and replay counterexamples?",
+    "--corpus",
+    "admission-compare",
+    "--hosted",
+    "off",
+    "--how",
+    "--max-tokens",
+    "3000",
+    "--json",
+    "--url",
+    "http://127.0.0.1:19591"
+  ],
+  "origin": null,
+  "started_unix": 1794150972.1364954,
+  "seconds": 3.679360866546631,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"admission-compare\",\"pin_sha\":\"7a439382d306ac8599b9cf613e967bf54c86d0f2\",\"pin_date\":\"2026-10-24\",\"age_days\":15,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"r2r-jev/docs/architecture.md\",\"line\":203,\"kind\":\"passage\",\"text\":\"\\n\\n1. **evidence history** — what was observed and how Admission classified it;\\n2. **governance state** — what accepted evidence caused the Relation Graph to become.\\n\\n## Provenance\\n\\nThe runtime records both admission and relation causality:\\n\\n```text\\nev-0001\\n  -> evidence-0001[BeyondScope:Accept(Strong)]\\n  -> trust-0001\\n  -> delegation-0001\\n  -> authorization-0001\\n\\nev-0001\\n  -> evidence-0002[DestructiveAction:Hold(...)]\\nev-0001 [via authorization-0001]\\n  -> DENY(merge_pull_request)\\n```\\n\\nA held or rejected evidence record remains explainable without becoming authoritative.\\n\\n## Falsification boundary\\n\\nThe earlier direct-threshold model remains useful as a baseline:\\n\\n```text\\nscore >= threshold\\n    -> persistent suspension\\n```\\n\\nAdmission v0.1 is a hypothesis about reducing false-positive persist\",\"value\":null,\"score\":1018.4445,\"licence_warning\":null},{\"file\":\"r2r-jev/README.md\",\"line\":277,\"kind\":\"passage\",\"text\":\"vernance, which relation transitions it may justify, and with what provenance.\\n\\n## Repository layout\\n\\n```text\\n.\\n├── src/\\n│   ├── admission.rs   # shared Evidence Admission v0.1 semantics\\n│   ├── main.rs        # three-act demo CLI (fixture + live)\\n│   ├── jev.rs         # Jev adapter\\n│   ├── model.rs       # typed judgment boundary objects\\n│   ├── r2r.rs         # deterministic demo relation-governance kernel\\n│   └── bin/\\n│       ├── admission.rs # Admission v0.1 executable cases\\n│       └── compare.rs   # stateless vs stateful baseline experiment\\n├── demo/\\n│   └── fixtures/\\n├── scripts/\\n│   └── make_demo_gif.py\\n├── experiments/\\n│   ├── evidence-admission-v0.1/\\n│   └── stateless-vs-stateful/\\n├── docs/\\n│   ├── architecture.md\\n│   ├── evidence-admission-semantics-v0.1.md\",\"value\":null,\"score\":1017.18677,\"licence_warning\":null},{\"file\":\"r2r-jev/docs/architecture.md\",\"line\":135,\"kind\":\"passage\",\"text\":\"ev and not to Admission.\\n\\nA different rule pack could react to the same admitted evidence by creating supervision, narrowing scope, or requesting review instead of suspending authorization.\\n\\nFormally:\\n\\n```text\\nAdmission(e) != AuthorizationDecision(e)\\n```\\n\\nand:\\n\\n```text\\nEvidenceAdmitted(e) + RelationGraph(t)\\n    -> R2R rules\\n    -> RelationGraph(t+1)\\n```\\n\\n## Deterministic boundary\\n\\nThe live Jev API returns floating-point probabilities. The adapter converts them to integer parts-per-million (ppm):\\n\\n```text\\n0.94 -> 940000\\n```\\n\\nFrom that boundary onward, the demo uses integer values, explicit virtual ticks, versioned admission semantics, deterministic ids, and explicit relation transitions.\\n\\nThe same evidence envelope + admission policy version + virtual tick produces the same admission result\",\"value\":null,\"score\":1013.35876,\"licence_warning\":null},{\"file\":\"r2r-jev/src/bin/admission-compare.rs\",\"line\":247,\"kind\":\"function\",\"text\":\"fn report(path: &str, rows: &[Row]) -> String {\\n    let mut out = String::new();\\n    out.push_str(&format!(\\\"scenario: {path}\\\\n\\\"));\\n    out.push_str(&format!(\\n        \\\"baseline threshold: >= {} ppm | admission: policy v0.1\\\\n\\\\n\\\",\\n        BASELINE_THRESHOLD_PPM\\n    ));\\n    out.push_str(&format!(\\n        \\\"{:<4} {:<6} {:<14} {:<9} {:<9} {}\\\\n\\\",\\n        \\\"step\\\", \\\"inc\\\", \\\"conf\\\", \\\"baseline\\\", \\\"final\\\", \\\"admission\\\"\\n    ));\\n    out.push_str(&\\\"-\\\".repeat(76));\\n    out.push('\\\\n');\\n    let mut log_b = Vec::new();\\n    let mut log_a = Vec::new();\\n    let base = run_baseline(rows, &mut log_b);\\n    let adm = run_admission(rows, &mut log_a);\\n    for (b, a) in log_b.iter().zip(log_a.iter()) {\\n        // merge: step/inc/conf from baseline line; admission verdict from the admission line tail\\n        let tail = a.tri\\n    ... [function report truncated at 800 chars]\",\"value\":null,\"score\":1011.274,\"licence_warning\":null},{\"file\":\"r2r-jev/docs/evidence-admission-semantics-v0.1.md\",\"line\":305,\"kind\":\"passage\",\"text\":\"The second and fifth rows are intentional counterexamples to `confidence alone ⇒ authority`.\\n---\\n## 9. Non-goals of v0.1\\nv0.1 does not claim to solve:\\n- calibration of Jev probabilities;\\n- learning source reliability automatically;\\n- Bayesian evidence fusion;\\n- adversarial collusion between corroborators;\\n- evidence decay functions beyond explicit expiry;\\n- organization-level reconciliation;\\n- optimal thresholds;\\n- automatic human-override policy.\\nThese remain experimentable extensions rather than hidden assumptions.\\n---\\n## 10. Falsifiable hypotheses\\n### EA-H1 — Admission reduces false-positive persistence\\nCompared with `score >= threshold → persistent suspension`, an admission layer with `Hold` should reduce the number/duration of persistent false-deny states under uncertain single-source\",\"value\":null,\"score\":1004.2027,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": "xerj hub: pulling 'admission-compare' (0.7 MB) — one-time download, later questions answer locally\nxerj hub: pulled admission-compare 7a439382 740654 → 4 indices, 142 definitions\n"
+}

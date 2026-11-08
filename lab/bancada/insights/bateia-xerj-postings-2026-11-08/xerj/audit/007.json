@@ -1,0 +1,40 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "search",
+    "--url",
+    "http://127.0.0.1:19701",
+    "--prefix",
+    "demo-postings-0156",
+    "How does RawSegmentFile validate bounds and read one posting block from its file offset and length?",
+    "-k",
+    "3",
+    "--full",
+    "6000",
+    "--json"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-demo-0156/xerj/bin/xerj",
+    "search",
+    "--url",
+    "http://127.0.0.1:19701",
+    "--prefix",
+    "demo-postings-0156",
+    "How does RawSegmentFile validate bounds and read one posting block from its file offset and length?",
+    "-k",
+    "3",
+    "--full",
+    "6000",
+    "--json"
+  ],
+  "origin": null,
+  "started_unix": 1794162536.3822083,
+  "pending": false,
+  "baseline_sha256": "fea858f5a351fe4f979d52400263cd2a4130aaa5bd6e40ad32588ce6c2afff6b",
+  "seconds": 0.06761693954467773,
+  "exit_code": 0,
+  "stdout": "{\n  \"took\": 33,\n  \"timed_out\": false,\n  \"_shards\": {\n    \"total\": 1,\n    \"successful\": 1,\n    \"skipped\": 0,\n    \"failed\": 0\n  },\n  \"hits\": {\n    \"total\": {\n      \"value\": 132,\n      \"relation\": \"eq\"\n    },\n    \"max_score\": 2032.148,\n    \"hits\": [\n      {\n        \"_index\": \"demo-postings-0156-docs\",\n        \"_id\": \"ff514c9ab3ba41bd0067cd43190b7a09\",\n        \"_score\": 2032.148,\n        \"_source\": {\n          \"title\": \"raw.rs\",\n          \"language\": \"rust\",\n          \"start_line\": 1,\n          \"ax_path\": \"src/raw.rs\",\n          \"ax_paths\": [\n            \"src/raw.rs\"\n          ],\n          \"ax_locator\": \"code\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 419,\n              \"start_offset\": 14182,\n              \"end_offset\": 14608,\n              \"text\": \"impl TermEntry {\\n    /// Capacity to reserve for this term's decoded postings.\\n    ///\\n    /// `df` comes from the file, so it cannot size an allocation on its own.\\n    /// Every posting is a doc-gap varint plus a weight varint, at least two\\n    /// bytes, so the postings bytes bound how many can really be there.\\n    fn posting_capacity(self) -> usize {\\n        (self.df as usize).min(self.postings_len as usize / 2)\\n    }\\n}\"\n            }\n          ]\n        },\n        \"match_line\": 423,\n        \"match_lines\": [\n          423,\n          424,\n          425\n        ]\n      },\n      {\n        \"_index\": \"demo-postings-0156-docs\",\n        \"_id\": \"9682088dcb66a42f575d718ffee4a434\",\n        \"_score\": 1015.27313,\n        \"_source\": {\n          \"title\": \"raw.rs\",\n          \"language\": \"rust\",\n          \"start_line\": 1,\n          \"ax_path\": \"src/positional/raw.rs\",\n          \"ax_paths\": [\n            \"src/positional/raw.rs\"\n          ],\n          \"ax_locator\": \"code\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 68,\n              \"start_offset\": 2604,\n              \"end_offset\": 3202,\n              \"text\": \"pub enum RawPositionalSegmentFileError {\\n    /// A file read failed.\\n    #[error(transparent)]\\n    Io(#[from] std::io::Error),\\n    /// The encoded segment was invalid.\\n    #[error(transparent)]\\n    Segment(#[from] Error),\\n    /// The caller supplied a different number of per-segment caches than files.\\n    #[error(\\\"raw positional cache count ({caches}) does not match segment count ({segments})\\\")]\\n    CacheSegmentCountMismatch {\\n        /// Number of file-backed segments being searched.\\n        segments: usize,\\n        /// Number of caller-owned caches supplied.\\n        caches: usize,\\n    },\\n}\"\n            }\n          ]\n        },\n        \"match_line\": 70,\n        \"match_lines\": [\n          70,\n          72,\n          75,\n          77,\n          79\n        ]\n      },\n      {\n        \"_index\": \"demo-postings-0156-docs\",\n        \"_id\": \"75d4e449365a62503fd43171093614cf\",\n        \"_score\": 1013.73737,\n        \"_source\": {\n          \"title\": \"# Raw Segments\",\n          \"start_line\": 38,\n          \"ax_path\": \"docs/raw-segments.md\",\n          \"ax_paths\": [\n            \"docs/raw-segments.md\"\n          ],\n          \"ax_locator\": \"s1\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 0,\n              \"start_offset\": 0,\n              \"end_offset\": 1886,\n              \"text\": \" Search\\n\\n`RawSegmentFile::top_k_weighted_u32` scores one raw file by sparse inner\\nproduct. `top_k_weighted_u32_files` merges exact top-k results across raw files\\nwhen document ids are globally unique.\\n\\nThe file-backed scorer uses block metadata for bounded reads and safe top-k\\npruning where the query weights make that possible. Use\\n`top_k_weighted_u32_files_with_stats` when you need searched/pruned segment\\ncounts for profiling. Segment pruning is layout-sensitive, so measure it against\\nrepresentative segment construction before treating it as a storage win.\\n\\n`top_k_weighted_u32_files_and_index` fuses sealed files with one live\\n`PostingsIndex<u64, u32>` shard and uses the live shard's current top-k\\nthreshold to skip low-bound sealed files.\\n\\nUse `lexir::raw` for BM25 over one or more raw files.\\n\\n## Filtering\\n\\nUse `RawSegmentFile::top_k_weighted_u32_filtered` or\\n`top_k_weighted_u32_files_filtered` when a lifecycle layer supplies tombstones\\nor newer-version masks. The predicate runs before local top-k truncation.\\n\\n## Embedded Files\\n\\nUse `RawSegmentFile::from_file_range` when a raw segment is embedded inside a\\ncontainer file, such as a lifecycle-owned sidecar envelope. The containing layer\\nvalidates its header, recipe, and segment id, then passes the raw payload byte\\nrange to `RawSegmentFile`. Raw-format offsets remain relative to the payload\\nstart; posting range reads still hit the original file without copying the whole\\npayload into memory.\\n\\n## Segstore Sidecars\\n\\n`postings::raw` is the byte format a `segstore` consumer can place under\\n`segstore.idx.<segment-id>.<kind>`. The `segstore` segment remains the durable\\nsource payload; the raw postings bytes are rebuildable derived data keyed by the\\nstable segment id. Use `segstore::SidecarEnvelope` for the repeated\\nmagic/version/segment-id/recipe/CRC framing, then put the raw segment bytes in\\nthe envelope payload.\"\n            }\n          ]\n        },\n        \"match_line\": 44,\n        \"match_lines\": [\n          40,\n          44,\n          50,\n          51,\n          54,\n          58,\n          66,\n          68\n        ]\n      }\n    ]\n  }\n}\n",
+  "stderr": ""
+}

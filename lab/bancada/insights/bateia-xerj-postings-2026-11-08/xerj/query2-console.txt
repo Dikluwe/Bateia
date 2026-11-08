@@ -1,0 +1,125 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/007.json
+Exit: 0 Seconds: 0.068
+{
+  "took": 33,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 132,
+      "relation": "eq"
+    },
+    "max_score": 2032.148,
+    "hits": [
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "ff514c9ab3ba41bd0067cd43190b7a09",
+        "_score": 2032.148,
+        "_source": {
+          "title": "raw.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 419,
+              "start_offset": 14182,
+              "end_offset": 14608,
+              "text": "impl TermEntry {\n    /// Capacity to reserve for this term's decoded postings.\n    ///\n    /// `df` comes from the file, so it cannot size an allocation on its own.\n    /// Every posting is a doc-gap varint plus a weight varint, at least two\n    /// bytes, so the postings bytes bound how many can really be there.\n    fn posting_capacity(self) -> usize {\n        (self.df as usize).min(self.postings_len as usize / 2)\n    }\n}"
+            }
+          ]
+        },
+        "match_line": 423,
+        "match_lines": [
+          423,
+          424,
+          425
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "9682088dcb66a42f575d718ffee4a434",
+        "_score": 1015.27313,
+        "_source": {
+          "title": "raw.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/positional/raw.rs",
+          "ax_paths": [
+            "src/positional/raw.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 68,
+              "start_offset": 2604,
+              "end_offset": 3202,
+              "text": "pub enum RawPositionalSegmentFileError {\n    /// A file read failed.\n    #[error(transparent)]\n    Io(#[from] std::io::Error),\n    /// The encoded segment was invalid.\n    #[error(transparent)]\n    Segment(#[from] Error),\n    /// The caller supplied a different number of per-segment caches than files.\n    #[error(\"raw positional cache count ({caches}) does not match segment count ({segments})\")]\n    CacheSegmentCountMismatch {\n        /// Number of file-backed segments being searched.\n        segments: usize,\n        /// Number of caller-owned caches supplied.\n        caches: usize,\n    },\n}"
+            }
+          ]
+        },
+        "match_line": 70,
+        "match_lines": [
+          70,
+          72,
+          75,
+          77,
+          79
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "75d4e449365a62503fd43171093614cf",
+        "_score": 1013.73737,
+        "_source": {
+          "title": "# Raw Segments",
+          "start_line": 38,
+          "ax_path": "docs/raw-segments.md",
+          "ax_paths": [
+            "docs/raw-segments.md"
+          ],
+          "ax_locator": "s1"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 0,
+              "start_offset": 0,
+              "end_offset": 1886,
+              "text": " Search\n\n`RawSegmentFile::top_k_weighted_u32` scores one raw file by sparse inner\nproduct. `top_k_weighted_u32_files` merges exact top-k results across raw files\nwhen document ids are globally unique.\n\nThe file-backed scorer uses block metadata for bounded reads and safe top-k\npruning where the query weights make that possible. Use\n`top_k_weighted_u32_files_with_stats` when you need searched/pruned segment\ncounts for profiling. Segment pruning is layout-sensitive, so measure it against\nrepresentative segment construction before treating it as a storage win.\n\n`top_k_weighted_u32_files_and_index` fuses sealed files with one live\n`PostingsIndex<u64, u32>` shard and uses the live shard's current top-k\nthreshold to skip low-bound sealed files.\n\nUse `lexir::raw` for BM25 over one or more raw files.\n\n## Filtering\n\nUse `RawSegmentFile::top_k_weighted_u32_filtered` or\n`top_k_weighted_u32_files_filtered` when a lifecycle layer supplies tombstones\nor newer-version masks. The predicate runs before local top-k truncation.\n\n## Embedded Files\n\nUse `RawSegmentFile::from_file_range` when a raw segment is embedded inside a\ncontainer file, such as a lifecycle-owned sidecar envelope. The containing layer\nvalidates its header, recipe, and segment id, then passes the raw payload byte\nrange to `RawSegmentFile`. Raw-format offsets remain relative to the payload\nstart; posting range reads still hit the original file without copying the whole\npayload into memory.\n\n## Segstore Sidecars\n\n`postings::raw` is the byte format a `segstore` consumer can place under\n`segstore.idx.<segment-id>.<kind>`. The `segstore` segment remains the durable\nsource payload; the raw postings bytes are rebuildable derived data keyed by the\nstable segment id. Use `segstore::SidecarEnvelope` for the repeated\nmagic/version/segment-id/recipe/CRC framing, then put the raw segment bytes in\nthe envelope payload."
+            }
+          ]
+        },
+        "match_line": 44,
+        "match_lines": [
+          40,
+          44,
+          50,
+          51,
+          54,
+          58,
+          66,
+          68
+        ]
+      }
+    ]
+  }
+}
+
+

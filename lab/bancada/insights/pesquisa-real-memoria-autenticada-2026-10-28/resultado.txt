@@ -1,0 +1,76 @@
+PESQUISA REAL DO BATEIA — 28/10/2026 (America/Sao_Paulo)
+
+Pergunta: como ampliar a descoberta de software para além de busca semântica e ranking de repositórios?
+
+No ensaio final, a segunda rodada leu três READMEs adicionais, sem reler nenhum dos cinco examinados na primeira. O catálogo retornou as mesmas treze identidades nas duas rodadas. O aumento veio de mudar quais candidatos eram examinados e de retomar uma referência pendente, usando a memória real da primeira rodada.
+
+PROTOCOLO
+
+Binário existente de 0142, SHA256 325aee9c18963774f477c5a7f896b72ec3b93516a8bafc22f5999177f5b12b2e.
+Comando: idea insights discover.
+Question: serendipitous software discovery beyond semantic search and repository ranking.
+Familiar: semantic search; repository ranking.
+Sources: all (11 sítios configurados, sem workspaces Bitbucket).
+Limites idênticos nas duas rodadas: max-calls 20; max-per-query 3; max-references 8; max-passages 16; follow-links 2; timeout 240s; attempt-timeout 12s.
+Rodada 1 sem memória. Rodada 2: --memory round-1.json intacto, sem feedback manual entre rodadas.
+Consultas ao GitHub usam a credencial previamente configurada no projeto, passada no ambiente do processo. Outros sítios permanecem anônimos. Nenhum segredo é registrado. Nenhum código de candidato foi instalado ou executado.
+
+RESULTADOS OPERACIONAIS
+
+Rodada 1: 90,809s; PARTIAL; 20 chamadas lógicas de catálogo; 13 candidatos; 3 READMEs primários e 2 por aprofundamento; memória geração 1 com 5 EXAMINED e 10 PENDING.
+Primários: cblgh/lieu, MuseCompNet/muse-tech-central, joshwcomeau/tinkersynth.
+Aprofundamento: chnm/serendipomatic, mainehackerclub/MDM.
+
+Rodada 2: 93,128s; PARTIAL; 20 chamadas lógicas de catálogo; as mesmas 13 identidades; 2 READMEs primários e 1 por aprofundamento; memória geração 2 com 8 EXAMINED e 13 PENDING.
+Primários novos: tarmstrong/longcv, vitality-vis/frontend.
+Aprofundamento novo: vanda/jquery_collections_browser.
+Sem releitura dos cinco repositórios examinados na rodada 1.
+Falhas explícitas: operatoolkit/OperaToolkit e museumvictoria/digital-labels retornaram READ_FAILED e continuam pendentes. Não extraímos mecanismos desses destinos.
+
+EXEMPLO CONCRETO DO EFEITO DA MEMÓRIA
+
+1. Na rodada 1, o README de MuseCompNet/muse-tech-central, commit e16338816fa93b3b376f1d31d800ead2362072d2, linhas 90–91, citou vanda/jquery_collections_browser.
+2. As duas vagas de aprofundamento foram usadas em Serendip-o-matic e MDM. O destino do V&A ficou PENDING/FOLLOWUP_BUDGET, com a citação de origem preservada.
+3. Na rodada 2, o MuseCompNet não foi relido. O Bateia retomou a referência guardada e coletou o README do V&A no commit ac4dd0a74a2fb74670624683758a77583e66d69f.
+4. Esse documento não era um candidato do catálogo nas duas rodadas. Seu conteúdo chegou por aprofundamento a partir da memória, sem escolher manualmente o destino entre as rodadas.
+
+POSSIBILIDADES ADICIONAIS SUGERIDAS PELA SEGUNDA RODADA
+
+1. Explorar o entorno sob demanda, em vez de exigir uma nova pergunta a cada passo.
+Observado: o README do navegador de coleções do V&A descreve uma grade arrastável que baixa mais imagens conforme novas partes entram em vista.
+Aplicação proposta ao Bateia: manter uma fronteira de possibilidades e aprofundar automaticamente as vizinhanças que a IA passa a explorar, sob orçamento explícito. Exemplo: ao investigar extração de conceitos no Serendip-o-matic, abrir referências adjacentes sem reiniciar a busca inteira.
+É uma transferência de mecanismo de navegação; o plugin não demonstra um algoritmo de descoberta de software, nem prova ganho de qualidade no Bateia.
+Fonte: https://github.com/vanda/jquery_collections_browser/blob/ac4dd0a74a2fb74670624683758a77583e66d69f/README
+
+2. Oferecer um mapa de abordagens e vizinhanças para a IA escolher deslocamentos.
+Observado: o README de VitaLITy apresenta uma ferramenta de descoberta de literatura que combina Transformers e análise visual; também lista componentes como PaperScatter e um backend próprio.
+Aplicação proposta: investigar uma representação estruturada das abordagens encontradas, mostrando grupos, relações e alternativas afastadas, além das listas de candidatos. A IA poderia escolher examinar uma região pouco explorada e justificar esse desvio. Uma interface visual seria uma possível vista dessa representação.
+O README sustenta o propósito declarado da ferramenta; não verificamos implementação, agrupamento, qualidade de embeddings ou efeito da interface. Esses detalhes exigem uma próxima investigação do código/backend.
+Fonte: https://github.com/vitality-vis/frontend/blob/60864cf6769090b7cd72f03e0657a1e5e8381df3/README.md
+
+3. Guardar percursos de descoberta e aprendizado, além de estados de repositórios.
+Observado: longcv reúne relatos de trajetórias de aprendizado não lineares e liga um repositório de programas iniciais de Julia Evans.
+Aplicação proposta: registrar, por investigação, por que uma trilha foi seguida, o que ela mudou na hipótese e quais bifurcações ficaram abertas. A retomada poderia explicar o percurso e sugerir outra bifurcação, além de evitar releituras.
+É a analogia mais exploratória das três: o README é uma coleção de trajetórias humanas, sem demonstrar uma política automatizada de memória. Os relatos e os programas ligados não foram lidos nesta execução.
+Fonte: https://github.com/tarmstrong/longcv/blob/56bb7fde79371a84be99859d88572d2f8f04bba8/README.md
+
+NOVAS TRILHAS AINDA NÃO LIDAS
+
+vitality-vis/rest-api: o README do frontend informa que esse backend é necessário para a funcionalidade completa. Ficou pendente pelo limite de aprofundamento; não inferimos seu mecanismo interno.
+jvns/julias-first-programs: referência trazida por longcv, ainda sem leitura própria.
+A memória também registrou vitality-vis/frontend.git como destino distinto do frontend. Trata-se de uma duplicação de identidade por sufixo a corrigir; não contamos essa entrada como nova possibilidade útil.
+
+LIMITES E MELHORIAS REVELADOS PELO USO REAL
+
+O ensaio inicial, com seis referências, destinou cinco vagas a metadados de lojas/artigos sem leitura de README. Sua rodada 2 tentou Tinkersynth, mas a leitura falhou: zero novos documentos naquele ensaio. O resultado está preservado em pesquisa-real-memoria-2026-10-28.
+Uma repetição ampliada anônima encontrou revisões opacas. Consulta real a /rate_limit confirmou core.remaining=0, com limite anônimo de 60 requisições. O recibo está em anonymous-api-limit.json. A repetição autenticada resolveu as leituras acima. Não atribuímos o sucesso apenas à memória sem registrar essa mudança de acesso entre ensaios; dentro do par final, acesso e limites foram mantidos iguais.
+Gitee teve timeouts; AtomGit exigiu autenticação; GitLab teve timeout/resposta vazia; Codeberg não retornou candidatos; Google Play teve falhas de integridade. Os demais catálogos não acrescentaram documentos lidos. Os dois relatórios finais permanecem PARTIAL.
+Melhorias concretas: explicitar esgotamento de API; preservar espaço para referências efetivamente legíveis; normalizar URLs terminadas em .git; melhorar o diagnóstico de READ_FAILED.
+
+INTEGRIDADE E ESCOPO DA CONCLUSÃO
+
+O SHA256 do round-1.json carregado pela rodada 2 é 100d7cc8520d29947cd99b0d06965b747fa643d938a06627d05ab948b547dc83, igual ao recibo da rodada 1. O objeto de memória carregado é idêntico ao produzido.
+compare.py verifica os hashes de todos os oito documentos coletados, as citações de origem e as passagens de leitura contra seu conteúdo, a igualdade das identidades do catálogo, a progressão da memória e a ausência de releituras. Também compara 2.197 arquivos de L0 e do produto com o estado anterior: nenhum foi alterado nesta pesquisa.
+As três propostas são síntese interpretativa a partir de documentação real. Novidade conceitual continua NOT_ASSESSED; efeitos no Bateia continuam UNVERIFIED. O que foi demonstrado foi ampliar o conjunto de documentos e possibilidades disponíveis à IA ao retomar a exploração, sem seleção manual de destinos entre rodadas.
+
+Artefatos: protocol.json, run_round.py, round-1.json, round-2.json, recibos, compare.py e comparison.json neste diretório. As tentativas preliminares continuam nos diretórios irmãos, sem promoção de falhas a evidência de mecanismo.

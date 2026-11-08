@@ -1,0 +1,58 @@
+{
+  "scope": "Pesquisa independente por Bateia, sem execução do XERJ ou referências.",
+  "baseline_sha256": "1fd0b1103886abc50605a53b713670603468bed12a3d1570c673f681cf7f5014",
+  "research_calls_before_formulate": 8,
+  "transport_acquisitions": 2,
+  "quota": {
+    "research_max": 60,
+    "external_acquisitions_max": 6
+  },
+  "covered": [
+    "README e comparação histórica do alvo",
+    "postings.rs e index.rs atuais",
+    "chamadores internos em search.rs e WAND atual",
+    "fonte Rust raw.rs, docs e matriz de workloads sem executar"
+  ],
+  "unknown": [
+    "Caminho engine/HTTP até abertura de FtsIndexReader e política de cache",
+    "Frequência de abertura e distribuição de consultas reais",
+    "Impacto de compressão por bloco no espaço/ingestão",
+    "Paridade e ganho de um protótipo de transferência",
+    "Demais subsistemas do XERJ; não há conclusão global de ausência"
+  ],
+  "negative_or_discarded": [
+    {
+      "topic": "Adicionar WAND genericamente",
+      "reason": "ALREADY_PRESENT em search_bounded -> wand_should_bool."
+    },
+    {
+      "topic": "Apenas persistir SkipEntry",
+      "reason": "Envelope Zstd inteiro e estado de gaps exigem framing endereçável; reader.next do percurso atual preserva total."
+    },
+    {
+      "topic": "Aplicar block-max diretamente",
+      "reason": "Fonte usa produto interno e top-k; alvo exige total exato e usa BM25, relação específica não estabelecida."
+    },
+    {
+      "topic": "Mixed read-under-write",
+      "reason": "Documento histórico contém hipóteses e correções; não investigado caminho atual, sem proposta."
+    },
+    {
+      "topic": "Fonte Java descoberta",
+      "reason": "Bytes coletados insuficientes para mecanismo; não segui por falta de evidência útil no recorte."
+    }
+  ],
+  "stop_reason": "Uma diferença de armazenamento sustentada e uma confirmação de princípio já presente são suficientes; aprofundar outros mecanismos sem dados de workload aumentaria especulação. Quotas não esgotadas.",
+  "tests": "Somente lidos; nenhum executado.",
+  "local_metadata_caveat": true,
+  "research_calls_total": 9,
+  "total_runner_calls": 11,
+  "formulate_audit": "audit/011.json",
+  "formulate_validation": {
+    "exit_code": 0,
+    "schema_version": "insight-algorithms-v1",
+    "ideas": 2,
+    "interpretation_state": "DECLARED_NOT_REASSESSED",
+    "effect_state": "UNVERIFIED"
+  }
+}

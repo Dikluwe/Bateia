@@ -1,0 +1,88 @@
+{
+  "scope": "Avaliação cega de problem.txt, rubric.md e packet-X/Y.json, sem fontes externas, execução ou inferência de identidade.",
+  "scoring_rule": "Notas ordinais separadas; candidata qualificada se relevância >= 3, evidência >= 2 e especificidade = 2. Sem soma.",
+  "alternatives": [
+    {
+      "id": "X-A1",
+      "scores": {"relevance": 4, "evidence": 3, "decision_specificity": 2},
+      "qualified": true,
+      "rationale": {"relevance": "Ficha local, reconciliação humana, arquivo de observações separado e regras comuns de custódia respondem aos problemas centrais; teste pequeno tem critérios de perda e tempo de resolução.", "evidence": "Documentação específica comprova inspeção explícita de conflitos e limite de retenção de revisões, além de armazenamento, retry e anexos. Não comprova durabilidade em Android nem adequação operacional.", "decision_specificity": "O estado corrente é editado como ficha; resolver conflitos de ficha é trabalho explícito, sem derivar todo estado de eventos."},
+      "evidence_refs": ["X:A1:P-local", "X:A1:P-conflict", "X:A1:P-compact", "X:A1:P-sync", "X:A1:P-photo", "X:A1:P-fetch", "X:A1:P-quota"],
+      "key_passages": ["P-conflict: opção {conflicts: true}", "P-compact: non-leaf revisions will no longer be available"],
+      "unresolved": ["Durabilidade local por 72h, espaço e fotos", "Escala de 45.000 peças e custos", "Tempo e disponibilidade de conciliador", "Exportador e recuperação próprios"],
+      "baseline_relation": {"classification": "mesma família", "ids": ["X-B1", "X-B4"], "reason": "B1 já continha observações append-only e reconciliação explícita. A opção por ficha corrente é específica, mas fila e preservação separada não demonstram alteração de uma garantia anterior: o baseline não propunha usar revisões como arquivo. A alegação de revisão material do pacote é mais forte que a comparação disponível.", "confidence": "moderada"},
+      "group": "G1"
+    },
+    {
+      "id": "X-A2",
+      "scores": {"relevance": 4, "evidence": 3, "decision_specificity": 2},
+      "qualified": true,
+      "rationale": {"relevance": "Histórico imutável, projeções reconstruíveis, transferência em duas etapas e confirmação pela custódia tratam perda de observações e promessas falsas; teste inclui reenvio, etapa ausente e reconstrução.", "evidence": "Estratégia append-only e atomicidade por documento sustentam mecanismo e limite decisório. A regra de custódia é desenho operacional, não garantia da biblioteca.", "decision_specificity": "Correção compensa registro anterior; autoridade confirma disponibilidade e trânsito bloqueia promessa."},
+      "evidence_refs": ["X:A2:P-delta", "X:A2:P-compact", "X:A2:P-sync", "X:A2:P-photo", "X:A2:P-atomic", "X:A2:P-fetch"],
+      "key_passages": ["P-delta: never update or remove existing documents", "P-atomic: atomic unit is the document"],
+      "unresolved": ["Contradições físicas e adesão à custódia", "Projeções, migrações e exportador próprios", "Durabilidade, escala e custo não medidos"],
+      "baseline_relation": {"classification": "mesma família", "ids": ["X-B2", "X-B3"], "reason": "Log, projeções, fotos separadas e custódia já eram explícitos. Unidade por comando e tratamento de recebimento ausente são refinamentos importantes da implementação, sem nova família ou mudança demonstrada da regra operacional central.", "confidence": "alta"},
+      "group": "G2"
+    },
+    {
+      "id": "X-A3",
+      "scores": {"relevance": 3, "evidence": 3, "decision_specificity": 2},
+      "qualified": true,
+      "rationale": {"relevance": "Alternativa condicional para concorrência descritiva frequente, com decisões físicas separadas e teste de descarte. App, persistência, transporte e saída ainda exigem muito trabalho de dois generalistas; benefício para esta cooperativa não foi demonstrado.", "evidence": "Código/documentação de edição local, conflitos de campos, histórico e exigência de transporte sustentam mecanismo e limite; não são resultados executados.", "decision_specificity": "Mesclar mapas/listas descritivos reduz a unidade da conciliação em relação à ficha inteira, mas preserva revisão de valores concorrentes e custódia para estoque."},
+      "evidence_refs": ["X:A3:A-local", "X:A3:A-conflict", "X:A3:A-history", "X:A3:A-transport", "X:A3:A-save"],
+      "key_passages": ["A-conflict: arbitrarily (but deterministically", "A-history: getAllChanges(doc)", "A-transport: reliable in-order stream"],
+      "unresolved": ["Frequência real de colaboração descritiva", "Custo de transporte/persistência/app e operação", "Memória e CPU com 45.000 fichas", "Exportação legível e mídia", "Teste proposto de 500 fichas não verifica sozinho escala final"],
+      "baseline_relation": {"classification": "revisão material", "ids": ["X-B1", "X-B3"], "reason": "A mudança identificável é editar e mesclar estruturas descritivas com conciliação por campo, em vez de apenas registrar observações e reconciliar edições/eventos. A-local e A-conflict sustentam essa mudança e a necessidade de expor alternativas. Não é a mera menção de CRDT. O baseline genérico impede atribuição causal forte.", "confidence": "moderada"},
+      "group": "G3"
+    },
+    {
+      "id": "Y-A1",
+      "scores": {"relevance": 4, "evidence": 3, "decision_specificity": 2},
+      "qualified": true,
+      "rationale": {"relevance": "Diário imutável, custódia, reserva física, trânsito e exportação reconstruível respondem ao problema; piloto futuro cobre 72h, 45.000 metadados, fotos e falhas com rejeição concreta.", "evidence": "Estratégia de documentos imutáveis, vencedor determinístico, retry, anexos e compactação sustentam mecanismo e limites. Não há prova de campo.", "decision_specificity": "Promessas dependem de separação e confirmação pela oficina custodiante; conflitos semânticos viram exceção humana."},
+      "evidence_refs": ["Y:A1:docs/guides/conflicts.md:140-154", "Y:A1:docs/guides/conflicts.md:74-90", "Y:A1:docs/guides/replication.md:109-116", "Y:A1:docs/guides/attachments.md:8-16,73-83", "Y:A1:docs/guides/compact-and-destroy.md:26-46"],
+      "key_passages": ["conflicts.md: never update or remove existing documents", "compact-and-destroy.md: non-leaf revisions will no longer be available"],
+      "unresolved": ["Durabilidade e espaço dos Android", "Custódia aceita pelos voluntários", "Custo de manutenção e infraestrutura", "Implementação de projeções/exportador"],
+      "baseline_relation": {"classification": "mesma família", "ids": ["Y-B1", "Y-B2"], "reason": "Append-only, resolução explícita e handoffs já constavam no baseline. As fontes tornam o desenho conferível e delimitam revisões, sem acrescentar família ou alterar a autoridade operacional central.", "confidence": "alta"},
+      "group": "G2"
+    },
+    {
+      "id": "Y-A2",
+      "scores": {"relevance": 3, "evidence": 3, "decision_specificity": 2},
+      "qualified": true,
+      "rationale": {"relevance": "Formulários Android offline, estado por peça, custódia e revisão podem atender com menos captura/exportação próprios. Consulta de fotos históricas offline, volume e telas de frescor permanecem condições decisivas; piloto testa essas condições.", "evidence": "Documentação específica sustenta representação local de entidades, ordem de aplicação, histórico, exportação com mídia e independência entre editar submissão e estado. Alguns trechos são curtos demais para comprovar alegações adicionais.", "decision_specificity": "Configurar formulários e revisar estado recebido com política last-write-wins; correções exigem manter submissão histórica e estado corrente coerentes, em vez de reconstruir toda disponibilidade de log próprio."},
+      "evidence_refs": ["Y:A2:docs/collect-intro.rst:13-17", "Y:A2:docs/central-entities.rst:648-654,637-643,520-527,418-441", "Y:A2:docs/entities-intro.rst:197-203,104-106,217-220", "Y:A2:docs/central-submissions.rst:134-136", "Y:A2:docs/central-install.rst:45-48", "Y:A2:docs/form-audit-log.rst:4-16"],
+      "key_passages": ["central-entities.rst: offline representation of Entity Lists", "entities-intro.rst: not automatically applied to the related Entities", "central-submissions.rst: multimedia submitted to the form"],
+      "unresolved": ["Foto/história acessível offline por peça", "Escala, filtros e aparente divergência documental", "Versões mínimas e retenção de cinco dias não demonstradas pelos excertos exibidos", "Sem contexto, Not yet não comprova sozinho ausência de mídia em Entity", "Custo, telas adicionais e esforço de formulários não medidos"],
+      "baseline_relation": {"classification": "revisão material", "ids": ["Y-B3", "Y-B2"], "reason": "Coleta offline já era família prevista. Representação local de entidades para seguimento e a independência entre editar submissão e atualizar estado impõem um fluxo concreto de revisão/correção; isso altera responsabilidade e garantia, além de nomear uma ferramenta. Ressalva: parte dos limites alegados não é conferível nos trechos curtos.", "confidence": "moderada"},
+      "group": "G4"
+    }
+  ],
+  "equivalence_groups": [
+    {"id": "G1", "members": ["X-A1"], "decision": "Ficha corrente mutável, conciliação humana de conflitos documentais e arquivo histórico separado.", "why_distinct": "Difere de G2 na origem do estado corrente e no trabalho de conciliação; compartilhar transporte não torna os desenhos equivalentes."},
+    {"id": "G2", "members": ["X-A2", "Y-A1"], "decision": "Operações imutáveis, projeção reconstruível, custódia e handoff explícitos com promessas provisórias.", "why_equivalent": "Mesmas garantias e responsabilidades centrais; atomicidade mais explícita em X e piloto mais amplo em Y não criam famílias exclusivas."},
+    {"id": "G3", "members": ["X-A3"], "decision": "Colaboração descritiva com mescla de estruturas e exposição de conflitos de campo; autoridade física separada.", "why_distinct": "A unidade de colaboração/conciliação muda; compartilhar custódia com G2 não apaga essa diferença."},
+    {"id": "G4", "members": ["Y-A2"], "decision": "Captura por formulários e estado por entidade aplicado na recepção, com revisão e correção explícita de estado e submissões.", "why_distinct": "Responsabilidade deslocada para configuração/administração e revisão de estado do sistema existente; não é apenas outra marca para o log reconstruível de G2."}
+  ],
+  "observed_qualified_exclusives": [
+    {"id": "X-A1", "research_contribution": "não demonstrada", "reason": "Exclusiva no resultado, mas reconciliação e observações imutáveis já estavam em X-B1; a pesquisa documenta riscos sem evidenciar mudança material do baseline."},
+    {"id": "X-A3", "research_contribution": "revisão material sustentada com confiança moderada", "reason": "Mescla descritiva e conciliação por campo acrescentam decisão identificável; benefício e causalidade da descoberta permanecem não comprovados."},
+    {"id": "Y-A2", "research_contribution": "revisão material sustentada com confiança moderada", "reason": "A família de coleta offline já existia, mas seguimento por entidades e correção independente do estado alteram o fluxo operacional."}
+  ],
+  "apparent_only_exclusives": [
+    {"claim": "X-A2 ou Y-A1 seriam exclusivos", "reason": "São equivalentes em decisões e garantias."},
+    {"claim": "O nome de uma biblioteca/plataforma prova família nova", "reason": "Nenhuma família nova foi demonstrada só por nome. X-A3 e Y-A2 são revisões materiais condicionais, não novidade no mundo."},
+    {"claim": "Fila humana e arquivo de observações de X-A1 foram acrescentados pela pesquisa", "reason": "O baseline já previa reconciliação explícita e observações append-only; atribuição incremental insuficiente."}
+  ],
+  "uncertainties": [
+    "Cinco candidatas qualificadas não equivalem a cinco soluções prontas ou eficazes em campo.",
+    "Notas são condicionais ao desenho e aos trechos; não houve execução dos projetos nem piloto da cooperativa.",
+    "Locators imprecisos em X não anulam literais cuja checagem no pin foi informada; não foi feita nova conferência externa.",
+    "Baselines breves limitam a separação entre elaboração e mudança material; não há sequência causal detalhada de decisões.",
+    "G1/G3/G4 partilham regras de custódia e preservação de observações; exclusividade é da decisão adicional especificada, não de todo o desenho.",
+    "Ausência de equivalente em um pacote não demonstra incapacidade do outro braço.",
+    "Sem custos medidos ou validação de escala, durabilidade, usabilidade e adesão, não há vencedor de adequação prática.",
+    "Nenhuma identidade dos produtos foi inferida."
+  ],
+  "conclusion": "Há exclusivas qualificadas observadas em ambos os pacotes: X-A1 e X-A3 em X, Y-A2 em Y. A contribuição incremental da pesquisa é defensável, com confiança moderada, para as revisões X-A3 e Y-A2; não está demonstrada para X-A1. X-A2/Y-A1 formam um núcleo equivalente forte. Isso não estabelece superioridade global, nova família descoberta nem utilidade de campo comprovada."
+}

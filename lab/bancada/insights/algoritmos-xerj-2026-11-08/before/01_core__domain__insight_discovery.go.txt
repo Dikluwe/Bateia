@@ -1,0 +1,95 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/domain/insight_discovery.md
+ * @layer L1
+ * @updated 2026-11-08
+ */
+package domain
+
+import (
+	"context"
+	"errors"
+	"time"
+)
+
+var ErrInsightDiscoveryUnavailable = errors.New("insight discovery could not complete any search")
+
+type InsightDiscoveryRequest struct {
+	QueryPolicy        string        `json:"query_policy,omitempty"`
+	SchemaVersion      string        `json:"schema_version"`
+	Question           string        `json:"question"`
+	FamiliarApproaches []string      `json:"familiar_approaches"`
+	MaxPerQuery        int           `json:"max_per_query"`
+	MaxReferences      int           `json:"max_references"`
+	MaxPassages        int           `json:"max_passages"`
+	TotalTimeout       time.Duration `json:"total_timeout"`
+	AttemptTimeout     time.Duration `json:"attempt_timeout"`
+}
+
+type InsightDiscoveryQuery struct {
+	ID          string   `json:"id"`
+	Perspective string   `json:"perspective"`
+	Query       string   `json:"query"`
+	AnchorTerms []string `json:"anchor_terms"`
+	Derivation  string   `json:"derivation"`
+}
+
+type InsightDiscoveryPlan struct {
+	SchemaVersion string                  `json:"schema_version"`
+	ID            string                  `json:"id"`
+	RequestSHA256 string                  `json:"request_sha256"`
+	Request       InsightDiscoveryRequest `json:"request"`
+	Queries       []InsightDiscoveryQuery `json:"queries"`
+}
+
+type InsightDiscoveryAttempt struct {
+	QueryID       string         `json:"query_id"`
+	Status        string         `json:"status"`
+	ErrorCode     string         `json:"error_code,omitempty"`
+	ReportedCount int            `json:"reported_count"`
+	AdmittedCount int            `json:"admitted_count"`
+	Attempt       CatalogAttempt `json:"attempt"`
+}
+
+type InsightDiscoveredReference struct {
+	ID                       string              `json:"id"`
+	Repository               RepositoryCandidate `json:"repository"`
+	Topics                   []string            `json:"topics"`
+	QueryIDs                 []string            `json:"query_ids"`
+	FamiliarSubstringMatches []string            `json:"familiar_substring_matches"`
+	RevisionConflict         bool                `json:"revision_conflict"`
+	ObservedCommits          []string            `json:"observed_commits"`
+	Selected                 bool                `json:"selected"`
+	SelectionReasons         []string            `json:"selection_reasons"`
+}
+
+type InsightReadmeReceipt struct {
+	ReferenceID string    `json:"reference_id"`
+	Source      CommitRef `json:"source"`
+	Status      string    `json:"status"`
+	Path        string    `json:"path,omitempty"`
+	Bytes       int       `json:"bytes"`
+	Scope       string    `json:"scope"`
+}
+
+type InsightReferenceReader interface {
+	FetchTree(context.Context, RepositoryCandidate) ([]DirectoryNode, error)
+	ExtractRepoFiles(context.Context, RepositoryCandidate, []string) (*ExtractedRepository, error)
+}
+
+type InsightDiscoveryReport struct {
+	SchemaVersion string                       `json:"schema_version"`
+	ID            string                       `json:"id"`
+	Status        string                       `json:"status"`
+	Plan          InsightDiscoveryPlan         `json:"plan"`
+	Provider      ProviderCapabilities         `json:"provider"`
+	Attempts      []InsightDiscoveryAttempt    `json:"attempts"`
+	Candidates    []InsightDiscoveredReference `json:"candidates"`
+	Readmes       []InsightReadmeReceipt       `json:"readmes"`
+	Bundles       []EvidenceBundle             `json:"bundles"`
+	Exploration   InsightExplorationReport     `json:"exploration"`
+	Gaps          []string                     `json:"gaps"`
+	NoveltyState  string                       `json:"novelty_state"`
+	EffectState   string                       `json:"effect_state"`
+	Limitations   []string                     `json:"limitations"`
+}

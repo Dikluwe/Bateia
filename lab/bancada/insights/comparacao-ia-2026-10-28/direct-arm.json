@@ -1,0 +1,98 @@
+{
+  "arm": "direct assistant web research",
+  "frozen_at_utc": "2026-10-29T00:43:34Z",
+  "research_started_utc": "2026-10-29T00:42:18Z",
+  "queries": [
+    "software discovery serendipity beyond semantic search repository recommendation novelty diversification maximal marginal relevance",
+    "github software discovery analogical retrieval engineering design serendipity repository",
+    "github quality diversity MAP Elites pyribs archive documentation",
+    "github analogical search engineering design Solvent functional abstraction software"
+  ],
+  "page_open_attempts": 6,
+  "successful_primary_pages": 5,
+  "abstract_only_pages": 2,
+  "failed_pages": [
+    "https://doi.org/10.1145/3758092 (403 on explicit open; search extract available)"
+  ],
+  "sources": [
+    {
+      "id": "A1",
+      "url": "https://docs.pyribs.org/en/latest/tutorials/qdaif.html",
+      "scope": "Tutorial official: archive, emitters, scheduler; grid stores best quality within each behavior region. No implementation executed."
+    },
+    {
+      "id": "A2",
+      "url": "https://docs.pyribs.org/en/stable/api/ribs.archives.CategoricalArchive.html",
+      "scope": "Official API: categories define archive cells and each cell keeps a representative according to objective/threshold."
+    },
+    {
+      "id": "A3",
+      "url": "https://arxiv.org/abs/1712.06880",
+      "scope": "Author abstract only: express and abstract specific design needs to retrieve distant relevant analogies."
+    },
+    {
+      "id": "A4",
+      "url": "https://arxiv.org/abs/2205.15476",
+      "scope": "Author abstract only: analogical search beyond keywords; level of problem abstraction affects ideation."
+    },
+    {
+      "id": "A5",
+      "url": "https://link.springer.com/article/10.1007/s10664-021-09963-7",
+      "scope": "Original CROSSMINER experience paper, ELL5: evaluate novelty/diversity and useful long-tail recommendations instead of popularity alone."
+    }
+  ],
+  "insights": [
+    {
+      "id": "A-I1",
+      "title": "Arquivo de alternativas por nicho de comportamento",
+      "source_ids": [
+        "A1",
+        "A2"
+      ],
+      "observed_in_source": "Archive stores representatives in behavior/category cells and updates each cell with objective quality.",
+      "adaptation_proposed_by_assistant": "No Bateia, manter mapa consultivo mecanismo × condição operacional, como push/pull e coordenação central/descentralizada, com melhor evidência por célula. Distinguir diversidade conceitual de diversidade de hosts. Não requer instalar pyribs.",
+      "condition": "Descritores precisam refletir diferenças verificáveis dos mecanismos, com estado desconhecido quando só há metadata.",
+      "rejection_experiment": "Em corpus congelado e perguntas iguais, comparar lista atual de seis resultados com seis células do mapa; rejeitar se não ampliar mecanismos úteis identificados por avaliador humano sem reduzir aplicabilidade.",
+      "state": "HYPOTHESIS_NOT_VALIDATED"
+    },
+    {
+      "id": "A-I2",
+      "title": "Busca analógica por função, meio e restrição",
+      "source_ids": [
+        "A3",
+        "A4"
+      ],
+      "observed_in_source": "The papers propose abstracting design needs and searching analogies beyond surface keyword matches; only abstracts inspected.",
+      "adaptation_proposed_by_assistant": "Representar uma necessidade como efeito desejado, mecanismo e restrições; por exemplo, limitar pressão sem bloquear o produtor pode buscar shedding/admission control fora de bibliotecas de filas. Exigir mapeamento explícito entre origem e alvo e casos de quebra.",
+      "condition": "A extração de função/mecanismo precisa apontar bytes ou permanecer hipótese declarada; resumo sozinho não comprova mecanismo.",
+      "rejection_experiment": "Comparar recuperação lexical atual com consultas derivadas de relações em conjunto de perguntas com domínios distintos; rejeitar se os resultados apenas mudarem vocabulário sem produzir analogias julgadas aplicáveis.",
+      "state": "HYPOTHESIS_NOT_VALIDATED"
+    },
+    {
+      "id": "A-I3",
+      "title": "Orçamento de exploração com piso de relevância",
+      "source_ids": [
+        "A5"
+      ],
+      "observed_in_source": "The experience paper highlights novelty/diversity and useful long-tail recommendations in software engineering.",
+      "adaptation_proposed_by_assistant": "Separar candidatos próximos, adjacentes e distantes, reservando vagas para cada grupo, mas exigir explicação de ligação ao problema antes de promover um candidato a insight. Registrar feedback de familiaridade/utilidade para pesquisa seguinte. Essa política é minha proposta, não resultado demonstrado pelo artigo.",
+      "condition": "Sem relevância mínima, diversidade vira ruído; não usar número de sites ou pouca popularidade como prova de novidade.",
+      "rejection_experiment": "Revisão humana de resultados de múltiplas perguntas, medindo úteis, inesperados e custo de triagem separadamente; rejeitar se a reserva distante aumentar descarte sem aumentar ideias aproveitáveis.",
+      "state": "HYPOTHESIS_NOT_VALIDATED"
+    }
+  ],
+  "operator_work": {
+    "manual_queries": 4,
+    "primary_page_open_attempts": 6,
+    "manual_adaptive_query_rounds": 2,
+    "source_selection_and_synthesis": "assistant manual",
+    "repository_commits_frozen": 0,
+    "candidate_code_executed": false
+  },
+  "limitations": [
+    "No measured validated benefit in Bateia",
+    "source A3/A4 read only at abstract level",
+    "prior assistant knowledge; not independent or blinded; source search order affects outcome",
+    "elapsed retrieval interval excludes earlier code reading and later report writing; not a full productivity measurement"
+  ]
+}

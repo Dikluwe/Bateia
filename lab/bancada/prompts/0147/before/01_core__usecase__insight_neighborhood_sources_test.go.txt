@@ -1,0 +1,48 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_neighborhood_sources_test.md
+ * @layer L1
+ * @updated 2026-10-29
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"encoding/json"
+	"testing"
+)
+
+func TestInsightNeighborhoodRejectsTamperedHistoryBeforeEffects(t *testing.T) {
+	first, reader, bindings := neighborhoodFixture(t)
+	for name, change := range map[string]func(*domain.InsightNeighborhoodRequest){
+		"report seal": func(r *domain.InsightNeighborhoodRequest) { r.Input.Status = "forged" },
+		"content": func(r *domain.InsightNeighborhoodRequest) {
+			r.Input.Bundles[0].Items[0].Content += "forged"
+			r.Input.ID = ""
+			r.Input.ID = "site_discovery_" + insightHash(r.Input)
+		},
+		"fingerprint": func(r *domain.InsightNeighborhoodRequest) {
+			i := &r.Input.Bundles[0].Items[0]
+			i.Content = "# Forged\n[Target](https://github.com/evil/path)\n"
+			i.ContentHash = "sha256:" + contentHash(i.Content)
+			r.Input.Bundles[0].BytesRead = int64(len(i.Content))
+			r.Input.Readmes[0].Receipt.Bytes = len(i.Content)
+			r.Input.ID = ""
+			r.Input.ID = "site_discovery_" + insightHash(r.Input)
+		},
+		"unknown focus": func(r *domain.InsightNeighborhoodRequest) { r.Focus = "https://github.com/unknown/path" },
+		"bad limit":     func(r *domain.InsightNeighborhoodRequest) { n := 5; r.FollowLinks = &n },
+		"bad passages":  func(r *domain.InsightNeighborhoodRequest) { r.MaxPassages = 17 },
+	} {
+		t.Run(name, func(t *testing.T) {
+			raw, _ := json.Marshal(first)
+			var input domain.InsightSiteReport
+			_ = json.Unmarshal(raw, &input)
+			request := domain.InsightNeighborhoodRequest{Input: input}
+			change(&request)
+			if _, err := ExpandInsightNeighborhood(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings); err == nil || len(reader.resolves) != 0 {
+				t.Fatal("invalid request reached a reader", err)
+			}
+		})
+	}
+}

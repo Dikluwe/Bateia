@@ -1,0 +1,86 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/010.json
+Exit: 0 Seconds: 0.04
+{
+  "took": 8,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 2,
+      "relation": "eq"
+    },
+    "max_score": 105.566925,
+    "hits": [
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "5afef521fe8c5c27f97ba57a53d3bc4c",
+        "_score": 105.566925,
+        "_source": {
+          "title": "read_posting_block_range_into",
+          "language": "rust",
+          "start_line": 3036,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code:3036:read_posting_block_range_into",
+          "kind": "function",
+          "line": 3036,
+          "code": "fn read_posting_block_range_into(\n    &mut self,\n    offset: u64,\n    len: u64,\n    bytes: &mut Vec<u8>,\n) -> Result<(), RawSegmentFileError>"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "code",
+              "ordinal": 0,
+              "start_offset": 0,
+              "end_offset": 141,
+              "text": "fn read_posting_block_range_into(\n    &mut self,\n    offset: u64,\n    len: u64,\n    bytes: &mut Vec<u8>,\n) -> Result<(), RawSegmentFileError>"
+            }
+          ]
+        },
+        "match_line": 3036,
+        "match_lines": [
+          3036
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "ff514c9ab3ba41bd0067cd43190b7a09",
+        "_score": 10.318307,
+        "_source": {
+          "title": "raw.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 3025,
+              "start_offset": 108682,
+              "end_offset": 108946,
+              "text": "fn read_posting_block_range(\n        &mut self,\n        offset: u64,\n        len: u64,\n    ) -> Result<Vec<u8>, RawSegmentFileError> {\n        let mut bytes = Vec::new();\n        self.read_posting_block_range_into(offset, len, &mut bytes)?;\n        Ok(bytes)\n    }"
+            }
+          ]
+        },
+        "match_line": 3032,
+        "match_lines": [
+          3032
+        ]
+      }
+    ]
+  }
+}
+
+

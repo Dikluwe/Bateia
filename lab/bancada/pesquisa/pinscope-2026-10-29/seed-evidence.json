@@ -1,0 +1,1814 @@
+[
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "Faradworks",
+      "repo": "Pinscope",
+      "commit": "b26ad3509f4a19878fb7050aad3da9eacba8d914"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "Faradworks",
+        "repo": "Pinscope",
+        "commit": "b26ad3509f4a19878fb7050aad3da9eacba8d914"
+      },
+      "candidate": {
+        "owner": "Faradworks",
+        "repo": "Pinscope",
+        "url": "",
+        "description": "A comprehensive datasheet-backed electrical schematic reviewer",
+        "stars": 182,
+        "commit_id": "b26ad3509f4a19878fb7050aad3da9eacba8d914",
+        "consultado_em": "2026-10-29T19:10:47.919394635Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-07-17T07:34:32Z"
+      },
+      "screening_decision": {
+        "repository": "Faradworks/Pinscope@b26ad3509f4a19878fb7050aad3da9eacba8d914",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Projeto de referência fornecido pelo usuário"
+        },
+        {
+          "path": "CLAUDE.md",
+          "kind": "documentation",
+          "reason": "Arquitetura declarada do projeto de referência"
+        }
+      ],
+      "budget": {
+        "documents": 2,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 131072,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "Faradworks",
+          "repo": "Pinscope",
+          "commit": "b26ad3509f4a19878fb7050aad3da9eacba8d914"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"Faradworks\",\"repo\":\"Pinscope\",\"url\":\"\",\"description\":\"A comprehensive datasheet-backed electrical schematic reviewer\",\"stars\":182,\"commit_id\":\"b26ad3509f4a19878fb7050aad3da9eacba8d914\",\"consultado_em\":\"2026-10-29T19:10:47.919394635Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-07-17T07:34:32Z\"}",
+        "content_hash": "dc66a6b3cdd7799830eba72b630b4c180d46de5335dcd3344c522d64a64450c5"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "Faradworks",
+          "repo": "Pinscope",
+          "commit": "b26ad3509f4a19878fb7050aad3da9eacba8d914"
+        },
+        "path": "README.md",
+        "content": "# Pinscope\n\nPinscope reviews schematics the way a good senior engineer does: with the datasheets open.\n\n\u003cimg width=\"1912\" height=\"1080\" alt=\"pinscope-screenrecording\" src=\"https://github.com/user-attachments/assets/7e9e4002-08df-423f-93c9-eefd52e88700\" /\u003e\n\n\nGive it a netlist, a BOM, and your datasheet PDFs. It builds a graph of your design, reads each IC's datasheet, and checks the circuit around every part against what the manufacturer actually specifies — reference application, pin functions, absolute maximums, recommended operating conditions. Every finding points at the datasheet page that backs it up, so you can judge the call yourself instead of trusting a black box.\n\nThe reason it exists: ERC passes boards that don't work. Your EDA tool has no idea that the CH340E you powered from 5 V drives its TXD at 4.5 V into an MCU pin that maxes out at 3.6 V, or that the net you labeled `UART5_TX` lands on a pin whose alternate-function table only offers `UART5_RX`, or that the LDO's bypass pin you left floating costs you an order of magnitude in output noise. None of that is an electrical *rule* violation. All of it is in the datasheet, and nobody has time to re-read 400 pages per part on every revision.\n\n## How it works\n\n\u003cp align=\"center\"\u003e\n  \u003cimg src=\"docs/how-it-works.svg\" width=\"920\" alt=\"Pipeline: the netlist and BOM are parsed into a design graph; datasheet PDFs are extracted into pin tables and specs; a per-IC review reads both and files findings cited to datasheet pages; the derating table and BOM roll-up are computed straight from the graph, no model involved.\"\u003e\n\u003c/p\u003e\n\n1. **Parse** the BOM (CSV/XLSX) and netlist (PADS-PCB `.asc` or EDIF 2.0.0 `.edn` — exportable from KiCad, Altium, OrCAD, Allegro, Xpedition, EasyEDA, Eagle) into a queryable bipartite graph of components and nets.\n2. **Extract** pin tables and specs from the PDFs. Large datasheets are trimmed to the relevant pages first, and every extraction is cached in a shared library, so a given part number is only ever processed once.\n3. **Review** each IC in isolation. The model gets the trimmed datasheet plus that IC's circuit neighborhood, can query the graph (`find_connected_components`, `get_net_for_pin`, `get_pintable`) and pull pages from a *connected* part's datasheet when a finding spans an interface. It files findings with severity, reasoning, and page citations.\n4. **Compute** the deterministic parts deterministically — BOM roll-up and a capacitor voltage-derating table come straight from the graph, no model involved.\n\nA post-pass normalizes findings conservatively: it can merge duplicates and downgrade severity, never upgrade. If the reviewer hedged, the report hedges.\n\nIt's a reviewer, not an oracle. It misses things, and it will occasionally question a choice you made on purpose — that's what the citations are for.\n\n## Try it on the bundled design\n\n`simple_project/` is a small MSPM0G3507 board with a CH340E USB-UART bridge and an SPX3819 LDO. Run it through and Pinscope flags, among other things, the LDO's bypass pin left unconnected (~300 µV\u003csub\u003eRMS\u003c/sub\u003e output noise instead of ~40) and the 5 V-powered CH340E driving the 3.3 V MCU directly — each with the page reference to check its work.\n\nYou need Python 3.12+, Node 20+, and an [Anthropic API key](https://console.anthropic.com/):\n\n```bash\npip install -r backend/requirements.txt\ncp backend/.env.example .env                 # set ANTHROPIC_API_KEY\npython3 scripts/upload_skills.py --update    # one-time: registers the extraction prompts under your account\npython3 -m uvicorn backend.main:app --reload\ncd frontend \u0026\u0026 npm install \u0026\u0026 npm run dev\n```\n\nOpen http://localhost:3000, create a project, and feed it the netlist and BOM from `simple_project/` plus datasheet PDFs for the ICs — grab those from the manufacturers, or set the optional DigiKey API keys and let it fetch them. Everything runs locally against your own key; projects and the extraction library live in `data/`. Architecture notes are in [CLAUDE.md](CLAUDE.md).\n\n## Hosted version\n\nThis repo is the product minus accounts and billing. If you'd rather not run it yourself, [pinscope.ai](https://pinscope.ai) is the same code, hosted, with team workspaces and a shared parts library that's already warm.\n\n## License\n\nAGPL-3.0. For commercial licensing, write to dev@faradworks.com.\n",
+        "content_hash": "c8f9e954af16faefb03914db19d86fd12b3e3fde0bf5f1f668455fd491ef6600"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "Faradworks",
+          "repo": "Pinscope",
+          "commit": "b26ad3509f4a19878fb7050aad3da9eacba8d914"
+        },
+        "path": "CLAUDE.md",
+        "content": "# Pinscope — Agentic Schematic Validation\n\nPinscope validates hardware schematics against component datasheets. It extracts constraints from PDFs, parses netlists and BOMs into a queryable graph, and runs an agentic validation loop to flag design violations.\n\n\u003e **Open-core note.** This is the open-source core. A small set of files are\n\u003e \"gateway-owned seams\" — pass-through stubs here (`frontend/src/proxy.ts`,\n\u003e `use-optional-auth.ts`, `clerk-theme-provider.tsx`,\n\u003e `components/billing/*`, `sidebar-auth.tsx`, `pricing-section.tsx`,\n\u003e `analytics/*`, `lib/csp-hosts.ts`) that the hosted-cloud repo replaces\n\u003e with auth/billing implementations. Keep their export signatures stable,\n\u003e and never import auth/billing SDKs anywhere else in the frontend. On the\n\u003e backend, everything reaches billing only through\n\u003e `backend/services/billing_hook.py:get_billing()` (a no-op here).\n\n## System Overview\n\nThree layers:\n\n| Layer | Location | Purpose |\n|-------|----------|---------|\n| **Core library** | `backend/pinscopex/` | Models, parsers, graph builder, agentic validator, passive resolver, taxonomy, BOM summary, derating |\n| **Backend** | `backend/` | FastAPI app — async pipeline orchestration, SSE progress, project/file storage |\n| **Frontend** | `frontend/` | Next.js 16 app — project dashboard, pipeline progress, report viewer, derating, admin dashboard |\n\nPlus `skills/` — Claude Console Skills for datasheet extraction (pintable, patterns, specs).\n\nThe pipeline stages: Parse BOM → Extract IC Pintables → Extract Simple Components → Extract Passives → DigiKey Auto-Resolve + Value Fallback → Build Graph → Direct Datasheet Review. Pipeline runs can be cancelled mid-execution via `POST /api/pipeline/{id}/cancel`.\n\n## Example Project\n\n`simple_project/` is the reference design for development and testing:\n\n- **MCU**: TI MSPM0G3507SPTR (U3) — 48-pin LQFP\n- **USB-UART Bridge**: CH340E (U2)\n- **LDO Regulator**: SPX3819M5-L-3-3 (U1) — 5V to 3.3V\n- **ESD Protection**: USBLC6-2SC6 (D1)\n- **Crystal**: 8 MHz (X1) with 18pF load caps (C9, C10)\n\nFiles: `.asc` (PADS-PCB netlist; `.edn` EDIF 2.0.0 also accepted), `.csv`/`.xlsx` (BOM), `design_graph.json` (committed reference fixture used by tests).\n\n## Architecture Principles\n\n- **Modular extractors** — Domain-specific extraction per component type, unified constraint schema\n- **Netlist as graph** — Queryable bipartite graph (components + nets) with traversal helpers\n- **Claude API for PDF extraction** — Forced tool calls for structured output (pintable, passive patterns, specs)\n- **Prompt caching** — Extraction and review API calls use `cache_control={\"type\": \"ephemeral\"}` on system prompts and input context to reduce cost on repeated calls\n- **Claude Console Skills** — Extraction prompts deployed as managed skills; skill_ids and versions loaded from `backend/skills_manifest.json` (upload your own via `scripts/upload_skills.py`)\n- **Direct datasheet review** — Claude reads the IC datasheet PDF and circuit neighborhood together, compares to reference application circuit, and flags issues via graph query tools (`find_connected_components`, `get_net_for_pin`, `get_pintable`)\n- **Datasheet page trimming** — Large PDFs are keyword-trimmed to relevant pages before sending to Claude, reducing token cost (`pypdf`)\n- **DigiKey fallback (exact MPN only)** — When pattern-based and direct extraction fail, DigiKey API fetches product parameters for auto-resolve. DigiKey matches only on exact MPN; fuzzy hits are rejected to avoid polluting the shared library with wrong-dielectric / wrong-voltage parts.\n- **Value-string fallback** — When DigiKey misses an R/C/L/FB passive, a value-string resolver maps the BOM `Value` string to typed passive specs. Value-derived specs are persisted per-project only — never to the shared library.\n- **Per-IC review error isolation** — Direct datasheet review runs each IC independently; one malformed payload or bad response cannot kill the whole run. Failed ICs surface as skipped components with the error.\n- **Cross-IC excerpt budget (per-neighbor)** — To verify an interface finding the reviewer can pull a *connected* IC's datasheet pages (`get_datasheet_excerpt`). The budget is a global per-review page ceiling **plus a per-neighbor sub-budget**, so verifying one interface is never starved by pages already spent on other neighbors.\n- **Finding normalization is downgrade-only** — A post-review per-IC normalize pass (`services/normalize_findings.py`) drops self-cancelling findings, merges same-root-cause findings, and re-grades severity — but only ever *downward*. A deterministic clamp caps each finding at the reviewer's calibrated severity (and any `Unverified:` finding at WARNING, preserving the prefix).\n- **Cross-IC finding dedup** — After all per-IC reviews complete, a single pass (`services/dedupe_findings.py`) collapses one physical interface defect reported from both endpoints into a single finding. Gated by `cross_ic_dedup_enabled`; fail-soft.\n- **Capacitor voltage derating** — Deterministic derating table computed from graph (ceramic/tantalum/electrolytic percentages, pass/fail per capacitor)\n- **Deterministic checks over heuristics** — Exact checks where possible\n- **Zero coupling between layers** — Backend calls pinscopex functions with paths; frontend talks to backend via REST + SSE\n- **Library deduplication** — Shared library (`library/extracted/`, `library/patterns/`, `library/models/`, `library/passives/`, `library/datasheets/`) caches extractions across projects\n- **Content-addressed datasheets** — `library/datasheets/blobs/{md5}.pdf` stores unique PDFs once; `library/datasheets/refs/{safe_mpn}.json` maps MPNs to blobs (dedupe + multi-MPN sharing)\n- **Taxonomy-driven extraction** — Living component taxonomy (`taxonomy/`) with per-subtype classification and specs schemas\n- **Per-stage model config** — Each pipeline stage can use a different Claude model (e.g., Sonnet for review, Haiku for auto-resolve)\n- **API call logging** — Every Claude API call is logged with token counts, cost, and timing per pipeline run\n- **Report versioning** — Each project run is stamped with the current app version on the first `/start` transition (`ProjectMeta.pinscope_version`). The version comes from `frontend/content/changelog.md`'s latest `##` heading — single source of truth — read at backend startup via `backend/_version.py`.\n\n## Datasheet Extraction\n\nExtracted data lives in `library/extracted/` (shared) or per-project under the storage backend. One JSON per MPN, schema in `backend/pinscopex/models.py`.\n\nPer-MPN IC extraction captures:\n1. **Pintable** — Pin number + name (required), description + alt functions (optional)\n2. **Package info** — Base family, package, pin count, description\n3. **Component subtype** — Dotted taxonomy path (e.g., `ic.mcu`, `ic.power.ldo`)\n\nFor discrete/simple components:\n4. **Specs** — Component specs (value, tolerance, package, voltage rating, etc.); parameters are filtered against taxonomy specs schemas\n\nExtraction uses **Claude Console Skills** (required, via `skill_id` in `backend/skills_manifest.json`). No inline fallback — raises error if skill not configured. Skills are defined in `skills/` and uploaded via `scripts/upload_skills.py` — run it once against your own Anthropic Console account to populate the manifest with your skill IDs.\n\n## Claude Console Skills\n\n```\nskills/\n├── extract-pintable/    # Pin table + package info + taxonomy\n│   ├── SKILL.md         # System prompt (YAML frontmatter + markdown)\n│   ├── schema.json      # Tool output schema\n│   └── validate.py      # Validation script\n├── extract-pattern/     # Passive MPN pattern\n└── extract-specs/       # Component specs (discrete, connectors, crystals, etc.)\n```\n\n## Taxonomy\n\nLiving component taxonomy in `taxonomy/` — one JSON file per top-level type (ic, passive, connector, crystal, discrete, fuse, switch, test_point, transformer). Each subtype entry includes `description` and `example_mpn`.\n\nKey taxonomy features:\n- **Ref prefix mapping** — `U→ic`, `R/C/L→passive`, `D/Q→discrete`, `X→crystal`, etc.\n- **Dotted subtype paths** — e.g., `ic.mcu`, `passive.capacitor.ceramic`, `ic.protection.esd`\n- **Dynamic growth** — `add_subtype()` adds new entries; concurrent-safe JSON writes\n- **Specs schema auto-generation** — Type-level and subtype-level parameter specs schemas are auto-generated via Claude when a taxonomy entry has none; extraction discards parameters not in the schema (`extra_specs` field)\n\n## Scripts\n\n- `scripts/upload_skills.py` — Create, update, or list Claude Console Skills. Reads/writes skill IDs to `backend/skills_manifest.json`\n- `scripts/migrate_datasheets_to_library.py` — One-time migration: copy per-project datasheets to `library/datasheets/` (dry-run by default, `--apply` to execute)\n- `scripts/migrate_datasheets_to_blobs.py` — Migrate named-PDF datasheets into the content-addressed blobs/refs layout (dry-run by default, `--apply` to execute)\n- `scripts/dedup_library_datasheets.py` — Remove redundant per-MPN datasheet PDFs when a passive pattern already has a `datasheet_key` (dry-run by default, `--apply` to execute)\n- `scripts/gc_orphan_blobs.py` — Garbage-collect `library/datasheets/blobs/*.pdf` not referenced by any ref file\n- `scripts/clear_rules_from_extractions.py` — Strip deprecated `rules`/`absolute_maximum_ratings` from existing library extractions\n\n## Tech Stack\n\n- **Core**: Python 3.12+, Pydantic 2.x, Anthropic SDK (async + sync), openpyxl (XLSX BOM support), pypdf (datasheet page trimming)\n- **Backend**: FastAPI, uvicorn, sse-starlette, pydantic-settings\n- **Frontend**: Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4, shadcn/ui (Base UI), react-pdf\n- **AI**: Claude API with forced tool calls for extraction, direct datasheet review for validation\n- **Model**: `claude-sonnet-4-6` default for extraction and review, `claude-haiku-4-5` for DigiKey auto-resolve and passive value fallback (per-stage overrides via `.env`)\n- **Skills**: Claude Console Skills API for managed extraction prompts (3 active skills: pintable, pattern, specs)\n- **External APIs**: DigiKey API v4 (OAuth2) — optional datasheet auto-fetch and parameter-based auto-resolve (`DIGIKEY_CLIENT_ID`, `DIGIKEY_CLIENT_SECRET`)\n\n## Extracted Model Versioning\n\nAll `ComponentConstraints` extracted JSON files carry a `model_version` semver field:\n\n- **Initial value** — set from `default_model_version` in `backend/skills_manifest.json` (starts at `1.0.0`)\n- **Minor bump** — `default_model_version` in `skills_manifest.json` is incremented by `scripts/upload_skills.py --update`, so all new extractions after a skill update start at the new minor (e.g. `1.0.0` → `1.1.0`)\n\n**Rule**: When committing or pushing changes under `skills/`, run `python3 scripts/upload_skills.py --update` before the commit/push to sync skill versions and bump `default_model_version`.\n\n## Development Guidelines\n\n- Write tests against `simple_project/` — it's the ground truth\n- Netlist parser and BOM parser are pure functions with no side effects\n- All data structures use Pydantic models in `backend/pinscopex/models.py`\n- Frontend types in `frontend/src/lib/types.ts` must stay in sync with `backend/pinscopex/models.py`\n- Extraction prompts live in `skills/` as Claude Console Skills (SKILL.md + schema.json + validate.py)\n- **Never swallow exceptions silently** — prefer logging or re-raising over bare `except: continue`. Silent failures hide real bugs.\n\n## Running\n\n```bash\n# Backend (copy backend/.env.example to .env at repo root first)\npython3 -m uvicorn backend.main:app --reload    # localhost:8000\n\n# Frontend\ncd frontend \u0026\u0026 npm run dev                       # localhost:3000\n```\n\nLocal mode needs no cloud services and no auth — projects are stored in `data/` and you are `user_id=\"local\"` with admin access.\n",
+        "content_hash": "30e8688288578c8e0213b3b4e23fa396eb0520f1dd742f3ed9259d6414dcddd3"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 16652,
+    "target_results": [
+      {
+        "target": {
+          "path": "backend/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/_version.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/config.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/main.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/middleware/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/middleware/auth.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/bom_summary.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/derating.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/graph.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/led_current_check.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/models.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/parsers.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/parsers_edif.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/pin_function_tokens.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/pin_mux_check.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/resolve_passives.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/taxonomy.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/utils.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/validate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pinscopex/validation_tools.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/pipeline_worker.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/admin.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/contact.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/deps.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/feedback.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/pipeline.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/projects.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/reports.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/routers/survey.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/admin_settings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/api_logs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/billing_hook.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/cost_estimator.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/datasheet_store.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/dedupe_findings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/digikey.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/email.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/event_bridge.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/extraction.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/job_runner.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/anthropic_provider.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/base.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/factory.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/gemini_provider.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/pricing.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/llm/types.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/normalize_findings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/pipeline.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/projects.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/purple_parts.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/storage.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/storage_gcs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/survey.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "backend/services/validation.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/next.config.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/admin/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/api/graph/[id]/route.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/api/projects/route.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/api/report/[id]/route.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/dashboard/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/feedback/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/layout.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/project/[id]/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/project/[id]/progress/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(app)/project/[id]/report/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/changelog/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/contact/actions.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/contact/contact-form.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/contact/nav.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/contact/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/file-guide/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/landing-cta.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/layout.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/privacy/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/(marketing)/terms/page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/layout.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/opengraph-image.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/robots.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/sitemap.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/app/twitter-image.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/analytics/reddit-pixel-match-keys.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/analytics/reddit-pixel.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/billing/credits-context.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/billing/paused-run-banner.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/dashboard/create-project-dialog.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/dashboard/onboarding-survey.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/dashboard/project-card.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/dashboard/projects-table.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/feedback/feedback-dialog.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/layout/sidebar-auth.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/layout/sidebar.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/legal/changelog-timeline.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/legal/file-guide-page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/legal/legal-page.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/marketing/pricing-section.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/pdf/pdf-viewer-panel.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/pdf/pdf-viewer-sheet.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/progress/pipeline-stepper.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/component-group.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/finding-card.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/finding-comments.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/finding-focus-view.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/findings-list.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/mention-input.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/report-filters.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/report-summary.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/reviewed-section.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/report/status-badge.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/theme/clerk-theme-provider.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/theme/theme-provider.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/theme/theme-toggle.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/alert-dialog.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/badge.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/button.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/card.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/collapsible.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/dialog.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/dropdown-menu.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/input.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/label.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/progress.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/scroll-area.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/select.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/separator.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/sheet.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/skeleton.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/tabs.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/textarea.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/toast.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/ui/tooltip.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/components/upload/file-upload-zone.tsx",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-auth-api.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-optional-auth.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-pipeline-progress.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-report.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-reviewed-count.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/hooks/use-reviewed-findings.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/api.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/auth.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/csp-hosts.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/mock-data.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/report-export.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/site.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/types.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/utils.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/lib/version.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/src/proxy.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/backfill_passive_subtype.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/clear_rules_from_extractions.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/dedup_library_datasheets.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/gc_orphan_blobs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/migrate_datasheets_to_blobs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/migrate_datasheets_to_library.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/upload_skills.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/extract-pattern/validate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/extract-pintable/validate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/extract-specs/validate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/conftest.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_cache_breakpoint_limit.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_cost_estimator.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_cost_estimator_model_aware.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_datasheet_excerpt_tool.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_dedupe_findings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_edif_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_led_current_check.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_netlist_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_normalize_findings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_pin_mux_check.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_purple_parts_resolver.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_validation_concurrency.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_validation_deterministic_seed.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_validation_no_tool_recovery.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_validation_trace_log.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/package.json",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/public/examples/TI-MSP-KICAD9-TUTORIAL-SCHEMATIC.pdf",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/public/examples/TI-MSP-KICAD9-TUTORIAL.asc",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "frontend/public/examples/TI-MSP-KICAD9-TUTORIAL.csv",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Projeto de referência fornecido pelo usuário"
+        },
+        "status": "COLLECTED",
+        "bytes": 4344
+      },
+      {
+        "target": {
+          "path": "CLAUDE.md",
+          "kind": "documentation",
+          "reason": "Arquitetura declarada do projeto de referência"
+        },
+        "status": "COLLECTED",
+        "bytes": 11990
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 8,
+    "requirement_coverage": null
+  }
+]

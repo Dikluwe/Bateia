@@ -1,0 +1,57 @@
+autoindex: 2 scan threads, 2 index workers, 4 pdf workers, --bulk-mb 8 [cores=16 ram_total_mib=63644 ram_available_mib=25860 safe_zone_mib=17905]
+autoindex: bulk HTTP request timeout: 300s
+xerj-bar [????????????????????????] pct unknown | walk | eta unknown
+xerj-progress phase=walk basis=none pct=unknown items=0/0 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.0
+autoindex: 19 files (0 MB) under /tmp/xerj-agent-corpus-20261108
+autoindex: estimated index 1.7 MB for 19 files (359.5 KB source) under the 9.5 GB budget (free 25.7 GB minus the 95% flood-stage reserve on 324.9 GB)
+xerj-progress phase=hash basis=bytes pct=0.0 items=0/19 bytes=0/368118 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.6
+autoindex: 1 byte-identical duplicate path(s) will reuse canonical content
+  duplicate: xerj-org--xerj--708e9745/LICENSE → xerj-org--xerj--1557de2f/LICENSE
+xerj-progress phase=scan basis=bytes pct=0.0 items=0/18 bytes=0/356761 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.7
+phase A: sniffing + sampling 18 files with 2 threads…
+phase A: 1 dataset inferred, 0 junk/skipped files
+estimate: at least 0.0 s–0.0 s — a MEASURED FLOOR for client-side extraction, not a prediction of the whole run: server indexing, embedding and network time are not in it
+estimate: basis — measured on this machine during phase A: 18 file(s) / 348.4 KB read end to end across 4 family/families, scheduled over 2 worker(s). Covers 348.4 KB of the 348.4 KB planned (100% of planned bytes). Client-side extraction only.
+  estimate: code           7 files  234.9 KB at 4.4 MB/s measured over 7 files / 234.9 KB → 0.1 s
+  estimate: txt-prose      7 files   69.9 KB at 39.8 MB/s measured over 7 files / 69.9 KB → 0.0 s
+  estimate: json           3 files   40.3 KB at 55.3 MB/s measured over 3 files / 40.3 KB → 0.0 s
+  estimate: txt-lines      1 file     3.4 KB at 40.2 MB/s measured over 1 file / 3.4 KB → 0.0 s
+  estimate excludes: server-side indexing, embedding and merge time (autoindex cannot measure it without writing)
+  estimate excludes: network round trips to the endpoint
+  estimate excludes: relationship detection and edge writes (--no-graph removes these)
+  estimate excludes: families with no end-to-end read in phase A, listed under unmeasured_families
+work order: source-and-docs (14 files, 304.7 KB) → config (3 files, 40.3 KB) → bulk (1 file, 3.4 KB) — biggest first inside each band at 2 worker(s); a file that outlasts everything above it starts first regardless of band
+  source-and-docs  source code and documents — what a person searches for first
+  config           configuration and small structured trees — dense, high signal per byte
+  bulk             logs and plain line files — voluminous, low signal per byte
+gate: not triggered — the measured extraction floor 0.0 s–0.0 s is under --max-minutes 10. That is NOT a promise the run finishes in 10 minutes: server, network and embedding time are not measured before indexing starts
+semantic autoindex embedding backend: lexical (resumable)
+xerj-progress phase=prepare basis=items pct=0.0 items=0/1 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.7
+xerj-progress phase=graph basis=items pct=0.0 items=0/18 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.7
+graph: brain 'xerj-agent-corpus-20261108' → .xerj-memory-xerj-agent-corpus-20261108-edges; 8 structural edges, 0 prior edges invalidated (9 detectors live)
+xerj-progress phase=index basis=bytes pct=0.0 items=0/18 bytes=0/356761 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.8
+phase B: indexing 18 files with 2 workers → http://127.0.0.1:19390
+xerj-progress phase=graph-corpus basis=items pct=0.0 items=0/9 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.9
+xerj-progress phase=finalize-refresh basis=items pct=0.0 items=0/2 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=0.9
+xerj-progress phase=finalize-count basis=items pct=0.0 items=0/1 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=1.6
+xerj-progress phase=finalize-correlate basis=none pct=unknown items=0/0 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=1.6
+xerj-progress phase=finalize-histogram basis=none pct=unknown items=0/0 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=1.6
+xerj-progress phase=finalize-catalog basis=items pct=0.0 items=0/2 bytes=0/0 rate=unknown eta_s=unknown eta_quality=unknown since_progress_s=0.0 phase_elapsed_s=0.0 elapsed_s=1.6
+ok: indexed and searchable (exit 0, completed)
+done in 1.6s — 1 dataset, 415 records live, 1 duplicate alias, 0 junk records, 0 junk/skipped files (261.6 docs/sec)
+indexed: 415 documents live; this run submitted 415 source records from 18 files
+  agenttest-docs                                  415 docs
+graph: 77 edges → .xerj-memory-xerj-agent-corpus-20261108-edges (mdlink@2 1, pathcite@1 1, samedir@2 8, sequence@2 67); 470 unresolved, 5 ambiguous, 0 capped, 0 self-dropped, 0 invalidated
+
+next: `xerj autoindex map --url http://127.0.0.1:19390` for the data map; search via `xerj search --url http://127.0.0.1:19390 --prefix agenttest "<what you need>"`
+      code was indexed — `xerj search` and `xerj def` ask for the matching
+        passage, so the header is a path and a line when the index has one:
+        xerj search --prefix agenttest "<what you need>"
+        xerj def --prefix agenttest <symbol>
+        (add the same --url and --api-key the map line above used)
+      this corpus mixes code and prose — code volume can swamp prose on
+      shared words. Scope one side with a filter on `ax_format`
+      (values in this run: code, json, txt-lines, txt-prose).
+      Prose sections are stored in `body`; line files such as changelogs
+      are stored in `text`, so a match on `body` alone misses them.
+xerj-done ok=true exit=0 reason=completed wall=2.2s files=18 records=415 datasets=1 junk_files=0 code_files=7 code_files_indexed=7 code_files_junked=0

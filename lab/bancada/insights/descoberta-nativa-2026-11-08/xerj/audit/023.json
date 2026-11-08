@@ -1,0 +1,22 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "setup",
+  "args": [
+    "search",
+    "--help"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "search",
+    "--help"
+  ],
+  "origin": null,
+  "started_unix": 1794157489.5275424,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 0.03565835952758789,
+  "exit_code": 0,
+  "stdout": "xerj search — retrieve code from a running XERJ node (reference coding, no scripts)\nDefault ranking is lexical: it matches the words you typed, and it is not a neural reading of the code.\n\nUSAGE:\n    xerj search [OPTIONS] \"<what you need, in plain words>\"\n\nOPTIONS:\n    --url <U>       node endpoint (default $XERJ_URL or http://localhost:9200)\n    --prefix <P>    one index prefix to search (default \"ax\" — what `xerj autoindex` writes);\n                    no comma lists\n    --api-key <K>   Authorization (or $XERJ_API_KEY; --insecure nodes need none)\n    -k <N>          number of passages to return (default 5). A non-number is a\n                    usage error, not a silent default\n    --full <CHARS>  max characters of each passage to print (default 600)\n    --json          print the raw response instead of formatted passages\n\nEXAMPLE:\n    xerj --insecure -d ./.xerj-data &                 # a node, running\n    xerj autoindex ref/sled                           # index once\n    xerj search \"fsync the WAL segment on rotation\"    # one line in, a passage out\n\nSEE ALSO:\n    xerj def <symbol>    exact go-to-definition when you already know the name\n\nWhen the autoindex catalog records a folder on this machine for --prefix and a\nfile there is newer than the last index, or an indexed file has been removed,\nthe command prints the last index time and a reindex command, then prints the\npassages. The check stats at most 4096 entries, stops after 100ms, and skips\nhidden and ignored paths.\n",
+  "stderr": ""
+}

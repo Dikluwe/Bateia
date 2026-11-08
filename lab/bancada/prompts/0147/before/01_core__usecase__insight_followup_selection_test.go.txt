@@ -1,0 +1,34 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_followup_selection_test.md
+ * @layer L1
+ * @updated 2026-10-29
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"reflect"
+	"testing"
+)
+
+func TestFollowupSelectionKeepsEligibilityBeforeDistanceWithoutEffects(t *testing.T) {
+	reader, _ := followFixture()
+	entries := []domain.InsightMemoryEntry{
+		{ID: "focus", Identity: domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog}, ReadAttempts: 0, FirstGeneration: 1},
+		{ID: "far", Identity: domain.ProductIdentity{ConnectorID: domain.ConnectorCodebergCatalog}, ReadAttempts: 0, FirstGeneration: 1},
+		{ID: "near", Identity: domain.ProductIdentity{ConnectorID: domain.ConnectorCodebergCatalog}, ReadAttempts: 5, FirstGeneration: 2},
+	}
+	report := domain.InsightSiteReport{Plan: domain.InsightSitePlan{Sources: []domain.DiscoveryConnectorCapabilities{{ID: domain.ConnectorGitHubCatalog}, {ID: domain.ConnectorCodebergCatalog}}}, ExplorationMemory: &domain.InsightExplorationMemory{Entries: entries}}
+	bindings := map[string]domain.InsightSiteBinding{domain.ConnectorGitHubCatalog: {}, domain.ConnectorCodebergCatalog: {RepositoryReader: reader}}
+	queue := append([]domain.InsightMemoryEntry{}, entries...)
+	ids := func() []string { return []string{queue[0].ID, queue[1].ID, queue[2].ID} }
+	sortInsightFollowupQueue(&report, bindings, queue, nil, map[string]int{"focus": 0, "near": 1, "far": 2})
+	if !reflect.DeepEqual(ids(), []string{"near", "far", "focus"}) {
+		t.Fatal("unavailable focus outranked an eligible neighbor", ids())
+	}
+	sortInsightFollowupQueue(&report, bindings, queue, nil, nil)
+	if !reflect.DeepEqual(ids(), []string{"far", "near", "focus"}) || !reflect.DeepEqual(report.ExplorationMemory.Entries, entries) || len(reader.resolves) != 0 || len(reader.reads) != 0 {
+		t.Fatal("general ordering mutated memory or performed reading", ids())
+	}
+}

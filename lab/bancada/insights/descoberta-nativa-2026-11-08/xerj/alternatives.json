@@ -1,0 +1,188 @@
+{
+  "research_origin": "Native XERJ catalogue and native reads only; design details explicitly synthesis",
+  "alternatives": [
+    {
+      "id": "A1",
+      "name": "Observações independentes, reservas provisórias e reconciliação",
+      "status": "desenho experimental com evidência parcial, sem produto pronto validado",
+      "baseline_relation": {
+        "ids": [
+          "B1",
+          "B3"
+        ],
+        "classification": "materialmente modificada",
+        "from_sources": [
+          "E1",
+          "E2",
+          "E3",
+          "E4"
+        ],
+        "change": "Convergência automática genérica deixou de ser promessa; reservas concorrentes são tentativas, com decisão explícita e preservação das observações."
+      },
+      "workflow_change": "Identificar cada peça com etiqueta única; registrar chegada, deslocamento, separação, uso e correção como observações novas. Distinguir salvo no telefone, recebido pelo servidor, observado e confirmado. Reservas remotas ficam pendentes; confirmar com quem tem a peça antes de viajar ou prometer. Correção referencia o registro anterior, sem apagá-lo.",
+      "software_change": "Cliente web candidato com inicialização offline e armazenamento local; fila de eventos com identificador único por operação, autor/dispositivo, peça, referência causal e horário apenas informativo. Reenvio idempotente; servidor guarda histórico e projeção consultável. Descrições concorrentes ficam visíveis; estados incompatíveis entram em fila de revisão. Fotos em fila separada, com indicação de pendência; exportação de eventos, tabela de peças e manifesto de imagens são requisitos da implementação.",
+      "constraints": {
+        "offline_72h": "Pretendido: registrar e consultar cache sem rede; disponibilidade global será antiga e não é promessa. Ainda requer ensaio de durabilidade e sincronização.",
+        "scale_45000_60": "Não demonstrado pelas fontes; ensaiar metadados completos no pior telefone. Cache de fotos deve ser limitado e explícito.",
+        "two_developers_cost": "Uma aplicação e um serviço simples são hipótese de manutenção; não propor Cassandra ou BookKeeper como infraestrutura necessária. Custo real e complexidade da fila/revisão não foram medidos.",
+        "history_photos_export": "Eventos anexados preservam histórico por desenho; fotos e exportação são critérios de aceitação sem implementação verificada."
+      },
+      "limitations": [
+        "Não impede duas pessoas de prometerem fisicamente a mesma peça; muda a promessa para provisória e torna conflito visível.",
+        "Revisão humana pode crescer demais. Falha se voluntários interpretarem pendência como confirmação.",
+        "Armazenamento web pode não resistir ao comportamento real do aparelho; quota, limpeza e recuperação não foram comprovadas.",
+        "Não é um CRDT de inventário validado. Unir eventos não resolve automaticamente qual uso físico realmente ocorreu."
+      ],
+      "application_condition": "Aceitável quando promessas definitivas podem esperar confirmação e o volume de conflitos permite revisão distribuída entre oficinas.",
+      "rejection_experiment": "Em duas oficinas e seis telefones reais, usar 200 peças etiquetadas e cache de 45 mil metadados. Ficar 72 h sem internet; fazer operações duplicadas/reordenadas, duas reservas e dois relatos de uso sobre a mesma peça, correções concorrentes, fotos, reinício do telefone e relógios divergentes. Rejeitar se qualquer evento confirmado localmente desaparecer, correção apagar outra observação, pendência aparecer como disponibilidade garantida ou reenvio duplicar uso. Medir tempo diário de revisão; rejeitar se exceder 15 min por oficina no cenário representativo acordado. Exportar e reconstruir história/fotos fora do cliente.",
+      "source_evidence": [
+        {
+          "id": "E1",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/fulldata-json/data-2.0.json",
+          "passage_start_line": 1,
+          "excerpt": "Method of storing data client-side, allows indexed database queries.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/025.json",
+          "witness_field": "stdout",
+          "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+        },
+        {
+          "id": "E2",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/data.json",
+          "passage_start_line": 1,
+          "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/027.json",
+          "witness_field": "stdout",
+          "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+        },
+        {
+          "id": "E3",
+          "origin": "tool",
+          "identity": {
+            "corpus": "cassandra",
+            "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff"
+          },
+          "file": "cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc",
+          "passage_start_line": 251,
+          "excerpt": "Updates\nresolve according to the conflict resolution rule of last write wins.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/029.json",
+          "witness_field": "stdout",
+          "scope": "Regra real de resolução, não garantia de preservar as duas observações; passagem também explicita dependência de relógios."
+        },
+        {
+          "id": "E4",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 1,
+          "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/034.json",
+          "witness_field": "stdout",
+          "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "name": "Custódia local e transferência com aceite",
+      "status": "desenho experimental com evidência parcial, sem produto pronto validado",
+      "baseline_relation": {
+        "ids": [
+          "B2"
+        ],
+        "classification": "materialmente modificada",
+        "from_sources": [
+          "E4",
+          "E5"
+        ],
+        "change": "A autoridade passa a ser explícita por custódia; a analogia de escritor único motivou exigir passagem de autoridade verificável, sem alegar que o backend resolve o trabalho físico."
+      },
+      "workflow_change": "Cada peça tem oficina custodiante e responsável local por confirmar alocação. Voluntários continuam registrando observações offline. Só a custódia confirma separação/uso; outras oficinas solicitam, sem prometer a terceiros. Transferência física tem saída em trânsito e recibo de chegada; remetente deixa de oferecer ao despachar, destinatário só oferece após aceite. Substituição de responsável exige entrega de autoridade explícita, não apenas esperar relógio vencer.",
+      "software_change": "Manter o mesmo diário de observações independente, mas separar pedidos de transições confirmadas por custódia. Uma sequência por custódia registra confirmações; cliente mostra oficina, em trânsito, pedido pendente e idade da informação. Detectar duas sequências de autoridade concorrentes e suspender confirmação até reconciliação. Cache local e fila permanecem necessários; imagens e exportação têm os mesmos requisitos de A1.",
+      "constraints": {
+        "offline_72h": "Atividades locais podem continuar se houver autoridade local disponível. Pedidos entre oficinas permanecem pendentes durante a falta de comunicação; não exige ida diária a escritório central.",
+        "scale_45000_60": "Divisão entre oito oficinas reduz quem pode confirmar cada peça; escala e ergonomia não demonstradas.",
+        "two_developers_cost": "Possível aplicação pequena, mas handover, recuperação de autoridade e treinamento são custos desconhecidos. Infraestrutura distribuída das fontes não é recomendação de implantação.",
+        "history_photos_export": "Mesmo diário de A1; capacidades completas ainda precisam ser construídas e verificadas."
+      },
+      "limitations": [
+        "Pode bloquear confirmação quando o custodiante estiver ausente; todos podem observar, mas não há garantia de toda transição definitiva a qualquer momento.",
+        "Dois responsáveis offline podem produzir dupla autoridade; sem um protocolo de entrega ou coordenação local confiável, a exclusividade é só regra no papel.",
+        "Peça pode sair fisicamente sem registro. Recibo e conferência de etiqueta são essenciais.",
+        "Uma oficina desconectada não permite às outras confirmar reserva daquela peça."
+      ],
+      "application_condition": "Boa candidata somente se as oficinas aceitarem autoridade local acessível e procedimento de entrega, e se atrasar compromissos remotos for melhor que resolver conflitos após promessas.",
+      "rejection_experiment": "No mesmo piloto de 72 h, comparar com A1 usando peças equivalentes. Simular troca de turno, responsável ausente, telefone perdido e transferência sem chegada confirmada. Tentar confirmar a mesma peça por duas autoridades desconectadas. Rejeitar se o fluxo não detectar dupla autoridade, se as duas oficinas oferecerem a peça em trânsito, ou se mais de 10% das operações locais ficarem bloqueadas por mais de 15 min por falta de autoridade. Esses limites são critérios propostos a negociar, não resultados observados.",
+      "source_evidence": [
+        {
+          "id": "E1",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/fulldata-json/data-2.0.json",
+          "passage_start_line": 1,
+          "excerpt": "Method of storing data client-side, allows indexed database queries.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/025.json",
+          "witness_field": "stdout",
+          "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+        },
+        {
+          "id": "E2",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/data.json",
+          "passage_start_line": 1,
+          "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/027.json",
+          "witness_field": "stdout",
+          "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+        },
+        {
+          "id": "E4",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 1,
+          "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/034.json",
+          "witness_field": "stdout",
+          "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+        },
+        {
+          "id": "E5",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 36,
+          "excerpt": "there is only one active writer for a log at any given time.",
+          "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/034.json",
+          "witness_field": "stdout",
+          "scope": "Passagem iniciada na linha 36; fonte explicita fencing durante partição. Não prova coordenação offline entre celulares."
+        }
+      ]
+    }
+  ]
+}

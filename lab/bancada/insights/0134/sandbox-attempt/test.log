@@ -1,0 +1,101 @@
+ok  	bateia/01_core/domain	0.030s
+ok  	bateia/01_core/parser	0.164s
+ok  	bateia/01_core/usecase	5.723s
+ok  	bateia/02_shell/cli	26.620s
+ok  	bateia/02_shell/mcp	0.279s
+ok  	bateia/02_shell/report	0.039s
+ok  	bateia/03_infra/bitbucket	(cached)
+ok  	bateia/03_infra/cache	(cached)
+ok  	bateia/03_infra/clang	(cached)
+?   	bateia/03_infra/content	[no test files]
+ok  	bateia/03_infra/durableconfig	(cached)
+ok  	bateia/03_infra/effects	4.224s
+?   	bateia/03_infra/envfile	[no test files]
+ok  	bateia/03_infra/fdroid	(cached)
+ok  	bateia/03_infra/forge	0.028s
+--- FAIL: TestGitHubCatalogSearchReturnsResolvedRepository (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: socket: operation not permitted [recovered, repanicked]
+
+goroutine 10 [running]:
+testing.tRunner.func1.2({0x80c5c0, 0x1a1dbe1911e0})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:1977 +0x349
+panic({0x80c5c0?, 0x1a1dbe1911e0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/panic.go:860 +0x13a
+net/http/httptest.newLocalListener()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:72 +0xda
+net/http/httptest.NewUnstartedServer(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:120
+net/http/httptest.NewServer({0x8d3ea0, 0x8cd740})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:107 +0x25
+bateia/03_infra/github.TestGitHubCatalogSearchReturnsResolvedRepository(0x1a1dbe060908)
+	/repos/Antigravity/Bateia/03_infra/github/project_catalog_test.go:18 +0x4a
+testing.tRunner(0x1a1dbe060908, 0x8cd578)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	bateia/03_infra/github	0.013s
+ok  	bateia/03_infra/host	0.079s
+ok  	bateia/03_infra/itunes	(cached)
+ok  	bateia/03_infra/lexical	0.034s
+ok  	bateia/03_infra/local	(cached)
+ok  	bateia/03_infra/marketreplay	(cached)
+ok  	bateia/03_infra/playstore	(cached)
+ok  	bateia/03_infra/research	(cached)
+ok  	bateia/03_infra/runcontainer	0.187s
+ok  	bateia/03_infra/runstore	(cached)
+ok  	bateia/03_infra/runworker	(cached)
+ok  	bateia/03_infra/sourcegraph	(cached)
+ok  	bateia/03_infra/vfs	(cached)
+ok  	bateia/03_infra/vulnerability	(cached)
+--- FAIL: TestObservableWebClientPreservesPublicResult (0.00s)
+panic: httptest: failed to listen on a port: listen tcp6 [::1]:0: socket: operation not permitted [recovered, repanicked]
+
+goroutine 29 [running]:
+testing.tRunner.func1.2({0x775720, 0x2f6c58ea17c0})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:1977 +0x349
+panic({0x775720?, 0x2f6c58ea17c0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/runtime/panic.go:860 +0x13a
+net/http/httptest.newLocalListener()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:72 +0xda
+net/http/httptest.NewUnstartedServer(...)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:120
+net/http/httptest.NewServer({0x824980, 0x2f6c58ea1780})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/net/http/httptest/server.go:107 +0x25
+bateia/03_infra/web.TestObservableWebClientPreservesPublicResult(0x2f6c58ce3b08)
+	/repos/Antigravity/Bateia/03_infra/web/observable_client_test.go:18 +0x85
+testing.tRunner(0x2f6c58ce3b08, 0x81ef08)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 1
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.5/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	bateia/03_infra/web	0.014s
+ok  	bateia/04_wiring	1.034s
+ok  	bateia/lab/bancada/arquitetura/0129/boundaries	0.212s
+ok  	bateia/lab/bancada/arquitetura/0131/contracts	0.142s
+ok  	bateia/lab/bancada/concorrencia/0109	(cached)
+ok  	bateia/lab/bancada/concorrencia/0109/cmd/observer	(cached)
+ok  	bateia/lab/bancada/concorrencia/0117	(cached)
+ok  	bateia/lab/bancada/concorrencia/0121	(cached)
+ok  	bateia/lab/bancada/concorrencia/0121/cmd/declarations	(cached)
+ok  	bateia/lab/bancada/gates/r3_gate	(cached)
+ok  	bateia/lab/bancada/gates/r4_gate	(cached)
+ok  	bateia/lab/bancada/gates/r5_gate	24.608s
+?   	bateia/lab/bancada/gates/r5_gate/fixture/l1mutant	[no test files]
+?   	bateia/lab/bancada/gates/r5_gate/fixture/l1reference	[no test files]
+?   	bateia/lab/bancada/gates/r5_gate/fixture/l2mutant	[no test files]
+?   	bateia/lab/bancada/gates/r5_gate/fixture/l2reference	[no test files]
+?   	bateia/lab/bancada/gates/r5_gate/fixture/store	[no test files]
+ok  	bateia/lab/bancada/gates/r6_gate	58.570s
+?   	bateia/lab/bancada/gates/r6_gate/conformance	[no test files]
+ok  	bateia/lab/bancada/gates/r6_gate/reference	(cached)
+?   	bateia/lab/bancada/gates/r6_gate/storefixture	[no test files]
+ok  	bateia/lab/bancada/gates/step0065_gate	(cached)
+ok  	bateia/lab/bancada/gates/step0066_gate	(cached)
+ok  	bateia/lab/bancada/gates/step0067_gate	(cached)
+ok  	bateia/lab/bancada/gates/step0068_gate	(cached)
+ok  	bateia/lab/bancada/gates/step0069_gate	(cached)
+ok  	bateia/lab/bancada/gates/step0070_gate	(cached)
+FAIL

@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-18",
+  "baseline_commit": "1104cad7a56f539685699063a9591ec198f9bd50",
+  "checks": {
+    "go_test_all": "passed; commit.gpgsign=false only in test process",
+    "go_test_changed_packages": "passed after final response hash prefix adjustment",
+    "go_vet_all": "passed",
+    "go_build": "passed; output /tmp/bateia-0126",
+    "git_diff_check": "passed",
+    "crystalline_lint_standard": "blocked by pre-existing configuration incompatibility",
+    "crystalline_lint_compatible": {
+      "errors": 0,
+      "warnings": 46,
+      "new_diagnostic_messages_vs_baseline": 0
+    }
+  },
+  "live_probes": [
+    {
+      "url": "https://gitee.com/api/v5/search/repositories?q=openeuler&per_page=1",
+      "credentials": false,
+      "http_status": 200,
+      "body": []
+    },
+    {
+      "url": "https://api.atomgit.com/api/v5/search/repositories?q=tools&per_page=1",
+      "credentials": false,
+      "http_status": 401,
+      "body": {
+        "message": "401 Unauthorized"
+      }
+    }
+  ],
+  "limits": [
+    "No authenticated AtomGit response tested live",
+    "Gitee live response was empty; no relevance or recall claim",
+    "Sealed gates have separate modules and were not rerun",
+    "Lint compatibility configuration was temporary; repository configuration unchanged"
+  ]
+}

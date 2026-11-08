@@ -1,0 +1,12 @@
+# insight_exploration_memory
+
+**Contrato:** passo0142.
+
+Validação/selagem canônica, cópia profunda, estados pendente/examinado/descartado, capacidade256, registro de leitura e feedback com motivo. Sem I/O.
+
+Na seleção primária, identidades ainda pendentes/desconhecidas têm precedência sobre examinadas/descartadas; estas só preenchem vagas restantes e não geram releitura. A memória gerada reserva4KiB abaixo do limite1MiB; se uma atualização exceder a capacidade, preservar o valor anterior e registrar MEMORY_CAPACITY.
+
+
+## Reorganização0145
+
+Container também possui bootstrap, consulta de estado e registro de testemunhos antes guardados no executor.

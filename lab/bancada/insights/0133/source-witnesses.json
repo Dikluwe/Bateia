@@ -1,0 +1,65 @@
+{
+  "repository": {
+    "owner": "sourcegraph",
+    "repo": "conc",
+    "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+  },
+  "observations": [
+    {
+      "path": "pool/pool.go",
+      "lines": [
+        42,
+        54
+      ],
+      "finding": "limiter nil permite iniciar goroutines sem teto; configuração explícita é pré-condição",
+      "content_hash": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+      "excerpt": "\tif p.limiter == nil {\n\t\t// No limit on the number of goroutines.\n\t\tselect {\n\t\tcase p.tasks <- f:\n\t\t\t// A goroutine was available to handle the task.\n\t\tdefault:\n\t\t\t// No goroutine was available to handle the task.\n\t\t\t// Spawn a new one and send it the task.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\t}\n\t} else {",
+      "assessment_origin": "MANUAL_REVIEW_NOT_REASSESSED"
+    },
+    {
+      "path": "pool/pool.go",
+      "lines": [
+        55,
+        65
+      ],
+      "finding": "sem vaga ou worker disponível, envio bloqueia; assinatura Go não recebe contexto",
+      "content_hash": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+      "excerpt": "\t\tselect {\n\t\tcase p.limiter <- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks <- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}",
+      "assessment_origin": "MANUAL_REVIEW_NOT_REASSESSED"
+    },
+    {
+      "path": "pool/pool.go",
+      "lines": [
+        89,
+        98
+      ],
+      "finding": "WithMaxGoroutines valida n>=1 e aloca limiter finito",
+      "content_hash": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+      "excerpt": "// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n < 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n < 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}",
+      "assessment_origin": "MANUAL_REVIEW_NOT_REASSESSED"
+    },
+    {
+      "path": "pool/pool.go",
+      "lines": [
+        102,
+        105
+      ],
+      "finding": "canal tasks sem buffer; limite é de workers, não uma fila durável com N posições",
+      "content_hash": "7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+      "excerpt": "func (p *Pool) init() {\n\tp.initOnce.Do(func() {\n\t\tp.tasks = make(chan func())\n\t})",
+      "assessment_origin": "MANUAL_REVIEW_NOT_REASSESSED"
+    },
+    {
+      "path": "pool/pool_test.go",
+      "lines": [
+        66,
+        90
+      ],
+      "finding": "teste observa concorrência máxima e conclusão, não rejeição ou cancelamento de submissão",
+      "content_hash": "a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+      "excerpt": "\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrent := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrent), func(t *testing.T) {\n\t\t\t\tg := pool.New().WithMaxGoroutines(maxConcurrent)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tvar errCount atomic.Int64\n\t\t\t\ttaskCount := maxConcurrent * 10\n\t\t\t\tfor i := 0; i < taskCount; i++ {\n\t\t\t\t\tg.Go(func() {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur > int64(maxConcurrent) {\n\t\t\t\t\t\t\terrCount.Add(1)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tg.Wait()\n\t\t\t\trequire.Equal(t, int64(0), errCount.Load())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})",
+      "assessment_origin": "MANUAL_REVIEW_NOT_REASSESSED"
+    }
+  ],
+  "candidate_tests_executed": false
+}

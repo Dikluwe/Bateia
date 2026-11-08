@@ -1,0 +1,67 @@
+[
+  {
+    "title": "Bateia README: scope of lazy file reader",
+    "repository": "arclabs561/postings",
+    "pin": "edb02683c6359efe2034a6cc71b64c9aaed90cb0",
+    "file": "README.md",
+    "start_line": 110,
+    "end_line": 111,
+    "excerpt": "The file reader keeps the\nfixed directories in memory and range-reads posting payloads for the query terms.",
+    "sha256": "da8fd82923b9470a5bc6b1ea5019950c2328c8e1bbe9a409826d070bad14b20b",
+    "product": "bateia",
+    "audit": "002.json",
+    "literal_in_git_and_return": true
+  },
+  {
+    "title": "XERJ: resident metadata reader",
+    "repository": "arclabs561/postings",
+    "pin": "edb02683c6359efe2034a6cc71b64c9aaed90cb0",
+    "file": "src/raw.rs",
+    "start_line": 1637,
+    "end_line": 1638,
+    "excerpt": "/// This reader keeps the term, document, and block directories resident but\n/// range-reads posting payloads from the file on demand.",
+    "sha256": "698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+    "product": "xerj",
+    "audit": "006.json",
+    "literal_in_git_and_return": true
+  },
+  {
+    "title": "XERJ: checked range and physical offset",
+    "repository": "arclabs561/postings",
+    "pin": "edb02683c6359efe2034a6cc71b64c9aaed90cb0",
+    "file": "src/raw.rs",
+    "start_line": 3014,
+    "end_line": 3019,
+    "excerpt": "        checked_range(offset, len, self.file_len, \"postings\")?;\n        let bytes = read_exact_at_positional(\n            &mut self.file,\n            segment_file_offset(self.data_offset, offset)?,\n            len,\n        )?;",
+    "sha256": "698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+    "product": "xerj",
+    "audit": "012.json",
+    "literal_in_git_and_return": true
+  },
+  {
+    "title": "XERJ: checksum when present",
+    "repository": "arclabs561/postings",
+    "pin": "edb02683c6359efe2034a6cc71b64c9aaed90cb0",
+    "file": "src/raw.rs",
+    "start_line": 3020,
+    "end_line": 3022,
+    "excerpt": "        if let Some(checksums) = self.decoded_block_checksums()? {\n            verify_span_blocks(checksums, offset, &bytes)?;\n        }",
+    "sha256": "698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+    "product": "xerj",
+    "audit": "012.json",
+    "literal_in_git_and_return": true
+  },
+  {
+    "title": "XERJ: outer segment boundary validation",
+    "repository": "arclabs561/postings",
+    "pin": "edb02683c6359efe2034a6cc71b64c9aaed90cb0",
+    "file": "src/raw.rs",
+    "start_line": 1706,
+    "end_line": 1712,
+    "excerpt": "        let file_end = offset.checked_add(len).ok_or(Error::SegmentTooLarge)?;\n        if file_end > file.metadata()?.len() {\n            return Err(Error::Truncated {\n                section: \"file range\",\n            }\n            .into());\n        }",
+    "sha256": "698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+    "product": "xerj",
+    "audit": "011.json",
+    "literal_in_git_and_return": true
+  }
+]

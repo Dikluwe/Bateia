@@ -1,0 +1,35 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "args": [
+    "search",
+    "span_sha256",
+    "--url",
+    "http://127.0.0.1:19591",
+    "--prefix",
+    "target",
+    "-k",
+    "8",
+    "--full",
+    "9000"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-cold-0150/xerj/bin/xerj",
+    "search",
+    "span_sha256",
+    "--url",
+    "http://127.0.0.1:19591",
+    "--prefix",
+    "target",
+    "-k",
+    "8",
+    "--full",
+    "9000"
+  ],
+  "origin": null,
+  "started_unix": 1794151109.962254,
+  "seconds": 0.7246725559234619,
+  "exit_code": 0,
+  "stdout": "\n─── engine/crates/xerj-common/src/hub_evidence.rs:98  (score 6.61)\n    pub fn from_bytes(\n            corpus: String,\n            repository: String,\n            commit: String,\n            file: String,\n            bytes: &[u8],\n            span: std::ops::Range<usize>,\n        ) -> Result<Self> {\n            require(\n                span.start < span.end && span.end <= bytes.len(),\n                \"byte range\",\n            )?;\n            let line = |end| 1 + bytes[..end].iter().filter(|&&b| b == b'\\n').count() as u64;\n            let citation = Self {\n                corpus,\n                repository,\n                commit,\n                file,\n                file_sha256: sha256(bytes),\n                byte_start: span.start as u64,\n                byte_end: span.end as u64,\n                line_start: line(span.start),\n                line_end: line(span.end - 1),\n                span_sha256: sha256(&bytes[span]),\n            };\n            citation.validate()?;\n            Ok(citation)\n        }\n\n1 passage(s) from 'target-*'. Cite ax_path:line (ax_path#locator for a data row) for anything you rely on.\n",
+  "stderr": ""
+}

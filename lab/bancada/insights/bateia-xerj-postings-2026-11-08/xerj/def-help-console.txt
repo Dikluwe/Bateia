@@ -1,0 +1,26 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/008.json
+Exit: 0 Seconds: 0.023
+xerj def — find where a symbol is defined (go-to-definition, no scripts)
+Default ranking is lexical: it matches the words you typed, and it is not a neural reading of the code.
+
+USAGE:
+    xerj def [OPTIONS] "<symbol or capability>"
+
+OPTIONS:
+    --url <U>       node endpoint (default $XERJ_URL or http://localhost:9200)
+    --prefix <P>    one index prefix to search (default "ax" — what `xerj autoindex` writes);
+                    no comma lists
+    --api-key <K>   Authorization (or $XERJ_API_KEY; --insecure nodes need none)
+    -k <N>          number of definitions to return (default 5)
+    --kind <KIND>   filter by symbol kind (function, class, method, ...)
+    --lang <LANG>   filter by language (python, rust, typescript, ...)
+    --json          print the raw response instead of formatted definitions
+
+EXAMPLE:
+    xerj def IOSIntfLine                       # exact identifier -> its declaration
+    xerj def "euler angles to rotation matrix"  # plain words also resolve the definer
+
+SEE ALSO:
+    xerj search "<plain words>"    ranked passages when you don't know the name
+
+

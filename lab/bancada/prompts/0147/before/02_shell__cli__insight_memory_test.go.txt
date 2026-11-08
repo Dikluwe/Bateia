@@ -1,0 +1,81 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/cli/insight_memory_test.md
+ * @layer L2
+ * @updated 2026-10-28
+ */
+package cli
+
+import (
+	"bateia/01_core/domain"
+	"bytes"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestInsightMemoryCLIReportFeedbackAndReuse(t *testing.T) {
+	dir := t.TempDir()
+	first := filepath.Join(dir, "first.json")
+	feedback := filepath.Join(dir, "memory.json")
+	next := filepath.Join(dir, "next.json")
+	factory := func() ([]domain.InsightSiteBinding, error) {
+		return []domain.InsightSiteBinding{{Connector: &insightSiteCLIFixture{}}}, nil
+	}
+	if err := RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--output", first}, &bytes.Buffer{}, nil, nil, factory); err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := os.ReadFile(first)
+	var report domain.InsightSiteReport
+	_ = json.Unmarshal(raw, &report)
+	if report.ExplorationMemory == nil || len(report.ExplorationMemory.Entries) != 1 {
+		t.Fatal("result did not persist memory")
+	}
+	command := []string{"memory", "--input", first, "--target", "https://gitee.com/org/repo", "--state", "discarded", "--reason", "Already investigated", "--output", feedback}
+	if err := runIdeaInsights(command, &bytes.Buffer{}); err != nil {
+		t.Fatal(err)
+	}
+	if err := RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--memory", feedback, "--output", next}, &bytes.Buffer{}, nil, nil, factory); err != nil {
+		t.Fatal(err)
+	}
+	raw, _ = os.ReadFile(next)
+	_ = json.Unmarshal(raw, &report)
+	if report.Readmes[0].Status != "MEMORY_DISCARDED" || report.ExplorationMemory.Entries[0].Reason != "Already investigated" {
+		t.Fatal("discarded history ignored")
+	}
+	if err := RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--memory", feedback, "--output", feedback}, &bytes.Buffer{}, nil, nil, factory); err == nil {
+		t.Fatal("memory input overwritten")
+	}
+}
+func TestInsightMemoryCLIRejectsBeforeFactoryAndProtectsOutput(t *testing.T) {
+	dir := t.TempDir()
+	invalid := filepath.Join(dir, "invalid.json")
+	_ = os.WriteFile(invalid, []byte(`{"schema_version":"insight-exploration-memory-v1","id":"tampered","generation":0,"entries":[]}`), 0600)
+	for _, flags := range [][]string{{"--memory", invalid}, {"--memory", ""}, {"--follow-links", "-1"}, {"--follow-links", "5"}} {
+		called := false
+		factory := func() ([]domain.InsightSiteBinding, error) { called = true; return nil, nil }
+		args := append([]string{"--question", "queue", "--sources", "gitee", "--output", filepath.Join(dir, "out.json")}, flags...)
+		if err := RunInsightDiscoveryCommand(args, &bytes.Buffer{}, nil, nil, factory); err == nil || called {
+			t.Fatal("invalid memory/options reached factory")
+		}
+	}
+	first := filepath.Join(dir, "first.json")
+	factory := func() ([]domain.InsightSiteBinding, error) {
+		return []domain.InsightSiteBinding{{Connector: &insightSiteCLIFixture{}}}, nil
+	}
+	if err := RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--output", first}, &bytes.Buffer{}, nil, nil, factory); err != nil {
+		t.Fatal(err)
+	}
+	output := filepath.Join(dir, "keep.json")
+	_ = os.WriteFile(output, []byte("keep"), 0600)
+	secret := "fixture-secret-token<>&"
+	t.Setenv("GITHUB_TOKEN", secret)
+	if err := runIdeaInsights([]string{"memory", "--input", first, "--target", "https://gitee.com/org/repo", "--state", "discarded", "--reason", secret, "--output", output}, &bytes.Buffer{}); err == nil {
+		t.Fatal("secret persisted in memory")
+	}
+	data, _ := os.ReadFile(output)
+	if string(data) != "keep" {
+		t.Fatal("rejected update changed output")
+	}
+}

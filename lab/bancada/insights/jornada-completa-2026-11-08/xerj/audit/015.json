@@ -1,0 +1,39 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "args": [
+    "ask",
+    "Evidence Admission applicability validity provenance expiry source reliability corroboration freshness counterexamples hypotheses",
+    "--corpus",
+    "admission-compare",
+    "--hosted",
+    "off",
+    "--how",
+    "--max-tokens",
+    "5000",
+    "--json",
+    "--url",
+    "http://127.0.0.1:19591"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-cold-0150/xerj/bin/xerj",
+    "ask",
+    "Evidence Admission applicability validity provenance expiry source reliability corroboration freshness counterexamples hypotheses",
+    "--corpus",
+    "admission-compare",
+    "--hosted",
+    "off",
+    "--how",
+    "--max-tokens",
+    "5000",
+    "--json",
+    "--url",
+    "http://127.0.0.1:19591"
+  ],
+  "origin": null,
+  "started_unix": 1794151010.1609075,
+  "seconds": 0.08839845657348633,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"admission-compare\",\"pin_sha\":\"7a439382d306ac8599b9cf613e967bf54c86d0f2\",\"pin_date\":\"2026-10-24\",\"age_days\":15,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"r2r-jev/docs/architecture.md\",\"line\":63,\"kind\":\"passage\",\"text\":\"        ├── source reliability = trusted runtime metadata\\n        ├── corroborators = trusted provenance metadata\\n        └── expiry = virtual-time metadata\\n        │\\n        ▼\\nAdmission\\n        ├── Reject\\n        ├── Hold\\n        └── Accept\\n```\\n\\nOnly `Accept` emits governance-active evidence.\\n\\n`Hold` is deliberately non-authoritative: it can wait for corroboration, review, contradiction, or expiry without mutating persistent relations.\\n\\n## Evidence Admission v0.1\\n\\nThe executable policy is defined in [`src/admission.rs`](../src/admission.rs) and specified in [`docs/evidence-admission-semantics-v0.1.md`](evidence-admission-semantics-v0.1.md).\\n\\nThe v0.1 decision order is:\\n\\n```text\\nunsupported kind\\n    -> Reject\\n\\nexpired\\n    -> Reject\\n\\nsource reliability below floor\\n    -> Reject\\n\",\"value\":null,\"score\":1015.2714,\"licence_warning\":null},{\"file\":\"r2r-jev/README.md\",\"line\":120,\"kind\":\"passage\",\"text\":\"corroborator count;\\n- virtual-time expiry.\\n\\nIt returns:\\n\\n```text\\nReject(reason)\\nHold(reason)\\nAccept(Strong | Corroborated)\\n```\\n\\nOnly `Accept` is allowed to emit governance-active `EvidenceAdmitted` input.\\n\\nImportant counterexamples are built into the tests:\\n\\n```text\\n99.9% confidence + low-reliability source -> Reject\\n99.0% confidence + expired evidence      -> Reject\\n76.0% confidence + no corroboration      -> Hold\\n76.0% confidence + 2 corroborators       -> Accept(Corroborated)\\n```\\n\\nRun the reference cases:\\n\\n```bash\\ncargo run --bin admission\\ncargo test --bin admission\\n```\\n\\nSpecification: [`docs/evidence-admission-semantics-v0.1.md`](docs/evidence-admission-semantics-v0.1.md)\\n\\nExperiment protocol: [`experiments/evidence-admission-v0.1/README.md`](experiments/evidence-admission-v0.1/README.\",\"value\":null,\"score\":1014.9965,\"licence_warning\":null},{\"file\":\"r2r-jev/docs/architecture.md\",\"line\":1,\"kind\":\"passage\",\"text\":\"# Architecture\\n\\n`r2r-jev` separates **probabilistic judgment**, **evidence admission**, **deterministic governance**, and **enforcement**.\\n\\n## Core flow\\n\\n```text\\nAgent / environment state\\n        │\\n        ▼\\n       Jev\\n        │\\n        │ typed answers + probabilities\\n        ▼\\nJudgmentObserved\\n        │\\n        ▼\\nTyped evidence candidates\\n        │\\n        ▼\\n┌───────────────────────────────┐\\n│ Evidence Admission v0.1       │\\n│                               │\\n│ kind                          │\\n│ confidence                    │\\n│ source reliability            │\\n│ corroboration                 │\\n│ virtual-time expiry           │\\n│                               │\\n│ Reject / Hold / Accept        │\\n└───────────────┬───────────────┘\\n                │ Accept only\\n                ▼\\nEvidenceAdmitted\",\"value\":null,\"score\":1010.8384,\"licence_warning\":null},{\"file\":\"r2r-jev/src/main.rs\",\"line\":35,\"kind\":\"function\",\"text\":\"  let outcome = governance.observe_judgment(&risky, AdmissionContext::demo(1));\\n    println!(\\\"Act 1: admission separates evidence from authority\\\");\\n    print_judgment(&risky, &outcome);\\n    print_changes(&outcome);\\n    print_decision(&outcome);\\n\\n    // Act 2: a later, low-scoring call produces no admitted evidence, but the\\n    // authorization state created by Act 1 still governs the call.\\n    let benign = JudgmentObserved::from_probabilities(\\n        \\\"fixture:jev-style\\\",\\n        \\\"coder\\\",\\n        \\\"repo-alpha\\\",\\n        \\\"Fix the login redirect bug\\\",\\n        \\\"read_file\\\",\\n        \\\"Read a source file in the same repository\\\",\\n        0.18,\\n        0.12,\\n    );\\n    let outcome = governance.observe_judgment(&benign, AdmissionContext::demo(2));\\n    println!();\\n    println!(\\\"Act 2: rejected evidence\\n    ... [function run_fixture_demo: showing 800 of 1,859 chars from offset 200, window centred on the match]\",\"value\":null,\"score\":1008.94806,\"licence_warning\":null},{\"file\":\"r2r-jev/src/admission.rs\",\"line\":148,\"kind\":\"function\",\"text\":\"        return AdmissionDecision::Reject(RejectReason::Expired);\\n    }\\n\\n    if context.source_reliability_ppm < MIN_SOURCE_RELIABILITY {\\n        return AdmissionDecision::Reject(RejectReason::SourceBelowTrustFloor);\\n    }\\n\\n    if confidence_ppm >= STRONG_CONFIDENCE && context.source_reliability_ppm >= STRONG_RELIABILITY {\\n        return AdmissionDecision::Accept(AdmissionClass::Strong);\\n    }\\n\\n    if confidence_ppm >= CORROBORATED_CONFIDENCE\\n        && context.source_reliability_ppm >= CORROBORATED_RELIABILITY\\n        && context.independent_corroborators >= MIN_CORROBORATORS\\n    {\\n        return AdmissionDecision::Accept(AdmissionClass::Corroborated);\\n    }\\n\\n    if confidence_ppm >= MIN_REVIEW_CONFIDENCE {\\n        return AdmissionDecision::Hold(HoldReason::NeedsCorroborationOrReview);\\n    ... [function admit: showing 795 of 1,256 chars from offset 387, window centred on the match]\",\"value\":null,\"score\":1007.2188,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": ""
+}

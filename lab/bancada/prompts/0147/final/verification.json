@@ -1,0 +1,57 @@
+{
+  "lint": {
+    "command": [
+      "/usr/bin/python3",
+      "lab/ferramentas/crystalline-lint/run.py",
+      "--fail-on",
+      "warning",
+      "."
+    ],
+    "exit_code": 0
+  },
+  "architecture": {
+    "command": [
+      "go",
+      "test",
+      "-v",
+      "./lab/bancada/arquitetura/0129/boundaries",
+      "./lab/bancada/arquitetura/0131/contracts",
+      "./lab/bancada/arquitetura/0145"
+    ],
+    "exit_code": 0
+  },
+  "test": {
+    "command": [
+      "go",
+      "test",
+      "./..."
+    ],
+    "exit_code": 0
+  },
+  "vet": {
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0
+  },
+  "build": {
+    "command": [
+      "go",
+      "build",
+      "-o",
+      "/repos/Antigravity/Bateia/lab/bancada/prompts/0147/final/bateia",
+      "./04_wiring"
+    ],
+    "exit_code": 0
+  },
+  "diff": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0
+  }
+}

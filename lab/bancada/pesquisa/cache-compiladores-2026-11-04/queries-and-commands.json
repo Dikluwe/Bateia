@@ -1,0 +1,77 @@
+{
+  "utc": "2026-11-04T16:32:01.957089+00:00",
+  "web_queries": [
+    "site.rustc-dev-guide.rust-lang.org incremental compilation red green query",
+    "site.salsa-rs.github.io salsa durability revisions memoization",
+    "site.docs.rs/comemo memoize track",
+    "site.clang.llvm.org docs PCHInternals validation stat cache ASTReader",
+    "site.llvm.org docs dependency scanning filesystem cache FileSystemStatCache",
+    "site.bazel.build skyframe non hermetic filesystem dependency invalidation",
+    "site.fontconfig.org fontconfig user cache rescan FcConfigUptoDate",
+    "site.man7.org inotify IN_Q_OVERFLOW races rename recursive monitoring",
+    "site.developer.apple.com FSEvents MustScanSubDirs UserDropped KernelDropped",
+    "site.learn.microsoft.com ReadDirectoryChangesW buffer overflow zero bytes",
+    "site.clang.llvm.org DependencyScanningFileSystem shared cache file system"
+  ],
+  "web_receipts": [
+    "web1.json",
+    "web2.json",
+    "web3.json"
+  ],
+  "reading_receipts": [
+    "read1.json",
+    "read2.json",
+    "read3.json",
+    "read4.json",
+    "read5.json",
+    "read6.json"
+  ],
+  "binary_sha256": "777558f951dd736cd9c7b8dd2c1616411ad544745b926b9255661b4cd8d91470",
+  "go": "go version go1.26.5 linux/amd64",
+  "commands": [
+    {
+      "command": "go build -o /tmp/bateia-cache-research-20261104 ./04_wiring",
+      "result": "initial default GOCACHE read-only; passed with GOCACHE=/tmp/bateia-research-gocache"
+    },
+    {
+      "command": "idea insights discover --no-token ...",
+      "result": "invalid flag; see discovery-queries.log"
+    },
+    {
+      "command": "idea insights discover --question 'incremental compiler cache invalidation tracked dependencies' --sources github --max-calls 5 --max-references 4 --follow-links 2 --timeout 70s --attempt-timeout 8s --output discovery.json",
+      "result": "FAILED; five PROVIDER failures"
+    },
+    {
+      "command": "same discover, expanded permissions, --output discovery-network.json",
+      "result": "FAILED; five PROVIDER failures"
+    },
+    {
+      "command": "public urllib probes api.github.com/search/repositories?q=salsa+incremental&per_page=2 and raw.githubusercontent.com/salsa-rs/salsa/master/README.md",
+      "result": "DNS failure [Errno -2] Name or service not known; no credentials used"
+    },
+    {
+      "command": "GitHub connector GET commits/HEAD then fetch README.md by returned commit, salsa-rs/salsa and typst/comemo",
+      "result": "success; github-meta/file-{0,1}.json"
+    },
+    {
+      "command": "idea insights explore --question 'incremental compiler cache invalidation tracked dependencies' --familiar 'full metadata validation' --bundles bundles.json --output exploration.json",
+      "result": "SEARCH_NEEDED; kind README ignored"
+    },
+    {
+      "command": "same explore with bundles-v2.json / exploration-v2.json",
+      "result": "CONTEXT_PREPARED; 2 cards, UNVERIFIED, INCOMPLETE_SOURCE_BUNDLES"
+    },
+    {
+      "command": "GOCACHE=/tmp/bateia-research-gocache BATEIA_VERIFY_OUTPUT=/tmp/bateia-cache-research-verify-20261104 python3 lab/ferramentas/verify.py",
+      "result": "lint, architecture, vet, build, diff passed; tests failed on loopback socket restriction"
+    },
+    {
+      "command": "go test ./... with expanded permissions and process-only commit.gpgsign=false",
+      "result": "first permission review timed out before execution; one approved retry passed exit 0; verification/test-loopback.log"
+    },
+    {
+      "command": "crystalline-lint --fail-on warning . via pinned runner, after research artifacts",
+      "result": "unpacked external .rs snapshots triggered foreign @prompt failures; raw bytes packed in indexed local-sources.tar.gz; final lint exit 0, no rules changed"
+    }
+  ]
+}

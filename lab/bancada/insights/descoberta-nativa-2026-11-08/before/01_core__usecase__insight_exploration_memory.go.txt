@@ -1,0 +1,304 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_exploration_memory.md
+ * @layer L1
+ * @updated 2026-10-29
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"encoding/json"
+	"sort"
+	"strings"
+	"unicode/utf8"
+)
+
+const (
+	insightMemorySchema          = "insight-exploration-memory-v1"
+	insightMemoryGenerationLimit = 1000000
+)
+
+// A final-generation snapshot remains readable, but cannot start another round.
+func validateInsightMemoryAdvance(memory domain.InsightExplorationMemory) error {
+	if memory.Generation >= insightMemoryGenerationLimit-1 {
+		return domain.ErrInvalidRunInput
+	}
+	return nil
+}
+
+func insightMemoryKey(identity domain.ProductIdentity) string {
+	return identity.ConnectorID + "\x00" + identity.ExternalID
+}
+func insightMemoryEntryID(identity domain.ProductIdentity) string {
+	return "exploration_entry_" + insightHash(insightMemoryKey(identity))
+}
+func sealInsightMemory(memory domain.InsightExplorationMemory) domain.InsightExplorationMemory {
+	sort.Slice(memory.Entries, func(i, j int) bool { return memory.Entries[i].ID < memory.Entries[j].ID })
+	memory.ID = ""
+	memory.ID = "exploration_memory_" + insightHash(memory)
+	return memory
+}
+func validInsightMemoryIdentity(identity domain.ProductIdentity) bool {
+	parsed, ok := insightLeadTarget(identity.CanonicalURL)
+	return ok && parsed == identity
+}
+func validInsightMemoryObservation(identity domain.ProductIdentity, observation domain.InsightReadObservation) bool {
+	_, digest := evidenceDigest(observation.ContentHash)
+	root := false
+	switch strings.ToLower(observation.Path) {
+	case "readme.md", "readme.rst", "readme.txt", "readme":
+		root = true
+	}
+	split := strings.LastIndex(identity.ExternalID, "/")
+	return digest && root && split > 0 && immutableCommitPattern.MatchString(observation.Source.Commit) && observation.Source.Owner == identity.ExternalID[:split] && observation.Source.Repo == identity.ExternalID[split+1:]
+}
+func validInsightMemoryLead(identity domain.ProductIdentity, lead domain.InsightReferenceLead) bool {
+	if lead.Target != identity || !validInsightMemoryIdentity(lead.SourceIdentity) || lead.Status != "REFERENCE_NOT_READ" || !validSynthesisText(lead.SourceCandidateID, 150) || !strings.HasPrefix(lead.ID, "reference_lead_") || len(lead.ID) > 100 {
+		return false
+	}
+	ref := lead.Reference
+	if !validInsightMemoryObservation(lead.SourceIdentity, domain.InsightReadObservation{Source: lead.Source, Path: ref.Path, ContentHash: ref.ContentHash}) || ref.StartLine < 1 || ref.EndLine < ref.StartLine || ref.EndLine-ref.StartLine > 1 || len(ref.Excerpt) > 1024 || !utf8.ValidString(ref.Excerpt) || strings.TrimSpace(ref.Excerpt) == "" || len(lead.MatchedQuestionTerms) > 24 || len(lead.SelectionReasons) > 8 {
+		return false
+	}
+	for _, set := range [][]string{lead.MatchedQuestionTerms, lead.SelectionReasons} {
+		for _, s := range set {
+			if !validSynthesisText(s, 120) {
+				return false
+			}
+		}
+	}
+	copy := lead
+	copy.ID = ""
+	copy.SelectionReasons = []string{}
+	return lead.ID == "reference_lead_"+insightHash(copy)
+}
+
+// ValidateInsightExplorationMemory checks a declared history, not remote source authenticity.
+func ValidateInsightExplorationMemory(input *domain.InsightExplorationMemory) (domain.InsightExplorationMemory, error) {
+	if input == nil {
+		return sealInsightMemory(domain.InsightExplorationMemory{SchemaVersion: insightMemorySchema, Entries: []domain.InsightMemoryEntry{}}), nil
+	}
+	raw, err := json.Marshal(input)
+	if err != nil || len(raw) > 1<<20 {
+		return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+	}
+	var memory domain.InsightExplorationMemory
+	if json.Unmarshal(raw, &memory) != nil || memory.SchemaVersion != insightMemorySchema || memory.Generation < 0 || memory.Generation >= insightMemoryGenerationLimit || len(memory.Entries) > 256 {
+		return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+	}
+	seen := map[string]bool{}
+	for _, entry := range memory.Entries {
+		if !validInsightMemoryIdentity(entry.Identity) || entry.ID != insightMemoryEntryID(entry.Identity) || seen[entry.ID] || entry.FirstGeneration < 1 || entry.FirstGeneration > memory.Generation || entry.ReadAttempts < 0 || entry.ReadAttempts > 1000000 || !validSynthesisText(entry.LastQuestion, 1000) || (entry.Reason != "" && !validSynthesisText(entry.Reason, 500)) {
+			return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+		}
+		seen[entry.ID] = true
+		switch entry.State {
+		case "PENDING":
+		case "EXAMINED":
+			if entry.LastRead == nil {
+				return domain.InsightExplorationMemory{}, domain.ErrIntegrity
+			}
+		case "DISCARDED":
+			if strings.TrimSpace(entry.Reason) == "" {
+				return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+			}
+		default:
+			return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+		}
+		if entry.LastStatus != "" && !validInsightMemoryStatus(entry.LastStatus) {
+			return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+		}
+		if entry.LastRead != nil && (entry.ReadAttempts == 0 || !validInsightMemoryObservation(entry.Identity, *entry.LastRead)) {
+			return domain.InsightExplorationMemory{}, domain.ErrIntegrity
+		}
+		if entry.Lead != nil && !validInsightMemoryLead(entry.Identity, *entry.Lead) {
+			return domain.InsightExplorationMemory{}, domain.ErrIntegrity
+		}
+	}
+	canonical := sealInsightMemory(memory)
+	if canonical.ID != input.ID {
+		return domain.InsightExplorationMemory{}, domain.ErrIntegrity
+	}
+	return canonical, nil
+}
+func validInsightMemoryStatus(status string) bool {
+	switch status {
+	case "COLLECTED", "AUTH_REQUIRED", "RATE_LIMIT", "NOT_FOUND", "INTEGRITY_ERROR", "CONTENT_LIMIT", "TREE_LIMIT", "READ_FAILED", "CANCELLED", "TIMED_OUT", "README_NOT_FOUND", "OPAQUE_REVISION", "REVISION_CONFLICT", "CONTENT_BUDGET":
+		return true
+	}
+	return false
+}
+func UpdateInsightExplorationMemory(input domain.InsightExplorationMemory, target, state, reason string) (domain.InsightExplorationMemory, error) {
+	memory, err := ValidateInsightExplorationMemory(&input)
+	identity, ok := insightLeadTarget(target)
+	state = strings.ToUpper(state)
+	if err != nil {
+		return domain.InsightExplorationMemory{}, err
+	}
+	if err := validateInsightMemoryAdvance(memory); err != nil {
+		return domain.InsightExplorationMemory{}, err
+	}
+	if !ok || (state != "PENDING" && state != "DISCARDED") || !validSynthesisText(reason, 500) || strings.TrimSpace(reason) == "" {
+		return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+	}
+	for i := range memory.Entries {
+		entry := &memory.Entries[i]
+		if entry.Identity == identity {
+			entry.State = state
+			entry.Reason = reason
+			memory.Generation++
+			if raw, _ := json.Marshal(memory); len(raw) > 1<<20 {
+				return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+			}
+			return sealInsightMemory(memory), nil
+		}
+	}
+	return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+}
+func insightMemoryFind(memory *domain.InsightExplorationMemory, identity domain.ProductIdentity) *domain.InsightMemoryEntry {
+	for i := range memory.Entries {
+		if insightMemoryKey(memory.Entries[i].Identity) == insightMemoryKey(identity) {
+			return &memory.Entries[i]
+		}
+	}
+	return nil
+}
+func insightMemoryRemember(report *domain.InsightSiteReport, identity domain.ProductIdentity) *domain.InsightMemoryEntry {
+	memory := report.ExplorationMemory
+	if !validInsightMemoryIdentity(identity) {
+		return nil
+	}
+	if existing := insightMemoryFind(memory, identity); existing != nil {
+		old := existing.LastQuestion
+		existing.LastQuestion = report.Plan.Request.Discovery.Question
+		if !insightMemoryFits(memory) {
+			existing.LastQuestion = old
+			insightMemoryCapacity(report)
+		}
+		return existing
+	}
+	if len(memory.Entries) >= 256 {
+		if !marketContains(report.Gaps, "MEMORY_CAPACITY") {
+			report.Gaps = append(report.Gaps, "MEMORY_CAPACITY")
+		}
+		return nil
+	}
+	memory.Entries = append(memory.Entries, domain.InsightMemoryEntry{ID: insightMemoryEntryID(identity), Identity: identity, State: "PENDING", FirstGeneration: memory.Generation, LastQuestion: report.Plan.Request.Discovery.Question})
+	if !insightMemoryFits(memory) {
+		memory.Entries = memory.Entries[:len(memory.Entries)-1]
+		insightMemoryCapacity(report)
+		return nil
+	}
+	return &memory.Entries[len(memory.Entries)-1]
+}
+func insightMemoryObserve(entry *domain.InsightMemoryEntry, status string, bundle *domain.EvidenceBundle) {
+	if entry == nil {
+		return
+	}
+	entry.ReadAttempts = min(entry.ReadAttempts+1, 1000000)
+	entry.LastStatus = status
+	if bundle != nil {
+		entry.State = "EXAMINED"
+		item := bundle.Items[0]
+		entry.LastRead = &domain.InsightReadObservation{Source: bundle.Repository, Path: item.Path, ContentHash: item.ContentHash}
+	}
+}
+
+func insightMemoryFits(memory *domain.InsightExplorationMemory) bool {
+	raw, err := json.Marshal(memory)
+	return err == nil && len(raw) < (1<<20)-4096
+}
+func insightMemoryCapacity(report *domain.InsightSiteReport) {
+	if !marketContains(report.Gaps, "MEMORY_CAPACITY") {
+		report.Gaps = append(report.Gaps, "MEMORY_CAPACITY")
+	}
+}
+func recordInsightMemoryObservation(report *domain.InsightSiteReport, identity domain.ProductIdentity, status string, bundle *domain.EvidenceBundle) {
+	entry := insightMemoryFind(report.ExplorationMemory, identity)
+	if entry == nil {
+		return
+	}
+	old := *entry
+	insightMemoryObserve(entry, status, bundle)
+	if !insightMemoryFits(report.ExplorationMemory) {
+		*entry = old
+		insightMemoryCapacity(report)
+	}
+}
+
+func selectInsightSitesWithMemory(values []domain.InsightSiteCandidate, maximum int, memory *domain.InsightExplorationMemory) []domain.InsightSiteCandidate {
+	if memory == nil {
+		return selectInsightSiteCandidates(values, maximum)
+	}
+	fresh, known := []domain.InsightSiteCandidate{}, []domain.InsightSiteCandidate{}
+	for _, candidate := range values {
+		entry := insightMemoryFind(memory, candidate.Product.Identity)
+		if entry == nil || entry.State == "PENDING" {
+			fresh = append(fresh, candidate)
+		} else {
+			known = append(known, candidate)
+		}
+	}
+	preferred := selectInsightSiteCandidates(fresh, maximum)
+	count := 0
+	byID := map[string]domain.InsightSiteCandidate{}
+	for _, candidate := range preferred {
+		if candidate.Selected {
+			count++
+			candidate.SelectionReasons = append(candidate.SelectionReasons, "UNEXAMINED_IN_MEMORY")
+		}
+		byID[candidate.ID] = candidate
+	}
+	for _, candidate := range selectInsightSiteCandidates(known, maximum-count) {
+		if candidate.Selected {
+			candidate.SelectionOrder += count
+			candidate.SelectionReasons = append(candidate.SelectionReasons, "MEMORY_FALLBACK")
+		}
+		byID[candidate.ID] = candidate
+	}
+	out := append([]domain.InsightSiteCandidate{}, values...)
+	for i := range out {
+		out[i] = byID[out[i].ID]
+	}
+	return out
+}
+
+func beginInsightExplorationMemory(report *domain.InsightSiteReport) {
+	memory, _ := ValidateInsightExplorationMemory(report.Plan.Request.Memory)
+	memory.Generation++
+	report.ExplorationMemory = &memory
+}
+
+func insightMemoryReadState(report *domain.InsightSiteReport, identity domain.ProductIdentity) string {
+	if entry := insightMemoryFind(report.ExplorationMemory, identity); entry != nil {
+		if entry.State == "EXAMINED" {
+			return "PREVIOUSLY_EXAMINED"
+		}
+		if entry.State == "DISCARDED" {
+			return "MEMORY_DISCARDED"
+		}
+	}
+	return ""
+}
+
+func rememberInsightReferenceLeads(report *domain.InsightSiteReport) map[string]int {
+	for _, lead := range report.ReferenceLeads {
+		entry := insightMemoryRemember(report, lead.Target)
+		if entry != nil && entry.Lead == nil {
+			copy := lead
+			entry.Lead = &copy
+			if !insightMemoryFits(report.ExplorationMemory) {
+				entry.Lead = nil
+				insightMemoryCapacity(report)
+			}
+		}
+	}
+	order := map[string]int{}
+	for i, lead := range report.ReferenceLeads {
+		if _, ok := order[insightMemoryKey(lead.Target)]; !ok {
+			order[insightMemoryKey(lead.Target)] = i
+		}
+	}
+	return order
+}

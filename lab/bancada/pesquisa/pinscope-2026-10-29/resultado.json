@@ -1,0 +1,137 @@
+{
+  "schema_version": "pinscope-search-summary-v1",
+  "date": "2026-10-29",
+  "seed": "https://github.com/Faradworks/Pinscope",
+  "method": "CLI Bateia compilada do checkout atual; duas rodadas insights discover, um refinamento manual de ExpansionPlan executado por idea catalog discover, coleta por idea evidence collect. Interpretação humana/IA separada dos resultados automáticos.",
+  "discovery": {
+    "lexical_multisite": {
+      "sources": [
+        "github",
+        "gitlab",
+        "codeberg",
+        "joss"
+      ],
+      "queries": 20,
+      "candidates": 37,
+      "status": "PARTIAL"
+    },
+    "lexical_github": {
+      "queries": 5,
+      "candidates": 23,
+      "status": "PARTIAL"
+    },
+    "refined_catalog": {
+      "queries": 3,
+      "candidates": 42,
+      "failed": 0
+    },
+    "unique_catalog_identities_across_rounds": 97,
+    "note": "Contagens descrevem candidatos de catálogo, incluindo ruído; não significam projetos pertinentes ou capacidades verificadas."
+  },
+  "shortlist": [
+    {
+      "repository": "ashutosh-rath02/schemantic",
+      "url": "https://github.com/ashutosh-rath02/schemantic",
+      "commit": "100fa8a02622ff0ae74b752c046563f250d1c88b",
+      "readme_url": "https://github.com/ashutosh-rath02/schemantic/blob/100fa8a02622ff0ae74b752c046563f250d1c88b/README.md",
+      "readme_sha256": "251752eadb9871003607eeae8278c56c0e86a253c88f54397538bd81731b38b0",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "similaridade alta",
+      "documented_mechanisms": "Grafo de conectividade, fatos de datasheet citados por página e verificação textual das citações; checks mecânicos e heurísticos separados.",
+      "limits": "README declara ausência de suporte a esquemas multipágina e scans."
+    },
+    {
+      "repository": "aklofas/kicad-happy",
+      "url": "https://github.com/aklofas/kicad-happy",
+      "commit": "2fd9aa0fe2d620f36627d9221e8b1393987ae38e",
+      "readme_url": "https://github.com/aklofas/kicad-happy/blob/2fd9aa0fe2d620f36627d9221e8b1393987ae38e/README.md",
+      "readme_sha256": "sha256:63286bb96078c7415c9b665c8f0649234dc90220788d1785c6de32bc14ac24f5",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "similaridade alta",
+      "documented_mechanisms": "Revisão KiCad, extração de datasheets com cache por MPN e análise ampliada para SPICE, EMC e PCB.",
+      "limits": "Conjunto de scripts e skills; eficácia declarada não foi reexecutada."
+    },
+    {
+      "repository": "settchan2003-design/kicad-schematic-review-skill",
+      "url": "https://github.com/settchan2003-design/kicad-schematic-review-skill",
+      "commit": "a25c34fe55bd9ce5f2218f833430b58f32b0d082",
+      "readme_url": "https://github.com/settchan2003-design/kicad-schematic-review-skill/blob/a25c34fe55bd9ce5f2218f833430b58f32b0d082/README.md",
+      "readme_sha256": "9e2d0b84fad04045ebffdcc8b5992f0141135a66607fe685944062eb5613c5fa",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "similaridade alta",
+      "documented_mechanisms": "Fatos KiCad, contratos por pino derivados dos datasheets, revisão por instância e relatório com evidências e lacunas.",
+      "limits": "Skill de revisão; exige agente e explicita limites sem evidência PCB ou datasheet suficiente."
+    },
+    {
+      "repository": "ee-in-a-box/altium-copilot",
+      "url": "https://github.com/ee-in-a-box/altium-copilot",
+      "commit": "3164e26580eaa892669c1826b9293de7df72ce04",
+      "readme_url": "https://github.com/ee-in-a-box/altium-copilot/blob/3164e26580eaa892669c1826b9293de7df72ce04/README.md",
+      "readme_sha256": "bf843b6652cebc81daecc5617f43f63aace0acd55b1ff4002b79a2da0e5fb54f",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "similaridade alta no fluxo assistido",
+      "documented_mechanisms": "Acesso ao Altium aberto, revisão estruturada em três fases e achados citando datasheet ou netlist.",
+      "limits": "Requer Windows/Altium; acesso descrito como somente leitura."
+    },
+    {
+      "repository": "jifengshandian/easyeda-ai-assistant",
+      "url": "https://github.com/jifengshandian/easyeda-ai-assistant",
+      "commit": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9",
+      "readme_url": "https://github.com/jifengshandian/easyeda-ai-assistant/blob/d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9/README.md",
+      "readme_sha256": "dd909bf19573c959af223ad73d953e9d4514e66e4937941ee7c9ee47c0a30686",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "similaridade parcial",
+      "documented_mechanisms": "Componentes, pinos e nets estruturados para revisão conversacional; busca de datasheets e ponte MCP.",
+      "limits": "Integração específica ao EasyEDA Pro; motor de regras aparece no roadmap."
+    },
+    {
+      "repository": "Dropio12/Cherry-Hardware-Agent",
+      "url": "https://github.com/Dropio12/Cherry-Hardware-Agent",
+      "commit": "879167e04bb4e49dadde2045a88cb0dddab77354",
+      "readme_url": "https://github.com/Dropio12/Cherry-Hardware-Agent/blob/879167e04bb4e49dadde2045a88cb0dddab77354/README.md",
+      "readme_sha256": "d9f064b162989f4035547fe6c77367b4eb481356d7db15001cbd1027ae653183",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "candidato relacionado",
+      "documented_mechanisms": "Revisão KiCad com análise de alimentação, interfaces, derating, EMC, datasheets e SPICE.",
+      "limits": "README muito próximo em estrutura e exemplos ao kicad-happy; independência e linhagem não verificadas."
+    },
+    {
+      "repository": "Robotips/uConfig",
+      "url": "https://github.com/Robotips/uConfig",
+      "commit": "f9e9ded9ddc573777820ad90e7bfbf2e4b740459",
+      "readme_url": "https://github.com/Robotips/uConfig/blob/f9e9ded9ddc573777820ad90e7bfbf2e4b740459/README.md",
+      "readme_sha256": "sha256:598d31af151c1c4b907b21b279c8da36f6488c5c09098db055c587fb43a33925",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "componente complementar",
+      "documented_mechanisms": "Extrai pinagem de PDFs com Poppler e regras para gerar bibliotecas KiCad.",
+      "limits": "Não se apresenta como revisor completo de circuitos."
+    },
+    {
+      "repository": "ilutchenko/kicad-ai-checker",
+      "url": "https://github.com/ilutchenko/kicad-ai-checker",
+      "commit": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4",
+      "readme_url": "https://github.com/ilutchenko/kicad-ai-checker/blob/cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4/README.md",
+      "readme_sha256": "2831e25520da28eff6032e5ddb8695416313c29da385acd6d6299ca91cec29c5",
+      "assessment_origin": "MANUAL_INTERPRETATION_OF_BATEIA_COLLECTED_DOCUMENTATION",
+      "classification": "infraestrutura inicial",
+      "documented_mechanisms": "Carregador de projetos, parser AST e modelo elétrico compacto com componentes, pinos e nets.",
+      "limits": "README situa checks por LLM e geração de relatórios como fases futuras."
+    }
+  ],
+  "validation": {
+    "build": "PASS; GOCACHE=/tmp/bateia-pinscope-go-cache go build -o /tmp/bateia-pinscope ./04_wiring",
+    "collected_content_hashes_checked": 25,
+    "all_checked_hashes_match": true,
+    "candidate_readmes_collected": 6,
+    "candidate_collection_failures": 0,
+    "candidate_software_executed": false,
+    "product_source_changes": false,
+    "test_suite": "Não executada: investigação operacional sem alteração no código do produto."
+  },
+  "limits": [
+    "Seleção semântica e comparação são interpretação sobre documentação coletada; não foram calculadas automaticamente pelo Bateia.",
+    "A descoberta lexical trouxe Minecraft, planilhas e outros domínios; o plano de consultas exatas foi fornecido manualmente.",
+    "Os artefatos registram coleta limitada, inclusive revisões opacas, README ausente e limite de tamanho.",
+    "Nenhum resultado comprova eficácia dos revisores ou benefício de adoção."
+  ]
+}

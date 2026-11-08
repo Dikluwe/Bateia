@@ -1,0 +1,487 @@
+--- before/01_core/domain/insight_discovery.go
++++ after/01_core/domain/insight_discovery.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/domain/insight_discovery.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package domain
+ 
+@@ -15,6 +15,7 @@
+ var ErrInsightDiscoveryUnavailable = errors.New("insight discovery could not complete any search")
+ 
+ type InsightDiscoveryRequest struct {
++	QueryPolicy        string        `json:"query_policy,omitempty"`
+ 	SchemaVersion      string        `json:"schema_version"`
+ 	Question           string        `json:"question"`
+ 	FamiliarApproaches []string      `json:"familiar_approaches"`
+--- before/01_core/domain/market_discovery.go
++++ after/01_core/domain/market_discovery.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/domain/market_discovery.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ 
+ package domain
+@@ -120,6 +120,7 @@
+ }
+ 
+ type MarketDiscoveryRequest struct {
++	QueryPolicy string `json:"query_policy,omitempty"`
+ 	QueryID     string `json:"query_id"`
+ 	QueryLocale string `json:"query_locale"`
+ 	Query       string `json:"query"`
+--- before/01_core/domain/project_catalog.go
++++ after/01_core/domain/project_catalog.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/domain/project_catalog.md
+  * @layer L1
+- * @updated 2026-08-26
++ * @updated 2026-11-08
+  */
+ package domain
+ 
+@@ -28,11 +28,13 @@
+ type ProviderCapabilityReporter interface{ Capabilities() ProviderCapabilities }
+ 
+ type CatalogSearchRequest struct {
+-	ExpansionID    string        `json:"expansion_id"`
+-	Query          string        `json:"query"`
+-	Discriminators []string      `json:"discriminators"`
+-	MaxResults     int           `json:"max_results"`
+-	AttemptTimeout time.Duration `json:"attempt_timeout,omitempty"`
++	MetadataOnly            bool          `json:"metadata_only,omitempty"`
++	DeferRevisionResolution bool          `json:"defer_revision_resolution,omitempty"`
++	ExpansionID             string        `json:"expansion_id"`
++	Query                   string        `json:"query"`
++	Discriminators          []string      `json:"discriminators"`
++	MaxResults              int           `json:"max_results"`
++	AttemptTimeout          time.Duration `json:"attempt_timeout,omitempty"`
+ }
+ 
+ type CatalogCandidate struct {
+--- before/01_core/usecase/insight_discovery.go
++++ after/01_core/usecase/insight_discovery.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_discovery.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -50,7 +50,7 @@
+ 		if timeoutErr != nil {
+ 			return domain.InsightDiscoveryReport{}, timeoutErr
+ 		}
+-		result, searchErr := catalog.SearchCatalog(operation, domain.CatalogSearchRequest{ExpansionID: query.ID, Query: query.Query, Discriminators: append([]string{}, query.AnchorTerms...), MaxResults: plan.Request.MaxPerQuery, AttemptTimeout: plan.Request.AttemptTimeout})
++		result, searchErr := catalog.SearchCatalog(operation, domain.CatalogSearchRequest{MetadataOnly: plan.Request.QueryPolicy == "context-v2", DeferRevisionResolution: plan.Request.QueryPolicy == "context-v2", ExpansionID: query.ID, Query: query.Query, Discriminators: append([]string{}, query.AnchorTerms...), MaxResults: plan.Request.MaxPerQuery, AttemptTimeout: plan.Request.AttemptTimeout})
+ 		operationErr := operation.Err()
+ 		stop()
+ 		attempt.ReportedCount = len(result.Candidates)
+@@ -89,7 +89,12 @@
+ 		attempt.Attempt.ResultCount = attempt.AdmittedCount
+ 		report.Attempts = append(report.Attempts, attempt)
+ 	}
+-	report.Candidates = selectInsightDiscoveryReferences(report.Candidates, plan.Request.MaxReferences)
++	question := ""
++	if plan.Request.QueryPolicy == "context-v2" {
++		question = plan.Request.Question
++		report.Limitations = append(report.Limitations, "Política contextual: correspondência literal em metadados precede diversidade; não é avaliação semântica. Revisões são resolvidas nas referências escolhidas.")
++	}
++	report.Candidates = selectInsightDiscoveryReferences(report.Candidates, plan.Request.MaxReferences, question)
+ 	covered := map[string]bool{}
+ 	for _, ref := range report.Candidates {
+ 		if ref.Selected {
+--- before/01_core/usecase/insight_discovery_plan.go
++++ after/01_core/usecase/insight_discovery_plan.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_discovery_plan.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -13,7 +13,7 @@
+ )
+ 
+ func PlanInsightDiscovery(request domain.InsightDiscoveryRequest) (domain.InsightDiscoveryPlan, error) {
+-	if request.SchemaVersion != "1" {
++	if request.SchemaVersion != "1" || (request.QueryPolicy != "" && request.QueryPolicy != "lexical-v1" && request.QueryPolicy != "context-v2") {
+ 		return domain.InsightDiscoveryPlan{}, domain.ErrInvalidRunInput
+ 	}
+ 	base, err := normalizeInsightExploration(domain.InsightExplorationRequest{SchemaVersion: "1", Question: request.Question, FamiliarApproaches: request.FamiliarApproaches, MaxPassages: request.MaxPassages})
+@@ -23,6 +23,9 @@
+ 	request.Question, request.FamiliarApproaches, request.MaxPassages = base.Question, base.FamiliarApproaches, base.MaxPassages
+ 	if request.MaxPerQuery == 0 {
+ 		request.MaxPerQuery = 2
++		if request.QueryPolicy == "context-v2" {
++			request.MaxPerQuery = 5
++		}
+ 	}
+ 	if request.MaxReferences == 0 {
+ 		request.MaxReferences = 4
+@@ -57,6 +60,23 @@
+ 	}
+ 	inputHash := insightHash(request)
+ 	plan := domain.InsightDiscoveryPlan{SchemaVersion: "insight-discovery-plan-v1", ID: "discovery_plan_" + insightHash(struct{ Contract, Input string }{"insight-discovery-v1", inputHash}), RequestSHA256: inputHash, Request: request, Queries: []domain.InsightDiscoveryQuery{}}
++	if request.QueryPolicy == "context-v2" {
++		pairs := [][]string{terms[:min(3, len(terms))], anchors[:min(2, len(anchors))], {anchors[0], anchors[len(anchors)-1]}, {anchors[min(1, len(anchors)-1)], anchors[min(2, len(anchors)-1)]}, {anchors[len(anchors)/2], anchors[len(anchors)-1]}}
++		for i, perspective := range []string{"DIRECT", "BROADENED", "ALTERNATIVES", "TRADEOFFS", "COUNTEREXAMPLES"} {
++			seen := map[string]bool{}
++			tokens := []string{}
++			for _, term := range pairs[i] {
++				if !seen[term] {
++					seen[term] = true
++					tokens = append(tokens, term)
++				}
++			}
++			q := domain.InsightDiscoveryQuery{Perspective: perspective, Query: strings.Join(tokens, " "), AnchorTerms: append([]string{}, tokens...), Derivation: "CONTEXTUAL_TERM_CONJUNCTION_V2"}
++			q.ID = "discovery_query_" + insightHash(struct{ Plan, Perspective, Query string }{plan.ID, q.Perspective, q.Query})
++			plan.Queries = append(plan.Queries, q)
++		}
++		return plan, nil
++	}
+ 	for _, route := range []struct {
+ 		name, query string
+ 		anchors     []string
+--- before/01_core/usecase/insight_discovery_selection.go
++++ after/01_core/usecase/insight_discovery_selection.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_discovery_selection.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -80,7 +80,7 @@
+ 	return out
+ }
+ 
+-func selectInsightDiscoveryReferences(candidates []domain.InsightDiscoveredReference, maximum int) []domain.InsightDiscoveredReference {
++func selectInsightDiscoveryReferences(candidates []domain.InsightDiscoveredReference, maximum int, question ...string) []domain.InsightDiscoveredReference {
+ 	out := append([]domain.InsightDiscoveredReference{}, candidates...)
+ 	queries, owners := map[string]bool{}, map[string]bool{}
+ 	for count := 0; count < maximum; count++ {
+@@ -96,7 +96,17 @@
+ 				}
+ 			}
+ 			current := [5]int{gain, 0, -len(candidate.FamiliarSubstringMatches)}
+-			if !owners[strings.ToLower(candidate.Repository.Owner)] {
++			if len(question) > 0 && question[0] != "" {
++				matched := insightMetadataMatchCount(question[0], candidate.Repository.Repo+" "+candidate.Repository.Description+" "+strings.Join(candidate.Topics, " "))
++				if matched == 0 {
++					continue
++				}
++				current = [5]int{matched, gain, 0, -len(candidate.FamiliarSubstringMatches)}
++				if !owners[strings.ToLower(candidate.Repository.Owner)] {
++					current[2] = 1
++				}
++			}
++			if (len(question) == 0 || question[0] == "") && !owners[strings.ToLower(candidate.Repository.Owner)] {
+ 				current[1] = 1
+ 			}
+ 			if best < 0 || explorationScoreGreater(current, score) {
+@@ -109,10 +119,18 @@
+ 		ref := &out[best]
+ 		ref.Selected = true
+ 		ref.SelectionReasons = append([]string{}, ref.SelectionReasons...)
+-		if score[0] > 0 {
++		if len(question) > 0 && question[0] != "" {
++			ref.SelectionReasons = append(ref.SelectionReasons, "LITERAL_METADATA_QUESTION_MATCH")
++		}
++		queryGain, ownerGain := score[0] > 0, score[1] > 0
++		if len(question) > 0 && question[0] != "" {
++			queryGain = score[1] > 0
++			ownerGain = score[2] > 0
++		}
++		if queryGain {
+ 			ref.SelectionReasons = append(ref.SelectionReasons, "NEW_QUERY_COVERAGE")
+ 		}
+-		if score[1] > 0 {
++		if ownerGain {
+ 			ref.SelectionReasons = append(ref.SelectionReasons, "NEW_OWNER")
+ 		}
+ 		for _, q := range ref.QueryIDs {
+@@ -120,5 +138,26 @@
+ 		}
+ 		owners[strings.ToLower(ref.Repository.Owner)] = true
+ 	}
++	if len(question) > 0 && question[0] != "" {
++		for i := range out {
++			if !out[i].Selected && insightMetadataMatchCount(question[0], out[i].Repository.Repo+" "+out[i].Repository.Description+" "+strings.Join(out[i].Topics, " ")) == 0 {
++				out[i].SelectionReasons = append(append([]string{}, out[i].SelectionReasons...), "NO_METADATA_QUESTION_MATCH")
++			}
++		}
++	}
+ 	return out
+ }
++
++func insightMetadataMatchCount(question, metadata string) int {
++	words := map[string]bool{}
++	for _, word := range explorationWords(metadata) {
++		words[word] = true
++	}
++	count := 0
++	for _, term := range explorationTerms(question) {
++		if words[term] {
++			count++
++		}
++	}
++	return count
++}
+--- before/01_core/usecase/insight_exploration_memory.go
++++ after/01_core/usecase/insight_exploration_memory.go
+@@ -227,9 +227,9 @@
+ 	}
+ }
+ 
+-func selectInsightSitesWithMemory(values []domain.InsightSiteCandidate, maximum int, memory *domain.InsightExplorationMemory) []domain.InsightSiteCandidate {
++func selectInsightSitesWithMemory(values []domain.InsightSiteCandidate, maximum int, memory *domain.InsightExplorationMemory, question ...string) []domain.InsightSiteCandidate {
+ 	if memory == nil {
+-		return selectInsightSiteCandidates(values, maximum)
++		return selectInsightSiteCandidates(values, maximum, question...)
+ 	}
+ 	fresh, known := []domain.InsightSiteCandidate{}, []domain.InsightSiteCandidate{}
+ 	for _, candidate := range values {
+@@ -240,7 +240,7 @@
+ 			known = append(known, candidate)
+ 		}
+ 	}
+-	preferred := selectInsightSiteCandidates(fresh, maximum)
++	preferred := selectInsightSiteCandidates(fresh, maximum, question...)
+ 	count := 0
+ 	byID := map[string]domain.InsightSiteCandidate{}
+ 	for _, candidate := range preferred {
+@@ -250,7 +250,7 @@
+ 		}
+ 		byID[candidate.ID] = candidate
+ 	}
+-	for _, candidate := range selectInsightSiteCandidates(known, maximum-count) {
++	for _, candidate := range selectInsightSiteCandidates(known, maximum-count, question...) {
+ 		if candidate.Selected {
+ 			candidate.SelectionOrder += count
+ 			candidate.SelectionReasons = append(candidate.SelectionReasons, "MEMORY_FALLBACK")
+--- before/01_core/usecase/insight_reference_collection.go
++++ after/01_core/usecase/insight_reference_collection.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_reference_collection.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -24,8 +24,32 @@
+ 		return receipt, nil
+ 	}
+ 	if !immutableCommitPattern.MatchString(repo.CommitID) {
+-		receipt.Status = "OPAQUE_REVISION"
+-		return receipt, nil
++		if ctx.Err() != nil {
++			receipt.Status = "CANCELLED"
++			return receipt, nil
++		}
++		resolver, ok := reader.(domain.InsightSiteRepositoryReader)
++		if !ok {
++			receipt.Status = "OPAQUE_REVISION"
++			return receipt, nil
++		}
++		id := domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: repo.Owner + "/" + repo.Repo, CanonicalURL: repo.URL}
++		if !validInsightSiteRepository(id) {
++			receipt.Status = "INTEGRITY_ERROR"
++			return receipt, nil
++		}
++		resolved, err := resolver.ResolveRepository(ctx, id)
++		if err != nil {
++			receipt.Status = insightReadmeFailureStatus(err)
++			return receipt, nil
++		}
++		if resolved.Owner != repo.Owner || resolved.Repo != repo.Repo || resolved.URL != repo.URL || !immutableCommitPattern.MatchString(resolved.CommitID) {
++			receipt.Status = "INTEGRITY_ERROR"
++			return receipt, nil
++		}
++		repo.CommitID = resolved.CommitID
++		ref.Commit = resolved.CommitID
++		receipt.Source = ref
+ 	}
+ 	if ctx.Err() != nil {
+ 		receipt.Status = "CANCELLED"
+--- before/01_core/usecase/insight_site_candidates.go
++++ after/01_core/usecase/insight_site_candidates.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_site_candidates.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -86,7 +86,7 @@
+ 	return out
+ }
+ 
+-func selectInsightSiteCandidates(values []domain.InsightSiteCandidate, maximum int) []domain.InsightSiteCandidate {
++func selectInsightSiteCandidates(values []domain.InsightSiteCandidate, maximum int, question ...string) []domain.InsightSiteCandidate {
+ 	out := append([]domain.InsightSiteCandidate{}, values...)
+ 	sites, queries, publishers := map[string]bool{}, map[string]bool{}, map[string]bool{}
+ 	for order := 1; order <= maximum; order++ {
+@@ -108,6 +108,13 @@
+ 			if c.Product.Publisher != "" && !publishers[c.Product.Identity.ConnectorID+"\x00"+c.Product.Publisher] {
+ 				current[2] = 1
+ 			}
++			if len(question) > 0 && question[0] != "" {
++				matched := insightMetadataMatchCount(question[0], c.Product.Name+" "+c.Product.Summary)
++				if matched == 0 {
++					continue
++				}
++				current = [5]int{matched, current[0], gain, current[2], -len(c.FamiliarSubstringMatches)}
++			}
+ 			if best < 0 || explorationScoreGreater(current, score) {
+ 				best, score = i, current
+ 			}
+@@ -118,7 +125,13 @@
+ 		c := &out[best]
+ 		c.Selected = true
+ 		c.SelectionOrder = order
++		if len(question) > 0 && question[0] != "" {
++			score = [5]int{score[1], score[2], score[3], score[4]}
++		}
+ 		c.SelectionReasons = []string{}
++		if len(question) > 0 && question[0] != "" {
++			c.SelectionReasons = append(c.SelectionReasons, "LITERAL_METADATA_QUESTION_MATCH")
++		}
+ 		if score[0] > 0 {
+ 			c.SelectionReasons = append(c.SelectionReasons, "NEW_SITE")
+ 		}
+--- before/01_core/usecase/insight_site_connectors.go
++++ after/01_core/usecase/insight_site_connectors.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_site_connectors.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -30,7 +30,7 @@
+ 	out := domain.ConnectorDiscovery{Candidates: []domain.ProductCandidate{}, Status: domain.AttemptUnknownProvider, ErrorClass: "PROVIDER"}
+ 	values := []domain.CatalogCandidate{}
+ 	if c.catalog != nil {
+-		result, err := c.catalog.SearchCatalog(ctx, domain.CatalogSearchRequest{ExpansionID: r.QueryID, Query: r.Query, MaxResults: r.Limit})
++		result, err := c.catalog.SearchCatalog(ctx, domain.CatalogSearchRequest{MetadataOnly: r.QueryPolicy == "context-v2", DeferRevisionResolution: r.QueryPolicy == "context-v2", ExpansionID: r.QueryID, Query: r.Query, MaxResults: r.Limit})
+ 		if err != nil {
+ 			if result.Attempt.Status == "RATE_LIMITED" {
+ 				out.ErrorClass = "RATE_LIMIT"
+--- before/01_core/usecase/insight_sites.go
++++ after/01_core/usecase/insight_sites.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_sites.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package usecase
+ 
+@@ -84,7 +84,7 @@
+ 			limit := min(plan.Request.Discovery.MaxPerQuery, 64-len(report.Candidates))
+ 			report.Calls++
+ 			attempt.ExecutionOrder = report.Calls
+-			result, callErr := byID[cap.ID].Connector.Discover(operation, domain.MarketDiscoveryRequest{QueryID: query.ID, QueryLocale: plan.Request.Locale, Query: query.Query, Limit: limit, Market: market})
++			result, callErr := byID[cap.ID].Connector.Discover(operation, domain.MarketDiscoveryRequest{QueryPolicy: plan.Request.Discovery.QueryPolicy, QueryID: query.ID, QueryLocale: plan.Request.Locale, Query: query.Query, Limit: limit, Market: market})
+ 			operationErr := operation.Err()
+ 			stop()
+ 			attempt.ReportedCount = len(result.Candidates)
+@@ -138,7 +138,11 @@
+ 		report.Attempts[index] = attempt
+ 	}
+ 	recordInsightOpportunityCoverage(&report)
+-	report.Candidates = selectInsightSitesWithMemory(report.Candidates, plan.Request.Discovery.MaxReferences, plan.Request.Memory)
++	question := ""
++	if plan.Request.Discovery.QueryPolicy == "context-v2" {
++		question = plan.Request.Discovery.Question
++	}
++	report.Candidates = selectInsightSitesWithMemory(report.Candidates, plan.Request.Discovery.MaxReferences, plan.Request.Memory, question)
+ 	selected := []domain.InsightSiteCandidate{}
+ 	sites, queries := map[string]bool{}, map[string]bool{}
+ 	for _, candidate := range report.Candidates {
+--- before/02_shell/cli/insight_discovery.go
++++ after/02_shell/cli/insight_discovery.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/02_shell/cli/insight_discovery.md
+  * @layer L2
+- * @updated 2026-10-28
++ * @updated 2026-11-08
+  */
+ package cli
+ 
+@@ -21,7 +21,7 @@
+ func RunInsightDiscoveryCommand(args []string, stdout io.Writer, catalog domain.ProjectCatalog, reader domain.InsightReferenceReader, factories ...domain.InsightSiteFactory) error {
+ 	fs := flag.NewFlagSet("idea insights discover", flag.ContinueOnError)
+ 	fs.SetOutput(io.Discard)
+-	request := domain.InsightDiscoveryRequest{SchemaVersion: "1"}
++	request := domain.InsightDiscoveryRequest{SchemaVersion: "1", QueryPolicy: "context-v2"}
+ 	output := ""
+ 	sources, locale, maxCalls := "", "", 0
+ 	memoryPath := ""
+@@ -36,6 +36,7 @@
+ 			return assign(value)
+ 		}
+ 	}
++	fs.Func("query-policy", "Política de descoberta: context-v2 ou lexical-v1", once("query-policy", func(value string) error { request.QueryPolicy = value; return nil }))
+ 	fs.Func("question", "Pergunta", once("question", func(value string) error { request.Question = value; return nil }))
+ 	fs.Func("output", "Arquivo obrigatório de resultado", once("output", func(value string) error { output = value; return nil }))
+ 	fs.Func("memory", "Memória ou relatório anterior", once("memory", func(value string) error { memoryPath = value; return nil }))
+--- before/03_infra/github/project_catalog.go
++++ after/03_infra/github/project_catalog.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/03_infra/github/project_catalog.md
+  * @layer L3
+- * @updated 2026-08-26
++ * @updated 2026-11-08
+  */
+ package github
+ 
+@@ -54,7 +54,11 @@
+ 		searchCtx, cancel = context.WithTimeout(ctx, request.AttemptTimeout)
+ 	}
+ 	defer cancel()
+-	endpoint := fmt.Sprintf("%s/search/repositories?q=%s&per_page=%d", c.baseURL, url.QueryEscape(query+" in:name,description,readme"), request.MaxResults)
++	scope := " in:name,description,readme"
++	if request.MetadataOnly {
++		scope = " in:name,description,topics"
++	}
++	endpoint := fmt.Sprintf("%s/search/repositories?q=%s&per_page=%d", c.baseURL, url.QueryEscape(query+scope), request.MaxResults)
+ 	req, err := http.NewRequestWithContext(searchCtx, "GET", endpoint, nil)
+ 	if err != nil {
+ 		return result, err
+@@ -95,8 +99,10 @@
+ 		if err := validateRemoteCandidate(repo); err != nil {
+ 			return result, err
+ 		}
+-		resolved, _ := c.FetchRepoMetadata(searchCtx, repo)
+-		repo = resolved
++		if !request.DeferRevisionResolution {
++			resolved, _ := c.FetchRepoMetadata(searchCtx, repo)
++			repo = resolved
++		}
+ 		fields := matchedCatalogFields(request.Discriminators, repo, item.Topics)
+ 		license := ""
+ 		if item.License != nil {

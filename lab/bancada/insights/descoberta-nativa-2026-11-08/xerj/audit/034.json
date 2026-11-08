@@ -1,0 +1,38 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "ask",
+    "ledger append only single writer immutable ordered entries",
+    "--corpus",
+    "bookkeeper",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "ask",
+    "ledger append only single writer immutable ordered entries",
+    "--corpus",
+    "bookkeeper",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "origin": null,
+  "started_unix": 1794157623.2060854,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 0.9833896160125732,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"bookkeeper\",\"pin_sha\":\"773a988ddf8b888a8869c6ae33f696935eba5cdc\",\"pin_date\":\"2026-10-13\",\"age_days\":26,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"bookkeeper/bookkeeper-server/src/main/java/org/apache/bookkeeper/client/LedgerHandle.java\",\"line\":1078,\"kind\":\"method\",\"text\":\" helpful enough.\\n            if (clientCtx.getConf().waitForWriteSetMs >= 0) {\\n                DistributionSchedule.WriteSet ws = distributionSchedule.getWriteSet(startEntry);\\n                try {\\n                    if (!waitForWritable(ws, ws.size() - 1, clientCtx.getConf().waitForWriteSetMs)) {\\n                        op.allowFailFastOnUnwritableChannel();\\n                    }\\n                } finally {\\n                    ws.recycle();\\n                }\\n            }\\n\\n            if (isHandleWritable()) {\\n                // Ledger handle in read/write mode: submit to OSE for ordered execution, unless the\\n                // caller is already on the ledger's thread.\\n                executor.executeOrRun(op);\\n            } else {\\n                // Read-only ledger handle: bypass OSE a\\n    ... [method batchReadEntriesInternalAsync: showing 800 of 3,021 chars from offset 1,900, window centred on the match]\",\"value\":null,\"score\":1023.0981,\"licence_warning\":null},{\"file\":\"bookkeeper/site3/website/docs/api/distributedlog-api.md\",\"line\":1,\"kind\":\"passage\",\"text\":\"---\\nid: distributedlog-api\\ntitle: DistributedLog\\n---\\n\\n> DistributedLog began its life as a separate project under the Apache Foundation. It was merged into BookKeeper in 2017.\\n\\nThe DistributedLog API is an easy-to-use interface for managing BookKeeper entries that enables you to use BookKeeper without needing to interact with [ledgers](ledger-api) directly.\\n\\nDistributedLog (DL) maintains sequences of records in categories called *logs* (aka *log streams*). *Writers* append records to DL logs, while *readers* fetch and process those records.\\n\\n## Architecture\\n\\nThe diagram below illustrates how the DistributedLog API works with BookKeeper:\\n\\n![DistributedLog API](/img/distributedlog.png)\\n\\n## Logs\\n\\nA *log* in DistributedLog is an ordered, immutable sequence of *log records*.\\n\",\"value\":null,\"score\":1021.75415,\"licence_warning\":null},{\"file\":\"bookkeeper/site3/website/docs/api/distributedlog-api.md\",\"line\":36,\"kind\":\"passage\",\"text\":\"ly categorized and managed under a *namespace*. DistributedLog namespaces essentially enable applications to locate log streams. Applications can perform the following actions under a namespace:\\n\\n* create streams\\n* delete streams\\n* truncate streams to a given sequence number (either a DLSN or a TransactionID)\\n\\n## Writers\\n\\nThrough the DistributedLog API, writers write data into logs of their choice. All records are appended into logs in order. The sequencing is performed by the writer, which means that there is only one active writer for a log at any given time.\\n\\nDistributedLog guarantees correctness when two writers attempt to write to the same log when a network partition occurs using a *fencing* mechanism in the log segment store.\\n\\n### Write Proxy\\n\\nLog writers are served and managed in a\",\"value\":null,\"score\":1020.2278,\"licence_warning\":null},{\"file\":\"bookkeeper/stream/distributedlog/core/src/main/java/org/apache/distributedlog/DistributedLogConfiguration.java\",\"line\":572,\"kind\":\"method\",\"text\":\"    public String getPropsAsString() {\\n        Iterator iterator = getKeys();\\n        StringBuilder builder = new StringBuilder();\\n        boolean appendNewline = false;\\n        while (iterator.hasNext()) {\\n            Object key = iterator.next();\\n            if (key instanceof String) {\\n                if (appendNewline) {\\n                    builder.append(\\\"\\\\n\\\");\\n                }\\n                Object value = getProperty((String) key);\\n                builder.append(key).append(\\\"=\\\").append(value);\\n                appendNewline = true;\\n            }\\n        }\\n        return builder.toString();\\n    }\",\"value\":null,\"score\":1018.96295,\"licence_warning\":null},{\"file\":\"bookkeeper/site3/website/versioned_docs/version-4.11.1/development/protocol.md\",\"line\":115,\"kind\":\"passage\",\"text\":\"leader that adds entries to a single ledger. Ledgers cannot be reopened for writing once they have been closed/recovered.\\n\\n> BookKeeper does *not* provide leader election. You must use a system like ZooKeeper for this.\\n\\nIn many cases, leader election is really leader suggestion. Multiple nodes could think that they are leader at any one time. It is the job of the log to guarantee that only one can write changes to the system.\\n\\n### Opening a log\\n\\nOnce a node thinks it is leader for a particular log, it must take the following steps:\\n\\n1. Read the list of ledgers for the log\\n1. Fence the last two ledgers in the list. Two ledgers are fenced because the writer may be writing to the second-to-last ledger while adding the last ledger to the list.\\n1. Create a new ledger\\n1. Add the new ledger to th\",\"value\":null,\"score\":1018.5798,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": ""
+}

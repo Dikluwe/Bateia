@@ -1,0 +1,143 @@
+[
+  {
+    "id": "XERJ-01",
+    "priority": 1,
+    "title": "Vincular a avaliação G7 à versão e ao protocolo avaliados",
+    "status": "STATIC_OBSERVATION_AND_UNVERIFIED_PROPOSAL",
+    "observation": "read_graded_suites retorna notas por slug, substituídas pela ordem lexical dos nomes de arquivo. A nota é associada ao catálogo por slug. O leitor não exige no recibo o SHA do corpus, o hash do pack nem o protocolo de consulta.",
+    "existing_capabilities": "O XERJ já verifica assinatura/hash/pin do pack e preserva xerj.lock. A proposta acrescenta vínculo causal à avaliação, sem substituir essas proteções.",
+    "hypothesis": "Uma nota de recuperação vinculada a corpus_sha, pack_sha256, query_set_sha256, grader e indexer_version evita reutilizar silenciosamente uma avaliação de outro recorte.",
+    "conditions": [
+      "Aplicável quando o corpus, o indexador ou as consultas mudam.",
+      "Recibos legados sem vínculo devem ser tratados como históricos, não como falha retroativa.",
+      "O achado está no caminho estático do builder; não foi demonstrada uma publicação incorreta no Hub."
+    ],
+    "experiment": {
+      "procedure": "Preparar dois packs com o mesmo slug e pins diferentes, mantendo apenas uma avaliação do primeiro; construir o catálogo do segundo e conferir a projeção da nota. Em seguida adicionar recibo correspondente e repetir.",
+      "observable": "Só o recibo compatível pode sustentar a nota atual; o incompatível fica histórico ou pendente.",
+      "reject_if": "O pipeline completo já impede a associação incompatível por outro contrato comprovado, ou o vínculo não altera a interpretação pelos consumidores."
+    },
+    "card_refs": [
+      "card_35f629ca459d51e0b0911835949e3036fbb16bc13382e5219968a6f945c9c560",
+      "card_e0ed4530ac62154377eb735e638113f0767f2d45e50201f63b88c81eea18c31c",
+      "card_4a00de537e277d5acc523a8877409d63029a8906f56a2020153741a227ddfb09"
+    ],
+    "evidence": [
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+        "path": "engine/crates/xerj-hub/src/build_catalogue.rs",
+        "sha256": "27b7b97d54e69a6055625d379c202496b284fee1c47dfeafa176f530a4ecaf5b",
+        "start_line": 418,
+        "end_line": 494,
+        "excerpt": "///\n/// - files in sorted name order; a later file's suite for a slug replaces an\n///   earlier one (`out[slug] = suite`);\n/// - the suites map is the first of `graded`, `suites`, `corpora` present; a\n///   file whose map is not an object (e.g. `\"graded\": \"<date>\"`) or that is\n///   not valid JSON is skipped;\n/// - only suites that carry `queries` count;\n/// - the suite's own `median` when it has one, else `suite_median`: per\n///   query `verdict` (falling back to `grade`), pass/relevant = 1,\n///   partial = 0.5, anything else 0, `*excluded*` left out of both sides,\n///   scaled to 5;\n/// - rendered `G7 {:.1}/5`, the site badge's text.\n///\n/// One deliberate difference: where the site would print `0.0/5` for a suite\n/// with no gradable query (or a `median` that is not a number), this returns\n/// no grade, because nothing was graded there.\npub fn read_graded_suites(backlog_dir: &Path) -> Result<BTreeMap<String, String>> {\n    let mut files: Vec<PathBuf> = Vec::new();\n    match fs::read_dir(backlog_dir) {\n        Ok(rd) => {\n            for entry in rd {\n                let path = entry\n                    .with_context(|| format!(\"list {}\", backlog_dir.display()))?\n                    .path();\n                let name = path\n                    .file_name()\n                    .map(|n| n.to_string_lossy().into_owned())\n                    .unwrap_or_default();\n                if name.contains(\"graded\") && name.ends_with(\".json\") && path.is_file() {\n                    files.push(path);\n                }\n            }\n        }\n        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(BTreeMap::new()),\n        Err(e) => return Err(e).with_context(|| format!(\"list {}\", backlog_dir.display())),\n    }\n    files.sort();\n    let mut out = BTreeMap::new();\n    for path in files {\n        let text = fs::read_to_string(&path).with_context(|| format!(\"read {}\", path.display()))?;\n        let Ok(data) = serde_json::from_str::<Value>(&text) else {\n            continue;\n        };\n        let Some(container) = [\"graded\", \"suites\", \"corpora\"]\n            .into_iter()\n            .find_map(|k| data.get(k))\n        else {\n            continue;\n        };\n        let Some(suites) = container.as_object() else {\n            continue;\n        };\n        for (slug, suite) in suites {\n            let Some(queries) = suite.get(\"queries\") else {\n                continue;\n            };\n            let median = match suite.get(\"median\") {\n                None | Some(Value::Null) => suite_median(queries),\n                Some(v) => v.as_f64(),\n            };\n            match median {\n                Some(m) => out.insert(slug.clone(), format!(\"G7 {m:.1}/5\")),\n                None => out.remove(slug),\n            };\n        }\n    }\n    Ok(out)\n}\n\n/// One entry per LIVE lane-B corpus (a record pack built by `hub build-pack\n/// --from-pack`) with a pack in `--packs`. A record pack's pin is a content\n/// pin, not a registry fact, so its current pack is the newest one for the\n/// slug in `--packs` (by `pack.json` `built_at`); the catalogue job downloads\n/// the record packs' published releases for it to choose from. Every candidate\n/// is verified like a lane-A pack; a failure aborts. Fields: slug, pin, licence\n/// and sources from the signed `pack.json`; domain, refresh, `ask_for` and\n/// `topics` from the backlog row."
+      },
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+        "path": "engine/crates/xerj-hub/src/build_catalogue.rs",
+        "sha256": "27b7b97d54e69a6055625d379c202496b284fee1c47dfeafa176f530a4ecaf5b",
+        "start_line": 365,
+        "end_line": 393,
+        "excerpt": "            domain: field(\"cat\").to_string(),\n            refresh_cadence_days: cadence_days(field(\"refresh\")),\n            pack_bytes: pack.bytes,\n            sig_url: format!(\"{pack_url}.sig\"),\n            pack_url,\n            pack_sha256: pack.sha256,\n            quality_grade: grades.get(slug).cloned(),\n            terms,\n            pin_sha,\n            ask_for: backlog_domain.to_string(),\n        });\n    }\n    let records = record_entries(opts, rows, pubkey_hex, &mut used, &mut without_pack)?;\n    if inputs.is_empty() && records.is_empty() {\n        bail!(\n            \"no live corpus has a pack for its current pin in {}\",\n            opts.packs.display()\n        );\n    }\n\n    let mut unmatched: Vec<String> = Vec::new();\n    for entry in\n        fs::read_dir(&opts.packs).with_context(|| format!(\"list {}\", opts.packs.display()))?\n    {\n        let name = entry?.file_name().to_string_lossy().into_owned();\n        if name.ends_with(\".hubpack.tar.zst\") && !used.contains(&name) {\n            unmatched.push(name);\n        }\n    }"
+      },
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+        "path": "engine/crates/xerj-common/src/hub.rs",
+        "sha256": "634ef3313bcde7ef34588cf81caeb17847f5fa140696e39d227bf896b23621b2",
+        "start_line": 141,
+        "end_line": 171,
+        "excerpt": "pub struct CatalogueEntry {\n    pub slug: String,\n    /// SEC, DB, NET, CRYPTO, WEB, API, OPS, LAW, HEALTH, AI, WRITE.\n    pub domain: String,\n    pub topics: Vec<String>,\n    /// The registry's one-line \"an agent working on ___ queries this for ___\".\n    pub ask_for: String,\n    /// Upstream git repo as `owner/name` (the manifest's `repos[].url`, GitHub\n    /// form). Several repos are joined with \", \" (at most four). Empty on a\n    /// catalogue written before this field, or when the manifest recorded no\n    /// `owner/name` remote — never guessed from the slug.\n    #[serde(default, skip_serializing_if = \"String::is_empty\")]\n    pub upstream: String,\n    /// Full 40-hex commit the pack was built at.\n    pub pin_sha: String,\n    /// YYYY-MM-DD the pin was taken.\n    pub pin_date: String,\n    /// How often this corpus is re-pinned (7 for code, 1 for feeds).\n    pub refresh_cadence_days: u32,\n    pub licence_spdx: String,\n    pub licence_class: LicenceClass,\n    pub pack_bytes: u64,\n    pub pack_url: String,\n    pub pack_sha256: String,\n    pub sig_url: String,\n    /// crate / npm / go-module / pypi names this corpus answers for; used by the\n    /// project-dependency router. Empty when none are recorded — never guessed.\n    pub dependency_names: Vec<String>,\n    /// e.g. \"G7 4/5\", or None. Never invented.\n    pub quality_grade: Option<String>,\n    pub term_sketch: Sketch,"
+      }
+    ]
+  },
+  {
+    "id": "XERJ-02",
+    "priority": 2,
+    "title": "Entregar um recibo do que foi verificado em cada solução",
+    "status": "DESIGN_HYPOTHESIS_NOT_IMPLEMENTED",
+    "observation": "G7 mede relevância de recuperação. Answer/Hit oferecem pin, licença, passagem e score. No formato examinado esses tipos não carregam um recibo de execução dos testes da solução. A fonte Feynman documenta auditoria, replicação e proveniência separadas.",
+    "existing_capabilities": "Já existem grade G7, feedback, licença, arquivos/linhas e Query-1 com verificações próprias. Nenhum deles deve ser renomeado como comprovação funcional genérica.",
+    "hypothesis": "Um anexo opcional por contribuição pode separar recuperação avaliada, teste declarado pelo upstream, teste executado pelo curador e replicação independente. Cada resultado nomeia versão, ambiente, comando, saída/hash e escopo; não executado não significa falhou.",
+    "conditions": [
+      "Começar com um conjunto pequeno e opt-in, sem exigir executar código desconhecido durante indexação.",
+      "Armazenar ausência como NOT_RUN/UNKNOWN e distinguir resultado declarado de reproduzido.",
+      "Evoluir esquema/versionamento explicitamente; não acrescentar campo incompatível às structs atuais com deny_unknown_fields."
+    ],
+    "experiment": {
+      "procedure": "Preparar dez referências com evidências de escopos diferentes. Comparar cegamente respostas de agentes com passagem simples versus passagem e recibo.",
+      "observable": "Frequência de afirmações indevidas de validação, precisão da escolha, tempo e tokens.",
+      "reject_if": "O recibo não reduz conclusões indevidas ou seu custo impede uso sem ganho de decisão."
+    },
+    "card_refs": [
+      "card_35f629ca459d51e0b0911835949e3036fbb16bc13382e5219968a6f945c9c560",
+      "card_e23d3712753a8bcc5dd6a39b8efb64445343e62f6690ff6e29847d6a54d80b28",
+      "card_9b66fa6ec8391117f8e517a901efcfe3a6e4dbdf968615788a0b7fc0477b4970"
+    ],
+    "evidence": [
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "708e974516a4ba1ba9bfa312aff164041997cfd6",
+        "path": "tools/xerj-code/hub/PROGRAM-100.md",
+        "sha256": "ed7767908b5a877a9ccb729be9dbe971c67bfe8693d1391881c4fa3776ec9748",
+        "start_line": 26,
+        "end_line": 42,
+        "excerpt": "\n| # | gate | what satisfies it | who |\n|---|------|-------------------|-----|\n| G1 | **domain test** | the backlog row finishes *\"an agent working on ___ would query this for ___\"* in one specific sentence — \"code\" or \"security\" is not a domain | intake |\n| G2 | **shape test** | the record/file shape matches the queries: function bodies for code questions, clause-level sections for standards questions, advisory records for precedent questions | build |\n| G3 | **un-memorisation test** | the answer-bearing content is niche, internal, post-cutoff, or too large/detailed for recall — famous-and-small content is killed as retrieval theatre | intake |\n| G4 | **licence review** | a human opened the licence file(s) and wrote the `review` block (`adapt-with-attribution` / `approach-only` / `mixed`); detector + profiler output are hints, never the verdict | reviewer |\n| G5 | **pin truth** | manifest SHA = the commit the build actually used; recipes pin source URLs and versions; `format_version` refused when unknown | build |\n| G6 | **registry validation** | `validate_hub.py` green (manifest/recipe shape, review blocks, 40-hex SHAs, no paths as slugs, backlog consistency) | CI + local |\n| G7 | **retrieval spot-check** | 5 pre-written domain queries against the built corpus, top-5 hits graded manually (relevant / partial / miss); **median ≥ 3 relevant to pass**, else back to G2 with the diagnosis recorded | maintainer |\n\nG7 is the wave's actual quality gate and it is deliberately manual: we have no ground-truth\nrelevance judgments for these domains, and pretending a script can grade \"is this RFC section the\nright answer to a sanitisation question\" would be a number without a run behind it. Five queries\nis small; it catches the failure modes that killed #1111's corpus arm (zero invocations,\nprose-vs-code mismatch) at minutes of cost.\n"
+      },
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+        "path": "engine/crates/xerj-common/src/hub.rs",
+        "sha256": "634ef3313bcde7ef34588cf81caeb17847f5fa140696e39d227bf896b23621b2",
+        "start_line": 280,
+        "end_line": 315,
+        "excerpt": "\n/// One retrieved definition or passage.\n#[derive(Serialize, Deserialize, Clone, Debug)]\n#[serde(deny_unknown_fields)]\npub struct Hit {\n    pub file: String,\n    pub line: u32,\n    pub kind: String,\n    pub text: String,\n    pub value: Option<String>,\n    pub score: f32,\n    /// Set for an approach-only source, naming the licence.\n    pub licence_warning: Option<String>,\n}\n\n/// What every surface returns: the CLI (as `--json`), the MCP tools and the\n/// hosted HTTP endpoints all build this and render it with [`render`].\n#[derive(Serialize, Deserialize, Clone, Debug)]\n#[serde(deny_unknown_fields)]\npub struct Answer {\n    pub corpus: String,\n    pub pin_sha: String,\n    pub pin_date: String,\n    pub age_days: u32,\n    pub licence_spdx: String,\n    pub licence_class: LicenceClass,\n    pub answered_from: AnsweredFrom,\n    pub mode: AnswerMode,\n    pub hits: Vec<Hit>,\n    pub truncated: bool,\n    /// One line each, e.g. \"pin is 23 days old; the question asks for the current source\".\n    pub warnings: Vec<String>,\n}\n\nimpl AnsweredFrom {\n    /// The words printed on the `answered from:` line."
+      }
+    ]
+  },
+  {
+    "id": "XERJ-03",
+    "priority": 3,
+    "title": "Recuperar condições e contraexemplos junto à passagem",
+    "status": "DESIGN_HYPOTHESIS_NOT_IMPLEMENTED",
+    "observation": "Os hits do Hub examinados representam passagens/definições; o processo G7 verifica se uma consulta encontra conteúdo relevante. Feynman declara uma etapa de auditoria/replicação; o pacote de exploração do Bateia exige condições e experimentos de rejeição.",
+    "existing_capabilities": "O XERJ já encontra testes e documentação quando indexados e possui modos/routing de consulta. A proposta é um pacote relacionado por contribuição, não uma nova modalidade de busca genérica.",
+    "hypothesis": "Relacionar a solução ao teste que especifica sua propriedade, às precondições e a um caso em que a abordagem falha pode reduzir transferência indevida entre projetos. Relações sugeridas por IA ficam declaradas até revisão.",
+    "conditions": [
+      "Propriedade e precondição precisam de fonte localizada, não apenas de texto gerado.",
+      "Contraexemplo pode ser desconhecido; não inventar relações nem interpretar teste encontrado como teste passado.",
+      "Não usar utilidade agregada como substituto de aplicabilidade."
+    ],
+    "experiment": {
+      "procedure": "Selecionar cinco problemas com implementação parecida e contratos diferentes, como rejeição versus bloqueio sob fila cheia. Comparar top-k atual com top-k mais teste/precondição/contraexemplo localizados.",
+      "observable": "Erros de escolha e de adaptação, capacidade de explicar quando a referência não serve, custo adicional de contexto.",
+      "reject_if": "A seleção contextual não reduz adaptações incorretas ou o custo excede o benefício nas tarefas declaradas."
+    },
+    "card_refs": [
+      "card_35f629ca459d51e0b0911835949e3036fbb16bc13382e5219968a6f945c9c560",
+      "card_e23d3712753a8bcc5dd6a39b8efb64445343e62f6690ff6e29847d6a54d80b28",
+      "card_9b66fa6ec8391117f8e517a901efcfe3a6e4dbdf968615788a0b7fc0477b4970"
+    ],
+    "evidence": [
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+        "path": "engine/crates/xerj-common/src/hub.rs",
+        "sha256": "634ef3313bcde7ef34588cf81caeb17847f5fa140696e39d227bf896b23621b2",
+        "start_line": 280,
+        "end_line": 315,
+        "excerpt": "\n/// One retrieved definition or passage.\n#[derive(Serialize, Deserialize, Clone, Debug)]\n#[serde(deny_unknown_fields)]\npub struct Hit {\n    pub file: String,\n    pub line: u32,\n    pub kind: String,\n    pub text: String,\n    pub value: Option<String>,\n    pub score: f32,\n    /// Set for an approach-only source, naming the licence.\n    pub licence_warning: Option<String>,\n}\n\n/// What every surface returns: the CLI (as `--json`), the MCP tools and the\n/// hosted HTTP endpoints all build this and render it with [`render`].\n#[derive(Serialize, Deserialize, Clone, Debug)]\n#[serde(deny_unknown_fields)]\npub struct Answer {\n    pub corpus: String,\n    pub pin_sha: String,\n    pub pin_date: String,\n    pub age_days: u32,\n    pub licence_spdx: String,\n    pub licence_class: LicenceClass,\n    pub answered_from: AnsweredFrom,\n    pub mode: AnswerMode,\n    pub hits: Vec<Hit>,\n    pub truncated: bool,\n    /// One line each, e.g. \"pin is 23 days old; the question asks for the current source\".\n    pub warnings: Vec<String>,\n}\n\nimpl AnsweredFrom {\n    /// The words printed on the `answered from:` line."
+      },
+      {
+        "repository": "xerj-org/xerj",
+        "commit": "708e974516a4ba1ba9bfa312aff164041997cfd6",
+        "path": "tools/xerj-code/hub/PROGRAM-100.md",
+        "sha256": "ed7767908b5a877a9ccb729be9dbe971c67bfe8693d1391881c4fa3776ec9748",
+        "start_line": 26,
+        "end_line": 42,
+        "excerpt": "\n| # | gate | what satisfies it | who |\n|---|------|-------------------|-----|\n| G1 | **domain test** | the backlog row finishes *\"an agent working on ___ would query this for ___\"* in one specific sentence — \"code\" or \"security\" is not a domain | intake |\n| G2 | **shape test** | the record/file shape matches the queries: function bodies for code questions, clause-level sections for standards questions, advisory records for precedent questions | build |\n| G3 | **un-memorisation test** | the answer-bearing content is niche, internal, post-cutoff, or too large/detailed for recall — famous-and-small content is killed as retrieval theatre | intake |\n| G4 | **licence review** | a human opened the licence file(s) and wrote the `review` block (`adapt-with-attribution` / `approach-only` / `mixed`); detector + profiler output are hints, never the verdict | reviewer |\n| G5 | **pin truth** | manifest SHA = the commit the build actually used; recipes pin source URLs and versions; `format_version` refused when unknown | build |\n| G6 | **registry validation** | `validate_hub.py` green (manifest/recipe shape, review blocks, 40-hex SHAs, no paths as slugs, backlog consistency) | CI + local |\n| G7 | **retrieval spot-check** | 5 pre-written domain queries against the built corpus, top-5 hits graded manually (relevant / partial / miss); **median ≥ 3 relevant to pass**, else back to G2 with the diagnosis recorded | maintainer |\n\nG7 is the wave's actual quality gate and it is deliberately manual: we have no ground-truth\nrelevance judgments for these domains, and pretending a script can grade \"is this RFC section the\nright answer to a sanitisation question\" would be a number without a run behind it. Five queries\nis small; it catches the failure modes that killed #1111's corpus arm (zero invocations,\nprose-vs-code mismatch) at minutes of cost.\n"
+      }
+    ]
+  }
+]

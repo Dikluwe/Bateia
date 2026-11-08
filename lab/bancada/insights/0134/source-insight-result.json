@@ -1,0 +1,337 @@
+{
+  "schema_version": "insight-source-analysis-v2",
+  "id": "insight_b7a884cdf7c8764e3e143f6172a8bd731a1c15dcbee149ebe48cf3d5a74bf780",
+  "scope": "FROZEN_DECLARED_SOURCE_OBSERVATIONS",
+  "status": "PARTIAL",
+  "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+  "target": {
+    "name": "Bateia",
+    "context": "Admissão de investigações concorrentes no runtime durável sob Tekt",
+    "property": "capacidade admitida e tempo de resposta à sobrecarga",
+    "desired_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+    "constraints": [
+      "avaliar a ideia sem transferir código",
+      "não bloquear indefinidamente a entrada MCP",
+      "preservar Tekt L0–L4",
+      "preservar recuperação e fila durável"
+    ]
+  },
+  "input_sha256": "1d82a4177a7368ac35303ec3d87c4461e9b7a28c0a99488bcafae1b697bc3887",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "source_analyses": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "catalog_definition": {
+        "origin": "CATALOG_TEMPLATE",
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "name": "bounded queue with backpressure",
+        "purpose": "bound admitted work and make overload behavior explicit",
+        "strategy": "reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable"
+      },
+      "extraction_scope": {
+        "languages": [
+          "go",
+          "java",
+          "python",
+          "rust",
+          "typescript"
+        ],
+        "ecosystems": [
+          "repository-backed source bundle"
+        ]
+      },
+      "mechanism_ref": "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc",
+      "mechanism_status": "PARTIAL",
+      "assessment_origin": "DECLARED_NOT_REASSESSED",
+      "evidence": [
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 56,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-reserve-before-commit",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 96,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "bounded-queue-capacity",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 70,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 86,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        }
+      ],
+      "counter_evidence": [],
+      "observations": [
+        {
+          "id": "obs_d700b6293c663bfe8f2ffd3d64d6acca0034be32ec3fcc02ab8e5d68110a70a0",
+          "kind": "FAILURE_MODE",
+          "statement": "Com limite e sem vaga ou worker disponível, a submissão aguarda; a assinatura Go não recebe contexto de cancelamento.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 37,
+              "end_line": 40,
+              "excerpt": "// Go submits a task to be run in the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *Pool) Go(f func()) {\n\tp.init()"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 55,
+              "end_line": 65,
+              "excerpt": "\t\tselect {\n\t\tcase p.limiter \u003c- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}"
+            }
+          ]
+        },
+        {
+          "id": "obs_bc6c511f371c6b1c420cf218250590d17b6b7335bc3834f761956d6797338d0c",
+          "kind": "LIMITATION",
+          "statement": "O teste limit observa concorrência máxima e conclusão; não demonstra cancelamento ou rejeição da submissão.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool_test.go",
+              "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+              "start_line": 66,
+              "end_line": 85,
+              "excerpt": "\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrent := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrent), func(t *testing.T) {\n\t\t\t\tg := pool.New().WithMaxGoroutines(maxConcurrent)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tvar errCount atomic.Int64\n\t\t\t\ttaskCount := maxConcurrent * 10\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\tg.Go(func() {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrent) {\n\t\t\t\t\t\t\terrCount.Add(1)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tg.Wait()"
+            },
+            {
+              "path": "pool/pool_test.go",
+              "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+              "start_line": 86,
+              "end_line": 90,
+              "excerpt": "\t\t\t\trequire.Equal(t, int64(0), errCount.Load())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})"
+            }
+          ]
+        },
+        {
+          "id": "obs_d17a94db3a19a92967278b240f92ba3a3e3ded9cdd6352337e6d834330797d31",
+          "kind": "LIMITATION",
+          "statement": "Sem configuração de limiter, Pool.Go permite iniciar goroutines sem teto.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 42,
+              "end_line": 54,
+              "excerpt": "\tif p.limiter == nil {\n\t\t// No limit on the number of goroutines.\n\t\tselect {\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A goroutine was available to handle the task.\n\t\tdefault:\n\t\t\t// No goroutine was available to handle the task.\n\t\t\t// Spawn a new one and send it the task.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\t}\n\t} else {"
+            }
+          ]
+        },
+        {
+          "id": "obs_d46a3a8c00b684f7085660e986bb1b60d93a77a6429f6ad76ee211a436d075ca",
+          "kind": "PRECONDITION",
+          "statement": "Configurar WithMaxGoroutines antes do primeiro uso para obter teto de workers.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 108,
+              "end_line": 110,
+              "excerpt": "// panicIfInitialized will trigger a panic if a configuration method is called\n// after the pool has started any goroutines for the first time. In the case that\n// new settings are needed, a new pool should be created."
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 89,
+              "end_line": 98,
+              "excerpt": "// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n \u003c 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}"
+            }
+          ]
+        },
+        {
+          "id": "obs_97430224661c931823bc2395f10650914179185827e1db32faeab7d5ca22d28f",
+          "kind": "STRATEGY",
+          "statement": "O canal tasks não tem buffer; o teto configurado limita workers e não representa uma fila durável com N posições.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 102,
+              "end_line": 105,
+              "excerpt": "func (p *Pool) init() {\n\tp.initOnce.Do(func() {\n\t\tp.tasks = make(chan func())\n\t})"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 89,
+              "end_line": 98,
+              "excerpt": "// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n \u003c 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}"
+            }
+          ]
+        },
+        {
+          "id": "obs_1fa33eee677378653c788e00aea6b738bc2186783dd924f93a9a09a5550f01d3",
+          "kind": "TRADEOFF",
+          "statement": "A submissão bloqueante exige que o chamador possa aguardar; cancelamento dessa espera não está na assinatura Go.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 37,
+              "end_line": 40,
+              "excerpt": "// Go submits a task to be run in the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *Pool) Go(f func()) {\n\tp.init()"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 55,
+              "end_line": 65,
+              "excerpt": "\t\tselect {\n\t\tcase p.limiter \u003c- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}"
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hyp_db8bb90d523e60912c92b15c825e52a7b47c511e2cefbfd2907904e8edb4ed9d",
+      "title": "Investigar bounded queue with backpressure em Bateia",
+      "target_property": "capacidade admitida e tempo de resposta à sobrecarga",
+      "target_state": "UNKNOWN",
+      "target_gap_refs": [
+        "TARGET_BASELINE_NOT_OBSERVED",
+        "TARGET_APPLICABILITY_NOT_VERIFIED"
+      ],
+      "expected_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+      "mechanism_refs": [
+        "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc"
+      ],
+      "product_observation_refs": [],
+      "transfer_mode": "REFERENCE_ONLY",
+      "license": "UNRECOGNIZED",
+      "assumptions": [
+        "O efeito desejado é uma intenção do pedido, não uma observação.",
+        "A estratégia do mecanismo pode ser investigada sem presumir adoção de código."
+      ],
+      "preconditions": [
+        "Configurar WithMaxGoroutines antes do primeiro uso para obter teto de workers."
+      ],
+      "integration_unknowns": [
+        "Compatibilidade com o contexto e as restrições do alvo.",
+        "Licença e direitos de eventual transferência de código não avaliados."
+      ],
+      "risks": [
+        "O mecanismo pode não ser relevante à pergunta ou não produzir o efeito desejado no alvo."
+      ],
+      "tradeoffs": [
+        "A submissão bloqueante exige que o chamador possa aguardar; cancelamento dessa espera não está na assinatura Go."
+      ],
+      "evidence_refs": [
+        "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc",
+        "obs_d700b6293c663bfe8f2ffd3d64d6acca0034be32ec3fcc02ab8e5d68110a70a0",
+        "obs_bc6c511f371c6b1c420cf218250590d17b6b7335bc3834f761956d6797338d0c",
+        "obs_d17a94db3a19a92967278b240f92ba3a3e3ded9cdd6352337e6d834330797d31",
+        "obs_d46a3a8c00b684f7085660e986bb1b60d93a77a6429f6ad76ee211a436d075ca",
+        "obs_97430224661c931823bc2395f10650914179185827e1db32faeab7d5ca22d28f",
+        "obs_1fa33eee677378653c788e00aea6b738bc2186783dd924f93a9a09a5550f01d3"
+      ],
+      "counter_evidence_refs": [],
+      "counterevidence_search": {
+        "status": "NONE_FOUND_IN_SCOPE",
+        "scope_refs": [
+          "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc"
+        ],
+        "result_refs": []
+      },
+      "validation_plan": [
+        {
+          "question": "Qual é o estado atual de capacidade admitida e tempo de resposta à sobrecarga?",
+          "observable": "capacidade admitida e tempo de resposta à sobrecarga",
+          "safe_procedure": "Medir o alvo atual sem modificá-lo, registrando casos e configuração.",
+          "pass_criterion": "Baseline repetível registrado.",
+          "reject_criterion": "A medição não é repetível ou não representa a propriedade desejada.",
+          "relative_cost": "LOW",
+          "missing_evidence": "baseline do alvo"
+        },
+        {
+          "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+          "observable": "Compatibilidade da estratégia com contexto e restrições",
+          "safe_procedure": "Comparar a estratégia observada com o contexto fornecido e conferir cada restrição antes de propor transferência.",
+          "pass_criterion": "Premissas e restrições verificadas com evidência localizada.",
+          "reject_criterion": "Uma premissa ou restrição necessária é incompatível.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "aplicabilidade ao alvo"
+        },
+        {
+          "question": "O mecanismo produz o efeito desejado?",
+          "observable": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+          "safe_procedure": "Planejar experimento isolado comparando baseline e variante; não executar nem modificar o alvo nesta investigação.",
+          "pass_criterion": "Definir antes do experimento uma métrica e um limiar de ganho, mantendo as restrições.",
+          "reject_criterion": "Efeito abaixo do limiar, regressão ou violação de restrição.",
+          "relative_cost": "MEDIUM",
+          "missing_evidence": "experimento comparativo e limiares pré-definidos"
+        }
+      ],
+      "derivation": "RULE_DERIVED",
+      "status": "INCONCLUSIVE",
+      "adoption_disposition": "NOT_AN_ADOPTION_DECISION"
+    }
+  ],
+  "extraction_gaps": [],
+  "provenance": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "bundle_sha256": "2a8f52756a94a3a00d00ecccde66d767c6a646078b56eda0b84a3a4f4b201aa4",
+      "assessments_sha256": "a89515cf7c8d1a665d42b04899754f029083786d88e4bb998974922a1bb0fd61",
+      "complete": true,
+      "assessment_origin": "DECLARED_NOT_REASSESSED"
+    }
+  ],
+  "limitations": [
+    "As avaliações fornecidas não foram refeitas nem autenticadas externamente.",
+    "Hashes e localizadores verificam vínculo com os bytes fornecidos, não comportamento executado.",
+    "O alvo, suas restrições e o efeito desejado ainda precisam de validação.",
+    "Nenhuma decisão de reúso ou autorização de adoção foi produzida.",
+    "A busca de contraevidência se limita às avaliações e bytes fornecidos; o ecossistema não foi pesquisado.",
+    "As observações são declarações fornecidas: referências e trechos foram conferidos, mas a interpretação não foi reavaliada.",
+    "A definição do catálogo é uma classificação genérica; condições operacionais dependem das observações declaradas de cada fonte."
+  ]
+}

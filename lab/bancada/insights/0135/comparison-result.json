@@ -1,0 +1,507 @@
+{
+  "schema_version": "insight-baseline-comparison-v1",
+  "id": "comparison_c0bc33016e0d7e06033a523d769de7fc12a91bf68cda04e1cfbc2a209fea7756",
+  "status": "PARTIAL",
+  "question": "Como controlar sobrecarga das investigações do Bateia preservando cancelamento e fila durável?",
+  "target": {
+    "name": "Bateia",
+    "context": "Admissão de investigações concorrentes no runtime durável sob Tekt",
+    "property": "capacidade admitida e tempo de resposta à sobrecarga",
+    "desired_effect": "Manter trabalho admitido limitado e preservar rejeição explícita e cancelamento",
+    "constraints": [
+      "avaliar a ideia sem transferir código",
+      "não bloquear indefinidamente a entrada MCP",
+      "preservar Tekt L0–L4",
+      "preservar recuperação e fila durável"
+    ]
+  },
+  "source_report_id": "insight_b7a884cdf7c8764e3e143f6172a8bd731a1c15dcbee149ebe48cf3d5a74bf780",
+  "source_input_sha256": "1d82a4177a7368ac35303ec3d87c4461e9b7a28c0a99488bcafae1b697bc3887",
+  "catalog_sha256": "52172e289faf65e791f8fa99cad1eee75e349fcbcf78186bcf9446ea4a8f4142",
+  "source_analyses": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "catalog_definition": {
+        "origin": "CATALOG_TEMPLATE",
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "name": "bounded queue with backpressure",
+        "purpose": "bound admitted work and make overload behavior explicit",
+        "strategy": "reserve finite capacity before admission and expose rejection or cancellation when capacity is unavailable"
+      },
+      "extraction_scope": {
+        "languages": [
+          "go",
+          "java",
+          "python",
+          "rust",
+          "typescript"
+        ],
+        "ecosystems": [
+          "repository-backed source bundle"
+        ]
+      },
+      "mechanism_ref": "mech_0ed369c42612dff400bc7bbe5931e922cc92af1e035adf351131b55e0e0505fc",
+      "mechanism_status": "PARTIAL",
+      "assessment_origin": "DECLARED_NOT_REASSESSED",
+      "evidence": [
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 56,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-reserve-before-commit",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool.go",
+          "symbol": "",
+          "line": 96,
+          "source_kind": "file",
+          "kind": "IMPLEMENTATION",
+          "assessment_status": "PARTIAL",
+          "rule_id": "bounded-queue-capacity",
+          "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 70,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        },
+        {
+          "repository": "sourcegraph/conc",
+          "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b",
+          "path": "pool/pool_test.go",
+          "symbol": "",
+          "line": 86,
+          "source_kind": "test",
+          "kind": "TEST",
+          "assessment_status": "PARTIAL",
+          "rule_id": "queue-capacity-test",
+          "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715"
+        }
+      ],
+      "counter_evidence": [],
+      "observations": [
+        {
+          "id": "obs_d700b6293c663bfe8f2ffd3d64d6acca0034be32ec3fcc02ab8e5d68110a70a0",
+          "kind": "FAILURE_MODE",
+          "statement": "Com limite e sem vaga ou worker disponível, a submissão aguarda; a assinatura Go não recebe contexto de cancelamento.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 37,
+              "end_line": 40,
+              "excerpt": "// Go submits a task to be run in the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *Pool) Go(f func()) {\n\tp.init()"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 55,
+              "end_line": 65,
+              "excerpt": "\t\tselect {\n\t\tcase p.limiter \u003c- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}"
+            }
+          ]
+        },
+        {
+          "id": "obs_bc6c511f371c6b1c420cf218250590d17b6b7335bc3834f761956d6797338d0c",
+          "kind": "LIMITATION",
+          "statement": "O teste limit observa concorrência máxima e conclusão; não demonstra cancelamento ou rejeição da submissão.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool_test.go",
+              "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+              "start_line": 66,
+              "end_line": 85,
+              "excerpt": "\tt.Run(\"limit\", func(t *testing.T) {\n\t\tt.Parallel()\n\t\tfor _, maxConcurrent := range []int{1, 10, 100} {\n\t\t\tt.Run(strconv.Itoa(maxConcurrent), func(t *testing.T) {\n\t\t\t\tg := pool.New().WithMaxGoroutines(maxConcurrent)\n\n\t\t\t\tvar currentConcurrent atomic.Int64\n\t\t\t\tvar errCount atomic.Int64\n\t\t\t\ttaskCount := maxConcurrent * 10\n\t\t\t\tfor i := 0; i \u003c taskCount; i++ {\n\t\t\t\t\tg.Go(func() {\n\t\t\t\t\t\tcur := currentConcurrent.Add(1)\n\t\t\t\t\t\tif cur \u003e int64(maxConcurrent) {\n\t\t\t\t\t\t\terrCount.Add(1)\n\t\t\t\t\t\t}\n\t\t\t\t\t\ttime.Sleep(time.Millisecond)\n\t\t\t\t\t\tcurrentConcurrent.Add(-1)\n\t\t\t\t\t})\n\t\t\t\t}\n\t\t\t\tg.Wait()"
+            },
+            {
+              "path": "pool/pool_test.go",
+              "content_hash": "sha256:a71867ff0d321c6ae088b28c6f809587749da7b155a29d52dccc1de5a67e9715",
+              "start_line": 86,
+              "end_line": 90,
+              "excerpt": "\t\t\t\trequire.Equal(t, int64(0), errCount.Load())\n\t\t\t\trequire.Equal(t, int64(0), currentConcurrent.Load())\n\t\t\t})\n\t\t}\n\t})"
+            }
+          ]
+        },
+        {
+          "id": "obs_d17a94db3a19a92967278b240f92ba3a3e3ded9cdd6352337e6d834330797d31",
+          "kind": "LIMITATION",
+          "statement": "Sem configuração de limiter, Pool.Go permite iniciar goroutines sem teto.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 42,
+              "end_line": 54,
+              "excerpt": "\tif p.limiter == nil {\n\t\t// No limit on the number of goroutines.\n\t\tselect {\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A goroutine was available to handle the task.\n\t\tdefault:\n\t\t\t// No goroutine was available to handle the task.\n\t\t\t// Spawn a new one and send it the task.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\t}\n\t} else {"
+            }
+          ]
+        },
+        {
+          "id": "obs_d46a3a8c00b684f7085660e986bb1b60d93a77a6429f6ad76ee211a436d075ca",
+          "kind": "PRECONDITION",
+          "statement": "Configurar WithMaxGoroutines antes do primeiro uso para obter teto de workers.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 108,
+              "end_line": 110,
+              "excerpt": "// panicIfInitialized will trigger a panic if a configuration method is called\n// after the pool has started any goroutines for the first time. In the case that\n// new settings are needed, a new pool should be created."
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 89,
+              "end_line": 98,
+              "excerpt": "// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n \u003c 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}"
+            }
+          ]
+        },
+        {
+          "id": "obs_97430224661c931823bc2395f10650914179185827e1db32faeab7d5ca22d28f",
+          "kind": "STRATEGY",
+          "statement": "O canal tasks não tem buffer; o teto configurado limita workers e não representa uma fila durável com N posições.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 102,
+              "end_line": 105,
+              "excerpt": "func (p *Pool) init() {\n\tp.initOnce.Do(func() {\n\t\tp.tasks = make(chan func())\n\t})"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 89,
+              "end_line": 98,
+              "excerpt": "// WithMaxGoroutines limits the number of goroutines in a pool.\n// Defaults to unlimited. Panics if n \u003c 1.\nfunc (p *Pool) WithMaxGoroutines(n int) *Pool {\n\tp.panicIfInitialized()\n\tif n \u003c 1 {\n\t\tpanic(\"max goroutines in a pool must be greater than zero\")\n\t}\n\tp.limiter = make(limiter, n)\n\treturn p\n}"
+            }
+          ]
+        },
+        {
+          "id": "obs_1fa33eee677378653c788e00aea6b738bc2186783dd924f93a9a09a5550f01d3",
+          "kind": "TRADEOFF",
+          "statement": "A submissão bloqueante exige que o chamador possa aguardar; cancelamento dessa espera não está na assinatura Go.",
+          "origin": "DECLARED_NOT_REASSESSED",
+          "references": [
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 37,
+              "end_line": 40,
+              "excerpt": "// Go submits a task to be run in the pool. If all goroutines in the pool\n// are busy, a call to Go() will block until the task can be started.\nfunc (p *Pool) Go(f func()) {\n\tp.init()"
+            },
+            {
+              "path": "pool/pool.go",
+              "content_hash": "sha256:7235474ee3334634f522eb4b08b981e63686ccdcca228a327b9347bc411b795c",
+              "start_line": 55,
+              "end_line": 65,
+              "excerpt": "\t\tselect {\n\t\tcase p.limiter \u003c- struct{}{}:\n\t\t\t// If we are below our limit, spawn a new worker rather\n\t\t\t// than waiting for one to become available.\n\t\t\tp.handle.Go(func() {\n\t\t\t\tp.worker(f)\n\t\t\t})\n\t\tcase p.tasks \u003c- f:\n\t\t\t// A worker is available and has accepted the task.\n\t\t\treturn\n\t\t}"
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "source_provenance": [
+    {
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "bundle_sha256": "2a8f52756a94a3a00d00ecccde66d767c6a646078b56eda0b84a3a4f4b201aa4",
+      "assessments_sha256": "a89515cf7c8d1a665d42b04899754f029083786d88e4bb998974922a1bb0fd61",
+      "complete": true,
+      "assessment_origin": "DECLARED_NOT_REASSESSED"
+    }
+  ],
+  "source_extraction_gaps": [],
+  "target_baseline": {
+    "repository": "Dikluwe/Bateia",
+    "snapshot_sha256": "sha256:685e6a6f6f2ea340f3065680e53b39ff4c6dfc1f7e3abbe380be0d97dcc725f2",
+    "scope": "SUPPLIED_FILES_ONLY",
+    "origin": "DECLARED_NOT_REASSESSED",
+    "observations": [
+      {
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "id": "target_obs_d2daba73cc7ab65a60bbde41fbf90538d91458276e0de5cbcec189523446b178",
+        "kind": "FAILURE_MODE",
+        "statement": "Reserve retorna ErrQueueFull na saturação ou fila parada; não aguarda abertura de vaga.",
+        "origin": "DECLARED_NOT_REASSESSED",
+        "references": [
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 72,
+            "end_line": 86,
+            "excerpt": "func (q *LocalQueue) Reserve(ctx context.Context) (domain.RecommendationQueueReservation, error) {\n\tif err := ctx.Err(); err != nil {\n\t\treturn nil, err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tif q.stopped {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tif q.reserved+len(q.states) \u003e= q.capacity {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tq.reserved++\n\treturn \u0026localReservation{queue: q}, nil\n}"
+          }
+        ]
+      },
+      {
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "id": "target_obs_4cf7ed04f69c24d36a68ee8a29ca4e304132c28ff3d74c10240b3b8dfc0a4306",
+        "kind": "LIMITATION",
+        "statement": "Cancelamento é cooperativo: o handler recebe contexto cancelável, mas o trecho não garante encerrar um handler que o ignore.",
+        "origin": "DECLARED_NOT_REASSESSED",
+        "references": [
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 140,
+            "end_line": 152,
+            "excerpt": "\t\t\tstate, exists := q.states[id]\n\t\t\tif !exists || state == jobCancelled {\n\t\t\t\tdelete(q.states, id)\n\t\t\t\tq.mu.Unlock()\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tctx, cancel := context.WithCancel(context.Background())\n\t\t\tq.states[id] = jobRunning\n\t\t\tq.cancels[id] = cancel\n\t\t\tq.mu.Unlock()\n\n\t\t\t_ = q.handler(ctx, id)\n\t\t\tcancel()"
+          },
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 161,
+            "end_line": 175,
+            "excerpt": "func (q *LocalQueue) Cancel(ctx context.Context, id domain.RunID) error {\n\tif err := ctx.Err(); err != nil {\n\t\treturn err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tswitch q.states[id] {\n\tcase jobQueued:\n\t\tq.states[id] = jobCancelled\n\tcase jobRunning:\n\t\tif cancel := q.cancels[id]; cancel != nil {\n\t\t\tcancel()\n\t\t}\n\t}\n\treturn nil"
+          }
+        ]
+      },
+      {
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "id": "target_obs_5e81de88d0550b8c1dfc85c9a670b83edcf8544ac4d3ce58de576923743eb61a",
+        "kind": "PRECONDITION",
+        "statement": "Configurar de 1 a 4 workers e capacidade de 1 a 32, com handler não nulo.",
+        "origin": "DECLARED_NOT_REASSESSED",
+        "references": [
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 55,
+            "end_line": 64,
+            "excerpt": "func NewLocalQueue(workers, capacity int, handler func(context.Context, domain.RunID) error) (*LocalQueue, error) {\n\tif workers \u003c 1 || workers \u003e 4 || capacity \u003c 1 || capacity \u003e 32 || handler == nil {\n\t\treturn nil, fmt.Errorf(\"invalid local queue configuration\")\n\t}\n\treturn \u0026LocalQueue{\n\t\tworkers: workers, capacity: capacity, handler: handler,\n\t\tstates: map[domain.RunID]jobState{}, cancels: map[domain.RunID]context.CancelFunc{}, views: map[domain.RunID]domain.RecommendationRunView{},\n\t\tjobs: make(chan domain.RunID, capacity), stop: make(chan struct{}),\n\t}, nil\n}"
+          }
+        ]
+      },
+      {
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "id": "target_obs_4aab2c36a6fe88790701e1bf5debe49534472b7417e79eb5659201e9ad2aece5",
+        "kind": "STRATEGY",
+        "statement": "A capacidade contabiliza reservas e estados ativos antes da admissão; o canal jobs tem buffer configurado.",
+        "origin": "DECLARED_NOT_REASSESSED",
+        "references": [
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 55,
+            "end_line": 64,
+            "excerpt": "func NewLocalQueue(workers, capacity int, handler func(context.Context, domain.RunID) error) (*LocalQueue, error) {\n\tif workers \u003c 1 || workers \u003e 4 || capacity \u003c 1 || capacity \u003e 32 || handler == nil {\n\t\treturn nil, fmt.Errorf(\"invalid local queue configuration\")\n\t}\n\treturn \u0026LocalQueue{\n\t\tworkers: workers, capacity: capacity, handler: handler,\n\t\tstates: map[domain.RunID]jobState{}, cancels: map[domain.RunID]context.CancelFunc{}, views: map[domain.RunID]domain.RecommendationRunView{},\n\t\tjobs: make(chan domain.RunID, capacity), stop: make(chan struct{}),\n\t}, nil\n}"
+          },
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 72,
+            "end_line": 86,
+            "excerpt": "func (q *LocalQueue) Reserve(ctx context.Context) (domain.RecommendationQueueReservation, error) {\n\tif err := ctx.Err(); err != nil {\n\t\treturn nil, err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tif q.stopped {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tif q.reserved+len(q.states) \u003e= q.capacity {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tq.reserved++\n\treturn \u0026localReservation{queue: q}, nil\n}"
+          }
+        ]
+      },
+      {
+        "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+        "id": "target_obs_831a5a0902fdd1728592538fd585580757624a86441c9a4f2fef15073489ac00",
+        "kind": "TRADEOFF",
+        "statement": "O chamador precisa tratar a recusa ErrQueueFull quando a capacidade está ocupada.",
+        "origin": "DECLARED_NOT_REASSESSED",
+        "references": [
+          {
+            "path": "03_infra/runworker/local_queue.go",
+            "content_hash": "sha256:8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+            "start_line": 72,
+            "end_line": 86,
+            "excerpt": "func (q *LocalQueue) Reserve(ctx context.Context) (domain.RecommendationQueueReservation, error) {\n\tif err := ctx.Err(); err != nil {\n\t\treturn nil, err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tif q.stopped {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tif q.reserved+len(q.states) \u003e= q.capacity {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tq.reserved++\n\treturn \u0026localReservation{queue: q}, nil\n}"
+          }
+        ]
+      }
+    ]
+  },
+  "comparisons": [
+    {
+      "id": "cmp_5cd3678cc423bed5c0b2fb679e3892f2909e4c6d01b6fe5e8966235cbbf92ef0",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "kind": "STRATEGY",
+      "declaration_status": "BOTH_DECLARED",
+      "source_observation_refs": [
+        "obs_97430224661c931823bc2395f10650914179185827e1db32faeab7d5ca22d28f"
+      ],
+      "target_observation_refs": [
+        "target_obs_4aab2c36a6fe88790701e1bf5debe49534472b7417e79eb5659201e9ad2aece5"
+      ],
+      "gaps": [
+        "SEMANTIC_DIFFERENCE_NOT_ASSESSED",
+        "TARGET_EFFECT_NOT_VERIFIED"
+      ],
+      "next_step": {
+        "question": "Como as estratégias declaradas se relacionam entre sourcegraph/conc e Bateia?",
+        "observable": "STRATEGY",
+        "safe_procedure": "Conferir os trechos referenciados e a política já declarada no alvo antes de propor alteração; registrar uma diferença concreta e planejar sua medição separadamente.",
+        "pass_criterion": "Diferença concreta e relevante à pergunta documentada com referências e plano de baseline/experimento.",
+        "reject_criterion": "Declarações insuficientes, diferença irrelevante ou capacidade já atendida sem benefício adicional demonstrado.",
+        "relative_cost": "LOW",
+        "missing_evidence": "Interpretação comparativa, aplicabilidade e efeito no alvo ainda não verificados."
+      }
+    },
+    {
+      "id": "cmp_69457297c640201da0b7db156328c529b211a90e5afd2117cafcb709e6f7a3e8",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "kind": "PRECONDITION",
+      "declaration_status": "BOTH_DECLARED",
+      "source_observation_refs": [
+        "obs_d46a3a8c00b684f7085660e986bb1b60d93a77a6429f6ad76ee211a436d075ca"
+      ],
+      "target_observation_refs": [
+        "target_obs_5e81de88d0550b8c1dfc85c9a670b83edcf8544ac4d3ce58de576923743eb61a"
+      ],
+      "gaps": [
+        "SEMANTIC_DIFFERENCE_NOT_ASSESSED",
+        "TARGET_EFFECT_NOT_VERIFIED"
+      ],
+      "next_step": {
+        "question": "Quais condições operacionais precisam ser comparadas entre sourcegraph/conc e Bateia?",
+        "observable": "PRECONDITION",
+        "safe_procedure": "Conferir os trechos referenciados e a política já declarada no alvo antes de propor alteração; registrar uma diferença concreta e planejar sua medição separadamente.",
+        "pass_criterion": "Diferença concreta e relevante à pergunta documentada com referências e plano de baseline/experimento.",
+        "reject_criterion": "Declarações insuficientes, diferença irrelevante ou capacidade já atendida sem benefício adicional demonstrado.",
+        "relative_cost": "LOW",
+        "missing_evidence": "Interpretação comparativa, aplicabilidade e efeito no alvo ainda não verificados."
+      }
+    },
+    {
+      "id": "cmp_c4a69779e80307a79b6153d07ba83c9a06e3cec90f83f9712bea595147ad3223",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "kind": "FAILURE_MODE",
+      "declaration_status": "BOTH_DECLARED",
+      "source_observation_refs": [
+        "obs_d700b6293c663bfe8f2ffd3d64d6acca0034be32ec3fcc02ab8e5d68110a70a0"
+      ],
+      "target_observation_refs": [
+        "target_obs_d2daba73cc7ab65a60bbde41fbf90538d91458276e0de5cbcec189523446b178"
+      ],
+      "gaps": [
+        "SEMANTIC_DIFFERENCE_NOT_ASSESSED",
+        "TARGET_EFFECT_NOT_VERIFIED"
+      ],
+      "next_step": {
+        "question": "Como falhas, saturação e cancelamento são tratados entre sourcegraph/conc e Bateia?",
+        "observable": "FAILURE_MODE",
+        "safe_procedure": "Conferir os trechos referenciados e a política já declarada no alvo antes de propor alteração; registrar uma diferença concreta e planejar sua medição separadamente.",
+        "pass_criterion": "Diferença concreta e relevante à pergunta documentada com referências e plano de baseline/experimento.",
+        "reject_criterion": "Declarações insuficientes, diferença irrelevante ou capacidade já atendida sem benefício adicional demonstrado.",
+        "relative_cost": "LOW",
+        "missing_evidence": "Interpretação comparativa, aplicabilidade e efeito no alvo ainda não verificados."
+      }
+    },
+    {
+      "id": "cmp_ffe54f4bdfa466dc8c8d30f9680bcf54dadb3ba1f74c75338adabf02fc0f9c44",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "kind": "TRADEOFF",
+      "declaration_status": "BOTH_DECLARED",
+      "source_observation_refs": [
+        "obs_1fa33eee677378653c788e00aea6b738bc2186783dd924f93a9a09a5550f01d3"
+      ],
+      "target_observation_refs": [
+        "target_obs_831a5a0902fdd1728592538fd585580757624a86441c9a4f2fef15073489ac00"
+      ],
+      "gaps": [
+        "SEMANTIC_DIFFERENCE_NOT_ASSESSED",
+        "TARGET_EFFECT_NOT_VERIFIED"
+      ],
+      "next_step": {
+        "question": "Quais custos e compromissos precisam ser comparados entre sourcegraph/conc e Bateia?",
+        "observable": "TRADEOFF",
+        "safe_procedure": "Conferir os trechos referenciados e a política já declarada no alvo antes de propor alteração; registrar uma diferença concreta e planejar sua medição separadamente.",
+        "pass_criterion": "Diferença concreta e relevante à pergunta documentada com referências e plano de baseline/experimento.",
+        "reject_criterion": "Declarações insuficientes, diferença irrelevante ou capacidade já atendida sem benefício adicional demonstrado.",
+        "relative_cost": "LOW",
+        "missing_evidence": "Interpretação comparativa, aplicabilidade e efeito no alvo ainda não verificados."
+      }
+    },
+    {
+      "id": "cmp_fbc9e9f5c125d1fd58b9c57ae6c42b0596fa5985bfe63969754f1f547f055a1a",
+      "source": {
+        "repository": "sourcegraph/conc",
+        "commit": "5f936abd7ae87036af1f75c95fb9d0daaf00116b"
+      },
+      "mechanism_class": "BOUNDED_QUEUE_BACKPRESSURE",
+      "kind": "LIMITATION",
+      "declaration_status": "BOTH_DECLARED",
+      "source_observation_refs": [
+        "obs_bc6c511f371c6b1c420cf218250590d17b6b7335bc3834f761956d6797338d0c",
+        "obs_d17a94db3a19a92967278b240f92ba3a3e3ded9cdd6352337e6d834330797d31"
+      ],
+      "target_observation_refs": [
+        "target_obs_4cf7ed04f69c24d36a68ee8a29ca4e304132c28ff3d74c10240b3b8dfc0a4306"
+      ],
+      "gaps": [
+        "SEMANTIC_DIFFERENCE_NOT_ASSESSED",
+        "TARGET_EFFECT_NOT_VERIFIED"
+      ],
+      "next_step": {
+        "question": "Quais limites das abordagens e evidências precisam ser conferidos entre sourcegraph/conc e Bateia?",
+        "observable": "LIMITATION",
+        "safe_procedure": "Conferir os trechos referenciados e a política já declarada no alvo antes de propor alteração; registrar uma diferença concreta e planejar sua medição separadamente.",
+        "pass_criterion": "Diferença concreta e relevante à pergunta documentada com referências e plano de baseline/experimento.",
+        "reject_criterion": "Declarações insuficientes, diferença irrelevante ou capacidade já atendida sem benefício adicional demonstrado.",
+        "relative_cost": "LOW",
+        "missing_evidence": "Interpretação comparativa, aplicabilidade e efeito no alvo ainda não verificados."
+      }
+    }
+  ],
+  "effect_state": "UNVERIFIED",
+  "adoption_disposition": "NOT_AN_ADOPTION_DECISION",
+  "limitations": [
+    "As avaliações fornecidas não foram refeitas nem autenticadas externamente.",
+    "Hashes e localizadores verificam vínculo com os bytes fornecidos, não comportamento executado.",
+    "O alvo, suas restrições e o efeito desejado ainda precisam de validação.",
+    "Nenhuma decisão de reúso ou autorização de adoção foi produzida.",
+    "A busca de contraevidência se limita às avaliações e bytes fornecidos; o ecossistema não foi pesquisado.",
+    "As observações são declarações fornecidas: referências e trechos foram conferidos, mas a interpretação não foi reavaliada.",
+    "A definição do catálogo é uma classificação genérica; condições operacionais dependem das observações declaradas de cada fonte.",
+    "O snapshot do alvo cobre somente os arquivos fornecidos; sua associação ao alvo é declarada, sem autenticação externa ou commit Git inferido.",
+    "Agrupar declarações por classe e tipo não comprova equivalência, diferença, presença ou ausência de uma capacidade no alvo.",
+    "Antes de propor alteração, comparar a política já declarada e validar uma diferença concreta; nenhum efeito foi medido."
+  ]
+}

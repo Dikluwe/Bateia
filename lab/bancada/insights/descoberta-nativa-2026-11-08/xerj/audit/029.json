@@ -1,0 +1,38 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "ask",
+    "last write wins timestamps conflict resolution",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "ask",
+    "last write wins timestamps conflict resolution",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "origin": null,
+  "started_unix": 1794157576.3463392,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 1.4998672008514404,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"cassandra\",\"pin_sha\":\"ec2c276be145bb25085c5c35ac0da69113b676ff\",\"pin_date\":\"2026-10-13\",\"age_days\":26,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"cassandra/src/java/org/apache/cassandra/db/compaction/CursorCompactor.java\",\"line\":454,\"kind\":\"method\",\"text\":\"nners,\\n                           AbstractCompactionController controller,\\n                           long nowInSec,\\n                           TimeUUID compactionId,\\n                           ActiveCompactionsTracker activeCompactions)\\n    {\\n        this.controller = controller;\\n        this.type = type;\\n        // mirror CompactionIterator.purger(): accord-enabled (and accord-migrating) tables\\n        // purge and expire relative to gcBefore — derived from accord's durability bounds by\\n        // CompactionTask.getCompactionController — retaining data accord may still read at\\n        // earlier timestamps; every nowInSec use below is a purge/expiry decision\\n        TableMetadata tableMetadata = controller.cfs.metadata();\\n        this.nowInSec = tableMetadata.isAccordEnabled() || tableMe\\n    ... [method CursorCompactor: showing 800 of 5,665 chars from offset 100, window centred on the match]\",\"value\":null,\"score\":2027.2046,\"licence_warning\":null},{\"file\":\"cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc\",\"line\":251,\"kind\":\"passage\",\"text\":\"enter the system do\\nso with a timestamp provided either from a client clock or, absent a\\nclient-provided timestamp, from the coordinator node's clock. Updates\\nresolve according to the conflict resolution rule of last write wins.\\nCassandra's correctness does depend on these clocks, so make sure a\\nproper time synchronization process is running such as NTP.\\nCassandra applies separate mutation timestamps to every column of every\\nrow within a CQL partition. Rows are guaranteed to be unique by primary\\nkey, and each column in a row resolves concurrent mutations according to\\nlast-write-wins conflict resolution. This means that updates to\\ndifferent primary keys within a partition can actually resolve without\\nconflict! Furthermore the CQL collection types such as maps and sets use\\nthis same conflict\",\"value\":null,\"score\":2019.6519,\"licence_warning\":null},{\"file\":\"cassandra/test/unit/org/apache/cassandra/db/compaction/differential/EdgeCaseDifferentialCompactionTest.java\",\"line\":822,\"kind\":\"method\",\"text\":\"     execute(\\\"INSERT INTO %s (pk, ck, v1, v2) VALUES (?, ?, ?, ?) USING TTL 86400\\\", pk, ck, \\\"a\\\" + ck, \\\"b\\\" + ck);\\n        flush();\\n\\n        // short TTLs: expired well before either run\\n        for (long ck = 0; ck < 10; ck++)\\n            execute(\\\"INSERT INTO %s (pk, ck, v1) VALUES (?, ?, ?) USING TTL 1\\\", 1L, ck, \\\"expired\\\" + ck);\\n        // mixed: row with one TTL'd and one permanent cell\\n        for (long ck = 0; ck < 10; ck++)\\n            execute(\\\"UPDATE %s USING TTL 86400 SET v1 = ? WHERE pk = ? AND ck = ?\\\", \\\"ttl\\\" + ck, 2L, ck);\\n        flush();\\n\\n        // fixed \\\"now\\\" two seconds past the LAST write, so the TTL=1 cells have expired relative to\\n        // it however long the write phase took, while the 86400s TTLs stay comfortably alive\\n        long fixedNow = FBUtilities.nowInSeconds() \\n    ... [method expiringCells: showing 800 of 1,335 chars from offset 400, window centred on the match]\",\"value\":null,\"score\":1023.18994,\"licence_warning\":null},{\"file\":\"cassandra/test/unit/org/apache/cassandra/db/compaction/differential/TimestampInversionDifferentialCompactionTest.java\",\"line\":116,\"kind\":\"method\",\"text\":\"                    \\\"middle-5000-wins\\\" + ck, ck);\\n        flush();\\n\\n        for (long ck = 0; ck < 6; ck++)\\n            execute(\\\"UPDATE %s USING TIMESTAMP 3000 SET m['k'] = ? WHERE pk = 0 AND ck = ?\\\",\\n                    \\\"last-3000\\\" + ck, ck);\\n        flush();\\n\\n        assertEquals(\\\"scenario needs three input sstables\\\", 3, cfs.getLiveSSTables().size());\\n\\n        String json = allJson(assertCursorMatchesIterator(cfs));\\n        for (long ck = 0; ck < 6; ck++)\\n        {\\n            assertTrue(\\\"the middle sstable's greater timestamp must win, ck \\\" + ck,\\n                       json.contains(cellValue(\\\"middle-5000-wins\\\" + ck)));\\n            assertFalse(\\\"the last sstable's lesser timestamp must not win, ck \\\" + ck,\\n                        json.contains(cellValue(\\\"last-3000\\\" + ck)));\\n    ... [method middleSSTableHoldsTheWinningTimestamp: showing 785 of 1,653 chars from offset 695, window centred on the match]\",\"value\":null,\"score\":1023.1771,\"licence_warning\":null},{\"file\":\"cassandra/test/unit/org/apache/cassandra/db/compaction/CellResolutionAgreementTest.java\",\"line\":320,\"kind\":\"method\",\"text\":\"    public void theSharedTableGivesTheExpectedVerdict()\\n    {\\n        Shape live = new Shape(Cell.NO_TTL, Cell.NO_DELETION_TIME);\\n        Shape tombstoneAtNow = new Shape(Cell.NO_TTL, NOW);\\n        Shape tombstoneLater = new Shape(Cell.NO_TTL, NOW + 10);\\n        Shape expiringAtNow = new Shape(100, NOW);\\n        Shape expiringLater = new Shape(100, NOW + 10);\\n        Shape expiringShortTtl = new Shape(1, NOW);\\n\\n        // the deletion-time guard: live-vs-live never enters the table and falls through to the value\\n        // comparison. The rule above it, differing timestamps, is pinned by theNewerTimestampWinsOutright.\\n        assertEquals(COMPARE, cursorVerdict(live, live));\\n\\n        // (a) anything with a deletion time beats a live cell, in either position\\n        assertEquals(LEFT, curso\\n    ... [method theSharedTableGivesTheExpectedVerdict truncated at 800 chars]\",\"value\":null,\"score\":1021.5719,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": ""
+}

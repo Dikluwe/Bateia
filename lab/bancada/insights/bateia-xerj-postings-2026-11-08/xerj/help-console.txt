@@ -1,0 +1,229 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/004.json
+Exit: 0 Seconds: 0.023
+xerj v1.0.0-rc.101 — the unified search engine for AI (Elasticsearch wire-compatible)
+
+USAGE:
+    A flag may precede the subcommand: xerj --url URL corpus index <name>
+    is read as xerj corpus index <name> --url URL.
+
+    xerj [OPTIONS]                      start the server (options below)
+    xerj autoindex <folder> [OPTIONS]   zero-config discovery + indexing — the
+                                         flagship path for most agents (see xerj
+                                         autoindex --help)
+    xerj autoindex map [folder]        data map of indexed data, or preview a folder
+    xerj autoindex remove --prefix <P>  drop one autoindexed folder, after a plan
+    xerj code <corpus> "<query>"        reference-coding retrieval over a corpus
+                                         of peer projects (see xerj code --help)
+    xerj corpus add|index|list          the corpus lifecycle behind `xerj code`
+                                         (see xerj corpus --help)
+    xerj ask "<question>"               answer a question from a hub corpus: the
+                                        pre-indexed pack is pulled the first time
+                                        (see xerj ask --help); `xerj "<question>"`
+                                        is the same. `xerj hub stop` stops the
+                                        node xerj ask started
+    xerj hub <command>                  pull, find, stop, ... see xerj hub --help
+    xerj index [OPTIONS]                direct NDJSON → engine ingest (see xerj
+                                         index --help)
+    xerj brain <folder>                 index + browse in one command (see xerj
+                                         brain --help)
+    xerj share <index|folder>           give someone read-only search over one
+                                         index: link + passcode + expiry (see xerj
+                                         share --help)
+    xerj feedback [OPTIONS]             draft or --submit the agent field report —
+                                         see xerj feedback --help
+
+OPTIONS (for `xerj [OPTIONS]`, the bare server start):
+    --config,   -c <PATH>  Path to TOML config file. CORS is off by default (no
+                             Access-Control-* headers); a browser app calling the node
+                             directly needs [cors] allowed_origins =
+                             ["http://localhost:8080"] there (allow_any_origin = true
+                             is for local development only)
+    --data-dir, -d <PATH>  Override data directory
+    --bind,     -b <ADDR>  Interface to bind every listener to. Default 127.0.0.1 —
+                             loopback only, reachable from this machine and nowhere
+                             else. Pass 0.0.0.0 (or a specific address) to expose the
+                             node; with TLS off that also needs
+                             server.allow_insecure_network_bind = true (or
+                             XERJ_ALLOW_INSECURE_NETWORK_BIND=true), because every
+                             request — API key included — would cross the network in
+                             cleartext. Env: XERJ_BIND_ADDRESS
+    --insecure, -k         Disable TLS *and* API-key authentication — local dev only.
+                             Auth is ON by default, so without this flag every client
+                             (`xerj autoindex` and `xerj brain` included) must send the
+                             key this server writes to <data_dir>/admin.key on first
+                             start. The default data directory is ./data. Keep it outside any folder
+                             you will autoindex — ./data inside that tree gets indexed, because data/
+                             is not in the built-in ignore list. Start it with xerj --data-dir ~/xerj-data
+                             (Windows: $HOME\xerj-data), then:
+                             export XERJ_API_KEY="$(cat ~/xerj-data/admin.key)"
+                             On Windows PowerShell:
+                             $env:XERJ_API_KEY = Get-Content "$env:USERPROFILE\xerj-data\admin.key"
+    --embed-mode <MODE>    Embedding backend: lexical | neural | proxy | auto |
+                             onnx-experimental
+                             lexical  built-in feature-hash (default; offline, not neural)
+                             neural   built-in BERT (all-MiniLM-L6-v2) — real semantics,
+                                      in-process. The model (~90 MB) loads at startup:
+                                      downloaded from the HuggingFace Hub, or read from
+                                      embedding.local_model_dir, then cached. If that load
+                                      fails, the process refuses to start. It does not keep
+                                      running and fail every ingest, and it does not write
+                                      lexical vectors. Restart with: xerj --embed-mode lexical
+                                      Or set HF_ENDPOINT to a Hub mirror and start again.
+                                      The mode is fixed per index at ingest time. Documents keep
+                                      the vectors written when they were indexed. Changing
+                                      --embed-mode does not re-embed an existing index; re-index.
+                                      Lexical is the fast default.
+                             proxy    external OpenAI-compatible embeddings endpoint.
+                                      embedding.default_endpoint may be a /v1 base, a bare host,
+                                      or the full /v1/embeddings URL (a trailing slash is ignored).
+                                      Any other path refuses to start and names the URL to set.
+                             auto     proxy if embedding.default_endpoint is set, else lexical
+                             onnx-experimental  local all-MiniLM-L6-v2-compatible FP32
+                                      ONNX prototype; width 384, named BERT inputs and
+                                      token output; requires matching tokenizer.json;
+                                      no auto-download
+    --onnx-model <PATH>    compatible FP32 MiniLM ONNX model
+    --onnx-tokenizer <PATH> tokenizer.json from the same model/export
+    --compat-distribution <DIST>  Force the wire-compat client identity: elasticsearch |
+                             opensearch. Default: unset — xerj auto-detects per request
+                             from the caller's User-Agent header instead (an
+                             opensearch-py/opensearch-js client — including OpenSearch
+                             Dashboards itself — and an elasticsearch-py/elasticsearch-js
+                             client hitting the SAME running instance each see GET / and
+                             GET /_nodes shaped for their own ecosystem). Setting this
+                             pins ALL clients to one identity regardless of User-Agent —
+                             useful if a client sends no recognizable User-Agent, or you
+                             just want deterministic behavior.
+                             Example: --compat-distribution opensearch
+    --compat-version <VER> Force the reported version.number (e.g. 2.11.0). Default:
+                             unset — when auto-detected as OpenSearch, reports a fixed
+                             version verified to pass OpenSearch Dashboards' own
+                             compatibility check (not the calling client's own version —
+                             client library versions aren't a reliable stand-in for a
+                             compatible server version, confirmed against a real OSD
+                             container). Example: --compat-version 2.11.0
+    --decide-mode <MODE>   System One decide ladder (/v1/systemone, /_decide):
+                             history | local (default history — the labelled-history
+                             vote, today's contract). `local` arms the tier-2 zero-shot
+                             decision head, which answers the questions the history
+                             vote cannot (no [decisions] index, no labelled neighbour)
+                             instead of 503/422. Needs --decide-model-dir (or
+                             XERJ_DECIDE_MODEL_DIR) naming a directory with
+                             config.json, tokenizer.json and model.safetensors, and a
+                             build with the decide-local feature
+                             (cargo build --release -p xerj-server --features
+                             decide-local). Env: XERJ_DECIDE_MODE
+    --decide-model-dir <PATH>  Directory holding the tier-2 decide head's
+                             config.json, tokenizer.json and model.safetensors —
+                             local file only, no download path. Env:
+                             XERJ_DECIDE_MODEL_DIR
+    --facts-model-dir <DIR>  Enable XERJ-Query: serve /_facts with the model
+                             bundle in DIR (bundle.json, facts/, counting/). Off by
+                             default: without it the node has no /_facts route and
+                             loads no model. Env: XERJ_FACTS_MODEL_DIR (the flag
+                             wins)
+    --port      <PORT>     Port for the Elasticsearch-compatible API (default 9200).
+                             When given, also claims PORT+1 for the native REST API and
+                             PORT+2 for gRPC, so a second instance needs only this one
+                             flag: xerj --insecure --port 9300 -d ./other-data
+                             Without it the native REST API listens on 8080 and gRPC on
+                             8081 ([server] rest_port / grpc_port in the TOML config).
+    --auto-port            Opt in to multi-instance mode: if a port is taken, bind the
+                             next free one; if the data dir is held by another live
+                             process, use <data-dir>-2, -3, ... The banner prints the
+                             ports actually bound. Off by default. Env: XERJ_AUTO_PORT
+    --no-auto-port         Fail at startup if a port is taken (the default).
+    --disable-feedback     Do not print the feedback invitation above. Honoured in any
+                             position, including after --help. Env:
+                             XERJ_DISABLE_FEEDBACK=true
+    --help,     -h         Show this help
+    --version,  -V         Print version and exit
+
+SUBCOMMANDS:
+    xerj batch-search --input FILE  ordered batch retrieval, JSON in/out (see xerj batch-search --help)
+    xerj sessions import     export selected session turns with PII redaction (see xerj sessions --help)
+    xerj index      <opts>          direct NDJSON → engine ingest (see xerj index --help)
+    xerj autoindex  <folder> [opts] zero-config folder discovery + indexing (see xerj autoindex --help)
+    xerj autoindex  map [folder]    data map of indexed data, or a read-only folder preview
+    xerj search     "<text>"         retrieve code/passages from a running node — the
+                                    query client, no wrapper scripts (see xerj search --help)
+    xerj def        "<symbol>"       go-to-definition: where is this symbol defined, and
+                                    what is its signature (see xerj def --help)
+    xerj code       <corpus> "<q>"  reference-coding retrieval: how did peer projects
+                                    solve this (see xerj code --help)
+    xerj corpus     add|index|list   clone + index + list the reference corpora that
+                                    `xerj code` searches (see xerj corpus --help)
+    xerj init                       wire XERJ into the coding agents in this project:
+                                    MCP + skill files, one command (see xerj init --help)
+    xerj gain                       what this node did for you, counted from the audit
+                                    log — searches, hit rate, latency (xerj gain --help)
+    xerj brain      <folder>        one command: index a folder into a running, browsable
+                                    second brain in your browser (see xerj brain --help)
+    xerj memory     store <ns> --text <t>
+                             store one agent memory on a running node
+                             (see xerj memory --help)
+    xerj mcp        [opts]          Model Context Protocol stdio server: exposes 23 tools
+                                    (search, semantic, vector, hybrid, memory, second-brain,
+                                    map, plan, code-search, Corpus Hub) to any MCP client.
+                                    Proxies to a node you already started — set XERJ_URL or
+                                    --url (see xerj mcp --help)
+    xerj feedback   [opts]          draft the agent field report XERJ asks every agent to
+                                    file; --submit sends it (GitHub PR first, API fallback),
+                                    --dry-run just prints (see xerj feedback --help)
+
+SEARCHING A CODEBASE:
+    A search hit returns the whole indexed document, which for source code is the
+    whole file. To get only the matching function or class, ask for the passage:
+
+        curl -s $URL/<index>/_search -H 'Content-Type: application/json' \
+          -d '{"query":{"bool":{"should":[{"multi_match":{"query":"<symbol or phrase>",
+               "fields":["body","defs"],"type":"most_fields"}},{"match_phrase":{"defs":{"query":"<symbol or phrase>","boost":4}}}]}},
+               "_source":["ax_path","title"],"fields":["_passage"]}'
+
+    the `match_phrase` clause ranks the file that DEFINES a symbol above files that merely call it;
+    `_passage` returns the enclosing block. Without them you get whole files.
+
+ENVIRONMENT:
+    XERJ_LOG         Log level filter (default: info)
+    XERJ_DISABLE_FEEDBACK  true/false — same as --disable-feedback, for callers that
+                             cannot change the command line (CI, containers, agents)
+    XERJ_CONFIG      Config file path
+    XERJ_EMBED_MODE  Embedding backend (lexical|neural|proxy|auto|onnx-experimental)
+    XERJ_ONNX_MODEL  FP32 ONNX model path
+    XERJ_ONNX_TOKENIZER matching tokenizer.json path
+    XERJ_COMPAT_DISTRIBUTION  elasticsearch|opensearch — same as --compat-distribution
+    XERJ_COMPAT_VERSION       same as --compat-version
+    XERJ_DECIDE_MODE          decide ladder: history|local — same as --decide-mode
+    XERJ_DECIDE_MODEL_DIR     tier-2 decide head's model directory — same as
+                             --decide-model-dir
+    XERJ_FACTS_MODEL_DIR      XERJ-Query model bundle; enables /_facts — same as
+                             --facts-model-dir
+    XERJ_INGEST_MEMORY_TRACE  off|summary (default: off); summary emits bounded
+                             periodic NDJSON diagnostics, never per-item events
+    XERJ_INGEST_MEMORY_SAMPLE_MS  sampler period, clamped to 25..60000 ms
+    XERJ_INGEST_MEMORY_OUTPUT tracing|<PATH> (default: tracing); append NDJSON to path
+                             Merge/cache fields are reserved/unavailable in v1.
+                             Active+drained may transiently overlap across sampling.
+
+WIRE-COMPAT IDENTITY — three ways to run this, pick what fits:
+
+    1. Fully automatic (default, no flags):
+         xerj -d ./data
+       Every client gets a response shaped for its own ecosystem, detected from its
+       User-Agent on every request. One instance serves ES and OpenSearch clients at
+       once.
+
+    2. Force one identity for every client, every request:
+         xerj -d ./data --compat-distribution opensearch --compat-version 2.11.0
+       Or via env (handy in docker-compose):
+         XERJ_COMPAT_DISTRIBUTION=opensearch XERJ_COMPAT_VERSION=2.11.0 xerj -d ./data
+       Ignores User-Agent entirely — useful for a client that doesn't send one, or when
+       you want fully deterministic behavior.
+
+    3. Pin only the distribution, let the version auto-detect per client:
+         xerj -d ./data --compat-distribution opensearch
+       (or set only XERJ_COMPAT_VERSION and leave distribution to auto-detect — the two
+       settings are resolved independently, mix and match as needed.)
+
+
+

@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-28",
+  "status": "completed_in_declared_scope",
+  "product_priority": "engineering insights",
+  "first_target": "Bateia",
+  "scope": "documentary product focus and authored diagnostic on known frozen sourcegraph/conc corpus",
+  "checks": {
+    "lint": {
+      "command": [
+        "/usr/bin/python3",
+        "lab/ferramentas/crystalline-lint/run.py",
+        "--fail-on",
+        "warning",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "architecture": {
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./lab/bancada/arquitetura/0129/boundaries",
+        "./lab/bancada/arquitetura/0131/contracts"
+      ],
+      "exit_code": 0
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/repos/Antigravity/Bateia/lab/bancada/insights/0133/final/bateia",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "all_baseline_go_sources_unchanged": true,
+  "go_sources_checked": 804,
+  "historical_0106_receipts_unchanged": true,
+  "current_replay_byte_identical": true,
+  "items_verified": 29,
+  "target_queue_contracts": "3 passed, current execution count=1",
+  "candidate_tests_executed": false,
+  "production_behavior_changed": false,
+  "functional_improvements_implemented": false,
+  "followup": "source-specific observations and operational preconditions in insight report; separate contract required",
+  "documents_sha256": {
+    "README.md": "f7b097c54f87ca756e9d93616049e788c86263458a1ba9ae16d66b4b262b1e43",
+    "00_nucleo/documentacao/produto.md": "2bf53f8e175d003f364c76f24a3663be59062e70c8c86f8b57c9e60f204edead",
+    "00_nucleo/arquitetura/README.md": "256b02f2703a2e6e4ad6520744333549642aa6798407174ef2608f9ed24b57c3",
+    "00_nucleo/passos/README.md": "b3e8ca321e3dcd91a8017bf5d48c732582c3cdace1d1faddef6ff6a9b0fcc5fb",
+    "00_nucleo/passos/0133-priorizar-insights-de-engenharia.md": "b2f1454af16fa25226a54aa5cf75333f749c1d4ad3571ac5f3aeb9efd46e3727",
+    "00_nucleo/laudos/0133-foco-em-insights-e-primeira-investigacao.md": "a03bc7e99a94b7f077b98a5bbb88a6704f3542b5023e49d871e5de897c398dac",
+    "lab/bancada/insights/0133/README.md": "f2d05da1f7cc970c6b76c34c86185bc6f4dc0054c877f914016bb3afa455f57a"
+  },
+  "runner_sha256": "187f7ce48ccf59a8009030ea1a2857c0a390b306c688e38c6ff920ce17ccb69a",
+  "limits": [
+    "Known corpus, authored review, no independence or holdout.",
+    "No live source reread or candidate execution.",
+    "No measured user gain or target effect.",
+    "Projection comparison is not semantic evaluation.",
+    "Root verification does not promote sealed gates."
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "baseline_review": [
+    {
+      "id": "b1",
+      "outcome": "Presented in A, with business event history separated from database revision history."
+    },
+    {
+      "id": "b2",
+      "outcome": "Presented in B with physical custody, one commitment writer and non-timeout handover; speculative protocol clearly labelled."
+    },
+    {
+      "id": "b3",
+      "outcome": "Not presented separately. Eight always-on workshop servers add operations burden and do not solve disconnected phone conflicts. B uses a workshop authority phone instead; hardware/LAN option remains unresearched."
+    },
+    {
+      "id": "b4",
+      "outcome": "Folded into A. Generic offline cache is insufficient without durable writes, explicit conflict policy, history and freshness."
+    }
+  ],
+  "considered_not_presented": [
+    {
+      "design": "Automerge as a separate alternative",
+      "reason": "Different merge library is not a different commitment/work design. Read scalar conflict and transport contracts; retain it as implementation comparison within A.",
+      "evidence": [
+        "audit/020.json",
+        "audit/021.json",
+        "audit/025.json"
+      ]
+    },
+    {
+      "design": "Central online-only inventory",
+      "reason": "Violates 72h disconnected work constraint; no research required to reject."
+    },
+    {
+      "design": "Last-write-wins inventory",
+      "reason": "Deterministic winners can hide a competing reservation or description; not a sufficient solution.",
+      "evidence": [
+        "audit/016.json",
+        "audit/020.json"
+      ]
+    }
+  ],
+  "gaps": [
+    "No ready-made inventory product or offline Android data-entry suite evaluated.",
+    "No escrow/ownership transfer implementation independently sourced or verified.",
+    "No actual Android storage, runtime, accessibility, camera, authentication or data-loss tests.",
+    "No hosting price, photo volume, maintenance cadence or licence compatibility assessment.",
+    "No measured 45000-part footprint or sync throughput; no complete export/restore exercise.",
+    "XERJ lexical queries gave noise, especially benchmark fixtures; no semantic search used.",
+    "Possible alternatives with BLE/local networking or form-only collection remain researchable."
+  ],
+  "stop_reason": "Two conceptual alternatives have direct evidence and distinguish operational trade-offs. Additional merge libraries would not add conceptual alternatives; remaining implementation uncertainties are best falsified with the proposed pilot. Stopped before 40 research calls, six acquisitions and 20-minute limits.",
+  "human_intervention": "None; authorization inherited from explicit parent task.",
+  "failures": [
+    {
+      "audit": "audit/004.json",
+      "reason": "Native find rejects k=12; retried with k=10."
+    },
+    {
+      "audit": "audit/005.json",
+      "reason": "No cached catalogue; resolved by native hub sync."
+    },
+    {
+      "audit": "audit/014.json",
+      "reason": "Index success exit 3 with 16 skipped binary/archive fixtures."
+    },
+    {
+      "audit": "audit/018.json",
+      "reason": "Index success exit 3 with 36 skipped binary fixtures."
+    }
+  ],
+  "source_coverage": "PouchDB conflict, replication, compaction, export and phone-memory passages read; Automerge core conflict/history docs, conflict test and reliable transport docs read. No acquired source read directly.",
+  "lifecycle": {
+    "startup_audit": "/tmp/bateia-xerj-open-0153/xerj/audit/012.json",
+    "shutdown": "SIGINT sent through own exec session 34130; runner exited 130 with KeyboardInterrupt, leaving startup audit pending. Child node unreachable verified by native search.",
+    "verification_audit": "/tmp/bateia-xerj-open-0153/xerj/audit/029.json",
+    "verification_result": "No XERJ node reachable at http://127.0.0.1:19693",
+    "unexpected_status_output": {
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/028.json",
+      "description": "Native autoindex status unexpectedly enumerated shared default journal entries naming earlier experiments despite url/prefix. No referenced source or journal was opened, no earlier content used, no additional actions on those nodes."
+    }
+  },
+  "unexpected_product_disclosure": {
+    "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/028.json",
+    "description": "Native autoindex status unexpectedly enumerated shared default journal entries naming earlier experiments despite url/prefix. No referenced source or journal was opened, no earlier content used, no additional actions on those nodes."
+  }
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "I1",
+    "title": "Separar ocorrência recuperada, integridade e comportamento testado na mesma alegação",
+    "observation": [
+      "T1",
+      "T2",
+      "T4",
+      "T5"
+    ],
+    "interpretation": "Uma citação íntegra torna a observação auditável; ranking lexical e frase encontrada não demonstram comportamento; feedback é testemunho atribuído.",
+    "hypothesis": "Expor facetas independentes retrieval, integrity, execution e behavior, ligadas ao claim, reduz promoções indevidas sem descartar fontes úteis.",
+    "already_exists": "PinnedCitation, hashes/offsets e recibos de verificação com limites explícitos já foram observados; não estabeleci que a composição proposta esteja ausente.",
+    "proposal": "Claim carrega consulta/campo/rank; citação pinada; resultado criptográfico; teste e asserção; status observed/not-run/pass/fail/inconclusive. Assinatura e utilidade ficam em campos separados e nunca promovem behavior.",
+    "conditions": "O executor só registra pass quando a asserção específica foi observada sob condições registradas; ausência de execução permanece not-run.",
+    "counterexample": "Pack assinado com texto relevante e feedback 5/5 descreve algoritmo que falha na fixture; integrity pode passar enquanto behavior falha.",
+    "rejection_experiment": "Construir quatro recibos sintéticos cruzando citação íntegra/adulterada e asserção passa/falha; adicionar relevância alta e feedback positivo em todos. Rejeitar o desenho se qualquer assinatura, rank ou feedback alterar o resultado de comportamento, ou se adulteração não invalidar integridade.",
+    "executed": false
+  },
+  {
+    "id": "I2",
+    "title": "Expor aplicabilidade como predicados e desconhecidos antes de reutilizar evidência",
+    "observation": [
+      "T2",
+      "T3",
+      "A"
+    ],
+    "interpretation": "Os recibos do próprio alvo já delimitam build, fixture, ambiente e o que não foi testado; admissão externa exemplifica estado não autoritativo quando falta suporte.",
+    "hypothesis": "Uma ficha de condições ligada ao claim evita extrapolar um recibo de fixture para produção ou release.",
+    "already_exists": "Há condições/exclusões em documentação e Hold no corpus externo; não alego ausência de política equivalente no produto.",
+    "proposal": "Extrair manualmente predicados explícitos: build/revisão, configuração lexical/neural, corpus/fixture, plataforma, operação e validade. Comparar contexto solicitado com supported/contradicted/unknown; preservar a fonte de cada condição e não converter score de retrieval em confiança.",
+    "conditions": "Predicados devem vir de recibos ou contrato, sem inferir limiares universais do demo de admissão. Falta de metadados dá unknown; requerimentos críticos contraditos impedem aplicação automática.",
+    "counterexample": "Teste lexical de três documentos com restart não sustenta probabilidade calibrada, performance matched-build, release distribuída ou outro sistema operacional.",
+    "rejection_experiment": "Criar seis pedidos variando só uma condição conhecida: mesma fixture, outro build, outro SO, modo neural, exigência de calibração e release publicado. Revisão humana cega marca o que o recibo suporta. Rejeitar se o sistema disser supported em condição explicitamente não testada, esconder unknown, ou deixar de preservar suporte no caso idêntico.",
+    "executed": false
+  },
+  {
+    "id": "I3",
+    "title": "Anexar cápsulas pinadas de contraexemplo e replay à alegação",
+    "observation": [
+      "T1",
+      "T2",
+      "A"
+    ],
+    "interpretation": "Hashes localizam bytes; replay precisa ainda de entradas, política, ambiente, asserção e saídas. Determinismo do demo é limitado ao envelope/política/tick, não prova geral.",
+    "hypothesis": "Um pequeno pacote negativo reproduzível detecta sobre-generalização de relevância e evidência com menos ambiguidade.",
+    "already_exists": "Alvo publica snapshots/comandos; corpus externo tem casos executáveis e baseline; não verifiquei que já exista formato unificado.",
+    "proposal": "Cápsula imutável com claim, citações, fixture/hash, versão de política, ambiente/build, comandos, pré-condições, oracle esperado e resultado observado, incluindo failed/not-reproduced/inconclusive. Guardar variantes negativas e ligar falhas à alegação original sem apagar o histórico.",
+    "conditions": "Replay apenas em ambiente controlado autorizado e sem segredos; processo reprodutível não é garantia de oracle correto. Plataformas ou dependências não disponíveis produzem inconclusive.",
+    "counterexample": "Mesmos bytes assinados e mesmo score de relevância podem levar a resultado diferente sob configuração neural ou regra de expiração diferente; não é corrupção da citação.",
+    "rejection_experiment": "Preparar duas execuções idênticas e uma variante que altera um único predicado (evidência expirada ou modo de busca). Verificar que idênticas mantêm hashes/resultados e que a variante preserva citação mas muda applicability/resultado esperado. Rejeitar se replay não identifica dependência, se falha some no histórico ou se ferramenta chama não reproduzido de confirmado.",
+    "executed": false
+  }
+]

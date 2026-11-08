@@ -1,0 +1,159 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/02_shell/cli/insight_discovery.md
+ * @layer L2
+ * @updated 2026-11-08
+ */
+package cli
+
+import (
+	"bateia/01_core/domain"
+	"bateia/01_core/usecase"
+	"context"
+	"flag"
+	"fmt"
+	"io"
+	"strconv"
+	"strings"
+	"time"
+)
+
+func RunInsightDiscoveryCommand(args []string, stdout io.Writer, catalog domain.ProjectCatalog, reader domain.InsightReferenceReader, factories ...domain.InsightSiteFactory) error {
+	fs := flag.NewFlagSet("idea insights discover", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	request := domain.InsightDiscoveryRequest{SchemaVersion: "1", QueryPolicy: "context-v2"}
+	output := ""
+	sources, locale, maxCalls := "", "", 0
+	memoryPath := ""
+	var followLinks *int
+	seen := map[string]bool{}
+	once := func(name string, assign func(string) error) func(string) error {
+		return func(value string) error {
+			if seen[name] {
+				return fmt.Errorf("flag de descoberta duplicada")
+			}
+			seen[name] = true
+			return assign(value)
+		}
+	}
+	fs.Func("query-policy", "Política de descoberta: context-v2 ou lexical-v1", once("query-policy", func(value string) error { request.QueryPolicy = value; return nil }))
+	fs.Func("question", "Pergunta", once("question", func(value string) error { request.Question = value; return nil }))
+	fs.Func("output", "Arquivo obrigatório de resultado", once("output", func(value string) error { output = value; return nil }))
+	fs.Func("memory", "Memória ou relatório anterior", once("memory", func(value string) error { memoryPath = value; return nil }))
+	fs.Func("follow-links", "Máximo de destinos aprofundados", once("follow-links", func(value string) error {
+		n, err := strconv.Atoi(value)
+		if err == nil {
+			followLinks = &n
+		}
+		return err
+	}))
+	fs.Func("sources", "Sítios separados por vírgula ou all", once("sources", func(value string) error { sources = value; return nil }))
+	fs.Func("locale", "Locale das consultas", once("locale", func(value string) error { locale = value; return nil }))
+	fs.Func("familiar", "Abordagem habitual; repetível", func(value string) error {
+		request.FamiliarApproaches = append(request.FamiliarApproaches, value)
+		return nil
+	})
+	for _, option := range []struct {
+		name string
+		dest *int
+	}{{"max-per-query", &request.MaxPerQuery}, {"max-references", &request.MaxReferences}, {"max-passages", &request.MaxPassages}, {"max-calls", &maxCalls}} {
+		fs.Func(option.name, "Limite", once(option.name, func(value string) error {
+			parsed, err := strconv.Atoi(value)
+			if err == nil {
+				*option.dest = parsed
+			}
+			return err
+		}))
+	}
+	for _, option := range []struct {
+		name string
+		dest *time.Duration
+	}{{"timeout", &request.TotalTimeout}, {"attempt-timeout", &request.AttemptTimeout}} {
+		fs.Func(option.name, "Deadline", once(option.name, func(value string) error {
+			parsed, err := time.ParseDuration(value)
+			if err == nil {
+				*option.dest = parsed
+			}
+			return err
+		}))
+	}
+	if err := fs.Parse(args); err != nil {
+		return fmt.Errorf("parâmetros de descoberta de insights inválidos: %w", err)
+	}
+	if fs.NArg() != 0 {
+		return fmt.Errorf("discover não aceita argumentos posicionais")
+	}
+	if output == "" {
+		return fmt.Errorf("insights discover exige --output antes de acessar a rede")
+	}
+	if err := validateDecisionTraceOutput(output, memoryPath); err != nil {
+		return err
+	}
+	// Validate the public request before signals, network calls or publication.
+	if _, err := usecase.PlanInsightDiscovery(request); err != nil {
+		return fmt.Errorf("pedido de descoberta inválido: %w", err)
+	}
+	if seen["sources"] {
+		if sources == "" || len(factories) != 1 || factories[0] == nil {
+			return fmt.Errorf("descoberta multifonte exige fontes e factory configuradas")
+		}
+		ids := strings.Split(sources, ",")
+		for i := range ids {
+			ids[i] = strings.TrimSpace(ids[i])
+		}
+		var memory *domain.InsightExplorationMemory
+		if seen["memory"] {
+			if memoryPath == "" {
+				return fmt.Errorf("--memory exige caminho")
+			}
+			var err error
+			memory, err = readInsightMemory(memoryPath)
+			if err != nil {
+				return err
+			}
+		}
+		siteRequest, err := usecase.ValidateInsightSiteOptions(domain.InsightSiteRequest{Memory: memory, FollowLinks: followLinks, Discovery: request, Sources: ids, MaxCalls: maxCalls, Locale: locale})
+		if err != nil {
+			return fmt.Errorf("opções multifonte inválidas: %w", err)
+		}
+		bindings, err := factories[0]()
+		if err != nil {
+			return fmt.Errorf("configuração de fontes indisponível")
+		}
+		if _, err := usecase.PlanInsightSites(siteRequest, bindings); err != nil {
+			return fmt.Errorf("seleção de fontes inválida: %w", err)
+		}
+		ctx, stop := commandHost().NotifyContext(commandContext(context.Background()))
+		defer stop()
+		report, discoveryErr := usecase.DiscoverInsightSites(ctx, siteRequest, bindings)
+		if report.ID == "" {
+			return fmt.Errorf("descoberta multifonte não iniciada: %w", discoveryErr)
+		}
+		if err := writeDecisionTraceJSON(report, output, stdout, memoryPath); err != nil {
+			return err
+		}
+		if discoveryErr != nil {
+			return fmt.Errorf("descoberta multifonte interrompida; resultados preservados: %w", discoveryErr)
+		}
+		return nil
+	}
+	if seen["max-calls"] || seen["locale"] || seen["memory"] || seen["follow-links"] {
+		return fmt.Errorf("--max-calls, --locale, --memory e --follow-links exigem --sources")
+	}
+	if catalog == nil || reader == nil {
+		return fmt.Errorf("insights discover exige catálogo e leitor configurados")
+	}
+	ctx, stop := commandHost().NotifyContext(commandContext(context.Background()))
+	defer stop()
+	report, discoveryErr := usecase.DiscoverInsightReferences(ctx, request, catalog, reader)
+	if report.ID == "" {
+		return fmt.Errorf("descoberta não iniciada: %w", discoveryErr)
+	}
+	if err := writeDecisionTraceJSON(report, output, stdout); err != nil {
+		return err
+	}
+	if discoveryErr != nil {
+		return fmt.Errorf("descoberta interrompida; resultados preservados: %w", discoveryErr)
+	}
+	return nil
+}

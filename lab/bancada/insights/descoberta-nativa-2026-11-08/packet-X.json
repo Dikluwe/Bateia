@@ -1,0 +1,1043 @@
+{
+  "label": "X",
+  "baseline": {
+    "basis": "Problem only; no source/project identity supplied or consulted",
+    "options": [
+      {
+        "id": "B1",
+        "concept": "Local append-only observation journal with later synchronization and explicit correction events; availability labelled tentative while disconnected."
+      },
+      {
+        "id": "B2",
+        "concept": "Offline replicated records with conflict review; photos and provenance preserved separately from current part summary."
+      },
+      {
+        "id": "B3",
+        "concept": "Allocate stock authority by workshop or custody; require handoff acknowledgments and restrict offline promises to locally controlled parts."
+      },
+      {
+        "id": "B4",
+        "concept": "Operational queues and reconciliation windows; retain phone capture offline but centralize final reservation decisions when connected."
+      }
+    ]
+  },
+  "result": {
+    "schema_version": "1",
+    "epistemic_note": "Desenhos são síntese condicional; fontes suportam componentes e limites. Nenhuma implantação, benchmark ou execução de fontes foi realizada.",
+    "shared_design_requirements": [
+      "Captura e consulta locais por 72h; reenvio posterior sem viagem diária à sede. São requisitos do desenho, não desempenho medido.",
+      "Histórico imutável de observações e correções, fotos separadas com fila de upload e exportação completa são trabalho de integração proposto.",
+      "Identidade física única por peça; distinguir peça, tipo/SKU, local, reserva, consumo e observação."
+    ],
+    "alternatives": [
+      {
+        "id": "A1",
+        "title": "Captura offline, histórico de eventos e confirmação central de compromissos",
+        "baseline_relation": {
+          "ids": [
+            "B1",
+            "B4"
+          ],
+          "classification": "materialmente modificada",
+          "reason": "Outbox e validação versionada observadas; limite de dedupe 24h e force push exigem novo contrato de reservas e retenção."
+        },
+        "work_change": "Registrar toda ação na hora; solicitação de peça remota fica pendente até confirmação. Antes de viajar, exigir confirmação recente da oficina custodiante. Correção referencia a observação anterior e preserva autoria e motivo. Consumo físico pode ser registrado offline como fato e reconciliado, sem fingir que havia reserva global aprovada.",
+        "software_change": "Banco local e outbox transacionais; eventos com ID estável, autor/dispositivo, peça, causalidade, horário observado e recebido. Servidor aceita eventos idempotentemente, conserva versões e valida reserva/consumo numa transação; projeção separa observado, pedido, confirmado e disputado. Nunca usar force update genérico no saldo ou reserva.",
+        "constraints_addressed": [
+          "Captura e consulta locais por 72h; reenvio posterior sem viagem diária à sede. São requisitos do desenho, não desempenho medido.",
+          "Histórico imutável de observações e correções, fotos separadas com fila de upload e exportação completa são trabalho de integração proposto.",
+          "Identidade física única por peça; distinguir peça, tipo/SKU, local, reserva, consumo e observação.",
+          "Um backend pode simplificar operação para dois desenvolvedores; custo real de fotos e suporte ainda precisa de orçamento."
+        ],
+        "limitations": [
+          "Fatos de uso/movimentação continuam offline; confirmação global pode esperar 72h, bloqueando promessa remota.",
+          "Outbox CRUD não implementa por si só histórico nem regras de estoque. O README sugere servidor validar, mas contrato aprofundado manda force update incondicional: integração insegura sem alteração.",
+          "Dedupe por 24h no exemplo é menor que a desconexão de 72h. Usar IDs de evento duráveis por todo horizonte de replay/backup; nem 72h exatas bastam se reaparecer backup antigo.",
+          "A analogia de log de RecallWeave é de outro domínio, single-writer, e sua compactação descarta histórico; não adotar como motor de sync."
+        ],
+        "application_condition": "Adequado quando compromissos entre oficinas podem esperar conexão e a equipe prefere centralizar regra de reserva; coleta local deve continuar sempre.",
+        "cheap_rejection_experiment": "Duas oficinas, seis voluntários e 100 peças reais em sombra por 72h. Dois celulares pedem a mesma peça, ambos corrigem descrição e um registra uso; perder ACK, reordenar e repetir eventos inclusive após 96h. Rejeitar se houver duas confirmações válidas, fato/autor/foto perdido, duplicação de consumo, ou espera remota operacionalmente inaceitável.",
+        "source_evidence": [
+          {
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "README.md",
+            "start_line": 8,
+            "end_line": 10,
+            "excerpt": "read locally → write locally + to outbox",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "docs/backend-transport.md",
+            "start_line": 190,
+            "end_line": 190,
+            "excerpt": "saves the data unconditionally",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "docs/backend-transport.md",
+            "start_line": 508,
+            "end_line": 521,
+            "excerpt": "Store the cache for 24 hours",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+            "start_line": 290,
+            "end_line": 310,
+            "excerpt": "expect(result.data['title'], equals('Local Title'));",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "Herricka/RecallWeave",
+            "url": "https://github.com/Herricka/RecallWeave",
+            "pin": "1052515e0726a957544be151987440ea5342f450",
+            "file": "README.md",
+            "start_line": 164,
+            "end_line": 186,
+            "excerpt": "It is *derived* by replaying every",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "Herricka/RecallWeave",
+            "url": "https://github.com/Herricka/RecallWeave",
+            "pin": "1052515e0726a957544be151987440ea5342f450",
+            "file": "README.md",
+            "start_line": 402,
+            "end_line": 408,
+            "excerpt": "Concurrent writers to one directory can corrupt",
+            "evidence_level": "source read, not executed"
+          }
+        ]
+      },
+      {
+        "id": "A2",
+        "title": "Observações concorrentes preservadas e mescladas, com disputa explícita de disponibilidade",
+        "baseline_relation": {
+          "ids": [
+            "B2",
+            "B1"
+          ],
+          "classification": "materialmente modificada",
+          "reason": "Datum distingue LWW padrão de CRDTs explícitos e exige identidades de réplica; isso restringe merge a observações adequadas, sem inferir exclusividade de reserva."
+        },
+        "work_change": "Voluntários acrescentam observações, fotos e rótulos sem apagar relatos de outros. Divergências de local, identidade e consumo viram tarefas nomeadas para um responsável; disponibilidade disputada não autoriza viagem ou promessa.",
+        "software_change": "Replicar registros de observação identificados, usar conjuntos/texto colaborativo somente onde semântica couber e preservar correções como novos eventos. Campos de localização e reserva têm estado de conflito visível e decisão registrada. IDs de réplica distintos, migrações e manutenção de tombstones são parte do contrato. Canal de transporte e backend ainda precisam ser definidos.",
+        "constraints_addressed": [
+          "Captura e consulta locais por 72h; reenvio posterior sem viagem diária à sede. São requisitos do desenho, não desempenho medido.",
+          "Histórico imutável de observações e correções, fotos separadas com fila de upload e exportação completa são trabalho de integração proposto.",
+          "Identidade física única por peça; distinguir peça, tipo/SKU, local, reserva, consumo e observação.",
+          "Mais autonomia para descrição colaborativa durante desconexão; biblioteca cliente MIT e adaptadores locais permitem investigar baixo custo sem serviço imposto."
+        ],
+        "limitations": [
+          "LWW padrão convergir não significa preservar observações concorrentes. Exige modelagem explícita.",
+          "CRDT de contador pode convergir para quantidade inválida no domínio; conjunto de duas reservas preserva duas promessas, não as torna válidas. Exclusividade exige A1 ou A3, ou aceitar disputa.",
+          "Não foi demonstrado P2P sem servidor, sincronização de fotos, exportação completa, 45000 peças em Android barato ou custo de suporte.",
+          "Maior complexidade de esquema, réplicas, compactação e resolução pode exceder dois generalistas; README e testes lidos não são execução validada."
+        ],
+        "application_condition": "Adequado se perda de relatos e descrições concorrentes domina o custo, e a cooperativa aceita disponibilidade provisória e trabalho explícito de reconciliação; combinar política de reservas com A1 ou A3.",
+        "cheap_rejection_experiment": "Três celulares baratos, réplicas distintas, mesma peça e 100 descrições/fotos: editar offline, excluir/corrigir, restaurar backup, compactar uma réplica e sincronizar em ordens diferentes. Rejeitar se qualquer observação irrecuperável sumir, conflito relevante desaparecer, réplicas divergirem ou fila de revisão consumir mais de 30 minutos/dia por oficina no piloto.",
+        "source_evidence": [
+          {
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/README.md",
+            "start_line": 271,
+            "end_line": 274,
+            "excerpt": "For counters, sets, lists, and collaborative text",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/README.md",
+            "start_line": 256,
+            "end_line": 259,
+            "excerpt": "The default is last-write-wins",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/test/core/crdt_convergence_regressions_test.dart",
+            "start_line": 94,
+            "end_line": 104,
+            "excerpt": "both concurrent runs survive with distinct identities",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+            "start_line": 290,
+            "end_line": 310,
+            "excerpt": "expect(result.data['title'], equals('Local Title'));",
+            "evidence_level": "source read, not executed"
+          }
+        ]
+      },
+      {
+        "id": "A3",
+        "title": "Custódia por oficina com reserva local exclusiva e transferência reconhecida",
+        "baseline_relation": {
+          "ids": [
+            "B3"
+          ],
+          "classification": "materialmente modificada",
+          "reason": "Reserva atômica num único banco e aplicação em rede isolada têm fontes; protocolo de custódia entre oficinas é síntese do agente, ainda sem implementação lida."
+        },
+        "work_change": "Cada peça tem uma oficina custodiante e um ponto autorizado de reserva. Separar fisicamente reservadas, conferir etiqueta antes da entrega, distinguir intenção de transferência e recebimento. Durante transporte, peça fica indisponível para nova promessa nas duas pontas até reconhecimento de recebimento. Relato em celular isolado continua possível; reserva definitiva espera autoridade local.",
+        "software_change": "Registro local por oficina acessível em Wi-Fi local, com transação de reserva/consumo e histórico de eventos; celular mantém outbox fora do Wi-Fi. Catálogo agregado é informativo e mostra idade/estado. Transferência com ID único e gerações de custódia, confirmação explícita e fila de recuperação, sem liberar automaticamente só por relógio. Não copiar banco SQLite compartilhado em drive de rede.",
+        "constraints_addressed": [
+          "Captura e consulta locais por 72h; reenvio posterior sem viagem diária à sede. São requisitos do desenho, não desempenho medido.",
+          "Histórico imutável de observações e correções, fotos separadas com fila de upload e exportação completa são trabalho de integração proposto.",
+          "Identidade física única por peça; distinguir peça, tipo/SKU, local, reserva, consumo e observação.",
+          "Internet indisponível não impede reserva na rede local; evita depender de sede diária. Recursos físicos locais e suporte a oito pontos têm custo não medido."
+        ],
+        "limitations": [
+          "Se nem rede local/autoridade da oficina está acessível, celular isolado registra intenção e uso observado, mas não pode confirmar uma nova reserva exclusiva.",
+          "Benchstock é protótipo para uma pessoa, quantidade por SKU, sem fotos, contas, interface web ou sync; não é solução pronta para 60 pessoas e peças individuais.",
+          "Teste de duas conexões no mesmo banco não cobre dois bancos desconectados. Custódia única e handoff seguro são hipótese a implementar.",
+          "Histórico de reserva/release e import/restore estão ausentes na fonte; export CSV omite movimentos. Precisa ampliar histórico e validar export completo.",
+          "Autoridade local avariada e handoff sem ACK podem deixar peça bloqueada; recuperação precisa inspeção física e ato auditado, sem criar duas autoridades."
+        ],
+        "application_condition": "Adequado se cada oficina consegue manter ponto local confiável e fluxo físico de custódia; inadequado se todos precisam confirmar reservas definitivas em quaisquer celulares isolados simultaneamente.",
+        "cheap_rejection_experiment": "Duas oficinas, 20 peças etiquetadas, autoridade local simples e celulares em sombra. Disputar a última peça; cortar internet 72h e Wi-Fi local temporariamente; perder confirmação de transferência, duplicar mensagens e derrubar autoridade. Rejeitar se dupla autoridade confirmar, peça reaparecer disponível em trânsito, trabalho de captura parar ou recuperação ultrapassar uma hora com inspeção.",
+        "source_evidence": [
+          {
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "docs/ARCHITECTURE.md",
+            "start_line": 17,
+            "end_line": 23,
+            "excerpt": "uses `BEGIN IMMEDIATE` to serialise writers before reading balances",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "tests/test_core.py",
+            "start_line": 207,
+            "end_line": 226,
+            "excerpt": "self.assertCountEqual(results, ['reserved', 'conflict'])",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 7,
+            "end_line": 7,
+            "excerpt": "It has no claimed production deployment or established user base.",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 87,
+            "end_line": 89,
+            "excerpt": "Full reservation event history is not implemented.",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 78,
+            "end_line": 78,
+            "excerpt": "CSV contains only the current item summary, not kit or movement data.",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "identity": "bitsandbots/inventory",
+            "url": "https://github.com/bitsandbots/inventory",
+            "pin": "ea8b7cfd7de91c72e0473329a4a0e1db994b159d",
+            "file": "docs/README.md",
+            "start_line": 7,
+            "end_line": 11,
+            "excerpt": "All assets bundled locally (no CDN), works on isolated networks",
+            "evidence_level": "source read, not executed"
+          }
+        ]
+      }
+    ]
+  },
+  "report": "# Ensaio [research product]: peças, desconexão e compromissos\n\n**Resultado:** três desenhos condicionais merecem um piloto pequeno. Nenhuma fonte lida fornece solução pronta para as oito oficinas, 45 mil peças individuais, 60 voluntários e celulares Android desconectados por 72h. A decisão principal é **quem pode confirmar uma promessa sobre uma peça durante a desconexão**. Preservar observações e convergir dados não responde sozinho a essa pergunta.\n\nAs alternativas abaixo são síntese do agente apoiada em fontes reais descobertas pelo produto. Bibliotecas são exemplos de componentes e contraexemplos, sem recomendação de adoção. Não executei nenhum projeto, teste ou benchmark; li documentação e testes por meio do [research product]. Os pins e testemunhos integrais estão em `sources.json`; a indicação de linhas refere-se ao conteúdo retornado pelo produto.\n\n## Mudanças comuns no trabalho e no software\n\nProponho identificar fisicamente cada peça; tipo/SKU não substitui identidade individual. Registrar chegada, movimento, separação, uso e correção como ações com autor, dispositivo e ID estável. Correções devem apontar o registro corrigido e explicar o motivo, preservando ambos. Separar observação do voluntário, estado confirmado e disputa; mostrar a idade da última informação e a fila pendente. Um indicador de “sincronizado” não deve significar “disponível para prometer”.\n\nFotos precisam de armazenamento local durável e fila separada: o relato pode sincronizar antes da imagem, mas a interface deve avisar que ela falta. Definir exportação de eventos, projeções e fotos com seus vínculos, mais restauração verificada; CSV de saldo não basta. Esses são requisitos propostos, **não capacidades demonstradas nas fontes**. Fazer conferência física ao reservar/entregar, manter peças reservadas em local sinalizado e exigir confirmação antes de viagem entre oficinas. Nada disso exige ir diariamente à sede.\n\n## A1 — Captura offline e confirmação central de compromissos\n\n**Trabalho:** qualquer voluntário continua registrando fatos offline. Pedido de peça de outra oficina fica pendente até confirmação; uso físico já ocorrido é registrado como fato mesmo que viole uma reserva conhecida depois. A equipe reconcilia a exceção, sem apagar o fato para recompor saldo artificialmente.\n\n**Software:** banco local e outbox na mesma transação; IDs persistentes; servidor conserva eventos e produz a visão atual. Reserva e consumo aceitos pelo servidor obedecem regra de domínio transacional. Descrições, fatos e compromissos não compartilham um único campo sobrescrito. Evidência de journal vem de outro domínio: RecallWeave descreve estado derivado por replay, mas não é um motor de sincronização compartilhada.\n\nO README de `cherrypick-agency/synchronize_cache` diz “read locally → write locally + to outbox” (README.md:8–10; pin `896e6c60c6f321d8ab8b923f2fc3ac1004eaca32`; retorno `discovery02.json`, audit `002`). A leitura aprofundada muda a avaliação: o contrato de force update “saves the data unconditionally” (docs/backend-transport.md:190; `collect07.json`, audit `007`), embora o README fale em servidor validar regras. Portanto, **não aplicar esse force update genérico a reservas/saldo**. O teste de merge escolhe `Local Title`, preservando outros campos do servidor; ele não conserva duas descrições no mesmo campo (conflict_resolution_test.dart:290–310; `collect10.json`, audit `010`).\n\nOutro limite concreto: “Store the cache for 24 hours” no exemplo de idempotência (docs/backend-transport.md:508–521; audit `007`) não cobre 72h nem replay de backup antigo. Eventos de consumo precisam dedupe durável por ID, com horizonte compatível com retenção e recuperação. RecallWeave alerta “Concurrent writers to one directory can corrupt” (README.md:402–408; pin `1052515e0726a957544be151987440ea5342f450`; `discovery01.json`, audit `001`); compactação também pode descartar história. Aproveitar a ideia de correção por evento, não transferir o motor sem contrato novo.\n\n**Quando aplicar:** compromissos remotos podem esperar conexão; dois desenvolvedores preferem uma autoridade central. A captura não espera. **Custo/risco:** pode bloquear promessas por 72h e gerar fila de exceções; backend, fotos e backups continuam sob manutenção. O baixo custo é hipótese a medir.\n\n**Experimento que rejeita:** duas oficinas, seis voluntários, 100 peças em sombra por 72h. Pedir a mesma peça em dois celulares; editar a mesma descrição; registrar uso; perder ACK; repetir e reordenar mensagens após 96h. Rejeitar por dupla confirmação, observação/foto perdida, consumo duplicado ou espera operacionalmente intolerável. Deriva dos baselines B1/B4, materialmente modificados pelos limites de force update e dedupe.\n\n## A2 — Observações concorrentes preservadas e disponibilidade disputada\n\n**Trabalho:** voluntários acrescentam relatos, fotos, rótulos e correções sem apagar uns aos outros. Um responsável resolve divergências relevantes de identidade, local e consumo; disputa bloqueia promessa, mas não captura.\n\n**Software:** observações identificadas e histórico próprio; conjuntos ou texto colaborativo somente onde a semântica permitir. O estado “duas pessoas disseram locais diferentes” deve sobreviver à sincronização. Reserva exclusiva depende da política de A1 ou A3; esta alternativa muda sobretudo o tratamento da colaboração e a carga de revisão, podendo se combinar com elas.\n\n`Shreemanarjun/datum` distingue política padrão e estrutura colaborativa: “The default is last-write-wins” (packages/datum/README.md:256–259) versus “For counters, sets, lists, and collaborative text” (271–274; pin `2622d4245427284eb10159c58e759d1f5a024815`; `collect07.json`, audit `007`). Não basta ativar a biblioteca e presumir preservação. O teste de regressão exige identidades de réplica distintas e espera “both concurrent runs survive with distinct identities” (packages/datum/test/core/crdt_convergence_regressions_test.dart:94–104; `collect10.json`, audit `010`). Isso sustenta investigar o mecanismo; teste lido não equivale a teste executado no alvo.\n\n**Quando aplicar:** observações concorrentes são frequentes e a cooperativa consegue revisar conflitos. **Riscos:** convergência de contador não impede estoque negativo; preservar duas reservas num conjunto não torna ambas válidas. P2P sem backend, upload de fotos, exportação completa e desempenho em Android barato não foram demonstrados. Réplicas, tombstones e migrações podem exceder a capacidade de dois generalistas.\n\n**Experimento que rejeita:** três celulares baratos e réplicas distintas; mesmas descrições/fotos editadas offline, exclusão/correção, restauração de backup e compactação de uma réplica. Sincronizar em ordens distintas. Rejeitar por relato irrecuperável, conflito invisível, divergência persistente ou revisão superior a 30 minutos/dia por oficina no piloto. Baseline B2/B1 materialmente modificado; CRDT é componente descoberto, não alternativa nova por trocar biblioteca.\n\n## A3 — Custódia por oficina e reserva local exclusiva\n\n**Trabalho:** cada peça tem uma oficina custodiante e um ponto autorizado de reserva. Transferência tem intenção, saída, trânsito e recebimento reconhecido. Em trânsito a peça não volta automaticamente a disponível por expiração de relógio. Celular isolado continua registrando relatos/intenção; confirmação exclusiva espera a autoridade local, acessível pela rede da oficina mesmo sem internet.\n\n**Software:** um registro transacional por oficina, catálogo agregado informativo, captura local no celular e fila posterior. Handoff com ID e geração de custódia, ACK idempotente e recuperação auditada exige implementação própria. Não replicar arquivos de banco para simular exclusividade entre bancos independentes.\n\nA fonte descoberta por consulta de capacidades, `domsie/benchstock`, documenta `BEGIN IMMEDIATE` para serializar escritores antes de ler saldos (docs/ARCHITECTURE.md:17–23; pin `79c2b643f2078ef5efba5867a12623c3870a10a9`; `collect11.json`, audit `011`). O teste usa duas conexões ao **mesmo banco** e espera `['reserved', 'conflict']` (tests/test_core.py:207–226). Não prova exclusividade entre celulares desconectados.\n\nA própria fonte informa “It has no claimed production deployment or established user base.” (README.md:7; `collect10.json`, audit `010`). É protótipo pessoal por SKU, sem contas, anexos, interface web ou rede. “Full reservation event history is not implemented.” (README.md:89), e CSV omite kits/movimentos (78). Logo, serve de referência para regras locais, não produto pronto. Já `bitsandbots/inventory` mostra outro sentido de offline: “All assets bundled locally (no CDN), works on isolated networks” (docs/README.md:11; pin `ea8b7cfd7de91c72e0473329a4a0e1db994b159d`; `collect07.json`, audit `007`). Isso permite considerar rede local, sem presumir gravação em telefone fora dela.\n\n**Quando aplicar:** há ponto local confiável e disciplina de custódia física. **Riscos:** oito pontos aumentam suporte; autoridade avariada e ACK perdido podem bloquear peça. Não resolve promessa definitiva simultânea em quaisquer celulares isolados. O protocolo distribuído é síntese do agente, sem implementação comprovada nas fontes lidas.\n\n**Experimento que rejeita:** duas oficinas e 20 peças etiquetadas, disputar a última peça, internet fora 72h, queda temporária do Wi-Fi local, transferência com ACK perdido, mensagens repetidas e autoridade reiniciada. Rejeitar por dupla autoridade, peça disponível em trânsito, captura interrompida ou recuperação acima de uma hora com inspeção. Baseline B3 materialmente modificado pelas fronteiras da transação local.\n\n## Escolha e avaliação antes do compromisso\n\nNão há vencedora imposta. A1 troca rapidez da promessa remota por confirmação; A3 desloca autoridade para perto do estoque e exige custódia disciplinada; A2 preserva colaboração e exige política separada para compromisso exclusivo. Começar com telas/protocolo de estados e um piloto em sombra; nenhum sistema piloto deve comandar estoque real antes da revisão.\n\nUsar o mesmo roteiro e planilha de avaliação para todos: falsos disponíveis, viagens evitadas/perdidas, reservas duplicadas, eventos/fotos recuperáveis, minutos de captura/reconciliação, tempo de recuperação, armazenamento por telefone e bytes de sync. Carregar 45 mil metadados sintéticos e amostra realista de fotos em celulares existentes; medir bateria, busca e fila de 72h, sem confundir benchmark sintético com prova de rotina. Fazer export completo e restauração para diretório novo conferindo IDs, vínculos, eventos e fotos; exigir uma pessoa diferente dos autores conseguir operar o procedimento. Dois desenvolvedores devem estimar e registrar horas semanais de manutenção e custo mensal de dados/fotos/backups; o teto monetário precisa ser escolhido pela cooperativa.\n\n## Caminho, falhas e limites do ensaio\n\nBaseline foi salvo antes da primeira ação, hash `2e77f395cdc8e961968dc5446034f9abf50c3663b2f1b1419392ba90869a3df8`. Foram **7 chamadas de pesquisa e 4 aquisições** pelo runner, sem web, fontes lembradas, consulta por nomes memorizados ou leitura direta dos clones. Consultas por capacidades: problema amplo → sincronização/conflitos → reserva/custódia. URLs vieram dos retornos nativos; aquisição tem origem `tool` e testemunhos nos audits `004`, `005`, `006`, `009`.\n\n`discovery01.json` foi parcial com erro de integridade numa rota. `collect03.json` encontrou HTTP 403 e deixou outros repositórios sem leitura; aquisições elegíveis e coleta local pelo produto recuperaram leituras. `discovery08.json` não trouxe bundles úteis; aquisição e coleta recuperaram a fonte de reserva. Budgets limitados deixaram arquivos não examinados. Os cartões/tarefas de exploration são instruções de comparação e trechos não interpretados, não pesquisa adicional nem prova de efeito. Nada foi instalado ou executado das fontes. Não houve intervenção humana adicional ou processos de serviço iniciados.\n\nA revisão descartou substituição por app individual e adoção direta das ferramentas. Hot Stuff exige Android 13 e alerta para perda por exclusão/destruição do aparelho (README.md:28,51; pin `7e60bfb0907c6a553999af32f28302d4c59b722f`; `discovery01.json`, audit `001`). Outros READMEs de fila/versionamento sobrepõem A1/A2; viewers e hits de jogos não acrescentam desenho útil. Não transformar nomes adicionais em alternativas.\n\nContinuam desconhecidos: preservação/transferência de fotos, recuperação de celular perdido, revogação offline, estabilidade/manutenção dos componentes, custo real, identidade física duplicada e segurança formal do handoff. Catálogo nativo adicional e fontes elegíveis não lidas permanecem pesquisáveis, conforme `coverage.json`. Encerro abaixo dos tetos porque os quatro baselines foram revisados e as três decisões condicionais já sustentam um piloto; a evidência não autoriza contratação ou alegação de prontidão.\n\nArquivos em `evidence/`: `baseline.json`, `report.md`, `alternatives.json`, `sources.json`, `coverage.json`; retornos `discovery*.json`, `collect*.json` e testemunhos imutáveis em `audit/`. Nenhum processo alheio foi encerrado.\n",
+  "coverage": {
+    "schema_version": "1",
+    "baseline_sha256": "2e77f395cdc8e961968dc5446034f9abf50c3663b2f1b1419392ba90869a3df8",
+    "baseline_review": [
+      {
+        "id": "B1",
+        "outcome": "Incorporated and modified in A1/A2; journal alone does not solve stock authority."
+      },
+      {
+        "id": "B2",
+        "outcome": "A2; LWW discarded as default for observations, CRDT scope bounded."
+      },
+      {
+        "id": "B3",
+        "outcome": "A3; local transactional evidence found, distributed custody remains synthesis."
+      },
+      {
+        "id": "B4",
+        "outcome": "A1; remote confirmation may wait, recording never waits."
+      }
+    ],
+    "presented": [
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "considered_and_discarded": [
+      {
+        "option": "Replace spreadsheets with standalone offline Android inventory",
+        "reason": "Hot Stuff local-only privacy/export lifecycle does not establish collaboration; Android 13 minimum and archival status constrain cheap existing phones.",
+        "evidence_ids": [
+          "android",
+          "loss"
+        ]
+      },
+      {
+        "option": "Adopt RecallWeave as shared sync engine",
+        "reason": "Cross-domain analogy useful for supersession; single-writer no locking, no replica protocol and compaction drops history.",
+        "evidence_ids": [
+          "journal_limit"
+        ]
+      },
+      {
+        "option": "Auto-preserve or LWW as complete conflict policy",
+        "reason": "Tests select local same-field value; convergence does not preserve two observations or guarantee one valid reservation.",
+        "evidence_ids": [
+          "merge",
+          "lww"
+        ]
+      },
+      {
+        "option": "Adopt bitsandbots/inventory unchanged as phone-offline solution",
+        "reason": "Offline in read docs means no CDN and isolated local network, not independently disconnected Android writes.",
+        "evidence_ids": [
+          "lan"
+        ]
+      },
+      {
+        "option": "Adopt Benchstock unchanged",
+        "reason": "Useful local reservation model; declared personal prototype, missing phone UI, photos, sync, full reservation history and restore.",
+        "evidence_ids": [
+          "prototype",
+          "historygap",
+          "export"
+        ]
+      },
+      {
+        "option": "Treat each discovered Flutter sync library as different conceptual alternative",
+        "reason": "EchoSync and offline-sync-conflict README describe overlapping queue/version patterns. They add no independently supported work design beyond A1/A2."
+      },
+      {
+        "option": "Use unrelated catalog hits",
+        "reason": "Games, viewers, timetables and payment escrow hits not evidence of the cooperative workflows. ClaudeViewer README was read automatically, but not promoted."
+      }
+    ],
+    "research_sequence": [
+      {
+        "return": "discovery01.json",
+        "purpose": "Broad problem capabilities; first conjunction integrity error, several irrelevant metadata matches."
+      },
+      {
+        "return": "discovery02.json",
+        "purpose": "Reformulate toward sync/concurrency to compensate catalog lexical specificity."
+      },
+      {
+        "return": "collect03.json",
+        "purpose": "Deeper collect; HTTP 403, later repos unresolved/unexplored."
+      },
+      {
+        "audits": [
+          "004",
+          "005",
+          "006"
+        ],
+        "purpose": "Runner acquires eligible exact identities; no direct clone reading."
+      },
+      {
+        "return": "collect07.json",
+        "purpose": "Product reads local acquisitions; targeted docs plus bounded automatic tree."
+      },
+      {
+        "return": "discovery08.json",
+        "purpose": "Baseline custody/reservation coverage; native discovery yields Benchstock, root README collection incomplete."
+      },
+      {
+        "purpose": "Eligible acquisition of Benchstock."
+      },
+      {
+        "returns": [
+          "collect10.json",
+          "collect11.json"
+        ],
+        "purpose": "Product reads reservation docs and tests, merge tests and CRDT regressions; no source execution."
+      }
+    ],
+    "counts": {
+      "research_calls": 7,
+      "acquisitions": 4,
+      "source_repositories_with_content_read": 9,
+      "presented_alternatives": 3
+    },
+    "failures": [
+      "Discovery01 PARTIAL; first query integrity error.",
+      "Collect03 GitHub HTTP 403; three remaining repositories unresolved, no snippets obtained there.",
+      "Discovery08 PARTIAL with no bundles; collection via permitted acquisition recovered Benchstock.",
+      "Bounded budgets left many files unexamined; product reports INCOMPLETE_SOURCE_BUNDLES and FAMILIARITY_NOT_PROVIDED.",
+      "No plan rejected and no permission rejection; no external web or direct source-file reading."
+    ],
+    "human_intervention": "None beyond original task authorization and parent assignment.",
+    "unknowns_researchable": [
+      "Export/restore fidelity including original photos, attachment deduplication and partial upload recovery.",
+      "45,000 unique parts, 60 users, old/cheap Android versions, 72h battery/storage and actual queue volume.",
+      "Security/access revocation during disconnection and lost phone; deletion/retention policy.",
+      "Unique item identity, duplicate scans, wrong labels and physical custody disputes.",
+      "A3 formal handoff and recovery safety across lost acknowledgments and independent databases.",
+      "Maintenance maturity, release provenance and dependency/security assessment of every candidate.",
+      "Actual recurring hosting/photo/backup expense and volunteer reconciliation burden.",
+      "Additional eligible catalog hits: stockbook, ports-and-adapters reservation examples, offline library management; not acquired or read.",
+      "Non-GitHub native providers and transport alternatives not sampled."
+    ],
+    "stopping_reason": "Three decision-relevant conditional designs cover all four baseline options. Further libraries do not warrant extra conceptual alternatives. Evidence is sufficient for a pilot comparison, not procurement; open gaps are explicit. Stopped below both ceilings.",
+    "processes": "All runner sessions completed; no services started, no source executed, no processes killed."
+  },
+  "sources": {
+    "schema_version": "1",
+    "sources": [
+      {
+        "identity": "crownleo/ClaudeViewer",
+        "url": "https://github.com/crownleo/ClaudeViewer",
+        "pin": "336fe39449abaa70ae3164615e00a6e94e2f167c",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery01.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [],
+        "role": "read but not used as independent design evidence"
+      },
+      {
+        "identity": "Herricka/RecallWeave",
+        "url": "https://github.com/Herricka/RecallWeave",
+        "pin": "1052515e0726a957544be151987440ea5342f450",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery01.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "journal",
+            "identity": "Herricka/RecallWeave",
+            "url": "https://github.com/Herricka/RecallWeave",
+            "pin": "1052515e0726a957544be151987440ea5342f450",
+            "file": "README.md",
+            "start_line": 164,
+            "end_line": 186,
+            "excerpt": "It is *derived* by replaying every",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "journal_limit",
+            "identity": "Herricka/RecallWeave",
+            "url": "https://github.com/Herricka/RecallWeave",
+            "pin": "1052515e0726a957544be151987440ea5342f450",
+            "file": "README.md",
+            "start_line": 402,
+            "end_line": 408,
+            "excerpt": "Concurrent writers to one directory can corrupt",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      },
+      {
+        "identity": "PamCatten/hot-stuff",
+        "url": "https://github.com/PamCatten/hot-stuff",
+        "pin": "7e60bfb0907c6a553999af32f28302d4c59b722f",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery01.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "android",
+            "identity": "PamCatten/hot-stuff",
+            "url": "https://github.com/PamCatten/hot-stuff",
+            "pin": "7e60bfb0907c6a553999af32f28302d4c59b722f",
+            "file": "README.md",
+            "start_line": 26,
+            "end_line": 28,
+            "excerpt": "a physical device running at least Android 13, API level 33",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "loss",
+            "identity": "PamCatten/hot-stuff",
+            "url": "https://github.com/PamCatten/hot-stuff",
+            "pin": "7e60bfb0907c6a553999af32f28302d4c59b722f",
+            "file": "README.md",
+            "start_line": 49,
+            "end_line": 57,
+            "excerpt": "risk of irreversible data loss by app deletion or device destruction",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      },
+      {
+        "identity": "cherrypick-agency/synchronize_cache",
+        "url": "https://github.com/cherrypick-agency/synchronize_cache",
+        "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery02.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect07.json",
+            "paths": [
+              "README.md",
+              "docs/backend-transport.md",
+              "docs-site/.vitepress/config.ts",
+              "docs-site/.vitepress/theme/index.ts",
+              "docs-site/.vitepress/theme/plugins/api-linker.ts",
+              "docs-site/.vitepress/theme/plugins/dartpad.ts",
+              "example/todo_advanced/frontend/ios/Runner/Runner-Bridging-Header.h",
+              "LICENSE",
+              "README.ru.md",
+              "docs-site/package.json",
+              "example/test/database_test.dart",
+              "example/todo_advanced/README.md",
+              "example/todo_advanced/backend/test/routes/simulate_test.dart",
+              "example/todo_advanced/backend/test/routes/todos_test.dart",
+              "example/todo_advanced/frontend/integration_test/app_test.dart",
+              "packages/offline_first_sync_drift/example/example.dart",
+              "packages/offline_first_sync_drift/example/example.drift.dart",
+              "packages/offline_first_sync_drift_rest/example/example.dart"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect10.json",
+            "paths": [
+              "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+              "packages/offline_first_sync_drift_rest/test/e2e/parallel_push_test.dart"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "outbox",
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "README.md",
+            "start_line": 8,
+            "end_line": 10,
+            "excerpt": "read locally → write locally + to outbox",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "force",
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "docs/backend-transport.md",
+            "start_line": 190,
+            "end_line": 190,
+            "excerpt": "saves the data unconditionally",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "dedupe",
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "docs/backend-transport.md",
+            "start_line": 508,
+            "end_line": 521,
+            "excerpt": "Store the cache for 24 hours",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "merge",
+            "identity": "cherrypick-agency/synchronize_cache",
+            "url": "https://github.com/cherrypick-agency/synchronize_cache",
+            "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+            "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+            "start_line": 290,
+            "end_line": 310,
+            "excerpt": "expect(result.data['title'], equals('Local Title'));",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      },
+      {
+        "identity": "gorkem91/flutter-offline-first-architecture",
+        "url": "https://github.com/gorkem91/flutter-offline-first-architecture",
+        "pin": "4617f0e95ba3f6d1708b530dfdc6c2d33bbc8945",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery02.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [],
+        "role": "read but not used as independent design evidence"
+      },
+      {
+        "identity": "Manikanta-dev-sys/offline-sync-conflict",
+        "url": "https://github.com/Manikanta-dev-sys/offline-sync-conflict",
+        "pin": "803d37578a7f29c3e64f826b3d9c218425d26323",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery02.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [],
+        "role": "read but not used as independent design evidence"
+      },
+      {
+        "identity": "Shreemanarjun/datum",
+        "url": "https://github.com/Shreemanarjun/datum",
+        "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/discovery02.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect07.json",
+            "paths": [
+              "packages/datum/README.md",
+              "README.md",
+              "packages/datum/dart_test.yaml",
+              "packages/datum/example/.gitignore",
+              "packages/datum/example/.metadata",
+              "packages/datum/example/README.md",
+              "packages/datum/example/analysis_options.yaml",
+              "packages/datum/example/android/.gitignore",
+              "packages/datum/example/integration_test/datum_e2e_perf_test.dart",
+              "packages/datum/example/integration_test/datum_relations_typed_test.dart",
+              "packages/datum/example/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+              "packages/datum/example/test/app/view/app_test.dart"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect10.json",
+            "paths": [
+              "packages/datum/test/core/crdt_convergence_regressions_test.dart",
+              "packages/datum/test/unit/crdt_test.dart"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "crdt",
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/README.md",
+            "start_line": 271,
+            "end_line": 274,
+            "excerpt": "For counters, sets, lists, and collaborative text",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "lww",
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/README.md",
+            "start_line": 256,
+            "end_line": 259,
+            "excerpt": "The default is last-write-wins",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "replica",
+            "identity": "Shreemanarjun/datum",
+            "url": "https://github.com/Shreemanarjun/datum",
+            "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+            "file": "packages/datum/test/core/crdt_convergence_regressions_test.dart",
+            "start_line": 94,
+            "end_line": 104,
+            "excerpt": "both concurrent runs survive with distinct identities",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      },
+      {
+        "identity": "bitsandbots/inventory",
+        "url": "https://github.com/bitsandbots/inventory",
+        "pin": "ea8b7cfd7de91c72e0473329a4a0e1db994b159d",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/collect07.json",
+            "paths": [
+              "README.md",
+              "libs/js/bootstrap-datepicker.min.js",
+              "libs/js/bootstrap.min.js",
+              "libs/js/functions.js",
+              "libs/js/jquery.min.js",
+              "playwright.config.js",
+              "tests/ui/auth.setup.js",
+              "tests/ui/core-inventory.spec.js",
+              "tests/ui/csp-compliance.spec.js",
+              "docs/README.md",
+              "migrations/README.md",
+              "package.json"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect10.json",
+            "paths": [
+              "docs/architecture.md"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "lan",
+            "identity": "bitsandbots/inventory",
+            "url": "https://github.com/bitsandbots/inventory",
+            "pin": "ea8b7cfd7de91c72e0473329a4a0e1db994b159d",
+            "file": "docs/README.md",
+            "start_line": 7,
+            "end_line": 11,
+            "excerpt": "All assets bundled locally (no CDN), works on isolated networks",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      },
+      {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "origin": "tool",
+        "read_returns": [
+          {
+            "file": "evidence/collect10.json",
+            "paths": [
+              "README.md"
+            ],
+            "complete": false
+          },
+          {
+            "file": "evidence/collect11.json",
+            "paths": [
+              "docs/ARCHITECTURE.md",
+              "tests/test_core.py"
+            ],
+            "complete": false
+          }
+        ],
+        "cited_evidence": [
+          {
+            "id": "localreserve",
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "docs/ARCHITECTURE.md",
+            "start_line": 17,
+            "end_line": 23,
+            "excerpt": "uses `BEGIN IMMEDIATE` to serialise writers before reading balances",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "localtest",
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "tests/test_core.py",
+            "start_line": 207,
+            "end_line": 226,
+            "excerpt": "self.assertCountEqual(results, ['reserved', 'conflict'])",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "prototype",
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 7,
+            "end_line": 7,
+            "excerpt": "It has no claimed production deployment or established user base.",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "historygap",
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 87,
+            "end_line": 89,
+            "excerpt": "Full reservation event history is not implemented.",
+            "evidence_level": "source read, not executed"
+          },
+          {
+            "id": "export",
+            "identity": "domsie/benchstock",
+            "url": "https://github.com/domsie/benchstock",
+            "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+            "file": "README.md",
+            "start_line": 78,
+            "end_line": 78,
+            "excerpt": "CSV contains only the current item summary, not kit or movement data.",
+            "evidence_level": "source read, not executed"
+          }
+        ],
+        "role": "supports or limits presented design"
+      }
+    ],
+    "identity_origin": "All identities appeared in native discovery returns before acquisition/collect; eligible registry and acquisition audits hold witnesses.",
+    "evidence": {
+      "outbox": {
+        "identity": "cherrypick-agency/synchronize_cache",
+        "url": "https://github.com/cherrypick-agency/synchronize_cache",
+        "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+        "file": "README.md",
+        "start_line": 8,
+        "end_line": 10,
+        "excerpt": "read locally → write locally + to outbox",
+        "evidence_level": "source read, not executed"
+      },
+      "force": {
+        "identity": "cherrypick-agency/synchronize_cache",
+        "url": "https://github.com/cherrypick-agency/synchronize_cache",
+        "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+        "file": "docs/backend-transport.md",
+        "start_line": 190,
+        "end_line": 190,
+        "excerpt": "saves the data unconditionally",
+        "evidence_level": "source read, not executed"
+      },
+      "dedupe": {
+        "identity": "cherrypick-agency/synchronize_cache",
+        "url": "https://github.com/cherrypick-agency/synchronize_cache",
+        "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+        "file": "docs/backend-transport.md",
+        "start_line": 508,
+        "end_line": 521,
+        "excerpt": "Store the cache for 24 hours",
+        "evidence_level": "source read, not executed"
+      },
+      "merge": {
+        "identity": "cherrypick-agency/synchronize_cache",
+        "url": "https://github.com/cherrypick-agency/synchronize_cache",
+        "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+        "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+        "start_line": 290,
+        "end_line": 310,
+        "excerpt": "expect(result.data['title'], equals('Local Title'));",
+        "evidence_level": "source read, not executed"
+      },
+      "journal": {
+        "identity": "Herricka/RecallWeave",
+        "url": "https://github.com/Herricka/RecallWeave",
+        "pin": "1052515e0726a957544be151987440ea5342f450",
+        "file": "README.md",
+        "start_line": 164,
+        "end_line": 186,
+        "excerpt": "It is *derived* by replaying every",
+        "evidence_level": "source read, not executed"
+      },
+      "journal_limit": {
+        "identity": "Herricka/RecallWeave",
+        "url": "https://github.com/Herricka/RecallWeave",
+        "pin": "1052515e0726a957544be151987440ea5342f450",
+        "file": "README.md",
+        "start_line": 402,
+        "end_line": 408,
+        "excerpt": "Concurrent writers to one directory can corrupt",
+        "evidence_level": "source read, not executed"
+      },
+      "crdt": {
+        "identity": "Shreemanarjun/datum",
+        "url": "https://github.com/Shreemanarjun/datum",
+        "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+        "file": "packages/datum/README.md",
+        "start_line": 271,
+        "end_line": 274,
+        "excerpt": "For counters, sets, lists, and collaborative text",
+        "evidence_level": "source read, not executed"
+      },
+      "lww": {
+        "identity": "Shreemanarjun/datum",
+        "url": "https://github.com/Shreemanarjun/datum",
+        "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+        "file": "packages/datum/README.md",
+        "start_line": 256,
+        "end_line": 259,
+        "excerpt": "The default is last-write-wins",
+        "evidence_level": "source read, not executed"
+      },
+      "replica": {
+        "identity": "Shreemanarjun/datum",
+        "url": "https://github.com/Shreemanarjun/datum",
+        "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+        "file": "packages/datum/test/core/crdt_convergence_regressions_test.dart",
+        "start_line": 94,
+        "end_line": 104,
+        "excerpt": "both concurrent runs survive with distinct identities",
+        "evidence_level": "source read, not executed"
+      },
+      "localreserve": {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "file": "docs/ARCHITECTURE.md",
+        "start_line": 17,
+        "end_line": 23,
+        "excerpt": "uses `BEGIN IMMEDIATE` to serialise writers before reading balances",
+        "evidence_level": "source read, not executed"
+      },
+      "localtest": {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "file": "tests/test_core.py",
+        "start_line": 207,
+        "end_line": 226,
+        "excerpt": "self.assertCountEqual(results, ['reserved', 'conflict'])",
+        "evidence_level": "source read, not executed"
+      },
+      "prototype": {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "file": "README.md",
+        "start_line": 7,
+        "end_line": 7,
+        "excerpt": "It has no claimed production deployment or established user base.",
+        "evidence_level": "source read, not executed"
+      },
+      "historygap": {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "file": "README.md",
+        "start_line": 87,
+        "end_line": 89,
+        "excerpt": "Full reservation event history is not implemented.",
+        "evidence_level": "source read, not executed"
+      },
+      "export": {
+        "identity": "domsie/benchstock",
+        "url": "https://github.com/domsie/benchstock",
+        "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+        "file": "README.md",
+        "start_line": 78,
+        "end_line": 78,
+        "excerpt": "CSV contains only the current item summary, not kit or movement data.",
+        "evidence_level": "source read, not executed"
+      },
+      "lan": {
+        "identity": "bitsandbots/inventory",
+        "url": "https://github.com/bitsandbots/inventory",
+        "pin": "ea8b7cfd7de91c72e0473329a4a0e1db994b159d",
+        "file": "docs/README.md",
+        "start_line": 7,
+        "end_line": 11,
+        "excerpt": "All assets bundled locally (no CDN), works on isolated networks",
+        "evidence_level": "source read, not executed"
+      },
+      "android": {
+        "identity": "PamCatten/hot-stuff",
+        "url": "https://github.com/PamCatten/hot-stuff",
+        "pin": "7e60bfb0907c6a553999af32f28302d4c59b722f",
+        "file": "README.md",
+        "start_line": 26,
+        "end_line": 28,
+        "excerpt": "a physical device running at least Android 13, API level 33",
+        "evidence_level": "source read, not executed"
+      },
+      "loss": {
+        "identity": "PamCatten/hot-stuff",
+        "url": "https://github.com/PamCatten/hot-stuff",
+        "pin": "7e60bfb0907c6a553999af32f28302d4c59b722f",
+        "file": "README.md",
+        "start_line": 49,
+        "end_line": 57,
+        "excerpt": "risk of irreversible data loss by app deletion or device destruction",
+        "evidence_level": "source read, not executed"
+      }
+    }
+  },
+  "verification": {
+    "all_cited_literals_present_in_recorded_product_returns": true,
+    "all_acquisitions_have_native_witnesses": true,
+    "no_projects_executed": true,
+    "pin_scope": "Treat corpus pins as reported by product; independent Git blobs checked where sources were acquired, not every hosted corpus."
+  }
+}

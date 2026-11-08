@@ -1,0 +1,120 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_exploration_memory_test.md
+ * @layer L1
+ * @updated 2026-10-28
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"encoding/json"
+	"strings"
+	"testing"
+)
+
+func memoryFixture(t *testing.T) domain.InsightExplorationMemory {
+	t.Helper()
+	report := insightLeadFixture("[Next](https://github.com/other/idea)\nA useful possibility.\n")
+	beginInsightExplorationMemory(&report)
+	entry := insightMemoryRemember(&report, report.Candidates[0].Product.Identity)
+	recordInsightMemoryObservation(&report, entry.Identity, "COLLECTED", &report.Bundles[0])
+	addInsightReferenceLeads(&report)
+	next := insightMemoryRemember(&report, report.ReferenceLeads[0].Target)
+	lead := report.ReferenceLeads[0]
+	next.Lead = &lead
+	return sealInsightMemory(*report.ExplorationMemory)
+}
+func TestExplorationMemoryIntegrityFeedbackAndImmutability(t *testing.T) {
+	memory := memoryFixture(t)
+	before, _ := json.Marshal(memory)
+	copy, err := ValidateInsightExplorationMemory(&memory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	copy.Entries[0].State = "changed"
+	after, _ := json.Marshal(memory)
+	if string(before) != string(after) {
+		t.Fatal("input mutated")
+	}
+	updated, err := UpdateInsightExplorationMemory(memory, "https://github.com/other/idea", "discarded", "Not applicable to this investigation")
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry := insightMemoryFind(&updated, domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "other/idea"})
+	if entry == nil || entry.State != "DISCARDED" || entry.Reason == "" {
+		t.Fatal("discard reason lost")
+	}
+	reopened, err := UpdateInsightExplorationMemory(updated, "https://github.com/other/idea", "pending", "Explore another mechanism")
+	if err != nil || insightMemoryFind(&reopened, entry.Identity).State != "PENDING" {
+		t.Fatal("reopen failed")
+	}
+	for _, state := range []string{"examined", "unsupported"} {
+		if _, err := UpdateInsightExplorationMemory(memory, "https://github.com/other/idea", state, "reason"); err == nil {
+			t.Fatal("feedback fabricated reading")
+		}
+	}
+	if _, err := UpdateInsightExplorationMemory(memory, "https://github.com/other/idea", "discarded", ""); err == nil {
+		t.Fatal("reasonless discard")
+	}
+	for _, mode := range []string{"hash", "state", "observation", "lead", "duplicate", "reason"} {
+		raw, _ := json.Marshal(memory)
+		var bad domain.InsightExplorationMemory
+		_ = json.Unmarshal(raw, &bad)
+		switch mode {
+		case "hash":
+			bad.ID = "bad"
+		case "state":
+			bad.Entries[0].State = "INVALID"
+		case "observation":
+			bad.Entries[0].LastRead = &domain.InsightReadObservation{Source: domain.CommitRef{Owner: "wrong", Repo: "repo", Commit: strings.Repeat("a", 40)}, Path: "README.md", ContentHash: "sha256:" + strings.Repeat("a", 64)}
+		case "lead":
+			for i := range bad.Entries {
+				if bad.Entries[i].Lead != nil {
+					bad.Entries[i].Lead.Reference.Excerpt = "tampered"
+				}
+			}
+		case "duplicate":
+			bad.Entries = append(bad.Entries, bad.Entries[0])
+		case "reason":
+			bad.Entries[0].State = "DISCARDED"
+			bad.Entries[0].Reason = ""
+		}
+		if mode != "hash" {
+			bad = sealInsightMemory(bad)
+		}
+		if _, err := ValidateInsightExplorationMemory(&bad); err == nil {
+			t.Fatal("invalid memory admitted", mode)
+		}
+	}
+}
+func TestExplorationMemoryReportsCapacityWithoutRemovingHistory(t *testing.T) {
+	memory, _ := ValidateInsightExplorationMemory(nil)
+	memory.Generation = 1
+	report := domain.InsightSiteReport{ExplorationMemory: &memory, Plan: domain.InsightSitePlan{Request: domain.InsightSiteRequest{Discovery: domain.InsightDiscoveryRequest{Question: "queue"}}}, Gaps: []string{}}
+	for i := 0; i < 256; i++ {
+		id := domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "org/r" + strings.Repeat("x", i%50) + string(rune('A'+i/50)), CanonicalURL: ""}
+		id.ExternalID += "-" + string(rune('a'+i%26))
+		id.CanonicalURL = "https://github.com/" + id.ExternalID
+		insightMemoryRemember(&report, id)
+	}
+	count := len(report.ExplorationMemory.Entries)
+	if count != 256 {
+		t.Fatal("fixture not full", count)
+	}
+	if insightMemoryRemember(&report, domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "extra/one", CanonicalURL: "https://github.com/extra/one"}) != nil || len(report.ExplorationMemory.Entries) != count || !marketContains(report.Gaps, "MEMORY_CAPACITY") {
+		t.Fatal("capacity erased history or silent")
+	}
+}
+
+func TestExplorationMemoryPrioritizesUnexaminedCandidates(t *testing.T) {
+	memory := memoryFixture(t)
+	old := domain.InsightSiteCandidate{ID: "old", Product: insightSiteProduct(domain.ConnectorGitHubCatalog)}
+	fresh := old
+	fresh.ID = "fresh"
+	fresh.Product.Identity = domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "new/possibility", CanonicalURL: "https://github.com/new/possibility"}
+	values := selectInsightSitesWithMemory([]domain.InsightSiteCandidate{old, fresh}, 1, &memory)
+	if values[0].Selected || !values[1].Selected || !marketContains(values[1].SelectionReasons, "UNEXAMINED_IN_MEMORY") {
+		t.Fatal("known history crowded out a new path")
+	}
+}

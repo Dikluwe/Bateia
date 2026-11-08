@@ -1,0 +1,56 @@
+[
+  {
+    "schema_version": "1",
+    "repository": {
+      "owner": "salsa-rs",
+      "repo": "salsa",
+      "commit": "30c80938bcc32cdf19ed33dd5d58e6ddbccd34d2"
+    },
+    "items": [
+      {
+        "kind": "README",
+        "ref": {
+          "owner": "salsa-rs",
+          "repo": "salsa",
+          "commit": "30c80938bcc32cdf19ed33dd5d58e6ddbccd34d2"
+        },
+        "path": "README.md",
+        "content": "# salsa\n\n[![Test](https://github.com/salsa-rs/salsa/workflows/Test/badge.svg)](https://github.com/salsa-rs/salsa/actions?query=workflow%3ATest)\n[![Book](https://github.com/salsa-rs/salsa/workflows/Book/badge.svg)](https://github.com/salsa-rs/salsa/actions?query=workflow%3ABook)\n[![Released API docs](https://docs.rs/salsa/badge.svg)](https://docs.rs/salsa)\n[![Crates.io](https://img.shields.io/crates/v/salsa.svg)](https://crates.io/crates/salsa)\n\n*A generic framework for on-demand, incrementalized computation.*\n\n<img alt=\"Salsa Logo\" src=\"https://raw.githubusercontent.com/salsa-rs/logo/main/FerrisSalsa4-01.svg\" width=\"200\" />\n\n## Credits\n\nThis system is heavily inspired by [adapton](http://adapton.org/), [glimmer](https://github.com/glimmerjs/glimmer-vm), and rustc's query\nsystem. So credit goes to Eduard-Mihai Burtescu, Matthew Hammer,\nYehuda Katz, and Michael Woerister.\n\n## Key idea\n\nThe key idea of `salsa` is that you define your program as a set of\n**queries**. Every query is used like function `K -> V` that maps from\nsome key of type `K` to a value of type `V`. Queries come in two basic\nvarieties:\n\n- **Inputs**: the base inputs to your system. You can change these\n  whenever you like.\n- **Functions**: pure functions (no side effects) that transform your\n  inputs into other values. The results of queries are memoized to\n  avoid recomputing them a lot. When you make changes to the inputs,\n  we'll figure out (fairly intelligently) when we can re-use these\n  memoized values and when we have to recompute them.\n\n## Want to learn more?\n\nTo learn more about Salsa, try one of the following:\n\n- read the [heavily commented examples](https://github.com/salsa-rs/salsa/tree/master/examples);\n- check out the [Salsa book](https://salsa-rs.github.io/salsa);\n    - [\u4e2d\u6587\u7248](https://rust-chinese-translation.github.io/salsa-book)\n- watch one of our [videos](https://salsa-rs.github.io/salsa/videos.html).\n\n## Getting in touch\n\nThe bulk of the discussion happens in the [issues](https://github.com/salsa-rs/salsa/issues)\nand [pull requests](https://github.com/salsa-rs/salsa/pulls),\nbut we have a [zulip chat](https://salsa.zulipchat.com/) as well.\n\n## Contributing\n\nTo create a release and publish to crates.io, update the `version` field in Cargo.toml.\nAfter pushed, GitHub Actions will publish the crates to crates.io automatically.\n",
+        "content_hash": "sha256:50c7e890c43b6f0dd2e16a35bac2cb6ac942c828ea50f604b8b4500d8994e444"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 2352,
+    "target_results": [],
+    "tree_complete": false,
+    "depth_reached": 0,
+    "requirement_coverage": []
+  },
+  {
+    "schema_version": "1",
+    "repository": {
+      "owner": "typst",
+      "repo": "comemo",
+      "commit": "5944487f5e9d11949038662df4b307ec56f153b3"
+    },
+    "items": [
+      {
+        "kind": "README",
+        "ref": {
+          "owner": "typst",
+          "repo": "comemo",
+          "commit": "5944487f5e9d11949038662df4b307ec56f153b3"
+        },
+        "path": "README.md",
+        "content": "# comemo\n[![Crates.io](https://img.shields.io/crates/v/comemo.svg)](https://crates.io/crates/comemo)\n[![Documentation](https://docs.rs/comemo/badge.svg)](https://docs.rs/comemo)\n\nIncremental computation through constrained memoization.\n\n```toml\n[dependencies]\ncomemo = \"0.5\"\n```\n\nA _memoized_ function caches its return values so that it only needs to be\nexecuted once per set of unique arguments. This makes for a great optimization\ntool. However, basic memoization is rather limited. For more advanced use cases\nlike incremental compilers, it lacks the necessary granularity. Consider, for\nexample, the case of the simple `.calc` scripting language. Scripts in this\nlanguage consist of a sum of numbers and `eval` statements that reference other\n`.calc` scripts. A few examples are:\n\n- `alpha.calc`: `\"2 + eval beta.calc\"`\n- `beta.calc`: `\"2 + 3\"`\n- `gamma.calc`: `\"8 + 3\"`\n\nWe can easily write an interpreter that computes the output of a `.calc` file:\n\n```rust\n/// Evaluate a `.calc` script.\nfn evaluate(script: &str, files: &Files) -> i32 {\n    script\n        .split('+')\n        .map(str::trim)\n        .map(|part| match part.strip_prefix(\"eval \") {\n            Some(path) => evaluate(&files.read(path), files),\n            None => part.parse::<i32>().unwrap(),\n        })\n        .sum()\n}\n\nimpl Files {\n    /// Read a file from storage.\n    fn read(&self, path: &str) -> String {\n        ...\n    }\n}\n```\n\nBut what if we want to make this interpreter _incremental,_ meaning that it only\nrecomputes a script's result if it or any of its dependencies change? Basic\nmemoization won't help us with this because the interpreter needs the whole set\nof files as input\u2014meaning that a change to any file invalidates all memoized\nresults.\n\nThis is where comemo comes into play. It implements _constrained memoization_\nwith more fine-grained access tracking. To use it, we can just:\n\n- Add the `#[memoize]` attribute to the `evaluate` function.\n- Add the `#[track]` attribute to the impl block of `Files`.\n- Wrap the `files` argument in comemo's `Tracked` container.\n\nThis instructs comemo to memoize the evaluation and to automatically track all\nfile accesses during a memoized call. As a result, we can reuse the result of a\n`.calc` script evaluation as long as its dependencies stay the same\u2014even if\nother files change.\n\n```rust\nuse comemo::{memoize, track, Tracked};\n\n/// Evaluate a `.calc` script.\n#[memoize]\nfn evaluate(script: &str, files: Tracked<Files>) -> i32 {\n    ...\n}\n\n#[track]\nimpl Files {\n    /// Read a file from storage.\n    fn read(&self, path: &str) -> String {\n        ...\n    }\n}\n```\n\nFor the full example see [`examples/calc.rs`][calc].\n\n[calc]: https://github.com/typst/comemo/blob/main/examples/calc.rs\n\n## License\nThis crate is dual-licensed under the MIT and Apache 2.0 licenses.\n",
+        "content_hash": "sha256:273c07f52c0fb4775793193e98389fe4166fd0c0c67a232da871ccf991c463c9"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 2806,
+    "target_results": [],
+    "tree_complete": false,
+    "depth_reached": 0,
+    "requirement_coverage": []
+  }
+]

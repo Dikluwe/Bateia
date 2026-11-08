@@ -1,0 +1,361 @@
+{
+  "fixture": "Synthetic pins and opaque snapshots; no index restore or source execution",
+  "binary_sha256": "8fa845b4b347ac1fa3d9674169f5082e2ca465ac2085362454d2dbdd9d98502c",
+  "binary_version": "xerj v1.0.0-rc.101",
+  "hub_commit": "708e974516a4ba1ba9bfa312aff164041997cfd6",
+  "main_commit": "1557de2f5be981d9db441969201c92a8af6d2de3",
+  "main_gate_sha256": "5f024e8265916c3f3e4478fc9d8a5962d595a6f2d3b028b8fed1ea246bd78d07",
+  "fixture_public_key": "95132649f71f5ddf97253b0af2eaaa4b7331ae6efa9674e2a18adf2b7fa043b0",
+  "source_sha256": {
+    "tools/hub-packs/hub_packs.py": "14243338a606b6745c7f05c802a4588601cd3019963a2da2f796b6515187c1fe",
+    "tools/hub-packs/ed25519.sh": "15a3f8edc265d798b123f4742db1f5aa09fb92f12d71e3145e90ce4caa2ee921",
+    "tools/xerj-code/hub/validate_hub.py": "8745820b39b174548f119536c840b3ba770ee422dee1f6964eb175175cb8db6e",
+    "tools/corpus-hub-site/agent_score.py": "6d673e42071402614e83ccdd4376118b2397912ea4fe51ede8ba3db456f458de",
+    "tools/corpus-hub-site/contributors.py": "0c45be82b591a052f5ca29c7e037ba069734ce2f21e20557bb20bb8e8b82ca5a",
+    "tools/corpus-hub-site/fetch_repo_stats.py": "2e113bc69e0b4eebedac03897e29850ea091c884a9fc88a994a5cb70210f398f",
+    "tools/corpus-hub-site/fetch_x_posts.py": "0188d4cacbfa36580638e914d79e5889388d40681f945cc67e358fe153d5a53d",
+    "tools/corpus-hub-site/gen.py": "c148abe95d5a3141e269685032415d9b45a16eb2dc510c5fbb0861c3c4c7cf6f",
+    "tools/corpus-hub-site/gh_stars.py": "c49d07b2e3c1a7c7ecfe10fbcb8e47d3bafae9a7dfac3a433414a7d7c00b21d0",
+    "tools/corpus-hub-site/private_data.py": "bcd42f5690234ddd2ce1c851b9d2a3358a4b292e6965e3b92bec59c8cbc923c5",
+    "tools/corpus-hub-site/repo_pages.py": "fadcfe77ee79affdd0de6f4a16891440dad0fa68ec4122b5cbe80190cb2af238",
+    "tools/corpus-hub-site/search_index.py": "d580e90b2259e2fed1563e112ac34a18a6b869eac65740d0c28190ce7b09c301",
+    "tools/corpus-hub-site/test_gen.py": "60a54611a856647ef6fb0e0e541acf416c5a3478a813534e112f4e523e50c8a5",
+    "tools/corpus-hub-site/treemap.py": "bc1d78582538e9eb860000fe6aac6a2640d0c8e6b4ff07705b3d292e64e01abb",
+    "tools/corpus-hub-site/usage.py": "0dd39daca1e20a97648dc6140253308c022b74baf0ca11bf9ba13eb6a6759556"
+  },
+  "results": {
+    "before": {
+      "pin_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "quality_grade": "G7 5.0/5",
+      "page_has_grade_5": true,
+      "page_has_new_pin": false,
+      "g7_suite_sha256": "3c452505a2f1bc10b4dc07217403c087992a03da0ecb8776bc773fc0d89d2ec5"
+    },
+    "after_repin": {
+      "pin_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "quality_grade": "G7 5.0/5",
+      "page_has_grade_5": true,
+      "page_has_new_pin": true,
+      "g7_suite_sha256": "3c452505a2f1bc10b4dc07217403c087992a03da0ecb8776bc773fc0d89d2ec5"
+    },
+    "without_suite": {
+      "pin_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "quality_grade": null,
+      "page_has_grade_5": false,
+      "page_has_new_pin": true,
+      "g7_suite_sha256": null
+    }
+  },
+  "commands": [
+    {
+      "name": "derive-key",
+      "command": [
+        "bash",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/ed25519.sh",
+        "derive",
+        "/tmp/xerj-g7-pipeline-70rulp_l/throwaway.key"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "before-validate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/validate_hub.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "before-catalogue",
+      "command": [
+        "/tmp/xerj-official-rc101/unpacked/xerj-1.0.0-rc.101-x86_64-unknown-linux-gnu/xerj",
+        "hub",
+        "build-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--packs",
+        "/tmp/xerj-g7-pipeline-70rulp_l/packs",
+        "--out",
+        "/tmp/xerj-g7-pipeline-70rulp_l/before.json",
+        "--sign-key",
+        "/tmp/xerj-g7-pipeline-70rulp_l/throwaway.key"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "before-signature",
+      "command": [
+        "bash",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/ed25519.sh",
+        "verify",
+        "95132649f71f5ddf97253b0af2eaaa4b7331ae6efa9674e2a18adf2b7fa043b0",
+        "/tmp/xerj-g7-pipeline-70rulp_l/before.json",
+        "/tmp/xerj-g7-pipeline-70rulp_l/before.json.sig"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "before-old-branch-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/before.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "before-main-publication-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/main-pipeline/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/before.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "before-site",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/corpus-hub-site/gen.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "after-repin-validate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/validate_hub.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "after-repin-catalogue",
+      "command": [
+        "/tmp/xerj-official-rc101/unpacked/xerj-1.0.0-rc.101-x86_64-unknown-linux-gnu/xerj",
+        "hub",
+        "build-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--packs",
+        "/tmp/xerj-g7-pipeline-70rulp_l/packs",
+        "--out",
+        "/tmp/xerj-g7-pipeline-70rulp_l/after-repin.json",
+        "--sign-key",
+        "/tmp/xerj-g7-pipeline-70rulp_l/throwaway.key"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "after-repin-signature",
+      "command": [
+        "bash",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/ed25519.sh",
+        "verify",
+        "95132649f71f5ddf97253b0af2eaaa4b7331ae6efa9674e2a18adf2b7fa043b0",
+        "/tmp/xerj-g7-pipeline-70rulp_l/after-repin.json",
+        "/tmp/xerj-g7-pipeline-70rulp_l/after-repin.json.sig"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "after-repin-old-branch-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/after-repin.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "after-repin-main-publication-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/main-pipeline/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/after-repin.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "after-repin-site",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/corpus-hub-site/gen.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "without-suite-validate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/validate_hub.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "without-suite-catalogue",
+      "command": [
+        "/tmp/xerj-official-rc101/unpacked/xerj-1.0.0-rc.101-x86_64-unknown-linux-gnu/xerj",
+        "hub",
+        "build-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--packs",
+        "/tmp/xerj-g7-pipeline-70rulp_l/packs",
+        "--out",
+        "/tmp/xerj-g7-pipeline-70rulp_l/without-suite.json",
+        "--sign-key",
+        "/tmp/xerj-g7-pipeline-70rulp_l/throwaway.key"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "without-suite-signature",
+      "command": [
+        "bash",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/ed25519.sh",
+        "verify",
+        "95132649f71f5ddf97253b0af2eaaa4b7331ae6efa9674e2a18adf2b7fa043b0",
+        "/tmp/xerj-g7-pipeline-70rulp_l/without-suite.json",
+        "/tmp/xerj-g7-pipeline-70rulp_l/without-suite.json.sig"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "without-suite-old-branch-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/hub-packs/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/without-suite.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "without-suite-main-publication-gate",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/main-pipeline/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/without-suite.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "without-suite-site",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/corpus-hub-site/gen.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "format1-gate-control",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/main-pipeline/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/format1-control.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "negative-wrong-pin",
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/xerj-g7-pipeline-70rulp_l/main-pipeline/hub_packs.py",
+        "check-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--backlog",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub/backlog/backlog-100.json",
+        "--catalogue",
+        "/tmp/xerj-g7-pipeline-70rulp_l/wrong-pin.json",
+        "--repo",
+        "xerj-org/xerj"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "negative-signature",
+      "command": [
+        "/tmp/xerj-official-rc101/unpacked/xerj-1.0.0-rc.101-x86_64-unknown-linux-gnu/xerj",
+        "hub",
+        "build-catalogue",
+        "--registry",
+        "/tmp/xerj-g7-pipeline-70rulp_l/tools/xerj-code/hub",
+        "--packs",
+        "/tmp/xerj-g7-pipeline-70rulp_l/packs",
+        "--out",
+        "/tmp/xerj-g7-pipeline-70rulp_l/bad.json",
+        "--sign-key",
+        "/tmp/xerj-g7-pipeline-70rulp_l/throwaway.key"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "version",
+      "command": [
+        "/tmp/xerj-official-rc101/unpacked/xerj-1.0.0-rc.101-x86_64-unknown-linux-gnu/xerj",
+        "--version"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "reproduced": true,
+  "both_publication_gates_block_format_2": true,
+  "deployed": false,
+  "live_incident_claimed": false
+}

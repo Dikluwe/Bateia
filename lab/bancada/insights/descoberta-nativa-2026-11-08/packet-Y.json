@@ -1,0 +1,393 @@
+{
+  "label": "Y",
+  "baseline": {
+    "basis": "Problem text only; no research or source names",
+    "options": [
+      {
+        "id": "B1",
+        "idea": "Offline local inventory with append-only observations and explicit reconciliation of conflicting changes; reserve with expiry and display uncertainty."
+      },
+      {
+        "id": "B2",
+        "idea": "Give workshops ownership of stock and transfer custody with receipts; allow local work while disconnected and avoid global availability promises."
+      },
+      {
+        "id": "B3",
+        "idea": "Replicate shared part history with convergent merge rules and preserve photos and conflicting descriptions for human review."
+      },
+      {
+        "id": "B4",
+        "idea": "Keep a simpler shared record system and change workflow through labeled bins, counting, and explicit confirmation before travel or promises."
+      }
+    ]
+  },
+  "result": {
+    "research_origin": "Native [research product] catalogue and native reads only; design details explicitly synthesis",
+    "alternatives": [
+      {
+        "id": "A1",
+        "name": "Observações independentes, reservas provisórias e reconciliação",
+        "status": "desenho experimental com evidência parcial, sem produto pronto validado",
+        "baseline_relation": {
+          "ids": [
+            "B1",
+            "B3"
+          ],
+          "classification": "materialmente modificada",
+          "from_sources": [
+            "E1",
+            "E2",
+            "E3",
+            "E4"
+          ],
+          "change": "Convergência automática genérica deixou de ser promessa; reservas concorrentes são tentativas, com decisão explícita e preservação das observações."
+        },
+        "workflow_change": "Identificar cada peça com etiqueta única; registrar chegada, deslocamento, separação, uso e correção como observações novas. Distinguir salvo no telefone, recebido pelo servidor, observado e confirmado. Reservas remotas ficam pendentes; confirmar com quem tem a peça antes de viajar ou prometer. Correção referencia o registro anterior, sem apagá-lo.",
+        "software_change": "Cliente web candidato com inicialização offline e armazenamento local; fila de eventos com identificador único por operação, autor/dispositivo, peça, referência causal e horário apenas informativo. Reenvio idempotente; servidor guarda histórico e projeção consultável. Descrições concorrentes ficam visíveis; estados incompatíveis entram em fila de revisão. Fotos em fila separada, com indicação de pendência; exportação de eventos, tabela de peças e manifesto de imagens são requisitos da implementação.",
+        "constraints": {
+          "offline_72h": "Pretendido: registrar e consultar cache sem rede; disponibilidade global será antiga e não é promessa. Ainda requer ensaio de durabilidade e sincronização.",
+          "scale_45000_60": "Não demonstrado pelas fontes; ensaiar metadados completos no pior telefone. Cache de fotos deve ser limitado e explícito.",
+          "two_developers_cost": "Uma aplicação e um serviço simples são hipótese de manutenção; não propor Cassandra ou BookKeeper como infraestrutura necessária. Custo real e complexidade da fila/revisão não foram medidos.",
+          "history_photos_export": "Eventos anexados preservam histórico por desenho; fotos e exportação são critérios de aceitação sem implementação verificada."
+        },
+        "limitations": [
+          "Não impede duas pessoas de prometerem fisicamente a mesma peça; muda a promessa para provisória e torna conflito visível.",
+          "Revisão humana pode crescer demais. Falha se voluntários interpretarem pendência como confirmação.",
+          "Armazenamento web pode não resistir ao comportamento real do aparelho; quota, limpeza e recuperação não foram comprovadas.",
+          "Não é um CRDT de inventário validado. Unir eventos não resolve automaticamente qual uso físico realmente ocorreu."
+        ],
+        "application_condition": "Aceitável quando promessas definitivas podem esperar confirmação e o volume de conflitos permite revisão distribuída entre oficinas.",
+        "rejection_experiment": "Em duas oficinas e seis telefones reais, usar 200 peças etiquetadas e cache de 45 mil metadados. Ficar 72 h sem internet; fazer operações duplicadas/reordenadas, duas reservas e dois relatos de uso sobre a mesma peça, correções concorrentes, fotos, reinício do telefone e relógios divergentes. Rejeitar se qualquer evento confirmado localmente desaparecer, correção apagar outra observação, pendência aparecer como disponibilidade garantida ou reenvio duplicar uso. Medir tempo diário de revisão; rejeitar se exceder 15 min por oficina no cenário representativo acordado. Exportar e reconstruir história/fotos fora do cliente.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "origin": "tool",
+            "identity": {
+              "corpus": "caniuse",
+              "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+            },
+            "file": "caniuse/fulldata-json/data-2.0.json",
+            "passage_start_line": 1,
+            "excerpt": "Method of storing data client-side, allows indexed database queries.",
+            "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+          },
+          {
+            "id": "E2",
+            "origin": "tool",
+            "identity": {
+              "corpus": "caniuse",
+              "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+            },
+            "file": "caniuse/data.json",
+            "passage_start_line": 1,
+            "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+            "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+          },
+          {
+            "id": "E3",
+            "origin": "tool",
+            "identity": {
+              "corpus": "cassandra",
+              "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff"
+            },
+            "file": "cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc",
+            "passage_start_line": 251,
+            "excerpt": "Updates\nresolve according to the conflict resolution rule of last write wins.",
+            "scope": "Regra real de resolução, não garantia de preservar as duas observações; passagem também explicita dependência de relógios."
+          },
+          {
+            "id": "E4",
+            "origin": "tool",
+            "identity": {
+              "corpus": "bookkeeper",
+              "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+            },
+            "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+            "passage_start_line": 1,
+            "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+            "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+          }
+        ]
+      },
+      {
+        "id": "A2",
+        "name": "Custódia local e transferência com aceite",
+        "status": "desenho experimental com evidência parcial, sem produto pronto validado",
+        "baseline_relation": {
+          "ids": [
+            "B2"
+          ],
+          "classification": "materialmente modificada",
+          "from_sources": [
+            "E4",
+            "E5"
+          ],
+          "change": "A autoridade passa a ser explícita por custódia; a analogia de escritor único motivou exigir passagem de autoridade verificável, sem alegar que o backend resolve o trabalho físico."
+        },
+        "workflow_change": "Cada peça tem oficina custodiante e responsável local por confirmar alocação. Voluntários continuam registrando observações offline. Só a custódia confirma separação/uso; outras oficinas solicitam, sem prometer a terceiros. Transferência física tem saída em trânsito e recibo de chegada; remetente deixa de oferecer ao despachar, destinatário só oferece após aceite. Substituição de responsável exige entrega de autoridade explícita, não apenas esperar relógio vencer.",
+        "software_change": "Manter o mesmo diário de observações independente, mas separar pedidos de transições confirmadas por custódia. Uma sequência por custódia registra confirmações; cliente mostra oficina, em trânsito, pedido pendente e idade da informação. Detectar duas sequências de autoridade concorrentes e suspender confirmação até reconciliação. Cache local e fila permanecem necessários; imagens e exportação têm os mesmos requisitos de A1.",
+        "constraints": {
+          "offline_72h": "Atividades locais podem continuar se houver autoridade local disponível. Pedidos entre oficinas permanecem pendentes durante a falta de comunicação; não exige ida diária a escritório central.",
+          "scale_45000_60": "Divisão entre oito oficinas reduz quem pode confirmar cada peça; escala e ergonomia não demonstradas.",
+          "two_developers_cost": "Possível aplicação pequena, mas handover, recuperação de autoridade e treinamento são custos desconhecidos. Infraestrutura distribuída das fontes não é recomendação de implantação.",
+          "history_photos_export": "Mesmo diário de A1; capacidades completas ainda precisam ser construídas e verificadas."
+        },
+        "limitations": [
+          "Pode bloquear confirmação quando o custodiante estiver ausente; todos podem observar, mas não há garantia de toda transição definitiva a qualquer momento.",
+          "Dois responsáveis offline podem produzir dupla autoridade; sem um protocolo de entrega ou coordenação local confiável, a exclusividade é só regra no papel.",
+          "Peça pode sair fisicamente sem registro. Recibo e conferência de etiqueta são essenciais.",
+          "Uma oficina desconectada não permite às outras confirmar reserva daquela peça."
+        ],
+        "application_condition": "Boa candidata somente se as oficinas aceitarem autoridade local acessível e procedimento de entrega, e se atrasar compromissos remotos for melhor que resolver conflitos após promessas.",
+        "rejection_experiment": "No mesmo piloto de 72 h, comparar com A1 usando peças equivalentes. Simular troca de turno, responsável ausente, telefone perdido e transferência sem chegada confirmada. Tentar confirmar a mesma peça por duas autoridades desconectadas. Rejeitar se o fluxo não detectar dupla autoridade, se as duas oficinas oferecerem a peça em trânsito, ou se mais de 10% das operações locais ficarem bloqueadas por mais de 15 min por falta de autoridade. Esses limites são critérios propostos a negociar, não resultados observados.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "origin": "tool",
+            "identity": {
+              "corpus": "caniuse",
+              "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+            },
+            "file": "caniuse/fulldata-json/data-2.0.json",
+            "passage_start_line": 1,
+            "excerpt": "Method of storing data client-side, allows indexed database queries.",
+            "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+          },
+          {
+            "id": "E2",
+            "origin": "tool",
+            "identity": {
+              "corpus": "caniuse",
+              "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+            },
+            "file": "caniuse/data.json",
+            "passage_start_line": 1,
+            "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+            "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+          },
+          {
+            "id": "E4",
+            "origin": "tool",
+            "identity": {
+              "corpus": "bookkeeper",
+              "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+            },
+            "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+            "passage_start_line": 1,
+            "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+            "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+          },
+          {
+            "id": "E5",
+            "origin": "tool",
+            "identity": {
+              "corpus": "bookkeeper",
+              "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+            },
+            "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+            "passage_start_line": 36,
+            "excerpt": "there is only one active writer for a log at any given time.",
+            "scope": "Passagem iniciada na linha 36; fonte explicita fencing durante partição. Não prova coordenação offline entre celulares."
+          }
+        ]
+      }
+    ]
+  },
+  "report": "# Ensaio [research product] independente — inventário cooperativo\n\nForam elaboradas duas alternativas de desenho para experimentar, com evidência parcial de mecanismos reais. **Nenhum aplicativo pronto que satisfaça o problema foi descoberto ou validado.** Não há base nesta pesquisa para escolher uma biblioteca de sincronização, prometer durabilidade em celulares baratos ou aprovar implantação. As mudanças de processo e os detalhes de aplicação abaixo são síntese deste ensaio; não são capacidades atribuídas aos projetos lidos.\n\nDiretório completo: `/tmp/[research product]-[research product]-open-0154/[research product]`. Entregas estruturadas: `alternatives.json`, `sources.json`, `coverage.json`. Testemunhos originais: `audit/NNN.json`, campo `stdout`. O baseline foi escrito antes da primeira chamada do produto e permaneceu congelado: SHA-256 `974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034`.\n\n## O que a pesquisa conseguiu estabelecer\n\nA descoberta partiu de problemas e capacidades: offline, inventário, replicação, conflitos, armazenamento móvel e histórico. Nenhum nome ou URL de projeto foi usado como atalho de memória. Depois da descoberta, nomes retornados pelo catálogo foram usados para selecionar o corpus de leitura. Foram lidos três corpora nativos, todos fixados em revisão de 2026-10-13:\n\n- **caniuse**, pin `e951c6cd80296dab56d08a932f5f879e786fa774`, licença CC-BY-4.0. `caniuse/fulldata-json/data-2.0.json`, linha 1: “Method of storing data client-side, allows indexed database queries.” (`audit/025.json`, E1). `caniuse/data.json`, linha 1, Service Workers: “including hooks to enable bootstrapping of web applications while offline.” (`audit/027.json`, E2). Isto sustenta experimentar cliente web com cache e armazenamento local; não comprova sincronização, quota, durabilidade de fotos, suporte dos aparelhos concretos nem entrega em background. A linha 1 é o localizador real do JSON monolítico retornado; não se inventaram números mais precisos.\n- **cassandra**, pin `ec2c276be145bb25085c5c35ac0da69113b676ff`, Apache-2.0. `cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc`, passagem iniciada na linha 251: “Updates / resolve according to the conflict resolution rule of last write wins.” A barra representa a quebra de linha literal registrada em E3 (`audit/029.json`). A mesma passagem explicita dependência dos relógios. **Inferência:** replicar um campo mutável não é conservar todas as observações. Uma correção pode ganhar e ocultar outra descrição; o desenho precisa tratar histórico separadamente.\n- **bookkeeper**, pin `773a988ddf8b888a8869c6ae33f696935eba5cdc`, Apache-2.0. `bookkeeper/site3/website/docs/api/distributedlog-api.md`, passagem da linha 1: “A *log* in DistributedLog is an ordered, immutable sequence of *log records*.” (E4). Passagem da linha 36: “there is only one active writer for a log at any given time.” (E5). Ambas em `audit/034.json`; a segunda descreve também fencing durante partição. **Inferência:** histórico imutável e autoridade para confirmar são decisões diferentes. Não se inferiu que BookKeeper seja adequado a telefones ou barato para dois mantenedores.\n\nEssas fontes são referências de mecanismos, não três alternativas conceituais nem uma lista de produtos recomendados. A identidade citada é corpus+pin, pois o catálogo não forneceu URL de repositório desses três projetos. O único link GitHub elegível observado, um polyfill de IndexedDB, não foi adquirido: não respondia ao conflito de inventário e uma leitura posterior indicava abandono de WebSQL. Nenhuma URL foi reconstruída por memória.\n\n## Mudanças comuns propostas\n\nEtiquetar individualmente as peças, incluindo itens visualmente idênticos. Registrar chegada, movimentação, separação, uso e correção como novas observações com autor, identificador da operação e referência à peça. Uma correção referencia o que corrige; não apaga o relato anterior. Horário do telefone ajuda a pessoa a entender o relato, mas não deve escolher sozinho qual observação é verdadeira.\n\nMostrar separadamente “salvo neste telefone”, “recebido”, “pedido pendente”, “confirmado” e idade da informação. Fotos podem sincronizar depois dos metadados, com pendência visível. Exportar histórico, inventário e manifesto de imagens, com originais acessíveis, é requisito de aceitação. Idempotência, fila, fotos e exportação são trabalho de implementação ainda não demonstrado pelas fontes.\n\n## A1 — Observar livremente, confirmar depois\n\nQualquer voluntário registra operações offline. Descrições concorrentes permanecem visíveis; estados fisicamente incompatíveis geram revisão. Separações remotas são pedidos provisórios. Antes de viagem ou promessa definitiva, confirmar com a oficina que possui a peça. Uma projeção de estoque facilita consulta, mas o diário mantém o que as pessoas disseram.\n\nÉ uma modificação material de B1 e da preservação de observações de B3. E1/E2 tornaram concreta uma possível interface web offline; E3 remove a confiança em “a replicação resolve”; E4 fundamenta a distinção entre diário e estado calculado. Nenhuma fonte demonstrou um CRDT de reservas, e esse mecanismo não é prometido.\n\nAtende por intenção às 72 horas de registro desconectado e reduz correções destrutivas. O preço é tolerar pedidos provisórios, conflitos e revisão humana. Não impede que duas pessoas façam promessas físicas inconsistentes se ignorarem a pendência. Metadados das 45 mil peças, fila e fotos precisam caber no pior telefone. Uma aplicação e um serviço simples são hipótese de manutenção; custos recorrentes e esforço dos dois desenvolvedores seguem desconhecidos.\n\nAplicável quando compromissos definitivos podem esperar confirmação e o volume de revisão for pequeno. Rejeitar se voluntários confundirem pedido com disponibilidade, se o histórico perder relatos ou se o trabalho diário de reconciliação ficar alto.\n\n## A2 — Custódia por oficina e transferência com recibo\n\nCada peça pertence a uma custódia local. Todos podem observar offline, mas uma autoridade local explícita confirma separação e uso. Outra oficina envia pedido. No despacho a peça deixa de estar disponível no remetente e entra em trânsito; o destinatário só a oferece após aceite físico. Troca de responsável exige entrega de autoridade, não apenas expiração pelo relógio.\n\nÉ uma modificação material de B2. E4/E5 fornecem a analogia de diário e escritor único, incluindo o problema de dois escritores durante partição. O protocolo de custódia proposto é síntese, não uma funcionalidade encontrada no BookKeeper. Ele só funciona se a autoridade local for de fato acessível e o trabalho físico seguir a entrega.\n\nTroca conflitos posteriores por restrição sobre quem confirma. Dispensa ida diária a uma sede e mantém observações durante desconexão, mas pedidos remotos aguardam comunicação. Ausência do responsável pode bloquear transições definitivas; dois responsáveis offline podem produzir dupla autoridade. Detectar esse caso e suspender confirmação é requisito ainda não implementado. Não se afirma exclusividade entre celulares desconectados por simples regra de interface.\n\nAplicável se cada oficina aceitar responsabilidade local, recibos e troca de turno disciplinada. Rejeitar se a autoridade se tornar gargalo ou se a entrega produzir duas peças disponíveis no catálogo embora exista apenas uma peça física.\n\n## Avaliação pequena antes de compromisso\n\nPropor um piloto comparável de duas oficinas, seis telefones reais e 200 peças etiquetadas; carregar também 45 mil metadados representativos. Não foi executado neste ensaio. Durante 72 horas sem internet, registrar reservas e usos concorrentes, descrições e correções incompatíveis, relógios divergentes, reenvios, reinício de telefone e fotos pendentes. Na reconexão, variar ordem e duplicar entregas.\n\nCritérios comuns: nenhum evento confirmado localmente desaparece; nenhuma correção apaga outra observação; reenvio não duplica uso; histórico e fotos exportados podem ser reconstruídos fora do cliente. Medir armazenamento, latência, bateria, dados transferidos, tempo de manutenção e entendimento dos voluntários. Fazer uma tentativa real de restaurar dados após falha, sem presumir que compatibilidade significa durabilidade.\n\nPara A1, propor limite de 15 minutos de revisão por oficina/dia no cenário acordado e exigir que ninguém trate pedido pendente como confirmação. Para A2, simular responsável ausente, troca de turno, telefone perdido, tentativa de dupla autoridade e transferência sem aceite. Propor rejeição se mais de 10% das operações locais aguardarem autoridade por mais de 15 minutos. São limiares sugeridos para negociação, não dados observados. Comparar promessas incorretas, viagens evitadas e atrasos de operação, não apenas sucesso de sincronização.\n\n## Cobertura e limites\n\nB1 e B2 foram apresentados; B3 não foi promovido a alternativa independente porque a descoberta não forneceu evidência suficiente de convergência que preserve a semântica de inventário. Sua parte útil — manter observações — entrou em A1 sem alegação de convergência automática. B4, etiquetas/contagem/confirmação, permanece complemento das duas propostas: não houve evidência de planilha que satisfaça as 72 horas sem perda e sem reconciliação destrutiva.\n\nMuitos resultados do catálogo foram tangenciais. A primeira descoberta falhou por catálogo ausente (`004`); sync obteve catálogo de 514 corpora (`006`). O build não tem cliente hospedado (`011`). Cassandra excedeu o limite de auto-pull de 50 MB (`016`), resolvido com pull explícito pelo produto (`018`). Uma tentativa de k=30 foi rejeitada e corrigida para 10 (`015`, `017`). Não se acessaram arquivos de fonte diretamente nem se executaram projetos. Testes de recuperação e de operação descritos acima são propostas, não resultados.\n\nPermanecem pesquisáveis: aplicativo pronto de inventário offline, protocolo de reserva exclusiva, durabilidade/quota real em Android barato, fotos, exportação completa, custos e acessibilidade. A cobertura estruturada registra descartes, evidências e lacunas. Foram registradas 27 chamadas classificadas pelo runner como pesquisa e nove como setup, zero aquisições via acquire. Parada antes do teto: as três fontes úteis foram lidas e o baseline foi revisto; novos nomes lembrados não foram usados para preencher lacunas.\n\nNão houve intervenção humana durante a execução. O nó automático próprio foi iniciado na porta 9300, PID 1201802, por pull nativo (`018`); encerrado somente esse nó (`035`); busca no endpoint próprio confirmou inacessibilidade (`036`). Nenhum timer, publicação ou feedback foi criado.\n",
+  "coverage": {
+    "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+    "counts_by_runner_kind": {
+      "setup": 9,
+      "research": 27
+    },
+    "acquisitions": 0,
+    "considered": [
+      {
+        "baseline": "B1",
+        "disposition": "presented",
+        "alternative": "A1"
+      },
+      {
+        "baseline": "B2",
+        "disposition": "presented",
+        "alternative": "A2"
+      },
+      {
+        "baseline": "B3",
+        "disposition": "not presented as independent automatic-convergence design",
+        "reason": "Consultas CRDT/conflitos não descobriram fonte suficiente; E3 mostra LWW, que não preserva duas observações. Parte de preservar observações incorporada em A1 como desenho, sem CRDT validado.",
+        "witnesses": [
+          "audit/009.json",
+          "audit/014.json",
+          "audit/029.json"
+        ]
+      },
+      {
+        "baseline": "B4",
+        "disposition": "adjunct only",
+        "reason": "Etiquetas e confirmação ajudam ambos os fluxos, mas a evidência não demonstrou planilha compartilhada com 72 h offline sem perda. Não apresentada como solução completa."
+      }
+    ],
+    "rejected_software_choices": [
+      {
+        "candidate": "cassandra as turnkey mobile replication/history",
+        "reason": "Fonte E3 documenta resolução LWW e relógios; não foram demonstrados cliente Android, fotos, exportação, custo operacional ou preservação das observações."
+      },
+      {
+        "candidate": "bookkeeper as phone-side solution",
+        "reason": "E5 exige escritor único e fencing; é referência de mecanismo, não aplicativo offline para voluntários."
+      },
+      {
+        "candidate": "IndexedDBShim",
+        "reason": "Único URL GitHub elegível observado; polyfill não responde problema principal e depende de direção WebSQL que leitura 033 indica abandonada."
+      }
+    ],
+    "gaps": [
+      "Não descoberto aplicativo pronto offline de peças/inventário.",
+      "Sem fonte lida que prove CRDT preservando semântica de reservas exclusivas.",
+      "Sem prova de quota/persistência, desempenho em Android barato e 45 mil peças.",
+      "Sem validação de fotos, backup/restauração, exportação completa ou custos.",
+      "Sem teste real com voluntários, idiomas ou acessibilidade."
+    ],
+    "failure_witnesses": {
+      "catalogue_initially_missing": "audit/004.json",
+      "hosted_client_unavailable": "audit/011.json",
+      "oversize_auto_pull": "audit/016.json",
+      "invalid_k_30_corrected_to_10": "audit/015.json"
+    },
+    "stopping_reason": "Cobertura nativa reiteradamente tangencial; três corpora úteis lidos, baseline revisado, desenho e lacunas explicitados. Não expandir artificialmente alternativas ou resgatar por memória. Parada antes de 40 chamadas e 20 min.",
+    "human_intervention": "Nenhuma intervenção humana durante execução; autorização pública da tarefa usada nas chamadas escaladas.",
+    "lifecycle": {
+      "startup": "audit/018.json",
+      "own_pid": 1201802,
+      "own_port": 9300,
+      "stop": "audit/035.json",
+      "unreachable_verification": "audit/036.json"
+    }
+  },
+  "sources": {
+    "sources": [
+      {
+        "corpus": "caniuse",
+        "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774",
+        "pin_date": "2026-10-13",
+        "origin": "tool",
+        "licence": "CC-BY-4.0",
+        "discovery_witness": "evidence/audit/010.json",
+        "read_witnesses": [
+          "evidence/audit/020.json",
+          "evidence/audit/025.json",
+          "evidence/audit/027.json",
+          "evidence/audit/028.json",
+          "evidence/audit/033.json"
+        ],
+        "url": null,
+        "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+      },
+      {
+        "corpus": "cassandra",
+        "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff",
+        "pin_date": "2026-10-13",
+        "origin": "tool",
+        "licence": "Apache-2.0",
+        "discovery_witness": "evidence/audit/007.json",
+        "read_witnesses": [
+          "evidence/audit/026.json",
+          "evidence/audit/029.json",
+          "evidence/audit/032.json"
+        ],
+        "url": null,
+        "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+      },
+      {
+        "corpus": "bookkeeper",
+        "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc",
+        "pin_date": "2026-10-13",
+        "origin": "tool",
+        "licence": "Apache-2.0",
+        "discovery_witness": "evidence/audit/012.json",
+        "read_witnesses": [
+          "evidence/audit/034.json"
+        ],
+        "url": null,
+        "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+      }
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "origin": "tool",
+        "identity": {
+          "corpus": "caniuse",
+          "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+        },
+        "file": "caniuse/fulldata-json/data-2.0.json",
+        "passage_start_line": 1,
+        "excerpt": "Method of storing data client-side, allows indexed database queries.",
+        "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+      },
+      {
+        "id": "E2",
+        "origin": "tool",
+        "identity": {
+          "corpus": "caniuse",
+          "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+        },
+        "file": "caniuse/data.json",
+        "passage_start_line": 1,
+        "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+        "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+      },
+      {
+        "id": "E3",
+        "origin": "tool",
+        "identity": {
+          "corpus": "cassandra",
+          "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff"
+        },
+        "file": "cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc",
+        "passage_start_line": 251,
+        "excerpt": "Updates\nresolve according to the conflict resolution rule of last write wins.",
+        "scope": "Regra real de resolução, não garantia de preservar as duas observações; passagem também explicita dependência de relógios."
+      },
+      {
+        "id": "E4",
+        "origin": "tool",
+        "identity": {
+          "corpus": "bookkeeper",
+          "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+        },
+        "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+        "passage_start_line": 1,
+        "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+        "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+      },
+      {
+        "id": "E5",
+        "origin": "tool",
+        "identity": {
+          "corpus": "bookkeeper",
+          "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+        },
+        "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+        "passage_start_line": 36,
+        "excerpt": "there is only one active writer for a log at any given time.",
+        "scope": "Passagem iniciada na linha 36; fonte explicita fencing durante partição. Não prova coordenação offline entre celulares."
+      }
+    ],
+    "acquisitions": [],
+    "useful_unfollowed_links": [
+      {
+        "identity": "https://github.com/axemclion/IndexedDBShim",
+        "witness": "evidence/audit/025.json",
+        "reason": "Link surgiu nativamente, mas polyfill para WebSQL não responde sincronização e WebSQL foi indicado como descontinuado na leitura 033; não adquirido."
+      }
+    ]
+  },
+  "verification": {
+    "all_cited_literals_present_in_recorded_product_returns": true,
+    "all_acquisitions_have_native_witnesses": true,
+    "no_projects_executed": true,
+    "pin_scope": "Treat corpus pins as reported by product; independent Git blobs checked where sources were acquired, not every hosted corpus."
+  }
+}

@@ -1,0 +1,461 @@
+{
+  "label": "X",
+  "baseline": {
+    "options": [
+      {
+        "id": "B1",
+        "design": "Offline-first shared inventory with append-only observations and explicit reconciliation of concurrent edits; availability promises remain tentative until confirmed."
+      },
+      {
+        "id": "B2",
+        "design": "Assign physical custody and reservation authority per workshop or part, permitting local offline work but delaying cross-workshop commitments."
+      },
+      {
+        "id": "B3",
+        "design": "Replicated event log with item identities, photos stored separately, and derived inventory projections; conflicting observations stay visible for human resolution."
+      },
+      {
+        "id": "B4",
+        "design": "Lightweight barcode workflow with immutable movement/consumption records and periodic reconciliation, comparing existing maintainable open-source platforms before custom development."
+      }
+    ]
+  },
+  "common_changes": {
+    "work_changes": [
+      "Colar identificador estável/QR em cada peça; manter identidade separada de descrições e fotos. Duplicatas suspeitas são ligadas para revisão, não fundidas automaticamente.",
+      "Registrar autor/dispositivo, oficina, referência causal e identificador único da operação. Correções apontam ao registro corrigido e conservam o original.",
+      "Separar observado, reservado localmente, pedido remoto pendente, recebido e consumido. Exibir última sincronização e pendências. A peça separada vai para posição física marcada com a reserva.",
+      "Confirmar disponibilidade com a oficina detentora antes de prometer deslocamento; durante isolamento pedidos remotos são pendentes. Se for indispensável consumir sem rede, limitar autoridade a um responsável/dispositivo por peça e transferi-la com confirmação, mantendo observações livres."
+    ],
+    "engineering_requirements": [
+      "Gravar localmente antes de mostrar sucesso; reenvio idempotente; preservar fila após reinício; distinguir erro de permissão de ausência de rede.",
+      "Exportar JSON/CSV documentado mais operações originais, identidades, ligações de correção e manifesto de fotos com hashes; incluir registros ainda não sincronizados e conflitos. Importar em armazenamento vazio e verificar integridade.",
+      "Miniaturas e fotos comprimidas com indicação explícita de ainda não enviadas; medir orçamento de armazenamento, não pressupor replicar todas as fotos em todos os celulares.",
+      "Um serviço de sincronização hospedado pela cooperativa é uma hipótese operacional; custos, backup, atualização e segurança não foram medidos."
+    ]
+  },
+  "alternatives": [
+    {
+      "id": "A1",
+      "name": "Fichas locais replicadas com reconciliação explícita",
+      "change": "Uma ficha mutável por peça no cliente PouchDB, sincronizada com servidor compatível; conflitos entram em fila humana, conservando observações e fotos em registros separados imutáveis. Não apresentar o vencedor padrão como disponibilidade confirmada.",
+      "decision": "O trabalho cotidiano edita fichas familiares; a equipe aceita resolver conflitos após reconexão, em vez de derivar tudo de eventos.",
+      "constraints_met": [
+        "Operações locais sem rede e sincronização posterior são documentadas.",
+        "Anexos binários e JSON permitem construir interface Android e exportação.",
+        "Pode começar com infraestrutura pequena, mas suficiência para 45 mil peças é hipótese."
+      ],
+      "risks": [
+        "Se a UI ler somente o vencedor padrão, reaparece apagamento aparente de observações.",
+        "Compactação remove revisões não folha; histórico exigido precisa de arquivo de observações próprio.",
+        "Não impede duas reservas offline da mesma peça.",
+        "Duas pessoas generalistas precisam manter resolução, exportação e recuperação, além da UI."
+      ],
+      "condition": "Boa candidata se disputas por ficha forem raras e houver responsável disponível para conciliá-las.",
+      "cheap_rejection_test": "Dois celulares alteram localização, descrição e reserva da mesma peça offline; reconectar em ordens opostas. Rejeitar se alguma observação/foto sumir, conflito ficar invisível ou voluntários não conseguirem resolvê-lo em dois minutos.",
+      "baseline_relation": {
+        "status": "materialmente modificada",
+        "ids": [
+          "B1",
+          "B4"
+        ],
+        "basis": "A estratégia geral já existia; P-conflict e P-compact especificaram fila explícita e arquivo separado, evitando tratar revisão como histórico permanente."
+      },
+      "source_evidence": [
+        {
+          "id": "P-local",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/learn.md",
+          "lines": [
+            7,
+            7
+          ],
+          "passage_locator": "s0",
+          "passage_ordinal": 0,
+          "excerpt": "save data locally",
+          "claim_supported": "Local browser storage, offline operation described in same passage.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-conflict",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            80,
+            80
+          ],
+          "passage_locator": "s2",
+          "passage_ordinal": 0,
+          "excerpt": "To detect if a document is in conflict, you use the `{conflicts: true}` option when you `get()` it.",
+          "claim_supported": "Conflicts require explicit inspection; arbitrary deterministic winner is not business truth.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-compact",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/compact-and-destroy.md",
+          "lines": [
+            19,
+            19
+          ],
+          "passage_locator": "b0",
+          "passage_ordinal": 0,
+          "excerpt": "non-leaf revisions will no longer be available.",
+          "claim_supported": "Revision trees are insufficient as permanent audit archive when compacted.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": false
+        },
+        {
+          "id": "P-sync",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/replication.md",
+          "lines": [
+            111,
+            111
+          ],
+          "passage_locator": "s3",
+          "passage_ordinal": 0,
+          "excerpt": "retry until the connection is re-established",
+          "claim_supported": "Retry support documented for replication; does not prove 72h device durability.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-photo",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/save_attachment.html",
+          "lines": [
+            5,
+            5
+          ],
+          "passage_locator": "b0",
+          "passage_ordinal": 0,
+          "excerpt": "Attaches a binary object to a document.",
+          "claim_supported": "Binary attachment API exists.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": false
+        },
+        {
+          "id": "P-fetch",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/batch_fetch.html",
+          "lines": [
+            143,
+            144
+          ],
+          "passage_locator": "b4966",
+          "passage_ordinal": 0,
+          "excerpt": "  include_docs: true,\n  attachments: true,",
+          "claim_supported": "Retrieval includes documents and attachment data; complete archival export still custom work.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-quota",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/faq.md",
+          "lines": [
+            50,
+            50
+          ],
+          "passage_locator": "s3",
+          "passage_ordinal": 0,
+          "excerpt": "your users will lose unsynced data.",
+          "claim_supported": "Source warns about device spare-space pressure; current Android behavior requires testing.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "name": "Livro de operações e custódia física com projeções",
+      "change": "Cada chegada, movimentação, separação, uso e correção vira documento novo e imutável, com ID por dispositivo/operação, peça, autor e referências. Ficha atual é projeção reconstruível. Movimento é saída e recebimento ligados; peça em trânsito não é disponível. Reserva confirmada só pela custódia vigente; outros dispositivos registram pedidos pendentes.",
+      "decision": "Correção acrescenta explicação e compensação; não reescreve o que outra pessoa observou. Aceita estados provisórios e reconciliação de contradições físicas, privilegiando rastreabilidade.",
+      "constraints_met": [
+        "Criações locais replicáveis evitam disputar a mesma revisão.",
+        "Histórico fica em documentos vivos, não depende de revisões antigas compactáveis.",
+        "Exportação de eventos e fotos pode reconstruir projeções sem fornecedor."
+      ],
+      "risks": [
+        "Eventos contraditórios continuam possíveis; log não resolve o mundo físico.",
+        "IDs por relógio somente, como no exemplo ilustrativo da fonte, não bastam: relógios podem coincidir ou atrasar. Usar identidade aleatória/contador persistente e causalidade.",
+        "Múltiplos documentos não são uma transação; modelar comando completo em um evento e projeções idempotentes, tratar recebimento faltante.",
+        "Custódia rigorosa pode criar gargalo offline; se muitos voluntários precisarem confirmar a mesma peça simultaneamente sem coordenação, essa restrição de trabalho falha.",
+        "Reprocessamento, migrações de evento e conflito de identidade aumentam responsabilidade dos desenvolvedores."
+      ],
+      "condition": "Preferível quando histórico e correções são centrais e a cooperativa aceita uma regra explícita de custódia e confirmação física.",
+      "cheap_rejection_test": "Repetir duas vezes o mesmo envio, interromper entre saída e recebimento, corrigir consumo e usar duas reservas offline. Reconstruir tudo apenas do export. Rejeitar se saldo/estado depender da ordem de entrega, surgir disponibilidade duplicada confirmada ou a rotina de custódia atrasar reparos de forma impraticável.",
+      "baseline_relation": {
+        "status": "já presente, materialmente detalhada",
+        "ids": [
+          "B2",
+          "B3"
+        ],
+        "basis": "P-delta fundamenta documento por operação; P-atomic impõe unidade de escrita e tratamento de etapas faltantes. Custódia é síntese do agente, não capacidade alegada do produto."
+      },
+      "source_evidence": [
+        {
+          "id": "P-delta",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            142,
+            142
+          ],
+          "passage_locator": "s3",
+          "passage_ordinal": 0,
+          "excerpt": "you never update or remove existing documents",
+          "claim_supported": "Append-only documents proposed by source as conflict avoidance strategy; physical contradictions still possible.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-compact",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/compact-and-destroy.md",
+          "lines": [
+            19,
+            19
+          ],
+          "passage_locator": "b0",
+          "passage_ordinal": 0,
+          "excerpt": "non-leaf revisions will no longer be available.",
+          "claim_supported": "Revision trees are insufficient as permanent audit archive when compacted.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": false
+        },
+        {
+          "id": "P-sync",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/replication.md",
+          "lines": [
+            111,
+            111
+          ],
+          "passage_locator": "s3",
+          "passage_ordinal": 0,
+          "excerpt": "retry until the connection is re-established",
+          "claim_supported": "Retry support documented for replication; does not prove 72h device durability.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "P-photo",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/save_attachment.html",
+          "lines": [
+            5,
+            5
+          ],
+          "passage_locator": "b0",
+          "passage_ordinal": 0,
+          "excerpt": "Attaches a binary object to a document.",
+          "claim_supported": "Binary attachment API exists.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": false
+        },
+        {
+          "id": "P-atomic",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/batch_create.html",
+          "lines": [
+            122,
+            123
+          ],
+          "passage_locator": "b2716",
+          "passage_ordinal": 0,
+          "excerpt": "the smallest\natomic unit is the document.",
+          "claim_supported": "Multi-document bulk writes are not transactional.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": false
+        },
+        {
+          "id": "P-fetch",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/batch_fetch.html",
+          "lines": [
+            143,
+            144
+          ],
+          "passage_locator": "b4966",
+          "passage_ordinal": 0,
+          "excerpt": "  include_docs: true,\n  attachments: true,",
+          "claim_supported": "Retrieval includes documents and attachment data; complete archival export still custom work.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "name": "Ficha colaborativa mesclável para descrições; decisões físicas separadas",
+      "change": "Manter por peça mapas/listas locais Automerge para descrições e observações, mesclados após rede; expor conflitos de campos com getConflicts e histórico. Reservas/movimentos continuam registros explícitos submetidos à custódia, nunca um campo disponível cujo vencedor arbitrário define a realidade. Fotos ficam referenciadas por manifesto e arquivo separado.",
+      "decision": "Investir em colaboração frequente sobre descrições sem exigir resolução de documento inteiro; separar o domínio mesclável das decisões exclusivas de estoque.",
+      "constraints_met": [
+        "Fonte documenta edição local e merge posterior.",
+        "Valores concorrentes e histórico podem ser inspecionados.",
+        "Formato binário incremental dá base para persistência/export técnico; exportação legível e mídia ainda precisam ser implementadas."
+      ],
+      "risks": [
+        "Convergência de estruturas não valida reservas nem localização física.",
+        "Vencedor determinístico também pode esconder campo concorrente se getConflicts não for usado.",
+        "Biblioteca não entrega sozinha app Android, transporte, persistência durável, catálogo, anexos ou operação de servidor.",
+        "Fonte exige stream confiável em ordem; reconexões e sincronização de muitos documentos aumentam trabalho para só dois mantenedores.",
+        "Memória/CPU/storage para 45 mil documentos e fotos em celulares baratos não foram medidos."
+      ],
+      "condition": "Só priorizar se a experiência mostrar edição descritiva concorrente frequente e a implementação básica não atender à colaboração.",
+      "cheap_rejection_test": "Protótipo futuro com 500 fichas e descrições concorrentes em três aparelhos baratos, reinício durante escrita e 72h offline. Rejeitar se conflitar silenciosamente, perder histórico, exceder orçamento do aparelho, ou exigir mais tempo de manutenção que A1/A2 sem melhorar tarefas.",
+      "baseline_relation": {
+        "status": "materialmente modificada",
+        "ids": [
+          "B1",
+          "B3"
+        ],
+        "basis": "O baseline não nomeava CRDT. Automerge veio da memória model; A-local/A-conflict mostram uma variante de colaboração que preserva conflitos mas exige limite de domínio. Não é tratada como novidade descoberta pelo catálogo."
+      },
+      "source_evidence": [
+        {
+          "id": "A-local",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "rust/automerge/src/lib.rs",
+          "lines": [
+            7,
+            7
+          ],
+          "passage_locator": "code",
+          "passage_ordinal": 0,
+          "excerpt": "entirely locally but which can at any time be merged with other instances of",
+          "claim_supported": "Local modifications and later merge.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "A-conflict",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "javascript/src/implementation.ts",
+          "lines": [
+            1006,
+            1007
+          ],
+          "passage_locator": "code",
+          "passage_ordinal": 987,
+          "excerpt": "Automerge chooses one value\n * arbitrarily (but deterministically",
+          "claim_supported": "Conflicting map puts have deterministic presentation; getConflicts exposes alternatives.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "A-history",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "javascript/src/implementation.ts",
+          "lines": [
+            1158,
+            1158
+          ],
+          "passage_locator": "code",
+          "passage_ordinal": 1156,
+          "excerpt": "const history = getAllChanges(doc)",
+          "claim_supported": "History API reconstructs snapshots using changes.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "A-transport",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "rust/automerge/src/sync.rs",
+          "lines": [
+            4,
+            4
+          ],
+          "passage_locator": "code",
+          "passage_ordinal": 0,
+          "excerpt": "it assumes a reliable in-order stream",
+          "claim_supported": "Transport constraint; reconnect/retry/persistence must be engineered.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "id": "A-save",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "javascript/src/implementation.ts",
+          "lines": [
+            829,
+            829
+          ],
+          "passage_locator": "code",
+          "passage_ordinal": 781,
+          "excerpt": "Create binary save data to be appended to a save file",
+          "claim_supported": "Incremental save data API; not complete cooperative export feature.",
+          "discovery_origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "durabilidade Android real",
+    "limites de armazenamento e energia",
+    "custos operacionais",
+    "licenças revisadas juridicamente",
+    "volume diário de eventos/fotos",
+    "aceitação da custódia",
+    "benchmark em 45 mil peças"
+  ]
+}

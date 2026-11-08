@@ -1,0 +1,560 @@
+{
+  "scope": {
+    "read_only_inputs": [
+      "problem.txt",
+      "rubric.md",
+      "packet-X.json",
+      "packet-Y.json"
+    ],
+    "external_lookup": false,
+    "workspace_read": false,
+    "subagents": false,
+    "source_execution": false,
+    "verification_assumption": "Literais e testemunhos aceitos conforme pacote/instrução; pins hospedados são identidades reportadas, não Git independentemente conferido por este parecer."
+  },
+  "summary": "As famílias operacionais centrais são compartilhadas. X traz opção complementar observada de merge colaborativo delimitado, sem equivalente explícito no resultado Y; ela já existia como família no baseline de ambos. A pesquisa de X torna essa opção mais concreta/restrita, não descobre a família. Nenhum pacote demonstra solução pronta ou benefício em campo; sem vencedor por contagem.",
+  "candidates": [
+    {
+      "package": "X",
+      "id": "A1",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "qualified": true,
+      "justification": "Captura sempre local; compromisso confirmado por autoridade central e reserva transacional. Histórico, fotos, saída de dados e piloto estão definidos como requisitos, com custo ainda por medir.",
+      "baseline_assessment": {
+        "family": "mesma família",
+        "material_revision": "sim, delimitada",
+        "new_family": false,
+        "reason": "B1/B4: mesma família, com revisão material do contrato de integração. Outbox já cabia na família; rejeitar force update e dedupe de 24h altera implementação e ensaio, não descobre confirmação central."
+      },
+      "decision_changing_limits": [
+        "Force update não pode decidir reserva/saldo.",
+        "Dedupe deve resistir a replay além de 72h e backups antigos."
+      ],
+      "unresolved": [
+        "Histórico e fotos não implementados pelas fontes.",
+        "Latência de promessa remota e manutenção não medidas."
+      ],
+      "excerpts_used": [
+        {
+          "identity": "cherrypick-agency/synchronize_cache",
+          "url": "https://github.com/cherrypick-agency/synchronize_cache",
+          "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+          "file": "README.md",
+          "start_line": 8,
+          "end_line": 10,
+          "excerpt": "read locally → write locally + to outbox",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "cherrypick-agency/synchronize_cache",
+          "url": "https://github.com/cherrypick-agency/synchronize_cache",
+          "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+          "file": "docs/backend-transport.md",
+          "start_line": 190,
+          "end_line": 190,
+          "excerpt": "saves the data unconditionally",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "cherrypick-agency/synchronize_cache",
+          "url": "https://github.com/cherrypick-agency/synchronize_cache",
+          "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+          "file": "docs/backend-transport.md",
+          "start_line": 508,
+          "end_line": 521,
+          "excerpt": "Store the cache for 24 hours",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "cherrypick-agency/synchronize_cache",
+          "url": "https://github.com/cherrypick-agency/synchronize_cache",
+          "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+          "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+          "start_line": 290,
+          "end_line": 310,
+          "excerpt": "expect(result.data['title'], equals('Local Title'));",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "Herricka/RecallWeave",
+          "url": "https://github.com/Herricka/RecallWeave",
+          "pin": "1052515e0726a957544be151987440ea5342f450",
+          "file": "README.md",
+          "start_line": 164,
+          "end_line": 186,
+          "excerpt": "It is *derived* by replaying every",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "Herricka/RecallWeave",
+          "url": "https://github.com/Herricka/RecallWeave",
+          "pin": "1052515e0726a957544be151987440ea5342f450",
+          "file": "README.md",
+          "start_line": 402,
+          "end_line": 408,
+          "excerpt": "Concurrent writers to one directory can corrupt",
+          "evidence_level": "source read, not executed"
+        }
+      ]
+    },
+    {
+      "package": "X",
+      "id": "A2",
+      "scores": {
+        "relevance": 3,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "qualified": true,
+      "justification": "Opção colaborativa complementar: merge de conjuntos/texto apropriados e relatos identificados; disputas de localização/consumo exigem responsável. Precisa de A1/A3 para exclusividade ou aceitar disponibilidade disputada.",
+      "baseline_assessment": {
+        "family": "mesma família",
+        "material_revision": "sim, delimitada",
+        "new_family": false,
+        "reason": "B2/B1: mesma família, revisão material de escopo. Fonte separa LWW padrão de estruturas explícitas e identidades de réplica; não criou a ideia de preservar relatos."
+      },
+      "decision_changing_limits": [
+        "Usar merge apenas para campos cuja semântica o permita.",
+        "Réplicas precisam de identidades distintas e revisão de tombstones/migrações.",
+        "Conjunto de reservas não valida duas promessas."
+      ],
+      "unresolved": [
+        "Transporte/backend indefinidos.",
+        "Fotos, exportação e carga de 45 mil peças não demonstrados.",
+        "Esforço de CRDT para dois generalistas não medido."
+      ],
+      "excerpts_used": [
+        {
+          "identity": "Shreemanarjun/datum",
+          "url": "https://github.com/Shreemanarjun/datum",
+          "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+          "file": "packages/datum/README.md",
+          "start_line": 271,
+          "end_line": 274,
+          "excerpt": "For counters, sets, lists, and collaborative text",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "Shreemanarjun/datum",
+          "url": "https://github.com/Shreemanarjun/datum",
+          "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+          "file": "packages/datum/README.md",
+          "start_line": 256,
+          "end_line": 259,
+          "excerpt": "The default is last-write-wins",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "Shreemanarjun/datum",
+          "url": "https://github.com/Shreemanarjun/datum",
+          "pin": "2622d4245427284eb10159c58e759d1f5a024815",
+          "file": "packages/datum/test/core/crdt_convergence_regressions_test.dart",
+          "start_line": 94,
+          "end_line": 104,
+          "excerpt": "both concurrent runs survive with distinct identities",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "cherrypick-agency/synchronize_cache",
+          "url": "https://github.com/cherrypick-agency/synchronize_cache",
+          "pin": "896e6c60c6f321d8ab8b923f2fc3ac1004eaca32",
+          "file": "packages/offline_first_sync_drift/test/unit/conflict_resolution_test.dart",
+          "start_line": 290,
+          "end_line": 310,
+          "excerpt": "expect(result.data['title'], equals('Local Title'));",
+          "evidence_level": "source read, not executed"
+        }
+      ]
+    },
+    {
+      "package": "X",
+      "id": "A3",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "qualified": true,
+      "justification": "Autoridade transacional por oficina em rede local; celular isolado observa mas não confirma. Trânsito/aceite, recuperação e piloto distinguem captura de exclusividade.",
+      "baseline_assessment": {
+        "family": "mesma família",
+        "material_revision": "sim, delimitada",
+        "new_family": false,
+        "reason": "B3: mesma família. Revisão material da implementação/limite: serialização vale no mesmo banco, rede local não é telefone independente. Custódia e recibos já eram baseline."
+      },
+      "decision_changing_limits": [
+        "Reservar na autoridade local acessível, não em cópias independentes de SQLite.",
+        "CSV do protótipo é insuficiente; exigir histórico/export completo.",
+        "Sem ACK/autoridade, bloquear compromisso e recuperar com inspeção."
+      ],
+      "unresolved": [
+        "Handoff distribuído é síntese não validada.",
+        "Oito pontos locais têm custo e falhas próprios.",
+        "Protótipo por SKU não atende diretamente peças individuais/fotos/60 usuários."
+      ],
+      "excerpts_used": [
+        {
+          "identity": "domsie/benchstock",
+          "url": "https://github.com/domsie/benchstock",
+          "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+          "file": "docs/ARCHITECTURE.md",
+          "start_line": 17,
+          "end_line": 23,
+          "excerpt": "uses `BEGIN IMMEDIATE` to serialise writers before reading balances",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "domsie/benchstock",
+          "url": "https://github.com/domsie/benchstock",
+          "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+          "file": "tests/test_core.py",
+          "start_line": 207,
+          "end_line": 226,
+          "excerpt": "self.assertCountEqual(results, ['reserved', 'conflict'])",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "domsie/benchstock",
+          "url": "https://github.com/domsie/benchstock",
+          "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+          "file": "README.md",
+          "start_line": 7,
+          "end_line": 7,
+          "excerpt": "It has no claimed production deployment or established user base.",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "domsie/benchstock",
+          "url": "https://github.com/domsie/benchstock",
+          "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+          "file": "README.md",
+          "start_line": 87,
+          "end_line": 89,
+          "excerpt": "Full reservation event history is not implemented.",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "domsie/benchstock",
+          "url": "https://github.com/domsie/benchstock",
+          "pin": "79c2b643f2078ef5efba5867a12623c3870a10a9",
+          "file": "README.md",
+          "start_line": 78,
+          "end_line": 78,
+          "excerpt": "CSV contains only the current item summary, not kit or movement data.",
+          "evidence_level": "source read, not executed"
+        },
+        {
+          "identity": "bitsandbots/inventory",
+          "url": "https://github.com/bitsandbots/inventory",
+          "pin": "ea8b7cfd7de91c72e0473329a4a0e1db994b159d",
+          "file": "docs/README.md",
+          "start_line": 7,
+          "end_line": 11,
+          "excerpt": "All assets bundled locally (no CDN), works on isolated networks",
+          "evidence_level": "source read, not executed"
+        }
+      ]
+    },
+    {
+      "package": "Y",
+      "id": "A1",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "qualified": true,
+      "justification": "Diário local, pedidos provisórios, confirmação pela oficina e revisão de estados incompatíveis; piloto inclui 45 mil metadados, restauração/export e compreensão pelos voluntários. Evidência 3 é sobre limites dos mecanismos, não cliente implementado.",
+      "baseline_assessment": {
+        "family": "mesma família",
+        "material_revision": "sim, delimitada",
+        "new_family": false,
+        "reason": "B1/B3: mesma família, revisão material pela retirada da convergência genérica como alternativa independente. Preservação de observações já estava no baseline; Web offline apenas concretiza uma interface candidata."
+      },
+      "decision_changing_limits": [
+        "LWW e relógio não escolhem verdade física nem preservam automaticamente relatos.",
+        "Separar diário/projeção; não implantar Cassandra ou BookKeeper como requisito."
+      ],
+      "unresolved": [
+        "Durabilidade/quota web desconhecidas.",
+        "Fila/idempotência/fotos/export são implementação proposta.",
+        "Autoridade final de confirmação menos formalizada que em X-A1."
+      ],
+      "excerpts_used": [
+        {
+          "id": "E1",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/fulldata-json/data-2.0.json",
+          "passage_start_line": 1,
+          "excerpt": "Method of storing data client-side, allows indexed database queries.",
+          "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+        },
+        {
+          "id": "E2",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/data.json",
+          "passage_start_line": 1,
+          "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+          "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+        },
+        {
+          "id": "E3",
+          "origin": "tool",
+          "identity": {
+            "corpus": "cassandra",
+            "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff"
+          },
+          "file": "cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc",
+          "passage_start_line": 251,
+          "excerpt": "Updates\nresolve according to the conflict resolution rule of last write wins.",
+          "scope": "Regra real de resolução, não garantia de preservar as duas observações; passagem também explicita dependência de relógios."
+        },
+        {
+          "id": "E4",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 1,
+          "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+          "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+        }
+      ]
+    },
+    {
+      "package": "Y",
+      "id": "A2",
+      "scores": {
+        "relevance": 3,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "qualified": true,
+      "justification": "Custódia e recibo definem quem confirma; bom piloto de ausência/troca de turno/dupla autoridade. Exclusividade ainda depende de protocolo operacional/local não especificado e a detecção posterior não impede duas confirmações anteriores.",
+      "baseline_assessment": {
+        "family": "mesma família",
+        "material_revision": "sim, delimitada",
+        "new_family": false,
+        "reason": "B2: mesma família. Revisão material parcial: explicita passagem de autoridade e proíbe substituição por relógio. Ownership e receipts já estavam no baseline; log de escritor único é analogia, não implementação do handoff."
+      },
+      "decision_changing_limits": [
+        "Só autoridade local acessível confirma.",
+        "Fencing/escritor único exige entrega real de autoridade; não basta UI ou timeout."
+      ],
+      "unresolved": [
+        "Não há coordenação local concreta para garantir autoridade única.",
+        "Ausência de responsável bloqueia transições.",
+        "Fotos/exportação/custo continuam não demonstrados."
+      ],
+      "excerpts_used": [
+        {
+          "id": "E1",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/fulldata-json/data-2.0.json",
+          "passage_start_line": 1,
+          "excerpt": "Method of storing data client-side, allows indexed database queries.",
+          "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+        },
+        {
+          "id": "E2",
+          "origin": "tool",
+          "identity": {
+            "corpus": "caniuse",
+            "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+          },
+          "file": "caniuse/data.json",
+          "passage_start_line": 1,
+          "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+          "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+        },
+        {
+          "id": "E4",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 1,
+          "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+          "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+        },
+        {
+          "id": "E5",
+          "origin": "tool",
+          "identity": {
+            "corpus": "bookkeeper",
+            "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+          },
+          "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+          "passage_start_line": 36,
+          "excerpt": "there is only one active writer for a log at any given time.",
+          "scope": "Passagem iniciada na linha 36; fonte explicita fencing durante partição. Não prova coordenação offline entre celulares."
+        }
+      ]
+    }
+  ],
+  "source_relevance": [
+    {
+      "package": "X",
+      "identity": "cherrypick-agency/synchronize_cache",
+      "classification": "implementação diretamente aplicável de componente",
+      "assessment": "Outbox e banco local são pertinentes ao cliente; force update e cache de dedupe exemplificado por 24h impedem adotar contrato intacto. Não é inventário/histórico pronto."
+    },
+    {
+      "package": "X",
+      "identity": "Shreemanarjun/datum",
+      "classification": "implementação diretamente aplicável de componente",
+      "assessment": "Estruturas de merge e regressão de identidades de réplica sustentam ensaio de descrições; não há validação de reservas ou fotos/export no alvo."
+    },
+    {
+      "package": "X",
+      "identity": "domsie/benchstock",
+      "classification": "mecanismo transferível",
+      "assessment": "Domínio de estoque e reserva concorrente é diretamente pertinente; serialização em banco único e teste de duas conexões são transferíveis. Protótipo por SKU, sem história completa/UI/sync, exige adaptação grande."
+    },
+    {
+      "package": "X",
+      "identity": "bitsandbots/inventory",
+      "classification": "mecanismo transferível",
+      "assessment": "Assets sem CDN tornam rede local isolada opção concreta; não demonstram telefone que grava fora da rede."
+    },
+    {
+      "package": "X",
+      "identity": "Herricka/RecallWeave",
+      "classification": "mecanismo transferível",
+      "assessment": "Replay e supersessão ajudam separar eventos/projeção; domínio diferente, escritor único e compactação impedem adoção como sincronizador ou prova de histórico completo."
+    },
+    {
+      "package": "X",
+      "identity": "PamCatten/hot-stuff",
+      "classification": "contexto insuficiente para solução colaborativa",
+      "assessment": "Limites Android 13/perda por aparelho ajudam rejeitar app local como substituição pronta. Não sustentam colaboração entre oficinas."
+    },
+    {
+      "package": "X",
+      "identity": "gorkem91/flutter-offline-first-architecture; Manikanta-dev-sys/offline-sync-conflict",
+      "classification": "contexto insuficiente para alternativa adicional",
+      "assessment": "README lido mas pacote não apresenta mecanismo distintivo verificável além de filas/versionamento já cobertos."
+    },
+    {
+      "package": "X",
+      "identity": "crownleo/ClaudeViewer",
+      "classification": "contexto insuficiente",
+      "assessment": "Leitura incidental sem conexão demonstrada às decisões do problema; não contar como alternativa/evidência favorável."
+    },
+    {
+      "package": "Y",
+      "identity": "caniuse",
+      "classification": "mecanismo transferível, evidência limitada",
+      "assessment": "Referência de capacidade web offline e armazenamento cliente, não implementação de sync. Nada prova retenção 72h, fotos, quota ou 45 mil peças nos aparelhos."
+    },
+    {
+      "package": "Y",
+      "identity": "cassandra",
+      "classification": "mecanismo transferível sobretudo como contraexemplo",
+      "assessment": "LWW/relógios mudam decisão de modelagem e invalidam sobrescrita como preservação. Não sustenta instalar backend distribuído nem prova todos os sistemas de replicação."
+    },
+    {
+      "package": "Y",
+      "identity": "bookkeeper",
+      "classification": "mecanismo transferível",
+      "assessment": "Log imutável e escritor único/fencing motivam separar história/autoridade; contexto de servidor não fornece custódia física, celular offline ou manutenção barata."
+    }
+  ],
+  "equivalence_groups": [
+    {
+      "id": "G1",
+      "members": [
+        "X-A1",
+        "Y-A1"
+      ],
+      "shared_decision": "Capturar observações offline, preservar correções, mostrar pendências e exigir confirmação antes de compromisso remoto/viagem.",
+      "partial_differences": "X-A1 formaliza servidor transacional como autoridade de reserva; Y-A1 exige confirmação com custódia mas não detalha protocolo único de confirmação. Distinção de especificação/garantia a testar, não motivo suficiente para inventar uma família totalmente exclusiva."
+    },
+    {
+      "id": "G2",
+      "members": [
+        "X-A3",
+        "Y-A2"
+      ],
+      "shared_decision": "Custódia local confirma, pedidos externos aguardam, trânsito fica indisponível até recibo, todos seguem observando.",
+      "partial_differences": "X propõe banco transacional acessível por Wi-Fi e esclarece quando telefone isolado não pode confirmar; Y explicita responsável, entrega de autoridade e suspensão diante de sequências concorrentes. Mesmo compromisso operacional sob condições, com maior concretude local em X e exclusividade preventiva ainda não implementada em Y."
+    },
+    {
+      "id": "G3",
+      "members": [
+        "X-A2",
+        "Y-A1 (preservação/revisão)",
+        "Y-B3 (somente baseline, não alternativa promovida)"
+      ],
+      "shared_decision": "Preservar relatos concorrentes e revisar estado físico incompatível; convergência não valida disponibilidade.",
+      "partial_differences": "X-A2 mantém opção de merge explícito de conjuntos/texto apropriados com identidades de réplica; Y conserva relatos/eventos e revisão humana, mas declara não ter suporte suficiente para apresentar convergência automática independente. União de relatos não é prova de texto colaborativo convergente."
+    }
+  ],
+  "qualified_observed_exclusives": [
+    {
+      "id": "X-A2-merge",
+      "scope": "opção complementar parcial, não solução operacional completa exclusiva",
+      "scores": {
+        "relevance": 3,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "decision_effect": "Permite investigar mesclagem automática somente de rótulos/conjuntos/texto adequados, deixando local/reserva/consumo em disputa e decisão explícita; muda esquema, identidade de réplica e manutenção, sem garantir reserva.",
+      "why_no_equivalent": "Y-A1 preserva descrições/observações e revisa conflitos, mas Y explicitamente não promove convergência automática por ausência de fonte suficiente. Y-B3 é ideia anterior, não resultado apoiado equivalente.",
+      "research_contribution": "Revisão material de uma família já lembrada: biblioteca com LWW padrão não basta; estruturas explícitas e identidades distintas restringem sua implementação e teste. Não há descoberta de nova família.",
+      "confidence": "moderada: os trechos sustentam opção componente; não estimam economia de revisão nem sistema integrado. Ao agrupar somente fluxos completos, há zero exclusiva integral."
+    }
+  ],
+  "full_workflow_exclusive_alternatives": [],
+  "apparent_exclusives": [
+    "Três títulos em X e dois em Y não significam três versus duas famílias: X-A2 complementa A1/A3 e parte de seu efeito já está em Y-A1.",
+    "Projeto de log, biblioteca Flutter, corpus de navegador e banco distribuído não são por si quatro opções de trabalho.",
+    "Rede local/SQLite em X-A3 concretiza custódia compartilhada com Y-A2; não prova handoff distribuído e não vira nova família por marca ou mecanismo.",
+    "Cliente web em Y é concretização de captura local; X deixa tecnologia aberta, e capacidade de navegador não justifica exclusiva de fluxo.",
+    "App local de inventário descartado em X não é candidata relevante para oito oficinas só por existir."
+  ],
+  "research_added_beyond_citation": {
+    "X": [
+      "Veto a force update de reserva/saldo e dedupe apenas 24h; acrescenta replay após 96h/backup ao piloto.",
+      "Delimita LWW versus CRDT explícito e exige identidades de réplica; mantém merge seletivo como hipótese pesquisável.",
+      "Fronteira banco único versus réplicas independentes; distingue rede isolada de telefone isolado.",
+      "Falhas de histórico/CSV e requisitos Android/perda de aparelho alteram rejeição de adoção direta e critérios de exportação/recuperação."
+    ],
+    "Y": [
+      "LWW/relógio dão contraexemplo concreto à ideia de que replicar preserva observações; alternativa automática independente não foi promovida.",
+      "Escritor único/fencing torna explícita entrega de autoridade; não é prova de implementação do protocolo.",
+      "Armazenamento/inicialização web tornam interface candidata investigável e destacam ensaio de quota/durabilidade."
+    ],
+    "not_added": "Diário, preservação de relatos, custódia/recibos e confirmação antes de promessa já constavam nos baselines; não atribuir a descoberta dessas famílias às fontes. Pilotos e trabalho físico detalhados são síntese, não resultados dos projetos."
+  },
+  "evaluation_quality": "Ambos propõem piloto pequeno de 72h, conflitos, export/restauração e métricas operacionais. X acrescenta replay >72h, compactação/backup e falha de Wi-Fi/autoridade. Y especifica melhor compreensão dos voluntários e proporção/tempo de operações bloqueadas. Limiares de 15/30 min, 10% e 1h são propostas negociáveis, não medidas. Nenhum experimento ocorreu.",
+  "uncertainties": [
+    "Zero evidência de campo para promessas reduzidas, viagens evitadas ou custos reais.",
+    "Durabilidade em Android barato, 45 mil peças, fotos, backup/export completo e esforço de dois generalistas não foram verificados.",
+    "IDs físicos duplicados, perda de aparelho e segurança do handoff exigem estudo/implementação.",
+    "Evidência estática sustenta mecanismos/limites, não a correção integrada dos desenhos.",
+    "Ausência de alternativa nesta execução não demonstra incapacidade do outro produto; catálogos e caminhos incompletos não são cobertura exaustiva."
+  ],
+  "winner": null,
+  "aggregation": "Notas ordinais não somadas; nenhuma inferência por quantidade de títulos, fontes ou chamadas."
+}

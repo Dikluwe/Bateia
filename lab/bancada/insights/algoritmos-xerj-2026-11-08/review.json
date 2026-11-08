@@ -1,0 +1,110 @@
+{
+  "schema_version": "1",
+  "reviewer": "independent_algorithm0155_review",
+  "verdict": "USABLE_WITH_CONDITIONS_NO_DEMONSTRATED_IMPROVEMENT",
+  "scope": {
+    "inputs": [
+      "review-rubric.md",
+      "review-packet.json",
+      "evidence-check.json"
+    ],
+    "clones_read": [
+      "xerj",
+      "postings-rust"
+    ],
+    "missing_requested_clone": "postings-go",
+    "available_clone_names": [
+      "xerj",
+      "postings-rust",
+      "postings-java"
+    ],
+    "unread_clone": "postings-java",
+    "source_execution": false,
+    "web": false,
+    "implementation": false,
+    "global_absence_inferred": false
+  },
+  "citation_integrity": {
+    "bound_citations": 15,
+    "all_supplied_git_and_return_checks_pass": true,
+    "semantic_validation_by_formulate": false,
+    "note": "Verificações de integridade aceitas do evidence-check; leitura independente de mecanismos e chamadores nos clones permitidos."
+  },
+  "ideas": [
+    {
+      "id": "I1",
+      "scores": {
+        "evidence": 3,
+        "transfer": 2,
+        "decision": 2
+      },
+      "classification": "CONDITIONAL_RESEARCH_CANDIDATE",
+      "email_usable": true,
+      "demonstrated_improvement": false,
+      "target_relation": "DIFFERENT_APPROACH_IN_OBSERVED_FTS_FORMAT",
+      "baseline_relation": "H1/H3 refinadas em mecanismo concreto; baseline não continha algoritmo equivalente demonstrado.",
+      "reason": "Diretórios residentes, offsets/comprimentos/base e leitura por faixa sustentam estratégia de armazenamento/acesso. Escritor ZPS2 e leitor integral do alvo sustentam diferença no caminho observado. Não comprova economia ou viabilidade integral.",
+      "conditions": [
+        "Perfil mostrar custo relevante de abertura/miss e poucos termos por leitor.",
+        "Comparar contra cache FTS existente, não contra reabertura artificial em toda consulta.",
+        "Novo framing independente, codecs/posições/frequências e formatos antigos compatíveis.",
+        "Paridade de IDs, scores, ordem, posições e total exato; rejeição por corrupção não detectada."
+      ],
+      "gaps": [
+        "Rota HTTP completa e distribuição real de workload não verificadas.",
+        "Taxas de hit/miss, orçamento efetivo, retenção e reabertura em produção desconhecidos.",
+        "Integração writer/merge/cache e impacto em compressão, I/O, ingestão e memória não verificados.",
+        "Limiares 20% e 5% são critérios propostos, não resultados ou requisitos derivados das fontes."
+      ],
+      "review_addition": "Clone contém fts_reader_cache e fts_reader_for: hit reutiliza Arc; miss abre leitor e contabiliza orçamento. Há chamador no loop FTS do engine. Incluir explicitamente esse baseline no email.",
+      "test_assessment": "Experimento futuro é rejeitável e cobre braços frio/aquecido e paridade; deve distinguir cache de leitor e cache de páginas, medir misses reais e memória transitória além de RSS/retida."
+    },
+    {
+      "id": "I2",
+      "scores": {
+        "evidence": 3,
+        "transfer": 3,
+        "decision": 2
+      },
+      "classification": "ALREADY_PRESENT_USEFUL_CONFIRMATION",
+      "email_usable": true,
+      "demonstrated_improvement": false,
+      "target_relation": "ALREADY_PRESENT_FOR_UPPER_BOUND_SCORE_PRUNING",
+      "baseline_relation": "Confirma H2; mecanismo identificado após ler fonte/alvo.",
+      "reason": "search delega a search_bounded; bool somente should de termos simples, msm efetivo 1, explain desativado e cap finito entra em wand_should_bool. Comparação >= preserva igualdade; total é incrementado por doc. Descartar adicionar WAND genericamente é decisão correta.",
+      "conditions": [
+        "Restringir confirmação ao princípio e shape observado.",
+        "Distinguir poda de score de saltos de blocos e preservar contagem exata.",
+        "Limites devem ser conservadores para scorer/boost/aritmética aplicáveis."
+      ],
+      "gaps": [
+        "Block-max da fonte usa pesos esparsos/produto interno; transferência para BM25 e total exato permanece NOT_ESTABLISHED.",
+        "Leitura dos testes não comprova execução nem correção em todo domínio de entradas."
+      ],
+      "test_assessment": "Teste do alvo tem precondição de poda explícita e compara total e bits de score para vários caps; fonte compara block-max com brute force. Ambos apenas lidos."
+    }
+  ],
+  "additional_target_observations": [
+    {
+      "path": "engine/crates/xerj-engine/src/index.rs",
+      "lines": "11704-11726;33420-33459;27061-27065",
+      "observation": "Cache por segmento/conjunto de campos, hit por Arc e miss com open/contabilização; usado no loop FTS. Comentário histórico de desempenho não foi promovido a medição atual."
+    },
+    {
+      "path": "engine/crates/xerj-fts/src/index.rs",
+      "lines": "1887-1932;2690-2738;2985-3008",
+      "observation": "Offsets por termo e blocos de codec já existem, mas não são diretório de blocos comprimidos independentes. Writer usa envelope integral; legado raw tem mmap; postings_reader constrói iterator de slice."
+    },
+    {
+      "path": "src/raw.rs (postings-rust)",
+      "lines": "1686-1798;3036-3053;3279-3318;7122-7165",
+      "observation": "Leitor carrega diretórios e metadados residentes; payload por faixa e verificação condicional de checksums; poda/teste têm condições concretas."
+    }
+  ],
+  "email_summary": "Um candidato condicional de formato/leitura, sujeito a perfil de misses e paridade, e uma confirmação útil que evita recomendar WAND já presente. Zero melhorias demonstradas. Não alegar ganho por consulta, adoção, ausência global, exclusividade ou superioridade geral.",
+  "required_editorial_adjustments": [
+    "Mencionar cache FTS existente como baseline, preservando desconhecimento de taxas reais.",
+    "Limitar a frase de descompressão integral aos envelopes comprimidos observados; legado raw usa mmap após leitura de detecção.",
+    "Apresentar percentuais somente como limiares propostos para experimento."
+  ]
+}

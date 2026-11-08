@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-28",
+  "status": "passed_in_declared_scope",
+  "contract": "00_nucleo/passos/0132-explicar-retomada-de-evidencias.md",
+  "checks": {
+    "lint": {
+      "command": [
+        "/usr/bin/python3",
+        "lab/ferramentas/crystalline-lint/run.py",
+        "--fail-on",
+        "warning",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "architecture": {
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./lab/bancada/arquitetura/0129/boundaries",
+        "./lab/bancada/arquitetura/0131/contracts"
+      ],
+      "exit_code": 0
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/repos/Antigravity/Bateia/lab/bancada/confiabilidade/0132/final/bateia",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "productive_go_files_audited": 354,
+  "lineage": "lineage.json",
+  "lineage_records": 7,
+  "protected_sources_unchanged": [
+    "01_core/usecase/evidence_checkpoint_test.go",
+    "01_core/usecase/recommendation_dossier_test.go",
+    "02_shell/cli/idea_recommend_test.go",
+    "02_shell/cli/idea_web_step0020_contract_test.go",
+    "02_shell/mcp/recommendation_step0025_contract_test.go",
+    "01_core/usecase/recommendation.go"
+  ],
+  "build_sha256": "7e3867b1ac7f887ae24fe5998f492667fd5bb7214c0aa0a4da637dc28421e455",
+  "sandbox_attempt": "sandbox-attempt/verification.json",
+  "environment_resolution": "Two HTTP fixture packages passed with authorized loopback; final make verify passed with loopback enabled. No tests skipped or relaxed.",
+  "compatibility": {
+    "eligibility_policy_preserved": true,
+    "diagnostic_persisted": false,
+    "historical_oracles_modified": false,
+    "sealed_gates_promoted": false
+  },
+  "limits": [
+    "First impediment only; no extra reads or authentication of sources.",
+    "CLI announces diagnostic on successful publication; later failure retains in-memory assessment without completion announcement.",
+    "Existing empty requirement_coverage null/[] oscillation is recorded in serializer-observation.json and remains outside this change.",
+    "No user study or live-provider evaluation."
+  ]
+}

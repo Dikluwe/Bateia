@@ -1,0 +1,129 @@
+{
+  "sources": [
+    {
+      "corpus": "caniuse",
+      "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774",
+      "pin_date": "2026-10-13",
+      "origin": "tool",
+      "licence": "CC-BY-4.0",
+      "discovery_witness": "/tmp/bateia-xerj-open-0154/xerj/audit/010.json",
+      "read_witnesses": [
+        "/tmp/bateia-xerj-open-0154/xerj/audit/020.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/025.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/027.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/028.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/033.json"
+      ],
+      "url": null,
+      "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+    },
+    {
+      "corpus": "cassandra",
+      "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff",
+      "pin_date": "2026-10-13",
+      "origin": "tool",
+      "licence": "Apache-2.0",
+      "discovery_witness": "/tmp/bateia-xerj-open-0154/xerj/audit/007.json",
+      "read_witnesses": [
+        "/tmp/bateia-xerj-open-0154/xerj/audit/026.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/029.json",
+        "/tmp/bateia-xerj-open-0154/xerj/audit/032.json"
+      ],
+      "url": null,
+      "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+    },
+    {
+      "corpus": "bookkeeper",
+      "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc",
+      "pin_date": "2026-10-13",
+      "origin": "tool",
+      "licence": "Apache-2.0",
+      "discovery_witness": "/tmp/bateia-xerj-open-0154/xerj/audit/012.json",
+      "read_witnesses": [
+        "/tmp/bateia-xerj-open-0154/xerj/audit/034.json"
+      ],
+      "url": null,
+      "url_note": "Identidade de corpus nativo; não foi inventada URL de repositório a partir do nome."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "origin": "tool",
+      "identity": {
+        "corpus": "caniuse",
+        "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+      },
+      "file": "caniuse/fulldata-json/data-2.0.json",
+      "passage_start_line": 1,
+      "excerpt": "Method of storing data client-side, allows indexed database queries.",
+      "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/025.json",
+      "witness_field": "stdout",
+      "scope": "Apenas capacidade de armazenamento cliente; não prova durabilidade, sincronização, fotos nem capacidade para 45 mil peças."
+    },
+    {
+      "id": "E2",
+      "origin": "tool",
+      "identity": {
+        "corpus": "caniuse",
+        "pin_sha": "e951c6cd80296dab56d08a932f5f879e786fa774"
+      },
+      "file": "caniuse/data.json",
+      "passage_start_line": 1,
+      "excerpt": "including hooks to enable bootstrapping of web applications while offline.",
+      "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/027.json",
+      "witness_field": "stdout",
+      "scope": "Inicialização offline com Service Workers; não prova execução contínua em background nem entrega de operações."
+    },
+    {
+      "id": "E3",
+      "origin": "tool",
+      "identity": {
+        "corpus": "cassandra",
+        "pin_sha": "ec2c276be145bb25085c5c35ac0da69113b676ff"
+      },
+      "file": "cassandra/doc/modules/cassandra/pages/architecture/dynamo.adoc",
+      "passage_start_line": 251,
+      "excerpt": "Updates\nresolve according to the conflict resolution rule of last write wins.",
+      "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/029.json",
+      "witness_field": "stdout",
+      "scope": "Regra real de resolução, não garantia de preservar as duas observações; passagem também explicita dependência de relógios."
+    },
+    {
+      "id": "E4",
+      "origin": "tool",
+      "identity": {
+        "corpus": "bookkeeper",
+        "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+      },
+      "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+      "passage_start_line": 1,
+      "excerpt": "A *log* in DistributedLog is an ordered, immutable sequence of *log records*.",
+      "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/034.json",
+      "witness_field": "stdout",
+      "scope": "Semântica do histórico; desenho da aplicação proposto por síntese, não produto Android descoberto."
+    },
+    {
+      "id": "E5",
+      "origin": "tool",
+      "identity": {
+        "corpus": "bookkeeper",
+        "pin_sha": "773a988ddf8b888a8869c6ae33f696935eba5cdc"
+      },
+      "file": "bookkeeper/site3/website/docs/api/distributedlog-api.md",
+      "passage_start_line": 36,
+      "excerpt": "there is only one active writer for a log at any given time.",
+      "witness_file": "/tmp/bateia-xerj-open-0154/xerj/audit/034.json",
+      "witness_field": "stdout",
+      "scope": "Passagem iniciada na linha 36; fonte explicita fencing durante partição. Não prova coordenação offline entre celulares."
+    }
+  ],
+  "acquisitions": [],
+  "useful_unfollowed_links": [
+    {
+      "identity": "https://github.com/axemclion/IndexedDBShim",
+      "witness": "/tmp/bateia-xerj-open-0154/xerj/audit/025.json",
+      "reason": "Link surgiu nativamente, mas polyfill para WebSQL não responde sincronização e WebSQL foi indicado como descontinuado na leitura 033; não adquirido."
+    }
+  ]
+}

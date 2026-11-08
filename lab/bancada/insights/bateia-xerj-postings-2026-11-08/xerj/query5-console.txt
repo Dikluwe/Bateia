@@ -1,0 +1,161 @@
+Audit: /tmp/bateia-xerj-demo-0156/xerj/audit/011.json
+Exit: 0 Seconds: 0.062
+{
+  "took": 25,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 76,
+      "relation": "eq"
+    },
+    "max_score": 2027.0951,
+    "hits": [
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "ff514c9ab3ba41bd0067cd43190b7a09",
+        "_score": 2027.0951,
+        "_source": {
+          "title": "raw.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/raw.rs",
+          "ax_paths": [
+            "src/raw.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 1700,
+              "start_offset": 58572,
+              "end_offset": 62499,
+              "text": "pub fn from_file_range(\n        mut file: File,\n        offset: u64,\n        len: u64,\n    ) -> Result<Self, RawSegmentFileError> {\n        let file_end = offset.checked_add(len).ok_or(Error::SegmentTooLarge)?;\n        if file_end > file.metadata()?.len() {\n            return Err(Error::Truncated {\n                section: \"file range\",\n            }\n            .into());\n        }\n\n        let file_len_u64 = len;\n        let file_len = usize::try_from(file_len_u64).map_err(|_| Error::SegmentTooLarge)?;\n        if file_len < HEADER_LEN {\n            return Err(Error::Truncated { section: \"header\" }.into());\n        }\n        let header = read_exact_at(&mut file, offset, HEADER_LEN as u64)?;\n        let meta = parse_header(&header)?;\n        validate_layout_len(meta, file_len)?;\n\n        let footer = read_exact_at(\n            &mut file,\n            segment_file_offset(offset, meta.footer_offset)?,\n            FOOTER_LEN as u64,\n        )?;\n        if &footer[..FOOTER_MAGIC.len()] != FOOTER_MAGIC {\n            return Err(Error::BadFooter.into());\n        }\n        let footer_version = read_u32_at(&footer, FOOTER_MAGIC.len(), \"footer\")?;\n        if footer_version != meta.version {\n            return Err(Error::UnsupportedVersion {\n                version: footer_version,\n            }\n            .into());\n        }\n\n        let term_dir_len = (meta.term_count as u64)\n            .checked_mul(TERM_ENTRY_LEN as u64)\n            .ok_or(Error::InvalidLayout {\n                reason: \"term directory length overflows\",\n            })?;\n        let doc_meta_len = (meta.doc_count as u64)\n            .checked_mul(DOC_ENTRY_LEN as u64)\n            .ok_or(Error::InvalidLayout {\n                reason: \"doc metadata length overflows\",\n            })?;\n        let block_dir_start = doc_meta_end(meta)?;\n        let block_dir_len =\n            meta.postings_offset\n                .checked_sub(block_dir_start)\n                .ok_or(Error::InvalidLayout {\n                    reason: \"block directory must follow doc metadata\",\n                })?;\n\n        let term_dir = read_exact_at(\n            &mut file,\n            segment_file_offset(offset, meta.term_dir_offset)?,\n            term_dir_len,\n        )?;\n        let doc_meta = read_exact_at(\n            &mut file,\n            segment_file_offset(offset, meta.doc_meta_offset)?,\n            doc_meta_len,\n        )?;\n        let block_dir = read_exact_at(\n            &mut file,\n            segment_file_offset(offset, block_dir_start)?,\n            block_dir_len,\n        )?;\n\n        // Directories are resident, so verify them at open; posting blocks\n        // verify lazily per range read via the checksum map.\n        let block_checksums = if meta.has_checksums() {\n            let (integrity_offset, block_count, integrity_len) = integrity_layout(meta)?;\n            let integrity = read_exact_at(\n                &mut file,\n                segment_file_offset(offset, integrity_offset)?,\n                integrity_len,\n            )?;\n            verify_directory_checksums(\n                meta, &header, &term_dir, &doc_meta, &block_dir, &integrity,\n            )?;\n            let block_count = usize::try_from(block_count).map_err(|_| Error::SegmentTooLarge)?;\n            if integrity.len() != meta.integrity_header_len() + block_count * 4 {\n                return Err(Error::InvalidLayout {\n                    reason: \"integrity section length mismatch\",\n                }\n                .into());\n            }\n            Some(BlockChecksums::new(&integrity, meta.integrity_header_len()))\n        } else {\n            None\n        };\n\n        validate_doc_id_bounds(&doc_meta, meta.doc_count, meta.max_doc_id)?;\n        Ok(Self {\n            file,\n            data_offset: offset,\n            file_len,\n            meta,\n            term_dir,\n            doc_meta,\n            block_dir,\n            block_checksums,\n        })\n    }"
+            }
+          ]
+        },
+        "match_line": 1773,
+        "match_lines": [
+          1719,
+          1725,
+          1759,
+          1764,
+          1769,
+          1773,
+          1774,
+          1779
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "b22ae838ab3e51c8d158cfe679e6566b",
+        "_score": 1006.7287,
+        "_source": {
+          "title": "# Design: Postings Raw Segment Reader",
+          "start_line": 215,
+          "ax_path": "docs/raw-segment-reader.md",
+          "ax_paths": [
+            "docs/raw-segment-reader.md"
+          ],
+          "ax_locator": "s7"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 0,
+              "start_offset": 0,
+              "end_offset": 1249,
+              "text": "it may need offsets to full vectors for reranking. Its\nquery loop probes a bounded set of lists and accumulates approximate distances;\nit does not run Boolean, BM25, phrase, or learned-sparse scoring.\n\nThat makes raw postings a useful reference design for immutable list storage,\nnot a drop-in vector-IVF backend. The pieces likely to transfer are the resident\ndirectory plus range-readable payload split, checksums, resident-vs-payload byte\naccounting, segment pruning diagnostics, and lifecycle separation from deletes,\ncompaction, and manifests. A shared lower layer should only be extracted after a\nvector-list reader and the postings raw reader both prove they want the same\ndirectory, payload, checksum, and cache contracts.\n\n## Open Questions\n\n- Should the checksum cover the whole raw segment or each section independently\n  so a reader can verify only the ranges it touches?\n- Should doc lengths live in every postings raw segment or in a shared corpus\n  metadata segment owned by `lexir`?\n- What is the first public term-id type: `u64`, `u32`, or a newtype that leaves\n  room for field ids?\n- What exact `SegmentMeta` does segstore need to store before raw postings bytes\n  can become source segment files rather than rebuildable sidecars?"
+            }
+          ]
+        },
+        "match_line": 225,
+        "match_lines": [
+          221,
+          225,
+          229
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "2b726ca5ebb6314466b0e76dbf4e7328",
+        "_score": 1006.21,
+        "_source": {
+          "title": "lib.rs",
+          "language": "rust",
+          "start_line": 1,
+          "ax_path": "src/lib.rs",
+          "ax_paths": [
+            "src/lib.rs"
+          ],
+          "ax_locator": "code"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 1155,
+              "start_offset": 41603,
+              "end_offset": 43646,
+              "text": "const SAVED_INDEX_VERSION: u32 = 1;\n/// Magic, version (u32), payload length (u64) and payload CRC-32 (u32).\n#[cfg(feature = \"persistence\")]\nconst SAVED_INDEX_HEADER_LEN: usize = 8 + 4 + 8 + 4;\n\n/// Wraps a postcard payload in the versioned, checksummed envelope.\n#[cfg(feature = \"persistence\")]\nfn frame_saved_index(payload: &[u8]) -> Vec<u8> {\n    let mut bytes = Vec::with_capacity(SAVED_INDEX_HEADER_LEN + payload.len());\n    bytes.extend_from_slice(SAVED_INDEX_MAGIC);\n    bytes.extend_from_slice(&SAVED_INDEX_VERSION.to_le_bytes());\n    bytes.extend_from_slice(&(payload.len() as u64).to_le_bytes());\n    bytes.extend_from_slice(&crc32fast::hash(payload).to_le_bytes());\n    bytes.extend_from_slice(payload);\n    bytes\n}\n\n/// The postcard payload of a saved index: the checked body of an envelope,\n/// or the whole file for an unframed index written before 0.7.0.\n#[cfg(feature = \"persistence\")]\nfn unframe_saved_index(bytes: &[u8]) -> Result<&[u8], std::io::Error> {\n    let invalid = |reason| std::io::Error::new(std::io::ErrorKind::InvalidData, reason);\n    let Some(rest) = bytes.strip_prefix(SAVED_INDEX_MAGIC.as_slice()) else {\n        return Ok(bytes);\n    };\n    if bytes.len() < SAVED_INDEX_HEADER_LEN {\n        return Err(invalid(\"saved index header is truncated\"));\n    }\n    let (version, rest) = rest.split_at(4);\n    let (len, rest) = rest.split_at(8);\n    let (crc, payload) = rest.split_at(4);\n    let version = u32::from_le_bytes(version.try_into().expect(\"4-byte field\"));\n    if version != SAVED_INDEX_VERSION {\n        return Err(invalid(\"saved index format version is not supported\"));\n    }\n    let len = u64::from_le_bytes(len.try_into().expect(\"8-byte field\"));\n    if u64::try_from(payload.len()).ok() != Some(len) {\n        return Err(invalid(\n            \"saved index payload length disagrees with its header\",\n        ));\n    }\n    if crc32fast::hash(payload) != u32::from_le_bytes(crc.try_into().expect(\"4-byte field\")) {\n        return Err(invalid(\"saved index checksum mismatch\"));\n    }\n    Ok(payload)\n}\n"
+            }
+          ]
+        },
+        "match_line": 1198,
+        "match_lines": [
+          1157,
+          1161,
+          1163,
+          1164,
+          1167,
+          1168,
+          1169,
+          1198
+        ]
+      },
+      {
+        "_index": "demo-postings-0156-docs",
+        "_id": "75907fe5c1b02c95cd685ee831cce358",
+        "_score": 1006.1543,
+        "_source": {
+          "title": "# Design: Postings Raw Segment Reader",
+          "start_line": 94,
+          "ax_path": "docs/raw-segment-reader.md",
+          "ax_paths": [
+            "docs/raw-segment-reader.md"
+          ],
+          "ax_locator": "s3"
+        },
+        "fields": {
+          "_passage": [
+            {
+              "field": "body",
+              "ordinal": 0,
+              "start_offset": 0,
+              "end_offset": 1948,
+              "text": "Add a `raw` design surface to `postings`, initially behind a feature name such\nas `raw-segment` once implemented. The first raw segment format is a\nfilesystem-friendly, numeric-term, CPU-query format:\n\n- header: magic, version, flags, checksum policy, endianness marker;\n- segment metadata: term count, doc count, max doc id, total doc length, weight\n  kind, block size, offsets to sections;\n- term directory: sorted `u64` term ids with document frequency, collection\n  term frequency, max score or weight bound, and posting-list offset;\n- doc metadata: sorted doc ids plus document lengths, either dense when max doc\n  id is compact or blocked sparse when it is not;\n- posting blocks: doc-id gaps plus `u32` frequencies or `f32` weights, split\n  into fixed target-size blocks with per-block max score and last doc id;\n- weighted metadata: per-term and per-block bounds must record enough sign\n  information to prove nonnegative contributions; mixed-sign queries must fall\n  back to exact scoring rather than unsafe block pruning;\n- optional positions section: per-term, per-doc position blocks for phrase and\n  proximity queries;\n- footer: format version and checksum over the payload or selected sections.\n\nThe reader API should expose capabilities already used by the in-memory code:\n\n- `df(term_id)`, `document_len(doc_id)`, `num_docs()`, `avg_doc_len()`;\n- `postings(term_id)` as a block iterator, not a `Vec`;\n- `candidates_any`, `candidates_all`, and `top_k_weighted` over one or more raw\n  segment readers;\n- optional positional readers that can retrieve positions for a term/doc pair\n  without decoding all positions for that term.\n\nThe first implementation can use `std::fs::File` plus `pread`-style range reads\nor a small buffered file abstraction. Mmap can come after the format and tests\nare stable. `MemoryDirectory` remains a correctness backend only; performance\nclaims must use a filesystem directory.\n\n## Segstore Integration Path"
+            }
+          ]
+        },
+        "match_line": 112,
+        "match_lines": [
+          98,
+          102,
+          105,
+          107,
+          112
+        ]
+      }
+    ]
+  }
+}
+
+

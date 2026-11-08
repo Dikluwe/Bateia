@@ -1,0 +1,3137 @@
+[
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "ashutosh-rath02",
+      "repo": "schemantic",
+      "commit": "100fa8a02622ff0ae74b752c046563f250d1c88b"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "ashutosh-rath02",
+        "repo": "schemantic",
+        "commit": "100fa8a02622ff0ae74b752c046563f250d1c88b"
+      },
+      "candidate": {
+        "owner": "ashutosh-rath02",
+        "repo": "schemantic",
+        "url": "https://github.com/ashutosh-rath02/schemantic",
+        "description": "Multi-agent system that parses Altium/KiCad schematic PDFs into a verified connectivity graph, with AI agents for part ID, datasheet grounding, a grounded chat agent, multi-board linking, and pre-fab design checks.",
+        "stars": 0,
+        "commit_id": "100fa8a02622ff0ae74b752c046563f250d1c88b",
+        "consultado_em": "2026-10-29T19:13:20.257825347Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-08-03T17:49:30Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "ashutosh-rath02",
+          "repo": "schemantic",
+          "commit": "100fa8a02622ff0ae74b752c046563f250d1c88b"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"ashutosh-rath02\",\"repo\":\"schemantic\",\"url\":\"https://github.com/ashutosh-rath02/schemantic\",\"description\":\"Multi-agent system that parses Altium/KiCad schematic PDFs into a verified connectivity graph, with AI agents for part ID, datasheet grounding, a grounded chat agent, multi-board linking, and pre-fab design checks.\",\"stars\":0,\"commit_id\":\"100fa8a02622ff0ae74b752c046563f250d1c88b\",\"consultado_em\":\"2026-10-29T19:13:20.257825347Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-08-03T17:49:30Z\"}",
+        "content_hash": "c57f6e142023df89f14aa89bdff850b7c2d04d8aa5dd239a2c2452f927390ec2"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "ashutosh-rath02",
+          "repo": "schemantic",
+          "commit": "100fa8a02622ff0ae74b752c046563f250d1c88b"
+        },
+        "path": "README.md",
+        "content": "# Schemantic\n\n[![tests](https://github.com/ashutosh-rath02/schemantic/actions/workflows/tests.yml/badge.svg)](https://github.com/ashutosh-rath02/schemantic/actions/workflows/tests.yml)\n[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)\n[![python](https://img.shields.io/badge/python-3.11-blue.svg)](pyproject.toml)\n\n**A multi-agent system that turns a circuit board's schematic PDF into something actually\nunderstood** -- a live connectivity graph, AI-identified parts with page-cited datasheet facts, a\ngrounded chat agent that reasons over the verified graph, and exports a coding agent can build\nfirmware from. Not a redraw: every wire you see is parsed fact, not a guess.\n\n**Live demo:** https://schemantic.ashutoshrath.me/\n\n![Chat agent tracing a real signal path across six nets, with semantic memory recalling a related past exchange](docs/screenshot-chat.png)\n\n## Why this exists\n\nA schematic PDF is a wall of reference designators and wires. Someone unfamiliar with a board --\na firmware engineer picking up a vendor reference design, an intern debugging someone else's\nproject -- can see that `U6` connects to something called `IIC_SDA`, but not *what U6 is*, *what\nelse is on that bus*, or *what this whole corner of the board does*. Getting those answers today\nmeans hours of squinting at the PDF plus a dozen datasheet tabs.\n\nSchemantic answers those questions directly: click any component to see what it actually is, ask\nthe board a question in plain English, or export everything as a hardware map a coding agent can\nuse to write real firmware against real, verified pins.\n\n## What it does\n\n- **Understands any Altium-exported schematic PDF or KiCad project** -- no CAD software, no\n  original project file required for the PDF path. Verified on three independently-sourced boards\n  from two different vendors and two different EDA tools.\n- **Renders its own interactive canvas** -- pan/zoom, component bodies sized from real pin\n  geometry, wires as real per-net connectivity. Click a component, everything it's wired to lights\n  up with the path traced; click a wire, every component on that net highlights.\n- **Identifies parts with evidence, not vibes** -- every AI guess ships with its reasoning, a\n  confidence score, and one-click links to check it against the real part. Generic passives never\n  touch the model at all -- there's nothing to identify.\n- **Fetches and quotes real datasheets** -- facts are extracted with a verbatim quote and page\n  number, then mechanically re-checked against the actual PDF page. A quote that doesn't match is\n  dropped, never shown. Full-document search answers arbitrary spec questions beyond the initial\n  digest.\n- **Answers questions about the board in chat**, grounded entirely in tool calls over the verified\n  graph -- never model recall -- with **persistent semantic memory** (SQLite + embeddings) so a\n  reworded question weeks later still finds the original answer, across restarts.\n- **Links multiple boards** -- an agent proposes which connectors on a master/slave pair likely\n  mate, with pin-level evidence; a human confirms or rejects each one; only confirmed links become\n  traversable in cross-board questions.\n- **Exports a Hardware Map** (`.md`/`.json`) -- pin tables, bus inventories, power rails, datasheet\n  links -- built for handing to a coding agent so it can write firmware against real, verified\n  pins instead of guessing.\n- **Generates starter firmware** -- a pin-definitions header and demo scaffold grounded in the\n  hardware map, with `TODO` markers instead of invented values wherever the map genuinely doesn't\n  know something.\n- **Flags pre-fabrication issues** -- missing I2C pull-ups, floating enable pins, unidentified\n  controllers, supply-rail mismatches -- split into mechanical (verified-connectivity-derived) and\n  heuristic (AI-identity-derived) tiers, each labeled as such.\n\n## See it work\n\n![Component selected, connected nets traced in matching colors, AI identity with confidence and datasheet facts in the side panel](docs/screenshot-canvas.png)\n\n## Architecture -- deterministic core, AI agents on top\n\nThe rule that shaped every decision in this codebase: **never let a model guess at something that\ncan be proven mechanically.**\n\n```\nSchematic PDF / KiCad project\n        │\n        ▼\n┌───────────────────┐   deterministic -- no AI, hand-verified against real boards\n│  Parser            │   Altium's embedded netlist tokens, or KiCad .net/.kicad_pcb\n│  Graph + geometry   │   MST wire routing, power-rail classification, pin bounding boxes\n└─────────┬──────────┘\n          ▼\n┌───────────────────────────────────────────────────────────┐  AI agents, narrowly scoped,\n│  Part Identity  │  Region Explainer  │  Datasheet Digest    │  every output verifiable\n│  (skips passives) │ (per section)    │  (quote + page cite)  │  against a mechanical check\n└─────────┬─────────────────┬──────────────────┬─────────────┘\n          ▼                 ▼                  ▼\n   ┌─────────────────────────────────────────────────┐\n   │  Supervisor -- cost budgets, spend tracking,     │\n   │  thread-safe, hard caps on every model call      │\n   └─────────────────────────────────────────────────┘\n          │\n          ▼\n┌────────────────────────────────────────────────────────────────────┐\n│  Graph API (tool layer, zero AI)  →  Chat Agent (tool-calling, memory) │\n│  Mate Proposer (human-gated)      →  Hardware Map / Firmware Starter   │\n│  Design Checks (mechanical + heuristic, tier-labeled)                 │\n└────────────────────────────────────────────────────────────────────┘\n          │\n          ▼\n   Interactive canvas · grounded chat · exports for a coding agent\n```\n\n1. **Netlist extraction (deterministic).** Altium's PDF export embeds invisible text at every pin\n   and component location -- `PI\u003crefdes\u003e\u003cpin\u003e`, `CO\u003crefdes\u003e`, `NL\u003cnetname\u003e` -- meant for interactive\n   net-highlighting in a PDF viewer. `schemantic/parser/netlist.py` reads it directly. Every\n   connection is parsed fact, verified by hand against real schematics (e.g., a sensor's SDA pin\n   lands on the SDA bus exactly as drawn; an IMU has exactly the pin count its real package has).\n2. **Part identification (AI, narrow scope).** Generic resistors/capacitors never reach the model\n   -- nothing to identify. Only ICs, connectors, and named transistors go through\n   `schemantic/agents/part_identity.py`, each result carrying reasoning, confidence, and\n   deterministic search links.\n3. **Region explanation (AI).** Plain-English summaries of what each labeled subcircuit does,\n   grounded only in the parts identified within it.\n4. **Graph + geometry (deterministic).** The parse becomes a drawable connectivity graph: real pin\n   bounding boxes, and per-net wires as a minimum spanning tree over real pin coordinates. Topology\n   is exact and test-enforced; the specific wire *paths* are synthetic, not the original routes --\n   stated plainly, not glossed over.\n5. **Datasheet grounding (AI extracts, mechanics verify).** Every fact ships with a verbatim quote\n   and page number; the quote is re-checked against the actual fetched PDF page, and anything that\n   fails is dropped and counted, never shown.\n6. **Multi-board workspaces (AI proposes, human confirms).** Connector matings can't be parsed --\n   they're physical harness decisions in neither schematic -- so an agent proposes candidates with\n   pin-level evidence, every proposal is mechanically validated against the real connectors before\n   storage, and only human-confirmed links become traversable.\n7. **Chat agent (tool-calling, grounded, with memory).** Can only answer through deterministic\n   tool calls over the parsed graph -- every claim traces to a query, shown in the UI as\n   provenance. Persistent semantic memory means conversations survive restarts and reworded\n   questions still find prior answers.\n8. **Supervisor.** Every model call anywhere in the system runs through a thread-safe cost-budget\n   layer with hard spend caps -- no agent, however deep in a tool loop, can run unmetered.\n\n## Built and verified across three real, independently-sourced boards\n\n| | Board 1 (Altium PDF) | Board 2 (Altium PDF) | Board 3 (KiCad project) |\n|---|---|---|---|\n| Source | Waveshare ROS Driver | Waveshare General Driver | Olimex ESP32-PoE |\n| Components | 146 | 149 | 135 |\n| Nets | 72 | 74 | 125 |\n| Parts identified | INA219, ICM-20948, TB6612FNG, ESP32... | QMI8658C, CP2102N... (different parts, same pipeline) | TPS2375 PoE controller, LAN8710A PHY, CH340T |\n\nThe second and third boards needed **zero parser code changes** -- the whole point of building on a\ndeterministic core.\n\n## Honesty log -- real bugs found by reading actual output, not assumed away\n\nThis is the part of the codebase I'm most willing to defend under questioning. A running list of\nmistakes caught by actually inspecting live output against ground truth, and exactly how each was\nfixed:\n\n- **A schema-ordering bug that let a model contradict itself.** Early on, a verdict field was\n  requested before the reasoning meant to justify it -- structured-output APIs fill fields in\n  declaration order, so the model was committing to an answer before thinking it through. Fixed by\n  putting reasoning first everywhere in the schema.\n- **A substring-matching bug mistook a section title for a component value** (`10-DOF-IMU-Sensor-D`\n  matched as a capacitor value because `M` is a substring of `IMU`). Fixed with a proper anchored\n  pattern; regression-tested.\n- **A naive \"any power rail counts as a pull-up\" check would have missed I2C buses with only a\n  pull-*down* to GND** -- caught by reading the actual resistor-to-net mapping on a real board (one\n  resistor really was GND-tied, for an unrelated reason) before trusting the check's silence.\n- **A voltage-range check false-flagged the board's own microcontroller** -- its datasheet says\n  \"3.0 to 3.6 V,\" but substring-matching only caught the upper bound \"3.6,\" which doesn't textually\n  appear in a \"3V3\" rail name even though 3.3V is well inside the real range. Fixed with actual\n  numeric range containment.\n- **The netlist format was misattributed to EasyEDA by assumption.** Checking PDF creator metadata\n  across every sample settled it: every token-carrying PDF says `creator='Altium Designer'`.\n  Corrected everywhere, including error messages users see.\n- **A stricter token filter (fixing a KiCad false-positive) silently exposed a day-one bug**: an\n  active-low enable net's token had been rejected by an overly loose check since the very first\n  version, silently merging its pins into an unrelated net. Both reference boards were\n  re-verified and locked in with regression tests after the fix.\n\nEvery one of these was found by generating real output and reading it critically, not by\nassuming the pipeline was correct -- and each fix is now guarded by a test that reproduces the\noriginal failure.\n\n## Tech stack\n\nPython · FastAPI · OpenAI (structured outputs, tool-calling, embeddings) · SQLite (semantic vector\nmemory) · PyMuPDF · vanilla JS + SVG (the canvas -- no framework, no build step) · pytest (81 tests,\nalmost all running against real enriched board data, not mocks)\n\n## Run it\n\n```bash\n# .env with OPENAI_API_KEY must exist in the project root (see .env.example)\npython -m venv .venv\n./.venv/Scripts/pip install -e \".[dev]\"\n./.venv/Scripts/pytest -q\n./.venv/Scripts/python -m uvicorn schemantic.web.app:app --reload\n```\n\nOpen http://127.0.0.1:8000/. First load runs the full pipeline (~1 min, a few cents against a new\nboard) and caches by content hash; every later load is instant. Upload any Altium PDF or KiCad\n`.net`/`.zip` via \"Analyze a board.\"\n\n## Not yet built\n\n- Eagle/OrCAD support, and KiCad *PDF* exports specifically (no embedded netlist in KiCad's PDF --\n  the source-file route is what's supported).\n- Scanned/rasterized schematics with no embedded text layer -- needs real computer-vision symbol\n  recognition, a fundamentally different problem, out of scope for now.\n- Multi-page schematics -- the parser currently expects a single-page export.\n\n## Repo layout\n\n```\nschemantic/\n  parser/           deterministic PDF/KiCad → components, pins, nets\n  graph.py          connectivity graph + wire geometry (MST)\n  graph_api.py       tool layer the chat agent queries (zero AI)\n  agents/           part identity, region explainer, datasheet digest,\n                    chat, mate proposer, firmware starter\n  datasheets.py     fetch + mechanical quote verification\n  chat_memory.py    persistent semantic memory (SQLite + embeddings)\n  workspace.py      multi-board store, mechanical mate validation\n  design_checks.py  pre-fab checks, mechanical + heuristic tiers\n  hardwaremap.py    coding-agent export\n  supervisor/       cost budgets, thread-safe, hard caps\n  web/              FastAPI app + canvas UI (vanilla JS/SVG)\ntests/              81 tests, mostly against real enriched board payloads\n```\n",
+        "content_hash": "251752eadb9871003607eeae8278c56c0e86a253c88f54397538bd81731b38b0"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 14366,
+    "target_results": [
+      {
+        "target": {
+          "path": "schemantic/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/chat.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/datasheet_digest.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/firmware_starter.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/mate_proposer.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/part_identity.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/region_explainer.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/agents/schema.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/auth.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/chat_memory.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/datasheets.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/design_checks.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/graph.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/graph_api.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/hardwaremap.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/kicad.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/lookup/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/lookup/links.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/parser/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/parser/models.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/parser/netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/parser/regions.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/parser/values.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/pipeline.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/projects.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/supervisor/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/supervisor/core.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/web/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/web/app.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/web/static/canvas.js",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/web/static/knowledge_graph.js",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "schemantic/workspace.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_app_routes.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_auth.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_chat_memory.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_chat_session.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_datasheets.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_design_checks.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_graph.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_graph_api.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_hardwaremap.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_kicad.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_netlist_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_projects.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_unsupported_pdfs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_workspace.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "pyproject.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 13846
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 5,
+    "requirement_coverage": null
+  },
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "Dropio12",
+      "repo": "Cherry-Hardware-Agent",
+      "commit": "879167e04bb4e49dadde2045a88cb0dddab77354"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "Dropio12",
+        "repo": "Cherry-Hardware-Agent",
+        "commit": "879167e04bb4e49dadde2045a88cb0dddab77354"
+      },
+      "candidate": {
+        "owner": "Dropio12",
+        "repo": "Cherry-Hardware-Agent",
+        "url": "https://github.com/Dropio12/Cherry-Hardware-Agent",
+        "description": "An agent that verifies your PCB before you have to pay for it",
+        "stars": 1,
+        "commit_id": "879167e04bb4e49dadde2045a88cb0dddab77354",
+        "consultado_em": "2026-10-29T19:13:21.920450146Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-05-14T21:04:58Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "Dropio12",
+          "repo": "Cherry-Hardware-Agent",
+          "commit": "879167e04bb4e49dadde2045a88cb0dddab77354"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"Dropio12\",\"repo\":\"Cherry-Hardware-Agent\",\"url\":\"https://github.com/Dropio12/Cherry-Hardware-Agent\",\"description\":\"An agent that verifies your PCB before you have to pay for it\",\"stars\":1,\"commit_id\":\"879167e04bb4e49dadde2045a88cb0dddab77354\",\"consultado_em\":\"2026-10-29T19:13:21.920450146Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-05-14T21:04:58Z\"}",
+        "content_hash": "df134d4505d7ceb86fa865f2d85c91bb3a3fbd03298de160c8d08811e24b994e"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "Dropio12",
+          "repo": "Cherry-Hardware-Agent",
+          "commit": "879167e04bb4e49dadde2045a88cb0dddab77354"
+        },
+        "path": "README.md",
+        "content": "# cherryhardware\n\n[![CI](https://github.com/dropio12/cherryhardware/actions/workflows/ci.yml/badge.svg)](https://github.com/dropio12/cherryhardware/actions/workflows/ci.yml)\n[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)\n[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)\n\nAI-powered design review for KiCad. Analyzes schematics, PCB layouts, and Gerbers — catches real bugs before you order boards.\n\nWorks with **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)**, **[OpenAI Codex](https://github.com/openai/codex)**, **[GitHub Copilot CLI](https://docs.github.com/en/copilot)**, and **[Gemini CLI](https://github.com/google-gemini/gemini-cli)**, as a **GitHub Action** for automated PR reviews, or as standalone Python scripts you can run anywhere.\n\n---\n\n## Table of Contents\n\n- [What It Does](#what-it-does)\n- [Skills](#skills)\n- [Quick Start](#quick-start)\n- [Installation](#installation)\n- [GitHub Action](#github-action)\n- [Optional Configuration](#optional-configuration)\n- [KiCad Version Support](#kicad-version-support)\n- [Project Structure](#project-structure)\n- [Contributing](#contributing)\n- [Testing](#testing)\n- [License](#license)\n\n---\n\n## What It Does\n\nPoint your AI agent at a KiCad project and cherryhardware does the rest — parses every schematic and PCB file, traces every net, computes every voltage, and tells you what is wrong before you spend money on boards.\n\n```\n\u003e \"Analyze my KiCad project at hardware/rev2/\"\n```\n\nThe agent builds a full power tree from feedback dividers, identifies subcircuits (motor drivers, filters, sensors, protection, buses), audits ESD coverage across every connector, validates passive networks mathematically, checks production readiness (BOM lock, decoupling, connector ground distribution), and suggests applicable certifications.\n\nFor full worked examples, see:\n- [Example 1: Robot controller](example-report-1.md) — schematic + PCB + EMC + SPICE, 184 components\n- [Example 2: GNSS disciplined oscillator](example-report-2.md) — 296 components, 10 power rails, Ethernet + USB + SMA\n\nFor the parsing and analysis methodology, see [How It Works](how-it-works.md).\n\n### Analysis coverage\n\n| Domain | What it checks |\n|---|---|\n| **Power** | Regulator Vout from feedback dividers (~65 Vref families), power sequencing, enable chains, inrush, sleep current |\n| **Analog** | Opamp gain/bandwidth (per-part behavioral models), voltage dividers, RC/LC filters, crystal load caps |\n| **Protection** | TVS/ESD mapping, reverse polarity FETs, fuse sizing, clamping voltage |\n| **Digital** | I2C pull-up validation with rise time calculation, SPI CS counts, UART voltage domains, CAN termination |\n| **Domain** | RF chains, Ethernet, HDMI, memory, BMS, motor drivers, sensors, display/touch, audio, LED drivers, debug interfaces, and more (40 detectors total) |\n| **Derating** | Capacitor voltage (ceramic 50%/electrolytic 80%), IC abs max, resistor power. Commercial/military/automotive profiles. |\n| **PCB** | Thermal via adequacy, zone stitching, trace width vs current, DFM scoring, impedance, proximity/crosstalk |\n| **Manufacturing** | MPN coverage audit, JLCPCB/PCBWay format export, assembly complexity scoring |\n| **Lifecycle** | Component EOL/NRND/obsolescence alerts, temperature grade audit, alternative part suggestions |\n| **Thermal** | Junction temperature estimation for LDOs, switching regulators, shunt resistors. Package Rθ_JA lookup, thermal via correction. |\n| **EMC** | Ground plane voids, decoupling, I/O filtering, switching harmonics, clock routing, diff pair skew, board edge radiation, PDN impedance, ESD paths, crosstalk. FCC/CISPR/automotive/military. |\n\n---\n\n## Skills\n\n| Skill | Description |\n|---|---|\n| **kicad** | Parse and analyze KiCad schematics, PCB layouts, Gerbers, and PDF reference designs. Automated subcircuit detection, design review, DFM. |\n| **spice** | SPICE simulation — generates testbenches for detected subcircuits, validates filter frequencies, opamp gains, divider ratios. Monte Carlo tolerance analysis. Supports ngspice, LTspice, Xyce. |\n| **emc** | EMC pre-compliance — 44 rule checks for radiated emission risks, PDN impedance, diff pair skew, ESD paths. FCC/CISPR/automotive/military. |\n| **datasheets** | Extract structured specs from datasheet PDFs — pinouts, electrical characteristics, peripherals, topology. Per-MPN caching with quality scoring. |\n| **kidoc** | *(beta)* Engineering documentation — HDD, CE technical file, ICD, design review, manufacturing, and more. Auto-generated figures, PDF/DOCX/ODT/HTML output. |\n| **bom** | Full BOM lifecycle — analyze, source, price, export tracking CSVs, generate per-supplier order files. |\n| **digikey** | Search DigiKey for components and download datasheets via API. |\n| **mouser** | Search Mouser for components and download datasheets. |\n| **lcsc** | Search LCSC for components (production sourcing, JLCPCB parts library). |\n| **element14** | Search Newark/Farnell/element14 (one API, three storefronts). |\n| **jlcpcb** | JLCPCB fabrication and assembly — design rules, BOM/CPL format, ordering workflow. |\n| **pcbway** | PCBWay fabrication and assembly — turnkey with MPN-based sourcing. |\n\n---\n\n## Quick Start\n\n```\n# Claude Code\n/plugin marketplace add dropio12/cherryhardware\n/plugin install cherryhardware@cherryhardware\n\n# Then point the agent at your project\n\u003e \"Analyze my KiCad project at hardware/rev2/\"\n\u003e \"Will my board pass FCC Class B?\"\n\u003e \"Source all the parts for my board, I'm building 5 prototypes\"\n```\n\nThe analysis scripts are **pure Python 3.10+** with zero required dependencies. No pip install, no Docker, no KiCad installation needed.\n\n---\n\n## Installation\n\n### Claude Code\n\n```\n/plugin marketplace add dropio12/cherryhardware\n/plugin install cherryhardware@cherryhardware\n```\n\n\u003e **Note:** `/plugin update` may not detect new versions due to a [known Claude Code issue](https://github.com/anthropics/claude-code/issues/36317).\n\u003e To get the latest version, clear the cache and reinstall:\n\u003e ```\n\u003e rm -rf ~/.claude/plugins/cache/cherryhardware ~/.claude/plugins/marketplaces/cherryhardware\n\u003e /plugin marketplace add dropio12/cherryhardware\n\u003e /plugin install cherryhardware@cherryhardware\n\u003e ```\n\n### OpenAI Codex\n\nUse Codex's built-in skill installer:\n\n```\n\"Use $skill-installer to install the cherryhardware skills from https://github.com/dropio12/cherryhardware\"\n```\n\nOr install manually into `~/.codex/skills/`.\n\n### Google Gemini CLI\n\n```bash\n# Clone and link all 12 skills at once\ngit clone https://github.com/dropio12/cherryhardware.git\ngemini skills link ./cherryhardware/skills\n\n# Or install individually (requires Gemini CLI \u003e= Jan 13 2026)\nfor skill in kicad spice emc datasheets bom digikey mouser lcsc element14 jlcpcb pcbway kidoc; do\n  gemini skills install https://github.com/dropio12/cherryhardware.git --path skills/$skill\ndone\n```\n\n\u003cdetails\u003e\n\u003csummary\u003eManual install (all platforms)\u003c/summary\u003e\n\n**Claude Code (macOS / Linux):**\n\n```bash\ngit clone https://github.com/dropio12/cherryhardware.git\ncd cherryhardware\nmkdir -p ~/.claude/skills\nfor skill in kicad spice emc datasheets bom digikey mouser lcsc element14 jlcpcb pcbway kidoc; do\n  ln -sf \"$(pwd)/skills/$skill\" ~/.claude/skills/$skill\ndone\n```\n\n**OpenAI Codex (macOS / Linux):**\n\n```bash\ngit clone https://github.com/dropio12/cherryhardware.git\ncd cherryhardware\nmkdir -p ~/.codex/skills\nfor skill in kicad spice emc datasheets bom digikey mouser lcsc element14 jlcpcb pcbway kidoc; do\n  ln -sf \"$(pwd)/skills/$skill\" ~/.codex/skills/$skill\ndone\n```\n\n**Windows PowerShell (Codex):**\n\n```powershell\ngit clone https://github.com/dropio12/cherryhardware.git\ncd cherryhardware\nNew-Item -ItemType Directory -Force \"$HOME\\.codex\\skills\" | Out-Null\n\"kicad\",\"spice\",\"emc\",\"datasheets\",\"bom\",\"digikey\",\"mouser\",\"lcsc\",\"element14\",\"jlcpcb\",\"pcbway\",\"kidoc\" | ForEach-Object {\n  New-Item -ItemType SymbolicLink -Path \"$HOME\\.codex\\skills\\$_\" -Target \"$(Get-Location)\\skills\\$_\" -Force | Out-Null\n}\n```\n\nNote: Windows symlinks may require Developer Mode or elevated privileges.\n\n\u003c/details\u003e\n\nFor detailed installation, upgrade, and platform-specific troubleshooting, see [install-guidance.md](install-guidance.md).\n\n---\n\n## GitHub Action\n\nEvery push and PR that touches KiCad files gets a commit status check and a structured review comment — power tree, SPICE results, EMC risk, thermal analysis, and more.\n\n```yaml\n- uses: dropio12/cherryhardware@v1\n  with:\n    severity: warning\n    spice: true\n    diff-base: true   # compare against base branch on PRs\n```\n\nSee [github-action.md](github-action.md) for workflow examples, diff-based PR reviews, and AI-powered review configuration.\n\n---\n\n## Optional Configuration\n\n### SPICE simulator\n\nRequired for the `spice` skill. Auto-detected — install any one:\n\n```bash\napt install ngspice   # or download LTspice / Xyce\n```\n\n### Distributor API keys\n\nFalls back to web search without these. Required for higher-reliability datasheet downloading and component sourcing.\n\n| Service | Environment variable | Where to get it |\n|---|---|---|\n| DigiKey | `DIGIKEY_CLIENT_ID`, `DIGIKEY_CLIENT_SECRET` | [developer.digikey.com](https://developer.digikey.com/) |\n| Mouser | `MOUSER_SEARCH_API_KEY` | My Mouser → APIs |\n| element14 | `ELEMENT14_API_KEY` | [partner.element14.com](https://partner.element14.com/) |\n| LCSC | *(none)* | Free community API |\n\n### Optional Python packages\n\n```bash\npip install requests    # better HTTP for datasheet downloads\npip install playwright  # JS-heavy datasheet sites\npip install pdftotext   # PDF text extraction\n```\n\nThese are never imported by the core analysis path — they are only used in datasheet downloading and web scraping fallbacks.\n\n---\n\n## KiCad Version Support\n\n| Version | Schematic | PCB | Gerber |\n|---|---|---|---|\n| KiCad 10 | Full | Full | Full |\n| KiCad 9 | Full | Full | Full |\n| KiCad 8 | Full | Full | Full |\n| KiCad 7 | Full | Full | Full |\n| KiCad 6 | Full | Full | Full |\n| KiCad 5 | Full (legacy `.sch` + `.lib`) | Full | Full |\n\n---\n\n## Project Structure\n\n```\nskills/\n├── kicad/            # Core analysis skill (schematic, PCB, Gerber, thermal, diff, what-if)\n│   ├── SKILL.md      # Skill definition — triggers and usage docs for AI agents\n│   ├── scripts/      # Python analysis scripts (zero-dependency, Python 3.10+)\n│   └── references/   # Methodology guides (19 files)\n├── datasheets/       # Structured extraction pipeline — per-MPN cache, quality scoring\n├── emc/              # EMC pre-compliance (44 rules, 18 categories)\n├── spice/            # SPICE simulation (ngspice/LTspice/Xyce)\n├── kidoc/            # Engineering documentation generation\n├── bom/              # BOM management\n├── digikey/          # DigiKey API integration\n├── mouser/           # Mouser API integration\n├── lcsc/             # LCSC/JLCPCB parts (no auth required)\n├── element14/        # element14/Newark/Farnell API\n├── jlcpcb/           # JLCPCB fab rules and BOM/CPL format\n└── pcbway/           # PCBWay fab rules\n```\n\n### Key files\n\n| File | Purpose |\n|---|---|\n| `kicad/scripts/analyze_schematic.py` | S-expression parser + schematic analysis orchestrator (~9,300 LOC) |\n| `kicad/scripts/signal_detectors.py` | Core signal path detectors: regulators, filters, opamps, dividers, crystals, protection (~4,400 LOC) |\n| `kicad/scripts/domain_detectors.py` | Domain-specific detectors: Ethernet, USB-C, BMS, motor drive, sensors, audio, LEDs, etc. (~6,100 LOC) |\n| `kicad/scripts/validation_detectors.py` | Validation detectors: pull-ups, voltage mismatch, protocol buses, sequencing, feedback stability |\n| `kicad/scripts/analyze_pcb.py` | PCB layout analysis: footprints, tracks, vias, zones, DFM, assembly checks, connectivity graph |\n| `kicad/scripts/analyze_gerbers.py` | Gerber/Excellon verification |\n| `kicad/scripts/cross_analysis.py` | Schematic + PCB cross-domain checks |\n| `kicad/scripts/finding_schema.py` | Rich finding factory, `Det` constants, consumer helpers, `trust_summary` aggregation |\n| `kicad/scripts/output_filters.py` | Stage/audience filtering for all analyzers |\n| `kicad/scripts/kicad_utils.py` | Shared utilities: component classification, value parsing, net detection, switching frequencies |\n| `kicad/scripts/kicad_types.py` | `AnalysisContext` dataclass — shared state for all detectors |\n| `kicad/scripts/sexp_parser.py` | S-expression parser shared by schematic and PCB analyzers |\n| `emc/scripts/emc_rules.py` | 44 EMC rule implementations |\n| `emc/scripts/emc_formulas.py` | Radiation formulas, harmonic analysis, PDN impedance |\n\n### Running the scripts directly\n\n```bash\n# Schematic analysis\npython3 skills/kicad/scripts/analyze_schematic.py \u003cfile\u003e.kicad_sch\npython3 skills/kicad/scripts/analyze_schematic.py \u003cfile\u003e.kicad_sch --output analysis.json\n\n# PCB layout analysis\npython3 skills/kicad/scripts/analyze_pcb.py \u003cfile\u003e.kicad_pcb\npython3 skills/kicad/scripts/analyze_pcb.py \u003cfile\u003e.kicad_pcb --full --output pcb.json\n\n# Gerber verification\npython3 skills/kicad/scripts/analyze_gerbers.py \u003cgerber_dir\u003e/\n\n# EMC pre-compliance (requires schematic + PCB JSON)\npython3 skills/emc/scripts/analyze_emc.py --schematic sch.json --pcb pcb.json\n\n# Thermal analysis\npython3 skills/kicad/scripts/analyze_thermal.py --schematic sch.json --pcb pcb.json\n```\n\nAll scripts exit 0 on success. Schematic and PCB analyzers produce JSON to stdout (or to a file with `--output`). EMC and thermal produce a structured risk report.\n\n---\n\n## Contributing\n\nSee [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor guide. Summary below.\n\n### Zero-dependency policy\n\nAll analysis scripts use Python 3.10+ standard library only. This is a hard requirement — no `pip install`, no Docker, no KiCad installation needed. Optional dependencies (`requests`, `playwright`) are only used for datasheet downloading and web scraping fallbacks, and are never imported by the core analysis path.\n\n### Code style\n\n- **Python 3.10+ compatibility** — use `from __future__ import annotations` for modern type hints where needed.\n- **No external dependencies** in analysis scripts — stdlib only.\n- **Functions over classes** — detectors are plain functions that take `AnalysisContext` and return lists.\n- **Inline equation comments** — tag formulas with `# EQ-NNN: formula_name (source)` so the harness can track them. Always include a `# Source:` citation line referencing a textbook, app note, or standard.\n- **No dead code** — if it is not called, delete it.\n\n### Writing a signal detector\n\nDetectors live in `signal_detectors.py` (core circuit analysis) or `domain_detectors.py` (application-level). Each follows the same pattern:\n\n```python\ndef detect_my_circuit(ctx: AnalysisContext, prior_results=None) -\u003e list[dict]:\n    findings = []\n    for comp in ctx.components:\n        if not _is_candidate(comp):\n            continue\n        neighbors = _get_net_components(ctx, net_name, comp[\"reference\"])\n        # compute, check, append\n        findings.append({\n            \"type\": \"my_circuit\",\n            \"reference\": comp[\"reference\"],\n            \"severity\": \"WARNING\",  # INFO, WARNING, or CRITICAL\n            \"details\": { ... }\n        })\n    return findings\n```\n\nRegister it in `analyze_schematic.py`'s `analyze_signal_paths()` function. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full `AnalysisContext` reference and EMC rule conventions.\n\n### Adding a skill\n\n1. Create `skills/\u003cname\u003e/SKILL.md` with YAML frontmatter (`name`, `description`, trigger phrases).\n2. Add scripts to `skills/\u003cname\u003e/scripts/`.\n3. Add a symlink in `.agents/skills/`: `ln -s ../../skills/\u003cname\u003e .agents/skills/\u003cname\u003e`.\n4. Update the install lists in this README (both Claude Code and Codex sections).\n5. Validate with `claude plugin validate .`.\n\nKeep SKILL.md language agent-neutral — use \"the agent\" instead of \"Claude\", \"use web search\" instead of tool names.\n\n### Submitting a PR\n\n1. Fork the repo and create a feature branch.\n2. Run the analysis scripts on at least one real KiCad project to sanity-check.\n3. Run the test harness if you have it set up (see [Testing](#testing)).\n4. Open a PR — the GitHub Action runs deterministic analysis as a CI check.\n\nFor changes to signal detectors or EMC rules, include in the PR description: how many corpus repos the detector fires on (if known), any false positive mitigation, and the primary source for any new formulas or thresholds.\n\n---\n\n## Testing\n\nThe full test harness lives in a separate repo: [cherryhardware-testharness](https://github.com/dropio12/cherryhardware-testharness) — a corpus of 5,829 real-world KiCad projects spanning hobby boards, production hardware, motor controllers, RF frontends, BMS, IoT, audio, and more. KiCad 5 through 10.\n\n| Metric | Value |\n|---|---|\n| Repos in corpus | 5,800+ |\n| Schematic files analyzed | 6,845 (100% success) |\n| PCB files analyzed | 3,498 (99.9%) |\n| Gerber directories analyzed | 1,050 (100% success) |\n| Regression assertions | 2M+ at 100% pass rate |\n| Equations tracked and verified | 86 with source citations |\n| Bugfix regression guards | 67 (no fixed bugs have returned) |\n\n```bash\n# Clone the harness\ngit clone https://github.com/dropio12/cherryhardware-testharness.git\n\n# Run analyzers across full corpus\npython3 run/run_schematic.py --jobs 16\npython3 run/run_emc.py --jobs 16\n\n# Run regression assertions\npython3 regression/run_checks.py --type schematic\npython3 regression/run_checks.py --type emc\n```\n\nThe target is 100% pass rate across all assertion types. Any regression should be investigated — not suppressed. If your change intentionally alters analyzer output (new fields, corrected calculations), re-seed only the assertions your change affects and verify the new values are correct before committing.\n\nFor full methodology and reproducibility instructions, see [VALIDATION.md](VALIDATION.md).\n\n---\n\n## Why KiCad?\n\nKiCad is fully open-source, cross-platform, backed by CERN, and its file format is clean, human-readable S-expressions. No proprietary binary blobs. No vendor lock-in. This means an AI agent can read KiCad files directly, trace every net, and reason about a design at the same level a human engineer would — no export plugins, no intermediary formats.\n\n---\n\n## License\n\nMIT — see [LICENSE](LICENSE). By contributing, you agree that your contributions will be licensed under the same terms.\n\nSee [CHANGELOG.md](CHANGELOG.md) for the full release history.\n\n---\n\n*Built with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenAI Codex](https://github.com/openai/codex).*\n",
+        "content_hash": "d9f064b162989f4035547fe6c77367b4eb481356d7db15001cbd1027ae653183"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 19066,
+    "target_results": [
+      {
+        "target": {
+          "path": "action/format-report.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/bom/scripts/bom_manager.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/bom/scripts/edit_properties.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/bom/scripts/kicad_sexp.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/bom/scripts/sync_datasheet_urls.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/datasheets/scripts/datasheet_extract_cache.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/datasheets/scripts/datasheet_features.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/datasheets/scripts/datasheet_page_selector.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/datasheets/scripts/datasheet_score.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/datasheets/scripts/datasheet_verify.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/digikey/scripts/fetch_datasheet_digikey.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/digikey/scripts/sync_datasheets_digikey.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/element14/scripts/fetch_datasheet_element14.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/element14/scripts/sync_datasheets_element14.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/emc/scripts/analyze_emc.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/emc/scripts/emc_formulas.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/emc/scripts/emc_rules.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/emc/scripts/emc_spice.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/analysis_cache.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/analyze_gerbers.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/analyze_pcb.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/analyze_schematic.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/analyze_thermal.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/cross_analysis.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/cross_verify.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/detection_schema.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/detector_helpers.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/diff_analysis.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/domain_detectors.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/export_issues.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/fab_release_gate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/finding_schema.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/kicad_types.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/kicad_utils.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/lifecycle_audit.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/netlist_queries.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/output_filters.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/pcb_connectivity.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/project_config.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/sexp_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/signal_detectors.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/summarize_findings.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/validation_detectors.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/what_if.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/_mpl_common.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/architecture/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/bus_topology/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/emc_severity/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/monte_carlo/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/pcb_views/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/pinout/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/power_tree/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/schematic_crop/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/schematic_overview/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/spice_validation/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/generators/thermal_margin/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/analysis_helpers.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/color_theme.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/layer_presets.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/schematic_constants.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/styles.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/svg_builder.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/svg_embed.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/svg_to_png.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/lib/theme.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/registry.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/_path_setup.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/pcb.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/pcb_graphics.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/sch_graphics.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/renderers/schematic.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/figures/runner.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kicad_cli.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_datasheet.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_diagrams.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_docx.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_generate.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_html.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_md_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_narrative.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_narrative_augment.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_narrative_config.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_narrative_extractors.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_odt.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_orchestrator.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_pdf.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_raster.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_scaffold.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_sections.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_spec.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_tables.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_templates.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/kidoc_venv.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/lcsc/scripts/fetch_datasheet_lcsc.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/lcsc/scripts/sync_datasheets_lcsc.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/mouser/scripts/fetch_datasheet_mouser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/mouser/scripts/sync_datasheets_mouser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/extract_parasitics.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/simulate_subcircuits.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_model_cache.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_model_generator.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_models.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_part_library.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_results.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_simulator.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_spec_fetcher.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_templates.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/spice/scripts/spice_tolerance.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "action/examples/fork-safe-comment.yml",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "action/examples/fork-safe.yml",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "action/examples/simple.yml",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kicad/scripts/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "skills/kidoc/scripts/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 18691
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 7,
+    "requirement_coverage": null
+  },
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "ee-in-a-box",
+      "repo": "altium-copilot",
+      "commit": "3164e26580eaa892669c1826b9293de7df72ce04"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "ee-in-a-box",
+        "repo": "altium-copilot",
+        "commit": "3164e26580eaa892669c1826b9293de7df72ce04"
+      },
+      "candidate": {
+        "owner": "ee-in-a-box",
+        "repo": "altium-copilot",
+        "url": "https://github.com/ee-in-a-box/altium-copilot",
+        "description": "Stop pasting netlists. Give Claude real access to your Altium project.",
+        "stars": 14,
+        "commit_id": "3164e26580eaa892669c1826b9293de7df72ce04",
+        "consultado_em": "2026-10-29T19:13:23.872401957Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-07-20T06:03:57Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "ee-in-a-box",
+          "repo": "altium-copilot",
+          "commit": "3164e26580eaa892669c1826b9293de7df72ce04"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"ee-in-a-box\",\"repo\":\"altium-copilot\",\"url\":\"https://github.com/ee-in-a-box/altium-copilot\",\"description\":\"Stop pasting netlists. Give Claude real access to your Altium project.\",\"stars\":14,\"commit_id\":\"3164e26580eaa892669c1826b9293de7df72ce04\",\"consultado_em\":\"2026-10-29T19:13:23.872401957Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-07-20T06:03:57Z\"}",
+        "content_hash": "105009e651e54933a20b15a8be3d99cbb1d9f3fbbd8f15e1baa56b76e9ca0c7d"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "ee-in-a-box",
+          "repo": "altium-copilot",
+          "commit": "3164e26580eaa892669c1826b9293de7df72ce04"
+        },
+        "path": "README.md",
+        "content": "# Altium Copilot\n\n[![CI](https://github.com/ee-in-a-box/altium-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/ee-in-a-box/altium-copilot/actions/workflows/ci.yml)\n[![Downloads](https://img.shields.io/github/downloads/ee-in-a-box/altium-copilot/total?color=brightgreen)](https://github.com/ee-in-a-box/altium-copilot/releases)\n[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)\n[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)]()\n\n**Software engineers have Claude Code. Hardware engineers have been pasting netlists into chat.**\n\n\u003e Read the full writeup → [maisamp.github.io](https://maisamp.github.io/posts/altium-copilot/)\n\nAltium Copilot gives Claude real-time read access to your open Altium project. Ask it about component values, trace a net across sheets, review your schematic, brainstorm a circuit — all from your Claude chat interface, grounded in your actual design files.\n\nFor now, the copilot is read-only. It only extracts data. It cannot modify your schematic, move components, or overwrite your `.PrjPcb` file, **more features coming soon.**\n\nPart of the [ee-in-a-box](https://github.com/ee-in-a-box) suite.\n\n![Demo](assets/Intro.gif)\n\n\n\n---\n\n## What it does\n\n| What you ask | What happens |\n|---|---|\n| *\"What's connected to the 3.3V net?\"* | Traces the net across all sheets |\n| *\"What's different in the Prototype variant?\"* | Compares DNP lists between variants |\n| *\"Review this power supply circuit\"* | Structured multi-phase schematic review |\n| *\"What does U12 do?\"* | Pulls component, all pins, connected nets |\n| *\"Where does RMII_REF_CLK route?\"* | Layers, routed length per layer, vias, endpoints |\n| *\"What runs within 10 mil of CLK on L3?\"* | Crosstalk proximity with parallel run lengths |\n| *\"Describe my stackup\"* | Layer-by-layer: copper weight, dielectric, material |\n| *\"Where is U12? What's next to it?\"* | Placement, side, rotation, nearest parts |\n\n---\n\n## Specialist modes\n\nClaude activates these automatically based on what you say — no commands needed.\n\n| Mode | Triggers when you say... | What happens |\n|---|---|---|\n| `schematic_review` | *\"review this\"*, *\"is this correct?\"*, *\"check my power supply\"* | 3-phase structured audit: Claude reads datasheets and confirms its understanding before flagging anything. Every finding cites a datasheet value or a netlist fact. Report saved to markdown. |\n| `brainstorm_circuits` | *\"I want to add a new circuit, lets brainstorm\"*, *\"How would i improve this circuit\"*, *\"What power supply topology should I use here?\"*  | 5-phase design session: reads your loaded schematic first, then asks one question at a time — problem, constraints, proposes 2–3 topologies with tradeoffs, checks your existing design before recommending anything new. |\n\n---\n\n## 🆕 PCB awareness\n\nAltium Copilot now reads your `.PcbDoc` directly. Ask where nets\nroute, what's near what (crosstalk), your full stackup, and where components sit.\nData refreshes automatically every time you save the board in Altium. Read-only,\nlike everything else.\n\n---\n\n## Requirements\n\n- Windows\n- [Altium Designer](https://www.altium.com/altium-designer) (must be running with a project open)\n- [Claude Desktop](https://claude.com/download) — works with Pro and Enterprise subscriptions\n\n---\n\n## Install\n\n1. Install [Claude Desktop](https://claude.com/download) or [Claude Code](https://claude.com/product/claude-code)\n2. Open **PowerShell** (search `powershell` in the Start menu) and run:\n   ```powershell\n   irm https://raw.githubusercontent.com/ee-in-a-box/altium-copilot/main/install.ps1 | iex\n   ```\n3. Open Altium Designer with your project loaded\n4. Start asking\n   \n---\n\n## Usage\n\nOnce installed, open Claude and ask anything about your schematic — the copilot detects your running Altium instance and orients itself to your project automatically.\n\n**Example prompts:**\n- *\"What's connected to the 3.3V net?\"*\n- *\"What's U4 doing on this page?\"*\n- *\"What's different between my schematic variants?\"*\n- *\"How should i improve this circuit?\"*\n- *\"Is this power supply circuit correct?\"* — triggers a structured design review automatically\n\n---\n\n## Privacy\n\nYour data stays yours. The MCP server runs locally, doesn't log anything, and doesn't phone home. All schematic data is sent only to Claude via your own Enterprise or Pro subscription.\n\n---\n\n## 🚀 NEW: Sharing with your team\n\nWant to share the same capabilities with firmware, mechanical, and test engineers without them needing an Altium license?\n\nAsk Claude to package your project:\n\n\u003e *\"Package this Altium project to share with the cross functional team\"* / *\"Export this Altium project for sharing\"*\n\nClaude calls `package_for_xfn`, which writes a portable SQLite snapshot (`.db`) next to your `.PrjPcb`. Share that file with your team via Confluence, Slack, or a shared drive.\n\nYour teammates open it with **[pcb-copilot](https://github.com/ee-in-a-box/pcb-copilot)** — a companion MCP server that gives Claude the same schematic Q\u0026A tools against the snapshot, no Altium license required. Pairs well with the free [Altium 365 Viewer](https://www.altium.com/altium-365/viewer) for visual reference alongside the AI Q\u0026A.\n\n---\n\n## Give Claude system-level context\n\nThe schematic tools tell Claude what's in your design. A `CLAUDE.md` in your project folder tells it *why*.\n\nDrop a `CLAUDE.md` file in the same folder as your `.PrjPcb` file — it's loaded automatically when the project opens. Put in what the schematic can't tell Claude:\n\n- What the board does and where it lives in the system\n- What it interfaces with upstream and downstream\n- Terms that look similar but mean different things (board vs. assembly, vendor naming vs. internal naming)\n- Key requirements — voltage rails, power budget, timing constraints, isolation barriers\n- Pointers to your requirements doc, Confluence page, or block diagram\n\n**Don't have time to write one?** Download the [template](examples/CLAUDE.md), upload it to Claude, and say: *\"Use this template and what you can read from my schematic to draft a CLAUDE.md — then ask me one question at a time for anything you can't figure out from the netlist.\"*\n\n---\n\n## What i'm experimenting with next\n\n- **PCB layout understanding** — same live-access model, extended to the board layer\n- **Simulator** — walks you through simulating and validating your design before you spin a board\n- **Librarian** — periodic audits of your component libraries, flags stale or discontinued entries\n- **Supply Chain Expert** — component availability, lead times, alternatives, and sourcing risk\n\n---\n\n## Contributing\n\nSee [CONTRIBUTING.md](CONTRIBUTING.md).\n\nFor bug reports and support, open an issue at [github.com/ee-in-a-box/altium-copilot/issues](https://github.com/ee-in-a-box/altium-copilot/issues).\n\n---\n\n## License\n\nMIT © Maisam Pyarali\n",
+        "content_hash": "bf843b6652cebc81daecc5617f43f63aace0acd55b1ff4002b79a2da0e5fb54f"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 7269,
+    "target_results": [
+      {
+        "target": {
+          "path": "conftest.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/altium.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/export.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/main.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/netlist_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/parsers/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/parsers/pcb_doc.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/parsers/prj_pcb.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/parsers/sch_doc.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/services/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/services/page_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/services/pcb_geometry.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/services/pcb_index.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "server/services/registry.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_altium.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_auto_update.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_brainstorm_circuits.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_detect.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_enrich_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_enrichment.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_export.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_generate_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_get_component.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_get_sheet_context.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_mcp_metadata.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_netlist_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_oracle_ipc2581.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_package_for_xfn.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_page_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_pcb_doc_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_pcb_geometry.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_pcb_index.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_pcb_tools.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_prj_pcb_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_prj_pcb_pcbdocs.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_query_net.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_refresh_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_registry.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_sch_doc_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_schematic_review.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_search_components.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_set_project_dir.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_variant_tools.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 6892
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 3,
+    "requirement_coverage": null
+  },
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "ilutchenko",
+      "repo": "kicad-ai-checker",
+      "commit": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "ilutchenko",
+        "repo": "kicad-ai-checker",
+        "commit": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4"
+      },
+      "candidate": {
+        "owner": "ilutchenko",
+        "repo": "kicad-ai-checker",
+        "url": "https://github.com/ilutchenko/kicad-ai-checker",
+        "description": "Kicad schematic files checker with LLMs",
+        "stars": 0,
+        "commit_id": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4",
+        "consultado_em": "2026-10-29T19:13:25.766040343Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2026-04-18T10:34:21Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "ilutchenko",
+          "repo": "kicad-ai-checker",
+          "commit": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"ilutchenko\",\"repo\":\"kicad-ai-checker\",\"url\":\"https://github.com/ilutchenko/kicad-ai-checker\",\"description\":\"Kicad schematic files checker with LLMs\",\"stars\":0,\"commit_id\":\"cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4\",\"consultado_em\":\"2026-10-29T19:13:25.766040343Z\",\"stale\":false,\"default_branch\":\"master\",\"updated_at\":\"2026-04-18T10:34:21Z\"}",
+        "content_hash": "12b17238b9d55999f770ebfc8acf1e9e0f50207211f5fd0418e80b99437ebc3b"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "ilutchenko",
+          "repo": "kicad-ai-checker",
+          "commit": "cb7e3d3e0ac0b200986b6d89637a5ebb32d0e6c4"
+        },
+        "path": "README.md",
+        "content": "# kischk\n\nKiCad schematic checker (early stage).\n\nCurrent code implements two foundational modules:\n- `project loader`: discovers root schematic and resolves hierarchical sheets.\n- `schematic parser`: parses `.kicad_sch` S-expressions into an AST.\n- `netlist module`: exports/parses KiCad netlist (`kicadsexpr`) from the root schematic.\n- `electrical builder`: converts AST into compact LLM-ready electrical model (components/pins/nets).\n\n## Module: Project Loader\n\nPath: `src/kischk/kicad/project.py`\n\n### Purpose\nBuild a deterministic list of schematic files that belong to a project, starting from a project root directory.\n\n### Main API\n- `load_project(project_root: str | Path) -\u003e LoadedProject`\n\n### Input\n- `project_root`: filesystem path to KiCad project directory.\n\n### Output\n`LoadedProject` dataclass:\n- `project_root: Path`\n- `project_file: Path | None`\n- `root_schematic: Path`\n- `schematic_files: tuple[Path, ...]`\n- `hierarchy: dict[Path, tuple[Path, ...]]` where key is parent schematic and value is child sheet schematic files.\n\n### How it works\n1. Validate `project_root` exists and is a directory.\n2. Select `.kicad_pro` file:\n- if exactly one exists, use it\n- if multiple exist, try `\u003cdir_name\u003e.kicad_pro`\n- otherwise raise `ProjectLoaderError`\n3. Select root `.kicad_sch`:\n- if project file exists, expect same basename (`\u003cproject\u003e.kicad_sch`)\n- if no project file, infer from available `.kicad_sch` files (single file or `\u003cdir_name\u003e.kicad_sch`)\n4. Recursively scan each schematic for hierarchical sheet references:\n- locate `(sheet ...)` blocks\n- read `(property \"Sheetfile\" \"...\")`\n- resolve child path relative to parent schematic directory\n5. Validate each referenced child exists.\n6. Detect cyclic sheet hierarchy and raise `ProjectLoaderError`.\n\n### Error model\nRaises `ProjectLoaderError` for:\n- missing/invalid project root\n- ambiguous or missing root project/schematic\n- missing referenced child sheet files\n- cyclic hierarchy\n- malformed sheet block parentheses\n\n## Module: Schematic Parser (AST)\n\nPath: `src/kischk/kicad/sch_parser.py` and `src/kischk/kicad/sch_model.py`\n\n### Purpose\nParse KiCad S-expression text into a typed AST for further analysis (connectivity, semantic checks, reporting).\n\n### Main API\n- `parse_schematic_file(path: str | Path) -\u003e ParsedSchematic`\n- `parse_loaded_project(loaded: LoadedProject) -\u003e ParsedProject`\n- `parse_project(project_root: str | Path) -\u003e ParsedProject` (loader + parser shortcut)\n- `parse_sexpr(text: str, source: Path | None = None) -\u003e SExprList`\n\n### Input\n- Single schematic file path (`parse_schematic_file`), or\n- `LoadedProject` object from loader (`parse_loaded_project`), or\n- project root path (`parse_project`).\n\n### Output\nAST dataclasses from `sch_model.py`:\n- `SExprAtom(value: str, quoted: bool)`\n- `SExprList(items: tuple[SExprNode, ...])`\n- `ParsedSchematic(path: Path, root: SExprList)`\n- `ParsedProject(schematics: tuple[ParsedSchematic, ...])`\n\n### Parser behavior\n- Supports nested lists, symbols, quoted strings, comments (`; ...`), and whitespace.\n- Preserves string-vs-symbol distinction via `quoted` flag on atoms.\n- Validates schematic top-level node starts with `kicad_sch`.\n- Produces precise parse errors with `file:line:column`.\n\n### Error model\nRaises `SchematicParseError` for:\n- invalid S-expression syntax (unexpected EOF, trailing content, unterminated string, etc.)\n- invalid root node (not `kicad_sch`)\n\n## End-to-end data flow\n\n1. `load_project(project_root)` discovers all related schematic files.\n2. `parse_loaded_project(loaded)` parses each file into AST.\n3. `build_electrical_project(project_root)` exports/parses KiCad netlist and converts AST to compact electrical model.\n4. Resulting `ElectricalProject` becomes input for future phases:\n- typed schematic model extraction\n- connectivity graph construction\n- LLM-assisted checks\n- report generation\n\n## Module: Electrical Builder (Compact Model)\n\nPath: `src/kischk/kicad/electrical_builder.py` and `src/kischk/kicad/electrical_model.py`\n\n### Purpose\nReduce verbose KiCad AST into electrical information needed for rule checks and LLM prompts.\n\n### Main API\n- `build_electrical_project(project_root: str | Path) -\u003e ElectricalProject`\n- `build_electrical_from_parsed(loaded: LoadedProject, parsed: ParsedProject, netlist: NetlistData | None = None) -\u003e ElectricalProject`\n\n### Input\n- `LoadedProject` + `ParsedProject`, optionally `NetlistData`.\n- In `build_electrical_project`, netlist is auto-loaded:\n- prefer `\u003croot_schematic_basename\u003e.net` if present\n- otherwise export via `kicad-cli sch export netlist --format kicadsexpr`\n\n### Output\n`ElectricalProject` dataclass:\n- `schematics: tuple[ElectricalSchematic, ...]`\n- `nets: tuple[ElectricalNet, ...]`\n\n`ElectricalSchematic`:\n- `path`\n- `sheet_path` (hierarchical path like `/Root/STM32`)\n- `components`\n\n`ElectricalComponent`:\n- `reference`, `value`, `lib_id`, `unit`, `uuid`\n- `footprint`, `datasheet`, `description`, `lcsc`, `custom_fields` (non-standard user fields only)\n- `pins`\n\n`ElectricalPin`:\n- `pin_number`, `pin_name`, `direction`\n- `is_no_connect`\n- `net_id`, `net_name`\n\n`ElectricalNet`:\n- `net_id` from KiCad netlist `code` when netlist is available, otherwise geometry fallback (`N0001`, ...)\n- optional `net_name`\n- `members` (`reference`, `pin_number`)\n- attached `labels`\n- `is_global`\n\n### Extraction logic\n1. Parse library pin definitions from `lib_symbols` to get pin names/directions/relative coordinates.\n2. Parse symbol instances (`symbol`) to build components and pin instances.\n3. If netlist is available, assign pin `net_id/net_name` from netlist `(net code/name)` by `(ref, pin)`.\n4. If netlist provides `pintype`, use it as pin direction in output.\n5. If netlist is unavailable, fallback to geometry connectivity (`wire`, `junction`, labels, hierarchy links).\n\n### Error model\nRaises `ElectricalBuildError` for internal model consistency problems (for example, missing parsed schematics or unsupported rotations). Netlist export/parse failures are non-fatal in `build_electrical_project` and trigger geometry fallback.\n\n## Module: Netlist\n\nPath: `src/kischk/kicad/netlist.py`\n\n### Purpose\nGet reliable net connectivity from KiCad-generated netlist instead of inferring all nets from graphics primitives.\n\n### Main API\n- `export_netlist(schematic_file, output_file, fmt=\\\"kicadsexpr\\\") -\u003e Path`\n- `load_or_export_project_netlist(project_root) -\u003e NetlistData`\n- `parse_netlist_file(path) -\u003e NetlistData`\n\n### Output\n- `NetlistData(nets=...)`\n- `NetlistNet(code, name, net_class, nodes=...)`\n- `NetlistNode(ref, pin, pintype, pinfunction)`\n\n## Minimal usage example\n\n```python\nfrom kischk.kicad.project import load_project\nfrom kischk.kicad.sch_parser import parse_loaded_project\n\nloaded = load_project(\"test_kicad_project\")\nparsed = parse_loaded_project(loaded)\n\nprint(loaded.root_schematic)\nprint(len(loaded.schematic_files))\nprint(parsed.schematics[0].root.items[0])  # SExprAtom(\"kicad_sch\", quoted=False)\n```\n\n## Current tests\n\n- `tests/test_project_loader.py`\n- `tests/test_sch_parser.py`\n- `tests/test_netlist.py`\n- `tests/test_electrical_builder.py`\n\nRun:\n\n```bash\nPYTHONPATH=src python3 -m unittest discover -s tests -v\n```\n",
+        "content_hash": "2831e25520da28eff6032e5ddb8695416313c29da385acd6d6299ca91cec29c5"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 7532,
+    "target_results": [
+      {
+        "target": {
+          "path": "src/kischk/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/__init__.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/electrical_builder.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/electrical_model.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/project.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/sch_model.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/kischk/kicad/sch_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_electrical_builder.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_netlist.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_project_loader.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "tests/test_sch_parser.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "pyproject.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 7183
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 5,
+    "requirement_coverage": null
+  },
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "jifengshandian",
+      "repo": "easyeda-ai-assistant",
+      "commit": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "jifengshandian",
+        "repo": "easyeda-ai-assistant",
+        "commit": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9"
+      },
+      "candidate": {
+        "owner": "jifengshandian",
+        "repo": "easyeda-ai-assistant",
+        "url": "https://github.com/jifengshandian/easyeda-ai-assistant",
+        "description": "AI-powered schematic review and chat assistant for EasyEDA Pro",
+        "stars": 98,
+        "commit_id": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9",
+        "consultado_em": "2026-10-29T19:13:27.964772202Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-03-13T12:11:57Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "jifengshandian",
+          "repo": "easyeda-ai-assistant",
+          "commit": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"jifengshandian\",\"repo\":\"easyeda-ai-assistant\",\"url\":\"https://github.com/jifengshandian/easyeda-ai-assistant\",\"description\":\"AI-powered schematic review and chat assistant for EasyEDA Pro\",\"stars\":98,\"commit_id\":\"d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9\",\"consultado_em\":\"2026-10-29T19:13:27.964772202Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-03-13T12:11:57Z\"}",
+        "content_hash": "a3fa6f3f0f9551ac4962c33b92173fe0c8ca9e496d8737381692fef197f221a2"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "jifengshandian",
+          "repo": "easyeda-ai-assistant",
+          "commit": "d4222c4e155c7bd1a9019af747a0cbd6b28b1fe9"
+        },
+        "path": "README.md",
+        "content": "# EasyEDA AI Assistant 🤖\n\n[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)\n[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)\n[![EasyEDA Pro](https://img.shields.io/badge/EasyEDA%20Pro-3.0%2B-green.svg)](https://pro.lceda.cn/)\n[![GitHub Issues](https://img.shields.io/github/issues/jifengshandian/easyeda-ai-assistant)](https://github.com/jifengshandian/easyeda-ai-assistant/issues)\n[![GitHub Stars](https://img.shields.io/github/stars/jifengshandian/easyeda-ai-assistant)](https://github.com/jifengshandian/easyeda-ai-assistant/stargazers)\n\n\u003e 你的原理图审查小助手 - 让 AI 真正\"看懂\"你的电路设计\n\n基于嘉立创 EDA 专业版的 AI 原理图对话助手，**不是帮你画图，而是帮你检查**！\n\n[English](README.en.md) | 简体中文\n\n---\n\n## 🎯 核心定位\n\n**它并不会帮你绘制原理图**，而是作为你画完原理图后帮你检查的小助手 🧐\n\n### 为什么选择这个插件？\n\n传统方式：截图 → 发给 AI → AI 看不懂电路细节 → 只能给出模糊建议 😤\n\n**本插件的优势**：\n- ✅ **以文字形式**完整理解你的原理图（器件、引脚、网络、连接关系）\n- ✅ **打破截图局限**，AI 能精确知道每个引脚连接到哪个网络\n- ✅ **智能跳转**，点击对话中的蓝色标签直接定位到原理图元件\n- ✅ **联网搜索**，AI 可以查询芯片手册、数据手册，给出专业建议\n\n### 🌟 推荐配置\n\n**强烈推荐使用 Grok 4.2 模型**！\n- 🔍 联网搜索能力超强，能实时查询芯片资料\n- 🧠 深度思考模式，显示完整推理过程\n- 🚀 后续将加入 MCP 功能（grok-search mcp），搭配更强大的模型体验更佳\n\n### 🤖 支持的 Reasoning 模型\n\n本插件支持 **13+ 种主流 AI 服务商**的 reasoning/thinking 功能，内置一键预设：\n\n| 服务商 | 推荐模型 | Reasoning 支持 |\n|--------|---------|---------------|\n| **OpenAI** | gpt-5.2 | ✅ 完整支持 |\n| **xAI (Grok)** | grok-4.20-beta | ✅ 完整支持（推荐） |\n| **DeepSeek** | deepseek-chat | ✅ 完整支持 |\n| **Google Gemini** | gemini-3-flash | ✅ 完整支持 |\n| **OpenRouter** | claude-sonnet-4.6 | ✅ 完整支持 |\n| **Groq** | qwen/qwen3-32b | ✅ 完整支持 |\n| **Mistral** | mistral-large-latest | ✅ 完整支持 |\n| **Qwen (通义千问)** | qwen3.5-plus | ✅ 完整支持 |\n| **Zhipu (智谱)** | glm-4.7 | ✅ 完整支持 |\n| **Kimi** | kimi-k2.5 | ✅ 完整支持 |\n| **SiliconFlow** | DeepSeek-V3 | ✅ 完整支持 |\n| **Doubao (豆包)** | doubao-seed-2-0-pro | ✅ 完整支持 |\n| **Yi (零一万物)** | yi-large | ✅ 完整支持 |\n\n**自动检测**：插件会自动识别模型类型，无需手动配置 reasoning 参数。\n\n---\n\n## 📸 界面展示\n\n### AI 对话分析\n\u003e 与 AI 自由对话，讨论原理图中的芯片选型、电路设计等问题\n\n![AI 对话界面](screenshots/screenshot-1.png)\n\n### 引脚级精准分析\n\u003e AI 能精确分析每个引脚的连接关系，指出悬空引脚和潜在问题\n\n![引脚分析功能](screenshots/screenshot-2.png)\n\n### 联网搜索 Datasheet\n\u003e 遇到不熟悉的芯片，AI 自动联网搜索数据手册，给出专业建议\n\n![联网搜索能力](screenshots/screenshot-3.png)\n\n### MCP 工具集成\n\u003e 支持 MCP 协议，集成 web_search、web_fetch 等工具，增强 AI 的信息获取能力\n\n![MCP 工具集成](screenshots/screenshot-4.png)\n\n---\n\n## ✨ 功能特性\n\n### 🆕 v1.1.0 新特性\n\n- 🧠 **Thinking Block 完美显示** - AI 思考过程清晰可见，显示在正文上方\n- 🤖 **支持 10+ AI 模型** - OpenAI o1/o3、Grok、DeepSeek、Claude 3.7、Gemini、Qwen、Doubao、Zhipu、Kimi、Hunyuan 等思考类模型\n- 📜 **历史会话增强** - 从历史对话无缝继续，保持完整上下文\n- 🛡️ **稳定性大幅提升** - 修复多个 Bug，添加类型安全防护\n- 🐛 **调试日志优化** - 详细的 SSE 解析和 reasoning 提取日志\n\n### 核心功能\n\n- 🤖 **AI 对话助手** - 与 AI 对话，分析原理图设计\n- 📊 **智能数据采集** - 自动采集原理图数据（器件、引脚、网络）\n- 🔗 **Pin-Net 绑定** - 基于网表的引脚-网络绑定（置信度 1.0）\n- 📝 **网表解析** - 支持 PROTEL NETLIST 2.0 格式\n- ⚡ **非阻塞设计** - 网表延迟回填，不阻塞用户操作\n- 🎯 **保守模式** - 避免 NC 引脚假阳性，只信任网表\n\n### 用户体验\n\n- 📱 **流式响应** - 实时显示 AI 思考过程和回答\n- 🎯 **智能跳转** - 点击蓝色标签（如 `U1`、`VCC`）直接定位到原理图\n- 📎 **上传附件** - 支持上传芯片手册、数据手册等文件\n- 📜 **历史记录** - 自动保存对话历史，随时回顾\n- 🧠 **显示思考过程** - 支持 Grok、DeepSeek、OpenAI o1 等模型的 reasoning 显示\n- 🛡️ **安全防护** - XSS 防护，Markdown 安全渲染\n\n---\n\n## 🔌 MCP 数据暴露（v1.4.0 新功能）\n\n让 Cursor、Claude Code、Codex 等外部 AI 工具通过 MCP 协议**只读访问**你的原理图数据。\n\n### 架构\n\n```\n┌─────────────────────────────┐\n│  EDA 扩展 (沙盒 WebView)     │\n│  mcp-bridge.ts              │\n└──────────┬──────────────────┘\n           │ WebSocket 出站\n           ▼\n┌─────────────────────────────┐\n│  eda-mcp-server (Node.js)    │\n│  WS Server + MCP Server      │\n└──────────┬──────────────────┘\n           │ stdio transport\n           ▼\n┌─────────────────────────────┐\n│  Cursor / Claude Code / Codex │\n│  等 AI 工具                   │\n└─────────────────────────────┘\n```\n\n### 快速使用\n\n**1. 启动 MCP Server**\n\n```bash\ncd packages/eda-mcp-server\nnpm install\nnpm run build\nnode dist/index.js                        # 默认 127.0.0.1:3100\nnode dist/index.js --host 0.0.0.0         # 允许远程连接\nnode dist/index.js --host 0.0.0.0 --port 3200  # 自定义端口\n```\n\n**2. 配置 EDA 扩展**\n\n在插件配置面板中设置 MCP Bridge URL：\n- 本机：`ws://127.0.0.1:3100`（默认）\n- 远程：`ws://\u003cserver-ip\u003e:3100`\n\n**3. 配置 AI 工具**\n\n**Cursor** (`~/.cursor/mcp.json`)：\n```json\n{\n  \"mcpServers\": {\n    \"eda-schematic\": {\n      \"command\": \"node\",\n      \"args\": [\"/path/to/eda-mcp-server/dist/index.js\", \"--host\", \"0.0.0.0\"]\n    }\n  }\n}\n```\n\n**Claude Code** (`~/.claude/mcp.json`)：\n```json\n{\n  \"mcpServers\": {\n    \"eda-schematic\": {\n      \"command\": \"node\",\n      \"args\": [\"/path/to/eda-mcp-server/dist/index.js\", \"--host\", \"0.0.0.0\"]\n    }\n  }\n}\n```\n\n### 可用 Resources\n\n| URI | 说明 |\n|-----|------|\n| `eda://schematic/status` | 连接状态、快照版本、时间戳 |\n| `eda://schematic/summary` | 器件/引脚/网络数量、DRC 状态摘要 |\n| `eda://schematic/components` | 全部器件列表 |\n| `eda://schematic/pins` | 全部引脚列表 |\n| `eda://schematic/nets` | 全部网络列表 |\n| `eda://schematic/drc` | DRC 检查结果 |\n| `eda://schematic/project-info` | 工程元信息 |\n| `eda://schematic/netlist` | 原始网表文本 |\n| `eda://schematic/compact` | 紧凑序列化格式（完整输出） |\n\n### 可用 Tools\n\n| Tool | 参数 | 说明 |\n|------|------|------|\n| `schematic_status` | 无 | 返回连接状态、数据版本 |\n| `query_component` | `designator` | 查询单个器件及其关联引脚和网络 |\n| `query_net` | `netName` | 查询网络及连接的引脚/器件 |\n| `search_schematic` | `keyword`, `type?` | 关键词搜索 |\n| `configure_bridge` | `host?`, `port?` | 动态修改 WS 监听地址（均可选） |\n| `get_bom` | `includeBomExcluded?` | 生成 BOM 清单 |\n| `find_unconnected_pins` | `designator?` | 查找悬空引脚（可选指定器件） |\n| `analyze_power_nets` | 无 | 分析电源网络拓扑 |\n| `check_drc` | 无 | 获取 DRC 结果摘要 |\n| `refresh_data` | 无 | 请求扩展重新推送快照 |\n| `trace_connectivity` | `from`, `to` | 查找两器件间的电气连接路径 |\n| `list_components_by_type` | 无 | 按类型分组统计器件 |\n| `get_netlist_raw` | 无 | 获取原始网表 |\n| `get_pin_map` | `designator` | 获取器件引脚映射表 |\n\n---\n\n## 🚀 快速开始\n\n### 安装\n\n#### 方式 1：从立创开源广场安装（推荐）\n\n1. 打开嘉立创 EDA 专业版\n2. 进入 **扩展 → 扩展管理器**\n3. 搜索 \"AI Schematic Assistant\"\n4. 点击安装\n5. 重启 EasyEDA Pro\n\n#### 方式 2：从 GitHub Releases 下载\n\n1. 访问 [Releases](https://github.com/jifengshandian/easyeda-ai-assistant/releases) 页面\n2. 下载最新版本的 `.eext` 文件\n3. 在 EasyEDA Pro 中：**扩展 → 扩展管理器 → 安装本地扩展**\n4. 选择下载的 `.eext` 文件\n5. 重启 EasyEDA Pro\n\n#### 方式 3：从源码构建\n\n```bash\n# 克隆仓库\ngit clone https://github.com/jifengshandian/easyeda-ai-assistant.git\ncd easyeda-ai-assistant\n\n# 安装依赖\nnpm install\n\n# 构建扩展\nnpm run build\n```\n\n### 使用\n\n1. 打开原理图\n2. 点击菜单 **AI Review → AI 原理图助手...**\n3. 首次使用需要配置 AI API：\n   - 点击配置按钮 ⚙️\n   - 填写 API URL 和 API Key\n   - 选择模型（**推荐 Grok 4.2**）\n4. 开始与 AI 对话！\n\n### 配置示例\n\n**推荐配置（Grok）**：\n- API URL: `https://api.x.ai/v1`\n- 模型: `grok-4.20-beta`\n- API Key: 从 [x.ai](https://x.ai) 获取\n\n**其他兼容 API**：\n- OpenAI API (`gpt-5.2`)\n- DeepSeek API (`deepseek-chat`)\n- Google Gemini API (`gemini-3-flash`)\n- OpenRouter（聚合多模型，如 `claude-sonnet-4.6`）\n- 任何 OpenAI 兼容的 API\n\n---\n\n## 📖 使用场景\n\n### 场景 1：原理图审查\n\n```\n你：帮我检查一下这个电源电路有没有问题\n\nAI：我看到你的电源电路使用了 LM2596 降压芯片...\n    [分析 U1 的引脚连接]\n    [检查去耦电容 C1、C2]\n    [验证反馈电阻 R1、R2 的分压比]\n\n    建议：\n    1. C1 的位置应该更靠近 U1 的 VIN 引脚\n    2. R1、R2 的分压比计算...\n```\n\n点击对话中的 `U1`、`C1` 等蓝色标签，直接跳转到原理图对应位置！\n\n### 场景 2：芯片选型咨询\n\n```\n你：我需要一个 5V 转 3.3V 的 LDO，推荐一下\n\nAI：[联网搜索芯片资料]\n    根据你的原理图，我看到负载电流约 500mA...\n    推荐使用 AMS1117-3.3，理由：\n    1. 输出电流最大 1A，满足需求\n    2. 压差低（1.2V），发热小\n    3. 封装兼容，易于采购\n\n    [附上数据手册链接]\n```\n\n### 场景 3：调试问题排查\n\n```\n你：我的 STM32 无法启动，帮我看看\n\nAI：让我检查启动相关的电路...\n    [分析 BOOT0、BOOT1 引脚]\n    [检查复位电路]\n    [验证电源去耦]\n\n    发现问题：\n    1. BOOT0 引脚悬空，应该下拉到 GND\n    2. NRST 引脚缺少上拉电阻\n```\n\n---\n\n## 🛠️ 开发\n\n### 环境要求\n\n- **Node.js** \u003e= 20.17.0\n- **npm** \u003e= 9.0.0\n- **EasyEDA Pro** \u003e= 3.0.0\n\n### 开发流程\n\n```bash\n# 安装依赖\nnpm install\n\n# 开发构建\nnpm run build\n\n# 代码检查\nnpm run lint\n\n# 自动修复\nnpm run fix\n```\n\n### 项目结构\n\n```\n.\n├── src/                    # 源代码\n│   ├── index.ts           # 扩展入口\n│   └── review/            # AI 审查模块\n│       ├── types.ts       # 类型定义\n│       ├── config.ts      # 配置管理\n│       ├── collector.ts   # 数据采集\n│       ├── mcp-bridge.ts  # MCP Bridge（WS 客户端）\n│       ├── chat-adapter.ts # AI 通信\n│       └── orchestrator.ts # 流程编排\n├── iframe/                # 对话 UI\n│   └── chat.html\n├── packages/              # 独立子项目\n│   └── eda-mcp-server/   # MCP Server（对外暴露原理图数据）\n│       ├── src/\n│       │   ├── index.ts          # 入口（CLI 启动）\n│       │   ├── ws-bridge.ts      # WS 接收扩展推送\n│       │   ├── snapshot-store.ts # 快照内存存储\n│       │   ├── mcp-server.ts     # Resources + Tools 注册\n│       │   └── types.ts          # 共享类型\n│       └── package.json\n├── docs/                  # 文档\n├── extension.json         # 扩展配置\n├── package.json           # 项目配置\n├── CHANGELOG.md           # 更新日志\n└── README.md             # 本文件\n```\n\n---\n\n## 📊 路线图\n\n### 近期计划\n\n- [x] **MCP 数据暴露** - 独立 MCP Server，让 Cursor/Claude Code/Codex 等外部 AI 工具读取原理图数据（v1.4.0 已完成）\n- [x] **多页原理图支持** - 逐页采集策略（v1.0.0 已实现）\n- [x] **扩展元素类型** - 支持文本标注、总线、网络标记、图形图元等（v1.3.0 已实现）\n- [x] **Markdown 渲染增强** - GFM 表格、代码高亮、脚注等（v1.1.1 已实现）\n\n### 长期计划\n\n- [ ] 支持更多网表格式（JLCEDA_PRO、EASYEDA_PRO）\n- [ ] 添加规则引擎，自动检测常见设计问题\n- [ ] 支持 PCB 审查\n- [ ] 多语言支持（英文、日文）\n- [ ] 导出审查报告（PDF、Markdown）\n\n---\n\n## 🤝 贡献\n\n欢迎贡献！本插件已上架**立创开源广场**和 **GitHub**，期待广大电子爱好者的指正和批评 🫡\n\n请查看 [贡献指南](CONTRIBUTING.md) 了解如何参与。\n\n### 贡献者\n\n感谢所有贡献者的付出！\n\n\u003c!-- ALL-CONTRIBUTORS-LIST:START --\u003e\n\u003c!-- ALL-CONTRIBUTORS-LIST:END --\u003e\n\n---\n\n## 🐛 问题反馈\n\n如果你发现了 Bug 或有功能建议，请：\n\n1. 查看 [现有 Issues](https://github.com/jifengshandian/easyeda-ai-assistant/issues)\n2. 如果没有相关 Issue，[创建新 Issue](https://github.com/jifengshandian/easyeda-ai-assistant/issues/new/choose)\n3. 使用 Issue 模板，提供详细信息\n\n---\n\n## 💬 讨论\n\n有问题或想法？欢迎在 [Discussions](https://github.com/jifengshandian/easyeda-ai-assistant/discussions) 讨论！\n\n---\n\n## 📖 文档\n\n- [更新日志](CHANGELOG.md) - 版本历史\n- [贡献指南](CONTRIBUTING.md) - 如何参与贡献\n- [行为准则](CODE_OF_CONDUCT.md) - 社区行为准则\n- [功能实现总结](docs/implementation-summary.md) - 技术细节\n- [网表延迟回填指南](docs/netlist-backfill-guide.md) - 延迟回填机制\n- [测试验证指南](docs/testing-guide.md) - 测试场景和方法\n\n---\n\n## 📄 许可证\n\n本项目采用 [Apache 2.0 许可证](LICENSE)。\n\n---\n\n## 🙏 致谢\n\n感谢以下项目和工具：\n\n- [嘉立创 EDA](https://pro.lceda.cn/) - 提供扩展 API\n- [pro-api-sdk](https://github.com/easyeda/pro-api-sdk) - 本项目基于此 SDK 开发，提供了 EDA 扩展开发的基础框架和 API 示例\n- [jlc-eda-mcp](https://github.com/XuF163/jlc-eda-mcp) - MCP 数据暴露功能的架构设计参考，提供了 EDA 扩展与 MCP Server 通过 WebSocket 桥接的思路\n- [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) - MCP 协议 TypeScript 实现\n- [marked.js](https://marked.js.org/) - Markdown 解析\n- [DOMPurify](https://github.com/cure53/DOMPurify) - XSS 防护\n- [Cherry Studio](https://github.com/kangfenmao/cherry-studio) - 流式响应参考\n\n---\n\n## ⭐ Star History\n\n[![Star History Chart](https://api.star-history.com/svg?repos=jifengshandian/easyeda-ai-assistant\u0026type=Date)](https://star-history.com/#jifengshandian/easyeda-ai-assistant\u0026Date)\n\n---\n\n**注意**：本项目基于 [pro-api-sdk](https://github.com/easyeda/pro-api-sdk) 开发，是一个独立的 AI 原理图助手扩展实现。\n\n如果这个项目对你有帮助，请给个 ⭐️ Star！\n",
+        "content_hash": "dd909bf19573c959af223ad73d953e9d4514e66e4937941ee7c9ee47c0a30686"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 16265,
+    "target_results": [
+      {
+        "target": {
+          "path": "config/esbuild.common.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "config/esbuild.prod.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/src/index.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/src/mcp-server.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/src/snapshot-store.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/src/types.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/src/ws-bridge.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/tsup.config.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/index.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/ai-adapter.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/chat-adapter.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/chunker.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/collector.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/config.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/locator.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/mcp-bridge.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/orchestrator.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/prompt-builder.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/reasoning-config.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/rule-engine.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/serializer.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/tool-orchestrator.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "src/review/types.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.eext.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.en.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.ja.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.original.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.ru.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.zh-Hant.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "package.json",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/package.json",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "build/packaged.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/dist/index.d.ts",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "packages/eda-mcp-server/dist/index.js",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 15878
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 4,
+    "requirement_coverage": null
+  },
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": [],
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 64,
+        "max_bytes": 4194304,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "settchan2003-design",
+      "repo": "kicad-schematic-review-skill",
+      "commit": "a25c34fe55bd9ce5f2218f833430b58f32b0d082"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "settchan2003-design",
+        "repo": "kicad-schematic-review-skill",
+        "commit": "a25c34fe55bd9ce5f2218f833430b58f32b0d082"
+      },
+      "candidate": {
+        "owner": "settchan2003-design",
+        "repo": "kicad-schematic-review-skill",
+        "url": "https://github.com/settchan2003-design/kicad-schematic-review-skill",
+        "description": "A disciplined, evidence-first AI skill to review KiCad schematics against datasheets, extracting pin-level design contracts and connectivity facts.",
+        "stars": 4,
+        "commit_id": "a25c34fe55bd9ce5f2218f833430b58f32b0d082",
+        "consultado_em": "2026-10-29T19:13:29.551641933Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-05-29T07:51:10Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        }
+      ],
+      "budget": {
+        "documents": 1,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "settchan2003-design",
+          "repo": "kicad-schematic-review-skill",
+          "commit": "a25c34fe55bd9ce5f2218f833430b58f32b0d082"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"settchan2003-design\",\"repo\":\"kicad-schematic-review-skill\",\"url\":\"https://github.com/settchan2003-design/kicad-schematic-review-skill\",\"description\":\"A disciplined, evidence-first AI skill to review KiCad schematics against datasheets, extracting pin-level design contracts and connectivity facts.\",\"stars\":4,\"commit_id\":\"a25c34fe55bd9ce5f2218f833430b58f32b0d082\",\"consultado_em\":\"2026-10-29T19:13:29.551641933Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-05-29T07:51:10Z\"}",
+        "content_hash": "d2522290e85efe1c34ea13a4055252b1e6381bcd17e78307a06b3f3a8a57786c"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "settchan2003-design",
+          "repo": "kicad-schematic-review-skill",
+          "commit": "a25c34fe55bd9ce5f2218f833430b58f32b0d082"
+        },
+        "path": "README.md",
+        "content": "# KiCad Schematic Review Skill\n\nThis is a ChatGPT / OpenAI Codex skill for reviewing KiCad schematics with an evidence-first hardware review workflow. It is not meant to replace KiCad ERC, and it is not a one-click claim that a design is correct. Its job is to separate the review into traceable evidence:\n\n1. Extract structured facts from the KiCad project.\n2. Turn datasheets into pin-level design contracts.\n3. Review ICs, connectors, terminals, and power paths instance by instance.\n4. Produce Markdown reports with findings, evidence, confidence, and manual-review gaps.\n\nThe current version focuses on **schematic review**. PCB routing, thermal layout, EMC, and DFM are treated as follow-up review items unless the relevant PCB evidence exists.\n\n## What This Project Does\n\nHardware reviews often get muddy because different evidence types are mixed together: extracted nets, datasheet requirements, engineering judgment, and user-specific checklist rules. This skill keeps those sources separate so every conclusion can be traced back to evidence.\n\nIt helps an agent:\n\n- Inventory KiCad project files such as `.kicad_pro`, `.kicad_sch`, and `.kicad_pcb`\n- Extract components, pins, nets, labels, no-connect markers, and schematic free-text annotations\n- Infer first-pass design intent from annotations and rails, such as `30W` with `+24V` becoming a current-budget hint\n- Identify high-risk review targets such as ICs, drivers, regulators, connectors, terminals, fuses, and sense resistors\n- Cache datasheets from component `Datasheet` fields and extract searchable text\n- Detect cached supplier HTML wrappers that are not real datasheet PDFs\n- Report whether PCB files contain placement/routing evidence or are effectively empty\n- Build keyword maps for faster datasheet reading\n- Review each IC with a pin-by-pin checklist\n- Review connectors, motors, loads, supply inputs, sense resistors, and current paths\n- Automatically discover and apply baseline, domain-specific, and project-local checklists\n- Generate final reports with high-severity findings, warnings, manual-review items, and parser limitations\n\nFor example, if a schematic contains the free-text annotation `30W DC-Motor` and the design has a `+24V` rail, the review context preserves that annotation as design-intent evidence. The reviewer can then calculate `30W / 24V = 1.25A` and compare that against connector contact ratings, terminal ratings, sense resistor power, and motor-driver thermal limits.\n\n## What It Checks\n\n- Component fields: Reference, Value, Footprint, Datasheet, MPN, Manufacturer\n- IC supply, ground, enable, reset, boot, mode, VREF, ISEN, fault, and exposed-pad pins\n- Required datasheet external parts such as decoupling capacitors, bulk capacitors, bootstrap capacitors, charge-pump capacitors, current-sense resistors, pull-ups, TVS/ESD parts, clocks, and feedback networks\n- Motor drivers and H-bridges: VM capacitance, current limit, sense resistor power, PowerPAD requirements, and motor output connectors\n- Half bridges and external power stages: gate-drive supply, bootstrap network, gate resistors, pulldowns, Miller/crosstalk risks, dead time, and VGS limits\n- DCDC converters: input/output capacitors, inductors, feedback dividers, compensation, BOOT/SW/EN/PGOOD pins, COT ripple-generation requirements, and layout-sensitive feedback/SW nodes\n- DCDC bring-up: ripple, efficiency, load-step, line/load regulation, short-circuit recovery, SW-node stress, and measurement setup\n- Current sensing: shunt value/power, high-side/low-side/phase topology, CSA common-mode limits, ADC mapping, Kelvin routing, and PWM rejection\n- Motor control and FOC: phase order, current sampling windows, dead time, encoder/resolver/Hall feedback, bus-voltage sensing, calibration, and safe fault behavior\n- Signal and power integrity: return paths, termination, differential interfaces, decoupling, PDN assumptions, probing, and EMI-sensitive layout risks\n- Connectors and terminals: current, wire gauge, temperature, paralleled contacts, supply path, and return path\n- Power entry and inrush: battery/DC-bus inputs, relays/SSRs, precharge, large downstream capacitance, fuses, and hot-swap behavior\n- MCU/ADC basics: decoupling, VCAP/reference pins, reset/boot states, ADC source impedance, RC settling, anti-alias filtering, and test access\n- Schematic design intent from text annotations, such as power, voltage, current, `motor`, `heater`, and `load`\n\n## What It Does Not Prove\n\n- It does not replace KiCad ERC.\n- It does not replace human datasheet reading.\n- It does not claim trace width, thermal vias, copper pours, or EMC are verified when PCB evidence is missing.\n- It does not claim ratings are verified when the datasheet is missing or weakly extracted.\n- It does not assume stall current, wire gauge, ambient temperature, or fuse behavior unless the user or schematic provides that information.\n\n## Installation\n\nUse Python 3.10+.\n\n```bash\npython3 -m venv .venv\n. .venv/bin/activate\npython -m pip install -r requirements.txt\n```\n\n`requirements.txt` currently includes `pypdf` for PDF datasheet text extraction. If `pdftotext` is installed on the system, `datasheet_tool.py` can also use it as a fallback.\n\n## Using It With Codex\n\nPlace this folder where Codex can load local skills or plugins, then ask the agent to use `kicad-schematic-review`.\n\nExample prompt:\n\n```text\nUse the kicad-schematic-review skill to review this KiCad project.\nFocus on motor drivers, connector current ratings, required datasheet external parts,\nand sense resistor power.\nProject path: /path/to/KiCadProject\n```\n\nIf you know the design intent, provide it up front:\n\n```text\nInput voltage is 24V.\nEach motor is 30W. Estimate startup current as 3x nominal.\nJ1 must be control-signal only; motor power must use a separate terminal.\n```\n\n## Command-Line Tools\n\nInventory a project:\n\n```bash\npython scripts/inventory_project.py /path/to/KiCadProject --pretty\n```\n\nExtract schematic facts:\n\n```bash\npython scripts/extract_kicad_sch.py /path/to/project.kicad_sch --pretty\n```\n\nBuild compact review context:\n\n```bash\npython scripts/build_review_context.py /path/to/KiCadProject --pretty\n```\n\nThe context includes `design_intent`, `datasheet_cache_status`, and `pcb_status` sections. These help the reviewer catch common misses: schematic text that implies current, supplier cache files that are HTML wrappers, and PCB files that are too empty for layout claims.\n\nCache and extract a datasheet:\n\n```bash\npython scripts/datasheet_tool.py fetch \"https://example.com/part.pdf\" --cache-dir /path/to/KiCadProject/datasheet_cache\npython scripts/datasheet_tool.py extract /path/to/KiCadProject/datasheet_cache/part.pdf --out /path/to/KiCadProject/datasheet_cache/part.datasheet.txt\npython scripts/datasheet_tool.py keywords /path/to/KiCadProject/datasheet_cache/part.datasheet.txt --out /path/to/KiCadProject/datasheet_cache/part.keywords.md\npython scripts/datasheet_tool.py inspect /path/to/KiCadProject/datasheet_cache/part.pdf --pretty\n```\n\n`datasheet_tool.py fetch` handles a common supplier-site problem: a URL may look like a `.pdf` but return an HTML wrapper page. The tool attempts to resolve canonical links, PDF links, and supplier-page links to cache the real PDF when possible.\n`datasheet_tool.py inspect` classifies an existing cached file as PDF, HTML wrapper, text, or unknown and lists PDF links found in an HTML wrapper.\n\n## Review Outputs\n\nRecommended output structure inside the reviewed KiCad project:\n\n```text\nKiCadProject/\n├── schematic_review.md                 # Final report\n├── datasheet_cache/                    # Datasheet PDF/text/keywords/summary files\n└── review_outputs/\n    ├── extracted/                      # Inventory, extraction, and context JSON\n    ├── U2_DRV8870DDA_review.md         # Per-IC instance review\n    ├── power_path_review.md            # Supply, connector, and load-path review\n    └── ...\n```\n\nFinal reports should clearly separate:\n\n- `pass`: enough evidence shows the requirement is satisfied\n- `fail`: a datasheet, checklist, or rating requirement is clearly violated\n- `warning`: risky, incomplete, low-margin, or dependent on unknown system conditions\n- `manual_review`: the available project files are not enough to decide\n\n## Repository Layout\n\n```text\nSKILL.md                                  Skill workflow and review contract\nrequirements.txt                          Python dependencies\nagents/openai.yaml                        Codex/OpenAI agent metadata\nscripts/inventory_project.py              Project file discovery\nscripts/extract_kicad_sch.py              Schematic fact extraction\nscripts/build_review_context.py           IC/current-path/checklist context builder\nscripts/datasheet_tool.py                 Datasheet fetch/extract/keyword helper\nreferences/checklist_example.md           Baseline checklist\nreferences/checklists/motor_driver.md     Motor-driver checklist\nreferences/checklists/connector_power.md  Connector and power-path checklist\nreferences/checklists/dcdc.md             DCDC checklist\nreferences/checklists/dcdc_bringup_test.md       DCDC bring-up and test checklist\nreferences/checklists/half_bridge_gate_drive.md  Half-bridge and gate-drive checklist\nreferences/checklists/current_sensing.md         Current-sensing checklist\nreferences/checklists/motor_control_foc.md       Motor-control and FOC checklist\nreferences/checklists/signal_power_integrity.md  Signal and power integrity checklist\nreferences/checklists/power_entry_inrush.md      Power-entry, inrush, and precharge checklist\nreferences/checklists/mcu_adc.md                 MCU, ADC, and low-level signal checklist\nreferences/knowledge_sources.md           Map of source-document themes to distilled checklist rules\nreferences/datasheet_summary_template.md  Datasheet summary template\nreferences/ic_review_template.md          IC instance review template\nreferences/power_path_review_template.md  Power-path review template\nreferences/report_template.md             Final report template\n```\n\n## How To Make This Skill More Knowledgeable\n\nThe best way to improve this skill is not to put every piece of knowledge into one prompt. Put each kind of knowledge in the layer where it belongs.\n\n### 1. Update `SKILL.md`\n\nUse `SKILL.md` for permanent workflow rules:\n\n- Which scripts must be run\n- Which evidence must appear in the final report\n- What counts as high severity\n- When the reviewer must not say `verified`\n- When new domain checklists should be loaded\n\nIf the agent should always follow a review principle, put it here.\n\n### 2. Add `references/checklists/*.md`\n\nUse domain checklists for reusable circuit knowledge. Keep one circuit class per file:\n\n```text\nreferences/checklists/\n  motor_driver.md\n  connector_power.md\n  dcdc.md\n  dcdc_bringup_test.md\n  half_bridge_gate_drive.md\n  current_sensing.md\n  motor_control_foc.md\n  signal_power_integrity.md\n  power_entry_inrush.md\n  mcu_adc.md\n  usb_c.md\n  can.md\n  rs485.md\n  ldo.md\n```\n\nThen update `scripts/build_review_context.py` so it can automatically load the right checklist based on library IDs, values, net names, and schematic text. This is what turns checklists from static documentation into active review rules.\n\n### 3. Improve `scripts/build_review_context.py`\n\nThis is where automatic recognition belongs. Good additions include:\n\n- Parse schematic text such as `30W`, `2A`, `24V`, and `stall current`\n- Detect USB-C, CAN, RS485, buck converters, LDOs, MCUs, and load switches from component and net names\n- Improve current-critical candidate detection\n- Discover project-local checklists\n- Generate manual-review questions from missing voltage, current, wire-gauge, or datasheet evidence\n\nThis is one of the highest-leverage files for making the skill smarter.\n\n### 4. Improve `scripts/extract_kicad_sch.py`\n\nThis is where KiCad fact extraction belongs. Useful improvements include:\n\n- Better hierarchical sheet parsing\n- Extract sheet pins, buses, graphical notes, and net classes\n- Improve cross-sheet and global-net handling\n- Output more raw evidence locations for report citations\n\n### 5. Improve `scripts/datasheet_tool.py`\n\nThis is where datasheet acquisition and text extraction belong. Useful improvements include:\n\n- Support more supplier redirect and wrapper-page patterns\n- Support local PDF, HTML, TXT, and Markdown sources\n- Add better real-PDF resolution for LCSC, TI, ADI, ST, Mouser, and DigiKey pages\n- Produce more stable keyword reading maps\n\n### 6. Improve The Templates\n\nTemplates shape report quality:\n\n- `references/datasheet_summary_template.md`: make datasheet summaries more pin-centric\n- `references/ic_review_template.md`: make per-IC reviews more thorough\n- `references/power_path_review_template.md`: make current, wire gauge, derating, temperature, and connector ratings clearer\n- `references/report_template.md`: make final reports better for hardware design reviews\n\n### Recommended Growth Path\n\n1. Add `usb_c.md`, `can.md`, `rs485.md`, `ldo.md`, and `battery_charger.md` checklists.\n2. Add auto-trigger rules for those checklists in `build_review_context.py`.\n3. Add one or two real KiCad projects as regression examples for each circuit class.\n4. Script common high-severity checks, such as missing VM caps, connector current exceeded, and VREF out of range.\n5. Make the final report always list datasheets as verified, missing, weakly extracted, or manual-review only.\n\n## License\n\nMIT. See `LICENSE`.\n",
+        "content_hash": "9e2d0b84fad04045ebffdcc8b5992f0141135a66607fe685944062eb5613c5fa"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 13974,
+    "target_results": [
+      {
+        "target": {
+          "path": "scripts/build_review_context.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/datasheet_tool.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/extract_kicad_sch.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "scripts/inventory_project.py",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "LICENSE",
+          "kind": "license",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "references/checklists/dcdc_bringup_test.md",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "README.md",
+          "kind": "documentation",
+          "reason": "Comparar proposta declarada ao Pinscope; candidato descoberto pelo catálogo Bateia"
+        },
+        "status": "COLLECTED",
+        "bytes": 13477
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 3,
+    "requirement_coverage": null
+  }
+]

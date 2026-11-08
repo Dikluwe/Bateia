@@ -1,0 +1,54 @@
+Comparação prática: pesquisa da IA e pesquisa da IA apoiada pelo Bateia
+Data local: 28/10/2026
+
+Resultado: o Bateia trouxe referências diferentes das encontradas na pesquisa direta e automatizou coleta/proveniência. Neste caso, minha pesquisa direta produziu três propostas candidatas; a rodada apoiada pelo Bateia produziu duas propostas diferentes. Não houve avaliação independente nem teste de benefício no produto, portanto estes números não são uma medida de qualidade nem provam superioridade de uma abordagem.
+
+Pergunta comum
+Encontrar abordagens menos habituais para melhorar a descoberta do Bateia, além de busca semântica e ranking de repositórios. Cada proposta deveria identificar fonte, adaptação, condições e experimento capaz de rejeitá-la.
+
+Método
+Primeiro realizei a pesquisa web e congelei suas conclusões em direct-arm.json, com hash, antes de executar/abrir o resultado do Bateia. Depois usei apenas os metadados, cartões e READMEs retornados pelo programa, sem consultas web suplementares. A mesma IA executou e interpretou ambas as rodadas; não há cegamento. Os canais e limites diferem: busca web adaptativa versus catálogos e consultas fixadas por política. Não é benchmark controlado.
+
+Sem Bateia
+Foram quatro consultas adaptativas e seis tentativas de abrir páginas primárias, das quais cinco foram acessíveis. Duas páginas eram resumos de artigos, não leitura integral. As propostas foram:
+
+1. Arquivo de alternativas por nichos de comportamento. A documentação oficial do pyribs descreve arquivos de quality-diversity com representantes por região/categoria. Minha adaptação: guardar alternativas por mecanismo e condição operacional, com evidência por célula. Teste proposto: comparar cobertura de mecanismos aplicáveis com a seleção atual no mesmo corpus e orçamento.
+Fontes: https://docs.pyribs.org/en/latest/tutorials/qdaif.html
+https://docs.pyribs.org/en/stable/api/ribs.archives.CategoricalArchive.html
+
+2. Buscar analogias por função e restrição. Dois artigos propõem abstrair necessidades de projeto e buscar analogias além da semelhança superficial. Minha adaptação: pesquisar efeito desejado, mecanismo e restrições, exigindo explicar a correspondência com o alvo. Teste: avaliar analogias entre domínios em perguntas congeladas, verificando se geram aplicabilidade além de trocar palavras.
+Fontes, lidas apenas em seus resumos: https://arxiv.org/abs/1712.06880 e https://arxiv.org/abs/2205.15476
+
+3. Exploração com piso de relevância. A experiência CROSSMINER relata importância de novidade/diversidade e recomendações úteis pouco populares. Minha proposta de política: reservar vagas próximas, adjacentes e distantes, sem promover diversidade de fontes a relevância. Teste: medir utilidade, surpresa e custo de triagem separadamente. A política é uma inferência minha, não uma melhoria do Bateia já demonstrada pelo artigo.
+Fonte: https://link.springer.com/article/10.1007/s10664-021-09963-7
+
+Com Bateia
+Uma pergunta com duas indicações de familiaridade acionou 20 chamadas lógicas de catálogo. Foram planejadas 11 fontes e 55 células fonte x perspectiva. O programa retornou 12 candidatos, selecionou seis e coletou dois READMEs, com 13.731 bytes e dois cartões. O subprocesso com rede durou 70,005 segundos. Isso não mede o tempo total de trabalho da IA e não é comparado ao tempo da busca web.
+
+As propostas, interpretadas por mim a partir desse material, foram:
+
+1. Buscar em vizinhanças de comunidades. O README do Lieu descreve um buscador de webrings, com lista configurada de domínios. Minha adaptação: explorar conjuntos de projetos de comunidades diferentes para expor soluções fora do catálogo global usual, sem presumir que pertencer à comunidade garanta utilidade. Teste: comparar buscas globais e mistura com vizinhanças, sob orçamento igual, avaliando mecanismos novos e aplicáveis.
+Fonte fixada: https://github.com/cblgh/lieu/blob/8efd4c7718a5ad4b67ea353936757b351b374d58/README.md
+Suporte: linhas 5–8 e 27–60. O fluxo está documentado; o código não foi executado.
+
+2. Tratar coleções como sementes para uma investigação de um salto. Lieu documenta precrawl de uma página de links; muse-tech-central reúne software de museus e aponta para Serendip-o-matic. Minha adaptação: distinguir um índice de uma implementação, extrair poucas referências do índice e investigar seus READMEs em uma etapa limitada, com orçamento e proveniência. Teste: comparar parar no índice e ler até dois projetos citados, medindo evidência útil adicional por chamada. Serendip-o-matic apareceu apenas como referência indireta: seu repositório/código não foi examinado. A proposta de manifesto/hook no início da coleção é intenção futura do autor, não funcionalidade observada.
+Fonte fixada: https://github.com/MuseCompNet/muse-tech-central/blob/e16338816fa93b3b376f1d31d800ead2362072d2/README.md
+Suporte adicional: README do Lieu, linhas 32–40 e 53–60; coleção, linhas 4–6 e 105–107.
+
+Os cartões automáticos mostravam principalmente introduções. Para encontrar o fluxo precrawl, precisei ler o texto completo já incluído no bundle. Não houve nova busca externa, mas ainda houve curadoria/interpretação da IA.
+
+Falhas e limites observados
+Quatro das seis referências selecionadas eram somente catálogo: três aplicativos sem descrição de mecanismo nos dados retornados e hddtools com tags de hidrologia. Não usei essas referências para sustentar as propostas; isso não prova que os projetos não tenham utilidade.
+
+As 20 chamadas cobriram somente DIRECT (11) e BROADENED (9). Nenhuma célula de ALTERNATIVES, TRADEOFFS ou COUNTEREXAMPLES foi executada. A variedade planejada de perspectivas não se realizou sob esse orçamento e número de fontes.
+
+Houve sete timeouts, uma exigência de token AtomGit e dois erros de integridade Google Play. Essas falhas reduzem cobertura, mas não são julgamentos de relevância. Codeberg/Gitee expiraram, GitLab retornou vazio/timeout e AtomGit não foi consultado por falta de token. Os dois READMEs deste ensaio vieram do GitHub.
+
+A primeira execução foi afetada pela restrição de rede do sandbox e foi guardada em sandbox-network. A primeira revisão automática de permissão expirou; a repetição autorizada executou a rodada pública. Nenhum token ou .env foi usado, nenhum software candidato foi executado e nenhum arquivo produtivo/nuclear foi alterado.
+
+Conclusão para o produto
+O Bateia mostrou utilidade como auxiliar de descoberta e montagem de evidências: trouxe comunidades e software de museus que não apareceram na rodada direta, com bytes e revisões rastreáveis. A pesquisa direta foi mais adaptativa na busca de fundamentos e algoritmos. A síntese dos insights continuou dependendo da IA nos dois casos. Não foi demonstrada economia total de tempo/tokens nem melhoria de utilidade percebida pelo usuário.
+
+Prioridades sugeridas por este caso: distribuir orçamento entre perspectivas e fontes adequadas; exigir ligação ao problema antes de gastar vagas; reconhecer índices/coleções e propor investigação limitada das referências; selecionar também trechos de fluxo e restrições. Este experimento não implementou essas alterações.
+
+Registros: protocol.json, direct-arm.json, direct-freeze.json, bateia-run.json, bateia-result.json, bateia-arm.json, comparison.json e verification.json. Reprodução das verificações offline: python3 lab/bancada/insights/comparacao-ia-2026-10-28/verify.py. Uma nova execução de run_bateia.py consulta serviços mutáveis e não deve sobrescrever esta rodada histórica: use outra pasta para uma nova rodada.

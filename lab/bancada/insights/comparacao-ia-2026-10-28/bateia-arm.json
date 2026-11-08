@@ -1,0 +1,95 @@
+{
+  "arm": "assistant using only Bateia output",
+  "material_examined": "two reading cards plus full text of the two returned README bundles; no supplemental web requests or code inspection",
+  "result_status": "PARTIAL",
+  "sources": [
+    {
+      "id": "B1",
+      "repository": "cblgh/lieu",
+      "commit": "8efd4c7718a5ad4b67ea353936757b351b374d58",
+      "url": "https://github.com/cblgh/lieu/blob/8efd4c7718a5ad4b67ea353936757b351b374d58/README.md",
+      "path": "README.md",
+      "content_hash": "sha256:2566788ae588741c281009e535c0c0868da4c7e4a6388a94ad2779776f0f5fb7",
+      "support_lines": [
+        [
+          5,
+          8
+        ],
+        [
+          27,
+          40
+        ],
+        [
+          53,
+          60
+        ]
+      ]
+    },
+    {
+      "id": "B2",
+      "repository": "MuseCompNet/muse-tech-central",
+      "commit": "e16338816fa93b3b376f1d31d800ead2362072d2",
+      "url": "https://github.com/MuseCompNet/muse-tech-central/blob/e16338816fa93b3b376f1d31d800ead2362072d2/README.md",
+      "path": "README.md",
+      "content_hash": "sha256:11713627ea5bf280c174534af4609eb5a944fe63abba792759250d4bba7bd963",
+      "support_lines": [
+        [
+          4,
+          6
+        ],
+        [
+          105,
+          107
+        ]
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "B-I1",
+      "title": "Buscar em vizinhanças de comunidades, não apenas em catálogos globais",
+      "source_ids": [
+        "B1"
+      ],
+      "documented_concept": "O README do Lieu descreve busca no próprio bairro/webring e lista configurada de domínios. Isso é declaração documental, não código executado ou propriedade comprovada.",
+      "adaptation_proposed_by_assistant": "No Bateia, usar conjuntos de projetos de comunidades distintas, como museus, ferramentas de computação criativa e infraestrutura, como rotas consultivas de busca. Reservar vagas para comunidades que ainda não tenham contribuído para o problema, preservando requisitos e origem.",
+      "condition": "A comunidade não garante utilidade. Explicitar a ligação entre um mecanismo documentado e a necessidade do alvo e avaliar isolamento da bolha curada.",
+      "rejection_experiment": "Em conjunto de perguntas e orçamento fixo, comparar somente catálogo global com mistura de catálogo e vizinhanças; rejeitar se as vizinhanças só aumentarem material descartado ou reforçarem o círculo conhecido.",
+      "state": "HYPOTHESIS_NOT_VALIDATED"
+    },
+    {
+      "id": "B-I2",
+      "title": "Usar coleções como sementes e seguir referências em uma etapa limitada",
+      "source_ids": [
+        "B1",
+        "B2"
+      ],
+      "documented_concept": "Lieu documenta precrawl de uma página de links para uma lista de destinos; muse-tech-central é uma coleção de projetos e aponta para Serendip-o-matic. Seu opt-in por manifesto/hook é intenção futura do autor, não funcionalidade verificada.",
+      "adaptation_proposed_by_assistant": "Distinguir README de índice/coleção de README de implementação. Após achar uma coleção, extrair algumas referências a software e planejar uma leitura adicional de um salto, dentro de orçamento, com validação da origem/commit e relação explícita entre índice e projeto. Hoje o pacote apenas entrega a referência indireta.",
+      "condition": "Serendip-o-matic foi visto somente como link descrito pela coleção: seu repositório/código não foi lido. Não atribuir seu mecanismo ao Bateia nem seguir URLs arbitrárias automaticamente.",
+      "rejection_experiment": "Comparar parar no README da coleção versus investigar até dois projetos citados; medir quantos mecanismos localizados adicionais aparecem por chamada. Rejeitar se o salto aumentar custo sem obter evidência útil.",
+      "state": "HYPOTHESIS_NOT_VALIDATED"
+    }
+  ],
+  "selection_review": {
+    "selected": 6,
+    "used_for_candidate_insights": 2,
+    "metadata_only_not_used": 4,
+    "note": "Three store applications have no mechanism description in returned metadata; hddtools has only hydrology tags and unverified upstream link, which do not support a mechanism for this brief."
+  },
+  "operator_work": {
+    "manual_search_briefs": 1,
+    "familiar_phrases": 2,
+    "logical_catalog_calls_automated": 20,
+    "manual_readme_reads": 2,
+    "supplemental_web_queries": 0,
+    "extra_manual_content_reading_beyond_cards": true,
+    "interpretation": "assistant manual; Bateia did not generate or validate these two proposals"
+  },
+  "limits": [
+    "Same assistant already knew A; no independence claim",
+    "two primary project READMEs, no candidate code executed",
+    "only GitHub READMEs collected in this actual run; no live read from Codeberg/GitLab/Gitee/AtomGit succeeded in this trial",
+    "source diversity alone is not conceptual diversity; hypotheses not effect validation"
+  ]
+}

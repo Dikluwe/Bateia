@@ -1,0 +1,71 @@
+{
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "counts_by_runner_kind": {
+    "setup": 9,
+    "research": 27
+  },
+  "acquisitions": 0,
+  "considered": [
+    {
+      "baseline": "B1",
+      "disposition": "presented",
+      "alternative": "A1"
+    },
+    {
+      "baseline": "B2",
+      "disposition": "presented",
+      "alternative": "A2"
+    },
+    {
+      "baseline": "B3",
+      "disposition": "not presented as independent automatic-convergence design",
+      "reason": "Consultas CRDT/conflitos não descobriram fonte suficiente; E3 mostra LWW, que não preserva duas observações. Parte de preservar observações incorporada em A1 como desenho, sem CRDT validado.",
+      "witnesses": [
+        "audit/009.json",
+        "audit/014.json",
+        "audit/029.json"
+      ]
+    },
+    {
+      "baseline": "B4",
+      "disposition": "adjunct only",
+      "reason": "Etiquetas e confirmação ajudam ambos os fluxos, mas a evidência não demonstrou planilha compartilhada com 72 h offline sem perda. Não apresentada como solução completa."
+    }
+  ],
+  "rejected_software_choices": [
+    {
+      "candidate": "cassandra as turnkey mobile replication/history",
+      "reason": "Fonte E3 documenta resolução LWW e relógios; não foram demonstrados cliente Android, fotos, exportação, custo operacional ou preservação das observações."
+    },
+    {
+      "candidate": "bookkeeper as phone-side solution",
+      "reason": "E5 exige escritor único e fencing; é referência de mecanismo, não aplicativo offline para voluntários."
+    },
+    {
+      "candidate": "IndexedDBShim",
+      "reason": "Único URL GitHub elegível observado; polyfill não responde problema principal e depende de direção WebSQL que leitura 033 indica abandonada."
+    }
+  ],
+  "gaps": [
+    "Não descoberto aplicativo pronto offline de peças/inventário.",
+    "Sem fonte lida que prove CRDT preservando semântica de reservas exclusivas.",
+    "Sem prova de quota/persistência, desempenho em Android barato e 45 mil peças.",
+    "Sem validação de fotos, backup/restauração, exportação completa ou custos.",
+    "Sem teste real com voluntários, idiomas ou acessibilidade."
+  ],
+  "failure_witnesses": {
+    "catalogue_initially_missing": "audit/004.json",
+    "hosted_client_unavailable": "audit/011.json",
+    "oversize_auto_pull": "audit/016.json",
+    "invalid_k_30_corrected_to_10": "audit/015.json"
+  },
+  "stopping_reason": "Cobertura nativa reiteradamente tangencial; três corpora úteis lidos, baseline revisado, desenho e lacunas explicitados. Não expandir artificialmente alternativas ou resgatar por memória. Parada antes de 40 chamadas e 20 min.",
+  "human_intervention": "Nenhuma intervenção humana durante execução; autorização pública da tarefa usada nas chamadas escaladas.",
+  "lifecycle": {
+    "startup": "audit/018.json",
+    "own_pid": 1201802,
+    "own_port": 9300,
+    "stop": "audit/035.json",
+    "unreachable_verification": "audit/036.json"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "search",
+    "--url",
+    "http://127.0.0.1:19691",
+    "--prefix",
+    "automerge",
+    "reliable in-order",
+    "-k",
+    "3",
+    "--full",
+    "5500",
+    "--json"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0152/xerj/bin/xerj",
+    "search",
+    "--url",
+    "http://127.0.0.1:19691",
+    "--prefix",
+    "automerge",
+    "reliable in-order",
+    "-k",
+    "3",
+    "--full",
+    "5500",
+    "--json"
+  ],
+  "origin": null,
+  "started_unix": 1794153326.4291475,
+  "pending": false,
+  "baseline_sha256": "d990ae6c0753f56518e1ececc3d403fff70d4f34282d514464d8e0a2311c1527",
+  "seconds": 0.4455142021179199,
+  "exit_code": 0,
+  "stdout": "{\n  \"took\": 400,\n  \"timed_out\": false,\n  \"_shards\": {\n    \"total\": 4,\n    \"successful\": 4,\n    \"skipped\": 0,\n    \"failed\": 0\n  },\n  \"hits\": {\n    \"total\": {\n      \"value\": 5457,\n      \"relation\": \"eq\"\n    },\n    \"max_score\": 22.025738,\n    \"hits\": [\n      {\n        \"_index\": \"automerge-docs\",\n        \"_id\": \"c2470c271f8ffe63fbacbba7e75bf832\",\n        \"_score\": 22.025738,\n        \"_source\": {\n          \"title\": \"sync.rs\",\n          \"ax_path\": \"rust/automerge/src/sync.rs\",\n          \"ax_paths\": [\n            \"rust/automerge/src/sync.rs\"\n          ],\n          \"ax_locator\": \"code\",\n          \"language\": \"rust\",\n          \"start_line\": 1\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 0,\n              \"start_offset\": 0,\n              \"end_offset\": 2019,\n              \"text\": \"//! # Sync Protocol\\n//!\\n//! The sync protocol is based on this paper:\\n//! <https://arxiv.org/abs/2012.00472>, it assumes a reliable in-order stream\\n//! between two peers who are synchronizing a document.\\n//!\\n//! Each peer maintains a [`State`] for each peer they are synchronizing with.\\n//! This state tracks things like what the heads of the other peer are and\\n//! whether there are in-flight messages. Anything which implements [`SyncDoc`]\\n//! can take part in the sync protocol. The flow goes something like this:\\n//!\\n//! * The initiating peer creates an empty [`State`] and then calls\\n//!   [`SyncDoc::generate_sync_message()`] to generate new sync message and sends\\n//!   it to the receiving peer.\\n//! * The receiving peer receives a message from the initiator, creates a new\\n//!   [`State`], and calls [`SyncDoc::receive_sync_message()`] on it's view of the\\n//!   document\\n//! * The receiving peer then calls [`SyncDoc::generate_sync_message()`] to generate\\n//!   a new sync message and send it back to the initiator\\n//! * From this point on each peer operates in a loop, receiving a sync message\\n//!   from the other peer and then generating a new message to send back.\\n//!\\n//! ## Example\\n//!\\n//! ```\\n//! use automerge::{transaction::Transactable, sync::{self, SyncDoc}, ReadDoc};\\n//! # fn main() -> Result<(), automerge::AutomergeError> {\\n//! // Create a document on peer1\\n//! let mut peer1 = automerge::AutoCommit::new();\\n//! peer1.put(automerge::ROOT, \\\"key\\\", \\\"value\\\")?;\\n//!\\n//! // Create a state to track our sync with peer2\\n//! let mut peer1_state = sync::State::new();\\n//! // Generate the initial message to send to peer2, unwrap for brevity\\n//! let message1to2 = peer1.sync().generate_sync_message(&mut peer1_state).unwrap();\\n//!\\n//! // We receive the message on peer2. We don't have a document at all yet\\n//! // so we create one\\n//! let mut peer2 = automerge::AutoCommit::new();\\n//! // We don't have a state for peer1 (it's a new connection), so we create one\\n//! let mut peer2_state = sync::State::new();\"\n            }\n          ]\n        },\n        \"match_line\": 4,\n        \"match_lines\": [\n          4\n        ]\n      },\n      {\n        \"_index\": \"automerge-docs\",\n        \"_id\": \"d6187faad9eb54e3e279112d25674fa3\",\n        \"_score\": 18.15224,\n        \"_source\": {\n          \"title\": \"lib.rs\",\n          \"ax_path\": \"rust/automerge/src/lib.rs\",\n          \"ax_paths\": [\n            \"rust/automerge/src/lib.rs\"\n          ],\n          \"ax_locator\": \"code\",\n          \"language\": \"rust\",\n          \"start_line\": 1\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 0,\n              \"start_offset\": 0,\n              \"end_offset\": 2023,\n              \"text\": \"//! # Automerge\\n//!\\n//! Automerge is a library of data structures for building collaborative,\\n//! [local-first](https://www.inkandswitch.com/local-first/) applications. The\\n//! idea of automerge is to provide a data structure which is quite general\\n//! \\\\- consisting of nested key/value maps and/or lists - which can be modified\\n//! entirely locally but which can at any time be merged with other instances of\\n//! the same data structure.\\n//!\\n//! In addition to the core data structure (which we generally refer to as a\\n//! \\\"document\\\"), we also provide an implementation of a sync protocol (in\\n//! [`crate::sync`]) which can be used over any reliable in-order transport; and\\n//! an efficient binary storage format.\\n//!\\n//! This crate is organised around two representations of a document -\\n//! [`Automerge`] and [`AutoCommit`]. The difference between the two is that\\n//! [`AutoCommit`] manages transactions for you. Both of these representations\\n//! implement [`ReadDoc`] for reading values from a document and provide access\\n//! to a [`sync::SyncDoc`] implementation (`Automerge` implements it directly\\n//! whilst [`AutoCommit`] provides [`AutoCommit::sync`]) for taking part in the\\n//! sync protocol. [`AutoCommit`] directly implements\\n//! [`transaction::Transactable`] for making changes to a document, whilst\\n//! [`Automerge`] requires you to explicitly create a\\n//! [`transaction::Transaction`].\\n//!\\n//! NOTE: The API this library provides for modifying data is quite low level\\n//! (somewhat analogous to directly creating JSON values rather than using\\n//! [`serde`] derive macros or equivalent). If you're writing a Rust application which uses automerge\\n//! you may want to look at [autosurgeon](https://github.com/automerge/autosurgeon).\\n//!\\n//! ## Data Model\\n//!\\n//! An automerge document is a map from strings to values\\n//! ([`Value`]) where values can be either\\n//!\\n//! * A nested composite value which is either\\n//!   * A map from strings to values ([`ObjType::Map`])\\n//!   * A list of values ([`ObjType::List`])\"\n            }\n          ]\n        },\n        \"match_line\": 12,\n        \"match_lines\": [\n          12\n        ]\n      },\n      {\n        \"_index\": \"automerge-docs\",\n        \"_id\": \"625529136ee7eb516de272088d2855b9\",\n        \"_score\": 16.107225,\n        \"_source\": {\n          \"title\": \"In\",\n          \"ax_path\": \"rust/automerge/src/storage/document/compression.rs\",\n          \"ax_paths\": [\n            \"rust/automerge/src/storage/document/compression.rs\"\n          ],\n          \"ax_locator\": \"code:142:In\",\n          \"language\": \"rust\",\n          \"kind\": \"type\",\n          \"line\": 142,\n          \"start_line\": 142,\n          \"code\": \"type In = compression::Uncompressed;\"\n        }\n      }\n    ]\n  }\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,352 @@
+{
+  "alternatives": [
+    {
+      "id": "A",
+      "name": "Free offline observations with provisional reservations and explicit reconciliation",
+      "baseline_relation": {
+        "status": "materially_modified",
+        "baseline": [
+          "b1",
+          "b4"
+        ],
+        "source": "PouchDB conflict and compaction guides establish separate immutable business history, not revision history. Automerge evidence prevents treating automatic convergence as inventory correctness."
+      },
+      "work_change": "Label each physical part with stable QR ID and workshop/bin. Every volunteer can record arrival, movement, reservation request, consumption and correction offline. Show reservations from disconnected devices as provisional; before a trip or promise obtain a fresh physical confirmation by the holding workshop. A steward resolves competing claims and links the decision to all original observations. Corrections append a superseding observation with reason rather than erasing another volunteer record.",
+      "software_change": "One JSON event per action with random globally unique event ID, part ID, workshop, actor/device, device sequence, observed parents, local time and received time. Deduplicate retries by event ID. Keep original photos attached to immutable photo/event IDs. Materialize search and availability views; conflicting locations, consumption/reservation claims and part-ID duplicates raise a visible review task, never disappear behind a winner. PouchDB local stores with CouchDB-compatible hub and live retry are a candidate. Persist app shell and selected workshop inventory on phones; sync metadata before bulk photo transfer if a spike proves this possible. Export events as JSONL, inventory as CSV, photos plus manifest and checksums.",
+      "constraints_met": [
+        "Local event capture during a 72h WAN partition; no central-office visit.",
+        "Replicated immutable observations preserve multiple descriptions and correction history.",
+        "One shared sync service is a plausible small operations footprint for two developers; cost remains to be measured.",
+        "Explicit portable export deliverable, backed by read primitives rather than an assumed built-in export product."
+      ],
+      "limitations": [
+        "Cannot guarantee a unique reservation while disconnected writers may claim the same part.",
+        "Physical confirmation adds latency and remains required before a firm external promise.",
+        "Photos, complete history, startup sync and browser storage durability on cheap Android phones are unmeasured.",
+        "Neither PouchDB winners nor Automerge winners imply physically correct stock. CRDT is an implementation option within this design, not another conceptual alternative."
+      ],
+      "condition_of_application": "Use if preserving unrestricted recording matters more than accepting immediate firm reservations from every disconnected volunteer, and stewards can clear a modest conflict queue.",
+      "rejection_experiment": "Two workshops, 6 volunteers, 200 labelled parts, 72h WAN cut. Inject same-part double reservation, move vs consume, description correction, duplicate arrival, repeated delivery and phone restart. Reject if any original observation/photo is lost, provisional state looks confirmed, or stewards cannot clear conflict backlog within an agreed 30-minute daily budget. Measure false-trip rate against current spreadsheets.",
+      "source_evidence": [
+        {
+          "id": "E1",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L142",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            142,
+            148
+          ],
+          "excerpt": "you never update or remove existing documents &ndash; you only create new documents.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "5881a51791c4ebdd040e4151fd7c2e18",
+            "passage_ordinal": 0
+          },
+          "supports": "Append-only event documents are an explicitly documented conflict avoidance design."
+        },
+        {
+          "id": "E2",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            74,
+            90
+          ],
+          "excerpt": "CouchDB will choose an arbitrary winner based on a deterministic algorithm",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "69efcd0a7e52e0766189ee3ed0c53c75",
+            "passage_ordinal": 0
+          },
+          "supports": "Concurrent offline revisions can succeed locally; deterministic winner is not domain adjudication."
+        },
+        {
+          "id": "E3",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L15",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/replication.html",
+          "lines": [
+            15,
+            16
+          ],
+          "excerpt": "using a backoff algorithm that retries at longer and longer intervals until a connection is re-established",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/017.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "d4c8c1b3d770253d8504483dfa9865a6",
+            "passage_ordinal": 0
+          },
+          "supports": "Replication supports offline retry with live enabled; application still handles denied and fatal errors."
+        },
+        {
+          "id": "E4",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/compaction.html#L3",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/compaction.html",
+          "lines": [
+            3,
+            7
+          ],
+          "excerpt": "removing unused and old data, namely non-leaf revisions and attachments that are no longer referenced by those revisions.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/019.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "d99919d21ab234870d8da92408e22b9b",
+            "passage_ordinal": 0
+          },
+          "supports": "Revision trees are insufficient as permanent business history when compacted."
+        },
+        {
+          "id": "E6",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L29",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/replication.html",
+          "lines": [
+            29,
+            33
+          ],
+          "excerpt": "You may need to adjust downward if targeting devices with low amounts of memory (e.g. phones)",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/017.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "ddba40553305dd5c5a020fff867690e0",
+            "passage_ordinal": 2
+          },
+          "supports": "Replication batches and attachments have phone memory implications."
+        },
+        {
+          "id": "E7",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/batch_fetch.html#L140",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/batch_fetch.html",
+          "lines": [
+            140,
+            149
+          ],
+          "excerpt": "include_docs: true,\n  attachments: true,",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/024.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "a2e6cc7e1c1d335b99d8a730873cf7f9",
+            "passage_ordinal": 0
+          },
+          "supports": "Readable document and attachment extraction primitive; full export/restore must be implemented and tested."
+        },
+        {
+          "id": "E8",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/lib.rs#L56",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "rust/automerge/src/lib.rs",
+          "lines": [
+            56,
+            61
+          ],
+          "excerpt": "the conflicting value is still available via the [`ReadDoc::get_all()`] method.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/020.json",
+          "witness_locator": {
+            "index": "autom-docs",
+            "id": "d6187faad9eb54e3e279112d25674fa3",
+            "passage_ordinal": 50
+          },
+          "supports": "CRDT scalar assignment conflicts still require application interpretation."
+        },
+        {
+          "id": "E9",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/sync.rs#L1",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "rust/automerge/src/sync.rs",
+          "lines": [
+            1,
+            10
+          ],
+          "excerpt": "it assumes a reliable in-order stream\n//! between two peers who are synchronizing a document.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/025.json",
+          "witness_locator": {
+            "index": "autom-docs",
+            "id": "c2470c271f8ffe63fbacbba7e75bf832",
+            "passage_ordinal": 0
+          },
+          "supports": "Core sync protocol needs transport supplied by the application."
+        },
+        {
+          "id": "E10",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/javascript/test/conflicts.ts#L39",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "javascript/test/conflicts.ts",
+          "lines": [
+            39,
+            54
+          ],
+          "excerpt": "assert.deepStrictEqual(new Set(names), new Set([\"charlie\", \"bob\"]))",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/021.json",
+          "witness_locator": {
+            "index": "autom-docs",
+            "id": "13bc0012a1f24f207073205d2c142a66",
+            "passage_ordinal": 17
+          },
+          "supports": "Source test checks that both conflicting map values remain; test was read, not executed."
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "name": "Workshop custody authority for firm promises, with free offline observation capture",
+      "baseline_relation": {
+        "status": "materially_modified",
+        "baseline": [
+          "b2",
+          "b3"
+        ],
+        "source": "PouchDB immediate/eventual conflict distinction exposes the need to prevent multiple offline commitment writers; source supplies primitives, custody protocol is agent synthesis."
+      },
+      "work_change": "Keep the same offline observation log, but each workshop has a designated commitment device at the stock shelf and physically controlled held/withdrawal bins. Volunteers can always record observations on personal phones. Firm reservation, release and withdrawal require the workshop authority device and physical scan; requests on other phones remain pending. A shared authority phone works without internet and can be handed between volunteers at that workshop. Inter-workshop moves use dispatch/in-transit/receipt with unique transfer ID; the sending workshop relinquishes rights at dispatch, receiving workshop gets them after accepting the dispatch receipt and physical part. Never create a second authority just because 72h passed.",
+      "software_change": "Maintain a single-writer per-part commitment sequence at the custody device, validate allowed transitions and reject stale commands. Replicate authority decisions and free observations as immutable events. Track ownership generation and transfer ID, keep in-transit unavailable to both sides, and require acknowledged durable handover before replacing a device. Personal phones can queue requests while disconnected but cannot mint confirmed reservations. Export and history remain as A. LAN kiosk is optional and not required by this design.",
+      "constraints_met": [
+        "No internet needed at the workshop commitment device for local commitment work.",
+        "All 60 volunteers retain disconnected observation capture; no central-office travel.",
+        "One shared hub plus eight authority phones, rather than eight maintained workshop servers.",
+        "Physical segregation and restricted commitment writers aim to reduce duplicate firm promises."
+      ],
+      "limitations": [
+        "Guarantee depends on physical custody discipline and one active authority; software alone cannot prevent unrecorded removal.",
+        "A missing, broken or unavailable authority phone stalls new firm commitments, though observation recording continues.",
+        "Immediate firm commitment from every independently disconnected personal phone is intentionally unavailable.",
+        "Handover after device loss may require physical recount and blocking affected parts; automatic timeout failover is unsafe.",
+        "Protocol has not been implemented or formally verified; PouchDB 409 is not distributed ownership enforcement."
+      ],
+      "condition_of_application": "Use if failed promises and wasted travel are more expensive than the extra shelf workflow, and each workshop can maintain a shared commitment device and controlled stock release.",
+      "rejection_experiment": "Apply same 72h two-workshop pilot, adding concurrent personal-phone requests, offline cross-workshop move, lost acknowledgement, duplicate dispatch and authority-phone failure. Reject on any two firm reservations or authority duplication, unexplained missing physical part, or if more than an agreed 5% of normal withdrawals cannot proceed within 5 minutes. Record observation availability separately from commitment availability.",
+      "source_evidence": [
+        {
+          "id": "E1",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L142",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            142,
+            148
+          ],
+          "excerpt": "you never update or remove existing documents &ndash; you only create new documents.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "5881a51791c4ebdd040e4151fd7c2e18",
+            "passage_ordinal": 0
+          },
+          "supports": "Append-only event documents are an explicitly documented conflict avoidance design."
+        },
+        {
+          "id": "E2",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            74,
+            90
+          ],
+          "excerpt": "CouchDB will choose an arbitrary winner based on a deterministic algorithm",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "69efcd0a7e52e0766189ee3ed0c53c75",
+            "passage_ordinal": 0
+          },
+          "supports": "Concurrent offline revisions can succeed locally; deterministic winner is not domain adjudication."
+        },
+        {
+          "id": "E3",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L15",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/replication.html",
+          "lines": [
+            15,
+            16
+          ],
+          "excerpt": "using a backoff algorithm that retries at longer and longer intervals until a connection is re-established",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/017.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "d4c8c1b3d770253d8504483dfa9865a6",
+            "passage_ordinal": 0
+          },
+          "supports": "Replication supports offline retry with live enabled; application still handles denied and fatal errors."
+        },
+        {
+          "id": "E5",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L22",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": [
+            22,
+            24
+          ],
+          "excerpt": "They manifest as a `409` (conflict) error:",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "a50a5581a421bbe5d66380f11e0814fb",
+            "passage_ordinal": 0
+          },
+          "supports": "Immediate stale-revision conflicts exist; they are different from eventual conflicts. This is a primitive, not proof of the proposed custody protocol."
+        },
+        {
+          "id": "E7",
+          "identity": "pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/batch_fetch.html#L140",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/_includes/api/batch_fetch.html",
+          "lines": [
+            140,
+            149
+          ],
+          "excerpt": "include_docs: true,\n  attachments: true,",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/024.json",
+          "witness_locator": {
+            "index": "pouch-docs",
+            "id": "a2e6cc7e1c1d335b99d8a730873cf7f9",
+            "passage_ordinal": 0
+          },
+          "supports": "Readable document and attachment extraction primitive; full export/restore must be implemented and tested."
+        },
+        {
+          "id": "E8",
+          "identity": "automerge",
+          "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/lib.rs#L56",
+          "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+          "file": "rust/automerge/src/lib.rs",
+          "lines": [
+            56,
+            61
+          ],
+          "excerpt": "the conflicting value is still available via the [`ReadDoc::get_all()`] method.",
+          "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/020.json",
+          "witness_locator": {
+            "index": "autom-docs",
+            "id": "d6187faad9eb54e3e279112d25674fa3",
+            "passage_ordinal": 50
+          },
+          "supports": "CRDT scalar assignment conflicts still require application interpretation."
+        }
+      ]
+    }
+  ],
+  "design_status": "Investigated proposals, not deployed or benchmarked; no projects executed.",
+  "common_scope": "Individual-part IDs, immutable observation history and photos, visible freshness/conflict/pending states, export and restore."
+}

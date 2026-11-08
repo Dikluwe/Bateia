@@ -1,0 +1,771 @@
+{
+  "schema_version": "1",
+  "idea": {
+    "problem": "Find cross-language property testing mechanisms that could improve XERJ evidence validation and reproducible counterexamples",
+    "capabilities": [
+      "property testing",
+      "counterexample shrinking"
+    ],
+    "non_goals": [
+      "execute discovered projects",
+      "change XERJ"
+    ]
+  },
+  "plan": {
+    "idea": {
+      "problem": "Find cross-language property testing mechanisms that could improve XERJ evidence validation and reproducible counterexamples",
+      "capabilities": [
+        "property testing",
+        "counterexample shrinking"
+      ],
+      "non_goals": [
+        "execute discovered projects",
+        "change XERJ"
+      ]
+    },
+    "expansions": [
+      {
+        "id": "refine-js",
+        "facet": "capability",
+        "query": "topic:property-based-testing language:JavaScript",
+        "discriminators": [
+          "property-based-testing"
+        ],
+        "rationale": "First language query returned broad testing repositories; refine by declared topic, without a repository name",
+        "covers": [
+          "property testing"
+        ]
+      },
+      {
+        "id": "refine-cpp",
+        "facet": "capability",
+        "query": "topic:property-based-testing language:C++",
+        "discriminators": [
+          "property-based-testing"
+        ],
+        "rationale": "First language query returned unrelated property libraries and graphics projects; refine by declared topic",
+        "covers": [
+          "property testing"
+        ]
+      }
+    ]
+  },
+  "provider": {
+    "provider": "github",
+    "roles": [
+      "PROJECT_CATALOG"
+    ],
+    "search_units": [
+      "repository_name",
+      "description",
+      "topics"
+    ],
+    "identity_levels": [
+      "owner/repo",
+      "commit"
+    ]
+  },
+  "per_expansion": [
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [
+        {
+          "repository": {
+            "owner": "dubzzz",
+            "repo": "ava-fast-check",
+            "url": "https://github.com/dubzzz/ava-fast-check",
+            "description": "Property based testing for AVA based on fast-check",
+            "stars": 43,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.104681513Z",
+            "stale": false,
+            "archived": true,
+            "default_branch": "main",
+            "updated_at": "2022-06-23T23:52:21Z"
+          },
+          "topics": [
+            "ava",
+            "generative-testing",
+            "property-based-testing",
+            "quickcheck",
+            "unit-testing"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "description",
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "dubzzz",
+            "repo": "fuzz-rest-api",
+            "url": "https://github.com/dubzzz/fuzz-rest-api",
+            "description": "Derive property based testing fast-check into a fuzzer for REST APIs",
+            "stars": 40,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.158758395Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2021-02-26T10:04:44Z"
+          },
+          "topics": [
+            "fast-check",
+            "fuzzing",
+            "property-based-testing",
+            "quickcheck",
+            "rest-api"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "description",
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "dubzzz",
+            "repo": "fast-check-examples",
+            "url": "https://github.com/dubzzz/fast-check-examples",
+            "description": "Property based testing (QuickCheck) examples based on fast-check",
+            "stars": 30,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.20941579Z",
+            "stale": false,
+            "default_branch": "main",
+            "updated_at": "2024-11-13T22:24:29Z"
+          },
+          "topics": [
+            "fast-check",
+            "property-based-testing",
+            "quickcheck",
+            "tdd"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "description",
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "sunesimonsen",
+            "repo": "chance-generators",
+            "url": "https://github.com/sunesimonsen/chance-generators",
+            "description": "Random generators based on changejs",
+            "stars": 10,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.259331321Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2024-09-02T21:33:19Z"
+          },
+          "topics": [
+            "generators",
+            "property-based-testing",
+            "testing",
+            "unexpected"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "trollaklass",
+            "repo": "troll-of-fame-js",
+            "url": "https://github.com/trollaklass/troll-of-fame-js",
+            "description": "PBT workshop in js",
+            "stars": 8,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.31009836Z",
+            "stale": false,
+            "default_branch": "master",
+            "updated_at": "2023-01-04T22:15:37Z"
+          },
+          "topics": [
+            "fast-check",
+            "javascript",
+            "jest",
+            "property-based-testing",
+            "workshop"
+          ],
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        }
+      ],
+      "attempt": {
+        "expansion_id": "refine-js",
+        "query": "topic:property-based-testing language:JavaScript",
+        "status": "SUCCEEDED",
+        "duration": 863995340,
+        "result_count": 5
+      }
+    },
+    {
+      "provider": "github",
+      "role": "PROJECT_CATALOG",
+      "search_unit": "repository",
+      "candidates": [
+        {
+          "repository": {
+            "owner": "int-i",
+            "repo": "cpp-sort",
+            "url": "https://github.com/int-i/cpp-sort",
+            "description": "C++20 Iterator Sorting Algorithm Implementation using Concepts TS (/w RapidCheck)",
+            "stars": 3,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.828017416Z",
+            "stale": false,
+            "archived": true,
+            "default_branch": "main",
+            "updated_at": "2021-11-25T14:47:09Z"
+          },
+          "topics": [
+            "clang-format",
+            "codecov",
+            "cpp",
+            "cpp20",
+            "gcov",
+            "iterator",
+            "meson",
+            "property-based-testing",
+            "rapidcheck",
+            "sorting-algorithms"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "voyager-jhk",
+            "repo": "DeterministicMatchingEngine",
+            "url": "https://github.com/voyager-jhk/DeterministicMatchingEngine",
+            "description": "A high-performance (30ns P50), deterministic matching engine for quantitative trading — built with zero-allocation architecture, intrusive data structures, event sourcing, and property-based testing.",
+            "stars": 2,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.87156374Z",
+            "stale": false,
+            "default_branch": "main",
+            "updated_at": "2026-02-25T07:19:56Z"
+          },
+          "topics": [
+            "cpp",
+            "cpp17",
+            "deterministic",
+            "event-sourcing",
+            "high-frequency-trading",
+            "lock-free",
+            "low-latency",
+            "matching-engine",
+            "order-book",
+            "property-based-testing",
+            "systems-programming"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "description",
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "div0rce",
+            "repo": "quant-systems-lab",
+            "url": "https://github.com/div0rce/quant-systems-lab",
+            "description": "Deterministic C++20 exchange simulator with binary gateway, price-time matching, replay recovery, benchmarks, and OCaml differential tests.",
+            "stars": 2,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.928657718Z",
+            "stale": false,
+            "default_branch": "main",
+            "updated_at": "2026-06-25T06:22:16Z"
+          },
+          "topics": [
+            "benchmarking",
+            "binary-protocol",
+            "cpp",
+            "cpp20",
+            "deterministic-replay",
+            "event-sourcing",
+            "exchange-simulator",
+            "fuzz-testing",
+            "low-latency",
+            "market-data",
+            "matching-engine",
+            "ocaml",
+            "order-book",
+            "property-based-testing",
+            "quant",
+            "risk-engine",
+            "sanitizers",
+            "systems-programming",
+            "tcp",
+            "udp"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "dubzzz",
+            "repo": "various-algorithms",
+            "url": "https://github.com/dubzzz/various-algorithms",
+            "description": "Various Algorithms",
+            "stars": 1,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:27.971493698Z",
+            "stale": false,
+            "default_branch": "main",
+            "updated_at": "2021-02-12T21:57:50Z"
+          },
+          "topics": [
+            "algorithm",
+            "constexpr",
+            "property-based-testing",
+            "template-metaprogramming",
+            "test-driven-development"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        },
+        {
+          "repository": {
+            "owner": "Kyurenpoto-org",
+            "repo": "pbdt",
+            "url": "https://github.com/Kyurenpoto-org/pbdt",
+            "description": "Property-Behavior Driven Test for C++",
+            "stars": 0,
+            "commit_id": "",
+            "consultado_em": "2026-11-08T15:28:28.013414581Z",
+            "stale": false,
+            "default_branch": "main",
+            "updated_at": "2025-11-15T11:11:57Z"
+          },
+          "topics": [
+            "bdd",
+            "behavior-driven-development",
+            "cpp",
+            "cpp23",
+            "pbt",
+            "property-based-testing",
+            "testing"
+          ],
+          "license": "MIT",
+          "matched_fields": [
+            "topics"
+          ],
+          "origins": null
+        }
+      ],
+      "attempt": {
+        "expansion_id": "refine-cpp",
+        "query": "topic:property-based-testing language:C++",
+        "status": "SUCCEEDED",
+        "duration": 700988360,
+        "result_count": 5
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "repository": {
+        "owner": "div0rce",
+        "repo": "quant-systems-lab",
+        "url": "https://github.com/div0rce/quant-systems-lab",
+        "description": "Deterministic C++20 exchange simulator with binary gateway, price-time matching, replay recovery, benchmarks, and OCaml differential tests.",
+        "stars": 2,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.928657718Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-06-25T06:22:16Z"
+      },
+      "topics": [
+        "benchmarking",
+        "binary-protocol",
+        "cpp",
+        "cpp20",
+        "deterministic-replay",
+        "event-sourcing",
+        "exchange-simulator",
+        "fuzz-testing",
+        "low-latency",
+        "market-data",
+        "matching-engine",
+        "ocaml",
+        "order-book",
+        "property-based-testing",
+        "quant",
+        "risk-engine",
+        "sanitizers",
+        "systems-programming",
+        "tcp",
+        "udp"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-cpp",
+          "planned_query": "topic:property-based-testing language:C++",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:C++"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "dubzzz",
+        "repo": "ava-fast-check",
+        "url": "https://github.com/dubzzz/ava-fast-check",
+        "description": "Property based testing for AVA based on fast-check",
+        "stars": 43,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.104681513Z",
+        "stale": false,
+        "archived": true,
+        "default_branch": "main",
+        "updated_at": "2022-06-23T23:52:21Z"
+      },
+      "topics": [
+        "ava",
+        "generative-testing",
+        "property-based-testing",
+        "quickcheck",
+        "unit-testing"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "description",
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-js",
+          "planned_query": "topic:property-based-testing language:JavaScript",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:JavaScript"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "dubzzz",
+        "repo": "fast-check-examples",
+        "url": "https://github.com/dubzzz/fast-check-examples",
+        "description": "Property based testing (QuickCheck) examples based on fast-check",
+        "stars": 30,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.20941579Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2024-11-13T22:24:29Z"
+      },
+      "topics": [
+        "fast-check",
+        "property-based-testing",
+        "quickcheck",
+        "tdd"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "description",
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-js",
+          "planned_query": "topic:property-based-testing language:JavaScript",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:JavaScript"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "dubzzz",
+        "repo": "fuzz-rest-api",
+        "url": "https://github.com/dubzzz/fuzz-rest-api",
+        "description": "Derive property based testing fast-check into a fuzzer for REST APIs",
+        "stars": 40,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.158758395Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2021-02-26T10:04:44Z"
+      },
+      "topics": [
+        "fast-check",
+        "fuzzing",
+        "property-based-testing",
+        "quickcheck",
+        "rest-api"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "description",
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-js",
+          "planned_query": "topic:property-based-testing language:JavaScript",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:JavaScript"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "dubzzz",
+        "repo": "various-algorithms",
+        "url": "https://github.com/dubzzz/various-algorithms",
+        "description": "Various Algorithms",
+        "stars": 1,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.971493698Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2021-02-12T21:57:50Z"
+      },
+      "topics": [
+        "algorithm",
+        "constexpr",
+        "property-based-testing",
+        "template-metaprogramming",
+        "test-driven-development"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-cpp",
+          "planned_query": "topic:property-based-testing language:C++",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:C++"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "int-i",
+        "repo": "cpp-sort",
+        "url": "https://github.com/int-i/cpp-sort",
+        "description": "C++20 Iterator Sorting Algorithm Implementation using Concepts TS (/w RapidCheck)",
+        "stars": 3,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.828017416Z",
+        "stale": false,
+        "archived": true,
+        "default_branch": "main",
+        "updated_at": "2021-11-25T14:47:09Z"
+      },
+      "topics": [
+        "clang-format",
+        "codecov",
+        "cpp",
+        "cpp20",
+        "gcov",
+        "iterator",
+        "meson",
+        "property-based-testing",
+        "rapidcheck",
+        "sorting-algorithms"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-cpp",
+          "planned_query": "topic:property-based-testing language:C++",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:C++"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "Kyurenpoto-org",
+        "repo": "pbdt",
+        "url": "https://github.com/Kyurenpoto-org/pbdt",
+        "description": "Property-Behavior Driven Test for C++",
+        "stars": 0,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:28.013414581Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2025-11-15T11:11:57Z"
+      },
+      "topics": [
+        "bdd",
+        "behavior-driven-development",
+        "cpp",
+        "cpp23",
+        "pbt",
+        "property-based-testing",
+        "testing"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-cpp",
+          "planned_query": "topic:property-based-testing language:C++",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:C++"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "sunesimonsen",
+        "repo": "chance-generators",
+        "url": "https://github.com/sunesimonsen/chance-generators",
+        "description": "Random generators based on changejs",
+        "stars": 10,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.259331321Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2024-09-02T21:33:19Z"
+      },
+      "topics": [
+        "generators",
+        "property-based-testing",
+        "testing",
+        "unexpected"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-js",
+          "planned_query": "topic:property-based-testing language:JavaScript",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:JavaScript"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "trollaklass",
+        "repo": "troll-of-fame-js",
+        "url": "https://github.com/trollaklass/troll-of-fame-js",
+        "description": "PBT workshop in js",
+        "stars": 8,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.31009836Z",
+        "stale": false,
+        "default_branch": "master",
+        "updated_at": "2023-01-04T22:15:37Z"
+      },
+      "topics": [
+        "fast-check",
+        "javascript",
+        "jest",
+        "property-based-testing",
+        "workshop"
+      ],
+      "matched_fields": [
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-js",
+          "planned_query": "topic:property-based-testing language:JavaScript",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:JavaScript"
+        }
+      ]
+    },
+    {
+      "repository": {
+        "owner": "voyager-jhk",
+        "repo": "DeterministicMatchingEngine",
+        "url": "https://github.com/voyager-jhk/DeterministicMatchingEngine",
+        "description": "A high-performance (30ns P50), deterministic matching engine for quantitative trading — built with zero-allocation architecture, intrusive data structures, event sourcing, and property-based testing.",
+        "stars": 2,
+        "commit_id": "",
+        "consultado_em": "2026-11-08T15:28:27.87156374Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-02-25T07:19:56Z"
+      },
+      "topics": [
+        "cpp",
+        "cpp17",
+        "deterministic",
+        "event-sourcing",
+        "high-frequency-trading",
+        "lock-free",
+        "low-latency",
+        "matching-engine",
+        "order-book",
+        "property-based-testing",
+        "systems-programming"
+      ],
+      "license": "MIT",
+      "matched_fields": [
+        "description",
+        "topics"
+      ],
+      "origins": [
+        {
+          "expansion_id": "refine-cpp",
+          "planned_query": "topic:property-based-testing language:C++",
+          "attempt_index": 0,
+          "effective_query": "topic:property-based-testing language:C++"
+        }
+      ]
+    }
+  ],
+  "receipt": {
+    "schema_version": "1",
+    "status": "COMPLETE",
+    "completion_cause": "FINISHED",
+    "policy": {
+      "schema_version": "1",
+      "total_timeout": 90000000000,
+      "attempt_timeout": 20000000000,
+      "concurrency": 2,
+      "max_attempts": 1
+    },
+    "planned": 2,
+    "started": 2,
+    "completed": 2,
+    "timed_out": 0,
+    "cancelled": 0,
+    "failed": 0,
+    "attempts": null
+  }
+}

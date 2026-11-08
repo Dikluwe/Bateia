@@ -1,0 +1,610 @@
+{
+  "label": "X",
+  "baseline": {
+    "basis": "Problem only; no research performed",
+    "options": [
+      {
+        "id": "B1",
+        "idea": "Offline phone capture with queued append-only observations and explicit reconciliation of competing actions; availability promises remain tentative until acknowledged."
+      },
+      {
+        "id": "B2",
+        "idea": "Allocate authority for each part or workshop to one custodian/device while offline; transfers require an explicit handoff and preserve an audit log."
+      },
+      {
+        "id": "B3",
+        "idea": "Replicated local-first inventory with conflict-preserving merges for descriptions/photos and separate rules for reservations and consumption."
+      },
+      {
+        "id": "B4",
+        "idea": "Adapt an existing low-cost inventory or field-data application with offline support and export, coupled with clearer identifiers and workshop procedures."
+      }
+    ]
+  },
+  "result": {
+    "problem": "Eight workshops; 45000 individual repair parts; 60 volunteers; low-cost Android; offline 72h; photos/history/export; two generalist developers",
+    "epistemic_status": "Design proposals backed by source reading, not executed validations",
+    "alternatives": [
+      {
+        "id": "A1",
+        "title": "Captura offline de ocorrências com conciliação posterior",
+        "baseline_relation": {
+          "ids": [
+            "B1",
+            "B4"
+          ],
+          "status": "materialmente modificada",
+          "change": "Concretizada com Collect/Central e registros independentes por ocorrência; não usar a Entity LWW como livro de estoque."
+        },
+        "work_change": "Etiquetar cada peça individualmente com ID e QR legível; cada chegada, movimento, pedido de reserva, uso e correção vira ocorrência nova. Correção aponta para a ocorrência corrigida e explica a razão. Um responsável revisa divergências por oficina após sincronização; disponibilidade remota é observada-em e pedido pendente, e uma viagem só é combinada após confirmação da oficina que detém a peça.",
+        "software_change": "Usar release suportada de ODK Collect com formulários curtos e Central. Guardar foto na submissão vinculada por ID, habilitar audit e motivos de edição, conservar originais e exportações. Uma projeção de estoque e a fila de conciliação são trabalho adicional dos dois desenvolvedores, não capacidade pronta atribuída ao ODK. Evitar editar diretamente uma única linha de estado para todas as ações.",
+        "constraints_addressed": [
+          "Android e coleta desconectada documentados; 72 horas precisam ser testadas",
+          "Fotos, barcode e export CSV com anexos documentados",
+          "Reutiliza aplicativo mantido e reduz escopo de app próprio",
+          "Observações e correções não precisam sobrescrever outra submissão",
+          "Operação não requer visita diária à sede"
+        ],
+        "limitations": [
+          "ODK não garante exclusão de reservas; Entity usa última atualização recebida",
+          "Conciliar pode atrasar promessa e impor custo humano",
+          "Desenho por ocorrências e projeção de estoque são síntese proposta, não módulo de inventário demonstrado",
+          "Auditoria opcional não é à prova de toda interrupção; preservar originais e anexos fora de edições",
+          "45 mil IDs e fotos em telefones baratos não foram medidos; custo da hospedagem e esforço de manutenção não orçados"
+        ],
+        "application_condition": "Adequada se pedidos puderem ficar pendentes e cada oficina conseguir revisar uma fila pequena de exceções. Uso físico local continua durante desconexão; o destino remoto não promete uma peça sem confirmação.",
+        "rejection_experiment": "Em duas oficinas, seis voluntários e 100 peças etiquetadas, registrar 72h desconectadas com duas reservas rivais, consumo, movimento e correção concorrente; sincronizar fora de ordem e repetir uploads. Rejeitar se faltar qualquer ocorrência/foto na exportação, ocorrer promessa dupla confirmada, ou a fila exigir mais de 20 minutos por oficina/dia no piloto.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/collect-intro.rst",
+            "start_line": 13,
+            "end_line": 17,
+            "excerpt": ":dfn:`ODK Collect` is an Android app for managing and filling out forms. It supports a wide range of question and answer types, and is designed to work well offline.\n\nODK Collect downloads blank forms from and submits filled forms to",
+            "claim": "Collect Android designed offline; forms, images and barcodes.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E2",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/entities-intro.rst",
+            "start_line": 151,
+            "end_line": 153,
+            "excerpt": "If your workflow requires accessing all captured data about an Entity, directly flowing data between forms would likely have worked well. You can achieve something similar with Entities by creating an Entity List that represents encounters with the Entity. \n\nFor",
+            "claim": "Encounter records linked to an Entity are a documented option.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E3",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/form-audit-log.rst",
+            "start_line": 91,
+            "end_line": 91,
+            "excerpt": "You can enable change tracking so that old answers and new answers will be added to the question events. To do this, add the following parameter to the XLSForm: ``track-changes=true``.",
+            "claim": "Optional audit tracks old and new answers.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E4",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/form-audit-log.rst",
+            "start_line": 107,
+            "end_line": 114,
+            "excerpt": "You can add to ``track-changes-reasons=on-form-edit`` to prompt enumerators to enter a reason before they save changes to a form:\n\n.. csv-table:: survey\n  :header: type, name, parameters\n\n  audit, audit, track-changes-reasons=on-form-edit\n\nThis will prevent filled out forms being edited without a reason",
+            "claim": "Optional reason on edits; reason recorded in audit.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E5",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/central-submissions.rst",
+            "start_line": 170,
+            "end_line": 175,
+            "excerpt": "Once the :file:`.csv` or :file:`.zip` completes downloading, you will find one or more files when you extract it:\n\n - A root table :file:`.csv` named after your Form title.\n - Join table :file:`.csv` files representing any repeats you may have in",
+            "claim": "CSV export includes linked attachments and enabled client audit.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E6",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/entities-intro.rst",
+            "start_line": 330,
+            "end_line": 334,
+            "excerpt": "A conflict happens when two form Submissions both representing updates to the same Entity with the same version are received by the server. If the two Submissions specify different, overlapping updates to one or more properties, Central will provide an",
+            "claim": "Entity conflicts are surfaced but updates use last-write-wins; assignment can reduce conflicts.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E7",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/central-entities.rst",
+            "start_line": 648,
+            "end_line": 654,
+            "excerpt": "When Central v2024.3.0 or later is used with Collect v2024.3.0 or later, Collect maintains its own offline representation of Entity Lists. This means that any Entity create or update by Form Submission is reflected in other follow-up forms the moment",
+            "claim": "Offline Entity state and ordering depend on versions; missing predecessors may wait five days.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E9",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/central-install.rst",
+            "start_line": 48,
+            "end_line": 51,
+            "excerpt": "If you are comfortable with Linux server administration, you can self-host Central for free. And while Central is available at no cost, please account for your infrastructure expenses and the time needed for ongoing maintenance.\n\n.. note::\n  To self-host Central,",
+            "claim": "Self-hosting requires infrastructure, maintenance and a domain.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E16",
+            "repository": "getodk/collect",
+            "url": "https://github.com/getodk/collect",
+            "pin": "41dc0f7d6ff1ac52d8642240dc87e4e868f11d23",
+            "file": "README.md",
+            "start_line": 8,
+            "end_line": 12,
+            "excerpt": "ODK Collect is an Android app for filling out forms. It is designed to be used in resource-constrained environments with challenges such as unreliable connectivity or power infrastructure. ODK Collect is part the ODK project, a free and open-source set",
+            "claim": "Collect is Android field forms software, and development master is not production-ready.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E17",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/form-audit-log.rst",
+            "start_line": 266,
+            "end_line": 268,
+            "excerpt": "- If the device is turned off while a form is being filled, Collect will not record a log entry for the screen that was shown at the time of device shutdown. Events before and after the shutdown will be",
+            "claim": "Client audit has shutdown and changed-configuration limitations.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E18",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/entities-intro.rst",
+            "start_line": 246,
+            "end_line": 246,
+            "excerpt": "When it comes to accessing them from forms, they are nearly identical. The only significant difference is that because Entity Lists are defined outside of a form, you need to explicitly attach them using :ref:`select_*_from_file <select-from-external-dataset>` or :ref:`csv-external <form-datasets-attaching-csv>`. Another",
+            "claim": "Entity Lists do not currently support media or translations.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          }
+        ]
+      },
+      {
+        "id": "A2",
+        "title": "Custódia exclusiva por peça para decisões de estoque offline",
+        "baseline_relation": {
+          "ids": [
+            "B2"
+          ],
+          "status": "já presente, refinada pelas fontes",
+          "change": "Separar atribuição/filtro de uma trava real; ODK recomenda atribuição para reduzir conflitos, mas não fornece a exclusividade proposta."
+        },
+        "work_change": "Designar um único ponto de decisão local por peça, normalmente um telefone compartilhado do balcão da oficina e seus responsáveis de turno. Outros voluntários continuam registrando fotos e observações, mas reserva, liberação e consumo são confirmados por esse ponto. Peça reservada ganha etiqueta física. Transferência entra em trânsito e só passa autoridade ao destino após entrega e aceite; a origem deixa de prometer a peça. Não restaurar autoridade por simples timeout de 72h.",
+        "software_change": "Reaproveitar captura de ocorrências de A1, com papel de custódio e estado explícito livre/reservado/usado/em trânsito. Filtrar entidades atribuídas ajuda a interface, mas o contrato de autoridade, revogação, troca de turno, perda do telefone e aceite de transferência exige implementação e procedimento próprios. Não afirmar que choice_filter é controle de escrita nem que 409 de um servidor resolve duas cópias offline.",
+        "constraints_addressed": [
+          "Decisões locais podem continuar sem internet e sem viagem à sede",
+          "Reduz concorrência permitida sobre o mesmo bem escasso",
+          "Todos podem registrar observações e fotos sem obter poder de reservar",
+          "Mesma base exportável e auditável de A1 pode ser utilizada",
+          "Escopo de sincronização de decisões menor que um sistema de escrita irrestrita"
+        ],
+        "limitations": [
+          "Garantia depende de um único custódio efetivo, inclusive durante perda/restauração do aparelho",
+          "Dispositivo único pode criar fila e ponto de falha",
+          "Transferência entre oficinas desconectadas depende de protocolo humano e físico; isso não foi executado nem demonstrado em software pronto",
+          "Conveniência cai: nem todo voluntário pode confirmar uma reserva de qualquer lugar",
+          "Filtros ODK reduzem chance de conflito, não impedem um cliente de enviar ação indevida"
+        ],
+        "application_condition": "Adequada quando a cooperativa aceita concentrar decisões de disponibilidade no balcão de cada oficina e cumprir a passagem de custódia. Permitir captura livre de observações continua necessário.",
+        "rejection_experiment": "Simular em mesa com dois telefones offline troca de turno, custódio ausente, telefone perdido/restaurado e transferência com aceite atrasado. Rejeitar se dois pontos puderem confirmar a mesma peça, se a operação local parar por falta de acesso ao custódio por mais de um turno, ou se o protocolo exigir ida à sede. Só então construir a mínima validação digital.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/collect-intro.rst",
+            "start_line": 13,
+            "end_line": 17,
+            "excerpt": ":dfn:`ODK Collect` is an Android app for managing and filling out forms. It supports a wide range of question and answer types, and is designed to work well offline.\n\nODK Collect downloads blank forms from and submits filled forms to",
+            "claim": "Collect Android designed offline; forms, images and barcodes.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E5",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/central-submissions.rst",
+            "start_line": 170,
+            "end_line": 175,
+            "excerpt": "Once the :file:`.csv` or :file:`.zip` completes downloading, you will find one or more files when you extract it:\n\n - A root table :file:`.csv` named after your Form title.\n - Join table :file:`.csv` files representing any repeats you may have in",
+            "claim": "CSV export includes linked attachments and enabled client audit.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E6",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/entities-intro.rst",
+            "start_line": 330,
+            "end_line": 334,
+            "excerpt": "A conflict happens when two form Submissions both representing updates to the same Entity with the same version are received by the server. If the two Submissions specify different, overlapping updates to one or more properties, Central will provide an",
+            "claim": "Entity conflicts are surfaced but updates use last-write-wins; assignment can reduce conflicts.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E7",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/central-entities.rst",
+            "start_line": 648,
+            "end_line": 654,
+            "excerpt": "When Central v2024.3.0 or later is used with Collect v2024.3.0 or later, Collect maintains its own offline representation of Entity Lists. This means that any Entity create or update by Form Submission is reflected in other follow-up forms the moment",
+            "claim": "Offline Entity state and ordering depend on versions; missing predecessors may wait five days.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E8",
+            "repository": "getodk/docs",
+            "url": "https://github.com/getodk/docs",
+            "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+            "file": "docs/entities-intro.rst",
+            "start_line": 187,
+            "end_line": 192,
+            "excerpt": "I need to assign specific Entities to specific data collectors, how can I represent this?\n-----------------------------------------------------------------------------------------\n\n:ref:`Entity filtering <entity-list-access-filter>` allows administrators to control which Entities are delivered to App Users and Public Access Links. For example, a field worker assigned",
+            "claim": "Entity delivery or visible choices can be filtered by assignment; neither is an exclusive lock.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E12",
+            "repository": "apache/couchdb",
+            "url": "https://github.com/apache/couchdb",
+            "pin": "76db2061a859fa6c589f0ee8954fe03cc33d77e9",
+            "file": "src/docs/src/replication/conflicts.rst",
+            "start_line": 111,
+            "end_line": 115,
+            "excerpt": "When working on a single node, CouchDB will avoid creating conflicting revisions\nby returning a :statuscode:`409` error. This is because, when you\nPUT a new version of a document, you must give the ``_rev`` of the previous\nversion. If that",
+            "claim": "Single-node stale update returns 409; this is not cross-offline exclusion.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          }
+        ]
+      },
+      {
+        "id": "A3",
+        "title": "Aplicativo local com réplicas colaborativas e conflitos visíveis",
+        "baseline_relation": {
+          "ids": [
+            "B3"
+          ],
+          "status": "materialmente modificada",
+          "change": "Distinguir convergência de descrições de exclusividade de reservas; exigir eventos duráveis porque revisões CouchDB podem perder corpos e campos Automerge ainda podem conflitar."
+        },
+        "work_change": "Permitir a todos registrar e consultar localmente observações e pedidos; mostrar oficina, última sincronização, foto e estado provisório. Divergências de descrição ficam lado a lado com autoria. Reservas concorrentes exigem decisão posterior; para promessa firme usar confirmação da oficina ou a custódia de A2. Nenhuma fusão de campos autoriza duas pessoas a usar a mesma peça.",
+        "software_change": "Construir cliente offline e projeções por peça sobre documentos replicados. CouchDB é uma opção de persistência/replicação com revisões conflitantes explicitamente lidas; Automerge é outra opção para objetos colaborativos e histórico por hashes. São variantes de implementação desta alternativa, não duas alternativas novas. Manter eventos de negócio imutáveis e fotos por ID/hash, fila de envio idempotente, conflitos consultáveis e export de JSON/CSV+anexos. Cliente Android, autorização, transporte de fotos, retenção e export completo são integração a validar, não funções prontas comprovadas pelas leituras.",
+        "constraints_addressed": [
+          "Mecanismos locais/replicados fornecem base para trabalho desconectado",
+          "Conflitos podem ser inspecionados em vez de tratados como observação descartável",
+          "Independência de um SaaS obrigatório é uma decisão possível de implantação",
+          "Uma leitura local evita depender de rede para registrar cada ação"
+        ],
+        "limitations": [
+          "Maior carga de desenvolvimento/operação para dois generalistas",
+          "Vencedor determinístico pode esconder valores se UI não consultar conflitos",
+          "CouchDB compacta corpos antigos; revisões não substituem um livro de ocorrências",
+          "CRDT não escolhe corretamente o dono de uma reserva física; requer regra de trabalho",
+          "Automerge não é app de inventário pronto; memória/storage/sync de 45 mil partes e fotos em Android barato desconhecidos",
+          "Baixo custo recorrente e exportabilidade são requisitos a implementar e testar, não conclusões da biblioteca"
+        ],
+        "application_condition": "Adequada se colaboração livre e consulta local rica justificarem a construção de cliente e interface de conflito. Evitar escolher a biblioteca antes de medir aparelhos e esforço de manutenção.",
+        "rejection_experiment": "Protótipo descartável de 500 peças com duas réplicas e lote sintético de 45 mil metadados nos aparelhos reais. Após 72h offline, mesclar correção simultânea, nomes diferentes, reserva versus uso e fotos; reiniciar dispositivos e compactar/restaurar. Rejeitar se qualquer observação desaparecer silenciosamente, se houver dupla reserva firme, se a UI não conseguir explicar a divergência ou se o piloto de integração ultrapassar uma semana de trabalho dos dois desenvolvedores. Medir latência p95 de abrir/salvar, memória e bytes antes de definir metas de produção.",
+        "source_evidence": [
+          {
+            "id": "E10",
+            "repository": "apache/couchdb",
+            "url": "https://github.com/apache/couchdb",
+            "pin": "76db2061a859fa6c589f0ee8954fe03cc33d77e9",
+            "file": "src/docs/src/replication/conflicts.rst",
+            "start_line": 90,
+            "end_line": 105,
+            "excerpt": "So the question now is: what happens when you try to read /db/bob? By default,\nCouchDB picks one arbitrary revision as the \"winner\", using a deterministic\nalgorithm so that the same choice will be made on all peers. The same",
+            "claim": "CouchDB chooses one winner; app must present or merge conflicting versions.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E11",
+            "repository": "apache/couchdb",
+            "url": "https://github.com/apache/couchdb",
+            "pin": "76db2061a859fa6c589f0ee8954fe03cc33d77e9",
+            "file": "src/docs/src/replication/conflicts.rst",
+            "start_line": 185,
+            "end_line": 189,
+            "excerpt": "When you compact a database, the bodies of all the non-leaf documents are\ndiscarded. However, the list of historical _revs is retained, for the benefit of\nlater conflict resolution in case you meet any old replicas of the database at",
+            "claim": "Compaction discards non-leaf revision bodies, so revisions are not a durable business audit.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E12",
+            "repository": "apache/couchdb",
+            "url": "https://github.com/apache/couchdb",
+            "pin": "76db2061a859fa6c589f0ee8954fe03cc33d77e9",
+            "file": "src/docs/src/replication/conflicts.rst",
+            "start_line": 111,
+            "end_line": 115,
+            "excerpt": "When working on a single node, CouchDB will avoid creating conflicting revisions\nby returning a :statuscode:`409` error. This is because, when you\nPUT a new version of a document, you must give the ``_rev`` of the previous\nversion. If that",
+            "claim": "Single-node stale update returns 409; this is not cross-offline exclusion.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E13",
+            "repository": "automerge/automerge",
+            "url": "https://github.com/automerge/automerge",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "rust/automerge/src/lib.rs",
+            "start_line": 58,
+            "end_line": 74,
+            "excerpt": "//! There are some things automerge cannot merge sensibly. For example, two\n//! actors concurrently setting the key \"name\" to different values. In this case\n//! automerge will pick a winning value in a random but deterministic way, but\n//!",
+            "claim": "Automerge scalar conflicts still exist; historical reads use change hashes.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E14",
+            "repository": "automerge/automerge",
+            "url": "https://github.com/automerge/automerge",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "javascript/src/implementation.ts",
+            "start_line": 1005,
+            "end_line": 1012,
+            "excerpt": " * The values of properties in a map in automerge can be conflicted if there\n * are concurrent \"put\" operations to the same key. Automerge chooses one value\n * arbitrarily (but deterministically, any two nodes who have the same set",
+            "claim": "Automerge scalar property has deterministic winner and explicit getConflicts access.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E15",
+            "repository": "automerge/automerge",
+            "url": "https://github.com/automerge/automerge",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "README.md",
+            "start_line": 10,
+            "end_line": 16,
+            "excerpt": "Automerge is a library which provides fast implementations of several different\nCRDTs, a compact compression format for these CRDTs, and a sync protocol for\nefficiently transmitting those changes over the network. The objective of the\nproject is to support [local-first](https://www.inkandswitch.com/local-first/)",
+            "claim": "Automerge supplies CRDT implementations, compressed representation and synchronization protocol; not a finished inventory app.",
+            "reading": "Product-collected file content, line-numbered from JSON; not direct clone access",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          }
+        ]
+      }
+    ]
+  },
+  "report": "# Peças de reparo: opções para trabalho desconectado\n\nProponho testar três desenhos antes de escolher. O problema exige separar o que alguém observou da autorização para prometer ou consumir uma peça. Preservar relatos e sincronizar cópias ajuda, mas não torna uma peça física disponível em dois lugares. As mudanças abaixo são propostas de projeto; nenhum software pesquisado foi executado e nenhum efeito foi verificado.\n\n## Trabalho comum aos desenhos\n\nAdotar ID estável por peça, etiqueta QR e código legível; identificar a oficina, posição e responsável. Registrar chegada, movimento, pedido, reserva, consumo e correção como ações distintas, com autoria e referência à ação corrigida. Mostrar idade da informação e distinguir pedido pendente, reserva confirmada e peça em trânsito. Fotos devem ficar ligadas ao relato que as produziu, e uma correção deve preservar o relato anterior. Esses contratos são síntese desta investigação, não funções prontas de uma biblioteca. Uma oficina pode continuar recebendo e usando peças localmente durante 72 horas sem rede; informação remota continua sujeita a confirmação.\n\n## O que as leituras mudam\n\nO ODK Collect documenta Android, operação offline, imagens e barcodes [E1]. A documentação admite listas de encontros vinculados a uma entidade [E2], registro opcional de valores antigos/novos e motivo da correção [E3–E4], e CSV com anexos e audit habilitado [E5]. Porém, Entities aplica alterações pela ordem de recebimento e sinaliza conflitos [E6–E7]. Isso exige evitar tratar a última Entity como prova de disponibilidade exclusiva. Entity Lists não transportam mídia [E18]: a foto proposta fica na submissão.\n\nCouchDB conserva revisões conflitantes, mas lê um vencedor por padrão; a aplicação precisa buscar e apresentar as demais [E10]. Compactação descarta corpos de revisões não-folha [E11], portanto é necessário um registro de negócio durável separado. O 409 por revisão antiga vale para um nó [E12]. Automerge também pode escolher um vencedor determinístico para valores escalares conflitantes, com acesso explícito aos demais e leituras históricas por hashes [E13–E14]. Estas leituras sustentam mecanismos, não uma garantia de reserva de peças.\n\n## A1 — Captura offline de ocorrências com conciliação posterior\n\nEtiquetar cada peça individualmente com ID e QR legível; cada chegada, movimento, pedido de reserva, uso e correção vira ocorrência nova. Correção aponta para a ocorrência corrigida e explica a razão. Um responsável revisa divergências por oficina após sincronização; disponibilidade remota é observada-em e pedido pendente, e uma viagem só é combinada após confirmação da oficina que detém a peça.\n\nUsar release suportada de ODK Collect com formulários curtos e Central. Guardar foto na submissão vinculada por ID, habilitar audit e motivos de edição, conservar originais e exportações. Uma projeção de estoque e a fila de conciliação são trabalho adicional dos dois desenvolvedores, não capacidade pronta atribuída ao ODK. Evitar editar diretamente uma única linha de estado para todas as ações.\n\n**Quando se aplica.** Adequada se pedidos puderem ficar pendentes e cada oficina conseguir revisar uma fila pequena de exceções. Uso físico local continua durante desconexão; o destino remoto não promete uma peça sem confirmação.\n\n**Restrições atendidas.** Android e coleta desconectada documentados; 72 horas precisam ser testadas; Fotos, barcode e export CSV com anexos documentados; Reutiliza aplicativo mantido e reduz escopo de app próprio; Observações e correções não precisam sobrescrever outra submissão; Operação não requer visita diária à sede.\n\n**Limites e falhas.** ODK não garante exclusão de reservas; Entity usa última atualização recebida; Conciliar pode atrasar promessa e impor custo humano; Desenho por ocorrências e projeção de estoque são síntese proposta, não módulo de inventário demonstrado; Auditoria opcional não é à prova de toda interrupção; preservar originais e anexos fora de edições; 45 mil IDs e fotos em telefones baratos não foram medidos; custo da hospedagem e esforço de manutenção não orçados.\n\n**Experimento que pode rejeitar.** Em duas oficinas, seis voluntários e 100 peças etiquetadas, registrar 72h desconectadas com duas reservas rivais, consumo, movimento e correção concorrente; sincronizar fora de ordem e repetir uploads. Rejeitar se faltar qualquer ocorrência/foto na exportação, ocorrer promessa dupla confirmada, ou a fila exigir mais de 20 minutos por oficina/dia no piloto.\n\n**Relação com baseline.** B1, B4: materialmente modificada. Concretizada com Collect/Central e registros independentes por ocorrência; não usar a Entity LWW como livro de estoque.\n\n**Fontes lidas.** E1, E2, E3, E4, E5, E6, E7, E9, E16, E17, E18.\n\n## A2 — Custódia exclusiva por peça para decisões de estoque offline\n\nDesignar um único ponto de decisão local por peça, normalmente um telefone compartilhado do balcão da oficina e seus responsáveis de turno. Outros voluntários continuam registrando fotos e observações, mas reserva, liberação e consumo são confirmados por esse ponto. Peça reservada ganha etiqueta física. Transferência entra em trânsito e só passa autoridade ao destino após entrega e aceite; a origem deixa de prometer a peça. Não restaurar autoridade por simples timeout de 72h.\n\nReaproveitar captura de ocorrências de A1, com papel de custódio e estado explícito livre/reservado/usado/em trânsito. Filtrar entidades atribuídas ajuda a interface, mas o contrato de autoridade, revogação, troca de turno, perda do telefone e aceite de transferência exige implementação e procedimento próprios. Não afirmar que choice_filter é controle de escrita nem que 409 de um servidor resolve duas cópias offline.\n\n**Quando se aplica.** Adequada quando a cooperativa aceita concentrar decisões de disponibilidade no balcão de cada oficina e cumprir a passagem de custódia. Permitir captura livre de observações continua necessário.\n\n**Restrições atendidas.** Decisões locais podem continuar sem internet e sem viagem à sede; Reduz concorrência permitida sobre o mesmo bem escasso; Todos podem registrar observações e fotos sem obter poder de reservar; Mesma base exportável e auditável de A1 pode ser utilizada; Escopo de sincronização de decisões menor que um sistema de escrita irrestrita.\n\n**Limites e falhas.** Garantia depende de um único custódio efetivo, inclusive durante perda/restauração do aparelho; Dispositivo único pode criar fila e ponto de falha; Transferência entre oficinas desconectadas depende de protocolo humano e físico; isso não foi executado nem demonstrado em software pronto; Conveniência cai: nem todo voluntário pode confirmar uma reserva de qualquer lugar; Filtros ODK reduzem chance de conflito, não impedem um cliente de enviar ação indevida.\n\n**Experimento que pode rejeitar.** Simular em mesa com dois telefones offline troca de turno, custódio ausente, telefone perdido/restaurado e transferência com aceite atrasado. Rejeitar se dois pontos puderem confirmar a mesma peça, se a operação local parar por falta de acesso ao custódio por mais de um turno, ou se o protocolo exigir ida à sede. Só então construir a mínima validação digital.\n\n**Relação com baseline.** B2: já presente, refinada pelas fontes. Separar atribuição/filtro de uma trava real; ODK recomenda atribuição para reduzir conflitos, mas não fornece a exclusividade proposta.\n\n**Fontes lidas.** E1, E5, E6, E7, E8, E12.\n\n## A3 — Aplicativo local com réplicas colaborativas e conflitos visíveis\n\nPermitir a todos registrar e consultar localmente observações e pedidos; mostrar oficina, última sincronização, foto e estado provisório. Divergências de descrição ficam lado a lado com autoria. Reservas concorrentes exigem decisão posterior; para promessa firme usar confirmação da oficina ou a custódia de A2. Nenhuma fusão de campos autoriza duas pessoas a usar a mesma peça.\n\nConstruir cliente offline e projeções por peça sobre documentos replicados. CouchDB é uma opção de persistência/replicação com revisões conflitantes explicitamente lidas; Automerge é outra opção para objetos colaborativos e histórico por hashes. São variantes de implementação desta alternativa, não duas alternativas novas. Manter eventos de negócio imutáveis e fotos por ID/hash, fila de envio idempotente, conflitos consultáveis e export de JSON/CSV+anexos. Cliente Android, autorização, transporte de fotos, retenção e export completo são integração a validar, não funções prontas comprovadas pelas leituras.\n\n**Quando se aplica.** Adequada se colaboração livre e consulta local rica justificarem a construção de cliente e interface de conflito. Evitar escolher a biblioteca antes de medir aparelhos e esforço de manutenção.\n\n**Restrições atendidas.** Mecanismos locais/replicados fornecem base para trabalho desconectado; Conflitos podem ser inspecionados em vez de tratados como observação descartável; Independência de um SaaS obrigatório é uma decisão possível de implantação; Uma leitura local evita depender de rede para registrar cada ação.\n\n**Limites e falhas.** Maior carga de desenvolvimento/operação para dois generalistas; Vencedor determinístico pode esconder valores se UI não consultar conflitos; CouchDB compacta corpos antigos; revisões não substituem um livro de ocorrências; CRDT não escolhe corretamente o dono de uma reserva física; requer regra de trabalho; Automerge não é app de inventário pronto; memória/storage/sync de 45 mil partes e fotos em Android barato desconhecidos; Baixo custo recorrente e exportabilidade são requisitos a implementar e testar, não conclusões da biblioteca.\n\n**Experimento que pode rejeitar.** Protótipo descartável de 500 peças com duas réplicas e lote sintético de 45 mil metadados nos aparelhos reais. Após 72h offline, mesclar correção simultânea, nomes diferentes, reserva versus uso e fotos; reiniciar dispositivos e compactar/restaurar. Rejeitar se qualquer observação desaparecer silenciosamente, se houver dupla reserva firme, se a UI não conseguir explicar a divergência ou se o piloto de integração ultrapassar uma semana de trabalho dos dois desenvolvedores. Medir latência p95 de abrir/salvar, memória e bytes antes de definir metas de produção.\n\n**Relação com baseline.** B3: materialmente modificada. Distinguir convergência de descrições de exclusividade de reservas; exigir eventos duráveis porque revisões CouchDB podem perder corpos e campos Automerge ainda podem conflitar.\n\n**Fontes lidas.** E10, E11, E12, E13, E14, E15.\n\n## Avaliação pequena antes de compromisso\n\nComeçar com duas oficinas e seis voluntários, mantendo a planilha apenas como comparação do piloto. Não migrar 45 mil peças de uma vez. Usar as mesmas peças etiquetadas e roteiros nas três propostas: duas reservas simultâneas, consumo durante transferência, descrições concorrentes, correção com foto, relógio errado, reinício, perda de telefone, retransmissão e chegada de mensagens fora de ordem. Aguardar 72h reais sem internet. Antes de programar A2, simular o protocolo de custódia com cartões e telefones.\n\nComparar tempo por registro, promessas duplas confirmadas, viagens combinadas com peça indisponível, relatos/fotos ausentes, tamanho e idade da fila de conciliação, bytes por sync e horas de suporte. Rejeitar qualquer desenho que perca relato silenciosamente ou confirme a mesma peça duas vezes. Para A1/A3, pedidos concorrentes pendentes podem ser esperados; a UI deve deixar isso inequívoco. Fazer export e reconstruir fora do sistema ID, cronologia, autoria, correções e fotos. Medir também abrir/salvar em telefones reais com 45 mil metadados sintéticos; não assumir que desempenho em aparelho moderno se repete no barato [E19].\n\nNão há vencedor obrigatório: A1 reduz materialização própria se a conciliação for leve; A2 troca liberdade de confirmação por disciplina e gargalo de custódia; A3 oferece colaboração mais rica com maior escopo técnico. É possível usar A1 para observações e A2 para compromissos, mas isso precisa de contrato de autoridade explícito, não apenas da soma de ferramentas. Self-hosting ODK é gratuito como software, porém exige infraestrutura e manutenção [E9]; nenhum valor mensal foi cotado.\n\n## Proveniência, limites e arquivos\n\nA baseline foi escrita antes da primeira chamada de produto e seu SHA-256 registrado pelo runner é `66b3565f40c518d910c7e544575942a711cda37a5fd2ff793553db1fe3e4b141`. A busca multifonte e a busca GitHub trouxeram metadados sem fonte útil lida. Os quatro repositórios utilizados foram escolhidos de memória do agente, declarados como `origin=model` em aquisições novas (audits 004, 005, 006, 010), e depois lidos exclusivamente pelo [research product]. A descoberta não foi creditada por essas escolhas. As propostas e procedimentos são síntese do agente; não há alternativa reivindicada como novidade encontrada pelo catálogo.\n\nAs coletas remotas falharam ao resolver HEAD. A coleta local resolveu commits, mas o provedor informa que esses metadados Git são consultivos, sem autenticar bytes da worktree pelo commit. Os hashes de conteúdo e JSONs de testemunho em sources.json identificam o que foi coletado. Houve recortes por orçamento; ausência num recorte não demonstra ausência no projeto. master de Collect é desenvolvimento [E16]; pilotos devem fixar releases compatíveis, especialmente Collect/Central 2024.3 ou posteriores para Entities offline [E7]. Auditoria de formulário tem limitações de desligamento e mudança de configuração [E17].\n\nFalhas e reformulações completas, revisão das quatro opções iniciais, itens descartados e lacunas estão em `evidence/coverage.json`. Não houve intervenção humana. Não foram iniciados nós persistentes; todas as chamadas encerraram e não há nó próprio a terminar. Foram 9 chamadas classificadas de pesquisa e quatro aquisições, abaixo do teto. Não foram executados os projetos, feitas publicações, enviados comentários nem instalados timers.\n\nEntregas: `evidence/report.md`, `evidence/alternatives.json`, `evidence/sources.json`, `evidence/coverage.json`. Os arquivos de plano e resultados do produto permanecem no mesmo diretório; audits em `evidence/audit`.\n\n## Trechos literais e localizadores\n\n**E1 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/collect-intro.rst:13–17.**\n\n> :dfn:`ODK Collect` is an Android app for managing and filling out forms. It supports a wide range of question and answer types, and is designed to work well offline.\n> \n> ODK Collect downloads blank forms from and submits filled forms to\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E2 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/entities-intro.rst:151–153.**\n\n> If your workflow requires accessing all captured data about an Entity, directly flowing data between forms would likely have worked well. You can achieve something similar with Entities by creating an Entity List that represents encounters with the Entity. \n> \n> For\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E3 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/form-audit-log.rst:91–91.**\n\n> You can enable change tracking so that old answers and new answers will be added to the question events. To do this, add the following parameter to the XLSForm: ``track-changes=true``.\n\nTestemunho: `evidence/odk-followup.json`; audit: `evidence/audit/013.json`.\n\n**E4 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/form-audit-log.rst:107–114.**\n\n> You can add to ``track-changes-reasons=on-form-edit`` to prompt enumerators to enter a reason before they save changes to a form:\n> \n> .. csv-table:: survey\n>   :header: type, name, parameters\n> \n>   audit, audit, track-changes-reasons=on-form-edit\n> \n> This will prevent filled out forms being edited without a reason\n\nTestemunho: `evidence/odk-followup.json`; audit: `evidence/audit/013.json`.\n\n**E5 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/central-submissions.rst:170–175.**\n\n> Once the :file:`.csv` or :file:`.zip` completes downloading, you will find one or more files when you extract it:\n> \n>  - A root table :file:`.csv` named after your Form title.\n>  - Join table :file:`.csv` files representing any repeats you may have in\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E6 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/entities-intro.rst:330–334.**\n\n> A conflict happens when two form Submissions both representing updates to the same Entity with the same version are received by the server. If the two Submissions specify different, overlapping updates to one or more properties, Central will provide an\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E7 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/central-entities.rst:648–654.**\n\n> When Central v2024.3.0 or later is used with Collect v2024.3.0 or later, Collect maintains its own offline representation of Entity Lists. This means that any Entity create or update by Form Submission is reflected in other follow-up forms the moment\n\nTestemunho: `evidence/odk-followup.json`; audit: `evidence/audit/013.json`.\n\n**E8 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/entities-intro.rst:187–192.**\n\n> I need to assign specific Entities to specific data collectors, how can I represent this?\n> -----------------------------------------------------------------------------------------\n> \n> :ref:`Entity filtering <entity-list-access-filter>` allows administrators to control which Entities are delivered to App Users and Public Access Links. For example, a field worker assigned\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E9 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/central-install.rst:48–51.**\n\n> If you are comfortable with Linux server administration, you can self-host Central for free. And while Central is available at no cost, please account for your infrastructure expenses and the time needed for ongoing maintenance.\n> \n> .. note::\n>   To self-host Central,\n\nTestemunho: `evidence/odk-followup.json`; audit: `evidence/audit/013.json`.\n\n**E10 — apache/couchdb@76db2061a859fa6c589f0ee8954fe03cc33d77e9, src/docs/src/replication/conflicts.rst:90–105.**\n\n> So the question now is: what happens when you try to read /db/bob? By default,\n> CouchDB picks one arbitrary revision as the \"winner\", using a deterministic\n> algorithm so that the same choice will be made on all peers. The same\n\nTestemunho: `evidence/targeted-evidence.json`; audit: `evidence/audit/008.json`.\n\n**E11 — apache/couchdb@76db2061a859fa6c589f0ee8954fe03cc33d77e9, src/docs/src/replication/conflicts.rst:185–189.**\n\n> When you compact a database, the bodies of all the non-leaf documents are\n> discarded. However, the list of historical _revs is retained, for the benefit of\n> later conflict resolution in case you meet any old replicas of the database at\n\nTestemunho: `evidence/targeted-evidence.json`; audit: `evidence/audit/008.json`.\n\n**E12 — apache/couchdb@76db2061a859fa6c589f0ee8954fe03cc33d77e9, src/docs/src/replication/conflicts.rst:111–115.**\n\n> When working on a single node, CouchDB will avoid creating conflicting revisions\n> by returning a :statuscode:`409` error. This is because, when you\n> PUT a new version of a document, you must give the ``_rev`` of the previous\n> version. If that\n\nTestemunho: `evidence/targeted-evidence.json`; audit: `evidence/audit/008.json`.\n\n**E13 — automerge/automerge@09aeeabaa499c3aca50c48f33051a5accad0cc58, rust/automerge/src/lib.rs:58–74.**\n\n> //! There are some things automerge cannot merge sensibly. For example, two\n> //! actors concurrently setting the key \"name\" to different values. In this case\n> //! automerge will pick a winning value in a random but deterministic way, but\n> //!\n\nTestemunho: `evidence/automerge-targeted.json`; audit: `evidence/audit/011.json`.\n\n**E14 — automerge/automerge@09aeeabaa499c3aca50c48f33051a5accad0cc58, javascript/src/implementation.ts:1005–1012.**\n\n>  * The values of properties in a map in automerge can be conflicted if there\n>  * are concurrent \"put\" operations to the same key. Automerge chooses one value\n>  * arbitrarily (but deterministically, any two nodes who have the same set\n\nTestemunho: `evidence/automerge-targeted.json`; audit: `evidence/audit/011.json`.\n\n**E15 — automerge/automerge@09aeeabaa499c3aca50c48f33051a5accad0cc58, README.md:10–16.**\n\n> Automerge is a library which provides fast implementations of several different\n> CRDTs, a compact compression format for these CRDTs, and a sync protocol for\n> efficiently transmitting those changes over the network. The objective of the\n> project is to support [local-first](https://www.inkandswitch.com/local-first/)\n\nTestemunho: `evidence/automerge-evidence.json`; audit: `evidence/audit/009.json`.\n\n**E16 — getodk/collect@41dc0f7d6ff1ac52d8642240dc87e4e868f11d23, README.md:8–12.**\n\n> ODK Collect is an Android app for filling out forms. It is designed to be used in resource-constrained environments with challenges such as unreliable connectivity or power infrastructure. ODK Collect is part the ODK project, a free and open-source set\n\nTestemunho: `evidence/local-evidence.json`; audit: `evidence/audit/007.json`.\n\n**E17 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/form-audit-log.rst:266–268.**\n\n> - If the device is turned off while a form is being filled, Collect will not record a log entry for the screen that was shown at the time of device shutdown. Events before and after the shutdown will be\n\nTestemunho: `evidence/odk-followup.json`; audit: `evidence/audit/013.json`.\n\n**E18 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/entities-intro.rst:246–246.**\n\n> When it comes to accessing them from forms, they are nearly identical. The only significant difference is that because Entity Lists are defined outside of a form, you need to explicitly attach them using :ref:`select_*_from_file <select-from-external-dataset>` or :ref:`csv-external <form-datasets-attaching-csv>`. Another\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n\n**E19 — getodk/docs@1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e, docs/entities-intro.rst:197–201.**\n\n> The short answer is that Collect performance is generally going to be your biggest concern. Most forms running on modern mobile devices can handle Entity Lists in Collect with hundreds of thousands of Entities without feeling slow.\n> \n> The long answer\n\nTestemunho: `evidence/odk-docs-evidence.json`; audit: `evidence/audit/012.json`.\n",
+  "coverage": {
+    "baseline_review": [
+      {
+        "id": "B1",
+        "disposition": "presented",
+        "alternative": "A1",
+        "reason": "Queued independent observations concretized using Collect and Central export/audit; promises need confirmation."
+      },
+      {
+        "id": "B2",
+        "disposition": "presented",
+        "alternative": "A2",
+        "reason": "Custody changes who may commit scarce-stock decisions; source assignment reduces conflict but does not implement exclusivity."
+      },
+      {
+        "id": "B3",
+        "disposition": "presented",
+        "alternative": "A3",
+        "reason": "Collaborative replicas retain conflicting observations; scalar winners and compaction require explicit design."
+      },
+      {
+        "id": "B4",
+        "disposition": "presented within A1 and A2",
+        "alternative": "A1",
+        "reason": "Existing field app is a concrete option; not a separately counted mechanism merely because product differs."
+      }
+    ],
+    "considered_not_presented": [
+      {
+        "option": "Spreadsheets plus a periodic daily central-office visit",
+        "reason": "Contradicts disconnection/continued local work and does not preserve concurrent observations. Problem-derived rejection, not source observation."
+      },
+      {
+        "option": "Treat ODK Entity last-write-wins as an exclusive inventory ledger",
+        "reason": "Conflicting updates are applied in received order; warning comes after application. Cannot safely equate last received with physically available.",
+        "evidence": [
+          "E6",
+          "E7"
+        ]
+      },
+      {
+        "option": "Treat CouchDB revision tree as permanent business history",
+        "reason": "Compaction discards non-leaf bodies.",
+        "evidence": [
+          "E11"
+        ]
+      },
+      {
+        "option": "Treat Automerge as automatic semantic resolution of a reservation",
+        "reason": "Concurrent scalar puts still choose one deterministic winner; getConflicts is explicit. Neither winner proves physical entitlement.",
+        "evidence": [
+          "E13",
+          "E14"
+        ]
+      },
+      {
+        "option": "Commercial ready-made mobile inventory from catalog (Zoho/Sortly)",
+        "reason": "Only iOS catalog metadata was returned; no source read supported Android 72h concurrency, costs, export or audit. Not presented as verified solution.",
+        "witness": "evidence/discovery.json"
+      },
+      {
+        "option": "GitHub discovered HubSpot/offline, Jan, Expertiza, rea and other catalog hits",
+        "reason": "Metadata did not establish relevant inventory behavior; root README resolution was OPAQUE_REVISION. No claimed mechanism.",
+        "witness": "evidence/github-discovery.json"
+      }
+    ],
+    "useful_sources_review": [
+      {
+        "repository": "getodk/collect",
+        "used_in": [
+          "A1",
+          "A2"
+        ],
+        "next": "Use stable release; cheap-phone Android compatibility not proven."
+      },
+      {
+        "repository": "getodk/docs",
+        "used_in": [
+          "A1",
+          "A2"
+        ],
+        "next": "Official docs clarify offline state, event lists, media export, conflicts, assignment and hosting effort."
+      },
+      {
+        "repository": "apache/couchdb",
+        "used_in": [
+          "A2",
+          "A3"
+        ],
+        "next": "Read single-node 409, replicated conflicts and compaction; Android client integration still unverified."
+      },
+      {
+        "repository": "automerge/automerge",
+        "used_in": [
+          "A3"
+        ],
+        "next": "Read scalar conflicts and historical reads. Alternative backend to same collaborative design, not forced conceptual novelty."
+      }
+    ],
+    "researchable_gaps": [
+      "Dedicated open inventory product supporting offline stock operations not established",
+      "Offline Android client integration for CouchDB/Automerge, media transport, permissions and secure local persistence",
+      "45k metadatas and photo cache performance on actual inexpensive phones",
+      "Current compatible stable ODK versions and actual minimum Android device requirements: guessed docs/collect-requirements.rst was NOT_FOUND",
+      "New assignment delivery documentation and older all-entities-on-update sentence coexist in docs; verify actual release behavior and do not size network by assumptions",
+      "End-to-end export of every original, amendment, history version and binary photo; Central submission CSV alone is not asserted to export every historical server version",
+      "Custody recovery/transfer without duplicate authority; operational enforceability with volunteers",
+      "Monthly hosting/backups/media bandwidth cost and two-generalist maintenance capacity",
+      "Photo rights/retention/access requirements and full offline recovery after device loss",
+      "Real measured reduction in wasted trips and unusable promises"
+    ],
+    "stopping_reason": "All four initial baseline options and all four useful acquired sources were reviewed. Three decision-level alternatives have real source witnesses and falsifiable pilots. Further library swapping would not add a conceptual alternative; do not fabricate ready-made offline inventory guarantees. Stopping before ceiling with gaps explicit, not claiming exhaustive coverage.",
+    "interventions": {
+      "human": [],
+      "agent": [
+        "Reformulated broad query to GitHub-only because broad multi-source budget was consumed before useful repository reads",
+        "Fell back from unresolved remote HEAD to fresh exact-URL acquisitions with origin=model",
+        "Followed product-emitted paths and documentation references through targeted product collections",
+        "Tried collect-audit.rst and collect-requirements.rst; corrected former to referenced form-audit-log.rst, left device requirement unknown"
+      ]
+    },
+    "failures": [
+      {
+        "detail": "Multi-source PARTIAL: catalog-only Apple candidates, auth blocked AtomGit, other source timeouts/budget exhaustion; no reading cards."
+      },
+      {
+        "detail": "GitHub discovery catalog metadata and OPAQUE_REVISION README results; no bundles."
+      },
+      {
+        "detail": "Remote HEAD resolution failed for three memory candidates."
+      },
+      {
+        "detail": "Automerge collection preceded completion of its acquisition; unresolved then re-collected after acquisition completed."
+      },
+      {
+        "detail": "docs/collect-audit.rst NOT_FOUND; followed audit reference instead."
+      },
+      {
+        "detail": "docs/collect-requirements.rst NOT_FOUND."
+      },
+      {
+        "detail": "Generic --help exits 1 by CLI convention; partial help only."
+      },
+      {
+        "detail": "Collection bundles are incomplete due to file/depth/quantity budgets; exploration cards are lexically selected and sometimes irrelevant. Claims use targeted file contents, not lexical card ranking."
+      }
+    ],
+    "run": {
+      "baseline_sha256": "66b3565f40c518d910c7e544575942a711cda37a5fd2ff793553db1fe3e4b141",
+      "audit_count": 14,
+      "research_calls": 9,
+      "acquisitions": 4,
+      "first_action_unix": 1794155303.7996962,
+      "last_action_unix": 1794155632.8781674,
+      "nodes_started": [],
+      "cleanup": "No persistent nodes or servers were started; all runner calls exited. No node to terminate.",
+      "used_tools": "Only exec_command/write_stdin, allowed runner product/acquire commands, local Python to prepare plans/read product JSON/write deliverables. No web, no direct source access, no project execution."
+    }
+  },
+  "evidence_verification": {
+    "all_literals_match_pinned_sources": true,
+    "line_range_mismatches": 0
+  }
+}

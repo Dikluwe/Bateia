@@ -1,0 +1,33 @@
+[project]
+root = "."
+
+[languages]
+go = { grammar = "tree-sitter-go", enabled = true }
+
+[layers]
+L0 = "00_nucleo"
+L1 = "01_core"
+L2 = "02_shell"
+L3 = "03_infra"
+L4 = "04_wiring"
+lab = "lab"
+
+[l1_ports]
+domain  = "domain"
+parser  = "parser"
+usecase = "usecase"
+
+[l1_allowed_external]
+go = ["log", "regexp", "hash", "unicode", "crypto", "embed", "go", "golang.org"]
+
+[orphan_exceptions]
+"00_nucleo/prompts/01_core/domain/architectural_mechanism_step0028_oracle_test.md" = "oráculo histórico: materialização excluída explicitamente do walker; não é código de produção"
+"00_nucleo/prompts/01_core/usecase/improvement_synthesis_step0028_oracle_test.md" = "oráculo histórico: materialização excluída explicitamente do walker; não é código de produção"
+"00_nucleo/prompts/01_core/usecase/mechanism_extraction_step0028_oracle_test.md" = "oráculo histórico: materialização excluída explicitamente do walker; não é código de produção"
+"00_nucleo/prompts/02_shell/mcp/improvement_synthesis_step0028_oracle_test.md" = "oráculo histórico: materialização excluída explicitamente do walker; não é código de produção"
+"00_nucleo/prompts/03_infra/lexical/vocabulary.md" = "especificação do catálogo determinístico de vocabulário 03_infra/lexical/vocabulary.json"
+
+[excluded]
+step0028_domain_oracle = "architectural_mechanism_step0028_oracle_test.go"
+step0028_mechanism_oracle = "mechanism_extraction_step0028_oracle_test.go"
+step0028_synthesis_oracle = "improvement_synthesis_step0028_oracle_test.go"

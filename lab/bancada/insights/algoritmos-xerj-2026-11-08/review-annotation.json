@@ -1,0 +1,47 @@
+{
+  "finding": "Existing FTS reader cache narrows applicability to cold opens/cache misses, budget rejection or memory pressure, subject to profiling. No per-query decompression claim.",
+  "evidence": [
+    {
+      "source": {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+      },
+      "path": "engine/crates/xerj-engine/src/index.rs",
+      "content_hash": "sha256:98342b82a18d3068c85f522e303f4583c74d8c28d0aa24f4542181b924c619a7",
+      "start_line": 33434,
+      "end_line": 33437,
+      "excerpt": "\n        if let Some(hit) = self.fts_reader_cache.get(&key) {\n            return Some(Arc::clone(hit.value()));\n        }",
+      "origin": "independent_review_of_user_target",
+      "git_verified_by_parent": true
+    },
+    {
+      "source": {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+      },
+      "path": "engine/crates/xerj-engine/src/index.rs",
+      "content_hash": "sha256:98342b82a18d3068c85f522e303f4583c74d8c28d0aa24f4542181b924c619a7",
+      "start_line": 33444,
+      "end_line": 33447,
+      "excerpt": "        let permit = transient_read_permit(&self.segment_hydration_budget, read_budget, estimate);\n        let reader = Arc::new(FtsIndexReader::open(fts_dir, segment_id, fields).ok()?);\n        let bytes = reader.retained_bytes();\n        Some(self.publish_current_permitted(",
+      "origin": "independent_review_of_user_target",
+      "git_verified_by_parent": true
+    },
+    {
+      "source": {
+        "repository": "xerj-org/xerj",
+        "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+      },
+      "path": "engine/crates/xerj-engine/src/index.rs",
+      "content_hash": "sha256:98342b82a18d3068c85f522e303f4583c74d8c28d0aa24f4542181b924c619a7",
+      "start_line": 27061,
+      "end_line": 27064,
+      "excerpt": "                let reader_opt = if needs_fts {\n                    self.fts_reader_for(&fts_dir, &seg_id, &field_refs)\n                } else {\n                    None",
+      "origin": "independent_review_of_user_target",
+      "git_verified_by_parent": true
+    }
+  ],
+  "change_to_final_decision": "Profile actual cache misses and opening cost first; only then consider prototype versus existing cached baseline.",
+  "research_outputs_unchanged": true,
+  "effect_state": "UNVERIFIED"
+}

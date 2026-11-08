@@ -1,0 +1,40 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "search",
+    "--url",
+    "http://127.0.0.1:19691",
+    "--prefix",
+    "automerge",
+    "getHistory",
+    "-k",
+    "3",
+    "--full",
+    "5500",
+    "--json"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0152/xerj/bin/xerj",
+    "search",
+    "--url",
+    "http://127.0.0.1:19691",
+    "--prefix",
+    "automerge",
+    "getHistory",
+    "-k",
+    "3",
+    "--full",
+    "5500",
+    "--json"
+  ],
+  "origin": null,
+  "started_unix": 1794153330.1086175,
+  "pending": false,
+  "baseline_sha256": "d990ae6c0753f56518e1ececc3d403fff70d4f34282d514464d8e0a2311c1527",
+  "seconds": 0.0598444938659668,
+  "exit_code": 0,
+  "stdout": "{\n  \"took\": 16,\n  \"timed_out\": false,\n  \"_shards\": {\n    \"total\": 4,\n    \"successful\": 4,\n    \"skipped\": 0,\n    \"failed\": 0\n  },\n  \"hits\": {\n    \"total\": {\n      \"value\": 2,\n      \"relation\": \"eq\"\n    },\n    \"max_score\": 149.46425,\n    \"hits\": [\n      {\n        \"_index\": \"automerge-docs\",\n        \"_id\": \"382340ab8b17b07f76a93710b4101c2e\",\n        \"_score\": 149.46425,\n        \"_source\": {\n          \"title\": \"getHistory\",\n          \"start_line\": 1157,\n          \"ax_path\": \"javascript/src/implementation.ts\",\n          \"ax_paths\": [\n            \"javascript/src/implementation.ts\"\n          ],\n          \"ax_locator\": \"code:1157:getHistory\",\n          \"language\": \"typescript\",\n          \"kind\": \"function\",\n          \"line\": 1157,\n          \"code\": \"export function getHistory<T>(doc: Doc<T>): State<T>[]\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"code\",\n              \"ordinal\": 0,\n              \"start_offset\": 0,\n              \"end_offset\": 54,\n              \"text\": \"export function getHistory<T>(doc: Doc<T>): State<T>[]\"\n            }\n          ]\n        },\n        \"match_line\": 1157,\n        \"match_lines\": [\n          1157\n        ]\n      },\n      {\n        \"_index\": \"automerge-docs\",\n        \"_id\": \"0d6c2cf273a2480f6eddb7bd00c3e6e7\",\n        \"_score\": 25.15318,\n        \"_source\": {\n          \"title\": \"implementation.ts\",\n          \"ax_path\": \"javascript/src/implementation.ts\",\n          \"ax_paths\": [\n            \"javascript/src/implementation.ts\"\n          ],\n          \"ax_locator\": \"code\",\n          \"language\": \"typescript\",\n          \"start_line\": 1\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 1156,\n              \"start_offset\": 34165,\n              \"end_offset\": 34491,\n              \"text\": \"export function getHistory<T>(doc: Doc<T>): State<T>[] {\\n  const history = getAllChanges(doc)\\n  return history.map((change, index) => ({\\n    get change() {\\n      return decodeChange(change)\\n    },\\n    get snapshot() {\\n      const [state] = applyChanges(init(), history.slice(0, index + 1))\\n      return <T>state\\n    },\\n  }))\\n}\"\n            }\n          ]\n        },\n        \"match_line\": 1157,\n        \"match_lines\": [\n          1157\n        ]\n      }\n    ]\n  }\n}\n",
+  "stderr": ""
+}

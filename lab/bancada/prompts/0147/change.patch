@@ -1,0 +1,759 @@
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_site_plan.md
++++ 00_nucleo/prompts/01_core/usecase/insight_site_plan.md
+@@ -1,21 +1,29 @@
+ # Plano de fontes e orçamento global
+ 
+-**Camada:** L1. **Contrato:** passo 0138.
++**Camada:** L1. **Responsável:** opções e admissão do plano multifonte. **Materialização:** [insight_site_plan.go](../../../../01_core/usecase/insight_site_plan.go).
+ 
+-Admitir até 12 bindings via capacidades canônicas existentes, reader somente GitHub, IDs únicos. Resolver aliases/all contra fontes disponíveis, canonicalizar seleção e locale, normalizar pedido/plano 0137 e orçamento global 1–60/padrão20. Plano determinístico sem efeitos, registrando capacidades. Não impor autenticação no wiring nem alterar registro de mercado.
++## Interface e responsabilidade
+ 
+-## Evolução 0139 (precedência sobre limites de fontes do recorte0138)
++ValidateInsightSiteOptions normaliza o pedido sem consultar conectores. PlanInsightSites recebe pedido e bindings disponíveis, valida capacidades e produz plano selado com fontes canônicas. O plano é consumido por discover e pela fachada de expand. L4 injeta as portas, sem decidir elegibilidade de memória ou limites de negócio.
+ 
+-Aplicar o passo0139: RepositoryReader opcional exclusivo Gitee/AtomGit, resolução imutável e contextos de leitura com identidade por sítio. Reader legado permanece só GitHub. Preservar resultados antigos quando o novo leitor não está vinculado. Erros do leitor classificados sem mensagens remotas; budgets compartilhados; tarefas agregam IDs dos cartões com origem.
++## Comportamento vigente
+ 
+-## Evolução0140 (precedência sobre lista de fontes0139)
++Delegar a normalização lexical e seus limites ao [plano de descoberta](insight_discovery_plan.md). FollowLinks ausente recebe2; copiar o ponteiro fornecido e admitir0..4. Validar memória por cópia profunda; pedir ao container sua guarda de avanço e verificar que o próximo snapshot selado cabe em1 MiB antes de admitir. Histórico999999 é inspecionável, mas não pode iniciar rodada;999998 admite avanço para999999, inclusive com follow-links0. Não chamar capabilities, busca ou leitura antes de rejeitar opções inválidas.
+ 
+-Aplicar passo0140: RepositoryReader também Codeberg/GitLab. Preservar namespace GitLab incluindo subgrupos, usar seletor puro diretamente apenas para seus bundles validados. Reader legado só GitHub; fontes anteriores preservadas. Composição passa a quatro RepositoryReader próprios, sem novas credenciais.
++Admitir de1 a12 bindings com conectores não nulos, IDs únicos e capacidades canônicas de até4096 bytes. Reader legado e FollowReader são exclusivos de GitHub; RepositoryReader opcional só pode atender Gitee/AtomGit/Codeberg/GitLab e não coexiste com Reader. Leitores ausentes não impedem catálogo. Não confundir namespace GitLab com owner/repo de outro sítio.
+ 
+-## Evolução0141
++Selecionar de1 a12 fontes pelo ID ou aliases conhecidos: github, sourcegraph, gitee, atomgit, codeberg, gitlab, bitbucket, joss, zbmath, itunes, playstore e fdroid. `all` só é válido sozinho e seleciona os bindings disponíveis. Rejeitar desconhecidos, repetidos após resolução de alias ou IDs com espaços externos; ordenar IDs canônicos e capacidades para obter plano determinístico. Não impor autenticação aqui.
+ 
+-Passo0141 tem precedência na agenda: alternar perspectivas e fontes com passo coprimo, tentativas em ordem canônica com execution_order, declarar scheduling_policy no plano. Extensões opcionais de cobertura e reference_leads; tarefas separam reference_lead_refs de catálogo/cartões. Trilhas derivadas de bytes reais, destinos REFERENCE_NOT_READ, zero HTTP adicional e zero promoção de novidade. Preservar modo GitHub legado e artefatos anteriores; atualizar testes apenas nas expectativas de agenda modificadas.
++MaxCalls0 recebe20; limite1..60. Locale vazio recebe en-US; demais valores exigem BCP47 válido. Selar site_plan_ pelo algoritmo histórico. Registrar a política compartilhada de [agenda](insight_site_schedule.md); este proprietário não executa essa agenda nem possui seleção de cartões, leitura ou derivação de leads.
+ 
+-## Evolução0142
++## Limites e dependências
+ 
+-Aplicar passo0142: memória validada antes de efeitos, followups de um salto com limites e origem própria, --memory/--follow-links na casca e feedback offline. FollowReader apenas GitHub, demais forges reaproveitam RepositoryReader. Memória em snapshot único de saída, sem releitura automática de examinados/descartados, sem promover histórico a evidência atual. Modo sem --sources preservado.
++Sem I/O ou fallback concreto. O [contrato de exploração](../../../contratos/exploracao-de-vizinhancas-v1.md#admissão) e o [container de memória](insight_exploration_memory.md) governam a retomada. Orçamento herdado de catálogo não autoriza buscas em expand. Preservar schemas, IDs e o ramo GitHub legado sem --sources; coleção e runtime têm outros proprietários.
++
++## Aceitação
++
++Consumir [o prompt de testes](insight_site_plan_test.md), ADM-03 e MEM-04 da [matriz](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md). Exigir equivalência do plano ao permutar bindings/aliases e rejeição antes dos efeitos quando a geração não puder avançar.
++
++## Origem e preservação
++
++Consolidação posterior ao código das regras0138–0142 no [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md); a guarda de avanço é intenção ex-ante da correção desse passo. O [texto anterior](../../../../lab/bancada/prompts/0147/before/00_nucleo__prompts__01_core__usecase__insight_site_plan.md.txt) preserva a cronologia e suas precedências. Não reclassificar a consolidação como origem ex-ante do comportamento legado.
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_site_plan_test.md
++++ 00_nucleo/prompts/01_core/usecase/insight_site_plan_test.md
+@@ -1,5 +1,21 @@
+-# Testes do plano multifonte
++# Aceitação do plano multifonte
+ 
+-**Camada:** L1. **Contrato:** passo 0138.
++**Camada:** L1. **Consumidor:** [insight_site_plan_test.go](../../../../01_core/usecase/insight_site_plan_test.go).
+ 
+-Testar aliases/IDs/all, ordens canônicas, fontes desconhecidas/repetidas/ausentes, capacidades/readers inválidos, locale e fronteiras de orçamento. Verificar IDs e imutabilidade, sem rede/relógio.
++## Interface e contrato
++
++Consumir [o proprietário](insight_site_plan.md) e os casos ADM-03/MEM-04 da [matriz](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md). Testes usam valores e portas controladas; nenhum acesso à rede ou relógio concreto.
++
++## Comportamento esperado
++
++Pedidos com aliases e IDs equivalentes e bindings permutados devem gerar planos iguais, sem alterar entrada. Controlar fontes ausentes, desconhecidas e repetidas, combinação indevida de all, capacidades duplicadas/inválidas, leitores incompatíveis, locale e orçamento fora dos limites.
++
++Para MEM-04, usar memória selada válida em999998 e999999. Ambas validam como história; somente999998 admite nova rodada, com ou sem tentativas de followup. Discover deve rejeitar999999 antes de buscar ou ler e sem produzir relatório publicável. Na última rodada válida, conferir geração999999 e revalidar todo o snapshot de saída. Comparar entrada antes/depois e não calcular o resultado esperado pela mesma guarda que se quer testar.
++
++## Limites e dependências
++
++A validação de opções não deve consultar capabilities para resolver uma rejeição de geração. Na execução pública, contar buscas, resoluções e leituras. A cobertura dos controles anteriores não substitui limites de bytes/fontes do proprietário sources. Preservar os testes já existentes e acrescentar as regressões de geração.
++
++## Origem e preservação
++
++Consolidação e intenção nova descritas no [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md). O [texto anterior](../../../../lab/bancada/prompts/0147/before/00_nucleo__prompts__01_core__usecase__insight_site_plan_test.md.txt) conserva o contrato histórico. Registrar falha antes da correção e passagem depois no Lab.
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_exploration_memory.md
++++ 00_nucleo/prompts/01_core/usecase/insight_exploration_memory.md
+@@ -12,7 +12,7 @@
+ 
+ ## Limites e dependências
+ 
+-Sem I/O, cache global, autenticação remota ou prova de mecanismo. Snapshot devolvido não compartilha estado mutável com entrada. MEM-04 é obrigação de fechamento ainda não satisfeita no feedback em geração999999; não tratar o defeito como regra aprovada. A consolidação não modifica código para ocultar a lacuna.
++Sem I/O, cache global, autenticação remota ou prova de mecanismo. Snapshot devolvido não compartilha estado mutável com entrada. A política de avanço pertence a este container: snapshot de geração999999 é válido para inspeção, mas feedback e admissão de uma nova rodada devem retornar ErrInvalidRunInput; geração999998 pode avançar para999999. Reutilizar a mesma guarda em discover e expand antes dos efeitos, conforme [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md). Não saturar/reiniciar geração.
+ 
+ As regras compartilhadas estão nas seções [memória](../../../contratos/exploracao-de-vizinhancas-v1.md#memória). Este componente realiza sua parte desse contrato; não redefine as políticas dos outros responsáveis.
+ 
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_exploration_memory_test.md
++++ 00_nucleo/prompts/01_core/usecase/insight_exploration_memory_test.md
+@@ -8,7 +8,7 @@
+ 
+ ## Comportamento esperado
+ 
+-Validar e modificar a cópia sem alterar original. Adulterar hash/estado/observação/lead/duplicidade, inclusive com resselo externo; exigir rejeição. Descartar e reabrir com motivo, rejeitar EXAMINED declarado e razão vazia. Esgotar256 entradas sem remover história; priorizar candidato novo. Na fronteira999999 exigir rejeição do avanço, registrando MEM-04 como lacuna atual em vez de afirmar cobertura verde inexistente.
++Validar e modificar a cópia sem alterar original. Adulterar hash/estado/observação/lead/duplicidade, inclusive com resselo externo; exigir rejeição. Descartar e reabrir com motivo, rejeitar EXAMINED declarado e razão vazia. Esgotar256 entradas sem remover história; priorizar candidato novo. No limite, aceitar snapshot999999 para validação, rejeitar seu avanço nos dois estados de feedback e em discover/expand sem efeitos, e aceitar o último avanço999998→999999 com saída que revalida. Comparar toda a entrada antes/depois. Para MEM-02, comparar todos os campos não alterados, incluindo Lead, LastRead e tentativas. Estes critérios antecedem a correção no [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md).
+ 
+ ## Limites e dependências
+ 
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_neighborhood_plan.md
++++ 00_nucleo/prompts/01_core/usecase/insight_neighborhood_plan.md
+@@ -8,7 +8,7 @@
+ 
+ ## Comportamento vigente
+ 
+-Copiar/validar relatório e memória original; obter origens congeladas antes de aplicar feedback. Feedback conserva identidades e não retrocede geração. Resolver foco explícito/herdado e AllTrails, inclusive aliases descartados. Rejeitar geração efetiva>=999999. Herdar opções e aplicar somente overrides permitidos, revalidando o plano; FollowLinks0 difere de ausência.
++Copiar/validar relatório e memória original; obter origens congeladas antes de aplicar feedback. Feedback conserva identidades e não retrocede geração. Resolver foco explícito/herdado e AllTrails, inclusive aliases descartados. Rejeitar geração efetiva>=999999 usando a guarda pertencente ao container de memória, compartilhada com discover/feedback ([passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md)). Herdar opções e aplicar somente overrides permitidos, revalidando o plano; FollowLinks0 difere de ausência.
+ 
+ ## Limites e dependências
+ 
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_neighborhood_plan_test.md
++++ 00_nucleo/prompts/01_core/usecase/insight_neighborhood_plan_test.md
+@@ -4,9 +4,11 @@
+ 
+ ## Interface e contrato
+ 
+-Consumir [o prompt proprietário](insight_neighborhood_plan.md) e as seções [admissão](../../../contratos/exploracao-de-vizinhancas-v1.md#admissão), [foco e fronteira](../../../contratos/exploracao-de-vizinhancas-v1.md#foco-e-fronteira), [ordenação e execução](../../../contratos/exploracao-de-vizinhancas-v1.md#ordenação-e-execução). Oráculos desta fatia: [ADM-01](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [ADM-02](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [ADM-03](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [FOC-01](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md). Nomes dos testes atuais localizam cobertura; não definem a regra de negócio.
++Consumir [o prompt proprietário](insight_neighborhood_plan.md) e as seções [admissão](../../../contratos/exploracao-de-vizinhancas-v1.md#admissão), [foco e fronteira](../../../contratos/exploracao-de-vizinhancas-v1.md#foco-e-fronteira), [ordenação e execução](../../../contratos/exploracao-de-vizinhancas-v1.md#ordenação-e-execução). Oráculos desta fatia: [MEM-04](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [ADM-01](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [ADM-02](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [ADM-03](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [FOC-01](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md). Nomes dos testes atuais localizam cobertura; não definem a regra de negócio.
+ 
+ ## Comportamento esperado
++
++MEM-04 ([passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md)): relatório com memória efetiva999999 deve validar como histórico e ser rejeitado para expansão antes de resolução/leitura; manter o relatório e feedback originais intactos. Geração999998 admite uma rodada final com memória999999 revalidável.
+ 
+ Admitir entrada válida e guardar a representação normalizada. Mudar conteúdo e estado no original, depois exigir pedido/origens admitidos intactos e leitura do alvo original. Incluir controles de selo, foco desconhecido, conflito AllTrails/foco, limites e feedback que remove identidade/retrocede geração; todos antes das portas. Omitir override herda; ponteiro0 impede leitura.
+ 
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_neighborhood_sources_test.md
++++ 00_nucleo/prompts/01_core/usecase/insight_neighborhood_sources_test.md
+@@ -8,7 +8,7 @@
+ 
+ ## Comportamento esperado
+ 
+-Criar origem válida e variar um aspecto por controle: selo, conteúdo, fingerprint, recibo ausente/incorreto, LastRead divergente, duplicidade, namespace, SHA e tamanho. Quando necessário resselo externo deve ser recalculado para isolar a inconsistência interna. Exigir rejeição e zero chamadas. Exercitar as três formas de origem e limites inclusivos/excedidos; a matriz registra quais controles ainda faltam.
++Criar origem válida e variar um aspecto por controle: selo, conteúdo, fingerprint, recibo ausente/incorreto, LastRead divergente, duplicidade, namespace, SHA e tamanho. Quando necessário resselo externo deve ser recalculado para isolar a inconsistência interna. Exigir rejeição e zero chamadas. Exercitar as três formas de origem e limites inclusivos/excedidos; o [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md) exige controles de32 KiB e32 KiB+1 por documento, oito e nove documentos,128 KiB e128 KiB+1 agregados para origens GitHub/sítio/followup. Resselo externo e LastRead consistentes devem isolar os limites em vez de disparar outra rejeição antes deles. Testes do validador de origens não bastam para afirmar todos os caminhos de transporte cobertos.
+ 
+ ## Limites e dependências
+ 
+--- before0147/00_nucleo/prompts/01_core/usecase/insight_followup_selection_test.md
++++ 00_nucleo/prompts/01_core/usecase/insight_followup_selection_test.md
+@@ -8,7 +8,7 @@
+ 
+ ## Comportamento esperado
+ 
+-Colocar foco sem leitor e destinos elegíveis perto/longe com contadores distintos: elegibilidade vence distância, distância vence tentativas. Repetir com distância ausente e exigir prioridade por tentativas. Comparar memória/contadores antes/depois e zero leituras. Para empates, variar uma chave por vez e permutar a entrada; ORD-02 registra a tabela de desempates ainda incompleta na suíte.
++Colocar foco sem leitor e destinos elegíveis perto/longe com contadores distintos: elegibilidade vence distância, distância vence tentativas. Repetir com distância ausente e exigir prioridade por tentativas. Comparar memória/contadores antes/depois e zero leituras. Para empates, variar uma chave por vez e permutar a entrada; No [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md), completar ORD-02 com casos que isolem geração, presença de referência, posição de referência e ID, inclusive distância ausente e empatada. Permutar a fila em cada caso e exigir ordem esperada explícita, sem alterar memória/bindings ou chamar leitores.
+ 
+ ## Limites e dependências
+ 
+--- before0147/00_nucleo/prompts/02_shell/cli/insight_memory.md
++++ 00_nucleo/prompts/02_shell/cli/insight_memory.md
+@@ -12,7 +12,7 @@
+ 
+ ## Limites e dependências
+ 
+-Comando offline, sem factory de pesquisa, política de estado na casca ou nova persistência global. Formato inválido, memória adulterada e feedback sem alvo/estado/motivo válidos são rejeitados com mensagem sanitizada. MEM-04 permanece uma divergência do core; a CLI não deve duplicar a regra para encobri-la.
++Comando offline, sem factory de pesquisa, política de estado na casca ou nova persistência global. Formato inválido, memória adulterada e feedback sem alvo/estado/motivo válidos são rejeitados com mensagem sanitizada. MEM-04 é decidido pelo core: feedback com geração999999 deve falhar sem publicação de saída, enquanto999998 admite snapshot999999 revalidável. A CLI não duplica a regra de geração ([passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md)).
+ 
+ As regras compartilhadas estão nas seções [transporte cli](../../../contratos/exploracao-de-vizinhancas-v1.md#transporte-cli), [memória](../../../contratos/exploracao-de-vizinhancas-v1.md#memória). Este componente realiza sua parte desse contrato; não redefine as políticas dos outros responsáveis.
+ 
+--- before0147/00_nucleo/prompts/02_shell/cli/insight_memory_test.md
++++ 00_nucleo/prompts/02_shell/cli/insight_memory_test.md
+@@ -8,7 +8,7 @@
+ 
+ ## Comportamento esperado
+ 
+-Ler as duas formas de entrada e realizar descarte/reabertura com motivo; reutilizar snapshot na próxima investigação. Variar schema, chaves desconhecidas/duplicadas, ID, estado e saída-alias; exigir ausência de publicação indevida e de factory. Verificar proteção de segredo sem ecoar valor. Distinguir leitura de memória de validação integral do relatório; limite de geração consome MEM-04, ainda pendente.
++Ler as duas formas de entrada e realizar descarte/reabertura com motivo; reutilizar snapshot na próxima investigação. Variar schema, chaves desconhecidas/duplicadas, ID, estado e saída-alias; exigir ausência de publicação indevida e de factory. Verificar proteção de segredo sem ecoar valor. Distinguir leitura de memória de validação integral do relatório; para MEM-04, testar feedback nos limites999998/999999 e conferir sucesso revalidável versus rejeição sem stdout/arquivo; discover com999999 deve rejeitar antes da factory. A entrada permanece byte a byte intacta ([passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md)).
+ 
+ ## Limites e dependências
+ 
+--- before0147/01_core/usecase/insight_site_plan.go
++++ 01_core/usecase/insight_site_plan.go
+@@ -2,7 +2,7 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_site_plan.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-10-29
+  */
+ package usecase
+ 
+@@ -31,6 +31,9 @@
+ 	if request.Memory != nil {
+ 		memory, err := ValidateInsightExplorationMemory(request.Memory)
+ 		if err != nil {
++			return request, err
++		}
++		if err := validateInsightMemoryAdvance(memory); err != nil {
+ 			return request, err
+ 		}
+ 		next := memory
+--- before0147/01_core/usecase/insight_site_plan_test.go
++++ 01_core/usecase/insight_site_plan_test.go
+@@ -2,13 +2,15 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_site_plan_test.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-10-29
+  */
+ package usecase
+ 
+ import (
+ 	"bateia/01_core/domain"
+ 	"encoding/json"
++	"errors"
++	"fmt"
+ 	"reflect"
+ 	"testing"
+ )
+@@ -56,3 +58,39 @@
+ 		t.Fatal("invalid locale admitted")
+ 	}
+ }
++
++func TestInsightSiteGenerationLimitPrecedesEffects(t *testing.T) {
++	for _, generation := range []int{999998, 999999} {
++		for _, followLinks := range []int{0, 1} {
++			t.Run(fmt.Sprintf("%d/links%d", generation, followLinks), func(t *testing.T) {
++				memory := memoryFixture(t)
++				memory.Generation = generation
++				memory = sealInsightMemory(memory)
++				request := insightSiteRequest()
++				request.Memory, request.FollowLinks = &memory, &followLinks
++				before, _ := json.Marshal(request)
++				_, admissionErr := ValidateInsightSiteOptions(request)
++				reader, bindings := followFixture()
++				catalogCalls := 0
++				bindings[0].Connector = &insightSiteFixtureConnector{id: domain.ConnectorGitHubCatalog, hook: func() { catalogCalls++ }}
++				report, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
++				after, _ := json.Marshal(request)
++				if string(before) != string(after) {
++					t.Fatal("discovery changed caller history")
++				}
++				if generation == 999999 {
++					if !errors.Is(admissionErr, domain.ErrInvalidRunInput) || !errors.Is(err, domain.ErrInvalidRunInput) || report.ID != "" || catalogCalls != 0 || len(reader.reads) != 0 || len(reader.resolves) != 0 {
++						t.Fatal("exhausted generation reached discovery effects", admissionErr, err, catalogCalls)
++					}
++					return
++				}
++				if admissionErr != nil || err != nil || report.ExplorationMemory == nil || report.ExplorationMemory.Generation != 999999 || catalogCalls == 0 {
++					t.Fatal("last valid discovery round failed", admissionErr, err)
++				}
++				if _, err := ValidateInsightExplorationMemory(report.ExplorationMemory); err != nil {
++					t.Fatal("last discovery memory is unusable", err)
++				}
++			})
++		}
++	}
++}
+--- before0147/01_core/usecase/insight_exploration_memory.go
++++ 01_core/usecase/insight_exploration_memory.go
+@@ -14,7 +14,18 @@
+ 	"unicode/utf8"
+ )
+ 
+-const insightMemorySchema = "insight-exploration-memory-v1"
++const (
++	insightMemorySchema          = "insight-exploration-memory-v1"
++	insightMemoryGenerationLimit = 1000000
++)
++
++// A final-generation snapshot remains readable, but cannot start another round.
++func validateInsightMemoryAdvance(memory domain.InsightExplorationMemory) error {
++	if memory.Generation >= insightMemoryGenerationLimit-1 {
++		return domain.ErrInvalidRunInput
++	}
++	return nil
++}
+ 
+ func insightMemoryKey(identity domain.ProductIdentity) string {
+ 	return identity.ConnectorID + "\x00" + identity.ExternalID
+@@ -73,7 +84,7 @@
+ 		return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+ 	}
+ 	var memory domain.InsightExplorationMemory
+-	if json.Unmarshal(raw, &memory) != nil || memory.SchemaVersion != insightMemorySchema || memory.Generation < 0 || memory.Generation >= 1000000 || len(memory.Entries) > 256 {
++	if json.Unmarshal(raw, &memory) != nil || memory.SchemaVersion != insightMemorySchema || memory.Generation < 0 || memory.Generation >= insightMemoryGenerationLimit || len(memory.Entries) > 256 {
+ 		return domain.InsightExplorationMemory{}, domain.ErrInvalidRunInput
+ 	}
+ 	seen := map[string]bool{}
+@@ -123,6 +134,9 @@
+ 	identity, ok := insightLeadTarget(target)
+ 	state = strings.ToUpper(state)
+ 	if err != nil {
++		return domain.InsightExplorationMemory{}, err
++	}
++	if err := validateInsightMemoryAdvance(memory); err != nil {
+ 		return domain.InsightExplorationMemory{}, err
+ 	}
+ 	if !ok || (state != "PENDING" && state != "DISCARDED") || !validSynthesisText(reason, 500) || strings.TrimSpace(reason) == "" {
+--- before0147/01_core/usecase/insight_exploration_memory_test.go
++++ 01_core/usecase/insight_exploration_memory_test.go
+@@ -2,13 +2,16 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/01_core/usecase/insight_exploration_memory_test.md
+  * @layer L1
+- * @updated 2026-10-28
++ * @updated 2026-10-29
+  */
+ package usecase
+ 
+ import (
+ 	"bateia/01_core/domain"
+ 	"encoding/json"
++	"errors"
++	"fmt"
++	"reflect"
+ 	"strings"
+ 	"testing"
+ )
+@@ -118,3 +121,56 @@
+ 		t.Fatal("known history crowded out a new path")
+ 	}
+ }
++
++func TestExplorationMemoryFeedbackClosesAtGenerationLimit(t *testing.T) {
++	for _, generation := range []int{999998, 999999} {
++		for _, state := range []string{"pending", "discarded"} {
++			t.Run(fmt.Sprintf("%d/%s", generation, state), func(t *testing.T) {
++				memory := memoryFixture(t)
++				for i := range memory.Entries {
++					entry := &memory.Entries[i]
++					if entry.Identity.ExternalID == "other/idea" {
++						entry.State, entry.ReadAttempts, entry.LastStatus = "EXAMINED", 3, "COLLECTED"
++						entry.LastRead = &domain.InsightReadObservation{Source: domain.CommitRef{Owner: "other", Repo: "idea", Commit: strings.Repeat("c", 40)}, Path: "README.md", ContentHash: "sha256:" + strings.Repeat("c", 64)}
++						if entry.Lead == nil {
++							t.Fatal("fixture must exercise both a lead and an earlier reading")
++						}
++					}
++				}
++				memory.Generation = generation
++				memory = sealInsightMemory(memory)
++				if _, err := ValidateInsightExplorationMemory(&memory); err != nil {
++					t.Fatal("boundary history must remain readable", err)
++				}
++				before, _ := json.Marshal(memory)
++				updated, err := UpdateInsightExplorationMemory(memory, "https://github.com/other/idea", state, "Boundary feedback")
++				after, _ := json.Marshal(memory)
++				if string(before) != string(after) {
++					t.Fatal("feedback changed caller history")
++				}
++				if generation == 999999 {
++					if !errors.Is(err, domain.ErrInvalidRunInput) || updated.ID != "" {
++						t.Fatal("feedback returned an unusable next generation", err, updated.Generation)
++					}
++					return
++				}
++				if err != nil || updated.Generation != 999999 {
++					t.Fatal("last valid feedback was rejected", err, updated.Generation)
++				}
++				if _, err := ValidateInsightExplorationMemory(&updated); err != nil {
++					t.Fatal("successful feedback must validate", err)
++				}
++				expected, _ := ValidateInsightExplorationMemory(&memory)
++				for i := range expected.Entries {
++					if expected.Entries[i].Identity.ExternalID == "other/idea" {
++						expected.Entries[i].State = strings.ToUpper(state)
++						expected.Entries[i].Reason = "Boundary feedback"
++					}
++				}
++				if !reflect.DeepEqual(expected.Entries, updated.Entries) {
++					t.Fatal("feedback changed reading evidence or other history")
++				}
++			})
++		}
++	}
++}
+--- before0147/01_core/usecase/insight_neighborhood_plan.go
++++ 01_core/usecase/insight_neighborhood_plan.go
+@@ -87,8 +87,8 @@
+ 			return insightNeighborhoodAdmission{Request: request}, domain.ErrInvalidRunInput
+ 		}
+ 	}
+-	if memory.Generation >= 999999 {
+-		return insightNeighborhoodAdmission{Request: request}, domain.ErrInvalidRunInput
++	if err := validateInsightMemoryAdvance(memory); err != nil {
++		return insightNeighborhoodAdmission{Request: request}, err
+ 	}
+ 	request.Input, request.Memory = input, &memory
+ 	options := neighborhoodSiteRequest(request)
+--- before0147/01_core/usecase/insight_neighborhood_sources_test.go
++++ 01_core/usecase/insight_neighborhood_sources_test.go
+@@ -9,6 +9,8 @@
+ import (
+ 	"bateia/01_core/domain"
+ 	"encoding/json"
++	"fmt"
++	"strings"
+ 	"testing"
+ )
+ 
+@@ -46,3 +48,164 @@
+ 		})
+ 	}
+ }
++
++func frozenNeighborhoodOriginsFixture(t *testing.T, kind string, sizes []int) domain.InsightSiteReport {
++	t.Helper()
++	report := domain.InsightSiteReport{SchemaVersion: "insight-site-discovery-v1", Plan: domain.InsightSitePlan{Request: insightSiteRequest()}}
++	memory := domain.InsightExplorationMemory{SchemaVersion: "insight-exploration-memory-v1", Generation: 1, Entries: []domain.InsightMemoryEntry{}}
++	for i, size := range sizes {
++		connector, host, owner := domain.ConnectorGitHubCatalog, "github.com", "org"
++		if kind == "site" {
++			connector, host, owner = domain.ConnectorGitLabCatalog, "gitlab.com", "org/subgroup"
++		} else if kind == "followup" {
++			connector, host = domain.ConnectorGiteeCatalog, "gitee.com"
++		}
++		repo := fmt.Sprintf("repo%d", i)
++		identity := domain.ProductIdentity{ConnectorID: connector, ExternalID: owner + "/" + repo, CanonicalURL: "https://" + host + "/" + owner + "/" + repo}
++		ref := domain.CommitRef{Owner: owner, Repo: repo, Commit: strings.Repeat("a", 40)}
++		content := strings.Repeat("x", size)
++		item := domain.CollectedEvidence{Kind: domain.EvidenceDocumentation, Ref: ref, Path: "README.md", Content: content, ContentHash: "sha256:" + contentHash(content)}
++		bundle := domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Items: []domain.CollectedEvidence{item}, BytesRead: int64(size), Complete: true}
++		entryID := insightMemoryEntryID(identity)
++		observation := domain.InsightReadObservation{Source: ref, Path: item.Path, ContentHash: item.ContentHash}
++		memory.Entries = append(memory.Entries, domain.InsightMemoryEntry{ID: entryID, Identity: identity, State: "EXAMINED", FirstGeneration: 1, LastQuestion: "queue", ReadAttempts: 1, LastStatus: "COLLECTED", LastRead: &observation})
++		id := fmt.Sprintf("candidate%d", i)
++		if kind == "followup" {
++			id = entryID
++		}
++		receipt := domain.InsightReadmeReceipt{ReferenceID: id, Source: ref, Status: "COLLECTED", Path: item.Path, Bytes: size, Scope: "ROOT_README_ONLY"}
++		switch kind {
++		case "github":
++			report.Candidates = append(report.Candidates, domain.InsightSiteCandidate{ID: id, Selected: true, Product: domain.ProductCandidate{Identity: identity}})
++			report.Bundles = append(report.Bundles, bundle)
++		case "site":
++			report.SiteContexts = append(report.SiteContexts, domain.InsightSiteContext{CandidateID: id, Identity: identity, Bundle: bundle})
++		case "followup":
++			report.Followups = append(report.Followups, domain.InsightFollowup{EntryID: id, Identity: identity, Status: "COLLECTED", Receipt: &receipt, Bundle: &bundle})
++		default:
++			t.Fatal("unknown fixture kind", kind)
++		}
++		if kind != "followup" {
++			report.Readmes = append(report.Readmes, domain.InsightSiteReadme{CandidateID: id, ConnectorID: connector, Status: "COLLECTED", Receipt: &receipt})
++		}
++	}
++	memory = sealInsightMemory(memory)
++	if _, err := ValidateInsightExplorationMemory(&memory); err != nil {
++		t.Fatal("invalid fixture history", err)
++	}
++	report.ExplorationMemory = &memory
++	return report
++}
++
++func TestNeighborhoodFrozenOriginExactLimits(t *testing.T) {
++	cases := []struct {
++		name  string
++		sizes []int
++		valid bool
++	}{
++		{"one file at limit", []int{32 << 10}, true},
++		{"one file over limit", []int{(32 << 10) + 1}, false},
++		{"eight documents", []int{1, 1, 1, 1, 1, 1, 1, 1}, true},
++		{"nine documents", []int{1, 1, 1, 1, 1, 1, 1, 1, 1}, false},
++		{"aggregate at limit", []int{32 << 10, 32 << 10, 32 << 10, 32 << 10}, true},
++		{"aggregate over limit", []int{32 << 10, 32 << 10, 32 << 10, 32 << 10, 1}, false},
++	}
++	for _, kind := range []string{"github", "site", "followup"} {
++		for _, tc := range cases {
++			t.Run(kind+"/"+tc.name, func(t *testing.T) {
++				input := frozenNeighborhoodOriginsFixture(t, kind, tc.sizes)
++				before, _ := json.Marshal(input)
++				origins, err := insightNeighborhoodOrigins(input)
++				if tc.valid {
++					if err != nil || len(origins) != len(tc.sizes) {
++						t.Fatal("inclusive source limit rejected", err, len(origins))
++					}
++				} else if err == nil {
++					t.Fatal("excess frozen sources admitted")
++				}
++				after, _ := json.Marshal(input)
++				if string(before) != string(after) {
++					t.Fatal("source validation changed frozen input")
++				}
++				if !tc.valid {
++					assertFrozenOriginRejectedBeforeRead(t, input)
++				}
++			})
++		}
++	}
++}
++
++func assertFrozenOriginRejectedBeforeRead(t *testing.T, input domain.InsightSiteReport) {
++	t.Helper()
++	// Keep an eligible pending destination so late validation would expose a read.
++	prepared := *input.ExplorationMemory
++	prepared.Entries = append([]domain.InsightMemoryEntry{}, prepared.Entries...)
++	prepared = sealInsightMemory(prepared)
++	memory, err := ValidateInsightExplorationMemory(&prepared)
++	if err != nil {
++		t.Fatal("source control must have an independently valid memory", err)
++	}
++	identity := domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "pending/target", CanonicalURL: "https://github.com/pending/target"}
++	memory.Entries = append(memory.Entries, domain.InsightMemoryEntry{ID: insightMemoryEntryID(identity), Identity: identity, State: "PENDING", FirstGeneration: 1, LastQuestion: "queue"})
++	memory = sealInsightMemory(memory)
++	input.ExplorationMemory = &memory
++	input.ID = ""
++	input.ID = "site_discovery_" + insightHash(input)
++	reader, bindings := followFixture()
++	one := 1
++	result, err := ExpandInsightNeighborhood(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), domain.InsightNeighborhoodRequest{Input: input, FollowLinks: &one}, bindings)
++	if err == nil || result.ID != "" || len(reader.reads) != 0 || len(reader.resolves) != 0 {
++		t.Fatal("bad frozen input was published or reached a reader", err)
++	}
++}
++
++func TestNeighborhoodFrozenOriginRejectsInconsistentWitnesses(t *testing.T) {
++	for _, kind := range []string{"github", "site", "followup"} {
++		for _, mode := range []string{"receipt source", "receipt path", "receipt bytes", "receipt scope", "receipt reference", "receipt absent", "last read", "duplicate"} {
++			t.Run(kind+"/"+mode, func(t *testing.T) {
++				input := frozenNeighborhoodOriginsFixture(t, kind, []int{20})
++				if _, err := insightNeighborhoodOrigins(input); err != nil {
++					t.Fatal("positive source control failed", err)
++				}
++				var r *domain.InsightReadmeReceipt
++				if kind == "followup" {
++					r = input.Followups[0].Receipt
++				} else {
++					r = input.Readmes[0].Receipt
++				}
++				switch mode {
++				case "receipt source":
++					r.Source.Commit = strings.Repeat("b", 40)
++				case "receipt path":
++					r.Path = "README.txt"
++				case "receipt bytes":
++					r.Bytes++
++				case "receipt scope":
++					r.Scope = "FULL_REPOSITORY"
++				case "receipt reference":
++					r.ReferenceID = "another-entry"
++				case "receipt absent":
++					if kind == "followup" {
++						input.Followups[0].Receipt = nil
++					} else {
++						input.Readmes[0].Receipt = nil
++					}
++				case "last read":
++					input.ExplorationMemory.Entries[0].LastRead.ContentHash = "sha256:" + strings.Repeat("b", 64)
++				case "duplicate":
++					if kind == "github" {
++						input.Bundles = append(input.Bundles, input.Bundles[0])
++					} else if kind == "site" {
++						input.SiteContexts = append(input.SiteContexts, input.SiteContexts[0])
++					} else {
++						input.Followups = append(input.Followups, input.Followups[0])
++					}
++				}
++				if _, err := insightNeighborhoodOrigins(input); err == nil {
++					t.Fatal("inconsistent witness admitted")
++				}
++				assertFrozenOriginRejectedBeforeRead(t, input)
++			})
++		}
++	}
++}
+--- before0147/01_core/usecase/insight_neighborhood_plan_test.go
++++ 01_core/usecase/insight_neighborhood_plan_test.go
+@@ -9,6 +9,8 @@
+ import (
+ 	"bateia/01_core/domain"
+ 	"encoding/json"
++	"errors"
++	"fmt"
+ 	"testing"
+ )
+ 
+@@ -32,3 +34,35 @@
+ 		t.Fatal("caller mutation invalidated the independently admitted investigation", err)
+ 	}
+ }
++
++func TestNeighborhoodGenerationLimitPrecedesEffects(t *testing.T) {
++	for _, generation := range []int{999998, 999999} {
++		t.Run(fmt.Sprint(generation), func(t *testing.T) {
++			input, reader, bindings := neighborhoodFixture(t)
++			input.ExplorationMemory.Generation = generation
++			memory := sealInsightMemory(*input.ExplorationMemory)
++			input.ExplorationMemory = &memory
++			input.ID = ""
++			input.ID = "site_discovery_" + insightHash(input)
++			before, _ := json.Marshal(input)
++			zero := 0
++			result, err := ExpandInsightNeighborhood(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), domain.InsightNeighborhoodRequest{Input: input, FollowLinks: &zero}, bindings)
++			after, _ := json.Marshal(input)
++			if string(before) != string(after) || len(reader.reads) != 0 || len(reader.resolves) != 0 {
++				t.Fatal("generation admission mutated input or read a source")
++			}
++			if generation == 999999 {
++				if !errors.Is(err, domain.ErrInvalidRunInput) || result.ID != "" {
++					t.Fatal("exhausted generation admitted", err)
++				}
++				return
++			}
++			if err != nil || result.ExplorationMemory == nil || result.ExplorationMemory.Generation != 999999 {
++				t.Fatal("last valid expansion failed", err)
++			}
++			if _, err := ValidateInsightExplorationMemory(result.ExplorationMemory); err != nil {
++				t.Fatal("last expansion memory cannot be reused as history", err)
++			}
++		})
++	}
++}
+--- before0147/01_core/usecase/insight_followup_selection_test.go
++++ 01_core/usecase/insight_followup_selection_test.go
+@@ -8,6 +8,7 @@
+ 
+ import (
+ 	"bateia/01_core/domain"
++	"encoding/json"
+ 	"reflect"
+ 	"testing"
+ )
+@@ -32,3 +33,57 @@
+ 		t.Fatal("general ordering mutated memory or performed reading", ids())
+ 	}
+ }
++
++func TestFollowupSelectionTieBreaksAcrossPermutations(t *testing.T) {
++	cases := []struct {
++		name        string
++		generations []int
++		references  map[string]int
++		want        []string
++	}{
++		{"age before references and ID", []int{1, 2, 3}, map[string]int{"a": 0, "b": 1, "z": 2}, []string{"z", "b", "a"}},
++		{"reference presence before ID", []int{1, 1, 1}, map[string]int{"z": 1, "b": 0}, []string{"b", "z", "a"}},
++		{"reference position before ID", []int{1, 1, 1}, map[string]int{"z": 0, "b": 2, "a": 1}, []string{"z", "a", "b"}},
++		{"ID breaks final tie", []int{1, 1, 1}, nil, []string{"a", "b", "z"}},
++	}
++	permutations := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			for _, focused := range []bool{false, true} {
++				entries := make([]domain.InsightMemoryEntry, 3)
++				order := map[string]int{}
++				var distances map[string]int
++				if focused {
++					distances = map[string]int{"z": 1, "b": 1, "a": 1}
++				}
++				for i, id := range []string{"z", "b", "a"} {
++					identity := domain.ProductIdentity{ConnectorID: domain.ConnectorGitHubCatalog, ExternalID: "org/" + id, CanonicalURL: "https://github.com/org/" + id}
++					entries[i] = domain.InsightMemoryEntry{ID: id, Identity: identity, ReadAttempts: 2, FirstGeneration: tc.generations[i]}
++					if position, ok := tc.references[id]; ok {
++						order[insightMemoryKey(identity)] = position
++					}
++				}
++				reader, _ := followFixture()
++				bindings := map[string]domain.InsightSiteBinding{domain.ConnectorGitHubCatalog: {FollowReader: reader}}
++				report := domain.InsightSiteReport{Plan: domain.InsightSitePlan{Sources: []domain.DiscoveryConnectorCapabilities{{ID: domain.ConnectorGitHubCatalog}}}, ExplorationMemory: &domain.InsightExplorationMemory{Entries: entries}}
++				before, _ := json.Marshal(report)
++				beforeOrder, _ := json.Marshal(order)
++				beforeDistances, _ := json.Marshal(distances)
++				for _, permutation := range permutations {
++					queue := []domain.InsightMemoryEntry{entries[permutation[0]], entries[permutation[1]], entries[permutation[2]]}
++					sortInsightFollowupQueue(&report, bindings, queue, order, distances)
++					got := []string{queue[0].ID, queue[1].ID, queue[2].ID}
++					if !reflect.DeepEqual(got, tc.want) {
++						t.Fatalf("focused=%t permutation=%v: got %v want %v", focused, permutation, got, tc.want)
++					}
++				}
++				after, _ := json.Marshal(report)
++				afterOrder, _ := json.Marshal(order)
++				afterDistances, _ := json.Marshal(distances)
++				if string(before) != string(after) || string(beforeOrder) != string(afterOrder) || string(beforeDistances) != string(afterDistances) || len(reader.reads) != 0 || len(reader.resolves) != 0 {
++					t.Fatal("sorting changed history/metadata or called a reader")
++				}
++			}
++		})
++	}
++}
+--- before0147/02_shell/cli/insight_memory_test.go
++++ 02_shell/cli/insight_memory_test.go
+@@ -2,13 +2,16 @@
+  * Crystalline Lineage
+  * @prompt 00_nucleo/prompts/02_shell/cli/insight_memory_test.md
+  * @layer L2
+- * @updated 2026-10-28
++ * @updated 2026-10-29
+  */
+ package cli
+ 
+ import (
+ 	"bateia/01_core/domain"
++	"bateia/01_core/usecase"
+ 	"bytes"
++	"crypto/sha256"
++	"encoding/hex"
+ 	"encoding/json"
+ 	"os"
+ 	"path/filepath"
+@@ -79,3 +82,75 @@
+ 		t.Fatal("rejected update changed output")
+ 	}
+ }
++
++func TestInsightMemoryCLIGenerationLimitDoesNotPublishInvalidSnapshot(t *testing.T) {
++	dir := t.TempDir()
++	first := filepath.Join(dir, "first.json")
++	factory := func() ([]domain.InsightSiteBinding, error) {
++		return []domain.InsightSiteBinding{{Connector: &insightSiteCLIFixture{}}}, nil
++	}
++	if err := RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--output", first}, &bytes.Buffer{}, nil, nil, factory); err != nil {
++		t.Fatal(err)
++	}
++	raw, err := os.ReadFile(first)
++	if err != nil {
++		t.Fatal(err)
++	}
++	var report domain.InsightSiteReport
++	if err := json.Unmarshal(raw, &report); err != nil || report.ExplorationMemory == nil {
++		t.Fatal("fixture lacks memory", err)
++	}
++	for _, tc := range []struct {
++		name       string
++		generation int
++		wantError  bool
++	}{{"last-valid", 999998, false}, {"exhausted", 999999, true}} {
++		t.Run(tc.name, func(t *testing.T) {
++			memory := *report.ExplorationMemory
++			memory.Generation, memory.ID = tc.generation, ""
++			var canonical bytes.Buffer
++			encoder := json.NewEncoder(&canonical)
++			encoder.SetEscapeHTML(false)
++			if err := encoder.Encode(memory); err != nil {
++				t.Fatal(err)
++			}
++			digest := sha256.Sum256(bytes.TrimSuffix(canonical.Bytes(), []byte{'\n'}))
++			memory.ID = "exploration_memory_" + hex.EncodeToString(digest[:])
++			if _, err := usecase.ValidateInsightExplorationMemory(&memory); err != nil {
++				t.Fatal("boundary history should remain readable", err)
++			}
++			input, output := filepath.Join(dir, tc.name+"-input.json"), filepath.Join(dir, tc.name+"-output.json")
++			data, _ := json.Marshal(memory)
++			if err := os.WriteFile(input, data, 0600); err != nil {
++				t.Fatal(err)
++			}
++			var stdout bytes.Buffer
++			err := runIdeaInsights([]string{"memory", "--input", input, "--target", "https://gitee.com/org/repo", "--state", "pending", "--reason", "Boundary feedback", "--output", output}, &stdout)
++			after, readErr := os.ReadFile(input)
++			if readErr != nil || !bytes.Equal(data, after) {
++				t.Fatal("feedback changed the input file", readErr)
++			}
++			if tc.wantError {
++				_, statErr := os.Stat(output)
++				if err == nil || !os.IsNotExist(statErr) || stdout.Len() != 0 {
++					t.Fatal("invalid next generation was published", err, statErr, stdout.String())
++				}
++				called := false
++				rejectedFactory := func() ([]domain.InsightSiteBinding, error) { called = true; return nil, nil }
++				err = RunInsightDiscoveryCommand([]string{"--question", "queue", "--sources", "gitee", "--memory", input, "--output", output}, &stdout, nil, nil, rejectedFactory)
++				_, statErr = os.Stat(output)
++				if err == nil || called || !os.IsNotExist(statErr) || stdout.Len() != 0 {
++					t.Fatal("exhausted generation reached the factory or publication", err, called)
++				}
++				return
++			}
++			if err != nil {
++				t.Fatal("last valid feedback failed", err)
++			}
++			updated, err := readInsightMemory(output)
++			if err != nil || updated.Generation != 999999 {
++				t.Fatal("published memory cannot be read", err)
++			}
++		})
++	}
++}

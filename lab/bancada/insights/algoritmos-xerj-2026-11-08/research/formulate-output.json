@@ -1,0 +1,257 @@
+{
+  "schema_version": "insight-algorithms-v1",
+  "id": "algorithms_f68317f7e6514c5864d9e3f284266c0489b44e490758c6e1fcfd548dbc77b6d1",
+  "input_sha256": "5cc7a74d9aed50f8ba80564e9fb2ea704de20711b28d5b4b7f00b6948d89ba75",
+  "question": "Que estratégias de fontes reais poderiam mudar decisões de engenharia no XERJ, distinguindo diferença sustentada, capacidade presente e relação desconhecida?",
+  "target": {
+    "repository": "xerj-org/xerj",
+    "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+  },
+  "scope": "SOURCE_BOUND_DECLARED_REASONING",
+  "interpretation_state": "DECLARED_NOT_REASSESSED",
+  "target_relation_state": "DECLARED_NOT_REASSESSED",
+  "effect_state": "UNVERIFIED",
+  "ideas": [
+    {
+      "id": "algorithm_7d52aa7726403581fec8152c4ec0337d67299ae16f9e5715a82dbe05ed4d06d9",
+      "title": "Confirmar poda de score por limite superior já presente; descartar adoção genérica de WAND como novidade",
+      "principle": "Quando o heap top-k está cheio, uma contribuição cujo limite superior é estritamente menor que o pior score retido pode evitar avaliação; igualdade deve respeitar desempate. A unidade podada e o contrato de contagem continuam específicos de cada sistema.",
+      "steps": [
+        "Preencher o heap top-k antes de usar seu limiar competitivo.",
+        "Construir limites superiores conservadores das contribuições de score.",
+        "Podar apenas abaixo do limiar estrito; tratar igualdade conforme ordenação pública.",
+        "No XERJ, continuar visitando e contando cada correspondência para total exato; não transferir automaticamente a poda de blocos da fonte."
+      ],
+      "evidence": [
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 2502,
+          "end_line": 2506,
+          "excerpt": "                    // Equality cannot be discarded: the smaller document id\n                    // wins score ties in the crate's public ordering.\n                    if upper_bound \u003e= threshold {\n                        pivot = Some(candidate);\n                        break;"
+        },
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 3290,
+          "end_line": 3305,
+          "excerpt": "        self.validate_block_directory(block_directory)?;\n        let mut ranked = Vec::with_capacity(k);\n        let mut sorted = false;\n        let can_prune_blocks = query_weight \u003e 0.0 \u0026\u0026 query_weight.is_finite();\n        let mut block_bytes = Vec::new();\n        for block_index in 0..block_directory.block_count {\n            let block = self.posting_block_at(entry, block_directory, block_index)?;\n            if can_prune_blocks \u0026\u0026 ranked.len() == k {\n                if !sorted {\n                    ranked.sort_by(crate::cmp_doc_scores);\n                    sorted = true;\n                }\n                let threshold = ranked.last().expect(\"top-k buffer is full\").1;\n                if query_weight * (block.max_weight as f32) \u003c threshold {\n                    continue;\n                }"
+        },
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 7122,
+          "end_line": 7128,
+          "excerpt": "    fn block_max_pruning_skips_a_block_and_matches_brute_force() {\n        // Oracle test for the block-skip at top_k_single_raw_term: block 0\n        // (128 entries, weights ~100) fills the top-k, then block 1's max\n        // (weight 3) falls below the threshold and the block is skipped.\n        // The result must still equal an unpruned brute force over the raw\n        // postings; the skip precondition is asserted explicitly so the test\n        // stays pinned to the pruning regime if constants drift."
+        }
+      ],
+      "application_conditions": [
+        "O princípio amplo de evitar cálculo de score não competitivo já opera no XERJ no bool somente should com termos simples, min_should_match efetivo 1, sem explain e com cap finito.",
+        "Transferência da variante em blocos só faria sentido com limites adequados ao BM25 e preservação explícita do total."
+      ],
+      "failure_conditions": [
+        "A fonte pontua produto interno esparso; max_weight não é automaticamente limite de BM25.",
+        "Limites subestimados removem resultados válidos.",
+        "Poda de blocos que deixa de visitar docs não mantém automaticamente a contagem exata exigida no alvo.",
+        "Podar em igualdade pode mudar o vencedor do desempate."
+      ],
+      "decision": {
+        "current": "XERJ já encaminha search_bounded para wand_should_bool, constrói ubound BM25, evita score abaixo do pior retido e avança next contando todo doc.",
+        "proposed": "Descartar a recomendação genérica de adicionar WAND; preservar a implementação existente. Manter a variante block-max como relação específica não estabelecida, sem recomendação de implementação neste relatório.",
+        "benefit": "Evitar trabalho duplicado e evitar confundir confirmação de princípio com novidade. Nenhum ganho novo alegado.",
+        "cost": "Nenhuma migração proposta; revisão de contratos seria necessária se alguém explorasse a variante block-max."
+      },
+      "target_relation": "ALREADY_PRESENT",
+      "target_evidence": [
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/search.rs",
+          "content_hash": "sha256:cacffa87fd1a7a4d67643ce88dd3d355164cf6532e32014d0943a20a3c2abade",
+          "start_line": 622,
+          "end_line": 630,
+          "excerpt": "        // WAND fast path for the shape a `match`/`multi_match` query becomes\n        // after planning (`bool{should: [Term..]}`, nothing else).  Only when\n        // nothing downstream needs the generic walk: `explain` needs every\n        // retained hit's breakdown, and `cap == usize::MAX` callers want the\n        // complete match set.\n        if !explain \u0026\u0026 cap != usize::MAX {\n            if let Some(res) = self.wand_should_bool(query, cap)? {\n                return Ok(res);\n            }"
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/search.rs",
+          "content_hash": "sha256:cacffa87fd1a7a4d67643ce88dd3d355164cf6532e32014d0943a20a3c2abade",
+          "start_line": 652,
+          "end_line": 664,
+          "excerpt": "    /// Design: WAND-style upper-bound pruning (Broder et al., *Faster Top-k\n    /// Document Retrieval Using Block-Max Indexes*; the same dynamic-pruning\n    /// idea as tantivy's `block_wand`, MIT — quickwit-oss/tantivy\n    /// `src/query/boolean_query/block_wand_union.rs`, whose block-max half\n    /// needs impact-ordered postings and skip tables this postings format\n    /// does not carry).  The walk still visits EVERY matching doc — postings\n    /// have no skip lists, and the caller needs an EXACT total — but a doc\n    /// is scored only when the sum of its matched terms' score upper bounds\n    /// (`idf × (k1+1) × boost`, the supremum of `score_term` over any tf/dl)\n    /// can still enter the heap.  For stopword-only docs that bound sum sits\n    //    below the 10th-best score almost immediately, so the entire scoring\n    ///   cost for them disappears; what remains per skipped doc is one\n    ///   cursor compare and one `next()`."
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/search.rs",
+          "content_hash": "sha256:cacffa87fd1a7a4d67643ce88dd3d355164cf6532e32014d0943a20a3c2abade",
+          "start_line": 788,
+          "end_line": 793,
+          "excerpt": "            let score_it = match top.worst() {\n                None =\u003e cap \u003e 0,\n                Some(worst) =\u003e {\n                    let bound: f32 = scorers[..k].iter().map(|s| s.ubound).sum();\n                    bound \u003e= worst.score\n                }"
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/search.rs",
+          "content_hash": "sha256:cacffa87fd1a7a4d67643ce88dd3d355164cf6532e32014d0943a20a3c2abade",
+          "start_line": 824,
+          "end_line": 836,
+          "excerpt": "            total += 1;\n\n            // Advance every scorer sitting on `d` — exactly `scorers[..k]`\n            // (the sort invariant makes the at-d cursors a prefix).\n            // Exhausted cursors are marked `u32::MAX`, which sorts last, and\n            // pop off after the re-sort.  `sort_unstable` never allocates the\n            // scratch buffer a stable sort spills to on \u003e20-element slices —\n            // this re-sort runs once per DOC, so that alloc was per-doc too.\n            for s in scorers.iter_mut().take(k) {\n                match s.reader.next() {\n                    Some(next) =\u003e {\n                        s.doc = next.doc_id;\n                        s.tf = next.term_freq;"
+        }
+      ],
+      "validation_observable": "Leitura confirma a cadeia interna search -\u003e search_bounded -\u003e wand_should_bool -\u003e postings_reader/next. Testes de paridade da fonte e alvo foram apenas lidos. Uma futura mudança teria de preservar IDs/scores/ordem/total, incluindo empates e fallback de shapes ricos.",
+      "reject_if": "Rejeitar a alegação de novidade do princípio amplo porque ele já está presente. Não inferir que a variante por blocos também esteja presente."
+    },
+    {
+      "id": "algorithm_ae107e272df0a928a170b8b9511398d1563520674a5f4dc31ac3791070c6287a",
+      "title": "Experimentar payloads de postings endereçáveis por bloco para abertura fria seletiva",
+      "principle": "Separar diretórios pequenos residentes do payload e endereçar blocos independentes permite carregar somente listas e blocos necessários, em vez de descomprimir todos os postings do campo na abertura. É uma hipótese de transferência de formato e leitor, não um ganho medido.",
+      "steps": [
+        "Persistir diretório com intervalo de doc IDs, offset e comprimento de cada bloco; manter a base necessária para decodificar gaps independentemente.",
+        "Usar offsets relativos a uma unidade acessível: no XERJ, um novo framing teria de substituir ou particionar o envelope Zstd inteiro; gravar apenas o SkipEntry atual não basta.",
+        "Abrir diretórios e metadados; ler e validar por faixa os blocos dos termos efetivamente pedidos.",
+        "Preservar codecs legados, posições, frequências, normas e invariantes de checksum; manter o percurso completo onde a API exige total exato.",
+        "Medir separadamente abertura fria, cache aquecido e percursos completos antes de decidir a migração."
+      ],
+      "evidence": [
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "docs/raw-segments.md",
+          "content_hash": "sha256:c4db83f4f97cf8c5360b619ea1d72380f52ce986821ded5cd860d0ca2f1ff872",
+          "start_line": 3,
+          "end_line": 5,
+          "excerpt": "`raw-segment` exposes numeric-term byte and file segment formats for large\nlexical or learned-sparse indexes. The readers keep fixed directories resident\nand range-read posting payloads for query terms."
+        },
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 3042,
+          "end_line": 3053,
+          "excerpt": "        checked_range(offset, len, self.file_len, \"postings\")?;\n        let len = usize::try_from(len).map_err(|_| Error::SegmentTooLarge)?;\n        bytes.clear();\n        bytes.resize(len, 0);\n        read_exact_at_positional_into(\n            \u0026mut self.file,\n            segment_file_offset(self.data_offset, offset)?,\n            bytes,\n        )?;\n        if let Some(checksums) = self.decoded_block_checksums()? {\n            verify_block_slice(checksums, offset, bytes)?;\n        }"
+        },
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 3308,
+          "end_line": 3318,
+          "excerpt": "            self.read_posting_block_range_into(\n                block.postings_offset,\n                block.postings_len as u64,\n                \u0026mut block_bytes,\n            )?;\n            for_each_posting_in_block(\n                entry.term_id,\n                \u0026block_bytes,\n                block.base_doc_id,\n                block.last_doc_id,\n                |doc_id, doc_weight| {"
+        },
+        {
+          "source": {
+            "repository": "arclabs561/postings",
+            "commit": "edb02683c6359efe2034a6cc71b64c9aaed90cb0"
+          },
+          "path": "src/raw.rs",
+          "content_hash": "sha256:698db589830dfc475eb6b2f82b72c00a016e69f7ab74207b2369f75af31f09dd",
+          "start_line": 609,
+          "end_line": 615,
+          "excerpt": "pub struct RawPostingBlockMeta {\n    base_doc_id: DocId,\n    last_doc_id: DocId,\n    postings_offset: u64,\n    postings_len: u32,\n    max_weight: u32,\n}"
+        }
+      ],
+      "application_conditions": [
+        "Leitores abertos com poucos termos consultados em relação ao vocabulário e payload do campo.",
+        "Novo formato permitir blocos independentes e leitor compatível com arquivos históricos.",
+        "Perfil confirmar custo material de fs::read/descompressão e retenção do .post; frequência de reabertura e caches da rota de produção ainda não foi estabelecida."
+      ],
+      "failure_conditions": [
+        "Compressão por bloco pode piorar espaço, throughput de ingestão ou aumentar operações de I/O.",
+        "Corpus pequeno, leitores mantidos aquecidos ou consultas que percorrem quase todo o payload podem perder para a leitura sequencial atual.",
+        "Pular correspondências para ranking pode quebrar total exato; esta proposta não autoriza essa mudança.",
+        "Índice de offsets sem mudança do envelope Zstd inteiro não torna o payload comprimido endereçável."
+      ],
+      "decision": {
+        "current": "No recorte atual, FtsIndexReader::open lê o .post inteiro e descomprime o envelope; a busca usa slices sem descompressão por consulta. Existe open_stats_only que já evita postings no pré-passe de estatísticas.",
+        "proposed": "Decidir primeiro por um protótipo de diretório + framing independente e leitor por faixas para abertura fria seletiva; manter o leitor atual como baseline/fallback. Não aprovar migração nem mudança de total sem experimento.",
+        "benefit": "Hipótese: diminuir bytes lidos e descomprimidos e memória retida quando uma abertura consulta poucos termos. Não há previsão quantitativa sustentada.",
+        "cost": "Versão nova de formato, escritor/leitor/merge compatíveis, checksums e testes de corrupção/recuperação, diretórios adicionais, possível perda de compressão e mais I/O. Integração em caches e lifecycle não estudada."
+      },
+      "target_relation": "DIFFERENT_APPROACH",
+      "target_evidence": [
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/index.rs",
+          "content_hash": "sha256:f91700ce299b3172fb3cefed572510ffb173273263f6c83825206359ddeaa92a",
+          "start_line": 2597,
+          "end_line": 2609,
+          "excerpt": "    /// Open ONLY what BM25 collection statistics need: the FST term\n    /// dictionary (mmap'd) and the small `.meta` side-car.\n    ///\n    /// Skips the two expensive parts of a full [`Self::open`]:\n    ///\n    ///  * the postings envelope — a whole-file `fs::read` plus a zstd\n    ///    decompress of every posting list in the field, O(index bytes);\n    ///  * the norms table — a whole-file `fs::read` plus decode, O(docs).\n    ///\n    /// That makes the per-segment `field_stats` + `term_doc_freq` pre-pass\n    /// the index-wide scorer needs (#188) cost, per field, one mmap plus one\n    /// `.meta` read-and-decode — for the current ZFM4 format that decode is\n    /// a zstd decompress of the `num_terms × 24`-byte records section, i.e."
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/index.rs",
+          "content_hash": "sha256:f91700ce299b3172fb3cefed572510ffb173273263f6c83825206359ddeaa92a",
+          "start_line": 2700,
+          "end_line": 2719,
+          "excerpt": "            // The query path references `post_data` by slice in all\n            // cases, so there's no per-query decompress cost.\n            //\n            // STATS-ONLY: skip the read + decompress entirely — the caller\n            // only wants `field_stats`/`term_doc_freq`, both of which live\n            // in `.meta`/`.fst`.\n            let raw_post = if stats_only {\n                Vec::new()\n            } else {\n                fs::read(\u0026post_path).with_context(|| format!(\"reading postings {:?}\", post_path))?\n            };\n            let zstd_envelope = raw_post.len() \u003e= 8\n                \u0026\u0026 (\u0026raw_post[..4] == POST_MAGIC_ZSTD_V2 || \u0026raw_post[..4] == POST_MAGIC_ZSTD);\n            let post_block_v2 = raw_post.len() \u003e= 4 \u0026\u0026 \u0026raw_post[..4] == POST_MAGIC_ZSTD_V2;\n            let post_data = if zstd_envelope {\n                let mut len_buf = [0u8; 4];\n                len_buf.copy_from_slice(\u0026raw_post[4..8]);\n                let uncompressed_len = u32::from_le_bytes(len_buf) as usize;\n                let decompressed = zstd::bulk::decompress(\u0026raw_post[8..], uncompressed_len)\n                    .map_err(|e| anyhow::anyhow!(\"ZPS postings decompress failed: {e}\"))?;"
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/postings.rs",
+          "content_hash": "sha256:35f56fe56978ca6437bf78571d88f647dd540aa7684f297d51a7a997d29cc5e3",
+          "start_line": 74,
+          "end_line": 83,
+          "excerpt": "//! ## Skip-list acceleration: NOT implemented\n//!\n//! There is **no on-disk skip table**.  [`PostingsWriter::encode_term`] computes\n//! a [`SkipEntry`] vector in memory (one entry every [`SKIP_INTERVAL`] blocks)\n//! but it is **never serialised** — the caller in `xerj-fts::index` discards it,\n//! and the whole `.post` blob is wrapped in a Zstd envelope, so intra-blob byte\n//! offsets would not be usable as seek targets anyway.  Consequently\n//! [`PostingsReader::advance_to`] performs a **linear scan**, not a skip-list\n//! seek.  Traversal is correct, just unaccelerated; the [`SkipEntry`] machinery\n//! is scaffolding for a future block-skip implementation."
+        },
+        {
+          "source": {
+            "repository": "xerj-org/xerj",
+            "commit": "1557de2f5be981d9db441969201c92a8af6d2de3"
+          },
+          "path": "engine/crates/xerj-fts/src/search.rs",
+          "content_hash": "sha256:cacffa87fd1a7a4d67643ce88dd3d355164cf6532e32014d0943a20a3c2abade",
+          "start_line": 746,
+          "end_line": 756,
+          "excerpt": "            // The factory reads the field's real positions layout and the\n            // envelope's block codec — a docs-only reader must synthesise\n            // tf=1 rather than misparse a positions-bearing stream, exactly\n            // like `scan_term`; the decoded positions are simply never read.\n            let Some(mut reader) = self.reader.postings_reader(\u0026tq.field, \u0026tp) else {\n                continue;\n            };\n            let Some(first) = reader.next() else { continue };\n            let bm25 = self.make_scorer(\u0026tq.field);\n            let score_df = self.scoring_df(\u0026tq.field, \u0026tq.term, tp.doc_frequency as u64);\n            let ubound = bm25.idf(score_df) * (bm25.k1 + 1.0) * tq.boost;"
+        }
+      ],
+      "validation_observable": "Experimento futuro, sem executar fonte nesta investigação: corpus real de código e logs, consultas com poucos/muitos termos, novo leitor e leitor atual com cache frio/aquecido; medir bytes realmente lidos/descomprimidos, RSS, p50/p95, ingestão e tamanho. Comparar IDs, scores, posições e total exato; testar arquivos legados e corrupção. Pré-registrar aceitação: pelo menos 20% menos bytes descomprimidos no braço frio seletivo, sem divergência e sem regressão \u003e5% de p95 aquecido ou ingestão; revisar limites conforme orçamento do projeto antes de executar.",
+      "reject_if": "Rejeitar migração se houver qualquer divergência semântica/corrupção não detectada, se perfil mostrar leitores aquecidos dominantes sem custo de abertura relevante, ou se os ganhos frios não compensarem regressões/custos pré-registrados."
+    }
+  ],
+  "limitations": [
+    "Identidade, hashes, faixas e literais foram ligados aos bytes fornecidos; a origem externa não foi autenticada pelo formulário.",
+    "Princípios, condições, decisões e relação com o alvo são interpretações declaradas, sem reavaliação semântica automática.",
+    "Recortes do alvo não comprovam ausência global de uma capacidade ou novidade; testes citados não foram executados por este comando.",
+    "Nenhum efeito, ganho de desempenho, adoção ou superioridade foi verificado."
+  ]
+}

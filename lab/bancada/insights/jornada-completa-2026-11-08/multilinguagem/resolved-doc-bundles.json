@@ -1,0 +1,2086 @@
+[
+  {
+    "implementation_search": {
+      "status": "not_evaluated",
+      "method": "go_ast_query_v1",
+      "reason": "nenhum arquivo Go elegível no escopo fornecido",
+      "hits": [],
+      "examined": null,
+      "files_read": 0,
+      "bytes_read": 0,
+      "budget": {
+        "max_files": 2048,
+        "max_bytes": 33554432,
+        "max_file_bytes": 524288,
+        "max_results": 24
+      },
+      "limited": false
+    },
+    "schema_version": "1",
+    "repository": {
+      "owner": "proptest-rs",
+      "repo": "proptest",
+      "commit": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+    },
+    "plan": {
+      "schema_version": "1",
+      "repository": {
+        "owner": "proptest-rs",
+        "repo": "proptest",
+        "commit": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+      },
+      "candidate": {
+        "owner": "proptest-rs",
+        "repo": "proptest",
+        "url": "file:///tmp/bateia-multilang-0151/acquired/proptest-rs--proptest",
+        "description": "Worktree local em /tmp/bateia-multilang-0151/acquired/proptest-rs--proptest (metadata Git consultiva; bytes da worktree não autenticados pelo commit)",
+        "stars": 2280,
+        "commit_id": "70cf37d46b7d83393b6ed94c611f8c52209f585d",
+        "consultado_em": "2026-11-08T15:35:28.19392839Z",
+        "stale": false,
+        "default_branch": "main",
+        "updated_at": "2026-10-10T18:18:37Z"
+      },
+      "screening_decision": {
+        "repository": "",
+        "ranking_score": 0,
+        "probability": null,
+        "calibration_status": "",
+        "decision": "",
+        "signals": {
+          "expansion_prior": 0,
+          "query_retention": 0,
+          "fallback_depth": 0,
+          "match_specificity": 0,
+          "description_alignment": 0,
+          "origin_convergence": 0,
+          "capability_coverage": 0,
+          "non_goal_conflict": 0,
+          "evidence_completeness": 0
+        },
+        "contributions": null,
+        "uncertainty_reasons": null,
+        "origins": null
+      },
+      "targets": [
+        {
+          "path": "proptest/README.md",
+          "kind": "documentation",
+          "reason": "Root README.md is a Git symlink; collect canonical target to make immutable source locator byte-exact"
+        }
+      ],
+      "budget": {
+        "documents": 0,
+        "manifests": 0,
+        "code_files": 0,
+        "requirement_files": 0,
+        "tests_examples": 0,
+        "total_bytes": 262144,
+        "tree_depth": 0
+      },
+      "requirement_queries": []
+    },
+    "items": [
+      {
+        "kind": "repository_metadata",
+        "ref": {
+          "owner": "proptest-rs",
+          "repo": "proptest",
+          "commit": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+        },
+        "path": "@repository-metadata",
+        "content": "{\"owner\":\"proptest-rs\",\"repo\":\"proptest\",\"url\":\"file:///tmp/bateia-multilang-0151/acquired/proptest-rs--proptest\",\"description\":\"Worktree local em /tmp/bateia-multilang-0151/acquired/proptest-rs--proptest (metadata Git consultiva; bytes da worktree não autenticados pelo commit)\",\"stars\":2280,\"commit_id\":\"70cf37d46b7d83393b6ed94c611f8c52209f585d\",\"consultado_em\":\"2026-11-08T15:35:28.19392839Z\",\"stale\":false,\"default_branch\":\"main\",\"updated_at\":\"2026-10-10T18:18:37Z\"}",
+        "content_hash": "f61446dc85ec5bb7bfbbfe2a81d5554380fbc8634a0980c8fb4747d256e4d611"
+      },
+      {
+        "kind": "documentation",
+        "ref": {
+          "owner": "proptest-rs",
+          "repo": "proptest",
+          "commit": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+        },
+        "path": "proptest/README.md",
+        "content": "# Proptest\n\n[![Build Status](https://github.com/proptest-rs/proptest/actions/workflows/rust.yml/badge.svg)](https://github.com/proptest-rs/proptest/actions)\n[![](https://img.shields.io/crates/v/proptest.svg)](https://crates.io/crates/proptest)\n[![](https://img.shields.io/website/https/proptest-rs.github.io/proptest.svg)][book]\n[![](https://docs.rs/proptest/badge.svg)][api-docs]\n\n[book]: https://proptest-rs.github.io/proptest/intro.html\n[api-docs]: https://docs.rs/proptest/latest/proptest/\n\n## Book\n\nA detailed introduction to proptest can be found in the [book](https://proptest-rs.github.io/proptest/)\n\n## Introduction\n\nProptest is a property testing framework (i.e., the QuickCheck family)\ninspired by the [Hypothesis](https://hypothesis.works/) framework for\nPython. It allows to test that certain properties of your code hold for\narbitrary inputs, and if a failure is found, automatically finds the\nminimal test case to reproduce the problem. Unlike QuickCheck, generation\nand shrinking is defined on a per-value basis instead of per-type, which\nmakes it more flexible and simplifies composition.\n\n### Status of this crate\n\nThe crate is fairly close to being feature-complete and has not seen\nsubstantial architectural changes in quite some time. At this point, it mainly\nsees passive maintenance.\n\nSee the [changelog](https://github.com/proptest-rs/proptest/blob/main/proptest/CHANGELOG.md)\nfor a full list of substantial historical changes, breaking and otherwise.\n\n### MSRV\n\nThe current MSRV of this crate is 1.88.\nThe MSRV is guaranteed to not exceed `\u003ccurrent stable release\u003e - 7`, though in practice it may be lower than this - your mileage may vary.\nIf we change this policy in a backwards incompatible way (e.g. changing it to `\u003ccurrent stable release\u003e - 1`), this constitutes a breaking change, and would be a major version bump (e.g. 1.1 -\u003e 2.0).\n\n### What is property testing?\n\n_Property testing_ is a system of testing code by checking that certain\nproperties of its output or behaviour are fulfilled for all inputs. These\ninputs are generated automatically, and, critically, when a failing input\nis found, the input is automatically reduced to a _minimal_ test case.\n\nProperty testing is best used to complement traditional unit testing (i.e.,\nusing specific inputs chosen by hand). Traditional tests can test specific\nknown edge cases, simple inputs, and inputs that were known in the past to\nreveal bugs, whereas property tests will search for more complicated inputs\nthat cause problems.\n\n## Getting Started\n\nLet's say we want to make a function that parses dates of the form\n`YYYY-MM-DD`. We're not going to worry about _validating_ the date, any\ntriple of integers is fine. So let's bang something out real quick.\n\n```rust,no_run\nfn parse_date(s: \u0026str) -\u003e Option\u003c(u32, u32, u32)\u003e {\n    if 10 != s.len() { return None; }\n    if \"-\" != \u0026s[4..5] || \"-\" != \u0026s[7..8] { return None; }\n\n    let year = \u0026s[0..4];\n    let month = \u0026s[6..7];\n    let day = \u0026s[8..10];\n\n    year.parse::\u003cu32\u003e().ok().and_then(\n        |y| month.parse::\u003cu32\u003e().ok().and_then(\n            |m| day.parse::\u003cu32\u003e().ok().map(\n                |d| (y, m, d))))\n}\n```\n\nIt compiles, that means it works, right? Maybe not, let's add some tests.\n\n```rust,ignore\n#[test]\nfn test_parse_date() {\n    assert_eq!(None, parse_date(\"2017-06-1\"));\n    assert_eq!(None, parse_date(\"2017-06-170\"));\n    assert_eq!(None, parse_date(\"2017006-17\"));\n    assert_eq!(None, parse_date(\"2017-06017\"));\n    assert_eq!(Some((2017, 06, 17)), parse_date(\"2017-06-17\"));\n}\n```\n\nTests pass, deploy to production! But now your application starts crashing,\nand people are upset that you moved Christmas to February. Maybe we need to\nbe a bit more thorough.\n\nIn `Cargo.toml`, add\n\n```toml\n[dev-dependencies]\nproptest = \"1.12.0\"\n```\n\nNow we can add some property tests to our date parser. But how do we test\nthe date parser for arbitrary inputs, without making another date parser in\nthe test to validate it? We won't need to as long as we choose our inputs\nand properties correctly. But before correctness, there's actually an even\nsimpler property to test: _The function should not crash._ Let's start\nthere.\n\n```rust,ignore\n// Bring the macros and other important things into scope.\nuse proptest::prelude::*;\n\nproptest! {\n    #[test]\n    fn doesnt_crash(s in \"\\\\PC*\") {\n        parse_date(\u0026s);\n    }\n}\n```\n\nWhat this does is take a literally random `\u0026String` (ignore `\\\\PC*` for the\nmoment, we'll get back to that — if you've already figured it out, contain\nyour excitement for a bit) and give it to `parse_date()` and then throw the\noutput away.\n\nWhen we run this, we get a bunch of scary-looking output, eventually ending\nwith\n\n```text\nthread 'main' panicked at 'Test failed: byte index 4 is not a char boundary; it is inside 'ௗ' (bytes 2..5) of `aAௗ0㌀0`; minimal failing input: s = \"aAௗ0㌀0\"\n\tsuccesses: 102\n\tlocal rejects: 0\n\tglobal rejects: 0\n'\n```\n\nIf we look at the top directory after the test fails, we'll see a new\n`proptest-regressions` directory, which contains some files corresponding to\nsource files containing failing test cases. These are [_failure\npersistence_](https://proptest-rs.github.io/proptest/proptest/failure-persistence.html)\nfiles. The first thing we should do is add these to source control.\n\n```text\n$ git add proptest-regressions\n```\n\nThe next thing we should do is copy the failing case to a traditional unit\ntest since it has exposed a bug not similar to what we've tested in the\npast.\n\n```rust,ignore\n#[test]\nfn test_unicode_gibberish() {\n    assert_eq!(None, parse_date(\"aAௗ0㌀0\"));\n}\n```\n\nNow, let's see what happened... we forgot about UTF-8! You can't just\nblindly slice strings since you could split a character, in this case that\nTamil diacritic placed atop other characters in the string.\n\nIn the interest of making the code changes as small as possible, we'll just\ncheck that the string is ASCII and reject anything that isn't.\n\n```rust,no_run\nfn parse_date(s: \u0026str) -\u003e Option\u003c(u32, u32, u32)\u003e {\n    if 10 != s.len() { return None; }\n\n    // NEW: Ignore non-ASCII strings so we don't need to deal with Unicode.\n    if !s.is_ascii() { return None; }\n\n    if \"-\" != \u0026s[4..5] || \"-\" != \u0026s[7..8] { return None; }\n\n    let year = \u0026s[0..4];\n    let month = \u0026s[6..7];\n    let day = \u0026s[8..10];\n\n    year.parse::\u003cu32\u003e().ok().and_then(\n        |y| month.parse::\u003cu32\u003e().ok().and_then(\n            |m| day.parse::\u003cu32\u003e().ok().map(\n                |d| (y, m, d))))\n}\n```\n\nThe tests pass now! But we know there are still more problems, so let's\ntest more properties.\n\nAnother property we want from our code is that it parses every valid date.\nWe can add another test to the `proptest!` section:\n\n```rust,ignore\nproptest! {\n    // snip...\n\n    #[test]\n    fn parses_all_valid_dates(s in \"[0-9]{4}-[0-9]{2}-[0-9]{2}\") {\n        parse_date(\u0026s).unwrap();\n    }\n}\n```\n\nThe thing to the right-hand side of `in` is actually a _regular\nexpression_, and `s` is chosen from strings which match it. So in our\nprevious test, `\"\\\\PC*\"` was generating arbitrary strings composed of\narbitrary non-control characters. Now, we generate things in the YYYY-MM-DD\nformat.\n\nThe new test passes, so let's move on to something else.\n\nThe final property we want to check is that the dates are actually parsed\n_correctly_. Now, we can't do this by generating strings — we'd end up just\nreimplementing the date parser in the test! Instead, we start from the\nexpected output, generate the string, and check that it gets parsed back.\n\n```rust,ignore\nproptest! {\n    // snip...\n\n    #[test]\n    fn parses_date_back_to_original(y in 0u32..10000,\n                                    m in 1u32..13, d in 1u32..32) {\n        let (y2, m2, d2) = parse_date(\n            \u0026format!(\"{:04}-{:02}-{:02}\", y, m, d)).unwrap();\n        // prop_assert_eq! is basically the same as assert_eq!, but doesn't\n        // cause a bunch of panic messages to be printed on intermediate\n        // test failures. Which one to use is largely a matter of taste.\n        prop_assert_eq!((y, m, d), (y2, m2, d2));\n    }\n}\n```\n\nHere, we see that besides regexes, we can use any expression which is a\n`proptest::strategy::Strategy`, in this case, integer ranges.\n\nThe test fails when we run it. Though there's not much output this time.\n\n```text\nthread 'main' panicked at 'Test failed: assertion failed: `(left == right)` (left: `(0, 10, 1)`, right: `(0, 0, 1)`) at examples/dateparser_v2.rs:46; minimal failing input: y = 0, m = 10, d = 1\n\tsuccesses: 2\n\tlocal rejects: 0\n\tglobal rejects: 0\n', examples/dateparser_v2.rs:33\nnote: Run with `RUST_BACKTRACE=1` for a backtrace.\n```\n\nThe failing input is `(y, m, d) = (0, 10, 1)`, which is a rather specific\noutput. Before thinking about why this breaks the code, let's look at what\nproptest did to arrive at this value. At the start of our test function,\ninsert\n\n```rust,ignore\n    println!(\"y = {}, m = {}, d = {}\", y, m, d);\n```\n\nRunning the test again, we get something like this:\n\n```text\ny = 2497, m = 8, d = 27\ny = 9641, m = 8, d = 18\ny = 7360, m = 12, d = 20\ny = 3680, m = 12, d = 20\ny = 1840, m = 12, d = 20\ny = 920, m = 12, d = 20\ny = 460, m = 12, d = 20\ny = 230, m = 12, d = 20\ny = 115, m = 12, d = 20\ny = 57, m = 12, d = 20\ny = 28, m = 12, d = 20\ny = 14, m = 12, d = 20\ny = 7, m = 12, d = 20\ny = 3, m = 12, d = 20\ny = 1, m = 12, d = 20\ny = 0, m = 12, d = 20\ny = 0, m = 6, d = 20\ny = 0, m = 9, d = 20\ny = 0, m = 11, d = 20\ny = 0, m = 10, d = 20\ny = 0, m = 10, d = 10\ny = 0, m = 10, d = 5\ny = 0, m = 10, d = 3\ny = 0, m = 10, d = 2\ny = 0, m = 10, d = 1\n```\n\nThe test failure message said there were two successful cases; we see these\nat the very top, `2497-08-27` and `9641-08-18`. The next case,\n`7360-12-20`, failed. There's nothing immediately obviously special about\nthis date. Fortunately, proptest reduced it to a much simpler case. First,\nit rapidly reduced the `y` input to `0` at the beginning, and similarly\nreduced the `d` input to the minimum allowable value of `1` at the end.\nBetween those two, though, we see something different: it tried to shrink\n`12` to `6`, but then ended up raising it back up to `10`. This is because\nthe `0000-06-20` and `0000-09-20` test cases _passed_.\n\nIn the end, we get the date `0000-10-01`, which apparently gets parsed as\n`0000-00-01`. Again, this failing case was added to the failure persistence\nfile, and we should add this as its own unit test:\n\n```text\n$ git add proptest-regressions\n```\n\n```rust,ignore\n#[test]\nfn test_october_first() {\n    assert_eq!(Some((0, 10, 1)), parse_date(\"0000-10-01\"));\n}\n```\n\nNow to figure out what's broken in the code. Even without the intermediate\ninput, we can say with reasonable confidence that the year and day parts\ndon't come into the picture since both were reduced to the minimum\nallowable input. The month input was _not_, but was reduced to `10`. This\nmeans we can infer that there's something special about `10` that doesn't\nhold for `9`. In this case, that \"special something\" is being two digits\nwide. In our code:\n\n```rust,ignore\n    let month = \u0026s[6..7];\n```\n\nWe were off by one, and need to use the range `5..7`. After fixing this,\nthe test passes.\n\nThe `proptest!` macro has some additional syntax, including for setting\nconfiguration for things like the number of test cases to generate. See its\n[documentation](https://docs.rs/proptest/latest/proptest/macro.proptest.html)\nfor more details.\n\n## Differences between QuickCheck and Proptest\n\nQuickCheck and Proptest are similar in many ways: both generate random\ninputs for a function to check certain properties, and automatically shrink\ninputs to minimal failing cases.\n\nThe one big difference is that QuickCheck generates and shrinks values\nbased on type alone, whereas Proptest uses explicit `Strategy` objects. The\nQuickCheck approach has a lot of disadvantages in comparison:\n\n- QuickCheck can only define one generator and shrinker per type. If you need a\n  custom generation strategy, you need to wrap it in a newtype and implement\n  traits on that by hand. In Proptest, you can define arbitrarily many\n  different strategies for the same type, and there are plenty built-in.\n\n- For the same reason, QuickCheck has a single \"size\" configuration that tries\n  to define the range of values generated. If you need an integer between 0 and\n  100 and another between 0 and 1000, you probably need to do another newtype.\n  In Proptest, you can directly just express that you want a `0..100` integer\n  and a `0..1000` integer.\n\n- Types in QuickCheck are not easily composable. Defining `Arbitrary` and\n  `Shrink` for a new struct which is simply produced by the composition of its\n  fields requires implementing both by hand, including a bidirectional mapping\n  between the struct and a tuple of its fields. In Proptest, you can make a\n  tuple of the desired components and then `prop_map` it into the desired form.\n  Shrinking happens automatically in terms of the input types.\n\n- Because constraints on values cannot be expressed in QuickCheck, generation\n  and shrinking may lead to a lot of input rejections. Strategies in Proptest\n  are aware of simple constraints and do not generate or shrink to values that\n  violate them.\n\nThe author of Hypothesis also has an [article on this\ntopic](https://hypothesis.works/articles/integrated-shrinking/).\n\nOf course, there's also some relative downsides that fall out of what\nProptest does differently:\n\n- Generating complex values in Proptest can be up to an order of magnitude\n  slower than in QuickCheck. This is because QuickCheck performs stateless\n  shrinking based on the output value, whereas Proptest must hold on to all the\n  intermediate states and relationships in order for its richer shrinking model\n  to work.\n\n## Limitations of Property Testing\n\nGiven infinite time, property testing will eventually explore the whole\ninput space to a test. However, time is not infinite, so only a randomly\nsampled portion of the input space can be explored. This means that\nproperty testing is extremely unlikely to find single-value edge cases in a\nlarge space. For example, the following test will virtually always pass:\n\n```rust\nuse proptest::prelude::*;\n\nproptest! {\n    #[test]\n    fn i64_abs_is_never_negative(a: i64) {\n        // This actually fails if a == i64::MIN, but randomly picking one\n        // specific value out of 2⁶⁴ is overwhelmingly unlikely.\n        assert!(a.abs() \u003e= 0);\n    }\n}\n```\n\nBecause of this, traditional unit testing with intelligently selected cases\nis still necessary for many kinds of problems.\n\nSimilarly, in some cases it can be hard or impossible to define a strategy\nwhich actually produces useful inputs. A strategy of `.{1,4096}` may be\ngreat to fuzz a C parser, but is highly unlikely to produce anything that\nmakes it to a code generator.\n\n# Acknowledgements\n\nThis crate wouldn't have come into existence had it not been for the [Rust port\nof QuickCheck](https://github.com/BurntSushi/quickcheck) and the\n[`regex_generate`](https://github.com/CryptArchy/regex_generate) crate which\ngave wonderful examples of what is possible.\n\n## Contribution\n\nUnless you explicitly state otherwise, any contribution intentionally submitted\nfor inclusion in the work by you, as defined in the Apache-2.0 license, shall\nbe dual licensed as above, without any additional terms or conditions.\n",
+        "content_hash": "c477b04a560cb66f0ebe3a6ebeced0ee1333fadccf4284cd97af8ad7a14d75f0"
+      }
+    ],
+    "complete": false,
+    "bytes_read": 15793,
+    "target_results": [
+      {
+        "target": {
+          "path": "proptest-derive/benches/large_enum.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/ast.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/attr.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/derive.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/error.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/interp.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/tests.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/use_tracking.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/util.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/src/void.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/arbitrary.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_body.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_data/arg_ident_and_pattern.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_data/arg_pattern.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_data/many_params.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_data/return_value.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/codegen/test_data/simple.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/options.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/utils.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/validate.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/src/strategy.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/src/test_runner.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/alloc.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/borrow.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/boxed.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/char.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/collections.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/hash.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/ops.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/rc.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/str.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_alloc/sync.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/ascii.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/cell.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/cmp.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/convert.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/fmt.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/iter.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/marker.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/mem.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/non_zero.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/num.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/option.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_core/result.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/env.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/ffi.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/fs.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/io.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/net.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/panic.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/path.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/string.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/sync.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/thread.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/_std/time.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/arrays.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/functor.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/macros.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/primitives.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/sample.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/traits.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/arbitrary/tuples.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/array.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/bits.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/bool.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/char.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/collection.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/macros.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/num.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/num/float_samplers.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/option.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/path.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/prelude.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/product_tuple.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/range_subset.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/regex-contrib/crates_regex.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/result.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/sample.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/std_facade.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/filter.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/filter_map.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/flatten.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/fuse.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/just.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/lazy.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/map.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/recursive.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/shuffle.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/statics.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/traits.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/strategy/unions.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/string.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/sugar.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/config.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/errors.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/failure_persistence/file.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/failure_persistence/map.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/failure_persistence/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/failure_persistence/noop.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/reason.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/replay.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/result_cache.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/rng.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/runner.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/test_runner/scoped_panic_hook.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/tuple.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/single-crate/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/single-crate/src/submodule/code.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/single-crate/src/submodule/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/workspace/member/src/lib.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/workspace/member/src/submodule/code.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/workspace/member/src/submodule/mod.rs",
+          "kind": "file",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/assoc.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0001-lifetime.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0002-no-unions.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0003-void-struct.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0004-void-enum.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0005-void-enum.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0006-void-enum.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0007-illegal-strategy.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0008-illegal-skip.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0009-illegal-weight.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0010-parent-has-params.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0011-params-variant.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0012-parent-has-filter.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0014-bare-attr.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0015-lit-set.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0016-immediate-lit.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0017-set-again.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0018-unknown-mod.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0019-no_params-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0020-skip-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0021-weight-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0022-overspec-param.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0023-params-malformed-expr.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0023-params-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0025-overspec-strat.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0026-strategy-malformed-expr.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0026-strategy-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0027-filter-malformed-expr.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0027-filter-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0028-skipped-variant-has-filter.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0028-skipped-variant-has-param.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0028-skipped-variant-has-strat.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0028-skipped-variant-has-weight.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0029-filter-on-unit-variant.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0029-params-on-unit-variant.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0029-strategy-on-unit-variant.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0030-params-on-unit-struct.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0031-no-bound-non-tyvar.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0032-no-bound-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0033-weight-overflow.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0034-regex-malformed.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0035-cant_set_param_and_regex.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/E0658-no-bare-modifiers.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/must-be-debug.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/no-arbitrary.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compile-fail/regex_wrong_type.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/compiletest.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/enum.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/filter.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/misc.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/no_bound.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/params.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/phantom.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/regex.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/skip.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/strategy.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/struct.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/uninhabited-pass.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/units.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/use_tracker.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/value.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/value_param.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-derive/tests/weight.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/tests/mod.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/tests/snapshot_tests.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/tests/snapshots/proptest_macro__property_test__tests__snapshot_tests__basic_derive_example.snap",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/tests/snapshots/proptest_macro__property_test__tests__snapshot_tests__custom_strategy.snap",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-macro/src/property_test/tests/snapshots/proptest_macro__property_test__tests__snapshot_tests__mix_custom_and_default_strategies.snap",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/examples/state_machine_echo_server.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest-state-machine/examples/state_machine_heap.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/config-defaults.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/dateparser_v1.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/dateparser_v2.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/fib.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/tutorial-simplify-play.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/examples/tutorial-strategy-play.rs",
+          "kind": "example",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/readme-antelogue.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/readme-prologue.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/src/regex-contrib/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/README.md",
+          "kind": "documentation",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/single-crate/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/workspace/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/test-persistence-location/workspace/member/Cargo.toml",
+          "kind": "manifest",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/tests/attr_macro.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/tests/pass/hygiene.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/tests/pass/simple_example.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/tests/pass/with_params.rs",
+          "kind": "test",
+          "reason": "árvore limitada no commit resolvido"
+        },
+        "status": "SKIPPED_BUDGET",
+        "message": "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"
+      },
+      {
+        "target": {
+          "path": "proptest/README.md",
+          "kind": "documentation",
+          "reason": "Root README.md is a Git symlink; collect canonical target to make immutable source locator byte-exact"
+        },
+        "status": "COLLECTED",
+        "bytes": 15322
+      }
+    ],
+    "tree_complete": true,
+    "depth_reached": 7,
+    "requirement_coverage": null
+  }
+]

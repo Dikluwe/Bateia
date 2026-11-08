@@ -1,0 +1,221 @@
+{
+  "sources": [
+    {
+      "identity": "pouchdb",
+      "repository": "https://github.com/pouchdb/pouchdb",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "discovery": "model memory; exact URL acquisition recorded in audit",
+      "acquisition_audit": "/tmp/bateia-xerj-open-0153/xerj/audit/010.json",
+      "read_via": "XERJ autoindex and search only"
+    },
+    {
+      "identity": "automerge",
+      "repository": "https://github.com/automerge/automerge",
+      "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+      "discovery": "model memory; exact URL acquisition recorded in audit",
+      "acquisition_audit": "/tmp/bateia-xerj-open-0153/xerj/audit/015.json",
+      "read_via": "XERJ autoindex and search only"
+    }
+  ],
+  "source_evidence": [
+    {
+      "id": "E1",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L142",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/guides/conflicts.md",
+      "lines": [
+        142,
+        148
+      ],
+      "excerpt": "you never update or remove existing documents &ndash; you only create new documents.",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "5881a51791c4ebdd040e4151fd7c2e18",
+        "passage_ordinal": 0
+      },
+      "supports": "Append-only event documents are an explicitly documented conflict avoidance design."
+    },
+    {
+      "id": "E2",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/guides/conflicts.md",
+      "lines": [
+        74,
+        90
+      ],
+      "excerpt": "CouchDB will choose an arbitrary winner based on a deterministic algorithm",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "69efcd0a7e52e0766189ee3ed0c53c75",
+        "passage_ordinal": 0
+      },
+      "supports": "Concurrent offline revisions can succeed locally; deterministic winner is not domain adjudication."
+    },
+    {
+      "id": "E3",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L15",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/_includes/api/replication.html",
+      "lines": [
+        15,
+        16
+      ],
+      "excerpt": "using a backoff algorithm that retries at longer and longer intervals until a connection is re-established",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/017.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "d4c8c1b3d770253d8504483dfa9865a6",
+        "passage_ordinal": 0
+      },
+      "supports": "Replication supports offline retry with live enabled; application still handles denied and fatal errors."
+    },
+    {
+      "id": "E4",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/compaction.html#L3",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/_includes/api/compaction.html",
+      "lines": [
+        3,
+        7
+      ],
+      "excerpt": "removing unused and old data, namely non-leaf revisions and attachments that are no longer referenced by those revisions.",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/019.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "d99919d21ab234870d8da92408e22b9b",
+        "passage_ordinal": 0
+      },
+      "supports": "Revision trees are insufficient as permanent business history when compacted."
+    },
+    {
+      "id": "E5",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L22",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/guides/conflicts.md",
+      "lines": [
+        22,
+        24
+      ],
+      "excerpt": "They manifest as a `409` (conflict) error:",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/016.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "a50a5581a421bbe5d66380f11e0814fb",
+        "passage_ordinal": 0
+      },
+      "supports": "Immediate stale-revision conflicts exist; they are different from eventual conflicts. This is a primitive, not proof of the proposed custody protocol."
+    },
+    {
+      "id": "E6",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L29",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/_includes/api/replication.html",
+      "lines": [
+        29,
+        33
+      ],
+      "excerpt": "You may need to adjust downward if targeting devices with low amounts of memory (e.g. phones)",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/017.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "ddba40553305dd5c5a020fff867690e0",
+        "passage_ordinal": 2
+      },
+      "supports": "Replication batches and attachments have phone memory implications."
+    },
+    {
+      "id": "E7",
+      "identity": "pouchdb",
+      "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/batch_fetch.html#L140",
+      "pin": "0ec5a68736e306814f491081eaf31692211af007",
+      "file": "docs/_includes/api/batch_fetch.html",
+      "lines": [
+        140,
+        149
+      ],
+      "excerpt": "include_docs: true,\n  attachments: true,",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/024.json",
+      "witness_locator": {
+        "index": "pouch-docs",
+        "id": "a2e6cc7e1c1d335b99d8a730873cf7f9",
+        "passage_ordinal": 0
+      },
+      "supports": "Readable document and attachment extraction primitive; full export/restore must be implemented and tested."
+    },
+    {
+      "id": "E8",
+      "identity": "automerge",
+      "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/lib.rs#L56",
+      "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+      "file": "rust/automerge/src/lib.rs",
+      "lines": [
+        56,
+        61
+      ],
+      "excerpt": "the conflicting value is still available via the [`ReadDoc::get_all()`] method.",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/020.json",
+      "witness_locator": {
+        "index": "autom-docs",
+        "id": "d6187faad9eb54e3e279112d25674fa3",
+        "passage_ordinal": 50
+      },
+      "supports": "CRDT scalar assignment conflicts still require application interpretation."
+    },
+    {
+      "id": "E9",
+      "identity": "automerge",
+      "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/sync.rs#L1",
+      "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+      "file": "rust/automerge/src/sync.rs",
+      "lines": [
+        1,
+        10
+      ],
+      "excerpt": "it assumes a reliable in-order stream\n//! between two peers who are synchronizing a document.",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/025.json",
+      "witness_locator": {
+        "index": "autom-docs",
+        "id": "c2470c271f8ffe63fbacbba7e75bf832",
+        "passage_ordinal": 0
+      },
+      "supports": "Core sync protocol needs transport supplied by the application."
+    },
+    {
+      "id": "E10",
+      "identity": "automerge",
+      "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/javascript/test/conflicts.ts#L39",
+      "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+      "file": "javascript/test/conflicts.ts",
+      "lines": [
+        39,
+        54
+      ],
+      "excerpt": "assert.deepStrictEqual(new Set(names), new Set([\"charlie\", \"bob\"]))",
+      "audit": "/tmp/bateia-xerj-open-0153/xerj/audit/021.json",
+      "witness_locator": {
+        "index": "autom-docs",
+        "id": "13bc0012a1f24f207073205d2c142a66",
+        "passage_ordinal": 17
+      },
+      "supports": "Source test checks that both conflicting map values remain; test was read, not executed."
+    }
+  ],
+  "discovery_outcomes": {
+    "hub_catalogue": "514 corpora, generated 2026-11-05T04:20:12Z; audit/006.json",
+    "queries": [
+      "audit/007.json",
+      "audit/008.json",
+      "audit/009.json"
+    ],
+    "assessment": "Queries returned unrelated or poorly matched candidates; none used as evidence."
+  }
+}

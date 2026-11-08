@@ -1,0 +1,62 @@
+[
+  {
+    "path": "03_infra/runworker/local_queue.go",
+    "sha256": "8e2b0e52684a9300e12a845eb838324d0f4f6679f3b5b989b72e80129843358a",
+    "ranges": [
+      {
+        "lines": [
+          55,
+          64
+        ],
+        "excerpt": "func NewLocalQueue(workers, capacity int, handler func(context.Context, domain.RunID) error) (*LocalQueue, error) {\n\tif workers < 1 || workers > 4 || capacity < 1 || capacity > 32 || handler == nil {\n\t\treturn nil, fmt.Errorf(\"invalid local queue configuration\")\n\t}\n\treturn &LocalQueue{\n\t\tworkers: workers, capacity: capacity, handler: handler,\n\t\tstates: map[domain.RunID]jobState{}, cancels: map[domain.RunID]context.CancelFunc{}, views: map[domain.RunID]domain.RecommendationRunView{},\n\t\tjobs: make(chan domain.RunID, capacity), stop: make(chan struct{}),\n\t}, nil\n}"
+      },
+      {
+        "lines": [
+          72,
+          86
+        ],
+        "excerpt": "func (q *LocalQueue) Reserve(ctx context.Context) (domain.RecommendationQueueReservation, error) {\n\tif err := ctx.Err(); err != nil {\n\t\treturn nil, err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tif q.stopped {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tif q.reserved+len(q.states) >= q.capacity {\n\t\treturn nil, domain.ErrQueueFull\n\t}\n\tq.reserved++\n\treturn &localReservation{queue: q}, nil\n}"
+      },
+      {
+        "lines": [
+          132,
+          158
+        ],
+        "excerpt": "func (q *LocalQueue) worker() {\n\tdefer q.wg.Done()\n\tfor {\n\t\tselect {\n\t\tcase <-q.stop:\n\t\t\treturn\n\t\tcase id := <-q.jobs:\n\t\t\tq.mu.Lock()\n\t\t\tstate, exists := q.states[id]\n\t\t\tif !exists || state == jobCancelled {\n\t\t\t\tdelete(q.states, id)\n\t\t\t\tq.mu.Unlock()\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tctx, cancel := context.WithCancel(context.Background())\n\t\t\tq.states[id] = jobRunning\n\t\t\tq.cancels[id] = cancel\n\t\t\tq.mu.Unlock()\n\n\t\t\t_ = q.handler(ctx, id)\n\t\t\tcancel()\n\t\t\tq.mu.Lock()\n\t\t\tdelete(q.cancels, id)\n\t\t\tdelete(q.states, id)\n\t\t\tq.mu.Unlock()\n\t\t}\n\t}"
+      },
+      {
+        "lines": [
+          161,
+          175
+        ],
+        "excerpt": "func (q *LocalQueue) Cancel(ctx context.Context, id domain.RunID) error {\n\tif err := ctx.Err(); err != nil {\n\t\treturn err\n\t}\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tswitch q.states[id] {\n\tcase jobQueued:\n\t\tq.states[id] = jobCancelled\n\tcase jobRunning:\n\t\tif cancel := q.cancels[id]; cancel != nil {\n\t\t\tcancel()\n\t\t}\n\t}\n\treturn nil"
+      }
+    ]
+  },
+  {
+    "path": "01_core/usecase/mechanism_extraction.go",
+    "sha256": "e0a147829d0cd799e14ce1b6d86ad98954944ddeb54b05f1cf6db4d254415170",
+    "ranges": [
+      {
+        "lines": [
+          439,
+          452
+        ],
+        "excerpt": "\t}\n\truleIDs = canonicalMechanismSet(ruleIDs)\n\thashes = canonicalMechanismSet(hashes)\n\tpurpose := normalizeMechanismText(group.rule.Purpose)\n\tstrategy := normalizeMechanismText(group.rule.Strategy)\n\tmechanism := domain.ArchitecturalMechanism{\n\t\tMechanismClass: group.rule.MechanismClass, Name: normalizeMechanismText(group.rule.Name), Purpose: purpose,\n\t\tTrigger: purpose, Strategy: strategy, Components: []domain.MechanismComponentRef{}, DataFlow: []string{strategy},\n\t\tStateModel: []string{}, FailureModel: []string{}, Boundaries: canonicalMechanismSet(group.rule.EcosystemLimits),\n\t\tPreconditions: canonicalMechanismSet(group.rule.LanguageLimits), Tradeoffs: []string{}, Source: group.source,\n\t\tEvidence: group.positive, CounterEvidence: group.counter, Status: status, Novelty: mechanismNovelty(group.rule.MechanismClass, status, baseline), ExtractionRuleIDs: ruleIDs,\n\t}\n\tmechanism.ID = mechanismID(mechanism, group.rule.ID, hashes)\n\treturn mechanism, true"
+      }
+    ]
+  },
+  {
+    "path": "01_core/usecase/insight_investigation.go",
+    "sha256": "1d36210238ca54adbb109d1b1c4a40a904e727ecc47cc3017dee6e549d7a0ee9",
+    "ranges": [
+      {
+        "lines": [
+          185,
+          213
+        ],
+        "excerpt": "func insightHypothesis(request domain.InsightInvestigationRequest, mechanism domain.ArchitecturalMechanism, incomplete bool, inputHash, catalogHash string) domain.ImprovementHypothesis {\n\tstatus := domain.HypothesisProposed\n\tif incomplete || mechanism.Status != domain.MechanismProven {\n\t\tstatus = domain.HypothesisInconclusive\n\t}\n\tcounterStatus := domain.CounterEvidenceNoneInScope\n\tcounterRefs := []string{}\n\tfor _, witness := range mechanism.CounterEvidence {\n\t\tcounterRefs = append(counterRefs, witness.ContentHash)\n\t}\n\tif len(counterRefs) > 0 {\n\t\tcounterStatus = domain.CounterEvidenceFound\n\t}\n\treturn domain.ImprovementHypothesis{\n\t\tID:    \"hyp_\" + insightHash(struct{ Input, Catalog, Mechanism string }{inputHash, catalogHash, mechanism.ID}),\n\t\tTitle: \"Investigar \" + mechanism.Name + \" em \" + request.Target.Name, TargetProperty: request.Target.Property, TargetState: domain.TargetUnknown, TargetGapRefs: []string{\"TARGET_BASELINE_NOT_OBSERVED\", \"TARGET_APPLICABILITY_NOT_VERIFIED\"}, ExpectedEffect: request.Target.DesiredEffect,\n\t\tMechanismRefs: []string{mechanism.ID}, ProductObservationRefs: []string{}, TransferMode: domain.TransferReferenceOnly, License: domain.ImprovementLicenseUnrecognized,\n\t\tAssumptions: []string{\"O efeito desejado é uma intenção do pedido, não uma observação.\", \"A estratégia do mecanismo pode ser investigada sem presumir adoção de código.\"}, Preconditions: append([]string{}, mechanism.Preconditions...),\n\t\tIntegrationUnknowns: []string{\"Compatibilidade com o contexto e as restrições do alvo.\", \"Licença e direitos de eventual transferência de código não avaliados.\"}, Risks: []string{\"O mecanismo pode não ser relevante à pergunta ou não produzir o efeito desejado no alvo.\"}, Tradeoffs: []string{\"O custo de adaptação e a utilidade no alvo ainda precisam de medição.\"}, EvidenceRefs: []string{mechanism.ID}, CounterEvidenceRefs: counterRefs,\n\t\tCounterEvidenceSearch: domain.CounterEvidenceSearch{Status: counterStatus, ScopeRefs: []string{mechanism.ID}, ResultRefs: append([]string{}, counterRefs...)},\n\t\tValidationPlan: []domain.ValidationStep{\n\t\t\t{Question: \"Qual é o estado atual de \" + request.Target.Property + \"?\", Observable: request.Target.Property, SafeProcedure: \"Medir o alvo atual sem modificá-lo, registrando casos e configuração.\", PassCriterion: \"Baseline repetível registrado.\", RejectCriterion: \"A medição não é repetível ou não representa a propriedade desejada.\", RelativeCost: \"LOW\", MissingEvidence: \"baseline do alvo\"},\n\t\t\t{Question: request.Question, Observable: \"Compatibilidade da estratégia com contexto e restrições\", SafeProcedure: \"Comparar a estratégia observada com o contexto fornecido e conferir cada restrição antes de propor transferência.\", PassCriterion: \"Premissas e restrições verificadas com evidência localizada.\", RejectCriterion: \"Uma premissa ou restrição necessária é incompatível.\", RelativeCost: \"MEDIUM\", MissingEvidence: \"aplicabilidade ao alvo\"},\n\t\t\t{Question: \"O mecanismo produz o efeito desejado?\", Observable: request.Target.DesiredEffect, SafeProcedure: \"Planejar experimento isolado comparando baseline e variante; não executar nem modificar o alvo nesta investigação.\", PassCriterion: \"Definir antes do experimento uma métrica e um limiar de ganho, mantendo as restrições.\", RejectCriterion: \"Efeito abaixo do limiar, regressão ou violação de restrição.\", RelativeCost: \"MEDIUM\", MissingEvidence: \"experimento comparativo e limiares pré-definidos\"},\n\t\t}, Derivation: domain.DerivationRuleDerived, Status: status, AdoptionDisposition: \"NOT_AN_ADOPTION_DECISION\",\n\t}\n}"
+      }
+    ]
+  }
+]

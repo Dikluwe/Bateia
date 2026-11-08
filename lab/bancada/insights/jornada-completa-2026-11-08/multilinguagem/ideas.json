@@ -1,0 +1,176 @@
+[
+  {
+    "id": "M1",
+    "title": "Reduzir sequências sem destruir precondições e invariantes",
+    "observation": "Hedgehog declara shrinking que preserva invariantes; o teste de jqwik especifica que a redução não deve sobrar apenas com ações de precondição falha; rapid declara teste de máquina de estados.",
+    "proposal": "Modelar sequências de admissão, revisão, retirada e citação do XERJ; reduzir a sequência mantendo o mesmo predicado violado e as precondições dos comandos restantes.",
+    "experiment": "Gerar sequências legais de três a vinte operações; a minimização deve preservar a classe de falha e não produzir uma sequência inválida que pareça sucesso.",
+    "reject_if": "O caso mínimo troca a propriedade, viola as precondições ou o modelo apenas repete a implementação.",
+    "evidence": [
+      {
+        "repository": "hedgehogqa/haskell-hedgehog",
+        "commit": "7845181d887d2f082ea537b6992d37f243314c46",
+        "path": "README.md",
+        "sha256": "3a94a83c2c1749c6f31e5eee56992491d9263bcfabe9e4381d40df285b8ef50c",
+        "start_line": 24,
+        "end_line": 30,
+        "excerpt": "## Features\n\n- Integrated shrinking, shrinks obey invariants by construction.\n- Abstract state machine testing.\n- Generators allow monadic effects.\n- Range combinators for full control over the scope of generated numbers and collections.\n- Equality and roundtrip assertions show a diff instead of the two inequal values.",
+        "url": "https://github.com/hedgehogqa/haskell-hedgehog/blob/7845181d887d2f082ea537b6992d37f243314c46/README.md#L24-L30"
+      },
+      {
+        "repository": "jqwik-team/jqwik",
+        "commit": "5c2ac9acfb8dc9a246c774094652b0f089ab90d3",
+        "path": "engine/src/test/java/net/jqwik/engine/properties/stateful/ActionSequenceShrinkingTests.java",
+        "sha256": "a15ab9f283906416ab14a792c8c79e719787dcffbd775316ca4746a5d67ac189",
+        "start_line": 19,
+        "end_line": 39,
+        "excerpt": "\t@Property(afterFailure = AfterFailureMode.RANDOM_SEED)\n\t@ExpectFailure(checkResult = FailedAndShrunkToAddX.class, failureType = AssertionError.class)\n\tvoid dontShrinkToActionsWithOnlyFailingPreconditions(@ForAll(\"addXorY\") @Size(3) ActionSequence<String> sequence) {\n\t\tString model = sequence.run(\"\");\n\t\tassertThat(model).isEmpty();\n\t}\n\n\tprivate class FailedAndShrunkToAddX implements Consumer<PropertyExecutionResult> {\n\t\t@SuppressWarnings({\"unchecked\", \"OptionalGetWithoutIsPresent\"})\n\t\t@Override\n\t\tpublic void accept(PropertyExecutionResult result) {\n\t\t\tassertThat(result.falsifiedParameters()).isPresent();\n\t\t\tassertThat(result.throwable()).isPresent();\n\t\t\tassertThat(result.throwable().get()).isInstanceOf(AssertionError.class);\n\n\t\t\tList<Object> sample = result.falsifiedParameters().get();\n\t\t\tassertThat(sample).hasSize(1);\n\n\t\t\tActionSequence<String> sequence = (ActionSequence<String>) sample.get(0);\n\t\t\tassertThat(sequence.runActions()).hasSize(1);\n\t\t\tassertThat(sequence.runActions().get(0).toString()).isEqualTo(\"addX\");",
+        "url": "https://github.com/jqwik-team/jqwik/blob/5c2ac9acfb8dc9a246c774094652b0f089ab90d3/engine/src/test/java/net/jqwik/engine/properties/stateful/ActionSequenceShrinkingTests.java#L19-L39"
+      },
+      {
+        "repository": "flyingmutant/rapid",
+        "commit": "6706a6fd83736ba24aaf55ef2621fdf00c2c27e8",
+        "path": "README.md",
+        "sha256": "fd0f634688cd2abbbb434473e950f19e34ec4f3691fc142c96a3989016b41a71",
+        "start_line": 9,
+        "end_line": 16,
+        "excerpt": "## Features\n\n- Imperative Go API with type-safe data generation using generics\n- Data generation biased to explore \"small\" values and edge cases more thoroughly\n- Fully automatic minimization of failing test cases\n- Persistence and automatic re-running of minimized failing test cases\n- Support for state machine (\"stateful\" or \"model-based\") testing\n- No dependencies outside the Go standard library",
+        "url": "https://github.com/flyingmutant/rapid/blob/6706a6fd83736ba24aaf55ef2621fdf00c2c27e8/README.md#L9-L16"
+      }
+    ],
+    "status": "HYPOTHESIS_NOT_IMPLEMENTED_OR_EXECUTED",
+    "card_refs": [
+      "card_c54a4e6966fedd5e691427350163dae26690cfa30cd684aad6ccbed88792bdab",
+      "card_a92342beef50b19332341460c1940cd9a55cadaa4a412985798812c0ffd8e2ac",
+      "card_4eb6689535245628a6d28f2fa504cc335bace56b81bf999648f493f2ab503b5e"
+    ]
+  },
+  {
+    "id": "M2",
+    "title": "Manter corpus de regressões minimizadas ligado a versão e propriedade",
+    "observation": "Proptest documenta arquivos de persistência de falhas e recomenda preservá-los no versionamento. Rapid declara persistência e reexecução automática dos casos reduzidos.",
+    "proposal": "Conservar falhas mínimas de escopo, bytes, calibração e revisão do XERJ como casos reexecutáveis com identidade da propriedade e revisão. Não confundir a existência do corpus com aprovação da versão nova.",
+    "experiment": "Corrigir uma implementação, mudar uma regra e repetir os mesmos casos em duas revisões, registrando resultado e versão de cada execução.",
+    "reject_if": "O resultado anterior for reutilizado sem execução compatível ou a persistência perder a propriedade que falhou.",
+    "evidence": [
+      {
+        "repository": "proptest-rs/proptest",
+        "commit": "70cf37d46b7d83393b6ed94c611f8c52209f585d",
+        "path": "proptest/README.md",
+        "sha256": "c477b04a560cb66f0ebe3a6ebeced0ee1333fadccf4284cd97af8ad7a14d75f0",
+        "start_line": 134,
+        "end_line": 142,
+        "excerpt": "If we look at the top directory after the test fails, we'll see a new\n`proptest-regressions` directory, which contains some files corresponding to\nsource files containing failing test cases. These are [_failure\npersistence_](https://proptest-rs.github.io/proptest/proptest/failure-persistence.html)\nfiles. The first thing we should do is add these to source control.\n\n```text\n$ git add proptest-regressions\n```",
+        "url": "https://github.com/proptest-rs/proptest/blob/70cf37d46b7d83393b6ed94c611f8c52209f585d/proptest/README.md#L134-L142"
+      },
+      {
+        "repository": "flyingmutant/rapid",
+        "commit": "6706a6fd83736ba24aaf55ef2621fdf00c2c27e8",
+        "path": "README.md",
+        "sha256": "fd0f634688cd2abbbb434473e950f19e34ec4f3691fc142c96a3989016b41a71",
+        "start_line": 9,
+        "end_line": 16,
+        "excerpt": "## Features\n\n- Imperative Go API with type-safe data generation using generics\n- Data generation biased to explore \"small\" values and edge cases more thoroughly\n- Fully automatic minimization of failing test cases\n- Persistence and automatic re-running of minimized failing test cases\n- Support for state machine (\"stateful\" or \"model-based\") testing\n- No dependencies outside the Go standard library",
+        "url": "https://github.com/flyingmutant/rapid/blob/6706a6fd83736ba24aaf55ef2621fdf00c2c27e8/README.md#L9-L16"
+      }
+    ],
+    "status": "HYPOTHESIS_NOT_IMPLEMENTED_OR_EXECUTED",
+    "card_refs": [
+      "card_2425180ffa4b9cd4b9f02992a857aa364820acd22b4a9cdb29af3dd8cb27042a",
+      "card_a92342beef50b19332341460c1940cd9a55cadaa4a412985798812c0ffd8e2ac"
+    ]
+  },
+  {
+    "id": "M3",
+    "title": "Registrar seed, caminho de redução e versão do gerador no replay",
+    "observation": "Parameters.ts declara replay de counterexamplePath com seed; ReplayFailures.spec.ts contém asserção de reconstrução do mesmo contraexemplo.",
+    "proposal": "A cápsula de replay do XERJ deve registrar o vetor completo de reprodução, incluindo seed/path/gerador, pin dos dados, política e ambiente relevantes; seed sozinho não autentica repetição.",
+    "experiment": "Reconstruir um caso com seed/path e versão fixa; em controle alterar gerador ou política. Distinguir incompatibilidade de replay de confirmação da alegação.",
+    "reject_if": "O replay produz outro caso silenciosamente ou altera a condição avaliada.",
+    "evidence": [
+      {
+        "repository": "dubzzz/fast-check",
+        "commit": "9a5f8e257dba762b3288701ae79b77d3d9b43505",
+        "path": "packages/fast-check/src/check/runner/configuration/Parameters.ts",
+        "sha256": "4f5532dcf92080fab9d082cf319b7e7a391785aed7f7f2a5cb28664e7b03e932",
+        "start_line": 49,
+        "end_line": 54,
+        "excerpt": "  /**\n   * Way to replay a failing property directly with the counterexample.\n   * It can be fed with the counterexamplePath returned by the failing test (requires `seed` too).\n   * @remarks Since 1.0.0\n   */\n  path?: string;",
+        "url": "https://github.com/dubzzz/fast-check/blob/9a5f8e257dba762b3288701ae79b77d3d9b43505/packages/fast-check/src/check/runner/configuration/Parameters.ts#L49-L54"
+      },
+      {
+        "repository": "dubzzz/fast-check",
+        "commit": "9a5f8e257dba762b3288701ae79b77d3d9b43505",
+        "path": "packages/fast-check/test/ReplayFailures.spec.ts",
+        "sha256": "593e3d2fb82021a1f325c656401428df449d307113d76dd04c110512c91ccbea",
+        "start_line": 20,
+        "end_line": 26,
+        "excerpt": "  describe('fc.sample', () => {\n    it('Should rebuild counterexample using sample and (path, seed)', async () => {\n      const out = await assertAndGetRunDetails(prop, { seed: seed });\n      expect(out.failed).toBe(true);\n      expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(\n        out.counterexample,\n      );",
+        "url": "https://github.com/dubzzz/fast-check/blob/9a5f8e257dba762b3288701ae79b77d3d9b43505/packages/fast-check/test/ReplayFailures.spec.ts#L20-L26"
+      }
+    ],
+    "status": "HYPOTHESIS_NOT_IMPLEMENTED_OR_EXECUTED",
+    "card_refs": [
+      "card_30915bfd2fbfb15d3c63eb8a0f3d7b1f0d51a7e7dfbe32be47798c1f074cfe01",
+      "card_552cd2ac51d8f7f1fd7eb2d000244b624b844a02c6b964e67148bf583b951f5f"
+    ]
+  },
+  {
+    "id": "M4",
+    "title": "Comparar verificadores independentes por replay diferencial",
+    "observation": "Quant Systems Lab declara um modelo OCaml separado do motor C++, ambos recebendo comandos e comparando snapshots; o gerador e redutor procuram divergências.",
+    "proposal": "Para um contrato pequeno do XERJ, comparar o verificador de produção com um modelo de referência independente, por exemplo para contagem, revisão ou admissibilidade. Guardar a menor divergência.",
+    "experiment": "Especificar primeiro a semântica; alimentar ambos com as mesmas sequências e comparar estado/decisão. Injetar uma divergência conhecida para conferir o ensaio.",
+    "reject_if": "Os dois compartilham a lógica que se pretendia conferir ou o acordo é tratado como prova de que o oracle está correto.",
+    "evidence": [
+      {
+        "repository": "div0rce/quant-systems-lab",
+        "commit": "ca5f08cc32b01a15663dc61ce8c7c7977e219e3e",
+        "path": "README.md",
+        "sha256": "ec12b32bd255fde85a98055407a59166c19f57f1c8e96d924389daf180042283",
+        "start_line": 135,
+        "end_line": 143,
+        "excerpt": "## What is actually interesting here\n\n- **Determinism as a feature, not an accident.** The engine never reads wall-clock time and never\n  uses floating point for price. Replaying the log on a cold engine yields byte-identical snapshots,\n  checked in CI across two compilers.\n- **An independent OCaml oracle.** A second engine, written functionally in OCaml (`ocaml/`),\n  replays the same command streams and must compute the same snapshot. A seeded C++ property\n  generator and a delta-debugging shrinker hunt for any disagreement and minimize it. This is\n  cross-language differential testing, not a unit test.",
+        "url": "https://github.com/div0rce/quant-systems-lab/blob/ca5f08cc32b01a15663dc61ce8c7c7977e219e3e/README.md#L135-L143"
+      }
+    ],
+    "status": "HYPOTHESIS_NOT_IMPLEMENTED_OR_EXECUTED",
+    "card_refs": [
+      "card_88f083347021aff5a034543749a07dcfa08e4f860b5410b2d67c70d60e075a36"
+    ]
+  },
+  {
+    "id": "M5",
+    "title": "Separar robustez de API da validade semântica da resposta",
+    "observation": "fuzz-rest-api declara uma propriedade HTTP sem 500 e mostra seeds e paths de casos reduzidos em uma implementação deliberadamente incorreta.",
+    "proposal": "Gerar pedidos estruturados para endpoints locais do XERJ e conferir respostas de erro limitadas e previsíveis. Avaliar truth/applicability em outra propriedade: ausência de 500 não prova resposta correta.",
+    "experiment": "Gerar entradas válidas, malformadas e fora de domínio em ambiente local; comparar o oracle HTTP com o oracle semântico, sem usar o primeiro para promover o segundo.",
+    "reject_if": "Uma resposta HTTP aceitável aprova uma afirmação semanticamente falsa ou a geração ignora as restrições declaradas.",
+    "evidence": [
+      {
+        "repository": "dubzzz/fuzz-rest-api",
+        "commit": "6e5b3dfa015bf0adb3b325f44d335999f339fcb0",
+        "path": "README.md",
+        "sha256": "59fdccaf1ec2bee9c7e1c957df2ff9cbad743b8599d9e1a9a933e7efa85b4efb",
+        "start_line": 18,
+        "end_line": 32,
+        "excerpt": "It intentially comes with an unsafe implementation of its APIs.\n\n- /api/login - does not escape incoming parameters from POST\n- /api/profile/:uid - considers uid to be an integer while its not\n\n## How does it work?\n\nThis Proof-Of-Concept uses the power of property based testing to generate inputs for a REST end-point.\nIt sends the generated values to this end-point and check for the property - _whatever the data I send I should not receive an Internal Error aka 500_.\n\nBasically defining the REST inputs using [fast-check](https://github.com/dubzzz/fast-check/) is quite simple:\n```js\nfc.record({\n  nameOfFieldOne: fc.string(),\n  nameOfFieldTwo: fc.string(),",
+        "url": "https://github.com/dubzzz/fuzz-rest-api/blob/6e5b3dfa015bf0adb3b325f44d335999f339fcb0/README.md#L18-L32"
+      },
+      {
+        "repository": "dubzzz/fuzz-rest-api",
+        "commit": "6e5b3dfa015bf0adb3b325f44d335999f339fcb0",
+        "path": "README.md",
+        "sha256": "59fdccaf1ec2bee9c7e1c957df2ff9cbad743b8599d9e1a9a933e7efa85b4efb",
+        "start_line": 71,
+        "end_line": 75,
+        "excerpt": "  1) Fuzzing REST API\n       /api/login:\n     Error: Property failed after 5 tests (seed: 1524328189654, path: 4:0:0:1:0:4): [{\"password\":\"'\"}]\nShrunk 5 time(s)\nGot error: Error: Internal Server Error, got: {\"data\":\"<!DOCTYPE html>\\n<html lang=\\\"en\\\">\\n<head>\\n<meta charset=\\\"utf-8\\\">\\n<title>Error</title>\\n</head>\\n<body>\\n<pre>Error: SQLITE_ERROR: unrecognized token: &quot;&#39;&#39;&#39;&quot;</pre>\\n</body>\\n</html>\\n\",\"status\":500}",
+        "url": "https://github.com/dubzzz/fuzz-rest-api/blob/6e5b3dfa015bf0adb3b325f44d335999f339fcb0/README.md#L71-L75"
+      }
+    ],
+    "status": "HYPOTHESIS_NOT_IMPLEMENTED_OR_EXECUTED",
+    "card_refs": [
+      "card_ab7b6d24c73891c7de14d55325082e539ed9002b28b6459bf983cbf7e3040f78"
+    ]
+  }
+]

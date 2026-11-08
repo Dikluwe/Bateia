@@ -1,0 +1,24 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "setup",
+  "args": [
+    "hub",
+    "find",
+    "--help"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "hub",
+    "find",
+    "--help"
+  ],
+  "origin": null,
+  "started_unix": 1794157344.242889,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 0.0424041748046875,
+  "exit_code": 0,
+  "stdout": "usage: xerj hub <command>\n\n  build-pack <slug> --registry <dir> --out <dir> --url <node> --sign-key <seed-file>\n        Build a signed, pre-indexed pack from a registry manifest (CI).\n  build-pack <slug> --from-pack <dir> --out <dir> --url <node> --sign-key <seed-file>\n        The same, from a record pack `xerj corpus build` made (rust-vulns,\n        agent-session-trajectories): its pin is the first 40 hex of a sha256\n        over its record files, so the same records give the same pin.\n  build-catalogue --registry <dir> --packs <dir> --out <file> --sign-key <seed-file>\n        Build and sign the catalogue from verified packs (CI; see -h).\n  sync [--url <node>] | sync --install-timer\n        Refresh the catalogue and bring every cached pack up to its pin;\n        --install-timer schedules that every 6 hours (see `xerj hub sync -h`).\n  pull <slug> [--quiet] [--url <node>]\n        Download, verify and restore a pack, then `xerj code <slug>` works.\n        Exits 2 for an unknown corpus, 3 when the pack fails verification, 5 when\n        this build has no hub public key to verify with (nothing is downloaded),\n        1 for anything else (an excluded licence and a pack over the size limit\n        are refused here too).\n  find \"<question>\" [--k N] [--json]\n        Which corpora could answer, best first. Each line names the upstream\n        repo (owner/name, when the catalogue has it) and the one-line description\n        of what that pack is. A query that names a different project of the same\n        slug (fabric.js) exits 4 instead of matching silently. A question no\n        corpus covers exits 1 (not 4) and names `xerj autoindex`.\n  feedback <slug> --usefulness <1-5> --found <yes|partial|no> [...]\n        Rate a corpus after using it: one structured review (no query text) for\n        its Agent score on hub.xerj.org (see `xerj hub feedback -h`).\n  status\n        Cached packs, the automatic node, the hosted setting, catalogue age.\n  stop\n        Stop the automatic node `xerj ask` started (only that process).\n  config hosted on|off|auto\n        Whether questions may be sent to the hosted hub (default auto: off\n        inside a git repository, on elsewhere).\n\nAsk a question with `xerj ask \"<question>\"` (see `xerj ask --help`).\n\nPacks are pulled on demand and never cloned or indexed on the user's machine\n(docs/CORPUS_HUB_V2_IMPLEMENTATION.md).\n",
+  "stderr": ""
+}

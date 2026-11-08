@@ -1,0 +1,7 @@
+# Critérios definidos antes dos resultados
+
+Avaliar encadeamento fonte -> princípio/passos/invariantes -> condições/falhas -> alvo atual -> decisão alternativa -> teste. Notas separadas, sem soma: evidência 0–3 (0 ausente;1 genérica;2 literal sustenta mecanismo;3 código/teste/doc específica delimita condição/decisão); transferência 0–3 (0 sem ligação;1 analogia vaga;2 condição/custo explícitos;3 compatibilidade e limites do alvo conferíveis); decisão 0–2 (0 slogan;1 parcial;2 mudança concreta com custo e critério de rejeição).
+
+Distinguir princípio reconhecido/ALREADY_PRESENT, mudança sustentada pelo recorte e NOT_ESTABLISHED. Não inferir ausência global por grep/trechos. Relação com baseline: mesma família, revisão material, nova ou incerta; mais citações não são nova ideia. Um teste lido é evidência estática. Produto formulate só confere bytes/estrutura: não promove verdade ou valida ganho.
+
+Para email: candidato utilizável se evidência>=2, transferência>=2, decisão=2 e relação com alvo não enganosa. Pode ser hipótese condicional, confirmação ou limite útil, explicitamente rotulado. Não requer exclusividade frente a outra ferramenta. Não fabricar quantidade mínima nem ignorar duplicação. Marcar o que exige teste, o que já existe e o que não pode ser anunciado como melhoria nova. Nenhum projeto-fonte foi executado pelo pesquisador. Referências externas devem surgir nativamente, salvo alvo fornecido pelo usuário. Sem vantagem de tokens ou superioridade geral.

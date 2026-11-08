@@ -1,0 +1,38 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "ask",
+    "lightweight transactions linearizable compare and set Paxos quorum",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "ask",
+    "lightweight transactions linearizable compare and set Paxos quorum",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "origin": null,
+  "started_unix": 1794157612.4071705,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 1.4577515125274658,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"cassandra\",\"pin_sha\":\"ec2c276be145bb25085c5c35ac0da69113b676ff\",\"pin_date\":\"2026-10-13\",\"age_days\":26,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"cassandra/conf/cassandra_latest.yaml\",\"line\":1605,\"kind\":\"passage\",\"text\":\"\\n\\n# Paxos variant for lightweight transactions (LWTs)\\n# Options:\\n#   v1\\n#          - Legacy Paxos. Expect 4RTs for a write and 3RTs for a read. (default)\\n#\\n#   v1_without_linearizable_reads_or_rejected_writes\\n#          - Legacy Paxos. Expect 4RTs for a write and 2RTs for a read.\\n#            With legacy semantics for read/read and rejected write linearizability, i.e. not guaranteed.\\n#\\n#   v2\\n#          - Optimized Paxos. Expect 2RTs for a write, and either 1RT or 2RT for a read. (recommended)\\n#\\n#   v2_without_linearizable_reads\\n#          - Optimized Paxos. Expect 2RTs for a write and 1RT for a read.\\n#\\n#   v2_without_linearizable_reads_or_rejected_writes\\n#          - Optimized Paxos. Expect 2RTs for a write and 1RT for a read.\\n#            With legacy semantics for read/read and rejected \",\"value\":null,\"score\":1037.3088,\"licence_warning\":null},{\"file\":\"cassandra/conf/cassandra.yaml\",\"line\":1726,\"kind\":\"passage\",\"text\":\"\\n\\n# Paxos variant for lightweight transactions (LWTs)\\n# Options:\\n#   v1\\n#          - Legacy Paxos. Expect 4RTs for a write and 3RTs for a read. (default)\\n#\\n#   v1_without_linearizable_reads_or_rejected_writes\\n#          - Legacy Paxos. Expect 4RTs for a write and 2RTs for a read.\\n#            With legacy semantics for read/read and rejected write linearizability, i.e. not guaranteed.\\n#\\n#   v2\\n#          - Optimized Paxos. Expect 2RTs for a write, and either 1RT or 2RT for a read. (recommended)\\n#\\n#   v2_without_linearizable_reads\\n#          - Optimized Paxos. Expect 2RTs for a write and 1RT for a read.\\n#\\n#   v2_without_linearizable_reads_or_rejected_writes\\n#          - Optimized Paxos. Expect 2RTs for a write and 1RT for a read.\\n#            With legacy semantics for read/read and rejected \",\"value\":null,\"score\":1037.3088,\"licence_warning\":null},{\"file\":\"cassandra/src/java/org/apache/cassandra/service/StorageProxy.java\",\"line\":2350,\"kind\":\"method\",\"text\":\"                // Commit an empty update to make sure all in-progress updates that should be finished first is, _and_\\n                // that no other in-progress can get resurrected.\\n                Function<Ballot, Pair<PartitionUpdate, RowIterator>> updateProposer =\\n                    !Paxos.isLinearizable()\\n                    ? ballot -> null\\n                    : ballot -> Pair.create(PartitionUpdate.emptyUpdate(metadata, key), null);\\n                // When replaying, we commit at quorum/local quorum, as we want to be sure the following read (done at\\n                // quorum/local_quorum) sees any replayed updates. Our own update is however empty, and those don't even\\n                // get committed due to an optimiation described in doPaxos/beingRepairAndPaxos, so the commit\\n    ... [method legacyReadWithPaxos: showing 797 of 4,815 chars from offset 1,236, window centred on the match]\",\"value\":null,\"score\":1032.1472,\"licence_warning\":null},{\"file\":\"cassandra/src/java/org/apache/cassandra/config/Config.java\",\"line\":1159,\"kind\":\"enum\",\"text\":\"    public enum PaxosStatePurging\\n    {\\n        /**\\n         * system.paxos records are written and garbage collected with TTLs. Unsafe to use with Commit consistency ANY.\\n         * Once migrated from, cannot be migrated back to safely. Must use gc_grace or repaired instead, as TTLs\\n         * will not have been set.\\n         */\\n        legacy,\\n\\n        /**\\n         * Functionally similar to legacy, but the gc_grace expiry is applied at compaction and read time rather than\\n         * using TTLs, so may be safely enabled at any point.\\n         */\\n        gc_grace,\\n\\n        /**\\n         * Clears system.paxos records only once they are known to be persisted to a quorum of replica's base tables\\n         * through the use of paxos repair. Requires that regular paxos repairs are performed on th\\n    ... [enum PaxosStatePurging truncated at 800 chars]\",\"value\":null,\"score\":1031.7479,\"licence_warning\":null},{\"file\":\"cassandra/test/distributed/org/apache/cassandra/distributed/test/accord/AccordCQLTestBase.java\",\"line\":3686,\"kind\":\"method\",\"text\":\"+\\n                          \\\"SET \\\" +\\n                          \\\"    v1=[00000000-0000-4e00-8c00-000000000000], \\\" +\\n                          \\\"    v4={[00000000-0000-4800-b300-000000000000]: {-30955: 'ϵ', -10479: '虑퐕㐧', 7904: '䁋'}}, \\\" +\\n                          \\\"    v3=00000000-0000-4600-b300-000000000000 \\\" +\\n                          \\\"WHERE  pk0 = -1.1763917E35 AND  pk1 = -466454 \\\" +\\n                          \\\"       AND  ck0 IN (-26786, 10038, 4991) AND  ck1 IN (124 - 36, -100)\\\", ConsistencyLevel.QUORUM);\\n            AssertUtils.assertRows(node.executeWithResult(\\\"SELECT writetime(v1), writetime(v3), writetime(v4) FROM \\\" + qualifiedAccordTableName + \\\" WHERE pk0 = -1.1763917E35 AND  pk1 = -466454\\\", ConsistencyLevel.QUORUM),\\n                                   QueryResults.builder()\\n        \\n    ... [method usingTimestamp: showing 800 of 2,844 chars from offset 1,100, window centred on the match]\",\"value\":null,\"score\":1027.5033,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": ""
+}

@@ -1,0 +1,382 @@
+{
+  "label": "Y",
+  "baseline": {
+    "problem": "Donated individual repair parts across eight intermittently connected workshops",
+    "options": [
+      {
+        "id": "B1",
+        "idea": "Local phone records with append-only observations and explicit resolution of competing edits; synchronize when online."
+      },
+      {
+        "id": "B2",
+        "idea": "Give each part a single responsible workshop and make transfers/reservations explicit handoffs; availability shown with freshness and uncertainty."
+      },
+      {
+        "id": "B3",
+        "idea": "Use an existing offline field data collection system with part identifiers, photos and follow-up reconciliation."
+      },
+      {
+        "id": "B4",
+        "idea": "Central inventory service with a local offline operation queue; reservation promises require confirmed synchronization."
+      }
+    ]
+  },
+  "common_changes": {},
+  "alternatives": [
+    {
+      "id": "A1",
+      "title": "Aplicação pequena com diário de observações e operações imutáveis, sincronizado entre telefones e servidor",
+      "changes_work": [
+        "Etiquetar cada peça individual com ID legível e código; separar descrição observada de posição, custódia, reserva e consumo.",
+        "Cada chegada, saída, pedido de reserva, confirmação de reserva, uso e correção cria registro novo com ator, oficina, ID único de operação, relações causais e fotos; correção aponta ao registro corrigido.",
+        "Uma oficina tem custódia física; pedido remoto é provisório. Promessa só após custodiante separar peça etiquetada em prateleira reservada e confirmar. Transferência tem despacho e recebimento; peça em trânsito fica indisponível.",
+        "Tela mostra horário da última sincronização e pendências; observações divergentes são conservadas e dois usos da mesma peça geram exceção humana."
+      ],
+      "changes_software": [
+        "Cliente com armazenamento local persistente e PouchDB; replicação com retry e servidor compatível. Registro de negócio é documento novo, não histórico de _rev.",
+        "Projeção reconstruível de disponibilidade, fila de conflitos semânticos, identificação de reenvios por ID estável, captura de fotos com tamanho limitado.",
+        "Exportador próprio de registros JSON/CSV, vínculos causais e arquivos de foto; testar reconstrução fora do produto. allDocs/get com anexos é matéria-prima documentada, não um exportador pronto."
+      ],
+      "constraints_addressed": [
+        "Trabalho e histórico local durante 72h sem Internet, sem viagem diária central.",
+        "Protege observações contra sobrescrita; transporte existente para sincronização e anexos reduz a parte a implementar.",
+        "Controle dos dados e formato exportável projetados explicitamente."
+      ],
+      "failure_modes": [
+        "Documentos sem conflito não significam peça disponível: duas reservas/consumos concorrentes ainda podem ser semanticamente incompatíveis.",
+        "Não há garantia automática de exclusividade global desconectada; disciplina física de custódia é parte do contrato.",
+        "Browser pode perder dados locais, espaço e fotos podem exceder o telefone; validar reinício, armazenamento persistente e retenção.",
+        "Duas pessoas desenvolvedoras ainda mantêm cliente, projeções, autorização, exportação, servidor e reconciliação; custo operacional não medido.",
+        "Replicação não fornece ordem global confiável; relógios locais não definem precedência e timestamps não devem ser IDs exclusivos."
+      ],
+      "application_condition": "Se é necessária uma interface de peças/fotos/história em campo e a equipe consegue manter uma superfície pequena de produto; rejeitar se a manutenção ou armazenamento não couberem.",
+      "cheap_rejection_experiment": {
+        "design": "Protótipo descartável em dois Android baratos e duas oficinas, 200 peças reais e 45.000 metadados sintéticos; 72h offline. Introduzir duas reservas, consumo concorrente, transferência sem recebimento, correção concorrente, relógio errado, reenvio, reinício e fotos. Executar somente no futuro: nenhum software fonte foi executado nesta investigação.",
+        "reject_if": [
+          "Qualquer observação ou foto confirmada localmente desaparecer após reinício/sync/exportação.",
+          "Qualquer reenvio virar operação duplicada; conflito de consumo não ficar explícito.",
+          "Uma peça provisória for apresentada como garantida para viagem ou reparo.",
+          "Exportação não permitir reconstruir histórico e disponibilidade com ferramenta simples externa.",
+          "Voluntários não conseguem terminar operação usual em 30 segundos após treinamento curto, ou manutenção estimada exceder capacidade acordada."
+        ]
+      },
+      "baseline_relation": {
+        "status": "já presente, especificada pela evidência",
+        "baseline_ids": [
+          "B1",
+          "B2"
+        ],
+        "details": "B1 já continha registros append-only e resolução explícita. A leitura da estratégia every doc is a delta fundamenta a escolha; compaction mostra por que _rev não pode substituir história. B2 fornece o acordo de custódia. Não é novidade descoberta pelo produto."
+      },
+      "source_evidence": [
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": {
+            "start": 140,
+            "end": 154
+          },
+          "excerpt": "you never update or remove existing documents",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L140",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/conflicts.md",
+          "lines": {
+            "start": 74,
+            "end": 90
+          },
+          "excerpt": "choose an arbitrary winner based on a deterministic algorithm",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/replication.md",
+          "lines": {
+            "start": 109,
+            "end": 116
+          },
+          "excerpt": "retry until the connection is re-established",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/replication.md#L109",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/attachments.md",
+          "lines": {
+            "start": 8,
+            "end": 16
+          },
+          "excerpt": "store images, MP3s, zip files, or whatever you want",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/attachments.md#L8",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/attachments.md",
+          "lines": {
+            "start": 73,
+            "end": 83
+          },
+          "excerpt": "specify `{attachments: true}`",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/attachments.md#L73",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "pouchdb/pouchdb",
+          "url": "https://github.com/pouchdb/pouchdb",
+          "pin": "0ec5a68736e306814f491081eaf31692211af007",
+          "file": "docs/guides/compact-and-destroy.md",
+          "lines": {
+            "start": 26,
+            "end": 46
+          },
+          "excerpt": "non-leaf revisions will no longer be available",
+          "source_url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/compact-and-destroy.md#L26",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        }
+      ],
+      "epistemic_status": "Síntese de desenho do agente apoiada em capacidades documentadas; não é aplicação pronta nem solução validada."
+    },
+    {
+      "id": "A2",
+      "title": "ODK Collect e Central como fluxo de formulários por peça, com revisão operacional de conflitos",
+      "changes_work": [
+        "Representar peça como Entity e ações como formulários de chegada, transferência, reserva, uso e nova observação/correção; usar código de peça para vincular submissões.",
+        "Dar a uma oficina custódia e responsabilidade pelas confirmações; pedido remoto continua provisório e reserva exige separação física local.",
+        "Responsável revisa atualizações paralelas após reconexão e corrige estado antes de dismiss; não tratar último estado recebido como prova de disponibilidade.",
+        "Fotos e relato histórico ficam nas submissões; correções são novas submissões ligadas à anterior. Editar submissão não atualiza Entity automaticamente."
+      ],
+      "changes_software": [
+        "Configurar Collect/Central compatíveis com offline Entities (ambos >=2024.3 segundo documentação lida) e formulários que escrevam apenas propriedades pertinentes à ação.",
+        "Entity contém metadados mínimos e estado corrente; submissões conservam observações e fotos. Central fornece histórico/revisão e exportação CSV+multimídia.",
+        "Avaliar filtro por propriedade de oficina na versão efetivamente instalada e uma lista mínima comum para localizar peças; não presumir que filtro de escolha reduz tráfego.",
+        "Disponibilizar resumo de frescor e pedidos provisórios no desenho do formulário ou em camada pequena adicional; essas telas não foram comprovadas prontas no produto."
+      ],
+      "constraints_addressed": [
+        "Android e operação desconectada já previstos pelo produto; criação e atualização local de Entities alimentam formulários seguintes.",
+        "Menos código próprio de captura, validação e exportação; instalação auto-hospedada não exige licença de servidor paga.",
+        "Submissões comportam fotos e exportação inclui mídia; trilha de Entity e audit podem apoiar revisão."
+      ],
+      "failure_modes": [
+        "Central aplica atualizações pela ordem de recebimento (last-write-wins) e sinaliza paralelismo; não implementa reserva exclusiva global offline.",
+        "Entity não aceita arquivos de mídia segundo documento lido: foto da submissão não está comprovadamente acessível offline por peça em formulários de seguimento.",
+        "Documentação contraditória no mesmo pin: entities-intro diz que todas Entities vão a todos dispositivos; central-entities documenta filtros de servidor por propriedade/ownership. Validar comportamento da versão, sem assumir sincronização incremental.",
+        "Atualizações offline fora de ordem podem ser retidas até cinco dias; cadeias com vários usuários podem ser difíceis de interpretar.",
+        "Fluxos de transferência especializados podem exigir bastante trabalho; administração e formulário não são manutenção zero. Preços e custo real não pesquisados."
+      ],
+      "application_condition": "Se o trabalho pode ser conduzido por formulários e revisão assíncrona, e a necessidade de consultar fotos históricas offline não tornar necessária uma aplicação própria grande.",
+      "cheap_rejection_experiment": {
+        "design": "Piloto futuro com as mesmas duas oficinas, dois telefones e 200 peças, carregando também catálogo de 45.000 metadados; criar e usar peça no mesmo telefone sem rede por 72h, dividir atualizações entre dois voluntários, entregar fora de ordem, revisar conflito e exportar fotos. Sem executar fonte nesta investigação.",
+        "reject_if": [
+          "Registro criado offline não aparecer no formulário seguinte.",
+          "Carregamento ou atualização de 45.000 peças travar os Android de baixo custo, ou consumir pacote de dados/custo acima do limite decidido pela cooperativa.",
+          "Revisor não identificar/recuperar a observação concorrente, ou alterar submissão deixar estado Entity incorreto sem alerta operacional compreensível.",
+          "Exigência de acessar foto/história por peça offline não for atendida com pequena configuração.",
+          "Não for possível exportar e ligar cada observação e foto à peça sem perda."
+        ]
+      },
+      "baseline_relation": {
+        "status": "materialmente modificada",
+        "baseline_ids": [
+          "B3",
+          "B2"
+        ],
+        "details": "B3 previa coleta offline existente de modo genérico; ODK Entities torna viável seguimento imediato offline, mas last-write-wins, edição independente e ausência de mídia em Entity mudam limites e revisão necessários. B2 segue acordo operacional; não há alternativa conceitual nova apenas por nomear ODK."
+      },
+      "source_evidence": [
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/collect-intro.rst",
+          "lines": {
+            "start": 13,
+            "end": 17
+          },
+          "excerpt": "designed to work well offline",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/collect-intro.rst#L13",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-entities.rst",
+          "lines": {
+            "start": 648,
+            "end": 654
+          },
+          "excerpt": "Collect maintains its own offline representation of Entity Lists",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-entities.rst#L648",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-entities.rst",
+          "lines": {
+            "start": 637,
+            "end": 643
+          },
+          "excerpt": "it always applies any changes it receives at the time and in the order it receives them",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-entities.rst#L637",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-entities.rst",
+          "lines": {
+            "start": 520,
+            "end": 527
+          },
+          "excerpt": "Activity Feed showing you the history of the Entity",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-entities.rst#L520",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-entities.rst",
+          "lines": {
+            "start": 418,
+            "end": 441
+          },
+          "excerpt": "Property filters compare an Entity property with a property on the App User",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-entities.rst#L418",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/entities-intro.rst",
+          "lines": {
+            "start": 217,
+            "end": 220
+          },
+          "excerpt": "Not yet",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/entities-intro.rst#L217",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/entities-intro.rst",
+          "lines": {
+            "start": 197,
+            "end": 203
+          },
+          "excerpt": "all Entities are sent to every device on every update",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/entities-intro.rst#L197",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-submissions.rst",
+          "lines": {
+            "start": 134,
+            "end": 136
+          },
+          "excerpt": "along with any multimedia submitted to the form",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-submissions.rst#L134",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/entities-intro.rst",
+          "lines": {
+            "start": 104,
+            "end": 106
+          },
+          "excerpt": "those changes are not automatically applied to the related Entities",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/entities-intro.rst#L104",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/central-install.rst",
+          "lines": {
+            "start": 45,
+            "end": 48
+          },
+          "excerpt": "account for your infrastructure expenses and the time needed for ongoing maintenance",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/central-install.rst#L45",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        },
+        {
+          "identity": "getodk/docs",
+          "url": "https://github.com/getodk/docs",
+          "pin": "1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e",
+          "file": "docs/form-audit-log.rst",
+          "lines": {
+            "start": 4,
+            "end": 16
+          },
+          "excerpt": "when, why and who changed answers",
+          "source_url": "https://github.com/getodk/docs/blob/1b4d4cd0bd96682b2cd16fa36dd0f5362891f56e/docs/form-audit-log.rst#L4",
+          "origin": "model",
+          "literal_checked_against_pinned_source": true,
+          "reported_line_range_contains_literal": true
+        }
+      ],
+      "epistemic_status": "Síntese condicional apoiada na documentação, não comprovação de adequação ao inventário ou de custo."
+    }
+  ],
+  "limitations": []
+}

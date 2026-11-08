@@ -1,0 +1,38 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "ask",
+    "How are concurrent writes reconciled and does the system preserve conflicting observations rather than overwrite them?",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0154/xerj/bin/xerj",
+    "ask",
+    "How are concurrent writes reconciled and does the system preserve conflicting observations rather than overwrite them?",
+    "--corpus",
+    "cassandra",
+    "--how",
+    "--hosted",
+    "off",
+    "--json",
+    "--max-tokens",
+    "4000"
+  ],
+  "origin": null,
+  "started_unix": 1794157555.3295794,
+  "pending": false,
+  "baseline_sha256": "974fd615f3b14e4a0e97d772649f2bb2625e4b8a1e6691a0b4e3f73272813034",
+  "seconds": 2.459547519683838,
+  "exit_code": 0,
+  "stdout": "{\"corpus\":\"cassandra\",\"pin_sha\":\"ec2c276be145bb25085c5c35ac0da69113b676ff\",\"pin_date\":\"2026-10-13\",\"age_days\":26,\"licence_spdx\":\"Apache-2.0\",\"licence_class\":\"adapt-with-attribution\",\"answered_from\":\"local_pack\",\"mode\":\"how\",\"hits\":[{\"file\":\"cassandra/test/simulator/test/org/apache/cassandra/service/accord/execution/AccordCommandStoreExecutorTest.java\",\"line\":466,\"kind\":\"class\",\"text\":\"y already lead everything it declared and be sitting in the run queue. Nothing\\n         * sequences its placement against that sibling's prepare, so this is recorded rather than required.\\n         */\\n        final AtomicInteger overtookPriority = new AtomicInteger(), failedToOvertakePriority = new AtomicInteger();\\n        /** tasks that declared RECOVERY and so went through a range scan, and how those scans were made to behave */\\n        final AtomicInteger rangeScans = new AtomicInteger(), scanFailures = new AtomicInteger(), scanArbitrary = new AtomicInteger();\\n        /**\\n         * Tasks that declared Ranges, and runs that touched a key the scan could not have discovered - i.e. one the\\n         * {@code KeyWatcher} must have adopted. The second is the point of the axis, so it is gated, \\n    ... [class Harness: showing 800 of 4,953 chars from offset 2,600, window centred on the match]\",\"value\":null,\"score\":1041.7618,\"licence_warning\":null},{\"file\":\"cassandra/src/java/org/apache/cassandra/service/StorageProxy.java\",\"line\":677,\"kind\":\"method\",\"text\":\" If we have an in-progress ballot greater than the MRC we know, then it's an in-progress round that\\n                // needs to be completed, so do it.\\n                // One special case we make is for update that are empty (which are proposed by serial reads and\\n                // non-applying CAS). While we could handle those as any other updates, we can optimize this somewhat by\\n                // neither committing those empty updates, nor replaying in-progress ones. The reasoning is this: as the\\n                // update is empty, we have nothing to apply to storage in the commit phase, so the only reason to commit\\n                // would be to update the MRC. However, if we skip replaying those empty updates, then we don't need to\\n                // update the MRC for following upd\\n    ... [method beginAndRepairPaxos: showing 800 of 7,883 chars from offset 2,900, window centred on the match]\",\"value\":null,\"score\":1040.8633,\"licence_warning\":null},{\"file\":\"cassandra/test/unit/org/apache/cassandra/service/accord/execution/AccordFailedKeyTest.java\",\"line\":1858,\"kind\":\"method\",\"text\":\"t be told the failure, and was told \\\" + failure.get(), failure.get() == injected);\\n        assertTrue(\\\"exactly the key the fan-out did not reach may be marked, and exactly that key may keep a claim or a \\\"\\n                   + \\\"reference - everything it did reach must be released. Marked \\\" + poisoned + \\\", still claimed \\\"\\n                   + stillClaimed + \\\", expected \\\" + unreached, released);\\n        assertEquals(\\\"the txnId must be marked too: the update it was applying is outstanding, so the command must be \\\"\\n                     + \\\"treated as unavailable rather than read as though every key had witnessed it\\\",\\n                     Boolean.TRUE, commandMarked.get());\\n        assertTrue(\\\"a later task declaring the same txnId must be told, promptly, that an update is outstanding: it may \\\"\\n  \\n    ... [method startedFanOutFailedOutsideARoundMarksTheKeyItDidNotReach: showing 800 of 7,708 chars from offset 6,200, window centred on the match]\",\"value\":null,\"score\":1040.295,\"licence_warning\":null},{\"file\":\"cassandra/test/unit/org/apache/cassandra/db/compaction/differential/EdgeCaseDifferentialCompactionTest.java\",\"line\":1366,\"kind\":\"method\",\"text\":\"            // ck 2 is written only by the same-timestamp inserts below. An auto-timestamp write\\n            // here would reconcile with them in the memtable and win, and the merge would then\\n            // resolve on timestamp and never reach the value comparison.\\n            if (ck == 2)\\n                continue;\\n            execute(\\\"INSERT INTO %s (pk, ck, big, exact, v) VALUES (?, ?, ?, ?, ?)\\\",\\n                    1L, ck, floats(1536, ck), floats(1024, ck), \\\"v\\\" + ck);\\n        }\\n        // ck 2: one half of a same-timestamp tie. It must be in a DIFFERENT sstable from its\\n        // partner, or the memtable reconciles the two before either reaches disk and the merge\\n        // resolves on timestamp instead of reaching the value comparison.\\n    ... [method fixedLengthValuesLargerThanCopyBuffer: showing 752 of 2,128 chars from offset 400, window centred on the match]\",\"value\":null,\"score\":1039.4031,\"licence_warning\":null},{\"file\":\"cassandra/src/java/org/apache/cassandra/db/compaction/CursorCompactor.java\",\"line\":570,\"kind\":\"method\",\"text\":\"    private boolean tryWriteNextPartition(CompactionAwareWriter compactionAwareWriter) throws IOException\\n    {\\n        if (isStopRequested())\\n            throw new CompactionInterruptedException(getCompactionInfo());\\n\\n        int partitionMergeLimit = prepareAndSortForPartitionMerge();\\n        // The round's slot advances have happened, so the steal owed by the last written partition is due. This\\n        // sits ahead of the finish() exit because that path consumes the value too, through writerRollover's\\n        // setLast; on it the advance came from resetAfterDone rather than from a read.\\n        takeOwedPartitionSteal();\\n        if (partitionMergeLimit == 0)\\n        {\\n            finish();\\n            return false;\\n        }\\n        // Top reader is on the current key/header\\n        St\\n    ... [method tryWriteNextPartition truncated at 800 chars]\",\"value\":null,\"score\":1038.876,\"licence_warning\":null}],\"truncated\":false,\"warnings\":[]}\n",
+  "stderr": ""
+}

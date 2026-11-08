@@ -1,0 +1,227 @@
+{
+  "scope": "Avaliação cega somente problem.txt, rubric.md, packet-X.json e packet-Y.json",
+  "ordinal_scores_not_summed": true,
+  "candidates": [
+    {
+      "id": "X.A1",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "relevant": true,
+      "decision": "Captura por aplicativo Android de formulários existente, ocorrências independentes e conciliação própria; confirmação física antes de viagem.",
+      "justification": "Define quem revisa, o que fica pendente, o que desenvolver e como rejeitar o piloto. Documentação específica apoia captura offline, encontro por entidade, auditoria opcional, CSV e limites de desligamento/manutenção.",
+      "passages": [
+        "X E1: docs/collect-intro.rst:13–17, designed to work well offline",
+        "X E2: docs/entities-intro.rst:151–153, Entity List that represents encounters",
+        "X E3: docs/form-audit-log.rst:91, old answers and new answers",
+        "X E9: docs/central-install.rst:48–51, infrastructure expenses and ongoing maintenance",
+        "X E17: docs/form-audit-log.rst:266–268, ausência de entrada de tela no desligamento"
+      ],
+      "unresolved": [
+        "Projeção de estoque, fila de revisão e protocolo de confirmação próprios",
+        "Exportação completa de originais/fotos e restauração não demonstradas pelos recortes",
+        "72h, Android barato, 45 mil peças, custos e carga humana não medidos"
+      ],
+      "baseline": {
+        "ids": [
+          "B1",
+          "B4"
+        ],
+        "classification": "mesma família",
+        "material_subdecision": "Auditoria opcional e suporte de formulários tornam a implementação mais concreta. B1 já exigia ocorrências append-only e confirmação; B4 já propunha adaptar aplicativo de campo. A exclusividade de responsabilidade abaixo não foi introduzida pela pesquisa.",
+        "self_claim": "materialmente modificada; aceito refinamento e limites novos, não novidade da configuração principal"
+      }
+    },
+    {
+      "id": "X.A2",
+      "scores": {
+        "relevance": 4,
+        "evidence": 2,
+        "decision_specificity": 2
+      },
+      "relevant": true,
+      "decision": "Um ponto local de custódia confirma reservas/uso; demais aparelhos só observam/pedem; trânsito e entrega transferem autoridade sem timeout.",
+      "justification": "Muda concorrência permitida e responsabilidade física, mantém captura livre e explicita gargalo e perda de aparelho. Fontes dão primitivas/limites, não demonstram exclusividade ou handover seguro.",
+      "passages": [
+        "X E8: docs/entities-intro.rst:187–192, control which Entities are delivered",
+        "X E12: src/docs/src/replication/conflicts.rst:111–115, single node e 409",
+        "X A2 work_change/software_change: custódio, transferência e não restaurar autoridade por timeout"
+      ],
+      "unresolved": [
+        "Protocolo de autoridade/recuperação sem implementação ou prova",
+        "Disciplina de retirada e disponibilidade do telefone",
+        "Mesmas lacunas de captura/exportação de A1"
+      ],
+      "baseline": {
+        "ids": [
+          "B2"
+        ],
+        "classification": "mesma família",
+        "material_subdecision": "B2 já continha custódio/dispositivo único e handoff explícito. Limites de filtro/409 e cenário de falha refinam esse desenho; não criam família."
+      }
+    },
+    {
+      "id": "X.A3",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "relevant": true,
+      "decision": "Cliente e projeções próprios, réplicas colaborativas com divergências visíveis, pedidos provisórios ou custódia para compromisso firme.",
+      "justification": "Explicita custo de construir cliente e UI de conflito e separa histórico de negócio das revisões descartáveis; tem piloto de integração e carga.",
+      "passages": [
+        "X E10: src/docs/src/replication/conflicts.rst:90–105, arbitrary revision as winner",
+        "X E11: src/docs/src/replication/conflicts.rst:185–189, non-leaf bodies discarded",
+        "X E13: rust/automerge/src/lib.rs:58–74, cannot merge sensibly",
+        "X E14: javascript/src/implementation.ts:1005–1012, concurrent put operations"
+      ],
+      "unresolved": [
+        "Android, autorização, transporte de fotos e exportador próprios",
+        "Memória, armazenamento, custo e prazo de dois generalistas não medidos",
+        "Convergência não garante reserva única"
+      ],
+      "baseline": {
+        "ids": [
+          "B3"
+        ],
+        "classification": "revisão material",
+        "material_subdecision": "A fonte de compactação exige manter eventos vivos separados das revisões/histórico do motor. A família colaborativa, preservação de conflitos e separação de reservas já constavam em B3; não são descobertas novas."
+      }
+    },
+    {
+      "id": "Y.A",
+      "scores": {
+        "relevance": 4,
+        "evidence": 3,
+        "decision_specificity": 2
+      },
+      "relevant": true,
+      "decision": "Aplicativo próprio com eventos locais replicados, revisão explícita e confirmação física antes de promessa; Automerge é opção interna.",
+      "justification": "Define identidade/idempotência, visibilidade de conflitos, papel do steward e entrega de saída de dados; distingue primitivas de exportação de exportador e mede carga em Android.",
+      "passages": [
+        "Y E1: docs/guides/conflicts.md:142–148, only create new documents",
+        "Y E2: docs/guides/conflicts.md:74–90, arbitrary winner",
+        "Y E4: docs/_includes/api/compaction.html:3–7, removing non-leaf revisions and attachments",
+        "Y E6: docs/_includes/api/replication.html:29–33, low amounts of memory",
+        "Y E8/E10: get_all e teste de ambos os valores; teste lido, não executado",
+        "Y E9: rust/automerge/src/sync.rs:1–10, reliable in-order stream"
+      ],
+      "unresolved": [
+        "Retenção Android, app shell, fotos, autenticação e custos sem medição",
+        "Exportação/restauração integral a implementar",
+        "Não garante reserva única entre escritores isolados"
+      ],
+      "baseline": {
+        "ids": [
+          "b1",
+          "b4"
+        ],
+        "classification": "revisão material",
+        "material_subdecision": "A regra de compactação torna explícito que eventos e fotos devem permanecer documentos vivos, sem depender de revisões antigas; é revisão de retenção/armazenamento, não nova família. b1 já dizia append-only e revisão de conflitos, b4 já tinha cache/fila/reconciliação."
+      }
+    },
+    {
+      "id": "Y.B",
+      "scores": {
+        "relevance": 4,
+        "evidence": 2,
+        "decision_specificity": 2
+      },
+      "relevant": true,
+      "decision": "Telefone compartilhado da oficina é único escritor de compromissos, retirada física controlada e passagem durável de autoridade; observações pessoais livres.",
+      "justification": "Distingue disponibilidade de registrar de disponibilidade de comprometer. Explicita perda de confirmação, bloqueio/recontagem e ausência de failover por timeout. Primitivas citadas não validam o protocolo.",
+      "passages": [
+        "Y E5: docs/guides/conflicts.md:22–24, 409",
+        "Y E2: docs/guides/conflicts.md:74–90, eventual deterministic winner",
+        "Y E1: docs/guides/conflicts.md:142–148, immutable documents",
+        "Y relatório B: aparelho único, trânsito indisponível e handover durável"
+      ],
+      "unresolved": [
+        "Ownership/handover não implementados nem formalmente verificados",
+        "Disciplina física e falha do aparelho podem bloquear compromissos",
+        "Sem orçamento ou resultados de campo"
+      ],
+      "baseline": {
+        "ids": [
+          "b2",
+          "b3"
+        ],
+        "classification": "revisão material",
+        "material_subdecision": "b2 já tinha direitos transferíveis por oficina. A substituição da configuração de b3 (servidores locais mantidos) por telefone de autoridade portátil muda responsabilidade operacional e falha; a relação causal exclusiva com uma fonte é incerta, pois 409 não determina escolha de hardware."
+      }
+    }
+  ],
+  "equivalence_groups": [
+    {
+      "id": "G1",
+      "decision": "Observações livres offline, preservação de divergências, pedidos provisórios e revisão/confirmacão física antes de promessa",
+      "members": [
+        "X.A1",
+        "X.A3",
+        "Y.A"
+      ],
+      "equivalence": "Equivalentes quanto à concorrência e garantia de compromisso; não são três garantias diferentes.",
+      "partial_differences": [
+        "X.A1 reaproveita aplicativo de coleta Android e deixa projeção/conciliação próprias; X.A3/Y.A exigem construir cliente e fluxo de conflito. Isso altera responsabilidade de manutenção, portanto merece comparação como configuração interna relevante.",
+        "X.A3 explicita descrições lado a lado; Y.A também exige que conflitos não desapareçam atrás de vencedor e inclui Automerge internamente. Não há exclusiva de colaboração demonstrada.",
+        "Y.A especifica transporte confiável, lotes/memória e eventos vivos; X.A3 também trata compactação e eventos imutáveis. São diferenças de profundidade/integração, sem nova garantia de reserva."
+      ]
+    },
+    {
+      "id": "G2",
+      "decision": "Custódia local restringe quem confirma compromissos; captura livre continua; transferência não duplica autoridade",
+      "members": [
+        "X.A2",
+        "Y.B"
+      ],
+      "equivalence": "Equivalentes quanto ao escritor único, gargalo, controle físico, trânsito e rejeição de failover por timeout.",
+      "partial_differences": [
+        "Y detalha geração/transfer ID, aceite durável, recontagem e limiar de 5%/5 minutos; X começa por simulação antes de construir e usa limite de um turno. São diferenças verificáveis de avaliação e detalhamento, sem outra garantia demonstrada.",
+        "O telefone de autoridade em lugar de servidores locais é revisão material do baseline de Y, mas X já oferece o mesmo telefone de balcão."
+      ]
+    }
+  ],
+  "exclusivity": {
+    "qualified_observed": [
+      {
+        "id": "X.G1.forms_responsibility",
+        "packet": "X",
+        "candidate": "X.A1",
+        "scope": "Configuração interna ao G1, não nova família de concorrência",
+        "decision_difference": "Reutilizar aplicativo Android de captura, formulários e auditoria mantidos externamente, desenvolvendo projeção e conciliação. Y.A exige cliente/app shell próprio e não investiga equivalente de formulários pronto. A diferença muda a responsabilidade de dois generalistas e pode mudar a escolha.",
+        "evidence": "X E1/E2/E3/E9/E17; Y relatório reconhece não ter avaliado serviço de formulários Android offline.",
+        "research_contribution": "Não demonstrada para a exclusividade principal: B4 de X já propunha adaptar aplicativo de campo offline/exportável. As fontes concretizam e impõem limites; não acrescentam essa decisão de responsabilidade.",
+        "uncertainty": "Se a unidade exigida for só política de compromisso, a exclusiva desaparece: G1 é comum. Registra-se a diferença parcial sem contá-la como família adicional."
+      }
+    ],
+    "new_exclusive_families": [],
+    "research_caused_exclusives": [],
+    "apparently_exclusive": [
+      {
+        "claim": "X tem três títulos contra dois em Y",
+        "reason": "X.A3 corresponde ao cliente replicado de Y.A; Automerge é opção interna em ambos. Títulos não dão cobertura adicional."
+      },
+      {
+        "claim": "Só X tem colaboração/CRDT",
+        "reason": "Y.A descreve implementação Automerge e acesso a conflitos no relatório, com teste estático e contrato de transporte."
+      },
+      {
+        "claim": "Só Y tem autoridade móvel sem servidores ou preservação de eventos contra compactação",
+        "reason": "X.A2 usa telefone compartilhado e X.A3 exige eventos separados das revisões descartáveis."
+      }
+    ]
+  },
+  "uncertainties": [
+    "Nenhum projeto, teste de fonte ou piloto foi executado; notas avaliam proposta e evidência estática, não utilidade comprovada.",
+    "Literalidade/linhas fixadas foram aceitas como verificadas conforme instrução; não houve consulta a outras fontes.",
+    "Recortes X E5, E6, E7 e E18 terminam antes de parte das propriedades atribuídas. CSV básico, conflito e estado local estão apoiados; anexos/audit integral, LWW, espera de cinco dias e ausência de mídia em Entity Lists não ficam integralmente demonstrados nesses trechos. Não usei essas extensões como garantia.",
+    "Recortes X E13/E14 não exibem completamente o acesso a valores/histórico alegado; Y E8/E10 fornece apoio mais explícito ao acesso a conflitos. Isso não cria alternativa nova.",
+    "Ambos deixam autenticação/revogação offline, restauração, 45 mil peças/fotos, custos recorrentes e disciplina real com voluntários sem validação.",
+    "Atribuição causal à pesquisa é limitada pelos baselines curtos: refinamentos de retenção são materiais no desenho explícito, mas append-only já era intenção de ambos. Não há evidência suficiente para atribuir uma nova família exclusiva à pesquisa.",
+    "Ausência de alternativa em Y ou X não demonstra incapacidade de um produto; nenhuma inferência de identidade ou comparação de desempenho dos produtos foi feita."
+  ],
+  "conclusion": "Os dois pacotes chegam às mesmas duas políticas de compromisso: observações livres com reconciliação, ou custódia local para compromissos firmes. X acrescenta uma configuração relevante de responsabilidade de implementação por reaproveitar app de formulários; essa diferença é observada no resultado e já existia como intenção no baseline X. Não há família exclusiva nova atribuível à pesquisa demonstrada. Fontes produzem revisões materiais de retenção e limites, sem validação operacional."
+}

@@ -1,0 +1,22 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "setup",
+  "args": [
+    "ask",
+    "--help"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-open-0153/xerj/bin/xerj",
+    "ask",
+    "--help"
+  ],
+  "origin": null,
+  "started_unix": 1794155314.3832157,
+  "pending": false,
+  "baseline_sha256": "5a9a7da8ae44492dc98195ea3324473ec8762421b57ff75ab2e2e3bdd3483266",
+  "seconds": 0.02193903923034668,
+  "exit_code": 0,
+  "stdout": "usage: xerj ask \"<question>\" [options]\n       xerj \"<question>\"            (the same, when the question contains a space)\n\nAnswers from a hub corpus - pulling its pre-indexed pack the first time - and\nalways names the corpus, the pinned revision and the licence.\n\noptions:\n  --corpus <slug>        skip routing and ask this corpus\n  --def <SYMBOL>         exact definition lookup (file:line, declaration, value)\n  --how                  a how-does-it-work question (ranked passages)\n  --files                list the relevant files with their licences\n  --offline              never touch the network (cached catalogue and packs only)\n  --no-fetch             do not download a pack for next time\n  --hosted on|off|auto   may the question be sent to the hosted hub? (default\n                         auto: off inside a git repository, on elsewhere)\n  --max-tokens N         cap the answer at about N tokens\n  --json                 print the answer as JSON\n  --url <node>           the node that holds the packs (default: XERJ_URL, then\n                         localhost:9200, else a local node is started)\n\nexit codes: 0 answered; 1 no match, nothing to answer from, or no hub corpus\ncovers the topic (index it locally: xerj autoindex <path>, then xerj code or\nxerj search; xerj hub find lists what the hub does have); 2 usage error or\nunknown corpus; 3 a pack failed verification; 4 more than one corpus actually\nmatches and none clearly wins (a few candidates are printed, best first;\nre-run with --corpus <slug>). A weak overlap, or a tie while the question\nnames a project no corpus contains, is exit 1, not 4; 5 this build has no hub\npublic key, so no pack can be verified (nothing was downloaded); 6 the hub\ncatalogue could not be loaded (hub unreachable, no signed catalogue served, or\n--offline with none cached): a hub problem, not an answer about any corpus\n",
+  "stderr": ""
+}

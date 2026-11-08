@@ -1,0 +1,402 @@
+{
+  "label": "Y",
+  "baseline": {
+    "options": [
+      {
+        "id": "b1",
+        "design": "Offline-first replicated record log with explicit conflict review and append-only observations"
+      },
+      {
+        "id": "b2",
+        "design": "Workshop ownership and transferable reservation rights to reduce conflicting promises while disconnected"
+      },
+      {
+        "id": "b3",
+        "design": "Local workshop servers with phone queues and periodic inter-workshop synchronization"
+      },
+      {
+        "id": "b4",
+        "design": "Shared inventory application with offline cache, sync queue, and manual reconciliation"
+      }
+    ],
+    "basis": "Initial reasoning from the problem only; no research performed."
+  },
+  "result": {
+    "alternatives": [
+      {
+        "id": "A",
+        "name": "Free offline observations with provisional reservations and explicit reconciliation",
+        "baseline_relation": {
+          "status": "materially_modified",
+          "baseline": [
+            "b1",
+            "b4"
+          ],
+          "source": "PouchDB conflict and compaction guides establish separate immutable business history, not revision history. Automerge evidence prevents treating automatic convergence as inventory correctness."
+        },
+        "work_change": "Label each physical part with stable QR ID and workshop/bin. Every volunteer can record arrival, movement, reservation request, consumption and correction offline. Show reservations from disconnected devices as provisional; before a trip or promise obtain a fresh physical confirmation by the holding workshop. A steward resolves competing claims and links the decision to all original observations. Corrections append a superseding observation with reason rather than erasing another volunteer record.",
+        "software_change": "One JSON event per action with random globally unique event ID, part ID, workshop, actor/device, device sequence, observed parents, local time and received time. Deduplicate retries by event ID. Keep original photos attached to immutable photo/event IDs. Materialize search and availability views; conflicting locations, consumption/reservation claims and part-ID duplicates raise a visible review task, never disappear behind a winner. PouchDB local stores with CouchDB-compatible hub and live retry are a candidate. Persist app shell and selected workshop inventory on phones; sync metadata before bulk photo transfer if a spike proves this possible. Export events as JSONL, inventory as CSV, photos plus manifest and checksums.",
+        "constraints_met": [
+          "Local event capture during a 72h WAN partition; no central-office visit.",
+          "Replicated immutable observations preserve multiple descriptions and correction history.",
+          "One shared sync service is a plausible small operations footprint for two developers; cost remains to be measured.",
+          "Explicit portable export deliverable, backed by read primitives rather than an assumed built-in export product."
+        ],
+        "limitations": [
+          "Cannot guarantee a unique reservation while disconnected writers may claim the same part.",
+          "Physical confirmation adds latency and remains required before a firm external promise.",
+          "Photos, complete history, startup sync and browser storage durability on cheap Android phones are unmeasured.",
+          "Neither PouchDB winners nor Automerge winners imply physically correct stock. CRDT is an implementation option within this design, not another conceptual alternative."
+        ],
+        "condition_of_application": "Use if preserving unrestricted recording matters more than accepting immediate firm reservations from every disconnected volunteer, and stewards can clear a modest conflict queue.",
+        "rejection_experiment": "Two workshops, 6 volunteers, 200 labelled parts, 72h WAN cut. Inject same-part double reservation, move vs consume, description correction, duplicate arrival, repeated delivery and phone restart. Reject if any original observation/photo is lost, provisional state looks confirmed, or stewards cannot clear conflict backlog within an agreed 30-minute daily budget. Measure false-trip rate against current spreadsheets.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L142",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/guides/conflicts.md",
+            "lines": [
+              142,
+              148
+            ],
+            "excerpt": "you never update or remove existing documents &ndash; you only create new documents.",
+            "supports": "Append-only event documents are an explicitly documented conflict avoidance design.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E2",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/guides/conflicts.md",
+            "lines": [
+              74,
+              90
+            ],
+            "excerpt": "CouchDB will choose an arbitrary winner based on a deterministic algorithm",
+            "supports": "Concurrent offline revisions can succeed locally; deterministic winner is not domain adjudication.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E3",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L15",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/replication.html",
+            "lines": [
+              15,
+              16
+            ],
+            "excerpt": "using a backoff algorithm that retries at longer and longer intervals until a connection is re-established",
+            "supports": "Replication supports offline retry with live enabled; application still handles denied and fatal errors.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E4",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/compaction.html#L3",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/compaction.html",
+            "lines": [
+              3,
+              7
+            ],
+            "excerpt": "removing unused and old data, namely non-leaf revisions and attachments that are no longer referenced by those revisions.",
+            "supports": "Revision trees are insufficient as permanent business history when compacted.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E6",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L29",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/replication.html",
+            "lines": [
+              29,
+              33
+            ],
+            "excerpt": "You may need to adjust downward if targeting devices with low amounts of memory (e.g. phones)",
+            "supports": "Replication batches and attachments have phone memory implications.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E7",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/batch_fetch.html#L140",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/batch_fetch.html",
+            "lines": [
+              140,
+              149
+            ],
+            "excerpt": "include_docs: true,\n  attachments: true,",
+            "supports": "Readable document and attachment extraction primitive; full export/restore must be implemented and tested.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E8",
+            "identity": "automerge",
+            "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/lib.rs#L56",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "rust/automerge/src/lib.rs",
+            "lines": [
+              56,
+              61
+            ],
+            "excerpt": "the conflicting value is still available via the [`ReadDoc::get_all()`] method.",
+            "supports": "CRDT scalar assignment conflicts still require application interpretation.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E9",
+            "identity": "automerge",
+            "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/sync.rs#L1",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "rust/automerge/src/sync.rs",
+            "lines": [
+              1,
+              10
+            ],
+            "excerpt": "it assumes a reliable in-order stream\n//! between two peers who are synchronizing a document.",
+            "supports": "Core sync protocol needs transport supplied by the application.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E10",
+            "identity": "automerge",
+            "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/javascript/test/conflicts.ts#L39",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "javascript/test/conflicts.ts",
+            "lines": [
+              39,
+              54
+            ],
+            "excerpt": "assert.deepStrictEqual(new Set(names), new Set([\"charlie\", \"bob\"]))",
+            "supports": "Source test checks that both conflicting map values remain; test was read, not executed.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Workshop custody authority for firm promises, with free offline observation capture",
+        "baseline_relation": {
+          "status": "materially_modified",
+          "baseline": [
+            "b2",
+            "b3"
+          ],
+          "source": "PouchDB immediate/eventual conflict distinction exposes the need to prevent multiple offline commitment writers; source supplies primitives, custody protocol is agent synthesis."
+        },
+        "work_change": "Keep the same offline observation log, but each workshop has a designated commitment device at the stock shelf and physically controlled held/withdrawal bins. Volunteers can always record observations on personal phones. Firm reservation, release and withdrawal require the workshop authority device and physical scan; requests on other phones remain pending. A shared authority phone works without internet and can be handed between volunteers at that workshop. Inter-workshop moves use dispatch/in-transit/receipt with unique transfer ID; the sending workshop relinquishes rights at dispatch, receiving workshop gets them after accepting the dispatch receipt and physical part. Never create a second authority just because 72h passed.",
+        "software_change": "Maintain a single-writer per-part commitment sequence at the custody device, validate allowed transitions and reject stale commands. Replicate authority decisions and free observations as immutable events. Track ownership generation and transfer ID, keep in-transit unavailable to both sides, and require acknowledged durable handover before replacing a device. Personal phones can queue requests while disconnected but cannot mint confirmed reservations. Export and history remain as A. LAN kiosk is optional and not required by this design.",
+        "constraints_met": [
+          "No internet needed at the workshop commitment device for local commitment work.",
+          "All 60 volunteers retain disconnected observation capture; no central-office travel.",
+          "One shared hub plus eight authority phones, rather than eight maintained workshop servers.",
+          "Physical segregation and restricted commitment writers aim to reduce duplicate firm promises."
+        ],
+        "limitations": [
+          "Guarantee depends on physical custody discipline and one active authority; software alone cannot prevent unrecorded removal.",
+          "A missing, broken or unavailable authority phone stalls new firm commitments, though observation recording continues.",
+          "Immediate firm commitment from every independently disconnected personal phone is intentionally unavailable.",
+          "Handover after device loss may require physical recount and blocking affected parts; automatic timeout failover is unsafe.",
+          "Protocol has not been implemented or formally verified; PouchDB 409 is not distributed ownership enforcement."
+        ],
+        "condition_of_application": "Use if failed promises and wasted travel are more expensive than the extra shelf workflow, and each workshop can maintain a shared commitment device and controlled stock release.",
+        "rejection_experiment": "Apply same 72h two-workshop pilot, adding concurrent personal-phone requests, offline cross-workshop move, lost acknowledgement, duplicate dispatch and authority-phone failure. Reject on any two firm reservations or authority duplication, unexplained missing physical part, or if more than an agreed 5% of normal withdrawals cannot proceed within 5 minutes. Record observation availability separately from commitment availability.",
+        "source_evidence": [
+          {
+            "id": "E1",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L142",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/guides/conflicts.md",
+            "lines": [
+              142,
+              148
+            ],
+            "excerpt": "you never update or remove existing documents &ndash; you only create new documents.",
+            "supports": "Append-only event documents are an explicitly documented conflict avoidance design.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E2",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L74",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/guides/conflicts.md",
+            "lines": [
+              74,
+              90
+            ],
+            "excerpt": "CouchDB will choose an arbitrary winner based on a deterministic algorithm",
+            "supports": "Concurrent offline revisions can succeed locally; deterministic winner is not domain adjudication.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E3",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/replication.html#L15",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/replication.html",
+            "lines": [
+              15,
+              16
+            ],
+            "excerpt": "using a backoff algorithm that retries at longer and longer intervals until a connection is re-established",
+            "supports": "Replication supports offline retry with live enabled; application still handles denied and fatal errors.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E5",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/guides/conflicts.md#L22",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/guides/conflicts.md",
+            "lines": [
+              22,
+              24
+            ],
+            "excerpt": "They manifest as a `409` (conflict) error:",
+            "supports": "Immediate stale-revision conflicts exist; they are different from eventual conflicts. This is a primitive, not proof of the proposed custody protocol.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E7",
+            "identity": "pouchdb",
+            "url": "https://github.com/pouchdb/pouchdb/blob/0ec5a68736e306814f491081eaf31692211af007/docs/_includes/api/batch_fetch.html#L140",
+            "pin": "0ec5a68736e306814f491081eaf31692211af007",
+            "file": "docs/_includes/api/batch_fetch.html",
+            "lines": [
+              140,
+              149
+            ],
+            "excerpt": "include_docs: true,\n  attachments: true,",
+            "supports": "Readable document and attachment extraction primitive; full export/restore must be implemented and tested.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          },
+          {
+            "id": "E8",
+            "identity": "automerge",
+            "url": "https://github.com/automerge/automerge/blob/09aeeabaa499c3aca50c48f33051a5accad0cc58/rust/automerge/src/lib.rs#L56",
+            "pin": "09aeeabaa499c3aca50c48f33051a5accad0cc58",
+            "file": "rust/automerge/src/lib.rs",
+            "lines": [
+              56,
+              61
+            ],
+            "excerpt": "the conflicting value is still available via the [`ReadDoc::get_all()`] method.",
+            "supports": "CRDT scalar assignment conflicts still require application interpretation.",
+            "literal_checked_against_pin": true,
+            "line_range_checked": true
+          }
+        ]
+      }
+    ],
+    "design_status": "Investigated proposals, not deployed or benchmarked; no projects executed.",
+    "common_scope": "Individual-part IDs, immutable observation history and photos, visible freshness/conflict/pending states, export and restore."
+  },
+  "report": "# Investigação independente com [research product]\n\nA mudança principal é separar **o que alguém observou**, **o que a oficina confirmou fisicamente** e **o que já pode ser prometido**. Manter uma planilha sincronizada ou adotar uma biblioteca que converge não elimina duas promessas sobre a mesma peça durante 72 horas de desconexão. Duas alternativas merecem um piloto; a escolha depende do custo aceitável de reconciliação versus o custo de controlar a liberação física.\n\nEsta é uma proposta investigada, não uma implementação testada. Não executei projetos ou testes dos projetos. Fontes foram adquiridas por URLs exatas sugeridas pela memória do agente, e lidas exclusivamente por indexação/busca [research product]. O catálogo nativo não descobriu fontes úteis para a pergunta. Nenhum mecanismo ou projeto foi fornecido no problema.\n\n## Mudanças comuns\n\nEtiquetar cada peça individual com ID estável/QR e localização física; distinguir duas peças semelhantes de dois registros da mesma peça. Fotografias ajudam a identificar e justificar correções, mas não substituem identidade. Cada chegada, movimentação, pedido de reserva, uso e correção gera um evento próprio, com autor/dispositivo, sequência local, peça, oficina, motivo, referências às observações conhecidas e fotos. Usar ID aleatório de evento para repetição idempotente; horário do aparelho serve à exibição, não a decidir qual observação é verdadeira. Correções acrescentam uma referência ao registro corrigido e preservam o original.\n\nA tela deve mostrar “salvo neste aparelho”, “enviado”, “pedido provisório”, “confirmado pela oficina”, “em trânsito” e “precisa revisão”, além da última confirmação física recebida. Ausência de conflito recebido não significa ausência de conflito durante desconexão. Não mostrar a peça como seguramente disponível para uma viagem somente porque existe num catálogo antigo. Criar fila curta de revisão por oficina, com responsável e motivo da decisão.\n\nGuardar metadados e o catálogo necessário localmente; disponibilizar a aplicação após reinício sem rede. Medir armazenamento de fotos antes de replicar 45 mil peças integralmente para todos os 60 aparelhos. Uma possível implementação usa PouchDB nos aparelhos e um serviço compatível com CouchDB para troca quando houver conexão. O número de serviços é pequeno, mas não há orçamento de hospedagem ou custo de manutenção medido. Separar progresso dos metadados do progresso das fotos só após verificar a implementação; não foi demonstrado como capacidade pronta.\n\nExportar JSONL dos eventos, CSV da visão atual, fotos e manifesto com IDs/checksums; documentar o significado dos campos e reconstruir uma instalação vazia. Uma réplica do mesmo motor é backup útil, mas o teste de saída deve comprovar um formato legível e completo. Estas são exigências de projeto, não um botão de exportação já encontrado.\n\n## A — Registro livre offline, reservas provisórias e reconciliação explícita\n\nTodos podem registrar ações e descrições desconectados. Pedidos concorrentes permanecem observações visíveis; uma oficina confirma fisicamente a peça antes de firmar a promessa ou orientar uma viagem. Um steward resolve reserva versus consumo, localização divergente, duplicação de peça e correção contestada, preservando os registros usados na decisão. A interface nunca transforma um vencedor técnico em confirmação física.\n\nIsso mantém o trabalho de registro disponível por 72 horas e evita apagar observações. Exige tolerar confirmação posterior e uma fila de revisão. Não garante uma reserva única entre aparelhos isolados; se o negócio exige essa garantia, esta alternativa é rejeitada ou precisa da disciplina de B. Pode servir quando conflitos são raros e confirmar antes de viajar custa menos que impor um ponto obrigatório na retirada.\n\n**Fontes efetivamente lidas:** PouchDB `docs/guides/conflicts.md`, linhas 142–148, diz “you never update or remove existing documents &ndash; you only create new documents.” O mesmo guia, linhas 74–90, admite vencedor “arbitrary winner based on a deterministic algorithm”. Testemunhos em `evidence/audit/016.json`, evidências E1/E2. A API de replicação documenta retry/backoff offline em `docs/_includes/api/replication.html`, linhas 15–16, audit/017.json (E3). A proposta usa esses mecanismos, mas política de reservas e confirmação é síntese do agente.\n\nA descoberta que materialmente modificou o baseline b1/b4 foi a diferença entre história de negócio e revisões do banco: compactação remove “non-leaf revisions and attachments that are no longer referenced”, `docs/_includes/api/compaction.html`, linhas 3–7, audit/019.json (E4). Eventos próprios precisam continuar sendo documentos vivos; não depender de revisões antigas que podem desaparecer.\n\nAutomerge é uma possível implementação do registro/edição, não uma terceira alternativa conceitual. Sua documentação reconhece valores concorrentes que não mescla sensatamente e disponibiliza o valor conflitante via `ReadDoc::get_all()`: `rust/automerge/src/lib.rs`, linhas 56–61, audit/020.json (E8). O teste `javascript/test/conflicts.ts`, linhas 39–54, verifica `new Set([\"charlie\", \"bob\"])`, audit/021.json (E10); foi lido, não executado. A convergência ainda precisa de política de inventário. O protocolo central requer “a reliable in-order stream”, `rust/automerge/src/sync.rs`, linhas 1–10, audit/025.json (E9), logo armazenamento, transporte, fotos e autenticação não estão resolvidos apenas por adotar a biblioteca. Não há evidência suficiente para escolhê-la acima de PouchDB para dois generalistas.\n\n## B — Custódia da oficina autoriza compromissos firmes\n\nManter o registro livre de A, mas reservar, liberar e retirar definitivamente uma peça passa pelo aparelho de compromisso da oficina, colocado na prateleira, e por uma verificação física. Separar fisicamente peças reservadas e exigir liberação na retirada. O telefone pode ser compartilhado pelos voluntários e funciona sem internet; ninguém precisa ir à sede. Os aparelhos pessoais podem sempre registrar observações e pedidos, mas pedidos ainda não aceitos aparecem como pendentes.\n\nHá apenas um escritor ativo dos compromissos de cada peça. O aparelho registra uma sequência de decisões e valida transições; o armazenamento replicado não autoriza outro aparelho a confirmar só porque recebeu uma cópia. Uma transferência registra despacho, trânsito e recebimento com o mesmo ID. O remetente abre mão dos direitos ao despachar; o destinatário só assume após receber a peça e o registro de despacho. Em trânsito, nenhuma oficina promete a peça. Perda de confirmação pode atrasar uso, nunca criar dois proprietários. Troca de aparelho precisa de passagem durável de responsabilidade; **não** criar autoridade substituta por timeout durante a partição. Recuperação sem aparelho pode exigir bloqueio e recontagem física das peças afetadas.\n\nA redução de dupla promessa depende de seguir esse trabalho: retirar uma peça da prateleira sem passar pelo ponto de liberação invalida a garantia. Falha do telefone de compromisso interrompe novos compromissos firmes, embora observações continuem. É apropriada se viagens inúteis e promessas quebradas custam mais que essa disciplina e cada oficina consegue manter um aparelho compartilhado. Se todo voluntário precisa confirmar irrevogavelmente qualquer peça no próprio telefone isolado, esta alternativa não satisfaz esse requisito adicional.\n\n**Fundamentação e limite:** PouchDB distingue conflito imediato `409` de conflito eventual entre pares offline (`docs/guides/conflicts.md`, linhas 22–24 e 74–90, audit/016.json, E5/E2). Isso justifica não confundir checagem local de revisão com exclusividade distribuída. Eventos imutáveis e retry são os mesmos mecanismos de A (E1/E3). **A custódia, os estados e a transferência são síntese do agente; nenhuma fonte lida demonstrou um protocolo de escrow/ownership pronto nem sua segurança.** Precisam ser projetados e testados. B modifica b2/b3 do baseline: usa autoridade portátil na oficina, evitando exigir oito servidores locais. Não há necessidade de instalar LAN para esta proposta; LAN/kiosk continua uma opção não investigada.\n\n## Avaliação pequena que possa rejeitar as propostas\n\nFazer um protótipo descartável, sem migrar definitivamente. Escolher duas oficinas, seis voluntários, dois modelos baratos de Android e 200 peças etiquetadas. Durante 72 horas, cortar WAN, reiniciar aparelhos e trocar ordem/repetir mensagens ao reconectar. Exercitar chegada duplicada, duas reservas da mesma peça, movimento versus uso, correções concorrentes com fotos, foto cujo envio falha e aparelho sem espaço. Conferir contra uma contagem física e uma lista independente de eventos esperados. Anotar tempo de entrada, perda de dados, uso de disco, bateria, tempo/bytes até convergir, promessas indevidas e tempo de revisão. Comparar com o mesmo roteiro na planilha atual.\n\nPara A: rejeitar se qualquer observação/foto desaparece, uma reserva provisória parece confirmada ou a revisão excede um orçamento proposto de 30 minutos por oficina/dia. Esses limites são hipóteses para a cooperativa pactuar, não resultados medidos. Para B: acrescentar falha do aparelho de autoridade, despacho duplicado e confirmação perdida. Rejeitar se dois dispositivos conseguem firmar reservas simultâneas da mesma peça, se há autoridade duplicada ou se mais de 5% das retiradas normais ficam bloqueadas por mais de cinco minutos. Medir disponibilidade de registro separadamente da disponibilidade de compromisso.\n\nAntes de escolher, carregar 45 mil registros sintéticos com volume de fotos baseado numa amostra real, sem executar os projetos durante esta investigação. Exportar e restaurar fora do estado original, contando eventos/fotos e verificando checksums. PouchDB oferece leitura de documentos/anexos (`docs/_includes/api/batch_fetch.html`, linhas 140–149, audit/024.json, E7), mas isso não demonstra um exportador completo. Batches de replicação afetam memória de telefones (`docs/_includes/api/replication.html`, linhas 29–33, audit/017.json, E6). Documentação de quotas encontrada é histórica; não usei seus números antigos como limite atual de Android. Validar retenção offline no hardware real é um gate do piloto.\n\n## Rastreabilidade, escopo e desconhecidos\n\nBaseline em `evidence/baseline.json`, hash congelado pelo runner `5a9a7da8ae44492dc98195ea3324473ec8762421b57ff75ab2e2e3bdd3483266`. Fontes adquiridas por memória: PouchDB pin `0ec5a68736e306814f491081eaf31692211af007` (audit/010.json); Automerge pin `09aeeabaa499c3aca50c48f33051a5accad0cc58` (audit/015.json). URLs completas, linhas, trechos literais, IDs de passagem e caminhos absolutos dos testemunhos estão em `evidence/sources.json` e repetidos por alternativa em `alternatives.json`.\n\nO Hub nativo informou 514 corpora; a busca inicial usou `k=12` não permitido, corrigido para 10. Faltava catálogo local, resolvido por `hub sync`. Resultados temáticos foram inadequados; não lhes atribuí descobertas. Indexações tiveram sucesso com exit 3 e arquivos binários/arquivo ZIP ignorados (16 PouchDB, 36 Automerge). Buscas lexicais amplas também retornaram fixtures de benchmark; não usei esses resultados como evidência de capacidade. Nenhuma intervenção humana adicional. Nenhum clone foi lido diretamente, nenhum projeto executado, feedback enviado ou timer instalado.\n\nNão avaliei produto pronto de inventário, serviço de formulários Android offline, transportes locais/BLE, autenticação/revogação offline, segurança de handover, limites atuais de armazenamento, preços, licenças, desempenho real ou acessibilidade. b3 como servidores por oficina não tem evidência suficiente para uma alternativa separada; b4 é incorporada a A. Uma lista de bibliotecas não acrescentaria uma decisão de trabalho. Por isso paro com duas alternativas fundamentadas, antes do teto de pesquisa. A revisão completa do baseline, descartes e lacunas está em `evidence/coverage.json`.\n\nEncerramento: enviei SIGINT somente à sessão do nó criado aqui. O runner saiu 130/KeyboardInterrupt e deixou audit/012.json marcado pending; audit/029.json confirma que não há nó acessível em 127.0.0.1:19693. Registro complementar em lifecycle.json. Na verificação, `autoindex status` (audit/028.json) enumerou inesperadamente nomes de journals compartilhados de experimentos anteriores apesar de URL/prefixo; não abri esses arquivos nem utilizei seu conteúdo, e nenhuma ação foi feita nesses nós. A descoberta ocorreu depois de concluídos os artefatos de pesquisa.\n",
+  "coverage": {
+    "baseline_review": [
+      {
+        "id": "b1",
+        "outcome": "Presented in A, with business event history separated from database revision history."
+      },
+      {
+        "id": "b2",
+        "outcome": "Presented in B with physical custody, one commitment writer and non-timeout handover; speculative protocol clearly labelled."
+      },
+      {
+        "id": "b3",
+        "outcome": "Not presented separately. Eight always-on workshop servers add operations burden and do not solve disconnected phone conflicts. B uses a workshop authority phone instead; hardware/LAN option remains unresearched."
+      },
+      {
+        "id": "b4",
+        "outcome": "Folded into A. Generic offline cache is insufficient without durable writes, explicit conflict policy, history and freshness."
+      }
+    ],
+    "considered_not_presented": [
+      {
+        "design": "Automerge as a separate alternative",
+        "reason": "Different merge library is not a different commitment/work design. Read scalar conflict and transport contracts; retain it as implementation comparison within A.",
+        "evidence": [
+          "audit/020.json",
+          "audit/021.json",
+          "audit/025.json"
+        ]
+      },
+      {
+        "design": "Central online-only inventory",
+        "reason": "Violates 72h disconnected work constraint; no research required to reject."
+      },
+      {
+        "design": "Last-write-wins inventory",
+        "reason": "Deterministic winners can hide a competing reservation or description; not a sufficient solution.",
+        "evidence": [
+          "audit/016.json",
+          "audit/020.json"
+        ]
+      }
+    ],
+    "gaps": [
+      "No ready-made inventory product or offline Android data-entry suite evaluated.",
+      "No escrow/ownership transfer implementation independently sourced or verified.",
+      "No actual Android storage, runtime, accessibility, camera, authentication or data-loss tests.",
+      "No hosting price, photo volume, maintenance cadence or licence compatibility assessment.",
+      "No measured 45000-part footprint or sync throughput; no complete export/restore exercise.",
+      "[research product] lexical queries gave noise, especially benchmark fixtures; no semantic search used.",
+      "Possible alternatives with BLE/local networking or form-only collection remain researchable."
+    ],
+    "stop_reason": "Two conceptual alternatives have direct evidence and distinguish operational trade-offs. Additional merge libraries would not add conceptual alternatives; remaining implementation uncertainties are best falsified with the proposed pilot. Stopped before 40 research calls, six acquisitions and 20-minute limits.",
+    "human_intervention": "None; authorization inherited from explicit parent task.",
+    "failures": [
+      {
+        "reason": "Native find rejects k=12; retried with k=10."
+      },
+      {
+        "reason": "No cached catalogue; resolved by native hub sync."
+      },
+      {
+        "reason": "Index success exit 3 with 16 skipped binary/archive fixtures."
+      },
+      {
+        "reason": "Index success exit 3 with 36 skipped binary fixtures."
+      }
+    ],
+    "source_coverage": "PouchDB conflict, replication, compaction, export and phone-memory passages read; Automerge core conflict/history docs, conflict test and reliable transport docs read. No acquired source read directly.",
+    "lifecycle": {
+      "startup_audit": "evidence/audit/012.json",
+      "shutdown": "SIGINT sent through own exec session 34130; runner exited 130 with KeyboardInterrupt, leaving startup audit pending. Child node unreachable verified by native search.",
+      "verification_audit": "evidence/audit/029.json",
+      "verification_result": "No [research product] node reachable at http://127.0.0.1:19693",
+      "unexpected_status_output": {
+        "description": "Native autoindex status unexpectedly enumerated shared default journal entries naming earlier experiments despite url/prefix. No referenced source or journal was opened, no earlier content used, no additional actions on those nodes."
+      }
+    },
+    "unexpected_product_disclosure": {
+      "description": "Native autoindex status unexpectedly enumerated shared default journal entries naming earlier experiments despite url/prefix. No referenced source or journal was opened, no earlier content used, no additional actions on those nodes."
+    }
+  },
+  "evidence_verification": {
+    "all_literals_match_pinned_sources": true,
+    "line_range_mismatches": 0
+  }
+}

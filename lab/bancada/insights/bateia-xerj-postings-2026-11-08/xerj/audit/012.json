@@ -1,0 +1,40 @@
+{
+  "arm": "xerj",
+  "action": "tool",
+  "kind": "research",
+  "args": [
+    "search",
+    "--url",
+    "http://127.0.0.1:19701",
+    "--prefix",
+    "demo-postings-0156",
+    "read_posting_block_range_into data_offset",
+    "-k",
+    "3",
+    "--full",
+    "7000",
+    "--json"
+  ],
+  "command": [
+    "/tmp/bateia-xerj-demo-0156/xerj/bin/xerj",
+    "search",
+    "--url",
+    "http://127.0.0.1:19701",
+    "--prefix",
+    "demo-postings-0156",
+    "read_posting_block_range_into data_offset",
+    "-k",
+    "3",
+    "--full",
+    "7000",
+    "--json"
+  ],
+  "origin": null,
+  "started_unix": 1794162664.4065955,
+  "pending": false,
+  "baseline_sha256": "fea858f5a351fe4f979d52400263cd2a4130aaa5bd6e40ad32588ce6c2afff6b",
+  "seconds": 0.042302846908569336,
+  "exit_code": 0,
+  "stdout": "{\n  \"took\": 8,\n  \"timed_out\": false,\n  \"_shards\": {\n    \"total\": 1,\n    \"successful\": 1,\n    \"skipped\": 0,\n    \"failed\": 0\n  },\n  \"hits\": {\n    \"total\": {\n      \"value\": 2,\n      \"relation\": \"eq\"\n    },\n    \"max_score\": 10.705921,\n    \"hits\": [\n      {\n        \"_index\": \"demo-postings-0156-docs\",\n        \"_id\": \"ff514c9ab3ba41bd0067cd43190b7a09\",\n        \"_score\": 10.705921,\n        \"_source\": {\n          \"title\": \"raw.rs\",\n          \"language\": \"rust\",\n          \"start_line\": 1,\n          \"ax_path\": \"src/raw.rs\",\n          \"ax_paths\": [\n            \"src/raw.rs\"\n          ],\n          \"ax_locator\": \"code\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"body\",\n              \"ordinal\": 3008,\n              \"start_offset\": 108159,\n              \"end_offset\": 108676,\n              \"text\": \"fn read_postings_range(\\n        &mut self,\\n        offset: u64,\\n        len: u64,\\n    ) -> Result<Vec<u8>, RawSegmentFileError> {\\n        checked_range(offset, len, self.file_len, \\\"postings\\\")?;\\n        let bytes = read_exact_at_positional(\\n            &mut self.file,\\n            segment_file_offset(self.data_offset, offset)?,\\n            len,\\n        )?;\\n        if let Some(checksums) = self.decoded_block_checksums()? {\\n            verify_span_blocks(checksums, offset, &bytes)?;\\n        }\\n        Ok(bytes)\\n    }\"\n            }\n          ]\n        },\n        \"match_line\": 3017,\n        \"match_lines\": [\n          3017\n        ]\n      },\n      {\n        \"_index\": \"demo-postings-0156-docs\",\n        \"_id\": \"5afef521fe8c5c27f97ba57a53d3bc4c\",\n        \"_score\": 10.432927,\n        \"_source\": {\n          \"title\": \"read_posting_block_range_into\",\n          \"language\": \"rust\",\n          \"start_line\": 3036,\n          \"ax_path\": \"src/raw.rs\",\n          \"ax_paths\": [\n            \"src/raw.rs\"\n          ],\n          \"ax_locator\": \"code:3036:read_posting_block_range_into\",\n          \"kind\": \"function\",\n          \"line\": 3036,\n          \"code\": \"fn read_posting_block_range_into(\\n    &mut self,\\n    offset: u64,\\n    len: u64,\\n    bytes: &mut Vec<u8>,\\n) -> Result<(), RawSegmentFileError>\"\n        },\n        \"fields\": {\n          \"_passage\": [\n            {\n              \"field\": \"code\",\n              \"ordinal\": 0,\n              \"start_offset\": 0,\n              \"end_offset\": 141,\n              \"text\": \"fn read_posting_block_range_into(\\n    &mut self,\\n    offset: u64,\\n    len: u64,\\n    bytes: &mut Vec<u8>,\\n) -> Result<(), RawSegmentFileError>\"\n            }\n          ]\n        },\n        \"match_line\": 3036,\n        \"match_lines\": [\n          3036\n        ]\n      }\n    ]\n  }\n}\n",
+  "stderr": ""
+}

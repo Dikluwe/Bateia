@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/funnel.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -23,6 +23,7 @@ import (
 
 // SearchFunnel UseCase que implementa a orquestração do funil de redução de 3 estágios em L1.
 type SearchFunnel struct {
+	runtime  domain.ExecutionRuntime
 	semantic domain.SemanticProvider
 	searcher domain.SearchProvider
 	fetcher  domain.ContentProvider
@@ -40,6 +41,11 @@ func (f *SearchFunnel) WithSemanticProvider(provider domain.SemanticProvider) *S
 // WithProgressReporter configura um observador de progresso e mantém o núcleo sem I/O direto.
 func (f *SearchFunnel) WithProgressReporter(reporter domain.ProgressReporter) *SearchFunnel {
 	f.reporter = reporter
+	return f
+}
+
+func (f *SearchFunnel) WithExecutionRuntime(runtime domain.ExecutionRuntime) *SearchFunnel {
+	f.runtime = runtime
 	return f
 }
 
@@ -100,10 +106,11 @@ func NewSearchFunnel(searcher domain.SearchProvider, fetcher domain.ContentProvi
 
 // Execute executa a busca através dos 3 estágios do funil com cache e invariante de redução.
 func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (*domain.SearchReport, error) {
+	ctx = domain.WithExecutionRuntime(ctx, f.runtime)
 	if err := ValidateQueryFilter(filter); err != nil {
 		return nil, fmt.Errorf("filtro inválido: %w", err)
 	}
-	startTotal := time.Now()
+	startTotal := domain.RuntimeNow(ctx)
 
 	langs := ParseLanguageList(filter.Language)
 	normalizedLanguage := strings.ToLower(strings.TrimSpace(filter.Language))
@@ -148,14 +155,14 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 			DiscoveryDurationMs:  discoveryMs,
 			TriageDurationMs:     triageMs,
 			ExtractionDurationMs: extractionMs,
-			TotalDurationMs:      time.Since(startTotal).Milliseconds(),
+			TotalDurationMs:      domain.ElapsedMillis(domain.RuntimeNow(ctx), startTotal),
 			CacheHits:            cacheHits,
 			CacheMisses:          cacheMisses,
 		}
 
 		finalReport := &domain.SearchReport{
 			Query:           filter,
-			GeneratedAt:     time.Now().UTC(),
+			GeneratedAt:     domain.RuntimeNow(ctx),
 			AnalyzerVersion: parser.EvidenceVersion,
 			TopCandidates:   topCandidates,
 			TriagedCount:    triagedCount,
@@ -199,17 +206,17 @@ func (f *SearchFunnel) Execute(ctx context.Context, filter domain.QueryFilter) (
 	if rep.Telemetry == nil {
 		rep.Telemetry = &domain.FunnelTelemetry{}
 	}
-	rep.Telemetry.TotalDurationMs = time.Since(startTotal).Milliseconds()
+	rep.Telemetry.TotalDurationMs = domain.ElapsedMillis(domain.RuntimeNow(ctx), startTotal)
 	return rep, nil
 }
 
 func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.QueryFilter, visited map[string]bool) (*domain.SearchReport, error) {
-	startStage1 := time.Now()
+	startStage1 := domain.RuntimeNow(ctx)
 	telemetry := &domain.FunnelTelemetry{}
 
 	report := &domain.SearchReport{
 		Query:           filter,
-		GeneratedAt:     time.Now().UTC(),
+		GeneratedAt:     domain.RuntimeNow(ctx),
 		AnalyzerVersion: parser.EvidenceVersion,
 		Results:         make([]domain.ExtractedRepository, 0),
 		Telemetry:       telemetry,
@@ -228,7 +235,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		f.progress("discovery", "analisando worktree local %s", filter.LocalPath)
 		candidates = append(candidates, domain.RepositoryCandidate{
 			Owner: "local", Repo: pathpkg.Base(strings.ReplaceAll(filter.LocalPath, "\\", "/")), URL: "file://" + filter.LocalPath,
-			Description: "Worktree local", CommitID: "WORKTREE", ConsultadoEm: time.Now().UTC(),
+			Description: "Worktree local", CommitID: "WORKTREE", ConsultadoEm: domain.RuntimeNow(ctx),
 		})
 	} else if len(filter.DirectRepos) > 0 {
 		f.progress("discovery", "modo benchmark: injetando %d repositórios", len(filter.DirectRepos))
@@ -241,7 +248,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 					URL:          "https://github.com/" + repoStr,
 					Description:  "Repositório Injetado (Benchmark)",
 					CommitID:     "HEAD",
-					ConsultadoEm: time.Now().UTC(),
+					ConsultadoEm: domain.RuntimeNow(ctx),
 				})
 			}
 		}
@@ -281,7 +288,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 	}
 
-	telemetry.DiscoveryDurationMs = time.Since(startStage1).Milliseconds()
+	telemetry.DiscoveryDurationMs = domain.ElapsedMillis(domain.RuntimeNow(ctx), startStage1)
 
 	report.TopCandidates = len(candidates)
 	if len(candidates) == 0 {
@@ -291,7 +298,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// ==========================================
 	// Estágio 2: Triagem (Meio do Funil)
 	// ==========================================
-	startStage2 := time.Now()
+	startStage2 := domain.RuntimeNow(ctx)
 	f.progress("triage", "triando manifestos e estrutura de %d candidatos", len(candidates))
 	triaged := make([]domain.TriagedRepository, 0)
 	discardedCount := 0
@@ -383,7 +390,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		}
 	})
 
-	telemetry.TriageDurationMs = time.Since(startStage2).Milliseconds()
+	telemetry.TriageDurationMs = domain.ElapsedMillis(domain.RuntimeNow(ctx), startStage2)
 
 	report.TriagedCount = len(triaged)
 	report.DiscardedCount = discardedCount
@@ -400,7 +407,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 	// Estágio 3: Extração (Fundo do Funil)
 	// Limita o fundo do funil a no máximo 10 repositórios validados
 	// ==========================================
-	startStage3 := time.Now()
+	startStage3 := domain.RuntimeNow(ctx)
 	maxExtract := 10
 	if len(triaged) < maxExtract {
 		maxExtract = len(triaged)
@@ -447,7 +454,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 			extracted.Manifest = nil
 			for _, file := range extracted.Files {
 				if parser.DetectManifestType(file.Path) != "" {
-					if m, err := parser.ParseManifest(file.Path, extracted.Ref, file.Content); err == nil {
+					if m, err := parser.ParseManifestAt(file.Path, extracted.Ref, file.Content, extracted.ConsultadoEm); err == nil {
 						extracted.Manifest = m
 						break
 					}
@@ -567,7 +574,7 @@ func (f *SearchFunnel) executeRecursive(ctx context.Context, filter domain.Query
 		return report.Results[i].RelevanceScore > report.Results[j].RelevanceScore
 	})
 
-	telemetry.ExtractionDurationMs = time.Since(startStage3).Milliseconds()
+	telemetry.ExtractionDurationMs = domain.ElapsedMillis(domain.RuntimeNow(ctx), startStage3)
 
 	report.PolyglotMatrix = parser.EvaluatePolyglotMatrix(report.Results)
 

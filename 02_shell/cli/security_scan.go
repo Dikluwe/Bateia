@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/security_scan.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 
 package cli
@@ -13,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -32,14 +31,14 @@ func RunSecurityScanCommand(args []string, stdout io.Writer, runner domain.Binar
 	if *binary == "" || !filepath.IsAbs(*binary) || fs.NArg() != 0 || *timeout <= 0 || *timeout > 5*time.Minute {
 		return fmt.Errorf("security scan requires --binary ABSOLUTE_FILE [--output FILE] [--timeout 1m..5m]")
 	}
-	inputInfo, err := os.Lstat(*binary)
+	inputInfo, err := commandHost().Lstat(*binary)
 	if err != nil || !inputInfo.Mode().IsRegular() {
 		return fmt.Errorf("--binary must identify a regular file, not a symlink")
 	}
 	if *output != "" && sameTechnicalOutputPath(*binary, *output) {
 		return fmt.Errorf("report output must not overwrite the scanned binary")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	var result domain.VulnerabilityScanReport
 	if runner == nil {

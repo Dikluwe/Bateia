@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/insight_investigation.md
  * @layer L1
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package domain
@@ -17,8 +17,9 @@ type InsightTarget struct {
 }
 
 type InsightEvidenceInput struct {
-	Bundle      EvidenceBundle        `json:"bundle"`
-	Assessments []CandidateAssessment `json:"assessments"`
+	Bundle       EvidenceBundle             `json:"bundle"`
+	Assessments  []CandidateAssessment      `json:"assessments"`
+	Observations []SourceInsightObservation `json:"observations,omitempty"`
 }
 
 type InsightInvestigationRequest struct {

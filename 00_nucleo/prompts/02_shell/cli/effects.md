@@ -5,3 +5,7 @@ RunEffectsCommand(args,out,verifier) offline: verify --source --symbol --output 
 Contrato autoritativo: `00_nucleo/passos/0062-verificar-efeito-executado.md`. Implementação A; testes e veredito independentes pelo protocolo segregado.
 
 Passo 0063: aceitar --expect-sha256 HEX opcional, exatamente 64 dígitos hexadecimais ASCII; normalizar para minúsculas e transmitir ExpectedSourceSHA256. Flag explicitamente vazia ou malformada é erro antes de chamar verifier; ausência mantém compatibilidade. Help explica hash de arquivo completo, mismatch unknown sem execução e ausência de vínculo automático com busca/repositório/commit ou dependências externas. Contrato adicional autoritativo: `00_nucleo/passos/0063-vincular-fonte-ao-efeito.md`.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

@@ -20,3 +20,7 @@ Generalize o handler da mesma fila para despachar pelo `run_kind` persistido e
 injete o módulo proprietário `market_discovery.go`. Não crie segunda store, fila,
 root, idempotência, secret, recovery ou shutdown; preserve identidade de instância
 e observáveis 0026 conforme o contrato 0027.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

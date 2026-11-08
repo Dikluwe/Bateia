@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/local/implementation_search.md
  * @layer L3
- * @updated 2026-09-08
+ * @updated 2026-10-28
  */
 package local
 
@@ -121,6 +121,7 @@ func (c *Client) SearchImplementations(ctx context.Context, candidate domain.Rep
 	})
 	report = parser.RankGoImplementations(query, files, budget.MaxResults)
 	report.Budget = budget
+	sort.Slice(examined, func(i, j int) bool { return examined[i].Path < examined[j].Path })
 	report.Examined = examined
 	report.FilesRead = len(examined)
 	report.BytesRead = bytesRead

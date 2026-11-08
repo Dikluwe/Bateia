@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/security_git_metadata_test.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 
 package cli
@@ -130,7 +130,7 @@ func TestGitMetadataReadRetainsRootDescriptorAfterPathReplacement(t *testing.T) 
 	parent := t.TempDir()
 	rootPath := filepath.Join(parent, "worktree")
 	writeGitMetadataFixture(t, rootPath, ".git/config", internalRemoteConfig)
-	root, err := os.OpenRoot(rootPath)
+	root, err := commandHost().OpenRoot(rootPath)
 	if err != nil {
 		t.Fatal(err)
 	}

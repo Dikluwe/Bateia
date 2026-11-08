@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_evidence_recheck.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -11,8 +11,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"time"
 
 	"bateia/01_core/domain"
@@ -49,7 +47,7 @@ func RunIdeaEvidenceRecheckCommand(args []string, stdout io.Writer, provider dom
 	if err != nil {
 		return err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	report, err := usecase.RecheckTechnicalSources(ctx, req, provider, asOf)
 	if err != nil {
@@ -63,13 +61,4 @@ func RunIdeaEvidenceRecheckCommand(args []string, stdout io.Writer, provider dom
 	return writeIdeaJSON(report, *output, stdout)
 }
 
-func sameTechnicalOutputPath(a, b string) bool {
-	aa, errA := filepath.Abs(a)
-	bb, errB := filepath.Abs(b)
-	if errA == nil && errB == nil && aa == bb {
-		return true
-	}
-	sa, errA := os.Stat(a)
-	sb, errB := os.Stat(b)
-	return errA == nil && errB == nil && os.SameFile(sa, sb)
-}
+func sameTechnicalOutputPath(a, b string) bool { return commandHost().SameOutputPath(a, b) }

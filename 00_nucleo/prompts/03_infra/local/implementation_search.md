@@ -22,3 +22,6 @@ Ranking e AST pertencem ao parser puro. Sem cache persistente ou aumento de capa
 ## Revisão de segurança 2026-09-26
 
 Aplicar `security.go`: árvore em lotes (máximo 20.000 entradas), sem alocar diretório inteiro antes de controlar orçamento. Exceder teto produz erro explícito, não sucesso truncado. Inventário expõe symlink/hardlink/nonregular; leitura rooted mantém alias interno mas recusa hardlinks por nlink do descritor. Extração até 100 arquivos/8 MiB (2 MiB por arquivo). Não executar Git ou herdar ambiente/configuração. BaseCommit consultivo vem de HEAD/refs/packed-refs confinados; gitdir externo fica indisponível explicitamente. Metadata não autentica bytes da worktree e certificados históricos não são atualizados.
+
+## Passo 0129 — ordem de metadados
+A projeção Examined é ordenada por caminho antes da publicação, independentemente da ordem física retornada pelo diretório. Manter a varredura limitada em lotes e todos os orçamentos, hashes e checagens de segurança; não alocar o diretório inteiro para obter a ordem da projeção.

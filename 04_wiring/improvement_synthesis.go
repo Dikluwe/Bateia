@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/improvement_synthesis.md
  * @layer L4
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package main
@@ -37,8 +37,8 @@ func NewImprovementSynthesisMCPServer(
 	if err != nil {
 		return nil, nil, domain.ErrInvalidRunInput
 	}
-	extractor := usecase.NewDeterministicMechanismExtractor()
-	if _, err := extractor.ExtractMechanisms(context.Background(), domain.MechanismExtractionInput{RuleCatalogJSON: mechanismCatalog, RuleCatalogSHA256: mechanismCatalogSHA256}); err != nil {
+	extractor, err := usecase.NewConfiguredMechanismExtractor(mechanismCatalog, mechanismCatalogSHA256)
+	if err != nil {
 		return nil, nil, err
 	}
 	durable, err := runcontainer.New(recommendationExecutor, root, cursorSecret, limits, workers, capacity)
@@ -46,7 +46,7 @@ func NewImprovementSynthesisMCPServer(
 		return nil, nil, err
 	}
 	service := durable.Service()
-	service.ConfigureMarketDiscovery(nil, registry)
+	service.ConfigureMarketDiscovery(usecase.NewMarketDiscoveryService(registry), registry)
 	service.ConfigureMechanismExtraction(extractor, mechanismCatalog, mechanismCatalogSHA256, baseline)
 	service.ConfigureImprovementSynthesis(mechanismCatalogSHA256)
 	if err := durable.Recover(context.Background()); err != nil {

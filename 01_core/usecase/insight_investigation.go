@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/insight_investigation.md
  * @layer L1
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -26,6 +26,9 @@ func InvestigateInsights(ctx context.Context, request domain.InsightInvestigatio
 	}
 	if err := ctx.Err(); err != nil {
 		return domain.InsightInvestigationReport{}, err
+	}
+	if request.SchemaVersion != "1" {
+		return domain.InsightInvestigationReport{}, domain.ErrInvalidRunInput
 	}
 	catalog, catalogHash := ActiveMechanismRuleCatalog()
 	rules, err := decodeMechanismCatalog(catalog, catalogHash)
@@ -87,7 +90,7 @@ func normalizeInsightRequest(request domain.InsightInvestigationRequest, rules m
 	invalid := func() (domain.InsightInvestigationRequest, error) {
 		return domain.InsightInvestigationRequest{}, domain.ErrInvalidRunInput
 	}
-	if request.SchemaVersion != "1" || !validSynthesisText(request.Question, 1000) || !validSynthesisText(request.Target.Name, 200) || !validSynthesisText(request.Target.Context, 1000) || !validSynthesisText(request.Target.Property, 200) || !validSynthesisText(request.Target.DesiredEffect, 1000) || !validSynthesisTextSet(request.Target.Constraints, 20, 200) {
+	if (request.SchemaVersion != "1" && request.SchemaVersion != "2") || !validSynthesisText(request.Question, 1000) || !validSynthesisText(request.Target.Name, 200) || !validSynthesisText(request.Target.Context, 1000) || !validSynthesisText(request.Target.Property, 200) || !validSynthesisText(request.Target.DesiredEffect, 1000) || !validSynthesisTextSet(request.Target.Constraints, 20, 200) {
 		return invalid()
 	}
 	if len(request.Sources) < 1 || len(request.Sources) > 8 || len(request.MechanismClasses) < 1 || len(request.MechanismClasses) > 4 {
@@ -129,6 +132,9 @@ func normalizeInsightRequest(request domain.InsightInvestigationRequest, rules m
 	identities := map[string]bool{}
 	items, assessments, witnesses := 0, 0, 0
 	for _, source := range request.Sources {
+		if request.SchemaVersion == "1" && len(source.Observations) != 0 {
+			return invalid()
+		}
 		bundle := source.Bundle
 		ref := bundle.Repository
 		if bundle.SchemaVersion != "1" || !immutableCommitPattern.MatchString(ref.Commit) || !validSynthesisText(ref.Owner, 100) || !validSynthesisText(ref.Repo, 100) || strings.ContainsAny(ref.Owner+ref.Repo, "/\\@") || ref.Owner != normalizeMechanismText(ref.Owner) || ref.Repo != normalizeMechanismText(ref.Repo) {

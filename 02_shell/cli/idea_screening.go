@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_screening.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-10-28
  */
 
 package cli
@@ -106,7 +106,7 @@ func runIdeaScreeningCalibrate(args []string, stdout io.Writer) error {
 		return fmt.Errorf("calibração exige --snapshots e --judgments")
 	}
 	pattern := filepath.Join(*snapshotsDir, "*."+strings.ToLower(*strategy)+".snapshot.json")
-	paths, err := filepath.Glob(pattern)
+	paths, err := commandHost().Glob(pattern)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,7 @@ func runIdeaScreeningAudit(args []string, stdout io.Writer) error {
 	var screening domain.ScreeningReport
 	var judgments domain.DiscoveryJudgments
 	if *screeningDir != "" && *judgmentsDir != "" {
-		paths, err := filepath.Glob(filepath.Join(*screeningDir, "*.screening.json"))
+		paths, err := commandHost().Glob(filepath.Join(*screeningDir, "*.screening.json"))
 		if err != nil {
 			return err
 		}

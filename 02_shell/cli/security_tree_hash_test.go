@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/security_tree_hash_test.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -115,7 +115,7 @@ func TestTreeHashSharedEntryAndByteBudgets(t *testing.T) {
 		bytes     int64
 		wantError bool
 	}{{2, 5, false}, {1, 5, true}, {2, 4, true}} {
-		budget := &treeHashBudget{entriesLeft: test.entries, bytesLeft: test.bytes}
+		budget := &treeHashBudget{EntriesLeft: test.entries, BytesLeft: test.bytes}
 		if _, e := treeHashExcludingContext(context.Background(), a, "", budget); e != nil {
 			t.Fatal(e)
 		}
@@ -126,11 +126,11 @@ func TestTreeHashSharedEntryAndByteBudgets(t *testing.T) {
 	}
 	empty := t.TempDir()
 	putHashFile(t, empty, "empty", "")
-	if _, e := treeHashExcludingContext(context.Background(), empty, "", &treeHashBudget{entriesLeft: 1}); e != nil {
+	if _, e := treeHashExcludingContext(context.Background(), empty, "", &treeHashBudget{EntriesLeft: 1}); e != nil {
 		t.Fatalf("zero bytes should fit: %v", e)
 	}
 	// Excluded names still consume entries, excluded contents do not.
-	if h, e := treeHashExcludingContext(context.Background(), a, filepath.Join(a, "missing"), &treeHashBudget{bytesLeft: 3}); e == nil || h != "" {
+	if h, e := treeHashExcludingContext(context.Background(), a, filepath.Join(a, "missing"), &treeHashBudget{BytesLeft: 3}); e == nil || h != "" {
 		t.Fatal("entry budget ignored")
 	}
 }
@@ -264,7 +264,7 @@ func TestTreeHashRetainsRootDescriptor(t *testing.T) {
 	parent := t.TempDir()
 	path := filepath.Join(parent, "repo")
 	putHashFile(t, path, "x", "original")
-	root, e := os.OpenRoot(path)
+	root, e := commandHost().OpenRoot(path)
 	if e != nil {
 		t.Fatal(e)
 	}

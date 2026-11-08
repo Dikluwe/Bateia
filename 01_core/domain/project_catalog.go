@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/project_catalog.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-11-08
  */
 package domain
 
@@ -28,11 +28,13 @@ type ProviderCapabilities struct {
 type ProviderCapabilityReporter interface{ Capabilities() ProviderCapabilities }
 
 type CatalogSearchRequest struct {
-	ExpansionID    string        `json:"expansion_id"`
-	Query          string        `json:"query"`
-	Discriminators []string      `json:"discriminators"`
-	MaxResults     int           `json:"max_results"`
-	AttemptTimeout time.Duration `json:"attempt_timeout,omitempty"`
+	MetadataOnly            bool          `json:"metadata_only,omitempty"`
+	DeferRevisionResolution bool          `json:"defer_revision_resolution,omitempty"`
+	ExpansionID             string        `json:"expansion_id"`
+	Query                   string        `json:"query"`
+	Discriminators          []string      `json:"discriminators"`
+	MaxResults              int           `json:"max_results"`
+	AttemptTimeout          time.Duration `json:"attempt_timeout,omitempty"`
 }
 
 type CatalogCandidate struct {

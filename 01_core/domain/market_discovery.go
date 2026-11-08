@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/market_discovery.md
  * @layer L1
- * @updated 2026-09-06
+ * @updated 2026-11-08
  */
 
 package domain
@@ -120,6 +120,7 @@ type MarketDiscoveryStartRequest struct {
 }
 
 type MarketDiscoveryRequest struct {
+	QueryPolicy string `json:"query_policy,omitempty"`
 	QueryID     string `json:"query_id"`
 	QueryLocale string `json:"query_locale"`
 	Query       string `json:"query"`
@@ -145,6 +146,7 @@ const (
 	ConnectorGooglePlay       = "google-play-store-apps"
 	ConnectorFDroid           = "fdroid-foss-apps"
 	ConnectorGiteeCatalog     = "gitee-repository-catalog"
+	ConnectorAtomGitCatalog   = "atomgit-repository-catalog"
 	ConnectorCodebergCatalog  = "codeberg-repository-catalog"
 	ConnectorGitLabCatalog    = "gitlab-repository-catalog"
 	ConnectorBitbucketCatalog = "bitbucket-repository-catalog"

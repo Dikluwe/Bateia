@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/project_catalog.md
  * @layer L3
- * @updated 2026-08-26
+ * @updated 2026-11-08
  */
 package github
 
@@ -54,7 +54,11 @@ func (c *Client) SearchCatalog(ctx context.Context, request domain.CatalogSearch
 		searchCtx, cancel = context.WithTimeout(ctx, request.AttemptTimeout)
 	}
 	defer cancel()
-	endpoint := fmt.Sprintf("%s/search/repositories?q=%s&per_page=%d", c.baseURL, url.QueryEscape(query+" in:name,description,readme"), request.MaxResults)
+	scope := " in:name,description,readme"
+	if request.MetadataOnly {
+		scope = " in:name,description,topics"
+	}
+	endpoint := fmt.Sprintf("%s/search/repositories?q=%s&per_page=%d", c.baseURL, url.QueryEscape(query+scope), request.MaxResults)
 	req, err := http.NewRequestWithContext(searchCtx, "GET", endpoint, nil)
 	if err != nil {
 		return result, err
@@ -95,8 +99,10 @@ func (c *Client) SearchCatalog(ctx context.Context, request domain.CatalogSearch
 		if err := validateRemoteCandidate(repo); err != nil {
 			return result, err
 		}
-		resolved, _ := c.FetchRepoMetadata(searchCtx, repo)
-		repo = resolved
+		if !request.DeferRevisionResolution {
+			resolved, _ := c.FetchRepoMetadata(searchCtx, repo)
+			repo = resolved
+		}
 		fields := matchedCatalogFields(request.Discriminators, repo, item.Topics)
 		license := ""
 		if item.License != nil {

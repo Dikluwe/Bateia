@@ -26,3 +26,7 @@ FIFO e symlink. Não enumerar diretório inteiro para detectar não-vazio.
 históricos nem enfraquecer critérios para acomodar falhas.
 
 0097 supersedes only the local collection spy: CLI uses real captured bytes, not fixtureContent. End-to-end test requires README bytes/hash, no fake calls and checkpoint_reused0/1. Missing local_collection forces recollection. Additional contract: local_snapshot_capture_test.md.
+
+## Integração por portas — 0129
+
+Preservar todos os oráculos e asserções adversariais. Handles são obtidos do host configurado e os contadores do orçamento usam a projeção L1 exportada; a operação física é realizada por L3. Não substituir expectativas por resultados do próprio driver.

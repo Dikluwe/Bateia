@@ -30,3 +30,9 @@ A operação existente de replay deve aceitar o novo schema sem token, sem leitu
 ## Códigos observáveis
 
 O processo distingue sucesso pronto para julgamento, inconclusão por cota/exposição e falhas de segurança, orçamento e reprodutibilidade. `Unknown` não usa código de sucesso equivalente a resultado vazio. Mensagens podem nomear campo/estado e request ID redigido, mas nunca incluir payload bruto sensível.
+
+## Passo 0131
+Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## Consolidação 0131
+Admissão, veredicto e agendamento pertencem a web_experiment_run.go em L1. Os auxiliares privados compatíveis delegam; L2 conserva flags, JSON estrito, filtro de dados sensíveis e publicação.

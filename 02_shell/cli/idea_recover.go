@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recover.md
  * @layer L2
- * @updated 2026-08-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -13,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"path/filepath"
 	"time"
 )
@@ -113,7 +112,7 @@ func runRecoverExecute(args []string, stdout io.Writer, provider domain.ContentP
 	}
 	if *resume {
 		_ = readJSONFile(indexPath, &index)
-	} else if _, err := os.Stat(indexPath); err == nil {
+	} else if _, err := commandHost().Stat(indexPath); err == nil {
 		return fmt.Errorf("recuperação já existe; use --resume")
 	}
 	round := len(index.Rounds) + 1
@@ -145,7 +144,7 @@ func runRecoverExecute(args []string, stdout io.Writer, provider domain.ContentP
 	if err != nil {
 		return err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	result, err := usecase.ExecuteEvidenceRecovery(ctx, idea, screening, bundles, before, plan, provider, usecase.DefaultEvidenceRules(), decisionPolicy)
 	if err != nil {
@@ -177,31 +176,7 @@ func recoveryOriginalTargets(run string) ([]domain.RecoveryTarget, error) {
 	if err := readJSONFile(filepath.Join(run, "evidence", "bundles.json"), &bundles); err != nil {
 		return nil, err
 	}
-	out := []domain.RecoveryTarget{}
-	for _, b := range bundles {
-		for _, target := range b.Plan.Targets {
-			out = append(out, domain.RecoveryTarget{Candidate: b.Repository, Capability: firstString(target.Capabilities), Path: target.Path, Kind: target.Kind, RuleID: recoveryHistoryRule(target.Kind)})
-		}
-		for _, target := range b.Targets {
-			out = append(out, domain.RecoveryTarget{Candidate: b.Repository, Capability: firstString(target.Target.Capabilities), Path: target.Target.Path, Kind: target.Target.Kind, RuleID: recoveryHistoryRule(target.Target.Kind)})
-		}
-	}
-	return out, nil
-}
-func recoveryHistoryRule(kind domain.EvidenceKind) string {
-	switch kind {
-	case domain.EvidenceLicense:
-		return "GATE-LICENSE-001"
-	case domain.EvidenceManifest:
-		return "GATE-OPERATION-001"
-	}
-	return "original"
-}
-func firstString(values []string) string {
-	if len(values) > 0 {
-		return values[0]
-	}
-	return ""
+	return usecase.OriginalRecoveryTargets(bundles), nil
 }
 
 func loadRecoveryDiagnosis(run string) (domain.InconclusiveDiagnosis, error) {

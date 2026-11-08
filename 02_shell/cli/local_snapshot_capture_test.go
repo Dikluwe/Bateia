@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/local_snapshot_capture_test.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -191,12 +191,12 @@ func TestLocalCaptureSinkFailureNeverReturnsDigest(t *testing.T) {
 	source, destination := t.TempDir(), t.TempDir()
 	putHashFile(t, source, "a", "A")
 	putHashFile(t, destination, "a", "pre-existing")
-	src, e := os.OpenRoot(source)
+	src, e := commandHost().OpenRoot(source)
 	if e != nil {
 		t.Fatal(e)
 	}
 	defer src.Close()
-	dst, e := os.OpenRoot(destination)
+	dst, e := commandHost().OpenRoot(destination)
 	if e != nil {
 		t.Fatal(e)
 	}

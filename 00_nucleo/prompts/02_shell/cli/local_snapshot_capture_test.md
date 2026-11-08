@@ -20,3 +20,7 @@ Superseder explícita e somente a expectativa do spy de coleta local0096: CLI
 agora substitui fake local pela captura real. Controle positivo deve inspecionar
 README efetivamente coletado/hash e checkpoint_reused0/1; versão de coleta
 ausente força recoleta. Preservar testes/counters live e certificados históricos.
+
+## Integração por portas — 0129
+
+Preservar todos os oráculos e asserções adversariais. Handles são obtidos do host configurado e os contadores do orçamento usam a projeção L1 exportada; a operação física é realizada por L3. Não substituir expectativas por resultados do próprio driver.

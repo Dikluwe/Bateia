@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/funnel_test.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -283,5 +283,35 @@ func TestFunnelInjectsStaticAnalysisWithoutSolutionPromotion0035(t *testing.T) {
 	repo := result.Results[0]
 	if repo.Semantic == nil || repo.Semantic.Status != "partial" || repo.HealthScore != -1 || repo.Coverage.Status != "insufficient" {
 		t.Fatalf("static evidence promoted: %+v", repo)
+	}
+}
+
+type manifestTimestampProvider struct {
+	MockContentProvider
+	collectedAt time.Time
+}
+
+func (p *manifestTimestampProvider) ExtractRepoFiles(ctx context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
+	extracted, err := p.MockContentProvider.ExtractRepoFiles(ctx, candidate, paths)
+	if err == nil {
+		extracted.ConsultadoEm = p.collectedAt
+	}
+	return extracted, err
+}
+
+func TestFunnelReparsePreservesCollectionInstant(t *testing.T) {
+	for _, collectedAt := range []time.Time{time.Date(2026, 10, 28, 10, 0, 0, 321, time.UTC), {}} {
+		provider := &manifestTimestampProvider{collectedAt: collectedAt}
+		funnel := NewSearchFunnel(&MockSearchProvider{Candidates: []domain.RepositoryCandidate{{Owner: "example", Repo: "app", CommitID: "abc123"}}}, provider, NewMockCacheStore())
+		report, err := funnel.Execute(context.Background(), domain.QueryFilter{Query: "app", Language: "go", MaxResults: 1, Depth: 1})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(report.Results) != 1 || report.Results[0].Manifest == nil {
+			t.Fatalf("missing parsed extraction: %+v", report)
+		}
+		if !report.Results[0].Manifest.ConsultadoEm.Equal(collectedAt) {
+			t.Fatalf("reparse replaced collection instant: %v", report.Results[0].Manifest.ConsultadoEm)
+		}
 	}
 }

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/market_discovery.md
  * @layer L1
- * @updated 2026-09-06
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -540,9 +540,16 @@ func ProjectMarketDiscoveryArtifacts(capabilities []domain.DiscoveryConnectorCap
 		if status != domain.AttemptSucceeded {
 			gaps = append(gaps, domain.MarketGap{AttemptID: attempt.AttemptID, QueryLocale: attempt.QueryLocale, Market: attempt.Market, ConnectorID: attempt.ConnectorID, Status: status, ReasonCode: string(status), ResponseHash: discovery.ResponseHash})
 		}
+		if attempt.Status == domain.AttemptMarketNotFiltered && status != domain.AttemptMarketNotFiltered {
+			gaps = append(gaps, domain.MarketGap{AttemptID: attempt.AttemptID, QueryLocale: attempt.QueryLocale, Market: attempt.Market, ConnectorID: attempt.ConnectorID, Status: domain.AttemptMarketNotFiltered, ReasonCode: "MARKET_NOT_FILTERED", ResponseHash: discovery.ResponseHash})
+		}
+		observedMarket := ""
+		if attempt.MarketFilterApplied {
+			observedMarket = attempt.Market
+		}
 		for _, candidate := range discovery.Candidates {
-			candidate.Origins = append(candidate.Origins, domain.MarketCandidateOrigin{ConnectorID: attempt.ConnectorID, ConnectorVersion: attempt.ConnectorVersion, QueryID: attempt.QueryID, QueryLocale: attempt.QueryLocale, ObservedMarket: attempt.Market, ResponseHash: discovery.ResponseHash})
-			if status == domain.AttemptSucceeded {
+			candidate.Origins = append(candidate.Origins, domain.MarketCandidateOrigin{ConnectorID: attempt.ConnectorID, ConnectorVersion: attempt.ConnectorVersion, QueryID: attempt.QueryID, QueryLocale: attempt.QueryLocale, ObservedMarket: observedMarket, ResponseHash: discovery.ResponseHash})
+			if status == domain.AttemptSucceeded && attempt.MarketFilterApplied {
 				candidate.ObservedMarkets = append(candidate.ObservedMarkets, attempt.Market)
 			}
 			candidates = append(candidates, candidate)
@@ -594,28 +601,24 @@ func NewRecommendationRunServiceWithMarketDiscovery(store domain.RecommendationR
 
 func (s *RecommendationRunService) ConfigureMarketDiscovery(marketExecutor domain.ObservableMarketDiscoveryExecutor, registry *DiscoveryConnectorRegistry) *RecommendationRunService {
 	if s != nil {
-		s.marketRegistry = registry
-		s.marketExecutor = marketExecutor
+		s.market.registry = registry
+		if marketExecutor == nil {
+			marketExecutor = NewMarketDiscoveryService(registry)
+		}
+		s.market.executor = marketExecutor
 	}
 	return s
 }
 
 func (s *RecommendationRunService) StartMarketDiscovery(ctx context.Context, key string, request domain.MarketDiscoveryStartRequest) (domain.MarketDiscoveryStartReceipt, error) {
-	if s == nil || s.store == nil || s.queue == nil || s.ids == nil || s.marketRegistry == nil || !validIdempotencyKey(key) {
+	if s == nil || s.store == nil || s.queue == nil || s.ids == nil || s.market.registry == nil || !validIdempotencyKey(key) {
 		return domain.MarketDiscoveryStartReceipt{}, domain.ErrInvalidRunInput
 	}
-	normalized, requestHash, err := CanonicalMarketDiscoveryStartRequestHash(request, s.marketRegistry)
+	normalized, requestHash, err := s.market.validate(request)
 	if err != nil {
-		return domain.MarketDiscoveryStartReceipt{}, domain.ErrInvalidRunInput
+		return domain.MarketDiscoveryStartReceipt{}, err
 	}
-	for _, id := range normalized.ConnectorIDs {
-		if _, ok := s.marketRegistry.Resolve(id); !ok {
-			return domain.MarketDiscoveryStartReceipt{}, domain.ErrInvalidRunInput
-		}
-	}
-	if _, err := PlanMarketDiscovery(normalized, s.marketRegistry); err != nil {
-		return domain.MarketDiscoveryStartReceipt{}, domain.ErrInvalidRunInput
-	}
+
 	keyDigest := digestString(key)
 	if record, ok, resolveErr := s.store.ResolveIdempotency(ctx, keyDigest); resolveErr != nil {
 		return domain.MarketDiscoveryStartReceipt{}, resolveErr
@@ -667,7 +670,7 @@ func marketReceiptFor(run domain.RecommendationRun) domain.MarketDiscoveryStartR
 }
 
 func (s *RecommendationRunService) executeMarketDiscovery(ctx context.Context, run domain.RecommendationRun) error {
-	if run.MarketRequest == nil || s.marketRegistry == nil {
+	if run.MarketRequest == nil || s.market.registry == nil {
 		return domain.ErrInvalidRunInput
 	}
 	var err error
@@ -684,95 +687,30 @@ func (s *RecommendationRunService) executeMarketDiscovery(ctx context.Context, r
 	if err != nil {
 		return err
 	}
-	capabilities := s.marketRegistry.Capabilities()
-	selectedCaps := []domain.DiscoveryConnectorCapabilities{}
-	for _, capability := range capabilities {
-		if marketContains(run.MarketRequest.ConnectorIDs, capability.ID) {
-			selectedCaps = append(selectedCaps, capability)
-		}
-	}
+	selectedCaps := selectedMarketCapabilities(s.market.registry, *run.MarketRequest)
 	run, err = s.publishDocument(ctx, run, domain.ArtifactConnectorCapabilities, interfacesFromCapabilities(selectedCaps))
 	if err != nil {
 		return err
 	}
-	plan, err := PlanMarketDiscovery(*run.MarketRequest, s.marketRegistry)
-	if err != nil {
-		return s.failRun(ctx, run, "INVALID_PLAN", "market plan invalid")
+	executionCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	reporter := &marketRunProgressReporter{ctx: executionCtx, service: s, run: run, cancel: cancel}
+	execution, executionErr := s.market.execute(executionCtx, *run.MarketRequest, reporter)
+	if reporter.err != nil {
+		return reporter.err
 	}
-	plan = AllocateMarketDiscoveryBudget(plan, run.MarketRequest.Budget)
-	run, err = s.store.Transition(ctx, domain.RunTransition{RunID: run.RunID, RunKind: domain.RunKindMarketDiscovery, ExpectedVersion: run.Version, Lifecycle: domain.RunRunning, Stage: domain.RunStageMarketDiscover, Progress: domain.RecommendationRunProgress{Planned: 4, Completed: 1}})
-	if err != nil {
-		return err
-	}
-	discoveries := map[string]domain.ConnectorDiscovery{}
-	queries := map[string]domain.MarketQueryProposal{}
-	for _, query := range run.MarketRequest.QueryProposals {
-		queries[query.ID] = query
-	}
-	accepted := 0
-	for _, attempt := range plan {
+	run = reporter.run
+	if executionErr != nil {
 		if ctx.Err() != nil {
 			return s.confirmCancellation(context.Background(), run.RunID)
 		}
-		if attempt.Status != domain.AttemptPlanned {
-			continue
+		if failure, ok := executionErr.(marketExecutionFailure); ok {
+			return s.failRun(ctx, run, failure.code, failure.message)
 		}
-		connector, ok := s.marketRegistry.Resolve(attempt.ConnectorID)
-		if !ok {
-			discoveries[attempt.AttemptID] = domain.ConnectorDiscovery{AttemptID: attempt.AttemptID, Status: domain.AttemptUnsupportedCapability, Candidates: []domain.ProductCandidate{}, ErrorClass: "UNSUPPORTED_CAPABILITY"}
-			continue
-		}
-		remaining := run.MarketRequest.Budget.MaxTotalCandidates - accepted
-		if remaining <= 0 {
-			discoveries[attempt.AttemptID] = domain.ConnectorDiscovery{AttemptID: attempt.AttemptID, Status: domain.AttemptBudgetExhausted, Candidates: []domain.ProductCandidate{}, ErrorClass: "BUDGET_EXHAUSTED"}
-			continue
-		}
-		limit := run.MarketRequest.Budget.MaxResultsPerQuery
-		if limit > remaining {
-			limit = remaining
-		}
-		query := queries[attempt.QueryID]
-		discovery, discoverErr := connector.Discover(ctx, domain.MarketDiscoveryRequest{QueryID: attempt.QueryID, QueryLocale: attempt.QueryLocale, Query: query.Query, Market: attempt.Market, Limit: limit})
-		if ctx.Err() != nil {
-			return s.confirmCancellation(context.Background(), run.RunID)
-		}
-		if discoverErr != nil {
-			discovery = domain.ConnectorDiscovery{Status: domain.AttemptUnknownProvider, Candidates: []domain.ProductCandidate{}, ErrorClass: "UNKNOWN_PROVIDER"}
-		}
-		discovery.AttemptID = attempt.AttemptID
-		if discovery.Candidates == nil {
-			discovery.Candidates = []domain.ProductCandidate{}
-		}
-		if discovery.Status == "" {
-			if len(discovery.Candidates) == 0 {
-				discovery.Status = domain.AttemptEmptyObserved
-			} else {
-				discovery.Status = domain.AttemptSucceeded
-			}
-		}
-		if len(discovery.Candidates) > limit {
-			discovery.Candidates = discovery.Candidates[:limit]
-		}
-		accepted += len(discovery.Candidates)
-		discoveries[attempt.AttemptID] = discovery
+		return s.failRun(ctx, run, "MARKET_DISCOVERY_FAILED", "market discovery failed")
 	}
-	run, err = s.store.Transition(ctx, domain.RunTransition{RunID: run.RunID, RunKind: domain.RunKindMarketDiscovery, ExpectedVersion: run.Version, Lifecycle: domain.RunRunning, Stage: domain.RunStageMarketResolve, Progress: domain.RecommendationRunProgress{Planned: 4, Completed: 2}})
-	if err != nil {
-		return err
-	}
-	discoveryList := make([]domain.ConnectorDiscovery, 0, len(discoveries))
-	for _, value := range discoveries {
-		discoveryList = append(discoveryList, value)
-	}
-	sort.Slice(discoveryList, func(i, j int) bool { return discoveryList[i].AttemptID < discoveryList[j].AttemptID })
-	artifacts, err := ProjectMarketDiscoveryArtifacts(selectedCaps, plan, discoveryList)
-	if err != nil {
-		return s.failRun(ctx, run, "INTEGRITY_ERROR", "market projection failed")
-	}
-	run, err = s.store.Transition(ctx, domain.RunTransition{RunID: run.RunID, RunKind: domain.RunKindMarketDiscovery, ExpectedVersion: run.Version, Lifecycle: domain.RunRunning, Stage: domain.RunStageMarketPublish, Progress: domain.RecommendationRunProgress{Planned: 4, Completed: 3}})
-	if err != nil {
-		return err
-	}
+	artifacts := execution.Artifacts
+
 	for _, document := range []struct {
 		name    domain.RunArtifactName
 		entries []any
@@ -784,7 +722,7 @@ func (s *RecommendationRunService) executeMarketDiscovery(ctx context.Context, r
 			return err
 		}
 	}
-	status := marketStatusFor(artifacts.MarketSnapshot, artifacts.MarketGaps)
+	status := execution.Result.Status
 	_, err = s.store.Transition(ctx, domain.RunTransition{RunID: run.RunID, RunKind: domain.RunKindMarketDiscovery, ExpectedVersion: run.Version, Lifecycle: domain.RunSucceeded, Stage: domain.RunStageTerminal, Progress: domain.RecommendationRunProgress{Planned: 4, Completed: 4}, MarketDiscoveryStatus: &status})
 	if errors.Is(err, domain.ErrRunVersionConflict) {
 		winner, getErr := s.store.Get(ctx, run.RunID)
@@ -793,25 +731,6 @@ func (s *RecommendationRunService) executeMarketDiscovery(ctx context.Context, r
 		}
 	}
 	return err
-}
-
-func marketStatusFor(snapshots []domain.MarketSnapshotEntry, gaps []domain.MarketGap) domain.MarketDiscoveryStatus {
-	selected, completed := 0, 0
-	for _, snapshot := range snapshots {
-		if snapshot.PlannedCost > 0 {
-			selected++
-			if snapshot.Status == domain.AttemptSucceeded || snapshot.Status == domain.AttemptEmptyObserved {
-				completed++
-			}
-		}
-	}
-	if selected == 0 || completed*100 < selected*80 {
-		return domain.MarketDiscoveryInconclusive
-	}
-	if len(gaps) > 0 {
-		return domain.MarketDiscoveryPartial
-	}
-	return domain.MarketDiscoveryComplete
 }
 
 func interfacesFromCapabilities(values []domain.DiscoveryConnectorCapabilities) []any {
@@ -859,3 +778,25 @@ func ExportedValidISO3166Alpha2(code string) bool { return validISO3166Alpha2(co
 // ExportedValidBCP47Locale expõe validBCP47Locale para testes em L4.
 // Uso exclusivo em testes de integração — não deve ser chamada em código de produção de outras camadas.
 func ExportedValidBCP47Locale(tag string) bool { return validBCP47Locale(tag) }
+
+type marketRunProgressReporter struct {
+	ctx     context.Context
+	service *RecommendationRunService
+	run     domain.RecommendationRun
+	err     error
+	cancel  context.CancelFunc
+}
+
+func (r *marketRunProgressReporter) MarketProgressError() error { return r.err }
+func (r *marketRunProgressReporter) ReportMarketDiscoveryProgress(event domain.MarketDiscoveryProgressEvent) {
+	if r.err != nil {
+		return
+	}
+	updated, err := r.service.store.Transition(r.ctx, domain.RunTransition{RunID: r.run.RunID, RunKind: domain.RunKindMarketDiscovery, ExpectedVersion: r.run.Version, Lifecycle: domain.RunRunning, Stage: event.Stage, Progress: event.Progress})
+	r.err = err
+	if err != nil {
+		r.cancel()
+		return
+	}
+	r.run = updated
+}

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/step0032_e2e_test.md
  * @layer L4
- * @updated 2026-09-03
+ * @updated 2026-10-28
  */
 package main
 
@@ -22,6 +22,7 @@ import (
 	"bateia/02_shell/mcp"
 	"bateia/03_infra/cache"
 	"bateia/03_infra/content"
+	"bateia/03_infra/host"
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
 	"bateia/03_infra/runstore"
@@ -68,6 +69,8 @@ func step0032ExtractTextResult(t *testing.T, response mcp.JSONRPCResponse) map[s
 }
 
 func TestStep0032E2ECLILocalFunnelWorkflow(t *testing.T) {
+	cli.ConfigureCommandHost(host.New())
+	t.Cleanup(func() { cli.ConfigureCommandHost(nil) })
 	tempDir := t.TempDir()
 	outputPath := filepath.Join(tempDir, "relatorio_e2e_teste.md")
 
@@ -77,7 +80,7 @@ func TestStep0032E2ECLILocalFunnelWorkflow(t *testing.T) {
 	}
 
 	contentProvider := content.NewRouter(nil, localrepo.NewClient())
-	funnelUsecase := usecase.NewSearchFunnel(nil, contentProvider, diskStore)
+	funnelUsecase := usecase.NewSearchFunnel(nil, contentProvider, diskStore).WithExecutionRuntime(host.New())
 	app := cli.NewCLIApp(funnelUsecase)
 
 	// Executa a CLI apontando para a worktree local atual (offline, sem dependência de rede externa)

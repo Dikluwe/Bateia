@@ -1,0 +1,55 @@
+# Exploração v1 — matriz de aceitação
+
+## Como usar
+
+Esta matriz consome o [contrato consolidado](exploracao-de-vizinhancas-v1.md). IDs identificam obrigações observáveis, não nomes de funções a preservar. “Direta” significa que há assertivas para o cenário descrito; “parcial” indica que só parte das variantes/limites está demonstrada. Links localizam testes existentes, sem declarar cobertura de toda a seção. “Lacuna” separa obrigação pretendida de implementação atual. Nenhuma classificação atesta ganho de criatividade ou utilidade para a IA.
+
+Os prompts de testes devem consumir estes casos e acrescentar controles independentes; não deduzir resultados de helpers da implementação. A consolidação0146 preservou os corpos existentes; o [passo0147](../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md) acrescenta testes e a correção de avanço, preservando os consumidores históricos. Execuções e o contraexemplo sintético ficam na [bancada0146](../../lab/bancada/prompts/0146/README.md), fora de L0.
+
+## Formatos e admissão
+
+| ID | Preparação e ação | Resultado obrigatório | Proprietário e evidência existente |
+| --- | --- | --- | --- |
+| WIRE-01 | Serializar relatório anterior sem neighborhood; depois com foco e vizinhos | Campos opcionais ausentes não mudam JSON legado; distância0 presente sobrevive ao roundtrip e difere de ausente | Domínio neighborhood; direta nos [testes de formato](../../01_core/domain/insight_neighborhood_test.go) |
+| WIRE-02 | Serializar memória e followup com cartão no mesmo relatório | Snapshot e conteúdo atual conservam campos distintos no roundtrip | Domínio memória; direta no [teste de formato](../../01_core/domain/insight_exploration_memory_test.go) |
+| ADM-01 | Entrada válida; depois adulterar selo, conteúdo, fingerprint, foco ou limites | Válida é admitida; cada variante inválida é rejeitada sem chamar leitor | Admissão/fontes; parcial nos [testes de adulteração](../../01_core/usecase/insight_neighborhood_sources_test.go): não cobre todas as combinações de recibo/quotas |
+| ADM-02 | Admitir relatório; alterar bundle e memória do chamador; executar pedido admitido | Origens e pedido admitidos permanecem iguais; leitura usa a admissão copiada | Admissão; direta no [teste de isolamento](../../01_core/usecase/insight_neighborhood_plan_test.go) |
+| ADM-03 | Omitir overrides; fornecer follow-links0; fornecer feedback antigo ou que remove identidade | Ausência herda, zero explícito desabilita leituras; feedback inválido rejeitado antes das portas | Admissão; parcial nos [testes de feedback](../../01_core/usecase/insight_neighborhood_result_test.go) e [CLI](../../02_shell/cli/insight_neighborhood_test.go); ampliar controles de feedback e herança numérica |
+| SRC-01 | Reapresentar origens congeladas GitHub/sítio/followup; perturbar recibo, LastRead ou tamanho | Só origens consistentes geram leads; erro antecede efeitos, sem reutilizar cartões antigos | Fontes/fronteira; parcial em [adulteração](../../01_core/usecase/insight_neighborhood_sources_test.go) e [continuação](../../01_core/usecase/insight_neighborhood_test.go); tabelas0147 cobrem as três origens, recibos/LastRead/duplicidade e limites exatos de documento, quantidade e agregado; ainda há variantes de estrutura/identidade e misturas entre tipos a ampliar |
+
+## Memória e alcance
+
+| ID | Preparação e ação | Resultado obrigatório | Proprietário e evidência existente |
+| --- | --- | --- | --- |
+| MEM-01 | Validar snapshot, alterar cópia; adulterar hash, estado, observação, lead ou duplicar entrada | Original intacto; variantes inválidas rejeitadas inclusive quando resselo externo é recalculado | Memória; direta nos [testes de integridade](../../01_core/usecase/insight_exploration_memory_test.go), sem cobrir cada campo possível |
+| MEM-02 | Descartar/reabrir alvo conhecido com motivo; tentar declarar EXAMINED ou motivo vazio | Mudar só estado/motivo e geração; conservar leitura anterior; não fabricar evidência | Memória; direta nos [testes de feedback](../../01_core/usecase/insight_exploration_memory_test.go), incluindo comparação integral dos campos de entradas com Lead e LastRead nos dois estados permitidos; [retomada](../../01_core/usecase/insight_neighborhood_result_test.go) permanece consumidora |
+| MEM-03 | Memória cheia; tentar inserir outra identidade | Histórico permanece; entrada extra não é criada; MEMORY_CAPACITY observável | Memória; parcial em [capacidade](../../01_core/usecase/insight_exploration_memory_test.go) e [expansão](../../01_core/usecase/insight_neighborhood_test.go); limite de256 coberto, fronteira exata em bytes não integralmente coberta |
+| MEM-04 | Feedback, discover e expand com memória válida de geração999998 ou999999 | Aceitar o último avanço para999999 com saída revalidável; rejeitar novo avanço antes de efeitos/mutação/publicação;999999 permanece legível | Memória/admissão; correção0147 e regressões em [feedback](../../01_core/usecase/insight_exploration_memory_test.go), [discover](../../01_core/usecase/insight_site_plan_test.go), [expand](../../01_core/usecase/insight_neighborhood_plan_test.go) e [CLI](../../02_shell/cli/insight_memory_test.go). [Contraexemplo anterior](../../lab/bancada/prompts/0146/README.md) preservado; [verificação da correção](../../lab/bancada/prompts/0147/README.md) |
+| FOC-01 | Expandir três rodadas de uma trilha; não fornecer nova pergunta/foco; depois pedir all-trails | Herdar foco; só descendentes conhecidos; modo geral inclui outras pendências; zero buscas de catálogo | Fachada/admissão/fronteira; direta nos [testes de continuação](../../01_core/usecase/insight_neighborhood_test.go) e [CLI](../../02_shell/cli/insight_neighborhood_test.go) |
+| FOC-02 | Grafo cíclico, intermediário descartado e ramo fora do foco | Terminar sem repetição; não atravessar descarte nem escapar para ramo alheio | Fronteira; direta nos [testes de grafo](../../01_core/usecase/insight_neighborhood_frontier_test.go), parcial quanto a todo limite numérico de extração |
+
+## Seleção e execução
+
+| ID | Preparação e ação | Resultado obrigatório | Proprietário e evidência existente |
+| --- | --- | --- | --- |
+| ALS-01 | X/X.git conhecidos; base pendente, examinada ou descartada | Suprimir alias com código correspondente; nenhuma leitura duplicada, quota extra ou reescrita histórica | Seleção; direta nos [testes de aliases](../../01_core/usecase/insight_neighborhood_selection_test.go) |
+| ALS-02 | Base pendente com alias descartado/examinado; depois reabertura explícita; variar host/forge | Conflito bloqueia travessia e gera lacuna; exame prévio só permite reabertura explícita; hosts/forges não se fundem | Seleção; direta nos [testes de conflito/escopo](../../01_core/usecase/insight_neighborhood_selection_test.go) |
+| ORD-01 | Foco sem leitor, vizinhos elegíveis a distâncias diferentes, tentativas diferentes; repetir sem distância | Elegibilidade precede distância, que precede tentativas; geral omite distância; não executar portas nem mudar memória | Ordem/projeção; direta nos [testes do ordenador](../../01_core/usecase/insight_followup_selection_test.go) e [distância](../../01_core/usecase/insight_neighborhood_selection_test.go) |
+| ORD-02 | Empatar elegibilidade, distância e tentativas; variar geração, ordem de referência e ID | Desempates na sequência declarada, repetíveis sob permutação de entrada | Ordem; direta na tabela dos [testes de seleção](../../01_core/usecase/insight_followup_selection_test.go): geração, presença/posição de referência e ID, sob seis permutações, com distância ausente ou empatada, sem efeitos/mutação |
+| RUN-01 | Orçamento de tentativas, fonte não selecionada ou leitor ausente | Só leitor elegível é chamado, omissões têm código próprio e continuam pendentes; falha tentada consome tentativa | Executor; parcial nos [testes de followups](../../01_core/usecase/insight_followups_test.go) e [restrições por forge](../../01_core/usecase/insight_neighborhood_frontier_test.go) |
+| RUN-02 | Coleta inicial + followups perto do teto de bytes/documentos; retorno do leitor excede agregado | Quota global respeitada, bundle excedente descartado, sem bytes/cartões apresentados como coletados | Executor; parcial nos [testes de orçamento](../../01_core/usecase/insight_followups_test.go); ampliar limites exatos e precedência de todas as omissões |
+| RUN-03 | Cancelar durante leitura e limitar max-passages; continuar de memória reaberta sem Lead | Preservar coleta parcial válida; não exceder cartões; expand permite leitura de alvo conhecido sem Lead inventado | Fachada/executor/contexto; direta no cenário dos [testes de expansão](../../01_core/usecase/insight_neighborhood_test.go) e [contexto](../../01_core/usecase/insight_followup_context_test.go) |
+
+## Resultado e transporte
+
+| ID | Preparação e ação | Resultado obrigatório | Proprietário e evidência existente |
+| --- | --- | --- | --- |
+| OUT-01 | Falhar única leitura, retomar, depois follow-links0 | FAILED com relatório selado e erro; falha mantém pendência; retomada lê; rodada0 preserva fronteira sem leitura | Resultado/memória; direta no [teste de estados](../../01_core/usecase/insight_neighborhood_result_test.go) |
+| OUT-02 | Gerar cartões após expand, incluindo omissões/cancelamento | Cartões só atuais, refs das tarefas rastreáveis; novidade NOT_ASSESSED, efeito UNVERIFIED; esgotamento não vira prova global | Resultado/contexto; parcial nos [testes de continuação](../../01_core/usecase/insight_neighborhood_test.go) e [cartões](../../01_core/usecase/insight_followup_context_test.go); revisão semântica necessária para interpretação |
+| CLI-01 | Flags inválidas/duplicadas, JSON adulterado, output igual a input/memory | Rejeitar sem factory/leitura/publicação; não ecoar segredos | L2 expand; parcial nos [testes de entrada e proteção](../../02_shell/cli/insight_neighborhood_test.go); transporte estrito também depende de seus testes compartilhados |
+| CLI-02 | Receber relatório de falha operacional com ID; depois rejeição sem ID | Publicar relatório selado antes do erro sanitizado; rejeição não publica | L2 expand; parcial nos [testes CLI](../../02_shell/cli/insight_neighborhood_test.go); ampliar tabela de cancelamento/deadline |
+| CLI-03 | Ler memória autônoma ou embutida, aplicar feedback; tentar formato/estado/saída inválidos | Publicar snapshot novo sem factory de pesquisa; rejeitar escrita sobre entrada e feedback que invente leitura | L2 memory; direta nos [testes de memória CLI](../../02_shell/cli/insight_memory_test.go) para variantes existentes e limites de geração MEM-04, com rejeição sem saída/stdout e antes da factory de discover |
+
+## Trabalho restante
+
+O passo0147 fecha a divergência MEM-04 e amplia controles de MEM-02, ORD-02 e SRC-01. Permanecem parciais, entre outros, a fronteira de capacidade em bytes da memória (MEM-03), combinações de fontes congeladas, precedência de omissões/quota agregada em execução (RUN-02) e tabela completa de publicação em interrupções (CLI-02). Confrontar futuros resultados com cada observável; execução verde não transforma essas lacunas em cobertura completa.

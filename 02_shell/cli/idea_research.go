@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_research.md
  * @layer L2
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package cli
@@ -93,7 +93,7 @@ func RunIdeaResearchCommand(args []string, stdout io.Writer, connectors []domain
 			return domain.ErrInvalidRunInput
 		}
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	snapshot := researchSnapshot{SchemaVersion: "1", Queries: queries, Attempts: []researchAttempt{}, Candidates: []domain.ProductCandidate{}}
 	seen := map[string]bool{}

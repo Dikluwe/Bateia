@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_discovery_test.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -111,7 +111,7 @@ func TestDiscoverExpansionPlanDoesNotMutateInput(t *testing.T) {
 
 func TestBoundedDiscoveryPreservesCandidateAndMarksNotStarted(t *testing.T) {
 	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: 40 * time.Millisecond, AttemptTimeout: 20 * time.Millisecond, Concurrency: 1, MaxAttempts: 3}
-	snapshot, err := DiscoverExpansionPlanWithPolicy(context.Background(), discoveryPlan(), "literal", "", 3, policy, deadlineProvider{}, nil)
+	snapshot, err := DiscoverExpansionPlanWithPolicy(domain.WithExecutionRuntime(context.Background(), discoveryTestRuntime{}), discoveryPlan(), "literal", "", 3, policy, deadlineProvider{}, nil)
 	if err == nil {
 		t.Fatal("deadline must be observable")
 	}
@@ -135,7 +135,7 @@ func TestBoundedDiscoveryPreservesCandidateAndMarksNotStarted(t *testing.T) {
 func TestDiscoveryPolicyRejectsInvalidTimeoutsBeforeProvider(t *testing.T) {
 	provider := &fakeObservableProvider{}
 	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: time.Second, AttemptTimeout: 2 * time.Second, Concurrency: 1, MaxAttempts: 3}
-	if _, err := DiscoverExpansionPlanWithPolicy(context.Background(), discoveryPlan(), "literal", "", 3, policy, provider, nil); err == nil {
+	if _, err := DiscoverExpansionPlanWithPolicy(domain.WithExecutionRuntime(context.Background(), discoveryTestRuntime{}), discoveryPlan(), "literal", "", 3, policy, provider, nil); err == nil {
 		t.Fatal("attempt timeout greater than total survived")
 	}
 	if provider.calls != 0 {
@@ -327,7 +327,7 @@ func TestM21RegionalPolicyReceiptAndOrdinaryLimitsAreEndToEnd(t *testing.T) {
 	provider := &m21RegionalProvider{}
 	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: 5 * time.Second, AttemptTimeout: time.Second, Concurrency: 1, MaxAttempts: 3}
 	plan := domain.ExpansionPlan{Idea: domain.IdeaSpec{Problem: "organizar receitas culinárias"}, Expansions: regional.Proposals}
-	snapshot, err := DiscoverExpansionPlanWithPolicy(context.Background(), plan, "literal", "go", 7, policy, provider, nil)
+	snapshot, err := DiscoverExpansionPlanWithPolicy(domain.WithExecutionRuntime(context.Background(), discoveryTestRuntime{}), plan, "literal", "go", 7, policy, provider, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -348,4 +348,11 @@ func TestM21RegionalPolicyReceiptAndOrdinaryLimitsAreEndToEnd(t *testing.T) {
 			t.Fatalf("regional request[%d] bypassed ordinary limits: %+v", index, request)
 		}
 	}
+}
+
+type discoveryTestRuntime struct{}
+
+func (discoveryTestRuntime) Now() time.Time { return time.Date(2026, 10, 28, 0, 0, 0, 0, time.UTC) }
+func (discoveryTestRuntime) WithTimeout(ctx context.Context, d time.Duration) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(ctx, d)
 }

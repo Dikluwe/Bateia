@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/improvement_synthesis.md
  * @layer L1
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -25,45 +25,29 @@ var proposalIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`
 var mechanismIDPattern = regexp.MustCompile(`^mech_[0-9a-f]{64}$`)
 var observationIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$`)
 
-type resolvedSynthesisSources struct {
-	mechanisms    map[string]domain.ArchitecturalMechanism
-	mechanismGaps map[string]domain.MechanismGap
-	observations  map[string]bool
-	degraded      bool
-}
-
 func (s *RecommendationRunService) ConfigureImprovementSynthesis(catalogSHA256 string) *RecommendationRunService {
 	if s != nil && catalogSHA256 == activeMechanismRulesSHA256 {
-		s.improvementEnabled = true
-		s.mechanismCatalogSHA256 = catalogSHA256
+		s.synthesis.catalogSHA256 = catalogSHA256
 	}
 	return s
 }
 
 func (s *RecommendationRunService) ConfigureMechanismExtraction(extractor domain.MechanismExtractor, catalog []byte, catalogSHA256 string, baseline *domain.ConventionalBaseline) *RecommendationRunService {
-	if s == nil || extractor == nil {
-		return s
+	if s != nil && s.mechanisms.configure(extractor, catalog, catalogSHA256, baseline) {
+		s.synthesis.catalogSHA256 = catalogSHA256
 	}
-	if _, err := decodeMechanismCatalog(catalog, catalogSHA256); err != nil {
-		return s
-	}
-	s.mechanismExtractor = extractor
-	s.mechanismCatalog = append([]byte(nil), catalog...)
-	s.mechanismCatalogSHA256 = catalogSHA256
-	s.mechanismBaseline = baseline
-	s.improvementEnabled = true
 	return s
 }
 
 func (s *RecommendationRunService) StartImprovementSynthesis(ctx context.Context, key string, request domain.ImprovementSynthesisRequest) (domain.ImprovementSynthesisStartReceipt, error) {
-	if s == nil || s.store == nil || s.queue == nil || s.ids == nil || !s.improvementEnabled || s.mechanismCatalogSHA256 != activeMechanismRulesSHA256 || !validIdempotencyKey(key) {
+	if s == nil || s.store == nil || s.queue == nil || s.ids == nil || !s.synthesis.enabled() || !validIdempotencyKey(key) {
 		return domain.ImprovementSynthesisStartReceipt{}, domain.ErrInvalidRunInput
 	}
 	normalized, err := normalizeImprovementSynthesisRequest(request)
 	if err != nil {
 		return domain.ImprovementSynthesisStartReceipt{}, domain.ErrInvalidRunInput
 	}
-	resolved, err := s.resolveSynthesisSources(ctx, normalized.SourceArtifacts)
+	resolved, err := resolveSynthesisSources(ctx, s.store, normalized.SourceArtifacts)
 	if err != nil {
 		return domain.ImprovementSynthesisStartReceipt{}, err
 	}
@@ -216,131 +200,6 @@ func synthesisRequestHash(request domain.ImprovementSynthesisRequest) (string, e
 	return "sha256:" + hex.EncodeToString(digest[:]), nil
 }
 
-func (s *RecommendationRunService) resolveSynthesisSources(ctx context.Context, sources []domain.SourceArtifactRef) (resolvedSynthesisSources, error) {
-	resolved := resolvedSynthesisSources{mechanisms: map[string]domain.ArchitecturalMechanism{}, mechanismGaps: map[string]domain.MechanismGap{}, observations: map[string]bool{}}
-	for _, source := range sources {
-		run, err := s.store.Get(ctx, source.RunID)
-		if err != nil {
-			return resolvedSynthesisSources{}, err
-		}
-		if effectiveRunKind(run) != source.RunKind {
-			return resolvedSynthesisSources{}, domain.ErrInvalidRunInput
-		}
-		if !terminalLifecycle(run.Lifecycle) {
-			return resolvedSynthesisSources{}, domain.ErrSourceBasisUnavailable
-		}
-		index, ok := publishedArtifactIndex(run, source.Artifact)
-		if !ok {
-			return resolvedSynthesisSources{}, domain.ErrSourceBasisUnavailable
-		}
-		hash := index.Hash
-		if hash == "" {
-			hash = index.ArtifactHash
-		}
-		if hash != "sha256:"+source.SHA256 {
-			return resolvedSynthesisSources{}, domain.ErrIntegrity
-		}
-		entries, err := s.readAllArtifactEntries(ctx, source, hash)
-		if err != nil {
-			return resolvedSynthesisSources{}, err
-		}
-		if run.Lifecycle != domain.RunSucceeded {
-			resolved.degraded = true
-		}
-		for _, entry := range entries {
-			switch source.Artifact {
-			case domain.ArtifactMechanismCatalog:
-				var mechanism domain.ArchitecturalMechanism
-				if json.Unmarshal(entry, &mechanism) != nil || !mechanismIDPattern.MatchString(mechanism.ID) || resolved.mechanisms[mechanism.ID].ID != "" {
-					return resolvedSynthesisSources{}, domain.ErrIntegrity
-				}
-				resolved.mechanisms[mechanism.ID] = mechanism
-			case domain.ArtifactMechanismGaps:
-				var gap domain.MechanismGap
-				if json.Unmarshal(entry, &gap) != nil || gap.Code == "" {
-					return resolvedSynthesisSources{}, domain.ErrIntegrity
-				}
-				key := gap.Code + ":" + gap.RuleID + ":" + gap.WitnessHash
-				resolved.mechanismGaps[key] = gap
-			case domain.ArtifactMarketCandidates, domain.ArtifactMarketSnapshot:
-				var identity struct {
-					ID            string `json:"id"`
-					CandidateID   string `json:"candidate_id"`
-					ObservationID string `json:"observation_id"`
-					QueryID       string `json:"query_id"`
-					AttemptID     string `json:"attempt_id"`
-					Identity      struct {
-						ConnectorID string `json:"connector_id"`
-						ExternalID  string `json:"external_id"`
-					} `json:"identity"`
-				}
-				if json.Unmarshal(entry, &identity) != nil {
-					return resolvedSynthesisSources{}, domain.ErrIntegrity
-				}
-				for _, id := range []string{identity.ID, identity.CandidateID, identity.ObservationID, identity.QueryID, identity.AttemptID, identity.Identity.ExternalID, identity.Identity.ConnectorID, identity.Identity.ConnectorID + ":" + identity.Identity.ExternalID} {
-					if observationIDPattern.MatchString(id) {
-						resolved.observations[id] = true
-					}
-				}
-			}
-		}
-	}
-	return resolved, nil
-}
-
-func publishedArtifactIndex(run domain.RecommendationRun, name domain.RunArtifactName) (domain.RunArtifactIndex, bool) {
-	for _, index := range run.Artifacts {
-		if index.Name == name && index.State == domain.ArtifactPublished {
-			return index, true
-		}
-	}
-	return domain.RunArtifactIndex{}, false
-}
-
-func (s *RecommendationRunService) readAllArtifactEntries(ctx context.Context, source domain.SourceArtifactRef, expectedHash string) ([][]byte, error) {
-	cursor := ""
-	entries := [][]byte{}
-	for pageNumber := 0; pageNumber < 1000; pageNumber++ {
-		page, err := s.store.ReadArtifact(ctx, domain.ArtifactReadRequest{RunID: source.RunID, Artifact: source.Artifact, Cursor: cursor, Limit: 50})
-		if err != nil {
-			return nil, err
-		}
-		if page.Artifact != source.Artifact || page.RunID != source.RunID || page.ArtifactHash != expectedHash {
-			return nil, domain.ErrIntegrity
-		}
-		for _, entry := range page.Entries {
-			if !json.Valid(entry) {
-				return nil, domain.ErrIntegrity
-			}
-			entries = append(entries, append([]byte(nil), entry...))
-		}
-		if page.NextCursor == nil {
-			return entries, nil
-		}
-		if *page.NextCursor == "" || *page.NextCursor == cursor {
-			return nil, domain.ErrIntegrity
-		}
-		cursor = *page.NextCursor
-	}
-	return nil, domain.ErrIntegrity
-}
-
-func validateProposalReferences(proposals []domain.ImprovementProposal, resolved resolvedSynthesisSources) error {
-	for _, proposal := range proposals {
-		for _, ref := range proposal.MechanismRefs {
-			if _, ok := resolved.mechanisms[ref]; !ok {
-				return domain.ErrInvalidRunInput
-			}
-		}
-		for _, ref := range proposal.ProductObservationRefs {
-			if !resolved.observations[ref] {
-				return domain.ErrInvalidRunInput
-			}
-		}
-	}
-	return nil
-}
-
 func (s *RecommendationRunService) ExecuteImprovementSynthesis(ctx context.Context, id domain.RunID) error {
 	run, err := s.store.Get(ctx, id)
 	if err != nil {
@@ -368,7 +227,7 @@ func (s *RecommendationRunService) ExecuteImprovementSynthesis(ctx context.Conte
 	if ctx.Err() != nil {
 		return s.confirmCancellation(context.Background(), id)
 	}
-	resolved, err := s.resolveSynthesisSources(ctx, run.ImprovementRequest.SourceArtifacts)
+	resolved, err := resolveSynthesisSources(ctx, s.store, run.ImprovementRequest.SourceArtifacts)
 	if err != nil {
 		return s.failRun(ctx, run, "SYNTHESIS_SOURCE_FAILED", "synthesis source resolution failed")
 	}

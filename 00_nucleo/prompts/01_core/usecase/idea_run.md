@@ -17,3 +17,7 @@ L1 puro: transformar IdeaSpec + DiscoverySnapshot + avaliações em plano determ
 BuildInvestigationPlan retorna requisitos, tentativas observadas, ações por candidato/requisito, classes de evidência, método, lacuna, critério de aceitação e encerramento delimitado. Sanitizar avaliações pelo contrato comum antes de atribuir status; sem candidatos produzir NO_CANDIDATES_IN_SCOPE somente sem falhas, nunca inexistência global. Queries e fontes opacas não geram prova. Plano sem snapshot informa DISCOVERY_NOT_RECORDED. Resultado ordenado independe da ordem dos conjuntos de entrada. Sem ensaio de integração sempre preservar condição pendente de validação.
 
 Anexar plano à decisão canônica e à apresentação CLI/MCP. Projetar texto público ao construir o plano com os filtros existentes de privacidade; preservar o gateway certificado. Telemetria identificada como da ferramenta. Compatibilidade aditiva com schema aninhado próprio; não promover resultados históricos.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

@@ -19,3 +19,6 @@ Exercite de ponta a ponta todas as vias de consumo operacionais do Bateia de for
 3. Invariantes de Isolamento:
    - Proibido qualquer acesso de rede externa durante a suíte E2E;
    - Zero I/O em L1.
+
+## Passo 0129
+A composição local injeta host L3 e relógio no funil, como o executável. Nenhum fallback concreto é permitido na CLI. Preservar as asserções E2E.

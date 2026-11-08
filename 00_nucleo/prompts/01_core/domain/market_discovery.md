@@ -10,3 +10,10 @@ artefatos. Preserve arrays vazios e as quatro dimensões independentes. Zero I/O
 MCP, filesystem, rede, env, goroutine ou mutex. Não invente política além do
 contrato nem modele aplicação como `owner/repo`.
 
+
+## 0126
+
+Adicionar a constante ConnectorAtomGitCatalog com ID atomgit-repository-catalog, sem alterar formatos JSON, enums existentes ou política de investigação.
+
+## 0154 — Descoberta contextual
+QueryPolicy opcional omitida quando vazia no pedido do conector. Bridges podem aplicar política explícita de investigação sem mudar o pedido de mercado legado.

@@ -11,3 +11,13 @@ AST/imports percorrem todos os arquivos Go de produção das camadas, rejeitam I
 ## Gate offline
 
 O antigo gate R2 baseado em presença de bindings foi removido integralmente. O gate executável independente R3 vive em `04_wiring/r3_gate`, executa fixtures/mutantes/faults concretos e conserva o protocolo 3×3.
+
+## Portas declarativas — 0129
+
+Distinguir import de io/io/fs usado exclusivamente para declarar interfaces/tipos/constantes de operação concreta. Permitir esses dois imports somente em arquivos sem funções, variáveis inicializadas ou chamadas AST. Manter recusa de os, net/http, dependências ascendentes e qualquer arquivo executável que use io. Adicionar controles para interface declarativa, função e inicializador com efeito; não liberar import por nome de arquivo.
+
+## Passo 0131
+Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## Consolidação 0131
+O auditor AST geral e seu controle de portas declarativas foram transferidos para lab/bancada/arquitetura/0131/contracts/legacy_architecture_test.go, preservando asserções e raízes. Este arquivo possui apenas testes de composição, publicação, privacidade e lifecycle.

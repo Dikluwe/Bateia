@@ -19,3 +19,7 @@ atomicamente snapshots completos, parciais ou falhos antes de retornar o erro.
 Registre `NO_SEMANTIC_EXPANSION` quando a estratégia lexical não propuser nada.
 
 Segurança: planos/corpus de descoberta usam readIdeaJSONInput antes de Unmarshal, conforme security_json_input.md; validar antes de acessar provedores e preservar saídas válidas.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

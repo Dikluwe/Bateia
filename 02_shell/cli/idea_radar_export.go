@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_radar_export.md
  * @layer L2
- * @updated 2026-09-12
+ * @updated 2026-10-28
  */
 
 package cli
@@ -13,10 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
-	"syscall"
 
 	"bateia/01_core/domain"
 	"bateia/02_shell/report"
@@ -112,104 +109,12 @@ func parseIdeaRadarExportArgs(args []string) (string, string, error) {
 	return inputPath, outputPath, nil
 }
 
-func openIdeaRadarExportInput(inputPath, outputPath string) (*os.File, os.FileInfo, error) {
-	if outputPath != "" {
-		inputAbsolute, err := filepath.Abs(inputPath)
-		if err != nil {
-			return nil, nil, fmt.Errorf("resolve idea radar input path: %w", err)
-		}
-		outputAbsolute, err := filepath.Abs(outputPath)
-		if err != nil {
-			return nil, nil, fmt.Errorf("resolve idea radar output path: %w", err)
-		}
-		if filepath.Clean(inputAbsolute) == filepath.Clean(outputAbsolute) {
-			return nil, nil, fmt.Errorf("idea radar output must not identify its input")
-		}
-	}
-
-	inputFile, err := os.OpenFile(inputPath, os.O_RDONLY|syscall.O_NONBLOCK, 0)
-	if err != nil {
-		return nil, nil, fmt.Errorf("read idea radar input %s: %w", inputPath, err)
-	}
-	fail := func(err error) (*os.File, os.FileInfo, error) {
-		inputFile.Close()
-		return nil, nil, err
-	}
-	inputInfo, err := inputFile.Stat()
-	if err != nil {
-		return fail(fmt.Errorf("inspect idea radar input %s: %w", inputPath, err))
-	}
-	if outputPath == "" {
-		return inputFile, inputInfo, nil
-	}
-	if err := rejectIdeaRadarExportAlias(inputPath, outputPath, inputInfo); err != nil {
-		return fail(err)
-	}
-	return inputFile, inputInfo, nil
+func openIdeaRadarExportInput(a, b string) (domain.CommandFile, domain.FileInfo, error) {
+	return commandHost().OpenIdeaRadarExportInput(a, b)
 }
-
-func rejectIdeaRadarExportAlias(inputPath, outputPath string, inputInfo os.FileInfo) error {
-	outputInfo, err := os.Stat(outputPath)
-	if err == nil && os.SameFile(inputInfo, outputInfo) {
-		return fmt.Errorf("idea radar output must not identify its input")
-	}
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("inspect idea radar output %s: %w", outputPath, err)
-	}
-
-	resolvedInput, err := filepath.EvalSymlinks(inputPath)
-	if err != nil {
-		return fmt.Errorf("resolve idea radar input %s: %w", inputPath, err)
-	}
-	resolvedInput, err = filepath.Abs(resolvedInput)
-	if err != nil {
-		return fmt.Errorf("resolve idea radar input %s: %w", inputPath, err)
-	}
-	resolvedOutputParent, err := filepath.EvalSymlinks(filepath.Dir(outputPath))
-	if err != nil {
-		return fmt.Errorf("resolve idea radar output directory %s: %w", filepath.Dir(outputPath), err)
-	}
-	resolvedOutput := filepath.Join(resolvedOutputParent, filepath.Base(outputPath))
-	resolvedOutput, err = filepath.Abs(resolvedOutput)
-	if err != nil {
-		return fmt.Errorf("resolve idea radar output %s: %w", outputPath, err)
-	}
-	if filepath.Clean(resolvedInput) == filepath.Clean(resolvedOutput) {
-		return fmt.Errorf("idea radar output must not identify its input")
-	}
-	return nil
+func rejectIdeaRadarExportAlias(a, b string, info domain.FileInfo) error {
+	return commandHost().RejectIdeaRadarExportAlias(a, b, info)
 }
-
-func writeIdeaRadarExportAtomic(outputPath string, data []byte, inputInfo os.FileInfo) error {
-	directory := filepath.Dir(outputPath)
-	temporary, err := os.CreateTemp(directory, ".bateia-idea-radar-export-*")
-	if err != nil {
-		return fmt.Errorf("create temporary idea radar export in %s: %w", directory, err)
-	}
-	temporaryPath := temporary.Name()
-	defer func() {
-		_ = temporary.Close()
-		_ = os.Remove(temporaryPath)
-	}()
-	if err := temporary.Chmod(0644); err != nil {
-		return fmt.Errorf("set temporary idea radar export permissions: %w", err)
-	}
-	if _, err := temporary.Write(data); err != nil {
-		return fmt.Errorf("write temporary idea radar export: %w", err)
-	}
-	if err := temporary.Sync(); err != nil {
-		return fmt.Errorf("sync temporary idea radar export: %w", err)
-	}
-	if err := temporary.Close(); err != nil {
-		return fmt.Errorf("close temporary idea radar export: %w", err)
-	}
-	if outputInfo, err := os.Stat(outputPath); err == nil && os.SameFile(inputInfo, outputInfo) {
-		return fmt.Errorf("idea radar output must not identify its input")
-	} else if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("inspect idea radar output %s: %w", outputPath, err)
-	}
-	if err := os.Rename(temporaryPath, outputPath); err != nil {
-		return fmt.Errorf("atomically replace idea radar output %s: %w", outputPath, err)
-	}
-	return nil
+func writeIdeaRadarExportAtomic(p string, data []byte, info domain.FileInfo) error {
+	return commandHost().WriteIdeaRadarExportAtomic(p, data, info)
 }

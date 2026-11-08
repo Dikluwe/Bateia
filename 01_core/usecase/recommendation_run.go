@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/recommendation_run.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -32,17 +32,13 @@ var runArtifactOrder = []domain.RunArtifactName{
 }
 
 type RecommendationRunService struct {
-	store                  domain.RecommendationRunStore
-	queue                  domain.RecommendationJobQueue
-	ids                    domain.RecommendationRunIDGenerator
-	executor               domain.ObservableRecommendationExecutor
-	marketRegistry         *DiscoveryConnectorRegistry
-	marketExecutor         domain.ObservableMarketDiscoveryExecutor
-	mechanismExtractor     domain.MechanismExtractor
-	mechanismCatalog       []byte
-	mechanismCatalogSHA256 string
-	mechanismBaseline      *domain.ConventionalBaseline
-	improvementEnabled     bool
+	store      domain.RecommendationRunStore
+	queue      domain.RecommendationJobQueue
+	ids        domain.RecommendationRunIDGenerator
+	executor   domain.ObservableRecommendationExecutor
+	market     marketRunCapability
+	mechanisms mechanismRunCapability
+	synthesis  synthesisRunCapability
 }
 
 type cancellationViewMemo interface {
@@ -166,7 +162,7 @@ func (s *RecommendationRunService) Start(ctx context.Context, key string, reques
 		Lifecycle: domain.RunQueued, Version: 1, Stage: domain.RunStageQueued,
 		Progress: domain.RecommendationRunProgress{Planned: 8}, Artifacts: []domain.RunArtifactIndex{},
 	}
-	if s.mechanismExtractor != nil {
+	if s.mechanisms.enabled() {
 		run.RunKind = domain.RunKindRecommendation
 	}
 	record := domain.IdempotencyRecord{KeyDigest: keyDigest, RequestHash: requestHash, RunID: id}
@@ -411,7 +407,7 @@ func (s *RecommendationRunService) Execute(ctx context.Context, id domain.RunID)
 	reporter := &runProgressReporter{ctx: ctx, service: s, id: id, current: run}
 	var execution RecommendationExecution
 	var executionErr error
-	if s.mechanismExtractor != nil {
+	if s.mechanisms.enabled() {
 		if detailed, ok := s.executor.(interface {
 			RecommendObservedWithRun(context.Context, domain.RecommendationRequest, domain.RecommendationProgressReporter) (RecommendationExecution, error)
 		}); ok {
@@ -453,19 +449,11 @@ func (s *RecommendationRunService) Execute(ctx context.Context, id domain.RunID)
 			return err
 		}
 	}
-	if s.mechanismExtractor != nil {
-		mechanisms := []domain.ArchitecturalMechanism{}
-		gaps := []domain.MechanismGap{}
-		for _, bundle := range execution.Run.Bundles {
-			extracted, extractErr := s.mechanismExtractor.ExtractMechanisms(ctx, domain.MechanismExtractionInput{Bundle: bundle, Assessments: execution.Run.Assessment.Assessments, ConventionalBaseline: s.mechanismBaseline, RuleCatalogJSON: s.mechanismCatalog, RuleCatalogSHA256: s.mechanismCatalogSHA256})
-			if extractErr != nil {
-				return s.failRun(ctx, run, "MECHANISM_EXTRACTION_FAILED", "mechanism extraction failed")
-			}
-			mechanisms = append(mechanisms, extracted.Mechanisms...)
-			gaps = append(gaps, extracted.Gaps...)
+	if s.mechanisms.enabled() {
+		mechanisms, gaps, extractErr := s.mechanisms.extract(ctx, execution.Run)
+		if extractErr != nil {
+			return s.failRun(ctx, run, "MECHANISM_EXTRACTION_FAILED", "mechanism extraction failed")
 		}
-		sort.Slice(mechanisms, func(i, j int) bool { return mechanisms[i].ID < mechanisms[j].ID })
-		sortMechanismGaps(gaps)
 		run, err = s.publishDocument(ctx, run, domain.ArtifactMechanismCatalog, interfacesForSlice(mechanisms))
 		if err != nil {
 			return err

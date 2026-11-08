@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_decide.md
  * @layer L2
- * @updated 2026-09-24
+ * @updated 2026-10-28
  */
 
 package cli
@@ -125,7 +125,7 @@ func runIdeaDecide(args []string, stdout io.Writer) error {
 
 func parseTechnicalEvidenceAsOf(value string) (time.Time, error) {
 	if value == "" {
-		return time.Now().UTC(), nil
+		return commandHost().Now().UTC(), nil
 	}
 	asOf, err := time.Parse(time.RFC3339, value)
 	if err != nil {

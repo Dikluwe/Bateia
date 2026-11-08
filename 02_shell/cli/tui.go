@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/tui.md
  * @layer L2
- * @updated 2026-08-04
+ * @updated 2026-10-28
  */
 
 package cli
@@ -34,25 +34,25 @@ type searchFinishedMsg struct {
 }
 
 type tuiModel struct {
-	funnel    *usecase.SearchFunnel
-	state     tuiState
-	query     string
-	lang      string
-	report    *domain.SearchReport
-	err       error
-	width     int
-	height    int
-	styles    tuiStyles
+	funnel *usecase.SearchFunnel
+	state  tuiState
+	query  string
+	lang   string
+	report *domain.SearchReport
+	err    error
+	width  int
+	height int
+	styles tuiStyles
 }
 
 type tuiStyles struct {
-	title       lipgloss.Style
-	label       lipgloss.Style
-	box         lipgloss.Style
-	accent      lipgloss.Style
-	stats       lipgloss.Style
-	repoItem    lipgloss.Style
-	errStyle    lipgloss.Style
+	title    lipgloss.Style
+	label    lipgloss.Style
+	box      lipgloss.Style
+	accent   lipgloss.Style
+	stats    lipgloss.Style
+	repoItem lipgloss.Style
+	errStyle lipgloss.Style
 }
 
 func newTUIStyles() tuiStyles {
@@ -72,11 +72,11 @@ func newTUIModel(funnel *usecase.SearchFunnel, initialQuery string, initialLang 
 		initialLang = "go"
 	}
 	return tuiModel{
-		funnel:    funnel,
-		state:     stateInput,
-		query:     initialQuery,
-		lang:      initialLang,
-		styles:    newTUIStyles(),
+		funnel: funnel,
+		state:  stateInput,
+		query:  initialQuery,
+		lang:   initialLang,
+		styles: newTUIStyles(),
 	}
 }
 
@@ -90,7 +90,7 @@ func (m tuiModel) Init() tea.Cmd {
 func (m tuiModel) executeSearchCmd() tea.Cmd {
 	m.state = stateSearching
 	return func() tea.Msg {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+		ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), 3*time.Minute)
 		defer cancel()
 
 		filter := domain.QueryFilter{

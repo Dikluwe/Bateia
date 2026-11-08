@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/market_discovery.md
  * @layer L4
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package main
@@ -39,7 +39,7 @@ func defaultMarketDiscoveryConnectors() ([]domain.MarketDiscoveryConnector, erro
 			IdentityLevels: []string{"commit", "owner_repo"}, EvidenceSurfaces: []string{"code_occurrence", "immutable_commit", "repository_identity"}, Replayable: true, PublicOnly: true,
 		}}
 	}
-	connectors := []domain.MarketDiscoveryConnector{apple, repository("github-repository-catalog"), repository("sourcegraph-repository-catalog"), research.NewZBMath(nil), research.NewJOSS(nil)}
+	connectors := []domain.MarketDiscoveryConnector{apple, repository("github-repository-catalog"), repository("sourcegraph-repository-catalog"), research.NewZBMath(nil), research.NewJOSS(nil), forge.NewGiteeConnectorWithToken(os.Getenv("BATEIA_GITEE_TOKEN"), nil), forge.NewAtomGitConnector(os.Getenv("BATEIA_ATOMGIT_TOKEN"), nil)}
 	return withConfiguredBitbucket(connectors)
 }
 
@@ -64,7 +64,8 @@ func federatedMarketDiscoveryConnectors() ([]domain.MarketDiscoveryConnector, er
 			IdentityLevels: []string{"commit", "owner_repo"}, EvidenceSurfaces: []string{"code_occurrence", "immutable_commit", "repository_identity"}, Replayable: true, PublicOnly: true,
 		}}
 	}
-	gitee := forge.NewGiteeConnector(nil)
+	gitee := forge.NewGiteeConnectorWithToken(os.Getenv("BATEIA_GITEE_TOKEN"), nil)
+	atomgit := forge.NewAtomGitConnector(os.Getenv("BATEIA_ATOMGIT_TOKEN"), nil)
 	codeberg := forge.NewCodebergConnector(nil)
 	gitlab := forge.NewGitLabConnector(nil)
 
@@ -75,6 +76,7 @@ func federatedMarketDiscoveryConnectors() ([]domain.MarketDiscoveryConnector, er
 		repository("github-repository-catalog"),
 		repository("sourcegraph-repository-catalog"),
 		gitee,
+		atomgit,
 		codeberg,
 		gitlab,
 		research.NewZBMath(nil),
@@ -116,7 +118,7 @@ func NewMarketDiscoveryMCPServer(
 		return nil, nil, err
 	}
 	service := durable.Service()
-	service.ConfigureMarketDiscovery(nil, registry)
+	service.ConfigureMarketDiscovery(usecase.NewMarketDiscoveryService(registry), registry)
 	if err := durable.Recover(context.Background()); err != nil {
 		return nil, nil, err
 	}

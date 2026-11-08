@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/algorithm_history.md
  * @layer L2
- * @updated 2026-09-12
+ * @updated 2026-10-28
  */
 
 package cli
@@ -12,8 +12,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"bateia/01_core/domain"
@@ -107,87 +105,9 @@ func parseAlgorithmHistoryArgs(args []string) (string, string, error) {
 	return inputPath, outputPath, nil
 }
 
-func openAlgorithmHistoryInput(inputPath, outputPath string) (*os.File, os.FileInfo, error) {
-	if outputPath != "" {
-		inputAbsolute, err := filepath.Abs(inputPath)
-		if err != nil {
-			return nil, nil, fmt.Errorf("resolve algorithm history input path: %w", err)
-		}
-		outputAbsolute, err := filepath.Abs(outputPath)
-		if err != nil {
-			return nil, nil, fmt.Errorf("resolve algorithm history output path: %w", err)
-		}
-		if filepath.Clean(inputAbsolute) == filepath.Clean(outputAbsolute) {
-			return nil, nil, fmt.Errorf("algorithm history output must not identify its input")
-		}
-	}
-	inputFile, err := os.Open(inputPath)
-	if err != nil {
-		return nil, nil, fmt.Errorf("read algorithm history input %s: %w", inputPath, err)
-	}
-	fail := func(err error) (*os.File, os.FileInfo, error) { inputFile.Close(); return nil, nil, err }
-	inputInfo, err := inputFile.Stat()
-	if err != nil {
-		return fail(fmt.Errorf("inspect algorithm history input %s: %w", inputPath, err))
-	}
-	if outputPath == "" {
-		return inputFile, inputInfo, nil
-	}
-	if outputInfo, err := os.Stat(outputPath); err == nil && os.SameFile(inputInfo, outputInfo) {
-		return fail(fmt.Errorf("algorithm history output must not identify its input"))
-	} else if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return fail(fmt.Errorf("inspect algorithm history output %s: %w", outputPath, err))
-	}
-	resolvedInput, err := filepath.EvalSymlinks(inputPath)
-	if err != nil {
-		return fail(fmt.Errorf("resolve algorithm history input %s: %w", inputPath, err))
-	}
-	resolvedParent, err := filepath.EvalSymlinks(filepath.Dir(outputPath))
-	if err != nil {
-		return fail(fmt.Errorf("resolve algorithm history output directory %s: %w", filepath.Dir(outputPath), err))
-	}
-	resolvedOutput := filepath.Join(resolvedParent, filepath.Base(outputPath))
-	resolvedInput, err = filepath.Abs(resolvedInput)
-	if err != nil {
-		return fail(fmt.Errorf("resolve algorithm history input %s: %w", inputPath, err))
-	}
-	resolvedOutput, err = filepath.Abs(resolvedOutput)
-	if err != nil {
-		return fail(fmt.Errorf("resolve algorithm history output %s: %w", outputPath, err))
-	}
-	if filepath.Clean(resolvedInput) == filepath.Clean(resolvedOutput) {
-		return fail(fmt.Errorf("algorithm history output must not identify its input"))
-	}
-	return inputFile, inputInfo, nil
+func openAlgorithmHistoryInput(a, b string) (domain.CommandFile, domain.FileInfo, error) {
+	return commandHost().OpenAlgorithmHistoryInput(a, b)
 }
-
-func writeAlgorithmHistoryAtomic(outputPath string, data []byte, inputInfo os.FileInfo) error {
-	directory := filepath.Dir(outputPath)
-	temporary, err := os.CreateTemp(directory, ".bateia-algorithm-history-*")
-	if err != nil {
-		return fmt.Errorf("create temporary algorithm history report in %s: %w", directory, err)
-	}
-	temporaryPath := temporary.Name()
-	defer func() { _ = temporary.Close(); _ = os.Remove(temporaryPath) }()
-	if err := temporary.Chmod(0644); err != nil {
-		return fmt.Errorf("set temporary algorithm history permissions: %w", err)
-	}
-	if _, err := temporary.Write(data); err != nil {
-		return fmt.Errorf("write temporary algorithm history report: %w", err)
-	}
-	if err := temporary.Sync(); err != nil {
-		return fmt.Errorf("sync temporary algorithm history report: %w", err)
-	}
-	if err := temporary.Close(); err != nil {
-		return fmt.Errorf("close temporary algorithm history report: %w", err)
-	}
-	if outputInfo, err := os.Stat(outputPath); err == nil && os.SameFile(inputInfo, outputInfo) {
-		return fmt.Errorf("algorithm history output must not identify its input")
-	} else if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("inspect algorithm history output %s: %w", outputPath, err)
-	}
-	if err := os.Rename(temporaryPath, outputPath); err != nil {
-		return fmt.Errorf("atomically replace algorithm history output %s: %w", outputPath, err)
-	}
-	return nil
+func writeAlgorithmHistoryAtomic(p string, data []byte, info domain.FileInfo) error {
+	return commandHost().WriteAlgorithmHistoryAtomic(p, data, info)
 }

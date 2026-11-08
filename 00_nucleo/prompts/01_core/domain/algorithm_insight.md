@@ -1,0 +1,3 @@
+# Ideias de algoritmos ligadas a decisões
+
+L1, passo 0155. Tipos abertos AlgorithmIdeaEvidence (fonte imutável + referência localizada), AlgorithmDecision (current/proposed/benefit/cost), AlgorithmIdea (title/principle/steps, evidências, condições/falhas, relação e evidência do alvo, validation_observable/reject_if), AlgorithmInsightRequest (schema/question/target bundle/source bundles/ideas) e AlgorithmInsightReport. Reporta ideias com IDs determinísticos, escopo SOURCE_BOUND_DECLARED_REASONING, interpretação/target relation DECLARED_NOT_REASSESSED e efeito UNVERIFIED. Sem I/O ou classificação de algoritmos por enum fechado. Papéis de alvo/fonte distintos.

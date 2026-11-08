@@ -5,3 +5,7 @@ Implemente a CLI offline `algorithm history analyze --input FILE [--output FILE]
 com dois espaços e newline, use stdout exclusivo sem output e escrita atômica silenciosa
 com output. Rejeite alias do input e preserve input/destino em erro. Sem rede, busca,
 LLM, Archify ou import de L3; o dispatcher recebe apenas encaminhamento aditivo.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

@@ -109,3 +109,32 @@ os caminhos existentes dos demais subcomandos.
 ## Passo 0105
 
 Despache idea insights antes de carregar .env, vocabulário, caches e clientes, como trace. Não criar runtime para este comando offline.
+
+## Passo 0137
+
+Exceção de transporte explicitamente online: despachar idea insights discover antes do ramo offline, instanciar cliente GitHub existente (token opcional do ambiente/.env) e injetar como ProjectCatalog e porta estreita de conteúdo em cli.RunInsightDiscoveryCommand. Não criar runtime durável/cache ou plano/política na composição. Os demais insights continuam offline como antes.
+
+0138: injetar adicionalmente factory lazy insightDiscoverySites para --sources; sem opção nova não construir o conjunto federado. Composição da lista no owner L4 próprio, política permanece L1.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.
+
+## Passo 0129 — configuração de entrada
+A interpretação do limite MCP pertence a mcp.ParseMaxToolCalls em L2. A fiação lê a configuração e delega; a função privada histórica permanece como ponte para testes de composição. Deadlines de shutdown são adquiridos pelo host L3.
+
+## Passo 0131
+Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## Consolidação 0131
+A interpretação do limite MCP e seus oráculos estão consolidados em 02_shell/mcp/config.go e config_test.go. A ponte privada e o teste duplicado em L4 foram removidos após comparação de igualdade dos corpos dos oráculos. O caminho produtivo de recomendação injeta serviço com runtime explícito.
+
+
+## Evolução0143
+
+Passo0143: despachar idea insights expand antes do ramo offline, carregar configuração online e injetar a factory insightDiscoverySites em RunInsightNeighborhoodCommand; sem decidir foco/fronteira.
+
+
+## Reorganização0145
+
+Delegar interpretação literal de --no-token a cli.WebTokenRequested; composição conserva carregamento de ambiente/cliente e ordem histórica.

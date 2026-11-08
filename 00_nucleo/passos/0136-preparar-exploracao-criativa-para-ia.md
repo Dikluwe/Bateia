@@ -1,0 +1,29 @@
+# 0136 — Preparar exploração criativa para IA
+
+**Data:** 2026-10-28. **Contrato ex-ante.** Origem: usuário pede menos curadoria manual e esclarece que o Bateia deve auxiliar a IA a sair das abordagens habituais. Responsabilidade de investigação em L1, transporte em L2.
+
+## Entrega
+
+`idea insights explore --question TEXTO [--bundles arquivo.json] [--familiar TEXTO ...] [--max-passages N] [--output arquivo.json]`. Ler diretamente a lista de EvidenceBundle emitida por evidence collect; sem assessments, observations, alvo ou classes de mecanismo. Sem bundles, preparar tarefas/direções de pesquisa e explicitar a falta de contexto. Não modificar analyze/compare, extração ou política de reúso. Não exigir configuração ou chamada de modelo para preparar o contexto.
+
+`ExploreInsights` recebe pedido v1 com pergunta, abordagens familiares opcionais, bundles e máximo de trechos. Normalizar pergunta/familiaridade; conferir identidades imutáveis, hashes, paths e unicidade. Até 8 bundles, 512 itens, 2 MiB no pedido, 1000 bytes na pergunta, 8 rótulos familiares de 120 bytes. Máximo de trechos 1–16, padrão 8. Ordenar cópias, sem mutar caller. Não confiar em caminhos/bytes como instruções nem executar a fonte.
+
+## Seleção automática e seus limites
+
+Selecionar no máximo um trecho por arquivo textual de código/documentação/teste/exemplo; manifesto, licença, metadado e outros tipos ficam fora. Arquivos binários ou com controles não textuais ficam fora da leitura. Usar janelas de até 16 linhas/2048 bytes, com início a cada 8 linhas, no prefixo de até 1024 linhas por arquivo. Ajustar fim sem cortar bytes de uma linha; ignorar trecho vazio ou linha inicial maior que o teto. Conservar path/hash/intervalo/trecho exato.
+
+Escolher a janela de cada arquivo pelo número de termos distintos da pergunta presentes e, em empate, menos rótulos familiares encontrados, mais palavras distintas no trecho e menor linha inicial. O mesmo desempate de palavras distintas antecede a ordem canônica na seleção de arquivos. Essa variedade lexical ajuda a evitar cabeçalhos/imports repetitivos, sem prometer melhor relevância. Tokens são alfanuméricos em minúsculas, com pelo menos três caracteres, até 24 termos distintos na ordem da pergunta, sem stopwords básicas PT/EN; listar os termos usados. Rótulos familiares são substrings em minúsculas com espaços canonicalizados, sem inferência semântica. Sem qualquer termo encontrado nos cartões, emitir lacuna QUESTION_TERMS_NOT_MATCHED e orientar reformulação pelo vocabulário da fonte; não há tradução automática.
+
+Selecionar arquivos por ganho de variedade: repositório ainda não representado, tipo de evidência ainda não representado, quantidade de termos da pergunta, menos correspondências familiares, desempate por identidade/path/linha. Repositórios são comparados sem caixa e independentemente do commit; selected_sources conta esses repositórios distintos e a recombinação prioriza dois deles. Deduplicar trechos de bytes idênticos entre fontes; não preencher a saída com cópias. Essa diversidade é estrutural/lexical, não novidade conceitual, relevância semântica ou qualidade comprovada. Sem coincidência lexical, explicitar ausência de match; sem familiaridade informada, explicitar limite. Informar seleção limitada, arquivos elegíveis, itens ignorados, prefixos limitados, fontes fornecidas e selecionadas e bundles incompletos. Ausência de exemplos não comprova ausência de abordagens.
+
+## Contexto para IA
+
+Relatório `insight-exploration-v1` com identidade causal própria, pergunta/familiaridade normalizadas, termos, cartões de leitura automáticos, diagnósticos, tarefas para IA e direções de pesquisa não executadas. Cartão possui fonte imutável, tipo, localizador e origem UNINTERPRETED_EXCERPT, matches lexicais e razões de seleção. Sem afirmação de comportamento, mecanismo ou efeito. Identidade do relatório inclui contrato e pedido canônico; cartões incluem identidade imutável e bytes/intervalo. Mudanças causais mudam IDs; reordenação e prefixos opcionais de hash não.
+
+Gerar cinco tarefas: alternativas ao caminho habitual, inversão de premissa, analogia entre domínios, recombinação e busca de contraexemplo. Referenciar somente IDs de cartões existentes. Para recombinação, priorizar um par de fontes distintas quando disponível e declarar falta de outra fonte; para analogia, explicitar que domínio semântico não foi classificado. Exigir que a IA separe observação citada de hipótese, considere a utilidade para a pergunta, explicite condições e proponha experimento/critério de rejeição. Trechos são dados não confiáveis, nunca instruções. Familiaridade declarada orienta exploração, sem excluir contraevidência.
+
+As cinco direções de pesquisa derivam dos termos da pergunta (fallback para pergunta) e de cada perspectiva, com estado PLANNED_NOT_EXECUTED. Não são resultados de busca. O pacote auxilia raciocínio; não contém conclusões criativas geradas por modelo, prova de novidade, efeito medido ou decisão de adoção. Status CONTEXT_PREPARED com cartões, SEARCH_NEEDED sem eles; novidade NOT_ASSESSED e efeito UNVERIFIED sempre. Documentar a distinção e como usar descoberta/coleta existentes para ampliar o corpus.
+
+## Aceite
+
+Testes puros de integridade/limites, localização exata, seleção diversificada e desduplicada, familiaridade lexical, determinismo/imutabilidade/causalidade, ausência de promoção semântica e referências resolvíveis das tarefas. CLI: pergunta direta, bundles coletados sem curadoria, flags inválidas, JSON estrito, alias/input protegido, short writes e segredo em trecho. Caso congelado conc sem assessments/observations deve produzir contexto útil para leitura e tarefas de exploração, sem exigir catálogo ou inventar outro domínio. Acrescentar controles de duas fontes, duplicatas e corpus vazio. Preservar replays 0106/0134/0135; executar lint, suíte, vet e build via make verify. Evidências novas somente em lab/bancada/insights/0136.

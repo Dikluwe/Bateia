@@ -5,6 +5,8 @@ parâmetros antes de provedores, grave JSON atomicamente, rejeite sobrescrita se
 resume, preserve file:// e hash de conteúdo local, nunca serialize segredos e
 gere manifesto, artefatos intermediários e projeção Markdown rastreável.
 
+0138: o bloqueio compartilhado de segredos cobre também BATEIA_GITEE_TOKEN e BATEIA_ATOMGIT_TOKEN, tanto valor literal quanto forma JSON escapada, preservando formatos quando não há segredo.
+
 ## Passo 0040
 
 Aplicar o contrato de autoridade, sinais lexicais sem comprovação comportamental, procedência local, seleção de produção, negação conservadora e lacunas acionáveis de `00_nucleo/passos/0040-corrigir-autoridade-da-evidencia.md`. Preservar determinismo e ausência de I/O no núcleo.
@@ -146,3 +148,22 @@ locations. Escrita individual atômica não equivale a transação de dois arqui
 Resume sem flag preserva ambos sidecars antigos no disco, exclui stage trace e
 avisa que a projeção não pertence à execução atual. Decide sidecar continua grafo
 somente. Declarações legíveis não são validação de verdade/completude/autoria.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.
+
+## Passo 0130 — Decisões delegadas ao núcleo
+
+Remapeamento de candidatos/assessments/fontes para exclusão do alvo local pertence a alternative_target.go em L1. L2 adapta a fonte de hints para a porta restrita, mantendo o lookup congelado e a ordem das consultas.
+
+Admissão semântica do modelo opt-in pertence a screening_model_policy.go; L2 conserva leitura limitada, JSON estrito, hash dos bytes e erros sanitizados. Este adendo substitui a proibição histórica de alterar L1 somente para mover esse ownership, sem alterar a política ou o pipeline.
+
+Elegibilidade e comparação de checkpoint pertencem a evidence_checkpoint.go. L2 resolve caminhos e fornece SHA-256 por adaptador restrito usando fileHash/host; não conserva uma segunda decisão de estados, hashes ou versões. Manter formatos, RunID, causalidade e todos os testes ativos anteriores, sem reescrever oráculos selados.
+
+## Passo 0131
+Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## Passo 0132
+
+Após a linha de conclusão, apresentar diagnóstico opcional de Checkpoint por renderizador L2. Sem diagnóstico manter saída existente. Não decidir elegibilidade, ler novamente o checkpoint, serializar diagnóstico ou alterar identidade. Apenas português e códigos fixos, com Subject restrito pelo renderizador. Aplicar limites de privacidade e compatibilidade do passo 0132.

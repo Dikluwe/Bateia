@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_insights.md
  * @layer L2
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package cli
@@ -17,7 +17,19 @@ import (
 )
 
 func runIdeaInsights(args []string, stdout io.Writer) error {
-	if len(args) == 0 || args[0] != "analyze" {
+	if len(args) > 0 && args[0] == "memory" {
+		return runInsightMemory(args[1:], stdout)
+	}
+	if len(args) > 0 && args[0] == "discover" {
+		return fmt.Errorf("insights discover exige catálogo e leitor configurados pelo executável")
+	}
+	if len(args) > 0 && args[0] == "expand" {
+		return fmt.Errorf("insights expand exige leitores configurados pelo executável")
+	}
+	if len(args) > 0 && args[0] == "explore" {
+		return runInsightExploration(args[1:], stdout)
+	}
+	if len(args) == 0 || (args[0] != "analyze" && args[0] != "compare" && args[0] != "formulate") {
 		return fmt.Errorf("uso: bateia idea insights analyze --input pedido.json [--output resultado.json]")
 	}
 	input, output, err := parseDecisionTraceArgs(args[1:])
@@ -27,11 +39,38 @@ func runIdeaInsights(args []string, stdout io.Writer) error {
 	if err := validateDecisionTraceOutput(output, input); err != nil {
 		return err
 	}
+	if args[0] == "formulate" {
+		var request domain.AlgorithmInsightRequest
+		if err := readStrictIntakeJSON(input, &request); err != nil {
+			return err
+		}
+		report, err := usecase.FormulateAlgorithmInsights(context.Background(), request)
+		if err != nil {
+			return fmt.Errorf("formulação de ideias rejeitada: %w", err)
+		}
+		return writeDecisionTraceJSON(report, output, stdout, input)
+	}
+	if args[0] == "compare" {
+		var request domain.InsightComparisonRequest
+		if err := readStrictIntakeJSON(input, &request); err != nil {
+			return err
+		}
+		report, err := usecase.CompareInsightBaseline(context.Background(), request)
+		if err != nil {
+			return fmt.Errorf("comparação de insights rejeitada: %w", err)
+		}
+		return writeDecisionTraceJSON(report, output, stdout, input)
+	}
 	var request domain.InsightInvestigationRequest
 	if err := readStrictIntakeJSON(input, &request); err != nil {
 		return err
 	}
-	report, err := usecase.InvestigateInsights(context.Background(), request)
+	var report any
+	if request.SchemaVersion == "2" {
+		report, err = usecase.InvestigateSourceInsights(context.Background(), request)
+	} else {
+		report, err = usecase.InvestigateInsights(context.Background(), request)
+	}
 	if err != nil {
 		return fmt.Errorf("investigação de insights rejeitada: %w", err)
 	}

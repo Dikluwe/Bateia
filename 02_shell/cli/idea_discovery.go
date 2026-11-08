@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_discovery.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-10-28
  */
 
 package cli
@@ -13,10 +13,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"bateia/01_core/domain"
@@ -91,7 +88,7 @@ func RunIdeaDiscoverCommand(args []string, stdout, stderr io.Writer, lexical use
 		}
 		plan, proposedCount = enriched.Plan, enriched.ProposedCount
 	}
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	ctx, stop := commandHost().NotifyContext(commandContext(context.Background()))
 	defer stop()
 	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: *totalTimeout, AttemptTimeout: *attemptTimeout, Concurrency: *concurrency, MaxAttempts: 3}
 	reporter := discoveryCLIReporter{writer: stderr}

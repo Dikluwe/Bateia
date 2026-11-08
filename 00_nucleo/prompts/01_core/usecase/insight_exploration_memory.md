@@ -1,0 +1,28 @@
+# insight_exploration_memory
+
+**Camada:** L1. **Responsável:** `01_core/usecase/insight_exploration_memory`. **Materialização:** [insight_exploration_memory.go](../../../../01_core/usecase/insight_exploration_memory.go).
+
+## Interface e responsabilidade
+
+ValidateInsightExplorationMemory devolve cópia canônica ou erro; UpdateInsightExplorationMemory aplica feedback offline. O container possui bootstrap, consultas de estado, registro de leituras/testemunhos e seleção primária sensível à memória.
+
+## Comportamento vigente
+
+Validar schema/selo/identidades/estados/observações/leads e limites compartilhados; ordenar entradas e selar com algoritmo histórico. Descarte/reabertura exigem motivo e preservam observações. Coleta marca EXAMINED; falha mantém PENDING com tentativa/status. Preservar histórico ao atingir capacidade e emitir MEMORY_CAPACITY. Na seleção primária de discover, desconhecidas/pendentes precedem examinadas/descartadas; estas só preenchem vagas de metadados e não geram releitura.
+
+## Limites e dependências
+
+Sem I/O, cache global, autenticação remota ou prova de mecanismo. Snapshot devolvido não compartilha estado mutável com entrada. A política de avanço pertence a este container: snapshot de geração999999 é válido para inspeção, mas feedback e admissão de uma nova rodada devem retornar ErrInvalidRunInput; geração999998 pode avançar para999999. Reutilizar a mesma guarda em discover e expand antes dos efeitos, conforme [passo0147](../../../passos/0147-corrigir-limites-e-verificar-contratos-de-exploracao.md). Não saturar/reiniciar geração.
+
+As regras compartilhadas estão nas seções [memória](../../../contratos/exploracao-de-vizinhancas-v1.md#memória). Este componente realiza sua parte desse contrato; não redefine as políticas dos outros responsáveis.
+
+## Aceitação
+
+Consumir os casos [MEM-01](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [MEM-02](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [MEM-03](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md), [MEM-04](../../../contratos/exploracao-de-vizinhancas-aceitacao-v1.md) e [o prompt de testes](insight_exploration_memory_test.md). A matriz distingue comportamento exigido, cobertura parcial e divergência conhecida. Passagem estrutural não comprova utilidade do insight.
+
+## Origem e preservação
+
+Consolidação de contratos0142–0145 confrontados com código existente, sob [passo0146](../../../passos/0146-consolidar-prompts-de-exploracao.md); não é autoria ex-ante desse código. O [texto anterior](../../../../lab/bancada/prompts/0146/before/00_nucleo__prompts__01_core__usecase__insight_exploration_memory.md.txt) conserva a sequência histórica. Evoluções de comportamento exigem intenção e verificação próprias antes da materialização.
+
+## 0154 — Descoberta contextual
+Propagar pergunta opcional de seleção contextual às seleções fresh/known; preservar prioridade de não examinados e regras seladas de memória, sem promover catálogo a evidência.

@@ -16,3 +16,7 @@ Verificar de forma determinística o comportamento público do contrato relacion
 ## Passo 0035
 
 Verificar injeção da porta semântica local e preservação de cobertura insuficiente/saúde não avaliada mesmo com resolução estática parcial.
+
+## Instante de coleta — 0128
+
+Verificar que manifesto reanalisado conserva o instante da extração fornecido por uma porta controlada, incluindo zero desconhecido. Não comparar a telemetria temporal do funil, que permanece fora deste recorte.

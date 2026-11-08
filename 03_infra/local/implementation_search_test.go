@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/local/implementation_search_test.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 package local_test
 
@@ -106,5 +106,25 @@ func TestLocalImplementationSearchCancelAndMissingRoot(t *testing.T) {
 	r, err = local.NewClient().SearchImplementations(context.Background(), implementationCandidate(filepath.Join(t.TempDir(), "missing")), "Anything", implementationBudget())
 	if err == nil {
 		t.Fatalf("missing root not returned as error: %+v", r)
+	}
+}
+
+func TestLocalImplementationExaminedOrderIsCanonical(t *testing.T) {
+	root := t.TempDir()
+	source := "package sample\nfunc QueueItems() {}\n"
+	for _, path := range []string{"zeta.go", "alpha.go"} {
+		implementationFixture(t, root, path, source)
+	}
+	report, err := local.NewClient().SearchImplementations(context.Background(), implementationCandidate(root), "QueueItems", implementationBudget())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(report.Examined) != 2 || report.Examined[0].Path != "alpha.go" || report.Examined[1].Path != "zeta.go" {
+		t.Fatalf("noncanonical metadata: %+v", report.Examined)
+	}
+	for _, input := range report.Examined {
+		if input.SHA256 != fmt.Sprintf("%x", sha256.Sum256([]byte(source))) {
+			t.Fatal("byte identity changed")
+		}
 	}
 }

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_recommend.md
  * @layer L2
- * @updated 2026-09-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -18,13 +18,9 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"math"
-	"net/url"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
-	"syscall"
 	"time"
 )
 
@@ -108,7 +104,7 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	if *timeout <= 0 {
 		return fmt.Errorf("timeout deve ser positivo")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	var screeningModel *domain.ScreeningModel
 	screeningModelHash := ""
@@ -151,306 +147,29 @@ func RunIdeaRecommendCommand(args []string, stdout io.Writer, semantic usecase.S
 	} else {
 		evidenceRules = usecase.DefaultEvidenceRules()
 	}
-	catalogCoverage, err := usecase.AnalyzeEvidenceCatalogCoverage(idea, evidenceRules)
-	if err != nil {
-		return err
-	}
 	req := domain.IdeaRunRequest{Idea: idea, Policy: policy, Mode: runMode, Strategy: strings.ToLower(*strategy), Provider: *provider, Language: *language, SearchLocales: normalizedSearchLocales, LocalPaths: append([]string(nil), locals...), ReplayDirectory: *replay, OutputDirectory: *output, Resume: *resume, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates}
-	deps := usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content, EvidenceRules: evidenceRules}
-	if screeningModel != nil {
-		deps.ScreeningModel = *screeningModel
+	input := usecase.RecommendationDossierInput{Request: req, Target: target, Rules: evidenceRules, CustomRules: strings.TrimSpace(*rulesPath) != "", ScreeningModel: screeningModel, ScreeningModelHash: screeningModelHash, Trace: *withTrace, Dependencies: usecase.IdeaRunDependencies{Semantic: semantic, Discovery: discovery, Content: content, EvidenceRules: evidenceRules}}
+	if len(recommendationServices) > 0 {
+		input.Recommendation = recommendationServices[0]
 	}
-	var localSnapshot *capturedLocalRun
-	if runMode == domain.IdeaRunLocal {
-		localSnapshot, err = captureLocalCandidates(ctx, locals, *output, targetRepository != nil)
-		if err != nil {
-			return err
-		}
-		defer func() {
-			if cleanupErr := localSnapshot.Close(); cleanupErr != nil {
-				if returnErr == nil {
-					returnErr = cleanupErr
-				} else {
-					returnErr = fmt.Errorf("%w; %v", returnErr, cleanupErr)
-				}
-			}
-		}()
-		deps.LocalCandidates = localSnapshot.Candidates
-		deps.Content, err = buildSnapshotProvider(content, localSnapshot.Bindings)
-		if err != nil {
-			return err
-		}
-	}
-	evidenceHash, err := evidenceInputHash(req, deps.LocalCandidates)
-	if err != nil {
-		return err
-	}
-	if err := ctx.Err(); err != nil {
-		return err
-	}
-	if err := prepareDossier(*output, *resume); err != nil {
-		return err
-	}
-	inputHashes := map[string]string{"idea": hashJSON(idea), "policy": hashJSON(policy), "mode": hashBytes([]byte(runMode)), "evidence": evidenceHash, "evidence_rules": catalogCoverage.RulesHash, "target": hashJSON(target)}
-	if screeningModel != nil {
-		inputHashes["screening_model"] = screeningModelHash
-	}
-	if len(normalizedSearchLocales) > 0 {
-		inputHashes["search_locales"] = hashJSON(normalizedSearchLocales)
-	}
-	if localSnapshot != nil && targetRepository != nil {
-		inputHashes["local_metadata"] = hashJSON(localSnapshot.Identities)
-	}
-	ruleVersions := map[string]string{"expansion": "1", "screening": "1", "evidence": catalogCoverage.RulesVersion, "decision": "0043", "alternatives": "0043", "analyzer": "0043"}
-	if screeningModel != nil {
-		ruleVersions["screening"] = "screening-opt-in-v1"
-	}
-	if runMode == domain.IdeaRunLocal {
-		ruleVersions["local_snapshot"] = localTreeHashVersion
-		ruleVersions["local_collection"] = localCollectionVersion
-	}
-	if runMode == domain.IdeaRunLocal || runMode == domain.IdeaRunLive {
-		ruleVersions["implementation_search"] = "0061"
-	}
-	if runMode == domain.IdeaRunLive {
-		ruleVersions["discovery_query"] = "live0056-v1"
-	}
-	var previous domain.IdeaRunManifest
-	staleTrace := false
-	if *resume && !*withTrace {
-		for _, path := range []string{"trace-graph.json", "trace-index.json"} {
-			_, traceErr := os.Lstat(filepath.Join(*output, path))
-			staleTrace = staleTrace || traceErr == nil
-		}
-	}
-	canReuseEvidence := false
-	if *resume {
-		if e := readJSONFile(filepath.Join(*output, "run.json"), &previous); e == nil {
-			canReuseEvidence = reusableEvidenceCheckpoint(*output, previous, evidenceHash, catalogCoverage.RulesHash, ruleVersions, screeningModelHash)
-		}
-	}
-	runIdentity := struct {
-		EvidenceHash       string            `json:"evidence_hash"`
-		PolicyHash         string            `json:"policy_hash"`
-		TargetHash         string            `json:"target_hash"`
-		ScreeningModelHash string            `json:"screening_model_hash,omitempty"`
-		LocalMetadataHash  string            `json:"local_metadata_hash,omitempty"`
-		RuleVersions       map[string]string `json:"rule_versions"`
-	}{EvidenceHash: evidenceHash, PolicyHash: inputHashes["policy"], TargetHash: inputHashes["target"], ScreeningModelHash: screeningModelHash, LocalMetadataHash: inputHashes["local_metadata"], RuleVersions: ruleVersions}
-	manifest := domain.IdeaRunManifest{SchemaVersion: "1", RunID: usecase.StableRunID(hashJSON(runIdentity)), Mode: runMode, Status: domain.IdeaRunRunning, InputHashes: inputHashes, RuleVersions: ruleVersions, Stages: []domain.IdeaRunStage{}}
-	if err = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest); err != nil {
-		return err
-	}
-	source := *replay
-	if canReuseEvidence {
-		source = *output
-	}
-	if runMode == domain.IdeaRunReplay || canReuseEvidence {
-		var snap domain.DiscoverySnapshot
-		var bundles []domain.EvidenceBundle
-		if e := readJSONFile(filepath.Join(source, "discovery-snapshot.json"), &snap); e != nil {
-			manifest.Status = domain.IdeaRunFailed
-			manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "replay", Message: e.Error()}}
-			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-			return e
-		}
-		if e := readJSONFile(filepath.Join(source, "evidence", "bundles.json"), &bundles); e != nil {
-			manifest.Status = domain.IdeaRunInconclusive
-			manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "replay", Message: e.Error()}}
-			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-			return e
-		}
-		deps.ReplaySnapshot = &snap
-		deps.ReplayBundles = bundles
-	}
-	var result domain.IdeaRunResult
-	var alternatives domain.SoftwareAlternativeReport
-	var runErr error
-	usesRecommendationService := runMode == domain.IdeaRunLive && targetRepository == nil && !canReuseEvidence && screeningModel == nil
-	if usesRecommendationService {
-		recommendationService, constructorErr := usecase.NewRecommendationServiceWithEvidenceRules(semantic, discovery, content, evidenceRules)
-		if constructorErr != nil {
-			return constructorErr
-		}
-		if strings.TrimSpace(*rulesPath) == "" && len(recommendationServices) > 0 && recommendationServices[0] != nil {
-			recommendationService = recommendationServices[0]
-		}
-		execution, recommendErr := recommendationService.RecommendWithRun(ctx, domain.RecommendationRequest{
-			Idea: idea, Policy: policy, Target: target,
-			Search: domain.RecommendationSearch{Strategy: strings.ToLower(*strategy), Language: *language, Locales: normalizedSearchLocales, MaxPerQuery: *maxPerQuery, MaxCandidates: *maxCandidates},
-		})
-		result, alternatives, runErr = execution.Run, execution.Recommendation.Alternatives, recommendErr
-	} else {
-		result, runErr = usecase.RunIdeaPipeline(ctx, req, deps)
-	}
-	if runErr != nil {
-		manifest.Status = domain.IdeaRunFailed
-		manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "pipeline", Message: runErr.Error()}}
-		_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-		return runErr
-	}
-	if !usesRecommendationService {
-		alternativesStarted := time.Now()
-		identitiesFor := localGitHubRepositoryIdentities
-		if localSnapshot != nil {
-			identitiesFor = func(candidateURL string) []domain.RepositoryIdentity { return localSnapshot.Identities[candidateURL] }
-		}
-		alternativeDiscovery, alternativeAssessments := alternativeInputsForTargetUsing(runMode, result.Discovery, result.Assessment.Assessments, targetRepository, identitiesFor)
-		alternatives, err = usecase.RankSoftwareAlternatives(target, idea, alternativeDiscovery, alternativeAssessments, policy)
-		result.StageDurations["alternatives"] = time.Since(alternativesStarted).Milliseconds()
-		if err != nil {
-			manifest.Status = domain.IdeaRunFailed
-			manifest.Failures = []domain.ExecutionFailure{{Scope: "run", Stage: "alternatives", Message: err.Error()}}
-			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-			return err
-		}
-	}
-	var traceGraph *domain.DecisionTraceGraph
-	var traceIndex domain.DecisionTraceExplanation
-	if *withTrace {
-		buildInput := domain.DecisionTraceBuildInput{SchemaVersion: "1", Idea: &idea, Report: result.Decision, RuleVersions: ruleVersions}
-		graph, traceErr := usecase.BuildDecisionTrace(buildInput)
-		if traceErr == nil {
-			traceIndex, traceErr = usecase.ExplainDecisionTrace(domain.DecisionTraceExplainInput{SchemaVersion: "1", Graph: graph, BuildInput: buildInput})
-		}
-		graphPath, indexPath := filepath.Join(*output, "trace-graph.json"), filepath.Join(*output, "trace-index.json")
-		if traceErr == nil {
-			traceErr = writeDecisionTraceJSON(graph, graphPath, nil, append(append([]string(nil), traceInputs...), indexPath)...)
-		}
-		if traceErr == nil {
-			traceErr = writeDecisionTraceJSON(traceIndex, indexPath, nil, append(append([]string(nil), traceInputs...), graphPath)...)
-		}
-		if traceErr != nil {
-			markDecisionTraceFailed(&manifest, traceErr)
-			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-			return traceErr
-		}
-		traceGraph = &graph
-	}
-	artifacts := []struct {
-		path  string
-		value any
-	}{{"idea.json", idea}, {"reuse-policy.json", policy}, {"expansion-plan.json", result.Expansion}, {"discovery-snapshot.json", result.Discovery}, {"screening-report.json", result.Screening}, {filepath.Join("evidence", "catalog-coverage.json"), result.CatalogCoverage}, {filepath.Join("evidence", "plans.json"), result.Plans}, {filepath.Join("evidence", "bundles.json"), result.Bundles}, {"assessment-report.json", result.Assessment}, {"reuse-decision.json", result.Decision}, {"alternatives.json", alternatives}}
-	for _, a := range artifacts {
-		if err = writeJSONAtomic(filepath.Join(*output, a.path), a.value); err != nil {
-			return err
-		}
-	}
-	if err = writeDecisionMarkdown(filepath.Join(*output, "decision.md"), result.Decision, result.Bundles); err != nil {
-		return err
-	}
-	if err = writeAlternativesMarkdown(filepath.Join(*output, "alternatives.md"), alternatives); err != nil {
-		return err
-	}
-	manifest.Status = usecase.IdeaRunStatusFor(result)
-	manifest.DecisionPath = "reuse-decision.json"
-	manifest.Failures = append(manifest.Failures, result.Failures...)
-	manifest.Stages = buildRunStages(*output, result, alternatives)
-	if traceGraph != nil {
-		stage, err := buildDecisionTraceStage(*output, *traceGraph, traceIndex, ruleVersions)
-		if err != nil {
-			markDecisionTraceFailed(&manifest, err)
-			_ = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest)
-			return err
-		}
-		manifest.Stages = append(manifest.Stages, stage)
-	}
-	if localSnapshot != nil {
-		for i := range manifest.Stages {
-			stage := &manifest.Stages[i]
-			if stage.Name == "discover" || stage.Name == "collect" {
-				stage.Counts["checkpoint_reused"] = 0
-				if canReuseEvidence && (stage.Name == "discover" || len(deps.ReplayBundles) > 0) {
-					stage.Counts["checkpoint_reused"] = 1
-				}
-			}
-		}
-	}
-	if err = writeJSONAtomic(filepath.Join(*output, "run.json"), manifest); err != nil {
-		return err
-	}
-	if stdout != nil {
-		_, _ = fmt.Fprintf(stdout, "dossiê %s: %s (%s)\n", manifest.RunID, result.Decision.Decision, *output)
-		if staleTrace {
-			_, _ = fmt.Fprintln(stdout, "aviso: projeção anterior (trace-graph.json/trace-index.json) permanece no disco, mas não pertence à execução atual; consulte os estágios e hashes em run.json")
-		}
-	}
-	return nil
+	_, runErr := usecase.RunRecommendationDossier(ctx, input, cliDossierFiles{output: *output, replay: *replay, traceInputs: traceInputs, stdout: stdout})
+	return runErr
 }
 
 func parseAlternativeTargetRepository(value string) (*domain.RepositoryIdentity, error) {
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return nil, nil
-	}
-	repository := value
-	lower := strings.ToLower(value)
-	switch {
-	case strings.HasPrefix(lower, "git@github.com:"):
-		repository = value[len("git@github.com:"):]
-	case strings.HasPrefix(lower, "http://") || strings.HasPrefix(lower, "https://") || strings.HasPrefix(lower, "ssh://"):
-		parsed, err := url.Parse(value)
-		if err != nil || !strings.EqualFold(parsed.Hostname(), "github.com") || parsed.RawQuery != "" || parsed.Fragment != "" {
-			return nil, fmt.Errorf("target-repo inválido %q; use owner/repo ou URL GitHub", value)
-		}
-		repository = parsed.Path
-	}
-	repository = strings.Trim(strings.TrimSpace(repository), "/")
-	if strings.HasSuffix(strings.ToLower(repository), ".git") {
-		repository = repository[:len(repository)-4]
-	}
-	parts := strings.Split(repository, "/")
-	if len(parts) != 2 || invalidTargetRepositoryPart(parts[0]) || invalidTargetRepositoryPart(parts[1]) {
-		return nil, fmt.Errorf("target-repo inválido %q; use owner/repo ou URL GitHub", value)
-	}
-	return &domain.RepositoryIdentity{Owner: strings.ToLower(parts[0]), Repo: strings.ToLower(parts[1])}, nil
+	return usecase.ParseRepositoryIdentity(value)
 }
 
-type localAlternativeBinding struct {
-	repository *domain.RepositoryIdentity
-}
+type alternativeIdentityLookup func(string) []domain.RepositoryIdentity
 
+func (lookup alternativeIdentityLookup) RepositoryIdentities(url string) []domain.RepositoryIdentity {
+	return lookup(url)
+}
 func alternativeInputsForTarget(mode domain.IdeaRunMode, discovery domain.DiscoverySnapshot, assessments []domain.CandidateAssessment, target *domain.RepositoryIdentity) (domain.DiscoverySnapshot, []domain.CandidateAssessment) {
 	return alternativeInputsForTargetUsing(mode, discovery, assessments, target, localGitHubRepositoryIdentities)
 }
-
 func alternativeInputsForTargetUsing(mode domain.IdeaRunMode, discovery domain.DiscoverySnapshot, assessments []domain.CandidateAssessment, target *domain.RepositoryIdentity, identitiesFor func(string) []domain.RepositoryIdentity) (domain.DiscoverySnapshot, []domain.CandidateAssessment) {
-	discovery.Candidates = append([]domain.DiscoveredCandidate(nil), discovery.Candidates...)
-	assessments = append([]domain.CandidateAssessment(nil), assessments...)
-	if mode != domain.IdeaRunLocal || target == nil {
-		return discovery, assessments
-	}
-	bindings := map[string]localAlternativeBinding{}
-	for i := range discovery.Candidates {
-		candidate := discovery.Candidates[i].Repository
-		key := alternativeIdentityKey(candidate.Owner, candidate.Repo)
-		identities := identitiesFor(candidate.URL)
-		if len(identities) == 0 {
-			discovery.Candidates[i].Repository.Stale = true
-			continue
-		}
-		for _, identity := range identities {
-			if alternativeIdentityKey(identity.Owner, identity.Repo) != alternativeIdentityKey(target.Owner, target.Repo) {
-				continue
-			}
-			bound := domain.RepositoryIdentity{Owner: strings.ToLower(strings.TrimSpace(target.Owner)), Repo: strings.ToLower(strings.TrimSpace(target.Repo))}
-			discovery.Candidates[i].Repository.Owner = bound.Owner
-			discovery.Candidates[i].Repository.Repo = bound.Repo
-			bindings[key] = localAlternativeBinding{repository: &bound}
-			break
-		}
-	}
-	for i := range assessments {
-		key := alternativeIdentityKey(assessments[i].Repository.Owner, assessments[i].Repository.Repo)
-		if binding := bindings[key]; binding.repository != nil {
-			assessments[i] = rebindAlternativeAssessment(assessments[i], *binding.repository)
-		}
-	}
-	return discovery, assessments
-}
-
-func alternativeIdentityKey(owner, repo string) string {
-	return strings.ToLower(strings.TrimSpace(owner)) + "/" + strings.ToLower(strings.TrimSpace(repo))
+	return usecase.AlternativeInputsForTarget(mode, discovery, assessments, target, alternativeIdentityLookup(identitiesFor))
 }
 
 func localGitHubRepositoryIdentities(candidateURL string) []domain.RepositoryIdentity {
@@ -458,113 +177,11 @@ func localGitHubRepositoryIdentities(candidateURL string) []domain.RepositoryIde
 }
 
 func localGitHubRepositoryIdentitiesLimit(candidateURL string, limit int64) []domain.RepositoryIdentity {
-	parsed, err := url.Parse(candidateURL)
-	if err != nil || !strings.EqualFold(parsed.Scheme, "file") || !filepath.IsAbs(parsed.Path) || (parsed.Host != "" && parsed.Host != "localhost") || parsed.RawQuery != "" || parsed.Fragment != "" {
-		return nil
-	}
-	data, err := readLocalGitConfigLimit(filepath.FromSlash(parsed.Path), limit)
-	if err != nil {
-		return nil
-	}
-	seen := map[string]domain.RepositoryIdentity{}
-	remoteSection := false
-	for _, raw := range strings.Split(string(data), "\n") {
-		line := strings.TrimSpace(raw)
-		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
-			remoteSection = strings.HasPrefix(strings.ToLower(line), "[remote ")
-			continue
-		}
-		if !remoteSection {
-			continue
-		}
-		key, value, ok := strings.Cut(line, "=")
-		if !ok || !strings.EqualFold(strings.TrimSpace(key), "url") {
-			continue
-		}
-		identity, parseErr := parseAlternativeTargetRepository(strings.TrimSpace(value))
-		if parseErr != nil || identity == nil {
-			continue
-		}
-		seen[alternativeIdentityKey(identity.Owner, identity.Repo)] = *identity
-	}
-	keys := make([]string, 0, len(seen))
-	for key := range seen {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	out := make([]domain.RepositoryIdentity, 0, len(keys))
-	for _, key := range keys {
-		out = append(out, seen[key])
-	}
-	return out
-}
-
-func rebindAlternativeAssessment(assessment domain.CandidateAssessment, repository domain.RepositoryIdentity) domain.CandidateAssessment {
-	assessment.Repository.Owner = repository.Owner
-	assessment.Repository.Repo = repository.Repo
-	assessment.ScreeningDecision.Repository = assessment.Repository.Key()
-	assessment.ProblemAlignment.Sources = rebindAlternativeSources(assessment.ProblemAlignment.Sources, repository)
-	assessment.Capabilities = append([]domain.CapabilityEvidence(nil), assessment.Capabilities...)
-	for i := range assessment.Capabilities {
-		assessment.Capabilities[i].Sources = rebindAlternativeSources(assessment.Capabilities[i].Sources, repository)
-	}
-	assessment.License.Sources = rebindAlternativeSources(assessment.License.Sources, repository)
-	assessment.Maintenance.Sources = rebindAlternativeSources(assessment.Maintenance.Sources, repository)
-	assessment.Operation.Sources = rebindAlternativeSources(assessment.Operation.Sources, repository)
-	return assessment
-}
-
-func rebindAlternativeSources(sources []domain.EvidenceSource, repository domain.RepositoryIdentity) []domain.EvidenceSource {
-	out := append([]domain.EvidenceSource(nil), sources...)
-	for i := range out {
-		out[i].Ref.Owner = repository.Owner
-		out[i].Ref.Repo = repository.Repo
-	}
-	return out
-}
-
-func invalidTargetRepositoryPart(value string) bool {
-	value = strings.TrimSpace(value)
-	return value == "" || strings.ContainsAny(value, " \t\r\n@:#?")
+	return commandHost().LocalGitRepositoryIdentities(candidateURL, limit)
 }
 
 func prepareDossier(path string, resume bool) error {
-	if strings.TrimSpace(path) == "" {
-		return fmt.Errorf("diretório de saída vazio")
-	}
-	if info, err := os.Lstat(path); err == nil {
-		if info.Mode()&os.ModeSymlink != 0 {
-			return fmt.Errorf("diretório de saída não pode ser symlink")
-		}
-		if !info.IsDir() {
-			return fmt.Errorf("saída exige diretório")
-		}
-		if !resume {
-			dir, e := os.OpenFile(path, os.O_RDONLY|syscall.O_NONBLOCK|syscall.O_NOFOLLOW, 0)
-			if e != nil {
-				return e
-			}
-			opened, e := dir.Stat()
-			if e != nil || !opened.IsDir() || !os.SameFile(info, opened) {
-				dir.Close()
-				return fmt.Errorf("diretório de saída alterado durante validação")
-			}
-			entries, readErr := dir.ReadDir(1)
-			closeErr := dir.Close()
-			if readErr != nil && readErr != io.EOF {
-				return readErr
-			}
-			if closeErr != nil {
-				return closeErr
-			}
-			if len(entries) > 0 {
-				return fmt.Errorf("diretório de saída já contém artefatos; use --resume")
-			}
-		}
-	} else if !os.IsNotExist(err) {
-		return err
-	}
-	return os.MkdirAll(path, 0755)
+	return commandHost().PrepareDossier(path, resume)
 }
 func writeJSONAtomic(path string, v any) error {
 	data, err := json.MarshalIndent(v, "", "  ")
@@ -574,35 +191,20 @@ func writeJSONAtomic(path string, v any) error {
 	data = append(data, '\n')
 	return writeAtomic(path, data, 0644)
 }
-func writeAtomic(path string, data []byte, mode os.FileMode) error {
+func writeAtomic(path string, data []byte, mode domain.FileMode) error {
 	if err := rejectSerializedSecrets(data); err != nil {
 		return err
 	}
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		return err
-	}
-	tmp, err := os.CreateTemp(filepath.Dir(path), ".bateia-*")
-	if err != nil {
-		return err
-	}
-	name := tmp.Name()
-	defer os.Remove(name)
-	if err = tmp.Chmod(mode); err == nil {
-		_, err = tmp.Write(data)
-	}
-	if closeErr := tmp.Close(); err == nil {
-		err = closeErr
-	}
-	if err != nil {
-		return err
-	}
-	return os.Rename(name, path)
+	return commandHost().WriteAtomic(path, data, mode)
 }
 func rejectSerializedSecrets(data []byte) error {
-	for _, key := range []string{"GITHUB_TOKEN", "SOURCEGRAPH_TOKEN"} {
-		secret := os.Getenv(key)
-		if len(secret) >= 8 && strings.Contains(string(data), secret) {
-			return fmt.Errorf("artefato contém segredo de %s", key)
+	for _, key := range []string{"GITHUB_TOKEN", "SOURCEGRAPH_TOKEN", "BATEIA_GITEE_TOKEN", "BATEIA_ATOMGIT_TOKEN"} {
+		secret := commandHost().Getenv(key)
+		if len(secret) >= 8 {
+			encoded, _ := json.Marshal(secret)
+			if strings.Contains(string(data), secret) || strings.Contains(string(data), string(encoded[1:len(encoded)-1])) {
+				return fmt.Errorf("artefato contém segredo de %s", key)
+			}
 		}
 	}
 	return nil
@@ -634,133 +236,27 @@ func readOptInScreeningModel(path string) (domain.ScreeningModel, string, error)
 	if err := decoder.Decode(&struct{}{}); err != io.EOF {
 		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
 	}
-	if !validOptInScreeningModel(model) {
+	if !usecase.IsValidOptInScreeningModel(model) {
 		return domain.ScreeningModel{}, "", fmt.Errorf("modelo de screening inválido")
 	}
 	return model, hashBytes(data), nil
 }
 
-func validOptInScreeningModel(model domain.ScreeningModel) bool {
-	if model.SchemaVersion != "1" || model.CalibrationStatus != "uncalibrated" || model.Calibration != nil || model.Weights == nil {
-		return false
-	}
-	if !finite(model.DropThreshold) || !finite(model.AdvanceThreshold) ||
-		model.DropThreshold < 0 || model.DropThreshold >= model.AdvanceThreshold || model.AdvanceThreshold > 1 {
-		return false
-	}
-	if !finite(model.AuditSampleRate) || model.AuditSampleRate < 0 || model.AuditSampleRate > 1 {
-		return false
-	}
-	for _, weight := range model.Weights {
-		if !finite(weight) {
-			return false
-		}
-	}
-	for _, prior := range model.ExpansionPriors {
-		if !finite(prior) {
-			return false
-		}
-	}
-	return true
-}
-
-func finite(value float64) bool {
-	return !math.IsNaN(value) && !math.IsInf(value, 0)
-}
-
-type evidenceInputs struct {
-	Idea            domain.IdeaSpec      `json:"idea"`
-	Mode            domain.IdeaRunMode   `json:"mode"`
-	Strategy        string               `json:"strategy"`
-	Provider        string               `json:"provider,omitempty"`
-	Language        string               `json:"language,omitempty"`
-	SearchLocales   []string             `json:"search_locales,omitempty"`
-	MaxPerQuery     int                  `json:"max_per_query"`
-	MaxCandidates   int                  `json:"max_candidates"`
-	LocalCandidates []localEvidenceInput `json:"local_candidates,omitempty"`
-	Replay          *replayEvidenceInput `json:"replay,omitempty"`
-}
-
-type localEvidenceInput struct {
-	URL      string `json:"url"`
-	CommitID string `json:"commit_id"`
-}
-
-type replayEvidenceInput struct {
-	Directory    string `json:"directory"`
-	SnapshotHash string `json:"snapshot_hash"`
-	BundlesHash  string `json:"bundles_hash"`
-}
-
 func evidenceInputHash(req domain.IdeaRunRequest, local []domain.RepositoryCandidate) (string, error) {
-	inputs := evidenceInputs{Idea: req.Idea, Mode: req.Mode, Strategy: req.Strategy, Provider: req.Provider, Language: req.Language, SearchLocales: append([]string(nil), req.SearchLocales...), MaxPerQuery: req.MaxPerQuery, MaxCandidates: req.MaxCandidates}
-	for _, candidate := range local {
-		inputs.LocalCandidates = append(inputs.LocalCandidates, localEvidenceInput{URL: candidate.URL, CommitID: candidate.CommitID})
-	}
-	if req.Mode == domain.IdeaRunReplay {
-		directory, err := filepath.Abs(req.ReplayDirectory)
-		if err != nil {
-			return "", fmt.Errorf("diretório de replay inválido: %w", err)
-		}
-		snapshotHash, err := fileHash(filepath.Join(directory, "discovery-snapshot.json"))
-		if err != nil {
-			return "", fmt.Errorf("snapshot de replay inválido: %w", err)
-		}
-		bundlesHash, err := fileHash(filepath.Join(directory, "evidence", "bundles.json"))
-		if err != nil {
-			return "", fmt.Errorf("bundles de replay inválidos: %w", err)
-		}
-		inputs.Replay = &replayEvidenceInput{Directory: directory, SnapshotHash: snapshotHash, BundlesHash: bundlesHash}
-	}
-	return hashJSON(inputs), nil
+	return usecase.DossierEvidenceInputHash(req, local, cliDossierFiles{})
 }
 
+type checkpointArtifactHashes struct{ root string }
+
+func (files checkpointArtifactHashes) ArtifactSHA256(path string) (string, error) {
+	return fileHash(filepath.Join(files.root, path))
+}
 func reusableEvidenceCheckpoint(root string, previous domain.IdeaRunManifest, evidenceHash, evidenceRulesHash string, ruleVersions map[string]string, screeningModelHashes ...string) bool {
-	switch previous.Status {
-	case domain.IdeaRunComplete, domain.IdeaRunPartial, domain.IdeaRunInconclusive:
-	default:
-		return false
-	}
-	if previous.SchemaVersion != "1" || previous.InputHashes["evidence"] != evidenceHash || previous.InputHashes["evidence_rules"] != evidenceRulesHash {
-		return false
-	}
-	screeningModelHash := ""
+	modelHash := ""
 	if len(screeningModelHashes) > 0 {
-		screeningModelHash = screeningModelHashes[0]
+		modelHash = screeningModelHashes[0]
 	}
-	previousScreeningModelHash, previousHasScreeningModel := previous.InputHashes["screening_model"]
-	if screeningModelHash == "" {
-		if previousHasScreeningModel {
-			return false
-		}
-	} else if !previousHasScreeningModel || previousScreeningModelHash != screeningModelHash {
-		return false
-	}
-	for _, key := range []string{"expansion", "screening", "evidence", "analyzer", "implementation_search", "discovery_query", "local_snapshot", "local_collection"} {
-		if previous.RuleVersions[key] != ruleVersions[key] {
-			return false
-		}
-	}
-	required := map[string]bool{"discovery-snapshot.json": false, filepath.Join("evidence", "bundles.json"): false}
-	for _, stage := range previous.Stages {
-		for _, artifact := range stage.Outputs {
-			expected, ok := required[artifact.Path]
-			if !ok || expected || artifact.Hash == "" {
-				continue
-			}
-			actual, err := fileHash(filepath.Join(root, artifact.Path))
-			if err != nil || actual != artifact.Hash {
-				return false
-			}
-			required[artifact.Path] = true
-		}
-	}
-	for _, valid := range required {
-		if !valid {
-			return false
-		}
-	}
-	return true
+	return usecase.CanReuseEvidenceCheckpoint(previous, usecase.EvidenceCheckpointCriteria{EvidenceHash: evidenceHash, EvidenceRulesHash: evidenceRulesHash, RuleVersions: ruleVersions, ScreeningModelHash: modelHash}, checkpointArtifactHashes{root: root})
 }
 
 func localCandidates(idea domain.IdeaSpec, paths []string) ([]domain.RepositoryCandidate, error) {
@@ -768,7 +264,7 @@ func localCandidates(idea domain.IdeaSpec, paths []string) ([]domain.RepositoryC
 }
 
 func localCandidatesExcluding(idea domain.IdeaSpec, paths []string, excludedPath string) ([]domain.RepositoryCandidate, error) {
-	return localCandidatesExcludingContext(context.Background(), idea, paths, excludedPath)
+	return localCandidatesExcludingContext(commandContext(context.Background()), idea, paths, excludedPath)
 }
 
 func localCandidatesExcludingContext(ctx context.Context, idea domain.IdeaSpec, paths []string, excludedPath string) ([]domain.RepositoryCandidate, error) {
@@ -790,10 +286,7 @@ func localCandidatesExcludingContext(ctx context.Context, idea domain.IdeaSpec, 
 }
 
 func localHashCandidate(abs, digest string) domain.RepositoryCandidate {
-	base := strings.ToLower(filepath.Base(abs))
-	pathHash := hashBytes([]byte(abs))
-	repo := base + "-" + pathHash[:8]
-	return domain.RepositoryCandidate{Owner: "local", Repo: repo, URL: "file://" + abs, CommitID: digest}
+	return usecase.LocalRepositoryCandidate(abs, filepath.Base(abs), digest)
 }
 
 func treeHash(root string) (string, error) {
@@ -801,7 +294,7 @@ func treeHash(root string) (string, error) {
 }
 
 func treeHashExcluding(root, excludedPath string) (string, error) {
-	return treeHashExcludingContext(context.Background(), root, excludedPath, newTreeHashBudget())
+	return treeHashExcludingContext(commandContext(context.Background()), root, excludedPath, newTreeHashBudget())
 }
 func writeDecisionMarkdown(path string, r domain.ReuseDecisionReport, evidence ...[]domain.EvidenceBundle) error {
 	var b strings.Builder
@@ -927,44 +420,75 @@ func markdownCell(value string) string {
 	return strings.Join(strings.Fields(value), " ")
 }
 
-func buildRunStages(root string, r domain.IdeaRunResult, alternatives ...domain.SoftwareAlternativeReport) []domain.IdeaRunStage {
-	defs := []struct {
-		name, path string
-		count      int64
-	}{{"expand", "expansion-plan.json", int64(len(r.Expansion.Expansions))}, {"discover", "discovery-snapshot.json", int64(len(r.Discovery.Candidates))}, {"screen", "screening-report.json", int64(len(r.Screening.Decisions))}, {"collect", filepath.Join("evidence", "bundles.json"), int64(len(r.Bundles))}, {"assess", "assessment-report.json", int64(len(r.Assessment.Assessments))}, {"decide", "reuse-decision.json", 1}}
-	out := make([]domain.IdeaRunStage, 0, len(defs))
-	ideaHash, _ := fileHash(filepath.Join(root, "idea.json"))
-	prev := map[string]string{"idea.json": ideaHash}
-	for _, d := range defs {
-		hash, _ := fileHash(filepath.Join(root, d.path))
-		if d.name == "decide" {
-			policyHash, _ := fileHash(filepath.Join(root, "reuse-policy.json"))
-			prev["reuse-policy.json"] = policyHash
-		}
-		out = append(out, domain.IdeaRunStage{Name: d.name, ContractVersion: "1", Status: domain.IdeaStageComplete, InputHashes: prev, Outputs: []domain.IdeaRunArtifact{{Path: d.path, Hash: hash}}, Counts: map[string]int64{"items": d.count}})
-		out[len(out)-1].DurationMillis = r.StageDurations[d.name]
-		prev = map[string]string{d.path: hash}
+func buildRunStages(root string, result domain.IdeaRunResult, alternatives ...domain.SoftwareAlternativeReport) []domain.IdeaRunStage {
+	return usecase.BuildRecommendationRunStages(checkpointArtifactHashes{root: root}, result, alternatives...)
+}
+
+type cliDossierFiles struct {
+	output, replay string
+	traceInputs    []string
+	stdout         io.Writer
+}
+
+func (f cliDossierFiles) Prepare(resume bool) error { return prepareDossier(f.output, resume) }
+func (f cliDossierFiles) ArtifactSHA256(path string) (string, error) {
+	return fileHash(filepath.Join(f.output, path))
+}
+func (f cliDossierFiles) RepositoryIdentities(url string) []domain.RepositoryIdentity {
+	return localGitHubRepositoryIdentities(url)
+}
+func (f cliDossierFiles) ReplayEvidenceIdentity(root string) (usecase.DossierReplayEvidenceIdentity, error) {
+	directory, err := commandHost().Abs(root)
+	if err != nil {
+		return usecase.DossierReplayEvidenceIdentity{}, fmt.Errorf("diretório de replay inválido: %w", err)
 	}
-	if len(alternatives) > 0 {
-		jsonHash, _ := fileHash(filepath.Join(root, "alternatives.json"))
-		markdownHash, _ := fileHash(filepath.Join(root, "alternatives.md"))
-		assessmentHash, _ := fileHash(filepath.Join(root, "assessment-report.json"))
-		discoveryHash, _ := fileHash(filepath.Join(root, "discovery-snapshot.json"))
-		policyHash, _ := fileHash(filepath.Join(root, "reuse-policy.json"))
-		out = append(out, domain.IdeaRunStage{
-			Name:            "alternatives",
-			ContractVersion: "1",
-			Status:          domain.IdeaStageComplete,
-			InputHashes: map[string]string{
-				"assessment-report.json":  assessmentHash,
-				"discovery-snapshot.json": discoveryHash,
-				"reuse-policy.json":       policyHash,
-				"target":                  hashJSON(alternatives[0].Target),
-			},
-			Outputs:        []domain.IdeaRunArtifact{{Path: "alternatives.json", Hash: jsonHash}, {Path: "alternatives.md", Hash: markdownHash}},
-			Counts:         map[string]int64{"items": int64(len(alternatives[0].Alternatives) + len(alternatives[0].Excluded))},
-			DurationMillis: r.StageDurations["alternatives"],
-		})
+	snapshotHash, err := fileHash(filepath.Join(directory, "discovery-snapshot.json"))
+	if err != nil {
+		return usecase.DossierReplayEvidenceIdentity{}, fmt.Errorf("snapshot de replay inválido: %w", err)
 	}
-	return out
+	bundlesHash, err := fileHash(filepath.Join(directory, "evidence", "bundles.json"))
+	if err != nil {
+		return usecase.DossierReplayEvidenceIdentity{}, fmt.Errorf("bundles de replay inválidos: %w", err)
+	}
+	return usecase.DossierReplayEvidenceIdentity{Directory: directory, SnapshotHash: snapshotHash, BundlesHash: bundlesHash}, nil
+}
+func (f cliDossierFiles) CaptureLocal(ctx context.Context, paths []string, metadata bool) (domain.CapturedWorkspace, error) {
+	return commandHost().CaptureLocal(ctx, paths, f.output, metadata)
+}
+func (f cliDossierFiles) SnapshotProvider(fallback domain.ContentProvider, bindings []domain.SnapshotBinding) (domain.ContentProvider, error) {
+	return buildSnapshotProvider(fallback, bindings)
+}
+func (f cliDossierFiles) HasArtifact(path string) bool {
+	_, err := commandHost().Lstat(filepath.Join(f.output, path))
+	return err == nil
+}
+func (f cliDossierFiles) ReadJSON(source usecase.DossierSource, path string, value any) error {
+	root := f.replay
+	if source == usecase.DossierOutputSource {
+		root = f.output
+	}
+	return readJSONFile(filepath.Join(root, path), value)
+}
+func (f cliDossierFiles) WriteJSON(path string, value any) error {
+	return writeJSONAtomic(filepath.Join(f.output, path), value)
+}
+func (f cliDossierFiles) WriteDecision(report domain.ReuseDecisionReport, bundles []domain.EvidenceBundle) error {
+	return writeDecisionMarkdown(filepath.Join(f.output, "decision.md"), report, bundles)
+}
+func (f cliDossierFiles) WriteAlternatives(report domain.SoftwareAlternativeReport) error {
+	return writeAlternativesMarkdown(filepath.Join(f.output, "alternatives.md"), report)
+}
+func (f cliDossierFiles) WriteTrace(value any, path, other string) error {
+	return writeDecisionTraceJSON(value, filepath.Join(f.output, path), nil, append(append([]string(nil), f.traceInputs...), filepath.Join(f.output, other))...)
+}
+
+func (f cliDossierFiles) Announce(execution usecase.RecommendationDossierOutput) {
+	if f.stdout == nil {
+		return
+	}
+	_, _ = fmt.Fprintf(f.stdout, "dossiê %s: %s (%s)\n", execution.Manifest.RunID, execution.Result.Decision.Decision, f.output)
+	writeResumeDiagnostic(f.stdout, execution.Checkpoint)
+	if execution.StaleTrace {
+		_, _ = fmt.Fprintln(f.stdout, "aviso: projeção anterior (trace-graph.json/trace-index.json) permanece no disco, mas não pertence à execução atual; consulte os estágios e hashes em run.json")
+	}
 }

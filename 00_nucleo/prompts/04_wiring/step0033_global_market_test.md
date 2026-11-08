@@ -23,3 +23,12 @@ ISO 3166-1 alpha-2 e BCP-47 em L1, L2 e L3.
 - Zero I/O real — todos os testes usam stubs e mocks.
 - Sem dependências externas além de L1 (usecase) e L3 (itunes).
 - Conforme Lei da Gravidade: L4 importa L1 e L3, nunca L2.
+
+## Passo 0129
+O teste iTunes e seu transporte pertencem agora ao teste do adaptador L3. Aqui permanecem contratos de composição de domínio/MCP.
+
+## Passo 0131
+Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## Consolidação 0131
+Os dois testes puros de validadores foram transferidos, sem mudar esperados, para 01_core/usecase/global_market_validation_test.go. Aqui permanecem schema MCP e integração de composição.

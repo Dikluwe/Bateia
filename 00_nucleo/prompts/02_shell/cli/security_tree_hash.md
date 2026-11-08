@@ -35,3 +35,7 @@ em syscall de filesystem já bloqueada. Hash não é snapshot atômico de árvor
 assinatura/autenticação de origem nem prova de equivalência do commit Git.
 
 0097: variantes To permitem sink privado na mesma io.CopyBuffer do conteúdo, sem framing nos arquivos. os.Root/O_EXCL, arquivo0400; erro de sink/Close/cancelamento aborta sem digest. Diretórios vazios retidos não mudam hash. Ciclo de vida em local_snapshot_capture.md.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

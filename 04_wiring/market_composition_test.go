@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/market_composition_test.md
  * @layer L4
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package main
@@ -46,6 +46,8 @@ func TestConfiguredMarketCompositionPublishesRegisteredSourcesAndReopens(t *test
 	for _, profile := range []string{"single", "legacy", "default", "default-bitbucket", "federated", "federated-bitbucket"} {
 		t.Run(profile, func(t *testing.T) {
 			t.Setenv("BATEIA_BITBUCKET_WORKSPACES", "")
+			t.Setenv("BATEIA_GITEE_TOKEN", "")
+			t.Setenv("BATEIA_ATOMGIT_TOKEN", "")
 			if strings.HasSuffix(profile, "-bitbucket") {
 				t.Setenv("BATEIA_BITBUCKET_WORKSPACES", "example")
 			}
@@ -58,6 +60,17 @@ func TestConfiguredMarketCompositionPublishesRegisteredSourcesAndReopens(t *test
 			}
 			if err != nil {
 				t.Fatal(err)
+			}
+			for _, id := range []string{domain.ConnectorGiteeCatalog, domain.ConnectorAtomGitCatalog} {
+				found := false
+				for _, c := range connectors {
+					if c.Capabilities().ID == id {
+						found = true
+					}
+				}
+				if !found {
+					t.Fatalf("missing configured connector %s", id)
+				}
 			}
 			if profile == "single" {
 				connectors = connectors[:1]
@@ -179,6 +192,8 @@ func TestConfiguredMarketCompositionPublishesRegisteredSourcesAndReopens(t *test
 
 func TestConfiguredMarketCompositionRejectsInvalidInputsBeforeCreatingResources(t *testing.T) {
 	t.Setenv("BATEIA_BITBUCKET_WORKSPACES", "")
+	t.Setenv("BATEIA_GITEE_TOKEN", "")
+	t.Setenv("BATEIA_ATOMGIT_TOKEN", "")
 	valid, err := defaultMarketDiscoveryConnectors()
 	if err != nil {
 		t.Fatal(err)

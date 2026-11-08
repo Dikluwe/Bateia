@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_discovery.md
  * @layer L1
- * @updated 2026-09-11
+ * @updated 2026-10-28
  */
 
 package usecase
@@ -56,7 +56,11 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 	}
 	if policy.TotalTimeout > 0 {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, policy.TotalTimeout)
+		var deadlineErr error
+		ctx, cancel, deadlineErr = domain.ExecutionTimeout(ctx, policy.TotalTimeout)
+		if deadlineErr != nil {
+			return domain.DiscoverySnapshot{}, deadlineErr
+		}
 		defer cancel()
 	}
 

@@ -5,6 +5,14 @@ Informar uso de govulncheck instalado e que o binário candidato não é executa
 
 # Prompt: Interface CLI e Controle de Flags (cli/app)
 
+0135: anunciar idea insights compare na ajuda, como comparação de observações de fontes e baseline do alvo.
+
+0136: anunciar idea insights explore como preparação de exemplos variados e tarefas para IA a partir de pergunta/bundles, sem curadoria de avaliações.
+
+0137: anunciar idea insights discover como descoberta online diversificada com coleta de README fixado e contexto para IA; output obrigatório.
+
+0138: indicar --sources all para descoberta entre os conectores configurados, com metadados de catálogo separados dos READMEs.
+
 **Camada**: L₂ — Casca  
 **Criado em**: 2026-07-25  
 **Arquivos gerados**: `02_shell/cli/app.go`  
@@ -89,3 +97,16 @@ no provedor GitHub com entrada explícita e bundles exportáveis.
 ## Passo 0105
 
 Acrescentar na ajuda o comando idea insights analyze, sem alterar comandos ou defaults existentes.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.
+
+## Evolução0142
+
+Aplicar passo0142: memória validada antes de efeitos, followups de um salto com limites e origem própria, --memory/--follow-links na casca e feedback offline. FollowReader apenas GitHub, demais forges reaproveitam RepositoryReader. Memória em snapshot único de saída, sem releitura automática de examinados/descartados, sem promover histórico a evidência atual. Modo sem --sources preservado.
+
+
+## Passo0143
+
+Exibir expand na ajuda como continuação por relatório e foco opcional, sem nova busca. Preservar comandos anteriores.

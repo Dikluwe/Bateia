@@ -15,3 +15,6 @@ Implemente start/get/artifact/cancel/execute/recover, projeções de artefatos e
 provenance sem snippets. Preserve Unknown, `SUCCEEDED+INCONCLUSIVE`, corrida
 terminal única e cancelamento que impede nova chamada após observação. Não faça
 filesystem, rede, goroutine, mutex, log, env ou serialização MCP em L1.
+
+## Passo 0129 — ownership de capacidade
+O serviço durável conserva store, fila, IDs, execução e lifecycle único. Containers internos separados possuem registro de descoberta, configuração de extração e admissão de síntese. A extração e ordenação dos mecanismos pertence à capacidade; o runtime publica suas saídas sem reinterpretá-las. APIs Configure, hashes, artefatos e transições permanecem compatíveis.

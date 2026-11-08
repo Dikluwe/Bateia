@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/app.md
  * @layer L2
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package cli
@@ -56,7 +56,7 @@ func (a *CLIApp) Run(args []string) error {
 			return RunBenchmarkCommand(args[1:], os.Stdout)
 		case "mcp":
 			mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns).WithAdvancedIntake()
-			return mcpServer.Serve(context.Background())
+			return mcpServer.Serve(commandContext(context.Background()))
 		case "tui":
 			return RunTUI(a.funnel, "", "go")
 		case "help":
@@ -88,6 +88,11 @@ func (a *CLIApp) PrintUsage() {
 	fmt.Println("  idea evidence plan|collect|assess|evaluate|diagnose|reconcile|verify|recheck Comprova e audita evidências, sem LLM")
 	fmt.Println("  idea decide   Decide offline; `decide frontier` expõe Pareto e `decide evaluate` mede risco-cobertura")
 	fmt.Println("  idea insights analyze Investiga mecanismos em evidências congeladas sem decisão de reúso")
+	fmt.Println("  idea insights compare Compara observações de fontes com a baseline declarada do alvo")
+	fmt.Println("  idea insights explore Prepara trechos variados e tarefas para IA explorar alternativas")
+	fmt.Println("  idea insights memory   Descarta/reabre caminhos com motivo em snapshot offline")
+	fmt.Println("  idea insights discover Descobre referências online (--sources all para multifonte; --output obrigatório)")
+	fmt.Println("  idea insights expand   Continua trilhas do relatório anterior (--input; --focus opcional; sem nova busca)")
 	fmt.Println("  idea recommend Orquestra o funil e ranqueia alternativas com evidência")
 	fmt.Println("  idea intake prepare|apply|diagnose Estrutura entradas e abstenções avançadas sem executar efeitos")
 	fmt.Println("  idea review protocol|synthesize|update|prioritize|evaluate Mantém revisão auditável e viva sem alterar a busca simples")
@@ -153,15 +158,15 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 
 	if *mcpFlag {
 		mcpServer := mcp.NewMCPServer(a.funnel, os.Stdin, os.Stdout, a.recommendation).WithDurableRuns(a.durableRuns).WithAdvancedIntake()
-		return mcpServer.Serve(context.Background())
+		return mcpServer.Serve(commandContext(context.Background()))
 	}
 
 	if *localPathFlag != "" {
-		absolutePath, err := filepath.Abs(*localPathFlag)
+		absolutePath, err := commandHost().Abs(*localPathFlag)
 		if err != nil {
 			return fmt.Errorf("caminho local inválido: %w", err)
 		}
-		info, err := os.Stat(absolutePath)
+		info, err := commandHost().Stat(absolutePath)
 		if err != nil {
 			return fmt.Errorf("não foi possível acessar a worktree local: %w", err)
 		}
@@ -218,7 +223,7 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 		return fmt.Errorf("parâmetros inválidos: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), 3*time.Minute)
 	defer cancel()
 
 	log.Printf("Iniciando busca no Bateia para: '%s' (linguagem: %s)...", filter.Query, filter.Language)
@@ -262,26 +267,26 @@ func (a *CLIApp) runSearchFlags(args []string) error {
 			return auditErr
 		}
 		auditPath := *outputFlag + ".evidence.json"
-		if err := os.MkdirAll(filepath.Dir(auditPath), 0755); err != nil {
+		if err := commandHost().MkdirAll(filepath.Dir(auditPath), 0755); err != nil {
 			return err
 		}
-		if err := os.WriteFile(auditPath, audit, 0644); err != nil {
+		if err := commandHost().WriteFile(auditPath, audit, 0644); err != nil {
 			return err
 		}
-		auditAbs, err := filepath.Abs(auditPath)
+		auditAbs, err := commandHost().Abs(auditPath)
 		if err != nil {
 			return err
 		}
 		reportContent = report.GenerateMarkdownReport(searchReport) + "\n[Dados integrais e recibos de compilação](<" + auditAbs + ">)\n"
 	}
 
-	_ = os.MkdirAll(filepath.Dir(*outputFlag), 0755)
-	err = os.WriteFile(*outputFlag, []byte(reportContent), 0644)
+	_ = commandHost().MkdirAll(filepath.Dir(*outputFlag), 0755)
+	err = commandHost().WriteFile(*outputFlag, []byte(reportContent), 0644)
 	if err != nil {
 		return fmt.Errorf("erro ao salvar o relatório em %s: %w", *outputFlag, err)
 	}
 
-	absPath, _ := filepath.Abs(*outputFlag)
+	absPath, _ := commandHost().Abs(*outputFlag)
 	fmt.Printf("\nBusca concluída! Relatório gerado com sucesso em: %s\n", absPath)
 	fmt.Printf("Funil: %d descobertos -> %d triados -> %d extraídos (%d descartados: %s)\n",
 		searchReport.TopCandidates, searchReport.TriagedCount, searchReport.ExtractedCount, searchReport.DiscardedCount, searchReport.DiscardReason)

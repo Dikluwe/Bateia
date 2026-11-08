@@ -9,3 +9,7 @@ Tradeoff: external administration used by linked Git worktrees is deliberately u
 After bounded reading, f.Stat must still show the same regular single-link descriptor, unchanged initial size/modtime and size equal to bytes read. Reject mutation or newly acquired hardlinks; this is consistency checking, not an atomic transaction or cryptographic proof of Git identity.
 
 0097: readLocalGitConfigLimit accepts a positive caller-owned limit no larger than16MiB. Capture admission uses64KiB/config only with target; freezes normalized IDs and never rereads after collection. Default diagnostic reader retains16MiB. Hints do not authenticate origin or enter file digest; their separate fingerprint identifies the run.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

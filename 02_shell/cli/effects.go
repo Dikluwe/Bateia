@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/effects.md
  * @layer L2
- * @updated 2026-09-08
+ * @updated 2026-10-28
  */
 
 package cli
@@ -18,7 +18,6 @@ import (
 	"go/ast"
 	"go/token"
 	"io"
-	"os"
 	"strings"
 	"time"
 )
@@ -87,7 +86,7 @@ func RunEffectsCommand(args []string, out io.Writer, verifier domain.EffectVerif
 	}
 	data = append(data, '\n')
 	if *output != "" {
-		return os.WriteFile(*output, data, 0600)
+		return commandHost().WriteFile(*output, data, 0600)
 	}
 	_, err = out.Write(data)
 	return err

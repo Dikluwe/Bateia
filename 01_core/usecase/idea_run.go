@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_run.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-10-28
  */
 package usecase
 
@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"time"
 )
 
 type IdeaRunDependencies struct {
+	Runtime         domain.ExecutionRuntime
 	Semantic        SemanticExpander
 	Discovery       domain.ObservableDiscoveryProvider
 	Content         domain.ContentProvider
@@ -28,6 +28,7 @@ type IdeaRunDependencies struct {
 }
 
 func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRunDependencies) (domain.IdeaRunResult, error) {
+	ctx = domain.WithExecutionRuntime(ctx, deps.Runtime)
 	canonicalLocales, localeErr := canonicalizeSearchLocales(req.SearchLocales)
 	if localeErr != nil {
 		return domain.IdeaRunResult{}, localeErr
@@ -45,7 +46,7 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 		return domain.IdeaRunResult{}, err
 	}
 	durations := map[string]int64{}
-	started := time.Now()
+	started := domain.RuntimeNow(ctx)
 	literal, err := ExpandIdea(req.Idea)
 	if err != nil {
 		return domain.IdeaRunResult{}, err
@@ -62,9 +63,9 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	if err != nil {
 		return domain.IdeaRunResult{}, err
 	}
-	durations["expand"] = time.Since(started).Milliseconds()
+	durations["expand"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
 	result := domain.IdeaRunResult{Expansion: plan, CatalogCoverage: catalogCoverage, StageDurations: durations}
-	started = time.Now()
+	started = domain.RuntimeNow(ctx)
 	if req.Resume && deps.ReplaySnapshot != nil {
 		if !equalSearchLocales(req.SearchLocales, deps.ReplaySnapshot.SearchLocales) {
 			return result, fmt.Errorf("snapshot de retomada pertence a outro conjunto de search locales")
@@ -91,8 +92,8 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 			result.Discovery = localDiscoverySnapshot(req, plan, deps.LocalCandidates)
 		}
 	}
-	durations["discover"] = time.Since(started).Milliseconds()
-	started = time.Now()
+	durations["discover"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
+	started = domain.RuntimeNow(ctx)
 	model := deps.ScreeningModel
 	if model.SchemaVersion == "" {
 		model = DefaultScreeningModel()
@@ -101,8 +102,8 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	if err != nil {
 		return result, err
 	}
-	durations["screen"] = time.Since(started).Milliseconds()
-	started = time.Now()
+	durations["screen"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
+	started = domain.RuntimeNow(ctx)
 	maxCandidates := req.MaxCandidates
 	if maxCandidates == 0 {
 		maxCandidates = 5
@@ -153,8 +154,8 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 	}
 	propagateResolvedDiscoveryCommits(&result.Discovery, result.Bundles)
 	canonicalizeDiscoveryCandidateOrder(&result.Discovery)
-	durations["collect"] = time.Since(started).Milliseconds()
-	started = time.Now()
+	durations["collect"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
+	started = domain.RuntimeNow(ctx)
 	validBundles := make([]domain.EvidenceBundle, 0, len(result.Bundles))
 	for _, bundle := range result.Bundles {
 		if bundle.Repository.Commit != "" && !strings.EqualFold(bundle.Repository.Commit, "HEAD") {
@@ -176,15 +177,15 @@ func RunIdeaPipeline(ctx context.Context, req domain.IdeaRunRequest, deps IdeaRu
 		result.Assessment.Assessments = append(result.Assessment.Assessments, validAssessments[validIndex])
 		validIndex++
 	}
-	durations["assess"] = time.Since(started).Milliseconds()
-	started = time.Now()
+	durations["assess"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
+	started = domain.RuntimeNow(ctx)
 	result.Decision, err = DecideReuse(domain.ReuseDecisionRequest{Idea: req.Idea, Assessments: result.Assessment.Assessments, Policy: req.Policy})
 	if err != nil {
 		return result, err
 	}
 	investigation := BuildInvestigationPlanWithCatalogCoverage(req.Idea, result.Discovery, result.Assessment.Assessments, catalogCoverage)
 	result.Decision.Investigation = &investigation
-	durations["decide"] = time.Since(started).Milliseconds()
+	durations["decide"] = domain.ElapsedMillis(domain.RuntimeNow(ctx), started)
 	return result, nil
 }
 

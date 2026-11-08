@@ -37,3 +37,7 @@ entrada. Executar todas as expansões técnicas independentes sob os budgets exi
 resultado não vazio de uma não cancela as demais. Deduplicar candidatos como hoje e
 conservar todas as expansion IDs, queries e origens técnicas canônicas. Não interpretar
 discriminadores nem avaliar capacidade em L1.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

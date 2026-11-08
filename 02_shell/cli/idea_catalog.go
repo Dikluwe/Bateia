@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_catalog.md
  * @layer L2
- * @updated 2026-08-26
+ * @updated 2026-10-28
  */
 package cli
 
@@ -58,7 +58,7 @@ func runIdeaDiscoverSurfaces(args []string, stdout io.Writer, providers []domain
 		caps = append(caps, p.SurfaceCapabilities())
 	}
 	plans := usecase.PlanCatalogSurfaces(plan, caps)
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	snapshot, discoverErr := usecase.DiscoverCatalogSurfaces(ctx, plans, providers, *max)
 	if err := writeJSONAtomic(*output, snapshot); err != nil {
@@ -111,7 +111,7 @@ func runIdeaCatalogDiscover(args []string, stdout io.Writer, provider domain.Pro
 	if err := readOntologyJSON(*planPath, &plan); err != nil {
 		return err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
 	policy := domain.DiscoveryExecutionPolicy{SchemaVersion: "1", TotalTimeout: *timeout, AttemptTimeout: *attempt, Concurrency: *concurrency, MaxAttempts: 1}
 	snapshot, discoverErr := usecase.DiscoverProjectCatalog(ctx, plan, *max, policy, provider)

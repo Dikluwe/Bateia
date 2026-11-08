@@ -15,3 +15,5 @@ locations. O índice aponta a declarações do build input exato; não comprova 
 Falha de build/explain/escrita/hash registra estágio FAILED com outputs vazios,
 sem anunciar projeção parcial como concluída. Escritas individuais são atômicas;
 o par grafo/índice não é uma transação, e manifesto governa seu consumo.
+
+0131: estágios e falhas de trace pertencem a recommendation_dossier_artifacts.go em L1. Este adaptador fornece hashes lógicos e mantém wrappers compatíveis para consumidores.

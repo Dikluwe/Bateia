@@ -23,3 +23,7 @@ permissiva congelada no contrato 0031; ela é somente filtro de aceitação e nu
 evidência nem atribuição da licença de um candidato. O alvo padrão deriva do
 problema normalizado. Não aplique defaults sobre valores explicitamente enviados
 e não mova para L1 a distinção de presença própria do decoder MCP.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

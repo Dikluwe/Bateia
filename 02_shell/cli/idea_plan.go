@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_plan.md
  * @layer L2
- * @updated 2026-10-06
+ * @updated 2026-10-28
  */
 
 package cli
@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 
 	"bateia/01_core/domain"
 	"bateia/01_core/usecase"
@@ -95,7 +94,7 @@ func writeIdeaJSON(value any, outputPath string, stdout io.Writer) error {
 	}
 	encoded = append(encoded, '\n')
 	if outputPath != "" {
-		if err := os.WriteFile(outputPath, encoded, 0644); err != nil {
+		if err := commandHost().WriteFile(outputPath, encoded, 0644); err != nil {
 			return fmt.Errorf("não foi possível gravar resultado %s: %w", outputPath, err)
 		}
 		return nil

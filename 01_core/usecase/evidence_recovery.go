@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_recovery.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-10-28
  */
 package usecase
 
@@ -474,4 +474,32 @@ func recoveryMetrics(plan domain.EvidenceRecoveryPlan, before, after domain.Reus
 		m.StatusTransitions = 1
 	}
 	return m
+}
+
+func OriginalRecoveryTargets(bundles []domain.EvidenceBundle) []domain.RecoveryTarget {
+	out := []domain.RecoveryTarget{}
+	for _, b := range bundles {
+		for _, target := range b.Plan.Targets {
+			out = append(out, domain.RecoveryTarget{Candidate: b.Repository, Capability: firstString(target.Capabilities), Path: target.Path, Kind: target.Kind, RuleID: recoveryHistoryRule(target.Kind)})
+		}
+		for _, target := range b.Targets {
+			out = append(out, domain.RecoveryTarget{Candidate: b.Repository, Capability: firstString(target.Target.Capabilities), Path: target.Target.Path, Kind: target.Target.Kind, RuleID: recoveryHistoryRule(target.Target.Kind)})
+		}
+	}
+	return out
+}
+func recoveryHistoryRule(kind domain.EvidenceKind) string {
+	switch kind {
+	case domain.EvidenceLicense:
+		return "GATE-LICENSE-001"
+	case domain.EvidenceManifest:
+		return "GATE-OPERATION-001"
+	}
+	return "original"
+}
+func firstString(values []string) string {
+	if len(values) > 0 {
+		return values[0]
+	}
+	return ""
 }

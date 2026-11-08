@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/subcommands.md
  * @layer L2
- * @updated 2026-09-19
+ * @updated 2026-10-28
  */
 
 package cli
@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -76,7 +75,7 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 		return fmt.Errorf("parâmetros inválidos: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), 3*time.Minute)
 	defer cancel()
 
 	log.Printf("[SIMILARITY ENGINE] Iniciando análise ontológica para query: '%s' (Alvo: %s)...", searchQuery, *targetFlag)
@@ -87,8 +86,8 @@ func (a *CLIApp) RunSimilarityCmd(args []string) error {
 
 	reportContent := report.GenerateMarkdownReport(searchReport)
 
-	_ = os.MkdirAll(filepath.Dir(*outputFlag), 0755)
-	if err := os.WriteFile(*outputFlag, []byte(reportContent), 0644); err != nil {
+	_ = commandHost().MkdirAll(filepath.Dir(*outputFlag), 0755)
+	if err := commandHost().WriteFile(*outputFlag, []byte(reportContent), 0644); err != nil {
 		return fmt.Errorf("falha ao salvar relatório em %s: %w", *outputFlag, err)
 	}
 

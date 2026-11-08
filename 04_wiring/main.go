@@ -2,18 +2,16 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/04_wiring/main.md
  * @layer L4
- * @updated 2026-10-06
+ * @updated 2026-10-29
  */
 
 package main
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -28,6 +26,7 @@ import (
 	"bateia/03_infra/effects"
 	"bateia/03_infra/envfile"
 	"bateia/03_infra/github"
+	"bateia/03_infra/host"
 	"bateia/03_infra/lexical"
 	localrepo "bateia/03_infra/local"
 	"bateia/03_infra/research"
@@ -38,27 +37,8 @@ import (
 
 func newMCPServer(funnel *usecase.SearchFunnel, semantic usecase.SemanticExpander, discovery domain.ObservableDiscoveryProvider, content domain.ContentProvider, reader io.Reader, writer io.Writer) *mcp.MCPServer {
 	recommendationService := usecase.NewRecommendationService(semantic, discovery, content)
+	recommendationService.WithExecutionRuntime(host.New())
 	return mcp.NewMCPServer(funnel, reader, writer, recommendationService)
-}
-
-func parseMCPMaxToolCalls(raw string, present bool) (*int, error) {
-	if !present {
-		return nil, nil
-	}
-	if raw == "" || raw[0] < '1' || raw[0] > '9' {
-		return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
-	}
-	for index := 1; index < len(raw); index++ {
-		if raw[index] < '0' || raw[index] > '9' {
-			return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
-		}
-	}
-	parsed, err := strconv.ParseInt(raw, 10, strconv.IntSize)
-	if err != nil || parsed <= 0 {
-		return nil, fmt.Errorf("BATEIA_MCP_MAX_TOOL_CALLS must be a canonical positive decimal integer")
-	}
-	limit := int(parsed)
-	return &limit, nil
 }
 
 func loadEnvFile(filepath string) {
@@ -66,6 +46,10 @@ func loadEnvFile(filepath string) {
 }
 
 func main() {
+	cli.ConfigureCommandHost(host.New())
+	cli.SetSnapshotProviderFactory(func(fallback domain.ContentProvider, bindings []domain.SnapshotBinding) (domain.ContentProvider, error) {
+		return localrepo.NewSnapshotProvider(fallback, bindings)
+	})
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "security") {
 		if len(os.Args) < 3 || !strings.EqualFold(os.Args[2], "scan") {
 			log.Fatal("Uso: bateia security scan --binary CAMINHO_ABSOLUTO [--output arquivo.json] [--timeout 1m]")
@@ -101,6 +85,22 @@ func main() {
 		return
 	}
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "idea") {
+		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "insights") && strings.EqualFold(os.Args[3], "expand") {
+			loadEnvFile(".env")
+			client := github.NewClient(os.Getenv("GITHUB_TOKEN"))
+			if err := cli.RunInsightNeighborhoodCommand(os.Args[4:], os.Stdout, func() ([]domain.InsightSiteBinding, error) { return insightDiscoverySites(client) }); err != nil {
+				log.Fatalf("Erro na expansão de insights: %v", err)
+			}
+			return
+		}
+		if len(os.Args) > 3 && strings.EqualFold(os.Args[2], "insights") && strings.EqualFold(os.Args[3], "discover") {
+			loadEnvFile(".env")
+			client := github.NewClient(os.Getenv("GITHUB_TOKEN"))
+			if err := cli.RunInsightDiscoveryCommand(os.Args[4:], os.Stdout, client, client, func() ([]domain.InsightSiteBinding, error) { return insightDiscoverySites(client) }); err != nil {
+				log.Fatalf("Erro na descoberta de insights: %v", err)
+			}
+			return
+		}
 		// Trace is entirely offline: no .env, vocabulary, cache or remote clients.
 		if len(os.Args) > 2 && strings.EqualFold(os.Args[2], "insights") {
 			if err := cli.RunIdeaCommand(os.Args[2:], os.Stdout); err != nil {
@@ -157,6 +157,7 @@ func main() {
 			sgClient := sourcegraph.NewClient(os.Getenv("SOURCEGRAPH_TOKEN"))
 			provider := content.NewRouter(github.NewClient(os.Getenv("GITHUB_TOKEN")), localrepo.NewClient())
 			recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, provider)
+			recommendationService.WithExecutionRuntime(host.New())
 			if err := cli.RunIdeaRecommendCommand(os.Args[3:], os.Stdout, lexicalExpander, sgClient, provider, recommendationService); err != nil {
 				log.Fatalf("Erro na execução da CLI Bateia: %v", err)
 			}
@@ -170,17 +171,12 @@ func main() {
 			}
 			return
 		}
-		noToken := false
-		for _, arg := range os.Args[2:] {
-			if arg == "--no-token" {
-				noToken = true
-			}
-		}
-		if !noToken {
+		useToken := cli.WebTokenRequested(os.Args[2:])
+		if useToken {
 			loadEnvFile(".env")
 		}
 		token := ""
-		if !noToken {
+		if useToken {
 			token = os.Getenv("GITHUB_TOKEN")
 		}
 		webProvider := webinfra.NewObservableWebClient(nil, token)
@@ -220,11 +216,12 @@ func main() {
 	}
 
 	// L4: Injetar adaptadores L3 nas abstrações/interfaces de L1 (Núcleo)
-	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithProgressReporter(cli.LogProgressReporter{}).WithSemanticProvider(clang.NewClient("clang").WithFlowTool(os.Getenv("BATEIA_CLANG_FLOW_TOOL")))
+	funnelUsecase := usecase.NewSearchFunnel(sgClient, contentProvider, cacheStore).WithExecutionRuntime(host.New()).WithProgressReporter(cli.LogProgressReporter{}).WithSemanticProvider(clang.NewClient("clang").WithFlowTool(os.Getenv("BATEIA_CLANG_FLOW_TOOL")))
 	recommendationService := usecase.NewRecommendationService(lexicalExpander, sgClient, contentProvider)
+	recommendationService.WithExecutionRuntime(host.New())
 	if len(os.Args) > 1 && strings.EqualFold(os.Args[1], "mcp") {
 		rawToolCallLimit, toolCallLimitPresent := os.LookupEnv("BATEIA_MCP_MAX_TOOL_CALLS")
-		toolCallLimit, toolCallLimitErr := parseMCPMaxToolCalls(rawToolCallLimit, toolCallLimitPresent)
+		toolCallLimit, toolCallLimitErr := mcp.ParseMaxToolCalls(rawToolCallLimit, toolCallLimitPresent)
 		if toolCallLimitErr != nil {
 			log.Fatalf("Erro ao inicializar orçamento MCP: %v", toolCallLimitErr)
 		}
@@ -248,7 +245,7 @@ func main() {
 		server.WithAdvancedIntake()
 		server.WithToolCallBudget(toolCallBudget)
 		serveErr := server.Serve(context.Background())
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		ctx, cancel := host.New().WithTimeout(context.Background(), 30*time.Second)
 		shutdownErr := shutdown(ctx)
 		cancel()
 		if serveErr != nil {
@@ -282,7 +279,7 @@ func main() {
 	runErr := app.Run(os.Args[1:])
 	var shutdownErr error
 	if shutdownDurable != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		ctx, cancel := host.New().WithTimeout(context.Background(), 30*time.Second)
 		shutdownErr = shutdownDurable(ctx)
 		cancel()
 	}

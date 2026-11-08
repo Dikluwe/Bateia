@@ -144,3 +144,58 @@ Cada passo deve declarar:
 - [0123 — Testar Laya e planejar treinamento](0123-testar-laya-e-planejar-treinamento.md) — inferência real isolada em CPU; três concordâncias diagnósticas, plano de treino sem dataset/ajuste executado.
 
 - [0124 — Investigar melhorias do Laya com Bateia](0124-investigar-melhorias-do-laya-com-bateia.md)
+
+- [0127 — Separar resolução de fontes da síntese](0127-separar-resolucao-de-fontes-da-sintese.md) — porta de leitura em L1 e caracterização antes/depois; testes, vet e build aprovados, lint padrão bloqueado por incompatibilidade anterior.
+
+- [0128 — Explicitar instante de coleta nos manifestos](0128-explicitar-instante-de-coleta-nos-manifestos.md) — parsers determinísticos, coleta temporal em L3 e configuração do lint compatível; avisos arquiteturais anteriores permanecem.
+
+- [0129 — Concluir fronteiras arquiteturais](0129-concluir-fronteiras-arquiteturais.md) — portas temporais e de arquivos, host L3, containers de capacidade e verificação reproduzível.
+
+- [0130 — Extrair regras de alternativas e retomada](0130-extrair-regras-de-alternativas-e-retomada.md) — alvo local, perfil opt-in e política de checkpoint em L1, com leitores restritos e preservação dos consumidores CLI.
+
+- [0131 — Concluir divergências da revisão Tekt](0131-concluir-divergencias-da-revisao-tekt.md) — jornadas em L1, execução de mercado delegada, composição em L4, bancada no Lab e gate reproduzível do projeto.
+
+- [0132 — Explicar retomada de evidências](0132-explicar-retomada-de-evidencias.md) — diagnóstico tipado em L1 e mensagem na CLI, preservando elegibilidade, privacidade e identidade causal.
+
+- [0133 — Priorizar insights de engenharia](0133-priorizar-insights-de-engenharia.md) — foco de produto, critérios de utilidade e lacuna prioritária registrados; sem alteração funcional ou promoção de evidências históricas.
+- [0134 — Conservar observações específicas nos insights](0134-conservar-observacoes-especificas-nos-insights.md) — contrato v2 com observações declaradas/localizadas, condições operacionais separadas da cobertura e replay v1 preservado.
+- [0135 — Comparar insights com baseline do alvo](0135-comparar-insights-com-baseline-do-alvo.md) — snapshot explícito do alvo, declarações por fonte/classe/tipo e perguntas para validar diferenças, sem inferir equivalência ou efeito.
+- [0136 — Preparar exploração criativa para IA](0136-preparar-exploracao-criativa-para-ia.md) — pergunta direta, cartões automáticos variados e tarefas de alternativas/inversão/analogia/recombinação/contraexemplos, sem curadoria prévia de avaliações.
+- [0137 — Descobrir referências diversificadas automaticamente](0137-descobrir-referencias-diversificadas-automaticamente.md) — buscas independentes, origens, seleção estrutural e coleta de READMEs fixados alimentando o contexto para IA.
+- [0138 — Ampliar descoberta de insights para outros sítios](0138-ampliar-descoberta-de-insights-para-outros-sitios.md) — fontes federadas, incluindo Gitee/AtomGit, com orçamento global, identidade por sítio e contexto de catálogo separado das leituras.
+
+- [0139 — Leitura automática de README em Gitee e AtomGit](0139-ler-readmes-de-gitee-e-atomgit.md): SHA fixado, contextos por sítio, cartões para IA e budgets compartilhados.
+
+- [0140 — Leitura automática de README em Codeberg e GitLab](0140-ler-readmes-de-codeberg-e-gitlab.md) — APIs públicas, revisão fixa, subgrupos GitLab e contexto para IA.
+
+- [0141 — Ampliar possibilidades com perspectivas e trilhas](0141-ampliar-possibilidades-com-perspectivas-e-trilhas.md) — agenda equilibrada e referências documentais para novas investigações da IA.
+
+- [0142 — Aprofundar trilhas e conservar memória](0142-aprofundar-trilhas-e-conservar-memoria.md) — leitura de um salto e snapshots com feedback.
+
+- [0143 — Expandir vizinhanças a partir da memória](0143-expandir-vizinhancas-a-partir-da-memoria.md) — continuação focada sem nova pergunta ou catálogo, com fronteira e um salto por chamada.
+
+- [0144 — Continuar o foco e selecionar vizinhos](0144-continuar-foco-e-selecionar-vizinhos.md) — foco herdado, fronteira ordenada por proximidade e aliases conhecidos sem tentativas duplicadas.
+
+- [0145 — Reorganizar fronteiras de investigação sob Tekt](0145-reorganizar-fronteiras-de-investigacao-sob-tekt.md) — admissão, fontes, fronteira, execução, memória e resultado com ownership explícito; interpretação de argumentos em L2.
+
+- [0146 — Consolidar prompts de exploração](0146-consolidar-prompts-de-exploracao.md) — contrato vigente, matriz de aceitação e obrigações locais; distinguir consolidação documental de autoria ex-ante.
+
+- [0147 — Corrigir limites e verificar contratos de exploração](0147-corrigir-limites-e-verificar-contratos-de-exploracao.md) — fechar o avanço de geração e ampliar controles de preservação, fontes congeladas e desempates.
+
+- [0148 — Organizar a entrada e investigar melhorias para o XERJ](0148-organizar-entrada-e-investigar-xerj.md) — guia de primeiro uso, referência de comandos e caso reproduzível de investigação, com propostas e limites explícitos.
+
+- [0149 — Reproduzir herança G7 no XERJ](0149-reproduzir-heranca-g7-no-xerj.md) — reprodução local, rastreamento dos gates de publicação e teste de um agente usando somente a recuperação do XERJ.
+
+- [0150 — Comparar jornadas completas Bateia e XERJ](0150-comparar-jornadas-completas-bateia-xerj.md) — dois agentes sem referências prontas, com descoberta nativa, aquisição registrada e propostas independentes.
+
+- [0151 — Ampliar referências por linguagem](0151-ampliar-referencias-por-linguagem.md) — investigação suplementar de mecanismos em sete linguagens, preservando a comparação original.
+
+- [0152 — Comparar alternativas em problema aberto](0152-comparar-alternativas-em-problema-aberto.md) — problema concreto sem mecanismos sugeridos, baselines congelados e avaliação anônima das decisões propostas.
+
+- [0153 — Ligar coleta à revisão de alternativas](0153-ligar-coleta-a-revisao-de-alternativas.md) — contexto atualizado após coleta, passagens adicionais e revisão de cobertura; reteste independente registrado no Lab.
+
+- [0154 — Corrigir descoberta nativa e testar sem memória](0154-corrigir-descoberta-nativa-e-testar-sem-memoria.md) — consultas contextuais, correspondência em metadados, pin nas leituras escolhidas e ensaio com origem nativa obrigatória.
+
+- [0155 — Descobrir princípios e decisões no XERJ](0155-descobrir-principios-e-decisoes-no-xerj.md) — exploração de algoritmos e registro de evidências/condições/decisões; ensaio no XERJ com referências nativas.
+
+- [0156 — Demonstrar Bateia e XERJ sobre postings](0156-demonstrar-bateia-e-xerj-sobre-postings.md) — descoberta nativa, mesmo commit, indexação e recuperação progressiva com evidência.

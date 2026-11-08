@@ -10,3 +10,7 @@ Node, Archify, rede ou renderização. O dispatcher recebe apenas encaminhamento
 ## Segurança de entrada
 
 Abrir com O_NONBLOCK e ler bytes limitados do mesmo descritor usado nas verificações de aliases; recusar não regulares/FIFO/>16MiB. Aplicar validateIdeaJSONStructure antes do Decoder estrito. Preservar escrita atômica, identidade de entrada, saída válida e certificados históricos.
+
+## Fronteiras explícitas — 0129
+
+Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.

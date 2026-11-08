@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/idea_evidence.md
  * @layer L2
- * @updated 2026-08-24
+ * @updated 2026-10-28
  */
 
 package cli
@@ -93,10 +93,35 @@ func RunIdeaEvidenceCollectCommand(args []string, stdout io.Writer, provider dom
 	fs := flag.NewFlagSet("idea evidence collect", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 	planPath := fs.String("plan", "", "Plano de extração")
+	question := fs.String("question", "", "Pergunta: emitir bundles com exploração e revisão de alternativas")
+	algorithmIdeas := fs.Bool("algorithm-ideas", false, "Preparar raciocínio de princípios e decisões com --question")
+	maximum := fs.Int("max-passages", 8, "Máximo global de cartões na exploração")
+	familiar := []string{}
+	fs.Func("familiar", "Abordagem inicial; repetível com --question", func(value string) error { familiar = append(familiar, value); return nil })
 	outputPath := fs.String("output", "", "Arquivo de saída; omita para stdout")
 	timeout := fs.Duration("timeout", 2*time.Minute, "Tempo máximo da coleta")
 	if err := fs.Parse(args); err != nil {
 		return fmt.Errorf("parâmetros de evidence collect inválidos: %w", err)
+	}
+	if fs.NArg() != 0 {
+		return fmt.Errorf("collect não aceita argumentos posicionais")
+	}
+	questionSet, contextSet := false, false
+	fs.Visit(func(f *flag.Flag) {
+		if f.Name == "question" {
+			questionSet = true
+		}
+		if f.Name == "familiar" || f.Name == "max-passages" || f.Name == "algorithm-ideas" {
+			contextSet = true
+		}
+	})
+	if !questionSet && contextSet {
+		return fmt.Errorf("flags de exploração exigem --question")
+	}
+	if questionSet {
+		if err := validateDecisionTraceOutput(*outputPath, *planPath); err != nil {
+			return err
+		}
 	}
 	if *planPath == "" {
 		return fmt.Errorf("evidence collect exige --plan")
@@ -113,8 +138,15 @@ func RunIdeaEvidenceCollectCommand(args []string, stdout io.Writer, provider dom
 		}
 		plans = []domain.EvidenceExtractionPlan{one}
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
+	ctx, cancel := commandHost().WithTimeout(commandContext(context.Background()), *timeout)
 	defer cancel()
+	if questionSet {
+		report, err := usecase.CollectInsightEvidence(ctx, plans, provider, domain.InsightExplorationRequest{SchemaVersion: "1", Question: *question, FamiliarApproaches: familiar, MaxPassages: *maximum, AlgorithmIdeas: *algorithmIdeas})
+		if err != nil {
+			return fmt.Errorf("coleta exploratória rejeitada: %w", err)
+		}
+		return writeDecisionTraceJSON(report, *outputPath, stdout, *planPath)
+	}
 	bundles := make([]domain.EvidenceBundle, 0, len(plans))
 	for _, plan := range plans {
 		bundle, collectErr := usecase.CollectEvidence(ctx, plan, provider)

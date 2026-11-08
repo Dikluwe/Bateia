@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_run_test.md
  * @layer L1
- * @updated 2026-08-31
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -106,7 +106,7 @@ func (p *maxCandidatesContentProvider) ExtractRepoFiles(_ context.Context, candi
 	p.mu.Lock()
 	p.collected = append(p.collected, candidate.Owner+"/"+candidate.Repo)
 	p.mu.Unlock()
-	return &domain.ExtractedRepository{Files: []domain.ExtractedFile{
+	return &domain.ExtractedRepository{Ref: domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID}, Files: []domain.ExtractedFile{
 		{Path: "README.md", Content: "dependency graph analysis"},
 		{Path: "LICENSE", Content: "MIT License"},
 		{Path: "graph.go", Content: "type DependencyGraph struct{}"},
@@ -377,7 +377,7 @@ func (m18ContentProvider) FetchTree(context.Context, domain.RepositoryCandidate)
 }
 
 func (m18ContentProvider) ExtractRepoFiles(_ context.Context, candidate domain.RepositoryCandidate, _ []string) (*domain.ExtractedRepository, error) {
-	return &domain.ExtractedRepository{Candidate: candidate, Files: []domain.ExtractedFile{
+	return &domain.ExtractedRepository{Ref: domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID}, Candidate: candidate, Files: []domain.ExtractedFile{
 		{Path: "README.md", Content: "dependency graph analysis"},
 		{Path: "LICENSE", Content: "MIT License"},
 		{Path: "graph.go", Content: "type DependencyGraph struct{}"},

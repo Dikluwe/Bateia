@@ -79,3 +79,9 @@ e casar integralmente na mesma linha admissível. Preservar fronteiras de identi
 remoção de comentários/literais e opacidade de macros ou expressões multiline. Texto
 natural multiword sem operador não ganha autoridade. Padrões probatórios continuam fora
 dos termos de recuperação, derivados somente de `TargetHints`.
+
+## 0158 — Integridade e serialização estável
+
+Aplicar o [contrato0158](../../../passos/0158-validar-origem-e-estabilizar-bundles.md) e o [ADR0022](../../../ADR/ADR-0022-integridade-de-coleta-e-serializacao-estavel.md). Domínio estabiliza requirement_coverage nil/vazio como array e preserva bytes populados, sem mutação. Coleta genérica compartilha admissão, conserva pin do plano e confronta identidade de metadados e Ref de extração antes de admitir conteúdo. Coleta coordenada valida todos os schemas1 antes de efeitos e propaga ErrIntegrity sem relatório útil. Somente a API genérica conserva schema ausente legado. Não recalcular registros/hashes históricos; representações instáveis passam à forma corrigida apenas em novas serializações.
+
+Critérios compartilhados vigentes: [EVD-01–05](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#aceitação).

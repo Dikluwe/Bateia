@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/domain/evidence.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-11-08
  */
 
 package domain
@@ -249,7 +249,7 @@ func (bundle EvidenceBundle) MarshalJSON() ([]byte, error) {
 	if copy.RequirementCoverage == nil {
 		copy.RequirementCoverage = []RequirementCollectionCoverage{}
 	} else {
-		copy.RequirementCoverage = append([]RequirementCollectionCoverage(nil), copy.RequirementCoverage...)
+		copy.RequirementCoverage = append([]RequirementCollectionCoverage{}, copy.RequirementCoverage...)
 	}
 	for i := range copy.RequirementCoverage {
 		if copy.RequirementCoverage[i].CandidatePaths == nil {

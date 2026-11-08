@@ -9,7 +9,7 @@ package usecase
 import (
 	"bateia/01_core/domain"
 	"context"
-	"strings"
+	"errors"
 )
 
 func CollectInsightEvidence(ctx context.Context, plans []domain.EvidenceExtractionPlan, provider domain.ContentProvider, request domain.InsightExplorationRequest) (domain.InsightCollectionReport, error) {
@@ -25,9 +25,8 @@ func CollectInsightEvidence(ctx context.Context, plans []domain.EvidenceExtracti
 		return domain.InsightCollectionReport{}, err
 	}
 	for _, plan := range plans {
-		ref := plan.Repository
-		if ref.Owner == "" || ref.Repo == "" || strings.ContainsAny(ref.Owner+ref.Repo, "/\\@") {
-			return domain.InsightCollectionReport{}, domain.ErrInvalidRunInput
+		if err := validateEvidenceCollectionPlan(plan, true); err != nil {
+			return domain.InsightCollectionReport{}, err
 		}
 	}
 	bundles := make([]domain.EvidenceBundle, 0, len(plans))
@@ -38,6 +37,9 @@ func CollectInsightEvidence(ctx context.Context, plans []domain.EvidenceExtracti
 		bundle, collectErr := CollectEvidence(ctx, plan, provider)
 		if err := ctx.Err(); err != nil {
 			return domain.InsightCollectionReport{}, err
+		}
+		if errors.Is(collectErr, domain.ErrIntegrity) {
+			return domain.InsightCollectionReport{}, domain.ErrIntegrity
 		}
 		if collectErr != nil {
 			bundle = domain.EvidenceBundle{SchemaVersion: "1", Repository: plan.Repository, Plan: plan, Complete: false, TreeComplete: false, Failures: []domain.ExecutionFailure{{Scope: plan.Repository.Key(), Stage: "resolution", Message: collectErr.Error()}}}

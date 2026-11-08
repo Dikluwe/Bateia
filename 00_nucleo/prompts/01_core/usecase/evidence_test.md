@@ -19,3 +19,7 @@ Correspondências lexicais, declarações e testes vazios são evidência parcia
 
 ## Correção contratual 0043
 O caso de README declarando execução local exige PARTIAL (declaração), não PROVEN (execução). Renomear o teste para tornar explícito esse limite; preservar demais casos.
+
+## 0158 — Double de conteúdo com identidade
+
+No recorte de integridade0158, os doubles que retornam extração bem-sucedida devem preencher Ref com owner/repo/commit do candidato efetivamente solicitado. Conservar conteúdo, falhas, quotas, testemunhos, mutantes e assertivas funcionais anteriores. Ref ausente ou divergente passa a ser controle negativo explícito nos testes próprios de integridade, sem dispensar a validação produtiva.

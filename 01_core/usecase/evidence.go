@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence.md
  * @layer L1
- * @updated 2026-09-17
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -12,6 +12,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	pathpkg "path"
 	"sort"
@@ -577,26 +578,66 @@ func parseRepositoryReference(value string) (domain.CommitRef, error) {
 	return domain.CommitRef{Owner: repo[0], Repo: repo[1], Commit: commit}, nil
 }
 
+func validateEvidenceCollectionPlan(plan domain.EvidenceExtractionPlan, requireSchema bool) error {
+	if plan.SchemaVersion != "1" && (requireSchema || plan.SchemaVersion != "") {
+		return domain.ErrInvalidRunInput
+	}
+	ref := plan.Repository
+	for _, part := range []string{ref.Owner, ref.Repo} {
+		if !validSynthesisText(part, 100) || part != normalizeMechanismText(part) || strings.ContainsAny(part, "/\\@ :?#") || part == "." || part == ".." {
+			return domain.ErrInvalidRunInput
+		}
+	}
+	if plan.Candidate.Owner != ref.Owner || plan.Candidate.Repo != ref.Repo || plan.Budget.TotalBytes <= 0 {
+		return domain.ErrInvalidRunInput
+	}
+	for _, quota := range []int{plan.Budget.Documents, plan.Budget.Manifests, plan.Budget.CodeFiles, plan.Budget.RequirementFiles, plan.Budget.Tests, plan.Budget.TreeDepth} {
+		if quota < 0 {
+			return domain.ErrInvalidRunInput
+		}
+	}
+	return nil
+}
+
 func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, provider domain.ContentProvider) (domain.EvidenceBundle, error) {
+	if ctx == nil {
+		return domain.EvidenceBundle{}, domain.ErrInvalidRunInput
+	}
+	if err := ctx.Err(); err != nil {
+		return domain.EvidenceBundle{}, err
+	}
+	if err := validateEvidenceCollectionPlan(plan, false); err != nil {
+		return domain.EvidenceBundle{}, err
+	}
 	if provider == nil {
 		return domain.EvidenceBundle{}, fmt.Errorf("provedor de conteúdo não configurado")
 	}
+	resolving := plan.Repository.Commit == "" || strings.EqualFold(plan.Repository.Commit, "HEAD")
+	if !resolving {
+		plan.Candidate.CommitID = plan.Repository.Commit
+	}
+	metadata, metadataErr := provider.FetchRepoMetadata(ctx, plan.Candidate)
 	if err := ctx.Err(); err != nil {
 		return domain.EvidenceBundle{}, err
 	}
-	if plan.Repository.Commit == "" || strings.EqualFold(plan.Repository.Commit, "HEAD") {
-		resolved, err := provider.FetchRepoMetadata(ctx, plan.Candidate)
-		if err != nil || resolved.CommitID == "" || strings.EqualFold(resolved.CommitID, "HEAD") {
-			return domain.EvidenceBundle{}, fmt.Errorf("não foi possível resolver %s para commit imutável", plan.Repository.Key())
+	if errors.Is(metadataErr, domain.ErrIntegrity) {
+		return domain.EvidenceBundle{}, domain.ErrIntegrity
+	}
+	if metadataErr == nil {
+		if metadata.Owner != plan.Repository.Owner || metadata.Repo != plan.Repository.Repo {
+			return domain.EvidenceBundle{}, domain.ErrIntegrity
 		}
-		plan.Candidate = resolved
-		plan.Repository.Commit = resolved.CommitID
-		plan.Decision.Repository = plan.Repository.Key()
-	} else if metadata, err := provider.FetchRepoMetadata(ctx, plan.Candidate); err == nil {
+		if resolving {
+			if metadata.CommitID == "" || strings.EqualFold(metadata.CommitID, "HEAD") {
+				return domain.EvidenceBundle{}, fmt.Errorf("não foi possível resolver %s para commit imutável", plan.Repository.Key())
+			}
+			plan.Repository.Commit = metadata.CommitID
+			plan.Decision.Repository = plan.Repository.Key()
+		}
+		metadata.CommitID = plan.Repository.Commit
 		plan.Candidate = metadata
-	}
-	if err := ctx.Err(); err != nil {
-		return domain.EvidenceBundle{}, err
+	} else if resolving {
+		return domain.EvidenceBundle{}, fmt.Errorf("não foi possível resolver %s para commit imutável", plan.Repository.Key())
 	}
 	plan.RequirementQueries = cloneRequirementQueries(plan.RequirementQueries)
 	sortRequirementQueries(plan.RequirementQueries)
@@ -703,6 +744,15 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		return bundle, err
 	}
 	extracted, err := provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
+	if contextErr := ctx.Err(); contextErr != nil {
+		return domain.EvidenceBundle{}, contextErr
+	}
+	if errors.Is(err, domain.ErrIntegrity) {
+		return domain.EvidenceBundle{}, domain.ErrIntegrity
+	}
+	if err == nil && (extracted == nil || extracted.Ref != plan.Repository) {
+		return domain.EvidenceBundle{}, domain.ErrIntegrity
+	}
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "content", Message: err.Error()})
 		bundle.Complete = false

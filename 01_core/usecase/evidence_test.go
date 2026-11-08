@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_test.md
  * @layer L1
- * @updated 2026-09-07
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -157,8 +157,8 @@ func (p evidenceProvider) FetchTree(context.Context, domain.RepositoryCandidate)
 	}
 	return []domain.DirectoryNode{{Path: "README.md", Type: "file"}, {Path: "graph_test.go", Type: "file"}}, nil
 }
-func (p evidenceProvider) ExtractRepoFiles(_ context.Context, _ domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
-	return &domain.ExtractedRepository{Files: p.files}, nil
+func (p evidenceProvider) ExtractRepoFiles(_ context.Context, candidate domain.RepositoryCandidate, paths []string) (*domain.ExtractedRepository, error) {
+	return &domain.ExtractedRepository{Ref: domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID}, Files: p.files}, nil
 }
 func (p evidenceProvider) FetchRepoMetadata(_ context.Context, candidate domain.RepositoryCandidate) (domain.RepositoryCandidate, error) {
 	candidate.CommitID = "resolved123"

@@ -29,6 +29,23 @@ flowchart TD
 
 As setas representam dependências de código. A execução de um caso de uso pode chamar um adaptador por uma porta de L1; isso não exige importar o pacote concreto de L3. L0 fornece especificações e rastreabilidade documental, não um módulo de execução. O Lab não é uma dependência do produto.
 
+## Jornada de investigação de insights
+
+A jornada prioritária parte de uma pergunta e prepara material para interpretação pela IA. `discover` consulta catálogos e tenta ler referências fixadas; `expand` continua a fronteira da memória sem nova busca de catálogo. `explore` trabalha offline sobre bundles fornecidos. `evidence collect --question` reúne coleta e exploração a partir de um plano explícito. `formulate` confere raciocínio declarado contra os bytes de fonte e alvo. Analyze/compare mantêm contratos próprios de avaliações fornecidas e catálogo de mecanismos limitado.
+
+| Responsabilidade | Proprietário L1 | Adaptação e composição |
+| --- | --- | --- |
+| Consultas, limites e seleção de descoberta | `insight_discovery_plan.go`, `insight_discovery_selection.go` e `insight_discovery.go` | CLI fornece `context-v2`; GitHub L3 busca metadados e resolve os pins escolhidos |
+| Descoberta e leitura por sítio | `insight_site_plan.go`, `insight_sites.go` e `insight_site_reading.go` | Leitores GitHub/forge em L3; factory em `04_wiring/insight_sites.go` |
+| Trechos e tarefas de exploração | `insight_exploration.go` e `insight_passages.go` | CLI adapta pergunta, bundles e saída; seleção lexical/estrutural |
+| Coleta com exploração | `insight_collection.go` | CLI de evidências adapta o plano e a pergunta; efeitos pela porta `ContentProvider` |
+| Memória, foco e expansão | `insight_exploration_memory.go`, `insight_neighborhood.go` e responsáveis delegados | CLI adapta snapshots e feedback; leitores L3 são injetados por L4 |
+| Formulação com evidências de fonte e alvo | `algorithm_insight.go` e tipos em `domain/algorithm_insight.go` | `idea insights formulate` adapta JSON estrito e publica o relatório offline |
+
+Os nomes de casos de uso na tabela pertencem a `01_core/usecase`. O [mapa de responsabilidades](../arquitetura/README.md) detalha os cortes de admissão, fontes congeladas, fronteira, seleção, execução e resultado da expansão. O [contrato consolidado](../contratos/exploracao-de-vizinhancas-v1.md) delimita memória, foco, aliases e leituras; os [passos 0153](../passos/0153-ligar-coleta-a-revisao-de-alternativas.md), [0154](../passos/0154-corrigir-descoberta-nativa-e-testar-sem-memoria.md) e [0155](../passos/0155-descobrir-principios-e-decisoes-no-xerj.md) registram as evoluções seguintes.
+
+L1 conserva regras, estado e coordenação por portas; L2 adapta entrada e apresentação; L3 realiza busca/leitura e efeitos de arquivos; L4 compõe clientes e host. Esses comandos não criam outro runtime durável nem chamam um modelo. Presença no catálogo, conteúdo lido, interpretação e efeito no alvo conservam escopos distintos. A integridade das citações em formulate não certifica novidade, semântica ou benefício.
+
 ## Jornada principal de recomendação
 
 ```mermaid
@@ -62,7 +79,7 @@ O [SearchFunnel](../../01_core/usecase/funnel.go) é outra fachada: busca, leitu
 
 Consulte [interfaces do domínio](../../01_core/domain/interfaces.go), [composição principal](../../04_wiring/main.go) e [composição de mercado](../../04_wiring/market_discovery.go).
 
-Os conectores disponíveis variam com a composição. Existem funções de registro padrão e federado; algumas entradas são `CapabilityOnlyConnector`, que declaram capacidades sem constituir um cliente de busca. A presença de um pacote ou registro não demonstra sua ativação em toda jornada. Pesquisa acadêmica e Bitbucket integram mudanças locais presentes nesta leitura; Bitbucket depende de workspaces configurados.
+Os conectores disponíveis variam com a composição. Existem funções de registro padrão e federado; algumas entradas são `CapabilityOnlyConnector`, que declaram capacidades sem constituir um cliente de busca. A presença de um pacote ou registro não demonstra sua ativação em toda jornada. Pesquisa acadêmica e Bitbucket integram o código versionado; Bitbucket depende de workspaces configurados. A composição específica de insights reutiliza os conectores e injeta leitores onde disponíveis, preservando a diferença entre pistas de catálogo e conteúdo fixado efetivamente lido.
 
 ## Persistência e lifecycle
 
@@ -80,7 +97,7 @@ O [ADR-0012](../ADR/ADR-0012-portas-de-execucao-e-arquivos.md) e o [passo 0129](
 
 O verificador de fronteiras usa AST Go, incluindo aliases de imports, e controla também a separação do Lab e o regime declarativo de L0. A correção do parser Go do lint é reproduzida numa cópia isolada, com regras e severidades preservadas. Aprovação desses checks não comprova todo o significado da lógica de negócio nem a utilidade das conclusões. Consulte a [bancada 0129](../../lab/bancada/arquitetura/0129/README.md).
 
-O [passo 0130](../passos/0130-extrair-regras-de-alternativas-e-retomada.md) separa três regras de negócio que permaneciam na CLI: identidade consultiva para exclusão do alvo, perfil semântico do modelo opt-in e elegibilidade de checkpoint. Os proprietários são `alternative_target.go`, `screening_model_policy.go` e `evidence_checkpoint.go`, todos em L1. Leitores restritos fornecem hints e SHA-256 por caminho lógico; L2 adapta os dados congelados/arquivos existentes. Não mudam os formatos, hashes, regras de ranking ou critérios de reaproveitamento. A composição condicional e outras jornadas ainda concentradas na casca permanecem fora deste corte.
+O [passo 0130](../passos/0130-extrair-regras-de-alternativas-e-retomada.md) separa três regras de negócio que permaneciam na CLI: identidade consultiva para exclusão do alvo, perfil semântico do modelo opt-in e elegibilidade de checkpoint. Os proprietários são `alternative_target.go`, `screening_model_policy.go` e `evidence_checkpoint.go`, todos em L1. Leitores restritos fornecem hints e SHA-256 por caminho lógico; L2 adapta os dados congelados/arquivos existentes. Não mudam os formatos, hashes, regras de ranking ou critérios de reaproveitamento. Naquele recorte, a composição condicional e outras jornadas concentradas na casca ficaram pendentes; o passo 0131, descrito a seguir, tratou os pontos inventariados dessa revisão.
 
 O [passo 0131](../passos/0131-concluir-divergencias-da-revisao-tekt.md) conclui os cortes que restavam nessa revisão. A jornada, a pré-imagem causal e o manifesto do dossiê agora são de L1; a casca fornece leitores/publicadores de nomes lógicos e renderiza mensagens. O serviço composto em L4 é recebido pela jornada, inclusive com regras dinâmicas; a API CLI compatível delega ao mesmo código. A apresentação de conclusão precede o cleanup diferido, preservando a ordem anterior.
 

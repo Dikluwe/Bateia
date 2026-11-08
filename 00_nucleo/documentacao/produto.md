@@ -10,13 +10,23 @@ A investigação deve ajudar a responder: como outros projetos tratam este probl
 
 Observação da fonte, interpretação, hipótese de benefício e efeito medido no alvo conservam escopos distintos. IA pode auxiliar consultas e interpretação, com referências conferíveis e hipóteses identificadas; não funciona como confirmação automática. A investigação não depende de uma decisão de adoção e não muda os critérios de licença/reúso existentes.
 
-Essa é a direção de produto. Busca automática, comparação semântica geral e validação de aplicabilidade ainda não são entregas completas da jornada de insights atual.
+A jornada atual automatiza descoberta lexical e coleta limitada de referências, com as capacidades e restrições descritas abaixo. Comparação semântica geral e validação de aplicabilidade continuam dependentes de interpretação e investigação adicionais.
 
 O usuário explicitou que a ferramenta deve auxiliar a IA a sair do caminho habitual. O [recorte 0136](../passos/0136-preparar-exploracao-criativa-para-ia.md) prepara cartões de leitura e tarefas de exploração diretamente da pergunta e de bundles coletados, sem assessments/observations. A IA recebe exemplos referenciáveis e perspectivas de alternativas, inversão, analogia, recombinação e contraexemplos. A escolha automática usa variedade estrutural e matches lexicais; não mede novidade ou criatividade, não traduz perguntas e não gera conclusões por modelo. Sem evidência, o pacote pede pesquisa e conserva as lacunas.
 
 O [recorte 0137](../passos/0137-descobrir-referencias-diversificadas-automaticamente.md) acrescenta `idea insights discover`: automatiza cinco consultas independentes no catálogo GitHub, seleção por cobertura de consultas/autores e coleta limitada de READMEs fixados, alimentando explore no mesmo resultado. As origens, falhas e limites de cada etapa ficam explícitos. Esse primeiro provedor não representa busca em todos os conectores; as heurísticas lexicais não comprovam diversidade conceitual. O [ensaio público](../../lab/bancada/insights/0137/README.md) produziu contexto sem curadoria de avaliações, conservando um documento rejeitado por tamanho e o estado parcial.
 
 O [recorte 0138](../passos/0138-ampliar-descoberta-de-insights-para-outros-sitios.md) permite `--sources all` ou lista de sítios, reutilizando os conectores de forges, lojas e software acadêmico. Inclui Gitee e AtomGit, mantém orçamento global e diferencia falha/autenticação de vazio. A IA recebe pistas de catálogo com identidade/proveniência por sítio, separadas das leituras de código/documentos. O recorte0138 começou com leitura imutável GitHub; a [evolução0139](../passos/0139-ler-readmes-de-gitee-e-atomgit.md) acrescenta Gitee/AtomGit com resolução de commit e contextos de origem separados. O [recorte0140](../passos/0140-ler-readmes-de-codeberg-e-gitlab.md) amplia esses leitores para Codeberg/GitLab, incluindo subgrupos do GitLab, pelas APIs públicas. A IA recebe os cartões desses contextos nas mesmas tarefas; outros catálogos não ganham SHA presumido. Novidade/relevância ainda precisam de interpretação e validação, e o ensaio registra ruído e fontes indisponíveis.
+
+## Coleta, descoberta contextual e formulação
+
+O [passo 0153](../passos/0153-ligar-coleta-a-revisao-de-alternativas.md) liga coleta e exploração: `idea evidence collect --plan plano.json --question 'pergunta'` entrega bundles e contexto com revisão de alternativas, passagens adicionais sob quota compartilhada e lacunas explícitas. Sem pergunta, a saída histórica continua uma lista de bundles. O plano escolhe as fontes; este modo não faz nova busca nem chama um modelo.
+
+O [passo 0154](../passos/0154-corrigir-descoberta-nativa-e-testar-sem-memoria.md) atualiza o padrão da CLI para `context-v2`: consultas derivadas dos termos da pergunta, até cinco resultados por consulta e seleção por correspondência literal em metadados antes de variedade. Os commits das referências selecionadas são resolvidos antes da leitura. `--query-policy lexical-v1` conserva a política anterior; nenhum dos modos certifica pertinência semântica ou ausência de alternativas.
+
+O [passo 0155](../passos/0155-descobrir-principios-e-decisoes-no-xerj.md) acrescenta `--algorithm-ideas` em discover, explore e collect com pergunta, preparando tarefas sobre princípios, passos, condições e decisões no alvo. `idea insights formulate` confere registros interpretados pelo agente contra bundles congelados de fonte e alvo. A relação declarada pode ser ALREADY_PRESENT, DIFFERENT_APPROACH ou NOT_ESTABLISHED; interpretação permanece DECLARED_NOT_REASSESSED e efeito UNVERIFIED. Não há catálogo fechado de algoritmos ou modelo interno.
+
+A [investigação 0155](../../lab/bancada/insights/algoritmos-xerj-2026-11-08/README.md) produziu uma hipótese condicional e identificou WAND já presente no alvo. A [demonstração sequencial 0156](../../lab/bancada/insights/bateia-xerj-postings-2026-11-08/README.md) liga descoberta pelo Bateia e recuperação de trechos pelo XERJ no mesmo commit, com operação assistida e contexto anterior. Esses recortes não demonstram ganho de desempenho ou exclusividade das ferramentas.
 
 ## Investigação independente de insights
 
@@ -54,6 +64,8 @@ Os critérios executáveis pertencem ao [caso de uso de decisão](../../01_core/
 | Descoberta de repositórios, produtos e software acadêmico | Encontrar candidatos com proveniência |
 | Triagem e calibração | Priorizar a investigação e tornar perdas observáveis |
 | Coleta, recuperação e avaliação de evidências | Verificar capacidades e explicitar desconhecidos |
+| Exploração, memória e expansão de trilhas | Preparar contexto para IA e continuar leituras limitadas |
+| Formulação de ideias de algoritmos | Vincular raciocínio declarado às fontes e ao alvo, com condições e experimento |
 | Decisão e ranking de alternativas | Relacionar evidência às opções de reúso |
 | Rastreabilidade e revisão | Localizar declarações e planejar sua revisão |
 | CLI, MCP e execuções duráveis | Tornar a jornada acessível a pessoas e agentes |

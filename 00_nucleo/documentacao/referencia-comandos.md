@@ -14,7 +14,9 @@ go build -o /tmp/bateia-insights ./04_wiring
   --output /tmp/descoberta-insights.json
 ```
 
-O comando online tenta cinco rotas independentes no catálogo GitHub, une candidatos com suas origens e seleciona referências por cobertura das consultas e variedade de autores. Coleta READMEs em commits fixados e entrega o contexto em `exploration`, pronto para a IA, junto com tentativas, recebimentos e bundles. Não exige escrever assessments/observations ou um plano de coleta. `--output` é obrigatório; token GitHub é opcional pelo ambiente/`.env` do executável. Os limites padrão são dois resultados por consulta, quatro referências, 90 s totais e 10 s por operação; a admissão de cada README é limitada a 32 KiB.
+O comando online usa `--query-policy context-v2` por padrão: deriva cinco consultas da pergunta, busca nome, descrição e tópicos no catálogo GitHub e prioriza correspondência literal antes de cobertura das consultas e variedade de autores. Une candidatos com suas origens e resolve a revisão imutável das referências selecionadas para leitura. Coleta READMEs em commits fixados e entrega o contexto em `exploration`, pronto para a IA, junto com tentativas, recebimentos e bundles. Não exige escrever assessments/observations ou um plano de coleta. `--output` é obrigatório; token GitHub é opcional pelo ambiente/`.env` do executável.
+
+Os limites padrão são cinco resultados por consulta com `context-v2`, quatro referências, 90 s totais e 10 s por operação. `--query-policy lexical-v1` reproduz a política anterior, cujo padrão é dois resultados por consulta. A admissão de cada README é limitada a 32 KiB.
 
 Consultas lexicais não classificam novidade/domínio e não traduzem perguntas. Vazio, quota, revisão opaca, documento grande ou falha de leitura ficam registrados, inclusive em resultado parcial. O [ensaio público 0137](../../lab/bancada/insights/0137/README.md) executou as cinco buscas, encontrou quatro candidatos e admitiu um README; o segundo selecionado excedeu o limite. Os demais comandos abaixo conservam seus formatos.
 

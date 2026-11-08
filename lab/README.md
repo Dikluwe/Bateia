@@ -41,6 +41,8 @@ somente para localização; ele não governa o produto atual.
 | Tarefa | Entrada |
 | --- | --- |
 | Investigar melhorias para o XERJ com o Bateia | [Caso de 8 de novembro de 2026](bancada/insights/xerj-2026-11-08/README.md) |
+| Investigar princípios e decisões com evidência de fonte/alvo | [0155 — Ideias de algoritmos no XERJ](bancada/insights/algoritmos-xerj-2026-11-08/README.md): hipótese condicional e confirmação de capacidade existente, sem ganho de desempenho demonstrado |
+| Acompanhar descoberta e recuperação na mesma fonte/commit | [0156 — Bateia e XERJ sobre postings](bancada/insights/bateia-xerj-postings-2026-11-08/README.md): demonstração sequencial assistida, com contexto anterior |
 | Preparar contexto para a IA sem avaliações manuais | [Exploração 0136](bancada/insights/0136/README.md) |
 | Entender memória e expansão de trilhas | [0142](bancada/insights/0142/README.md), [0143](bancada/insights/0143/README.md) e [0144](bancada/insights/0144/README.md) |
 | Executar o gate de desenvolvimento | [Ferramentas](ferramentas/README.md) |

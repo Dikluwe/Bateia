@@ -6,7 +6,17 @@ A primeira etapa é tornar o funcionamento atual legível por capacidade. O proj
 
 O [passo 0148](../passos/0148-organizar-entrada-e-investigar-xerj.md) separa o README de entrada, o [guia de investigação](investigar-software.md) e a [referência completa de comandos](referencia-comandos.md). Os exemplos anteriores foram preservados com seus links ajustados. O caso XERJ fica no Lab e distingue coleta, contexto automático e propostas interpretadas pela IA. Este corte melhora navegação e uso; não declara refatoração integral do código ou encerramento das alterações locais anteriores.
 
+## Situação vigente após os passos 0153–0156
+
+A prioridade de documentação acompanha a investigação de insights: descoberta contextual, coleta com exploração, memória/expansão e formulação de ideias com evidências de fonte e alvo. O [mapa de responsabilidades](../arquitetura/README.md), a [arquitetura atual](arquitetura.md) e o [guia de investigação](investigar-software.md) descrevem os proprietários e as interfaces disponíveis. As demonstrações [0155](../../lab/bancada/insights/algoritmos-xerj-2026-11-08/README.md) e [0156](../../lab/bancada/insights/bateia-xerj-postings-2026-11-08/README.md) conservam seus resultados e limites no Lab.
+
+As integrações e os cortes descritos abaixo já fazem parte do código versionado. Menções a alterações locais e pendências nas seções históricas descrevem o momento daqueles recortes. A sequência proposta inicial é mantida como registro de planejamento; não constitui uma lista atual de tarefas abertas.
+
+Permanecem como trabalho de avaliação: relevância das buscas, cobertura dos trechos, utilidade das hipóteses, condições de transferência ao alvo e efeitos medidos. Novas mudanças de política ou comportamento exigem contrato próprio. Para organizar o próximo corte, começar pela capacidade afetada e seus consumidores, mantendo evidência histórica e verificações estruturais separadas da avaliação de produto.
+
 ## Organização aplicada
+
+Esta seção conserva o contexto dos recortes iniciais.
 
 O [mapa arquitetural](../arquitetura/README.md) liga responsabilidades e contratos. A primeira fatia isola análise pura de hipóteses do protocolo de execução. O passo 0104 corrige admissão e projeção do registro de fontes; o passo 0105 acrescenta investigação offline de insights sem decisão de reúso. A linhagem das adições locais de pesquisa e Bitbucket foi regularizada preservando seu comportamento. O [passo 0103](../passos/0103-testar-hierarquia-de-arquiteturas-sob-tekt.md) registra o recorte; trabalhos restantes continuam abaixo.
 
@@ -20,7 +30,7 @@ O [passo 0130](../passos/0130-extrair-regras-de-alternativas-e-retomada.md) prio
 
 A próxima organização deve seguir capacidade e contratos observáveis; ampliar a árvore ou criar runtimes paralelos não decorre desse corte. Avaliação semântica de insights, utilidade para usuários e evolução das políticas de reúso mantêm seus contratos próprios.
 
-O trabalho 0126 de Gitee/AtomGit permanece uma alteração local anterior, com verificação descrita em seu laudo. A retomada 0127 não transforma essa integração ou as bancadas em validação integral da arquitetura. O tamanho de um arquivo ajuda a navegar; a escolha do corte decorre das responsabilidades e dependências.
+No momento da retomada 0127, o trabalho 0126 de Gitee/AtomGit era uma alteração local anterior, com verificação descrita em seu laudo; essa integração agora pertence ao código versionado. A retomada 0127 não transforma essa integração ou as bancadas em validação integral da arquitetura. O tamanho de um arquivo ajuda a navegar; a escolha do corte decorre das responsabilidades e dependências.
 
 ## Primeiras correções de divergências — 0128
 
@@ -30,9 +40,11 @@ Na verificação 0128, a tabela Go resolveu o carregamento, mas 46 avisos V12 ai
 
 ## Entrega documental inicial
 
-Esta pasta fornece uma visão de produto, um mapa de arquitetura e um guia de engenharia. O [diagnóstico inicial](../relatorios/diagnostico-organizacao-2026-10-06.md) distingue condições verificadas e pendências. Os próximos itens são propostas de trabalho, não ADRs aceitos nem implementação concluída.
+Esta pasta fornece uma visão de produto, um mapa de arquitetura e um guia de engenharia. O [diagnóstico inicial](../relatorios/diagnostico-organizacao-2026-10-06.md) distingue condições verificadas e pendências. Os itens da sequência abaixo registram as propostas daquele planejamento, sem substituir os resultados posteriores dos passos 0129–0131 ou a situação vigente descrita acima.
 
 ## Sequência proposta
+
+Registro histórico da sequência inicial; consultar a situação vigente acima para planejar novos cortes.
 
 | Ordem | Trabalho | Por que priorizar | Critério de aceite |
 | --- | --- | --- | --- |
@@ -56,7 +68,7 @@ Para cada capacidade, preencher:
 - Testes ativos e evidência de avaliação com recorte temporal.
 - Limites conhecidos, falhas parciais e dúvidas ainda abertas.
 
-Começar pela recomendação ponta a ponta. Depois registrar descoberta de mercado/pesquisa, coleta e comprovação, rastreabilidade/revisão e runtime durável. Essa ordem acompanha a promessa central do produto.
+A ordem inicial começava pela recomendação ponta a ponta, seguida de descoberta de mercado/pesquisa, coleta e comprovação, rastreabilidade/revisão e runtime durável. Com a prioridade de insights registrada no passo 0133, o inventário atual deve começar pela capacidade investigativa afetada e conservar as demais jornadas com seus contratos próprios.
 
 ## Política de mudança
 

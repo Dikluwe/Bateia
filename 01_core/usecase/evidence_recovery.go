@@ -29,14 +29,14 @@ func DiagnoseInconclusive(runID, decisionHash string, decision domain.ReuseDecis
 	}
 	byRepo := map[string]domain.EvidenceBundle{}
 	for _, b := range bundles {
-		byRepo[b.Repository.Owner+"/"+b.Repository.Repo] = b
+		byRepo[b.Repository.Key()] = b
 	}
 	if len(assessment.Assessments) == 0 {
 		d.Findings = append(d.Findings, newFinding(domain.CauseInsufficientCorpus, "", "", "DEC-INCONCLUSIVE-002", nil, nil, []string{"candidate assessment"}, false, "corpus não contém assessments"))
 	}
 	globalCatalogFindings := map[string]bool{}
 	for _, a := range assessment.Assessments {
-		key := a.Repository.Owner + "/" + a.Repository.Repo
+		key := a.Repository.Key()
 		candidateKey := a.Repository.Key()
 		b := byRepo[key]
 		if a.Repository.Commit == "" || strings.EqualFold(a.Repository.Commit, "HEAD") {
@@ -274,15 +274,44 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 	if err := ctx.Err(); err != nil {
 		return domain.RecoveryRoundResult{}, err
 	}
+	if plan.Policy.AdditionalBytes <= 0 {
+		return domain.RecoveryRoundResult{}, domain.ErrInvalidRunInput
+	}
 	if len(plan.Targets) == 0 {
 		return domain.RecoveryRoundResult{}, fmt.Errorf("plano de recuperação não possui targets")
 	}
-	plans, providerCalls, err := recoveryExtractionPlans(ctx, plan, original, provider)
-	if err != nil {
-		return domain.RecoveryRoundResult{}, err
-	}
+	plans := recoveryExtractionPlans(plan, original)
+	providerCalls := 0
 	collected := []domain.EvidenceBundle{}
+	omitted := []domain.EvidenceBundle{}
+	remaining := plan.Policy.AdditionalBytes
+	executedTargets := 0
 	for _, p := range plans {
+		if err := ctx.Err(); err != nil {
+			return domain.RecoveryRoundResult{}, err
+		}
+		if remaining == 0 {
+			b := domain.EvidenceBundle{SchemaVersion: "1", Repository: p.Repository, Plan: p}
+			for _, target := range plan.Targets {
+				if target.Candidate == p.Repository {
+					b.Targets = append(b.Targets, domain.CollectionTargetResult{Target: domain.ExtractionTarget{Path: target.Path, Kind: target.Kind, Capabilities: []string{target.Capability}, Reason: "recovery " + target.FindingID}, Status: domain.TargetSkippedBudget, Message: "orçamento de bytes da rodada esgotado"})
+				}
+			}
+			omitted = append(omitted, b)
+			continue
+		}
+		prepared, calls, err := prepareRecoveryExtraction(ctx, p, plan.Targets, provider)
+		providerCalls += calls
+		if err != nil {
+			return domain.RecoveryRoundResult{}, err
+		}
+		p = prepared
+		p.Budget.TotalBytes = remaining
+		for _, target := range plan.Targets {
+			if target.Candidate == p.Repository {
+				executedTargets++
+			}
+		}
 		b, e := collectEvidence(ctx, p, provider, true)
 		if err := ctx.Err(); err != nil {
 			return domain.RecoveryRoundResult{}, err
@@ -293,9 +322,10 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		if e != nil {
 			b = domain.EvidenceBundle{SchemaVersion: "1", Repository: p.Repository, Plan: p, Failures: []domain.ExecutionFailure{{Scope: p.Repository.Key(), Stage: "recovery", Message: e.Error()}}}
 		}
+		remaining -= b.BytesRead
 		collected = append(collected, b)
 	}
-	merged, duplicates := mergeRecoveryBundles(original, collected)
+	merged, duplicates := mergeRecoveryBundles(original, append(collected, omitted...))
 	valid := []domain.EvidenceBundle{}
 	failed := []domain.EvidenceBundle{}
 	for _, b := range merged {
@@ -318,74 +348,86 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 	}
 	diagnosis := DiagnoseInconclusive("recovery", recoveryHash(decision), decision, assessment, merged, rules)
 	metrics := recoveryMetrics(plan, before, decision, original, collected, duplicates, diagnosis, providerCalls)
+	metrics.TargetsExecuted = executedTargets
 	return domain.RecoveryRoundResult{Bundles: merged, Assessment: assessment, Decision: decision, Diagnosis: diagnosis, Metrics: metrics}, nil
 }
 
-func recoveryExtractionPlans(ctx context.Context, plan domain.EvidenceRecoveryPlan, original []domain.EvidenceBundle, provider domain.ContentProvider) ([]domain.EvidenceExtractionPlan, int, error) {
+func recoveryExtractionPlans(plan domain.EvidenceRecoveryPlan, original []domain.EvidenceBundle) []domain.EvidenceExtractionPlan {
 	byRepo := map[string]domain.EvidenceBundle{}
 	for _, b := range original {
-		byRepo[b.Repository.Owner+"/"+b.Repository.Repo] = b
+		byRepo[b.Repository.Key()] = b
 	}
 	grouped := map[string][]domain.RecoveryTarget{}
 	for _, t := range plan.Targets {
-		grouped[t.Candidate.Owner+"/"+t.Candidate.Repo] = append(grouped[t.Candidate.Owner+"/"+t.Candidate.Repo], t)
+		grouped[t.Candidate.Key()] = append(grouped[t.Candidate.Key()], t)
 	}
 	keys := []string{}
 	for k := range grouped {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	calls := 0
 	out := []domain.EvidenceExtractionPlan{}
 	for _, key := range keys {
 		targets := grouped[key]
 		base := byRepo[key]
 		candidate := base.Plan.Candidate
 		if candidate.Owner == "" {
-			candidate = domain.RepositoryCandidate{Owner: targets[0].Candidate.Owner, Repo: targets[0].Candidate.Repo, CommitID: targets[0].Candidate.Commit, URL: "https://github.com/" + key}
+			candidate = domain.RepositoryCandidate{Owner: targets[0].Candidate.Owner, Repo: targets[0].Candidate.Repo, CommitID: targets[0].Candidate.Commit, URL: "https://github.com/" + targets[0].Candidate.Owner + "/" + targets[0].Candidate.Repo}
 		}
 		ref := targets[0].Candidate
+		candidate.CommitID = ref.Commit
 		extraction := []domain.ExtractionTarget{}
-		needsTree := false
 		for _, t := range targets {
 			if t.Path == "@repository-metadata" {
 				continue
 			}
 			if t.Path != "" {
 				extraction = append(extraction, domain.ExtractionTarget{Path: t.Path, Kind: t.Kind, Capabilities: []string{t.Capability}, Reason: "recovery " + t.FindingID})
-			} else {
-				needsTree = true
-			}
-		}
-		if needsTree {
-			if err := ctx.Err(); err != nil {
-				return nil, calls, err
-			}
-			tree, e := provider.FetchTree(ctx, candidate)
-			if err := ctx.Err(); err != nil {
-				return nil, calls + 1, err
-			}
-			calls++
-			if e == nil {
-				for _, node := range tree {
-					if node.Type != "file" {
-						continue
-					}
-					for _, t := range targets {
-						if t.Path != "" {
-							continue
-						}
-						if recoveryPathMatches(node.Path, t) {
-							extraction = append(extraction, domain.ExtractionTarget{Path: node.Path, Kind: t.Kind, Capabilities: []string{t.Capability}, Reason: "recovery " + t.FindingID})
-						}
-					}
-				}
 			}
 		}
 		extraction = dedupeExtractionTargets(extraction)
 		out = append(out, domain.EvidenceExtractionPlan{SchemaVersion: "1", Repository: ref, Candidate: candidate, Decision: base.Plan.Decision, Targets: extraction, Budget: domain.ExtractionBudget{Documents: plan.Policy.AdditionalDocuments, CodeFiles: plan.Policy.AdditionalCodeFiles, Tests: plan.Policy.AdditionalTests, Manifests: 2, TotalBytes: plan.Policy.AdditionalBytes, TreeDepth: plan.Policy.AdditionalTreeDepth}})
 	}
-	return out, calls, nil
+	return out
+}
+
+func prepareRecoveryExtraction(ctx context.Context, p domain.EvidenceExtractionPlan, targets []domain.RecoveryTarget, provider domain.ContentProvider) (domain.EvidenceExtractionPlan, int, error) {
+	derived := []domain.RecoveryTarget{}
+	for _, target := range targets {
+		if target.Candidate == p.Repository && target.Path == "" {
+			derived = append(derived, target)
+		}
+	}
+	if len(derived) == 0 {
+		return p, 0, nil
+	}
+	if err := ctx.Err(); err != nil {
+		return p, 0, err
+	}
+	if provider == nil {
+		return p, 0, domain.ErrInvalidRunInput
+	}
+	tree, err := provider.FetchTree(ctx, p.Candidate)
+	if contextErr := ctx.Err(); contextErr != nil {
+		return p, 1, contextErr
+	}
+	if errors.Is(err, domain.ErrIntegrity) {
+		return p, 1, domain.ErrIntegrity
+	}
+	if err == nil {
+		for _, node := range tree {
+			if node.Type != "file" {
+				continue
+			}
+			for _, target := range derived {
+				if recoveryPathMatches(node.Path, target) {
+					p.Targets = append(p.Targets, domain.ExtractionTarget{Path: node.Path, Kind: target.Kind, Capabilities: []string{target.Capability}, Reason: "recovery " + target.FindingID})
+				}
+			}
+		}
+	}
+	p.Targets = dedupeExtractionTargets(p.Targets)
+	return p, 1, nil
 }
 func recoveryPathMatches(path string, t domain.RecoveryTarget) bool {
 	kind := classifyEvidencePath(path)
@@ -422,13 +464,17 @@ func dedupeExtractionTargets(in []domain.ExtractionTarget) []domain.ExtractionTa
 func mergeRecoveryBundles(original, newBundles []domain.EvidenceBundle) ([]domain.EvidenceBundle, int) {
 	byRepo := map[string]domain.EvidenceBundle{}
 	for _, b := range original {
-		byRepo[b.Repository.Owner+"/"+b.Repository.Repo] = b
+		b.Items = append([]domain.CollectedEvidence(nil), b.Items...)
+		b.Targets = append([]domain.CollectionTargetResult(nil), b.Targets...)
+		b.Failures = append([]domain.ExecutionFailure(nil), b.Failures...)
+		byRepo[b.Repository.Key()] = b
 	}
 	duplicates := 0
 	for _, n := range newBundles {
-		key := n.Repository.Owner + "/" + n.Repository.Repo
+		key := n.Repository.Key()
 		b := byRepo[key]
 		if b.Repository.Owner == "" {
+			n.Items = append([]domain.CollectedEvidence(nil), n.Items...)
 			byRepo[key] = n
 			continue
 		}

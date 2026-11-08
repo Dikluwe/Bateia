@@ -652,8 +652,13 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	}
 	if metadata, err := json.Marshal(plan.Candidate); err == nil {
 		content := string(metadata)
-		bundle.Items = append(bundle.Items, domain.CollectedEvidence{Kind: domain.EvidenceRepository, Ref: plan.Repository, Path: "@repository-metadata", Content: content, ContentHash: contentHash(content)})
-		bundle.BytesRead += int64(len(content))
+		if int64(len(content)) <= plan.Budget.TotalBytes {
+			bundle.Items = append(bundle.Items, domain.CollectedEvidence{Kind: domain.EvidenceRepository, Ref: plan.Repository, Path: "@repository-metadata", Content: content, ContentHash: contentHash(content)})
+			bundle.BytesRead += int64(len(content))
+		} else {
+			bundle.Complete = false
+			bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: domain.ExtractionTarget{Path: "@repository-metadata", Kind: domain.EvidenceRepository}, Status: domain.TargetSkippedBudget, Message: "metadados integrais excedem orçamento de bytes"})
+		}
 	}
 	paths := make([]string, 0)
 	kinds := map[string]domain.EvidenceKind{}
@@ -673,6 +678,9 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	implementationQuery := ""
 	var requirementSelections []requirementPathSelection
 	tree, err := provider.FetchTree(ctx, plan.Candidate)
+	if contextErr := ctx.Err(); contextErr != nil {
+		return domain.EvidenceBundle{}, contextErr
+	}
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "tree", Message: err.Error()})
 		bundle.Complete = false
@@ -706,7 +714,13 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 					requirements = append(requirements, target.Capabilities...)
 				}
 				implementationQuery = strings.Join(uniqueNormalizedStrings(requirements), "\n")
+				if err := ctx.Err(); err != nil {
+					return domain.EvidenceBundle{}, err
+				}
 				retrieval := RetrieveImplementationEvidence(ctx, provider, plan.Candidate, implementationQuery)
+				if err := ctx.Err(); err != nil {
+					return domain.EvidenceBundle{}, err
+				}
 				bundle.ImplementationSearch = &retrieval
 				rank := map[string]int{}
 				for _, h := range retrieval.Hits {

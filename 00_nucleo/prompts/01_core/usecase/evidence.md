@@ -89,3 +89,7 @@ Critérios compartilhados vigentes: [EVD-01–05](../../../contratos/coleta-e-se
 ## 0159 — Cancelamento, targets congelados e recibos
 
 Aplicar o [passo0159](../../../passos/0159-fechar-cancelamento-escopo-e-recibos.md). O responsável recheck verifica contexto antes/depois das portas e da conclusão; cancelamento não publica VERIFIED. Recuperação usa coleta interna restrita a targets congelados, sem ampliar caminhos ou aceitar extras da resposta; busca geral conserva seu modo. Fontes de vizinhança exigem correspondência um-para-um dos recibos COLLECTED primários por connector/candidate, rejeitando órfãos, duplicatas, nil e estados incoerentes antes dos efeitos. Preservar schemas, hashes de registros existentes e limites de força de evidência.
+
+## 0160 — Interrupção e teto de metadados
+
+Aplicar EVD-07/09 do [contrato de coleta](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#revisões-interrupção-e-orçamento--0160). Conferir contexto imediatamente após árvore e antes/depois da busca de implementação. TotalBytes inclui metadados: admitir JSON integral apenas se couber; omitir com SKIPPED_BUDGET e incompletude quando exceder, sem truncar JSON. Preservar regras de seleção, força de evidência e registros históricos. Origem ex-ante: [passo0160](../../../passos/0160-preservar-revisoes-e-orcamentos-de-coleta.md).

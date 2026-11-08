@@ -258,3 +258,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0102 — Ligar tarefas de revisão às declarações originais](0102-ligar-revisao-as-declaracoes-originais.md)
 - [0125 — Contexto de compilação e investigação Mesa](0125-investigar-clipping-e-transicao-gs.md)
 - [0126 — Integrar Gitee e AtomGit à descoberta](0126-integrar-gitee-e-atomgit.md)
+
+- [0160 — Preservar revisões e orçamentos de coleta](0160-preservar-revisoes-e-orcamentos-de-coleta.md) — separação repo@commit, interrupção entre portas, saldo por rodada e metadados dentro do teto; regressões sem reescrever históricos.

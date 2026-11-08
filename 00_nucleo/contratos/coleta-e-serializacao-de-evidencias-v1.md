@@ -31,3 +31,13 @@ Esses controles verificam integridade declarada e estabilidade local, sem autent
 ## Recorte congelado de recuperação — 0159
 
 Na recuperação, os caminhos explícitos ou derivados dos padrões dos targets são congelados antes da coleta. O modo interno restrito reutiliza a admissão de origem deste contrato, mas não amplia caminhos pela árvore ou pelo buscador de implementação. Resposta com caminho extra/duplicado é ErrIntegrity e não gera resultado útil. Arquivos elegíveis conhecidos fora do recorte conservam incompletude; enumeração/metadados não significam leitura desses arquivos. O modo público de amostragem geral conserva seu comportamento. O [passo0159](../passos/0159-fechar-cancelamento-escopo-e-recibos.md) e as [regressões de fronteiras](../../01_core/usecase/investigation_boundaries_regression_test.go) delimitam essa correção sem modificar registros anteriores.
+
+## Revisões, interrupção e orçamento — 0160
+
+O [passo0160](../passos/0160-preservar-revisoes-e-orcamentos-de-coleta.md) exige identidade repo@commit completa no diagnóstico, preparação e união da recuperação. Bundles de revisões diferentes não são fundidos, mesmo com paths/hashes iguais. Leituras preparatórias usam o pin do target; resultados conservam a origem dos itens e não alteram as entradas.
+
+A coleta geral observa contexto após árvore e antes/depois da busca de implementação. Cancelamento/deadline prevalecem antes de outra porta.
+
+TotalBytes abrange os metadados: JSON que não couber é omitido integralmente com SKIPPED_BUDGET e Complete=false. Nenhum JSON truncado é admitido; BytesRead fica dentro do teto. AdditionalBytes é um saldo compartilhado entre as coletas da rodada, consumido em ordem canônica de repo@commit. Sem saldo, gerar omissão por orçamento, sem portas de coleta e sem contar esses targets como executados. Bytes de bundles originais não são cobrados novamente. Falta de orçamento conserva inconclusão.
+
+Critérios EVD-06 (revisões e isolamento), EVD-07 (interrupção entre portas), EVD-08 (saldo por rodada) e EVD-09 (metadados dentro do teto) são consumidos pelas [regressões0160](../../01_core/usecase/evidence_budget_revision_regression_test.go). Schemas e registros históricos permanecem intactos; somente novas execuções seguem a correção.

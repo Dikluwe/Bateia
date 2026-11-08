@@ -29,7 +29,7 @@ Regras do parsing:
 1. Extrair todas as ocorrências de `<PackageReference Include="PackageName" Version="1.2.3" />` ou elementos `<PackageReference>` expandidos.
 2. Identificar pacotes de teste (ex: `xunit`, `nunit`, `MSTest.TestFramework`, `Microsoft.NET.Test.Sdk`) e marcar como tipo `"dev"`, demais como `"direct"`.
 3. Preencher `Language: "csharp"`.
-4. Preencher `ConsultadoEm` com a data/hora UTC atual.
+4. Manter `ConsultadoEm` zerado; o instante de coleta é fornecido explicitamente no dispatcher (ADR-0011).
 
 ---
 
@@ -55,3 +55,7 @@ Então retorna um Manifest com Language "csharp", 1 dependência "direct" (Entit
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para C# / .NET | csharp.go, csharp_test.go |
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.

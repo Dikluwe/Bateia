@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/cpp.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -69,7 +68,6 @@ func ParseCMakeListsTxt(ref domain.CommitRef, content string) (*domain.Manifest,
 		Ref:          ref,
 		Language:     lang,
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -113,7 +111,6 @@ func ParseVcpkgJson(ref domain.CommitRef, content string) (*domain.Manifest, err
 		ModuleName:   vcpkg.Name,
 		Language:     "cpp",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -155,7 +152,6 @@ func ParseConanfileTxt(ref domain.CommitRef, content string) (*domain.Manifest, 
 		ModuleName:   ref.Repo,
 		Language:     lang,
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

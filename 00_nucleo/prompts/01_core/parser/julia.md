@@ -16,3 +16,7 @@ Parsing de manifestos `Project.toml` do ecossistema Julia.
 
 - **L₁ (Núcleo)**: Função estritamente pura. Recebe string de conteúdo e retorna `*domain.Manifest`.
 - Proibido I/O ou dependências externas.
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.

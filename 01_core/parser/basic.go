@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/basic.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,7 +10,6 @@ package parser
 import (
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -26,7 +25,6 @@ func ParseBasicVbp(ref domain.CommitRef, content string) (*domain.Manifest, erro
 		ModuleName:   ref.Repo,
 		Language:     "basic",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

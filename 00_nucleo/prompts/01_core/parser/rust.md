@@ -33,7 +33,7 @@ Regras do parsing:
 5. Extrair dependências de build sob `[build-dependencies]`.
 6. Suportar sintaxe simples (`tokio = "1.0"`) e sintaxe inline table (`serde = { version = "1.0", features = ["derive"] }`).
 7. Preencher `Language: "rust"`.
-8. Preencher `ConsultadoEm` com a data/hora UTC atual.
+8. Manter `ConsultadoEm` zerado; o instante de coleta é fornecido explicitamente no dispatcher (ADR-0011).
 
 ---
 
@@ -59,3 +59,7 @@ Então retorna um Manifest com ModuleName "axum-app", Language "rust", 1 depend�
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Rust | rust.go, rust_test.go |
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.

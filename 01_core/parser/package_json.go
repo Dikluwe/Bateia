@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/package_json.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,7 +10,6 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -37,12 +36,12 @@ func ParsePackageJson(ref domain.CommitRef, content string) (*domain.Manifest, e
 		ModuleName:   pkgJson.Name,
 		Language:     "typescript",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
 	// Mapear dependências de produção (direct)
-	for name, version := range pkgJson.Dependencies {
+	for _, name := range sortedManifestKeys(pkgJson.Dependencies) {
+		version := pkgJson.Dependencies[name]
 		manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 			Name:     name,
 			Version:  version,
@@ -52,7 +51,8 @@ func ParsePackageJson(ref domain.CommitRef, content string) (*domain.Manifest, e
 	}
 
 	// Mapear dependências de desenvolvimento (dev)
-	for name, version := range pkgJson.DevDependencies {
+	for _, name := range sortedManifestKeys(pkgJson.DevDependencies) {
+		version := pkgJson.DevDependencies[name]
 		manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 			Name:     name,
 			Version:  version,
@@ -62,7 +62,8 @@ func ParsePackageJson(ref domain.CommitRef, content string) (*domain.Manifest, e
 	}
 
 	// Mapear dependências de runtime peer (peer)
-	for name, version := range pkgJson.PeerDependencies {
+	for _, name := range sortedManifestKeys(pkgJson.PeerDependencies) {
+		version := pkgJson.PeerDependencies[name]
 		manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 			Name:     name,
 			Version:  version,

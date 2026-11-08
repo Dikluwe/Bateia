@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/local/client.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 
 package local
@@ -191,7 +191,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 		if readErr != nil {
 			continue
 		}
-		manifest, parseErr := parser.ParseManifest(name, domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID}, string(data))
+		manifest, parseErr := parser.ParseManifestAt(name, domain.CommitRef{Owner: candidate.Owner, Repo: candidate.Repo, Commit: candidate.CommitID}, string(data), time.Now().UTC())
 		if parseErr != nil {
 			continue
 		}

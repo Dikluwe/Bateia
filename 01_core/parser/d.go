@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/d.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"encoding/json"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -25,7 +24,6 @@ func ParseDubJson(ref domain.CommitRef, content string) (*domain.Manifest, error
 		Ref:          ref,
 		Language:     "d",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -37,7 +35,7 @@ func ParseDubJson(ref domain.CommitRef, content string) (*domain.Manifest, error
 			manifest.ModuleName = ref.Repo
 		}
 
-		for depName := range parsed.Dependencies {
+		for _, depName := range sortedManifestKeys(parsed.Dependencies) {
 			manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 				Name:     depName,
 				Version:  "",

@@ -103,3 +103,7 @@ Então o Dispatcher chama ParseGleamToml e retorna um Manifest com Language "gle
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para Dispatcher Pattern | manifest.go, manifest_test.go |
 | 2026-07-31 | Adiciona suporte a D, Gleam, ColdFusion e ActionScript | manifest.go |
+
+## Instante de coleta — 0128
+
+Adicionar ParseManifestAt(filename string, ref domain.CommitRef, content string, collectedAt time.Time). Delegar ao mesmo parsing; somente em sucesso aplicar collectedAt.UTC(). ParseManifest e parsers específicos permanecem disponíveis com ConsultadoEm zero. Zero não autoriza consulta ao relógio. Preservar roteamento, erros e formatos.

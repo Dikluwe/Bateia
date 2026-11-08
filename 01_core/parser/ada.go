@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/ada.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -20,7 +19,6 @@ func ParseAlireToml(ref domain.CommitRef, content string) (*domain.Manifest, err
 		Ref:          ref,
 		Language:     "ada",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

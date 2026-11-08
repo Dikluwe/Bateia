@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/manifest.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"bateia/01_core/domain"
 )
@@ -243,4 +244,15 @@ func ParseManifest(filename string, ref domain.CommitRef, content string) (*doma
 	default:
 		return nil, fmt.Errorf("unsupported manifest type: %s (file: %s)", manifestType, filename)
 	}
+}
+
+// ParseManifestAt associates supplied collection metadata with pure parsing.
+// A zero collectedAt preserves an unknown instant; it never reads a clock.
+func ParseManifestAt(filename string, ref domain.CommitRef, content string, collectedAt time.Time) (*domain.Manifest, error) {
+	manifest, err := ParseManifest(filename, ref, content)
+	if err != nil {
+		return nil, err
+	}
+	manifest.ConsultadoEm = collectedAt.UTC()
+	return manifest, nil
 }

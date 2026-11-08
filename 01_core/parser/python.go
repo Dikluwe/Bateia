@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/python.md
  * @layer L1
- * @updated 2026-08-26
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,7 +10,6 @@ package parser
 import (
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -27,7 +26,6 @@ func ParsePyProjectToml(ref domain.CommitRef, content string) (*domain.Manifest,
 		Ref:          ref,
 		Language:     "python",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -83,7 +81,6 @@ func ParseRequirementsTxt(ref domain.CommitRef, content string) (*domain.Manifes
 		ModuleName:   ref.Repo,
 		Language:     "python",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

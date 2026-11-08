@@ -33,7 +33,7 @@ Regras do parsing:
 5. Mapear `devDependencies` como dependências do tipo `"dev"`.
 6. Mapear `peerDependencies` como dependências do tipo `"peer"`.
 7. Tratar erros de unmarshal com mensagem clara.
-8. Preencher `ConsultadoEm` com a data/hora UTC atual.
+8. Manter `ConsultadoEm` zerado; o instante de coleta é fornecido explicitamente no dispatcher (ADR-0011).
 
 ---
 
@@ -59,3 +59,11 @@ Então retorna um Manifest com ModuleName "express-app", Language "typescript", 
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para TypeScript | package_json.go, package_json_test.go |
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.
+
+## Ordem de dependências — 0128
+
+Iterar os objetos JSON por chaves lexicograficamente ordenadas, usando sortedManifestKeys. Preservar grupos, tipos, versões, exclusões e política de erros. A ordem anterior dos mapas Go era indeterminada; a nova ordem não modifica artefatos históricos.

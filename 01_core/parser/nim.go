@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/nim.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,13 +10,12 @@ package parser
 import (
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
 
 var (
-	nimPackageRegex = regexp.MustCompile(`(?m)^\s*packageName\s*=\s*["']([^"']+)["']`)
+	nimPackageRegex  = regexp.MustCompile(`(?m)^\s*packageName\s*=\s*["']([^"']+)["']`)
 	nimRequiresRegex = regexp.MustCompile(`requires\s+["']([^"']+)["']`)
 )
 
@@ -26,7 +25,6 @@ func ParseNimble(ref domain.CommitRef, content string) (*domain.Manifest, error)
 		Ref:          ref,
 		Language:     "nim",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

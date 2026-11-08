@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/haxe.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"encoding/json"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -25,7 +24,6 @@ func ParseHaxelibJson(ref domain.CommitRef, content string) (*domain.Manifest, e
 		Ref:          ref,
 		Language:     "haxe",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -37,7 +35,8 @@ func ParseHaxelibJson(ref domain.CommitRef, content string) (*domain.Manifest, e
 			manifest.ModuleName = ref.Repo
 		}
 
-		for depName, ver := range parsed.Dependencies {
+		for _, depName := range sortedManifestKeys(parsed.Dependencies) {
+			ver := parsed.Dependencies[depName]
 			manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 				Name:     depName,
 				Version:  ver,

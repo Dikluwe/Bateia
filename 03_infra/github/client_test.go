@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client_test.md
  * @layer L3
- * @updated 2026-08-24
+ * @updated 2026-10-28
  */
 
 package github_test
@@ -16,6 +16,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 	"bateia/03_infra/github"
@@ -166,6 +167,9 @@ func TestClient_FetchManifest_GoMod(t *testing.T) {
 	}
 	if manifest == nil {
 		t.Fatal("Manifesto retornou nil")
+	}
+	if manifest.ConsultadoEm.IsZero() || manifest.ConsultadoEm.Location() != time.UTC {
+		t.Fatalf("collector lost the UTC collection instant: %v", manifest.ConsultadoEm)
 	}
 	if manifest.Language != "go" {
 		t.Errorf("Language esperada 'go', recebeu: %s", manifest.Language)

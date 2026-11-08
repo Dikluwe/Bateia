@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/java.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,18 +10,17 @@ package parser
 import (
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
 
 var (
-	pomArtifactRegex     = regexp.MustCompile(`(?s)<artifactId>(.*?)</artifactId>`)
-	pomDependencyRegex   = regexp.MustCompile(`(?s)<dependency>(.*?)</dependency>`)
-	pomGroupRegex        = regexp.MustCompile(`(?s)<groupId>(.*?)</groupId>`)
-	pomVersionRegex      = regexp.MustCompile(`(?s)<version>(.*?)</version>`)
-	pomScopeRegex        = regexp.MustCompile(`(?s)<scope>(.*?)</scope>`)
-	gradleDepRegex       = regexp.MustCompile(`(?m)^\s*(implementation|testImplementation|api|testCompile|runtimeOnly)\s*\(?['"]([^'"]+)['"]\)?`)
+	pomArtifactRegex   = regexp.MustCompile(`(?s)<artifactId>(.*?)</artifactId>`)
+	pomDependencyRegex = regexp.MustCompile(`(?s)<dependency>(.*?)</dependency>`)
+	pomGroupRegex      = regexp.MustCompile(`(?s)<groupId>(.*?)</groupId>`)
+	pomVersionRegex    = regexp.MustCompile(`(?s)<version>(.*?)</version>`)
+	pomScopeRegex      = regexp.MustCompile(`(?s)<scope>(.*?)</scope>`)
+	gradleDepRegex     = regexp.MustCompile(`(?m)^\s*(implementation|testImplementation|api|testCompile|runtimeOnly)\s*\(?['"]([^'"]+)['"]\)?`)
 )
 
 // ParsePomXml analisa o conteúdo de um manifesto Maven pom.xml.
@@ -30,7 +29,6 @@ func ParsePomXml(ref domain.CommitRef, content string) (*domain.Manifest, error)
 		Ref:          ref,
 		Language:     "java",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -95,7 +93,6 @@ func ParseBuildGradle(ref domain.CommitRef, content string) (*domain.Manifest, e
 		ModuleName:   ref.Repo,
 		Language:     "java",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

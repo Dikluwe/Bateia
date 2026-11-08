@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/github/client.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 
 package github
@@ -190,7 +190,7 @@ func (c *Client) FetchManifest(ctx context.Context, candidate domain.RepositoryC
 			Commit: candidate.CommitID,
 		}
 
-		manifest, err := parser.ParseManifest(targetFile, ref, rawContent)
+		manifest, err := parser.ParseManifestAt(targetFile, ref, rawContent, time.Now().UTC())
 		if err != nil {
 			lastErr = err
 			continue

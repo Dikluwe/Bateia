@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/03_infra/local/client_test.md
  * @layer L3
- * @updated 2026-09-07
+ * @updated 2026-10-28
  */
 
 package local
@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"bateia/01_core/domain"
 )
@@ -41,6 +42,9 @@ func TestClientAnalyzesLocalWorktree(t *testing.T) {
 	manifest, err := client.FetchManifest(context.Background(), candidate)
 	if err != nil {
 		t.Fatalf("manifesto local: %v", err)
+	}
+	if manifest.ConsultadoEm.IsZero() || manifest.ConsultadoEm.Location() != time.UTC {
+		t.Fatalf("collector lost the UTC collection instant: %v", manifest.ConsultadoEm)
 	}
 	if manifest.ModuleName != "example.local/project" || string(manifest.Content) != "# Local Project" {
 		t.Fatalf("manifesto inesperado: %+v", manifest)

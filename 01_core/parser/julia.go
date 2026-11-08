@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/julia.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,7 +10,6 @@ package parser
 import (
 	"regexp"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -26,7 +25,6 @@ func ParseJuliaProjectToml(ref domain.CommitRef, content string) (*domain.Manife
 		Ref:          ref,
 		Language:     "julia",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

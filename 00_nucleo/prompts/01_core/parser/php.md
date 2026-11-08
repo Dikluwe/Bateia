@@ -31,7 +31,7 @@ Regras do parsing:
 3. Mapear o campo `require` como dependências do tipo `"direct"`.
 4. Mapear o campo `require-dev` como dependências do tipo `"dev"`.
 5. Preencher `Language: "php"`.
-6. Preencher `ConsultadoEm` com a data/hora UTC atual.
+6. Manter `ConsultadoEm` zerado; o instante de coleta é fornecido explicitamente no dispatcher (ADR-0011).
 
 ---
 
@@ -57,3 +57,11 @@ Então retorna um Manifest com ModuleName "laravel/laravel", Language "php", 1 d
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-31 | Criação inicial Tekt L0 para PHP | php.go, php_test.go |
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.
+
+## Ordem de dependências — 0128
+
+Iterar os objetos JSON por chaves lexicograficamente ordenadas, usando sortedManifestKeys. Preservar grupos, tipos, versões, exclusões e política de erros. A ordem anterior dos mapas Go era indeterminada; a nova ordem não modifica artefatos históricos.

@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/fsharp.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"regexp"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -25,7 +24,6 @@ func ParseFsProj(ref domain.CommitRef, content string) (*domain.Manifest, error)
 		ModuleName:   ref.Repo,
 		Language:     "fsharp",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

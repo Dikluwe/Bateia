@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/gomod.md
  * @layer L1
- * @updated 2026-07-25
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -21,7 +20,6 @@ func ParseGoMod(ref domain.CommitRef, content string) (*domain.Manifest, error) 
 		Language:     "go",
 		Content:      []byte(content),
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 	}
 
 	lines := strings.Split(content, "\n")

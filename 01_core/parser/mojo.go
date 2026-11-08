@@ -2,14 +2,13 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/mojo.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
 
 import (
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -20,7 +19,6 @@ func ParseMojoProjectToml(ref domain.CommitRef, content string) (*domain.Manifes
 		Ref:          ref,
 		Language:     "mojo",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 

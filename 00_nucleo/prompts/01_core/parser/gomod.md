@@ -31,7 +31,7 @@ Regras do parsing:
 3. Extrair dependências declaradas tanto inline (`require github.com/foo/bar v1.0.0`) quanto dentro de blocos `require (...)`.
 4. Marcar dependências que possuam o comentário `// indirect` com `Indirect: true`.
 5. Ignorar linhas em branco e comentários de cabeçalho.
-6. Preencher `ConsultadoEm` com a data/hora UTC atual.
+6. Manter `ConsultadoEm` zerado; o instante de coleta é fornecido explicitamente no dispatcher (ADR-0011).
 
 ---
 
@@ -57,3 +57,7 @@ Então retorna um Manifest com ModuleName "github.com/example/bateia", GoVersion
 | Data | Motivo | Arquivos afetados |
 |------|--------|-------------------|
 | 2026-07-25 | Criação inicial Tekt L0 | gomod.go, gomod_test.go |
+
+## Pureza temporal — 0128
+
+Não consultar o relógio neste parser. ConsultadoEm permanece zero quando a coleta não foi informada. Preservar assinatura, parsing e erros; ParseManifestAt aplica o instante explícito recebido dos coletores L3. O ADR-0011 substitui qualquer obrigação anterior de gerar a hora atual neste componente.

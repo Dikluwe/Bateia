@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/lab_extractor.md
  * @layer L1
- * @updated 2026-08-04
+ * @updated 2026-10-28
  */
 
 package parser
@@ -11,16 +11,18 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"bateia/01_core/domain"
 )
 
 // ExtractLabDataset analisa o relatório extraído em memória (Zero I/O) e compila o dataset do Lab de Projetos.
 func ExtractLabDataset(report *domain.SearchReport) *domain.LabDataset {
+	if report == nil {
+		return &domain.LabDataset{Challenges: []domain.AlgorithmChallenge{}}
+	}
 	dataset := &domain.LabDataset{
 		Query:       report.Query.Query,
-		GeneratedAt: time.Now().UTC(),
+		GeneratedAt: report.GeneratedAt,
 		Challenges:  make([]domain.AlgorithmChallenge, 0),
 	}
 

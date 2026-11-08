@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/parser/php.md
  * @layer L1
- * @updated 2026-07-31
+ * @updated 2026-10-28
  */
 
 package parser
@@ -10,7 +10,6 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"bateia/01_core/domain"
 )
@@ -35,7 +34,6 @@ func ParseComposerJson(ref domain.CommitRef, content string) (*domain.Manifest, 
 		ModuleName:   compJson.Name,
 		Language:     "php",
 		Dependencies: make([]domain.Dependency, 0),
-		ConsultadoEm: time.Now().UTC(),
 		Content:      []byte(content),
 	}
 
@@ -44,7 +42,8 @@ func ParseComposerJson(ref domain.CommitRef, content string) (*domain.Manifest, 
 	}
 
 	// Mapear dependências de produção (direct)
-	for name, version := range compJson.Require {
+	for _, name := range sortedManifestKeys(compJson.Require) {
+		version := compJson.Require[name]
 		if name == "php" || len(name) > 4 && name[:4] == "ext-" {
 			continue
 		}
@@ -57,7 +56,8 @@ func ParseComposerJson(ref domain.CommitRef, content string) (*domain.Manifest, 
 	}
 
 	// Mapear dependências de dev (dev)
-	for name, version := range compJson.RequireDev {
+	for _, name := range sortedManifestKeys(compJson.RequireDev) {
+		version := compJson.RequireDev[name]
 		manifest.Dependencies = append(manifest.Dependencies, domain.Dependency{
 			Name:     name,
 			Version:  version,

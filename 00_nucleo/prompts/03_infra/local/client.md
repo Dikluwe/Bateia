@@ -43,3 +43,7 @@ Contraexemplo observado pelo verificador: arquivo regular interno + alias intern
 ## Revisão de segurança 2026-09-26
 
 Aplicar `security.go`: árvore em lotes (máximo 20.000 entradas), sem alocar diretório inteiro antes de controlar orçamento. Exceder teto produz erro explícito, não sucesso truncado. Inventário expõe symlink/hardlink/nonregular; leitura rooted mantém alias interno mas recusa hardlinks por nlink do descritor. Extração até 100 arquivos/8 MiB (2 MiB por arquivo). Não executar Git ou herdar ambiente/configuração. BaseCommit consultivo vem de HEAD/refs/packed-refs confinados; gitdir externo fica indisponível explicitamente. Metadata não autentica bytes da worktree e certificados históricos não são atualizados.
+
+## Instante de coleta — 0128
+
+Ao ler manifesto local, adquirir instante UTC em L3 e fornecer a ParseManifestAt. Preservar raiz confinada, limites e enriquecimento de README.

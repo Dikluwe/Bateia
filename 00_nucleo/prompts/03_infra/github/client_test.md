@@ -12,3 +12,7 @@ Verificar de forma determinística o comportamento público do contrato relacion
 - não relaxar validações para satisfazer testes;
 - mudanças futuras neste consumidor devem atualizar primeiro este prompt proprietário;
 - consultar `00_nucleo/prompts/03_infra/github/client.md` apenas como contexto de domínio relacionado, não como origem deste consumidor.
+
+## Instante de coleta — 0128
+
+Verificar que FetchManifest continua retornando instante de coleta não zero e UTC registrado pelo adaptador, mesmo com parser puro.

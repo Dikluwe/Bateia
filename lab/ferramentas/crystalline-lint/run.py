@@ -15,7 +15,8 @@ def digest(path):
 
 def ensure_tool():
     manifest = json.loads((HERE / 'manifest.json').read_text())
-    assert digest(HERE / 'source.tar.gz') == manifest['archive_sha256'], 'linter source digest mismatch'
+    archive_path = HERE / manifest.get('archive_file', 'source.tar.gz')
+    assert digest(archive_path) == manifest['archive_sha256'], 'linter source digest mismatch'
     assert digest(HERE / 'go-parser.patch') == manifest['patch_sha256'], 'linter patch digest mismatch'
     identity = manifest['archive_sha256'][:16] + '-' + manifest['patch_sha256'][:16]
     cache = Path(os.environ.get('BATEIA_TOOL_CACHE', str(Path(tempfile.gettempdir()) / 'bateia-tool-cache')))
@@ -30,7 +31,7 @@ def ensure_tool():
     source = root / 'source'
     if not source.exists():
         source.mkdir()
-        with tarfile.open(HERE / 'source.tar.gz') as archive:
+        with tarfile.open(archive_path) as archive:
             archive.extractall(source, filter='data')
         subprocess.run(['git', 'apply', '--check', str(HERE / 'go-parser.patch')], cwd=source, check=True)
         subprocess.run(['git', 'apply', str(HERE / 'go-parser.patch')], cwd=source, check=True)

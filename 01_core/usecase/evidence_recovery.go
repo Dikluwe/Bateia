@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_recovery.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -12,6 +12,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -267,6 +268,12 @@ func canonicalDiagnosisHash(d domain.InconclusiveDiagnosis) string {
 }
 
 func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screening domain.ScreeningReport, original []domain.EvidenceBundle, before domain.ReuseDecisionReport, plan domain.EvidenceRecoveryPlan, provider domain.ContentProvider, rules domain.CapabilityRuleCatalog, decisionPolicy domain.ReuseDecisionPolicy) (domain.RecoveryRoundResult, error) {
+	if ctx == nil {
+		return domain.RecoveryRoundResult{}, domain.ErrInvalidRunInput
+	}
+	if err := ctx.Err(); err != nil {
+		return domain.RecoveryRoundResult{}, err
+	}
 	if len(plan.Targets) == 0 {
 		return domain.RecoveryRoundResult{}, fmt.Errorf("plano de recuperação não possui targets")
 	}
@@ -276,7 +283,13 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 	}
 	collected := []domain.EvidenceBundle{}
 	for _, p := range plans {
-		b, e := CollectEvidence(ctx, p, provider)
+		b, e := collectEvidence(ctx, p, provider, true)
+		if err := ctx.Err(); err != nil {
+			return domain.RecoveryRoundResult{}, err
+		}
+		if errors.Is(e, domain.ErrIntegrity) {
+			return domain.RecoveryRoundResult{}, domain.ErrIntegrity
+		}
 		if e != nil {
 			b = domain.EvidenceBundle{SchemaVersion: "1", Repository: p.Repository, Plan: p, Failures: []domain.ExecutionFailure{{Scope: p.Repository.Key(), Stage: "recovery", Message: e.Error()}}}
 		}
@@ -345,7 +358,13 @@ func recoveryExtractionPlans(ctx context.Context, plan domain.EvidenceRecoveryPl
 			}
 		}
 		if needsTree {
+			if err := ctx.Err(); err != nil {
+				return nil, calls, err
+			}
 			tree, e := provider.FetchTree(ctx, candidate)
+			if err := ctx.Err(); err != nil {
+				return nil, calls + 1, err
+			}
 			calls++
 			if e == nil {
 				for _, node := range tree {

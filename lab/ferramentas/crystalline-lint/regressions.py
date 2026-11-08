@@ -53,3 +53,42 @@ lab = "lab"
             assert result.returncode != 0 and '[' + expected + ']' in output, (name, output)
         print(name + ': PASS')
 print(str(len(cases)) + ' parser regression controls passed')
+
+# Exercise the new per-rule switch against a real Go gravity violation.
+# Enabling/disabling is inspected in SARIF, not inferred from a green exit code.
+import json
+for enabled in [False, True]:
+    with tempfile.TemporaryDirectory(prefix='bateia-rule-switch-') as temp:
+        root = pathlib.Path(temp)
+        (root / 'crystalline.toml').write_text('''[project]
+root = "."
+[languages]
+go = { grammar = "tree-sitter-go", enabled = true }
+[layers]
+L0 = "00_nucleo"
+L1 = "01_core"
+L2 = "02_shell"
+L3 = "03_infra"
+L4 = "04_wiring"
+lab = "lab"
+[rules]
+V3 = { enabled = ''' + str(enabled).lower() + ' }\n')
+        for relative, body in [
+            ('02_shell/cli/app.go', 'package cli;import _ "bateia/03_infra/host"'),
+            ('02_shell/cli/app_test.go', 'package cli'),
+        ]:
+            path = pathlib.Path(relative)
+            prompt = '00_nucleo/prompts/' + str(path.with_suffix('.md'))
+            (root / prompt).parent.mkdir(parents=True, exist_ok=True)
+            (root / prompt).write_text('Per-rule selection regression.\n')
+            (root / path).parent.mkdir(parents=True, exist_ok=True)
+            (root / path).write_text('/**\n * Crystalline Lineage\n * @prompt ' + prompt + '\n * @layer L2\n * @updated 2026-11-08\n */\n' + body)
+        result = subprocess.run([binary, '--checks', 'all', '--format', 'sarif', '--fail-on', 'warning', str(root)], cwd=root, capture_output=True, text=True)
+        report = json.loads(result.stdout)['runs'][0]
+        scope = report['properties']['analysisScope']
+        assert ('V3' in scope['selectedRules']) == enabled, scope
+        assert ('V3' in scope['disabledRules']) != enabled, scope
+        assert any(item['ruleId'] == 'V3' for item in report['results']) == enabled, report['results']
+        assert (result.returncode != 0) == enabled, (result.returncode, result.stderr)
+        print('rule-switch-V3-' + ('on' if enabled else 'off') + ': PASS')
+print('2 per-rule switch controls passed')

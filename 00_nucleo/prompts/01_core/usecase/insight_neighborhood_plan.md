@@ -23,3 +23,7 @@ Consumir os casos [ADM-01](../../../contratos/exploracao-de-vizinhancas-aceitaca
 ## Origem e preservação
 
 Consolidação de contratos0142–0145 confrontados com código existente, sob [passo0146](../../../passos/0146-consolidar-prompts-de-exploracao.md); não é autoria ex-ante desse código. O [texto anterior](../../../../lab/bancada/prompts/0146/before/00_nucleo__prompts__01_core__usecase__insight_neighborhood_plan.md.txt) conserva a sequência histórica. Evoluções de comportamento exigem intenção e verificação próprias antes da materialização.
+
+## 0159 — Guarda anterior de recibos
+
+Delegar ao responsável sources a verificação um-para-um dos recibos primários antes de admitir as origens. A guarda nova não possui fontes, efeitos ou política de memória. Preservar o corpo histórico de insightNeighborhoodOrigins e o gate0145; o [passo0159](../../../passos/0159-fechar-cancelamento-escopo-e-recibos.md) acrescenta a obrigação sem reescrever o congelamento0145.

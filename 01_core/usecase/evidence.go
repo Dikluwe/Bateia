@@ -600,6 +600,11 @@ func validateEvidenceCollectionPlan(plan domain.EvidenceExtractionPlan, requireS
 }
 
 func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, provider domain.ContentProvider) (domain.EvidenceBundle, error) {
+	return collectEvidence(ctx, plan, provider, false)
+}
+
+// collectEvidence keeps frozen recovery paths separate from general tree sampling.
+func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, provider domain.ContentProvider, frozen bool) (domain.EvidenceBundle, error) {
 	if ctx == nil {
 		return domain.EvidenceBundle{}, domain.ErrInvalidRunInput
 	}
@@ -675,59 +680,77 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		requirementSelections = buildRequirementPathSelections(nil, plan.RequirementQueries)
 	} else {
 		tree = canonicalEvidenceTree(tree)
-		requirementSelections = buildRequirementPathSelections(tree, plan.RequirementQueries)
-		reserveRequirementPaths(requirementSelections, plan.Budget, &paths, kinds, targetByPath, selectedPaths)
-		tree = prioritizeEvidenceTree(tree, plan.Targets)
-		if _, ok := provider.(domain.ImplementationSearcher); ok {
-			requirements := []string{}
-			for _, target := range plan.Targets {
-				requirements = append(requirements, target.Capabilities...)
-			}
-			implementationQuery = strings.Join(uniqueNormalizedStrings(requirements), "\n")
-			retrieval := RetrieveImplementationEvidence(ctx, provider, plan.Candidate, implementationQuery)
-			bundle.ImplementationSearch = &retrieval
-			rank := map[string]int{}
-			for _, h := range retrieval.Hits {
-				if _, ok := rank[h.Path]; !ok {
-					rank[h.Path] = len(rank) + 1
+		if frozen {
+			for _, node := range tree {
+				if depth := pathDepth(node.Path); depth > bundle.DepthReached {
+					bundle.DepthReached = depth
+				}
+				if node.Type != "file" || (ignoredEvidencePath(node.Path) && !explicitEvidenceDirectory(node.Path, plan.Targets)) {
+					continue
+				}
+				kind := classifyEvidencePath(node.Path)
+				if kind == domain.EvidenceFile && !isCodePath(node.Path) {
+					continue
+				}
+				if !selectedPaths[node.Path] {
+					bundle.Complete = false
 				}
 			}
-			sort.SliceStable(tree, func(i, j int) bool {
-				a, ao := rank[tree[i].Path]
-				b, bo := rank[tree[j].Path]
-				if ao != bo {
-					return ao
+		} else {
+			requirementSelections = buildRequirementPathSelections(tree, plan.RequirementQueries)
+			reserveRequirementPaths(requirementSelections, plan.Budget, &paths, kinds, targetByPath, selectedPaths)
+			tree = prioritizeEvidenceTree(tree, plan.Targets)
+			if _, ok := provider.(domain.ImplementationSearcher); ok {
+				requirements := []string{}
+				for _, target := range plan.Targets {
+					requirements = append(requirements, target.Capabilities...)
 				}
-				if ao && bo {
-					return a < b
+				implementationQuery = strings.Join(uniqueNormalizedStrings(requirements), "\n")
+				retrieval := RetrieveImplementationEvidence(ctx, provider, plan.Candidate, implementationQuery)
+				bundle.ImplementationSearch = &retrieval
+				rank := map[string]int{}
+				for _, h := range retrieval.Hits {
+					if _, ok := rank[h.Path]; !ok {
+						rank[h.Path] = len(rank) + 1
+					}
 				}
-				return false
-			})
-		}
-		for _, node := range tree {
-			if depth := pathDepth(node.Path); depth > bundle.DepthReached {
-				bundle.DepthReached = depth
+				sort.SliceStable(tree, func(i, j int) bool {
+					a, ao := rank[tree[i].Path]
+					b, bo := rank[tree[j].Path]
+					if ao != bo {
+						return ao
+					}
+					if ao && bo {
+						return a < b
+					}
+					return false
+				})
 			}
-			if node.Type != "file" || (ignoredEvidencePath(node.Path) && !explicitEvidenceDirectory(node.Path, plan.Targets)) {
-				continue
+			for _, node := range tree {
+				if depth := pathDepth(node.Path); depth > bundle.DepthReached {
+					bundle.DepthReached = depth
+				}
+				if node.Type != "file" || (ignoredEvidencePath(node.Path) && !explicitEvidenceDirectory(node.Path, plan.Targets)) {
+					continue
+				}
+				kind := classifyEvidencePath(node.Path)
+				if kind == domain.EvidenceFile && !isCodePath(node.Path) {
+					continue
+				}
+				if selectedPaths[node.Path] {
+					continue
+				}
+				target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
+				if pathDepth(node.Path) > plan.Budget.TreeDepth || !withinKindBudget(paths, kinds, kind, plan.Budget) {
+					bundle.Complete = false
+					bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: target, Status: domain.TargetSkippedBudget, Message: "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"})
+					continue
+				}
+				paths = append(paths, node.Path)
+				kinds[node.Path] = kind
+				targetByPath[node.Path] = target
+				selectedPaths[node.Path] = true
 			}
-			kind := classifyEvidencePath(node.Path)
-			if kind == domain.EvidenceFile && !isCodePath(node.Path) {
-				continue
-			}
-			if selectedPaths[node.Path] {
-				continue
-			}
-			target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
-			if pathDepth(node.Path) > plan.Budget.TreeDepth || !withinKindBudget(paths, kinds, kind, plan.Budget) {
-				bundle.Complete = false
-				bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: target, Status: domain.TargetSkippedBudget, Message: "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"})
-				continue
-			}
-			paths = append(paths, node.Path)
-			kinds[node.Path] = kind
-			targetByPath[node.Path] = target
-			selectedPaths[node.Path] = true
 		}
 	}
 	if err == nil {
@@ -761,6 +784,16 @@ func CollectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		}
 		bundle.RequirementCoverage = finalizeRequirementCoverage(requirementSelections, bundle.TreeComplete, nil)
 		return bundle, nil
+	}
+	if frozen {
+		seenReturned := map[string]bool{}
+		for _, file := range extracted.Files {
+			path := slashPath(file.Path)
+			if !selectedPaths[path] || seenReturned[path] {
+				return domain.EvidenceBundle{}, domain.ErrIntegrity
+			}
+			seenReturned[path] = true
+		}
 	}
 	filesByPath := map[string]domain.ExtractedFile{}
 	for _, file := range extracted.Files {

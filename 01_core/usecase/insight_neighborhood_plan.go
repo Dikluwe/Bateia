@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/insight_neighborhood_plan.md
  * @layer L1
- * @updated 2026-10-29
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -42,6 +42,9 @@ func admitInsightNeighborhood(request domain.InsightNeighborhoodRequest) (insigh
 		return insightNeighborhoodAdmission{Request: request}, err
 	}
 	input.ExplorationMemory = &original
+	if err := validateInsightNeighborhoodReceipts(input); err != nil {
+		return insightNeighborhoodAdmission{Request: request}, err
+	}
 	origins, err := insightNeighborhoodOrigins(input)
 	if err != nil {
 		return insightNeighborhoodAdmission{Request: request}, err

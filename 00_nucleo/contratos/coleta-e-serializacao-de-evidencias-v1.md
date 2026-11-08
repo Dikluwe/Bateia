@@ -27,3 +27,7 @@ Registros e hashes históricos não são reescritos. Formas vazias antes alterna
 | EVD-05 | Formulação salva/reaberta mantém IDs; controle populado conserva ID literal anterior | [Regressões de formulação](../../01_core/usecase/evidence_integrity_regression_test.go) |
 
 Esses controles verificam integridade declarada e estabilidade local, sem autenticar provedor remoto, comprovar comportamento, novidade ou efeito no alvo.
+
+## Recorte congelado de recuperação — 0159
+
+Na recuperação, os caminhos explícitos ou derivados dos padrões dos targets são congelados antes da coleta. O modo interno restrito reutiliza a admissão de origem deste contrato, mas não amplia caminhos pela árvore ou pelo buscador de implementação. Resposta com caminho extra/duplicado é ErrIntegrity e não gera resultado útil. Arquivos elegíveis conhecidos fora do recorte conservam incompletude; enumeração/metadados não significam leitura desses arquivos. O modo público de amostragem geral conserva seu comportamento. O [passo0159](../passos/0159-fechar-cancelamento-escopo-e-recibos.md) e as [regressões de fronteiras](../../01_core/usecase/investigation_boundaries_regression_test.go) delimitam essa correção sem modificar registros anteriores.

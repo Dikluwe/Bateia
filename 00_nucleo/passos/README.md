@@ -204,6 +204,8 @@ Cada passo deve declarar:
 
 - [0158 — Validar origem da coleta e estabilizar bundles](0158-validar-origem-e-estabilizar-bundles.md) — admissão antecipada, vínculo repo@commit e serialização estável, sem reescrever evidência histórica.
 
+- [0159 — Fechar cancelamento, escopo e recibos](0159-fechar-cancelamento-escopo-e-recibos.md) — fronteiras da investigação e linter com seleção explícita de regras.
+
 ## Complemento de navegação histórica
 
 As entradas abaixo completam a navegação para passos, adendos e verificações já existentes. Os títulos são os dos documentos originais; inclusão no índice não altera seu estado, suas evidências ou seus critérios de aceite. A sequência acima conserva as descrições e os estados anteriormente registrados.

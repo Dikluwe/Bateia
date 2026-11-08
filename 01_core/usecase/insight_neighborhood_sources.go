@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/insight_neighborhood_sources.md
  * @layer L1
- * @updated 2026-10-29
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -72,4 +72,42 @@ func insightNeighborhoodOrigins(input domain.InsightSiteReport) ([]insightLeadOr
 		}
 	}
 	return origins, nil
+}
+
+// validateInsightNeighborhoodReceipts closes the reverse edge of the historical
+// origin validator: every primary collected receipt must own exactly one bundle.
+func validateInsightNeighborhoodReceipts(input domain.InsightSiteReport) error {
+	type receiptKey struct{ connector, candidate string }
+	seen := map[receiptKey]bool{}
+	for _, r := range input.Readmes {
+		innerCollected := r.Receipt != nil && r.Receipt.Status == "COLLECTED"
+		if r.Status != "COLLECTED" && !innerCollected {
+			continue
+		}
+		key := receiptKey{r.ConnectorID, r.CandidateID}
+		if r.Status != "COLLECTED" || !innerCollected || seen[key] {
+			return domain.ErrIntegrity
+		}
+		seen[key] = true
+		matches := 0
+		if r.ConnectorID == domain.ConnectorGitHubCatalog {
+			for _, bundle := range input.Bundles {
+				for _, candidate := range input.Candidates {
+					if candidate.Selected && candidate.ID == r.CandidateID && candidate.Product.Identity.ConnectorID == r.ConnectorID && candidate.Product.Identity.ExternalID == bundle.Repository.Owner+"/"+bundle.Repository.Repo {
+						matches++
+						break
+					}
+				}
+			}
+		}
+		for _, scoped := range input.SiteContexts {
+			if scoped.CandidateID == r.CandidateID && scoped.Identity.ConnectorID == r.ConnectorID {
+				matches++
+			}
+		}
+		if matches != 1 {
+			return domain.ErrIntegrity
+		}
+	}
+	return nil
 }

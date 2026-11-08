@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/technical_recheck.md
  * @layer L1
- * @updated 2026-09-26
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -23,6 +23,12 @@ const technicalRecheckMaxBytes = 4 << 20
 // configured provider reads an explicit GitHub candidate at a full commit SHA.
 // This is a provider observation, not a cryptographic certificate on exported JSON.
 func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRecheckRequest, provider domain.ContentProvider, asOf time.Time) (domain.TechnicalSourceRecheckReport, error) {
+	if ctx == nil {
+		return domain.TechnicalSourceRecheckReport{}, domain.ErrInvalidRunInput
+	}
+	if err := ctx.Err(); err != nil {
+		return domain.TechnicalSourceRecheckReport{}, err
+	}
 	initial, err := VerifyTechnicalEvidence(req.Batch, nil, asOf)
 	if err != nil {
 		return domain.TechnicalSourceRecheckReport{}, err
@@ -98,6 +104,9 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 		// Inspect the full tree so another root license cannot be omitted from
 		// the fresh bundle to manufacture an unambiguous adoption gate.
 		tree, treeErr := provider.FetchTree(ctx, c)
+		if err := ctx.Err(); err != nil {
+			return domain.TechnicalSourceRecheckReport{}, err
+		}
 		if treeErr != nil {
 			fail("não foi possível conferir árvore da revisão: " + treeErr.Error())
 		} else {
@@ -120,7 +129,13 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 		if len(ordered) > 20 {
 			fail("releitura excede limite de 20 arquivos por candidato")
 		} else if len(bundle.Failures) == 0 {
+			if err := ctx.Err(); err != nil {
+				return domain.TechnicalSourceRecheckReport{}, err
+			}
 			extracted, readErr := provider.ExtractRepoFiles(ctx, c, ordered)
+			if err := ctx.Err(); err != nil {
+				return domain.TechnicalSourceRecheckReport{}, err
+			}
 			if readErr != nil || extracted == nil {
 				fail("provedor não devolveu os arquivos solicitados")
 			} else if extracted.Ref != ref || extracted.Stale {
@@ -150,7 +165,13 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 		sort.Slice(bundle.Items, func(i, j int) bool { return bundle.Items[i].Path < bundle.Items[j].Path })
 		report.Bundles = append(report.Bundles, bundle)
 	}
+	if err := ctx.Err(); err != nil {
+		return domain.TechnicalSourceRecheckReport{}, err
+	}
 	report.Review, err = VerifyTechnicalEvidence(req.Batch, report.Bundles, asOf)
+	if err := ctx.Err(); err != nil {
+		return domain.TechnicalSourceRecheckReport{}, err
+	}
 	for i := range report.Review.Verifications {
 		if report.Review.Verifications[i].IntegrityVerified {
 			report.Review.Verifications[i].SourceAuthentication = "PROVIDER_OBSERVED"

@@ -53,3 +53,7 @@ Os prompts de testes devem consumir estes casos e acrescentar controles independ
 ## Trabalho restante
 
 O passo0147 fecha a divergência MEM-04 e amplia controles de MEM-02, ORD-02 e SRC-01. Permanecem parciais, entre outros, a fronteira de capacidade em bytes da memória (MEM-03), combinações de fontes congeladas, precedência de omissões/quota agregada em execução (RUN-02) e tabela completa de publicação em interrupções (CLI-02). Confrontar futuros resultados com cada observável; execução verde não transforma essas lacunas em cobertura completa.
+
+## Ampliação SRC-01 — 0159
+
+O [passo0159](../passos/0159-fechar-cancelamento-escopo-e-recibos.md) acrescenta controles de correspondência um-para-um dos recibos primários: órfãos, duplicados, nil e status divergentes são recusados antes de leituras. Consumidor: [regressões de fronteiras](../../01_core/usecase/investigation_boundaries_regression_test.go). As demais variantes parciais de SRC-01 continuam com os limites registrados acima.

@@ -23,3 +23,9 @@ Consumir os casos [ADM-01](../../../contratos/exploracao-de-vizinhancas-aceitaca
 ## Origem e preservação
 
 Consolidação de contratos0142–0145 confrontados com código existente, sob [passo0146](../../../passos/0146-consolidar-prompts-de-exploracao.md); não é autoria ex-ante desse código. O [texto anterior](../../../../lab/bancada/prompts/0146/before/00_nucleo__prompts__01_core__usecase__insight_neighborhood_sources.md.txt) conserva a sequência histórica. Evoluções de comportamento exigem intenção e verificação próprias antes da materialização.
+
+## 0159 — Cancelamento, targets congelados e recibos
+
+Aplicar o [passo0159](../../../passos/0159-fechar-cancelamento-escopo-e-recibos.md). O responsável recheck verifica contexto antes/depois das portas e da conclusão; cancelamento não publica VERIFIED. Recuperação usa coleta interna restrita a targets congelados, sem ampliar caminhos ou aceitar extras da resposta; busca geral conserva seu modo. Fontes de vizinhança exigem correspondência um-para-um dos recibos COLLECTED primários por connector/candidate, rejeitando órfãos, duplicatas, nil e estados incoerentes antes dos efeitos. Preservar schemas, hashes de registros existentes e limites de força de evidência.
+
+A guarda validateInsightNeighborhoodReceipts pertence a este responsável e é chamada pela admissão antes do verificador de origens. Ela conta os pares primários por sítio/candidato e rejeita recibos órfãos, repetidos ou com estado incoerente. O corpo original de insightNeighborhoodOrigins permanece como controle histórico0145; a extensão não relaxa suas validações.

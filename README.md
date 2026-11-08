@@ -32,6 +32,7 @@ Comece pelo [mapa de documentação](00_nucleo/documentacao/README.md), que reú
 | Encontrar referências para uma pergunta | `idea insights discover` — [primeiro uso](00_nucleo/documentacao/investigar-software.md#encontrar-referências) |
 | Continuar uma trilha já encontrada | `idea insights expand` — [continuação](00_nucleo/documentacao/investigar-software.md#continuar-uma-trilha) |
 | Explorar código/documentos já coletados | `idea insights explore` — [contexto para IA](00_nucleo/documentacao/investigar-software.md#explorar-material-coletado) |
+| Coletar fontes e preparar a exploração na mesma chamada | `idea evidence collect --question` — [coleta com exploração](00_nucleo/documentacao/investigar-software.md#atualizar-a-exploração-depois-de-coletar) |
 | Investigar princípios de algoritmos e decisões | `--algorithm-ideas` e `idea insights formulate` — [guia](00_nucleo/documentacao/investigar-software.md#investigar-princípios-de-algoritmos-e-decisões) |
 | Consultar todas as opções e exemplos | [Referência de comandos](00_nucleo/documentacao/referencia-comandos.md) |
 | Desenvolver ou verificar uma mudança | [Engenharia](00_nucleo/documentacao/engenharia.md), `make verify` e [mapa de responsabilidades](00_nucleo/arquitetura/README.md) |
@@ -48,7 +49,11 @@ GOCACHE=/tmp/bateia-go-cache go build -o /tmp/bateia ./04_wiring
   --output /tmp/descoberta-insights.json
 ```
 
-O comando consulta o GitHub e tenta coletar READMEs em commits fixados. As consultas não são traduzidas: use termos na língua das fontes. O JSON contém material para a IA interpretar, tentativas e lacunas; uma execução concluída pode entregar conteúdo parcial. Veja os [limites e o passo seguinte](00_nucleo/documentacao/investigar-software.md).
+O comando precisa de rede, consulta o GitHub e tenta coletar READMEs em commits fixados. O token GitHub é opcional, sujeito às quotas do serviço; pode ser configurado em `GITHUB_TOKEN` pelo ambiente ou pelo `.env` local.
+
+A descoberta usa `context-v2` por padrão: combina termos da pergunta em consultas menores e prioriza correspondência literal no nome, descrição e tópicos dos repositórios antes da variedade. As consultas não são traduzidas: use termos na língua das fontes. `--query-policy lexical-v1` permite reproduzir a política anterior. O JSON contém material para a IA interpretar, tentativas e lacunas; uma execução concluída pode entregar conteúdo parcial. Veja os [limites e o passo seguinte](00_nucleo/documentacao/investigar-software.md).
+
+Para fontes já escolhidas em um plano, `idea evidence collect --plan plano.json --question 'pergunta da investigação' --output coleta.json` reúne `bundles` e `exploration`, com revisão de alternativas ativa. Sem `--question`, a saída permanece uma lista de bundles. O [guia de coleta com exploração](00_nucleo/documentacao/investigar-software.md#atualizar-a-exploração-depois-de-coletar) detalha o formato e os limites; o comando não faz busca adicional nem chama um modelo.
 
 ## O que está disponível
 
@@ -60,6 +65,11 @@ O comando consulta o GitHub e tenta coletar READMEs em commits fixados. As consu
 | Analyze/compare | Organiza mecanismos e observações declaradas, hipóteses e perguntas de validação | Depende de entradas fornecidas e catálogo limitado; não demonstra efeito no alvo |
 | Decisão de reúso | Dossiê e alternativas sob política explícita | Evidência insuficiente permanece inconclusiva |
 | CLI, MCP e execução durável | Interfaces e lifecycle conforme os contratos de cada jornada | A existência de CLI não implica paridade completa de ferramentas MCP |
+
+## Demonstrações recentes
+
+- [0155 — Princípios de algoritmos e decisões no XERJ](lab/bancada/insights/algoritmos-xerj-2026-11-08/README.md): formulação com evidências de fonte e alvo, resultando em uma hipótese condicional de leitura de postings e uma confirmação de WAND já existente. Nenhuma melhoria de desempenho foi demonstrada.
+- [0156 — Bateia encontra a fonte, XERJ recupera o mecanismo](lab/bancada/insights/bateia-xerj-postings-2026-11-08/README.md): descoberta de uma referência sobre postings e recuperação de trechos no mesmo commit. Demonstração sequencial assistida por operador, com contexto anterior; não mede ganho de desempenho ou exclusividade das ferramentas.
 
 ## Onde trabalhar
 

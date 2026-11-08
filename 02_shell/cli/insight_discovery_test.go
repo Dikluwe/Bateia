@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/insight_discovery_test.md
  * @layer L2
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package cli
 
@@ -14,6 +14,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -117,5 +118,80 @@ func TestInsightDiscoveryCLIBlocksSecretsWithoutReplacingOutput(t *testing.T) {
 	saved, _ := os.ReadFile(output)
 	if err == nil || string(saved) != "preserve" || stdout.Len() != 0 || strings.Contains(err.Error(), secret) {
 		t.Fatal("secret leaked or protected output replaced")
+	}
+}
+
+func TestInsightDiscoveryCLIBooleanDuplicatesNeverReachProvidersOrFactory(t *testing.T) {
+	for _, flags := range [][]string{
+		{"--algorithm-ideas", "--algorithm-ideas"},
+		{"--algorithm-ideas=true", "--algorithm-ideas=true"},
+		{"--algorithm-ideas=false", "--algorithm-ideas=false"},
+		{"--algorithm-ideas", "-algorithm-ideas=false"},
+		{"-algorithm-ideas=false", "--algorithm-ideas"},
+	} {
+		for _, existing := range []bool{false, true} {
+			t.Run(strings.Join(flags, "/")+"/existing="+strconv.FormatBool(existing), func(t *testing.T) {
+				output := filepath.Join(t.TempDir(), "result.json")
+				if existing {
+					if err := os.WriteFile(output, []byte("preserve"), 0600); err != nil {
+						t.Fatal(err)
+					}
+				}
+				ports := &discoveryCLIPorts{}
+				factoryCalls := 0
+				factory := func() ([]domain.InsightSiteBinding, error) { factoryCalls++; return nil, errors.New("factory reached") }
+				var out bytes.Buffer
+				args := []string{"--question", "queue", "--sources", "all", "--output", output}
+				err := RunInsightDiscoveryCommand(append(args, flags...), &out, ports, ports, factory)
+				if err == nil || !strings.Contains(err.Error(), "duplicada") || ports.calls != 0 || factoryCalls != 0 || out.Len() != 0 {
+					t.Fatalf("duplicate reached effects: %v", err)
+				}
+				data, readErr := os.ReadFile(output)
+				if existing && (readErr != nil || string(data) != "preserve") || !existing && !os.IsNotExist(readErr) {
+					t.Fatal("duplicate changed output")
+				}
+			})
+		}
+	}
+}
+
+func TestInsightDiscoveryCLIBooleanFormsPreserveModes(t *testing.T) {
+	for _, value := range []string{"absent", "implicit", "true", "false", "1", "0", "bad"} {
+		t.Run(value, func(t *testing.T) {
+			output := filepath.Join(t.TempDir(), "result.json")
+			args := []string{"--question", "queue", "--query-policy", "lexical-v1", "--output", output}
+			if value == "implicit" {
+				args = append(args, "--algorithm-ideas")
+			} else if value != "absent" {
+				args = append(args, "--algorithm-ideas="+value)
+			}
+			ports := &discoveryCLIPorts{}
+			var out bytes.Buffer
+			err := RunInsightDiscoveryCommand(args, &out, ports, ports)
+			if value == "bad" {
+				if err == nil || ports.calls != 0 {
+					t.Fatal("invalid boolean reached provider")
+				}
+				if _, err := os.Stat(output); !os.IsNotExist(err) {
+					t.Fatal("invalid boolean published")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			data, err := os.ReadFile(output)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var report domain.InsightDiscoveryReport
+			if err := json.Unmarshal(data, &report); err != nil {
+				t.Fatal(err)
+			}
+			want := value == "implicit" || value == "true" || value == "1"
+			if report.Plan.Request.AlgorithmIdeas != want || (len(report.Exploration.AlgorithmAgenda) > 0) != want || ports.calls != 5 {
+				t.Fatal("boolean mode changed")
+			}
+		})
 	}
 }

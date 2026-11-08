@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/02_shell/cli/insight_exploration.md
  * @layer L2
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package cli
 
@@ -40,8 +40,19 @@ func runInsightExploration(args []string, stdout io.Writer) error {
 		}
 		return err
 	}))
-	algorithmIdeas := fs.Bool("algorithm-ideas", false, "Investigar princípios, condições e decisões algorítmicas")
-	review := fs.Bool("review-alternatives", false, "Comparar decisões na mesma fonte e revisar cobertura")
+	algorithmIdeas, review := false, false
+	for _, option := range []struct {
+		name, usage string
+		dest        *bool
+	}{{"algorithm-ideas", "Investigar princípios, condições e decisões algorítmicas", &algorithmIdeas}, {"review-alternatives", "Comparar decisões na mesma fonte e revisar cobertura", &review}} {
+		fs.BoolFunc(option.name, option.usage, once(option.name, func(value string) error {
+			parsed, err := strconv.ParseBool(value)
+			if err == nil {
+				*option.dest = parsed
+			}
+			return err
+		}))
+	}
 	familiar := []string{}
 	fs.Func("familiar", "Abordagem habitual; flag repetível", func(value string) error { familiar = append(familiar, value); return nil })
 	if err := fs.Parse(args); err != nil {
@@ -53,7 +64,7 @@ func runInsightExploration(args []string, stdout io.Writer) error {
 	if err := validateDecisionTraceOutput(output, bundles); err != nil {
 		return err
 	}
-	request := domain.InsightExplorationRequest{SchemaVersion: "1", Question: question, FamiliarApproaches: familiar, MaxPassages: maximum, ReviewAlternatives: *review, AlgorithmIdeas: *algorithmIdeas}
+	request := domain.InsightExplorationRequest{SchemaVersion: "1", Question: question, FamiliarApproaches: familiar, MaxPassages: maximum, ReviewAlternatives: review, AlgorithmIdeas: algorithmIdeas}
 	if bundles != "" {
 		if err := readStrictIntakeJSON(bundles, &request.Bundles); err != nil {
 			return err

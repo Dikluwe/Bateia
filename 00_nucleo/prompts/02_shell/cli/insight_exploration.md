@@ -9,3 +9,7 @@ Adaptar flag --review-alternatives booleana ao pedido L1; sem flag preservar com
 
 ## 0155 — Ideias de algoritmos
 Flag --algorithm-ideas booleana adapta campo L1, preservando --review-alternatives e modo padrão.
+
+## 0157 — Unicidade booleana
+
+Consumir o [passo 0157](../../../passos/0157-fechar-duplicatas-e-limites-de-formulacao.md): a unicidade de flags escalares inclui booleanas, com valores implícitos ou explícitos, mesmo false e mesmo com um hífen. Rejeitar repetição no parse antes de efeitos/publicação; familiar permanece repetível. Uma ocorrência admite as formas booleanas válidas existentes.

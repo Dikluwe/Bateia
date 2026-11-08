@@ -15,3 +15,7 @@ CLI usa context-v2 por padrão e expõe --query-policy context-v2|lexical-v1. L1
 
 ## 0155 — Ideias de algoritmos
 Flag --algorithm-ideas booleana adapta campo do pedido sem lógica de raciocínio na CLI.
+
+## 0157 — Unicidade booleana
+
+Consumir o [passo 0157](../../../passos/0157-fechar-duplicatas-e-limites-de-formulacao.md): a unicidade de flags escalares inclui booleanas, com valores implícitos ou explícitos, mesmo false e mesmo com um hífen. Rejeitar repetição no parse antes de efeitos/publicação; familiar permanece repetível. Uma ocorrência admite as formas booleanas válidas existentes.

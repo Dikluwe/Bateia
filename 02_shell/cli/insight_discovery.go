@@ -23,7 +23,6 @@ func RunInsightDiscoveryCommand(args []string, stdout io.Writer, catalog domain.
 	fs.SetOutput(io.Discard)
 	request := domain.InsightDiscoveryRequest{SchemaVersion: "1", QueryPolicy: "context-v2"}
 	output := ""
-	fs.BoolVar(&request.AlgorithmIdeas, "algorithm-ideas", false, "Investigar princípios, condições e decisões")
 	sources, locale, maxCalls := "", "", 0
 	memoryPath := ""
 	var followLinks *int
@@ -37,6 +36,13 @@ func RunInsightDiscoveryCommand(args []string, stdout io.Writer, catalog domain.
 			return assign(value)
 		}
 	}
+	fs.BoolFunc("algorithm-ideas", "Investigar princípios, condições e decisões", once("algorithm-ideas", func(value string) error {
+		parsed, err := strconv.ParseBool(value)
+		if err == nil {
+			request.AlgorithmIdeas = parsed
+		}
+		return err
+	}))
 	fs.Func("query-policy", "Política de descoberta: context-v2 ou lexical-v1", once("query-policy", func(value string) error { request.QueryPolicy = value; return nil }))
 	fs.Func("question", "Pergunta", once("question", func(value string) error { request.Question = value; return nil }))
 	fs.Func("output", "Arquivo obrigatório de resultado", once("output", func(value string) error { output = value; return nil }))

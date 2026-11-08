@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-28",
+  "scope": "0129 architectural boundaries on existing worktree including 0126-0128; no sealed-gate promotion",
+  "checks": {
+    "go-test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "go-vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "go-build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/tmp/bateia-0129",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "lint": {
+      "command": "crystalline-lint --fail-on warning .",
+      "exit_code": 0,
+      "tool": "isolated validated Go parser; process-local PATH"
+    },
+    "diff-check": {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  },
+  "boundary_audit": {
+    "productive_go_files": 346,
+    "control_cases": 11,
+    "log": "boundary-audit.log"
+  },
+  "linter": {
+    "source_revision": "e53de6fd2bff9f3a87a3e8a076f5e470ce4bb7a0",
+    "patch_sha256": "87488d85b45d332ad93a43ff576cc9822651a40ad7147960930e96b50dd4ccb6",
+    "library_tests_passed": 671,
+    "parser_controls_passed": 11,
+    "reproduction": "reproduce-lint.sh",
+    "global_installation_modified": false
+  },
+  "preserved_certified_source": {
+    "01_core/usecase/recommendation.go": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b"
+  },
+  "environment": {
+    "git_signing_disabled_only_in_test_process": true,
+    "loopback_tests_permitted": true,
+    "build_output": "/tmp/bateia-0129"
+  },
+  "limits": [
+    "CLI library consumers must compose CommandHost at startup",
+    "Missing temporal runtime leaves metadata unknown and refuses requested deadlines",
+    "Structural checks do not prove all business semantics or product utility",
+    "Protected .agents/AGENTS.md replacement rejected by automatic review; file unchanged"
+  ],
+  "lineage": "lineage.json",
+  "materialization_hashes": "source-hashes.json"
+}

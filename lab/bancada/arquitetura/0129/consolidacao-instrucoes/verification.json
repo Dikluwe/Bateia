@@ -1,0 +1,48 @@
+{
+  "checks": {
+    "lint": {
+      "command": [
+        "crystalline-lint",
+        "--fail-on",
+        "warning",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/tmp/bateia-agents-consolidado",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "lint_tool": "parser Go corrigido e validado conforme reprodução 0129; instalação global intacta"
+}

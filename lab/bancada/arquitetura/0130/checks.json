@@ -1,0 +1,54 @@
+{
+  "lint": {
+    "command": [
+      "crystalline-lint",
+      "--fail-on",
+      "warning",
+      "."
+    ],
+    "exit_code": 0
+  },
+  "boundaries": {
+    "command": [
+      "go",
+      "test",
+      "-v",
+      "./lab/bancada/arquitetura/0129/boundaries"
+    ],
+    "exit_code": 0
+  },
+  "test": {
+    "command": [
+      "go",
+      "test",
+      "./..."
+    ],
+    "exit_code": 0
+  },
+  "vet": {
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0
+  },
+  "build": {
+    "command": [
+      "go",
+      "build",
+      "-o",
+      "/tmp/bateia-0130",
+      "./04_wiring"
+    ],
+    "exit_code": 0
+  },
+  "diff": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0
+  }
+}

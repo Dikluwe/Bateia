@@ -1,0 +1,208 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_followups.md
+ * @layer L1
+ * @updated 2026-10-28
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"context"
+	"errors"
+	"sort"
+)
+
+func beginInsightExplorationMemory(report *domain.InsightSiteReport) {
+	memory, _ := ValidateInsightExplorationMemory(report.Plan.Request.Memory)
+	memory.Generation++
+	report.ExplorationMemory = &memory
+}
+func insightMemoryReadState(report *domain.InsightSiteReport, identity domain.ProductIdentity) string {
+	if entry := insightMemoryFind(report.ExplorationMemory, identity); entry != nil {
+		if entry.State == "EXAMINED" {
+			return "PREVIOUSLY_EXAMINED"
+		}
+		if entry.State == "DISCARDED" {
+			return "MEMORY_DISCARDED"
+		}
+	}
+	return ""
+}
+func runInsightFollowups(ctx context.Context, report *domain.InsightSiteReport, bindings map[string]domain.InsightSiteBinding) (bool, error) {
+	order := rememberInsightReferenceLeads(report)
+	pending := []domain.InsightMemoryEntry{}
+	for _, entry := range report.ExplorationMemory.Entries {
+		if entry.State == "PENDING" && entry.Lead != nil {
+			pending = append(pending, entry)
+		}
+	}
+	return runInsightFollowupQueue(ctx, report, bindings, pending, order)
+}
+
+func rememberInsightReferenceLeads(report *domain.InsightSiteReport) map[string]int {
+	for _, lead := range report.ReferenceLeads {
+		entry := insightMemoryRemember(report, lead.Target)
+		if entry != nil && entry.Lead == nil {
+			copy := lead
+			entry.Lead = &copy
+			if !insightMemoryFits(report.ExplorationMemory) {
+				entry.Lead = nil
+				insightMemoryCapacity(report)
+			}
+		}
+	}
+	order := map[string]int{}
+	for i, lead := range report.ReferenceLeads {
+		if _, ok := order[insightMemoryKey(lead.Target)]; !ok {
+			order[insightMemoryKey(lead.Target)] = i
+		}
+	}
+	return order
+}
+
+func sortInsightFollowupQueue(report *domain.InsightSiteReport, bindings map[string]domain.InsightSiteBinding, pending []domain.InsightMemoryEntry, order, distances map[string]int) {
+	selected := map[string]bool{}
+	for _, source := range report.Plan.Sources {
+		selected[source.ID] = true
+	}
+	eligible := func(entry domain.InsightMemoryEntry) bool {
+		b := bindings[entry.Identity.ConnectorID]
+		return selected[entry.Identity.ConnectorID] && (b.RepositoryReader != nil || b.FollowReader != nil)
+	}
+	sort.Slice(pending, func(i, j int) bool {
+		a, b := pending[i], pending[j]
+		if eligible(a) != eligible(b) {
+			return eligible(a)
+		}
+		if distances != nil && distances[a.ID] != distances[b.ID] {
+			return distances[a.ID] < distances[b.ID]
+		}
+		if a.ReadAttempts != b.ReadAttempts {
+			return a.ReadAttempts < b.ReadAttempts
+		}
+		if a.FirstGeneration != b.FirstGeneration {
+			return a.FirstGeneration < b.FirstGeneration
+		}
+		ai, aok := order[insightMemoryKey(a.Identity)]
+		bi, bok := order[insightMemoryKey(b.Identity)]
+		if aok != bok {
+			return aok
+		}
+		if aok && ai != bi {
+			return ai < bi
+		}
+		return a.ID < b.ID
+	})
+}
+
+func runInsightFollowupQueue(ctx context.Context, report *domain.InsightSiteReport, bindings map[string]domain.InsightSiteBinding, pending []domain.InsightMemoryEntry, order map[string]int, priorities ...map[string]int) (bool, error) {
+	var distances map[string]int
+	if len(priorities) > 0 {
+		distances = priorities[0]
+	}
+	sortInsightFollowupQueue(report, bindings, pending, order, distances)
+	selected := map[string]bool{}
+	for _, source := range report.Plan.Sources {
+		selected[source.ID] = true
+	}
+	bytes, documents := 0, 0
+	for _, b := range report.Bundles {
+		bytes += int(b.BytesRead)
+		documents++
+	}
+	for _, s := range report.SiteContexts {
+		bytes += int(s.Bundle.BytesRead)
+		documents++
+	}
+	failed, attempts := false, 0
+	for _, entry := range pending {
+		if len(report.Followups) >= 16 {
+			report.Gaps = append(report.Gaps, "FOLLOWUP_PLAN_LIMITED")
+			break
+		}
+		follow := domain.InsightFollowup{EntryID: entry.ID, Identity: entry.Identity, Status: "FOLLOWUP_BUDGET", Cards: []domain.InsightReadingCard{}}
+		if entry.Lead != nil {
+			follow.LeadID = entry.Lead.ID
+		}
+		reader := bindings[entry.Identity.ConnectorID].RepositoryReader
+		if entry.Identity.ConnectorID == domain.ConnectorGitHubCatalog {
+			reader = bindings[entry.Identity.ConnectorID].FollowReader
+		}
+		switch {
+		case ctx.Err() != nil:
+			follow.Status = "NOT_STARTED"
+		case !selected[entry.Identity.ConnectorID]:
+			follow.Status = "SOURCE_NOT_SELECTED"
+		case reader == nil:
+			follow.Status = "READER_UNAVAILABLE"
+		case attempts >= *report.Plan.Request.FollowLinks:
+		case documents >= 8:
+			follow.Status = "DOCUMENT_BUDGET"
+		case bytes >= 128<<10:
+			follow.Status = "CONTENT_BUDGET"
+		default:
+			operation, stop, err := domain.ExecutionTimeout(ctx, report.Plan.Request.Discovery.AttemptTimeout)
+			if err != nil {
+				return failed, err
+			}
+			attempts++
+			candidate := domain.InsightSiteCandidate{ID: entry.ID, Product: domain.ProductCandidate{Identity: entry.Identity}}
+			receipt, bundle := collectInsightSiteReadme(operation, candidate, reader)
+			operationErr := operation.Err()
+			stop()
+			if operationErr != nil {
+				bundle = nil
+				receipt.Status = "CANCELLED"
+				if errors.Is(operationErr, context.DeadlineExceeded) {
+					receipt.Status = "TIMED_OUT"
+				}
+			}
+			if bundle != nil && bytes+receipt.Bytes > 128<<10 {
+				receipt.Status = "CONTENT_BUDGET"
+				receipt.Bytes = 0
+				bundle = nil
+			}
+			follow.Status, follow.Receipt = receipt.Status, &receipt
+			follow.Bundle = bundle
+			recordInsightMemoryObservation(report, entry.Identity, receipt.Status, bundle)
+			if bundle != nil {
+				bytes += receipt.Bytes
+				documents++
+			} else {
+				failed = true
+			}
+		}
+		report.Followups = append(report.Followups, follow)
+	}
+	// Reuse the same per-origin passage policy, including GitLab namespaces.
+	shadow := domain.InsightSiteReport{Plan: report.Plan, Exploration: report.Exploration, Gaps: []string{}}
+	occupied := len(report.Exploration.Cards)
+	for _, s := range report.SiteContexts {
+		occupied += len(s.Cards)
+	}
+	shadow.Exploration.Cards = make([]domain.InsightReadingCard, occupied)
+	for _, f := range report.Followups {
+		if f.Bundle != nil {
+			shadow.SiteContexts = append(shadow.SiteContexts, domain.InsightSiteContext{CandidateID: f.EntryID, Identity: f.Identity, Bundle: *f.Bundle})
+		}
+	}
+	if err := prepareInsightSiteContexts(&shadow); err != nil {
+		return failed, err
+	}
+	for _, scoped := range shadow.SiteContexts {
+		for i := range report.Followups {
+			f := &report.Followups[i]
+			if f.EntryID == scoped.CandidateID {
+				for _, card := range scoped.Cards {
+					card.ID = "followup_card_" + insightHash(struct{ Entry, Card string }{f.EntryID, card.ID})
+					f.Cards = append(f.Cards, card)
+				}
+			}
+		}
+	}
+	report.Gaps = append(report.Gaps, shadow.Gaps...)
+	memory := sealInsightMemory(*report.ExplorationMemory)
+	report.ExplorationMemory = &memory
+	return failed, nil
+}

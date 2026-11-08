@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-28",
+  "scope": "0130: regras de alvo local, perfil opt-in e elegibilidade de checkpoint extraídas de L2 para L1",
+  "checks": {
+    "lint": {
+      "command": [
+        "crystalline-lint",
+        "--fail-on",
+        "warning",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "boundaries": {
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./lab/bancada/arquitetura/0129/boundaries"
+      ],
+      "exit_code": 0
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/tmp/bateia-0130",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "productive_go_files_audited": 349,
+  "lint_tool": "parser Go validado/reproduzível de 0129 via PATH do processo; instalação global intacta",
+  "preservation": {
+    "baseline": "baseline.json",
+    "unchanged_consumer_and_certified_sources": "preserved-sources.json",
+    "cli_contracts_before": "cli-before.log",
+    "cli_contracts_after": "cli-after.log",
+    "materializations": "lineage.json",
+    "sealed_gates_promoted": false
+  },
+  "environment": {
+    "git_signing_disabled_only_in_test_process": true,
+    "go_cache": "/tmp/bateia-review-go-cache",
+    "build_output": "/tmp/bateia-0130"
+  },
+  "remaining_scope": [
+    "construção de manifesto/identidade e jornada do dossiê em L2",
+    "composição condicional da recomendação em L2",
+    "veredicto experimental web",
+    "separação investigação/runtime de mercado e outros pontos da revisão"
+  ]
+}

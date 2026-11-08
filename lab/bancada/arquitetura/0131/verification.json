@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-28",
+  "scope": "eight findings from the Tekt review, following 0130",
+  "findings": [
+    {
+      "point": 1,
+      "status": "closed_in_declared_scope",
+      "evidence": "0130 alternative_target.go and screening_model_policy.go"
+    },
+    {
+      "point": 2,
+      "status": "closed_in_declared_scope",
+      "evidence": "0130 evidence_checkpoint.go; 0131 recommendation_dossier*.go"
+    },
+    {
+      "point": 3,
+      "status": "closed_in_declared_scope",
+      "evidence": "web_experiment_run.go + CLI contracts"
+    },
+    {
+      "point": 4,
+      "status": "closed_in_declared_scope",
+      "evidence": "CLI delegates RunRecommendationDossier; L4 composes service"
+    },
+    {
+      "point": 5,
+      "status": "closed_in_declared_scope",
+      "evidence": "market_execution.go + configured executor tests"
+    },
+    {
+      "point": 6,
+      "status": "closed_in_declared_scope",
+      "evidence": "moved-artifacts.json"
+    },
+    {
+      "point": 7,
+      "status": "closed_in_declared_scope",
+      "evidence": "oracle-preservation.json + relocated tests"
+    },
+    {
+      "point": 8,
+      "status": "closed_in_declared_scope",
+      "evidence": "Makefile + lab/ferramentas + final/verification.json"
+    }
+  ],
+  "checks": {
+    "lint": {
+      "command": [
+        "/usr/bin/python3",
+        "lab/ferramentas/crystalline-lint/run.py",
+        "--fail-on",
+        "warning",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "architecture": {
+      "command": [
+        "go",
+        "test",
+        "-v",
+        "./lab/bancada/arquitetura/0129/boundaries",
+        "./lab/bancada/arquitetura/0131/contracts"
+      ],
+      "exit_code": 0
+    },
+    "test": {
+      "command": [
+        "go",
+        "test",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "vet": {
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "go",
+        "build",
+        "-o",
+        "/repos/Antigravity/Bateia/lab/bancada/arquitetura/0131/final/bateia",
+        "./04_wiring"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "productive_go_files_audited": 353,
+  "lineage": "lineage.json",
+  "oracle_preservation": "oracle-preservation.json",
+  "raw_artifact_preservation": "moved-artifacts.json",
+  "tool_manifest": "../../../ferramentas/crystalline-lint/manifest.json",
+  "sealed_gates_promoted": false,
+  "limits": [
+    "structural checks and declared ownership controls are not a universal semantic proof",
+    "A1 organizational hypotheses and product usefulness retain separate contracts"
+  ],
+  "protected_source_hashes": {
+    "01_core/usecase/recommendation.go": "ad6badcdbf33019ffb0c81274961e68524da933a832c7cbbc6415b5c35491e1b",
+    "02_shell/cli/idea_recommend_test.go": "23321525de069daec00033e3e273ad226d2310a17893b636ac95159edf28030b",
+    "02_shell/cli/local_snapshot_capture_test.go": "3e4f3021ecdd39f5ec332b27896da602a471f0fc37f2cbe900ac1917a0da9097",
+    "02_shell/cli/security_tree_hash_test.go": "0e2537720bd9d5231817368d4c26a6f5a45714fc8b39635dd0a58f52a6b1cc22",
+    "02_shell/mcp/recommendation_step0025_contract_test.go": "7e9d9652ea6eac94fa144ec24d3f44e81971aaec9d13456169f8276c9c118f1f",
+    "02_shell/cli/idea_web_step0020_contract_test.go": "b5626da7f34f6c0a2b42aeebf377c461bdbfbfea3b5555d3ea8f956243fb02bb",
+    "02_shell/cli/idea_web_test.go": "dcdce11be0eb078ae016e9c2db40efbe8e7f7590a6f506cedbdc4c1b6d8b5657",
+    "02_shell/mcp/config_test.go": "6a6a5d7c24df661de5f901ee11572a5301ca79da787f3b78867608684bb6a854"
+  },
+  "configured_executor_conclusions_preserved": true,
+  "final_execution": "make verify in restricted environment, with process-local cache/output and Git fixture signing option",
+  "build_sha256": "991f44f10e523cdc823d87fed4945bdfa305a66b97f1ad0372c05477c5c461fd",
+  "lineage_records": 24
+}

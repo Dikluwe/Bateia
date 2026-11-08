@@ -1,0 +1,78 @@
+diff --git a/03_infra/go_parser.rs b/03_infra/go_parser.rs
+index b30bdf1..ee4c2fa 100644
+--- a/03_infra/go_parser.rs
++++ b/03_infra/go_parser.rs
+@@ -119,6 +119,13 @@ impl<R: PromptReader, S: PromptSnapshotReader> LanguageParser for GoParser<R, S>
+         let mut declarations = Vec::new();
+ 
+         collect_nodes(root, source, &mut imports, &mut declarations);
++        // Go test files are excluded from release builds, like Rust cfg(test).
++        for import in &mut imports {
++            import.is_test_origin = is_test_file;
++        }
++        if is_test_file {
++            declarations.clear();
++        }
+         let tokens = extract_tokens(root, source, &imports);
+ 
+         Ok(ParsedFile {
+@@ -227,33 +234,40 @@ fn collect_nodes<'a>(
+             "import_declaration" => {
+                 extract_imports(child, source, imports);
+             }
+-            "function_declaration" | "method_declaration" => {
++            "method_declaration" => {
+                 if let Some(name_node) = child.child_by_field_name("name") {
+                     if let Ok(name) = name_node.utf8_text(source) {
+-                        if name.chars().next().is_some_and(|c| c.is_uppercase()) {
+-                            declarations.push(Declaration {
+-                                name,
+-                                kind: DeclarationKind::Impl,
+-                                line: child.start_position().row + 1,
+-                            });
+-                        }
++                        declarations.push(Declaration {
++                            name,
++                            kind: DeclarationKind::Impl,
++                            line: child.start_position().row + 1,
++                        });
+                     }
+                 }
+             }
+             "type_declaration" => {
+                 let mut type_cursor = child.walk();
+                 for type_child in child.children(&mut type_cursor) {
+-                    if type_child.kind() == "type_spec" {
+-                        if let Some(name_node) = type_child.child_by_field_name("name") {
+-                            if let Ok(name) = name_node.utf8_text(source) {
+-                                if name.chars().next().is_some_and(|c| c.is_uppercase()) {
+-                                    declarations.push(Declaration {
+-                                        name,
+-                                        kind: DeclarationKind::Struct,
+-                                        line: type_child.start_position().row + 1,
+-                                    });
+-                                }
+-                            }
++                    if type_child.kind() != "type_spec" && type_child.kind() != "type_alias" {
++                        continue;
++                    }
++                    if let Some(name_node) = type_child.child_by_field_name("name") {
++                        if let Ok(name) = name_node.utf8_text(source) {
++                            let kind = if type_child.kind() == "type_alias" {
++                                DeclarationKind::TypeAlias
++                            } else if type_child
++                                .child_by_field_name("type")
++                                .is_some_and(|n| n.kind() == "interface_type")
++                            {
++                                DeclarationKind::Interface
++                            } else {
++                                DeclarationKind::Struct
++                            };
++                            declarations.push(Declaration {
++                                name,
++                                kind,
++                                line: type_child.start_position().row + 1,
++                            });
+                         }
+                     }
+                 }

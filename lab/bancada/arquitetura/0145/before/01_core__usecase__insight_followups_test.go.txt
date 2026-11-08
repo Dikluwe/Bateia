@@ -1,0 +1,267 @@
+/**
+ * Crystalline Lineage
+ * @prompt 00_nucleo/prompts/01_core/usecase/insight_followups_test.md
+ * @layer L1
+ * @updated 2026-10-28
+ */
+package usecase
+
+import (
+	"bateia/01_core/domain"
+	"context"
+	"fmt"
+	"strings"
+	"testing"
+)
+
+type memoryFollowReader struct {
+	contents map[string]string
+	resolves []string
+	reads    []string
+	fail     map[string]bool
+	hook     func()
+}
+
+func (r *memoryFollowReader) ResolveRepository(_ context.Context, id domain.ProductIdentity) (domain.RepositoryCandidate, error) {
+	r.resolves = append(r.resolves, id.ExternalID)
+	if r.hook != nil {
+		r.hook()
+	}
+	if r.fail[id.ExternalID] {
+		return domain.RepositoryCandidate{}, domain.InsightReadmeFailure{Code: "AUTH_REQUIRED"}
+	}
+	parts := strings.Split(id.ExternalID, "/")
+	return domain.RepositoryCandidate{Owner: strings.Join(parts[:len(parts)-1], "/"), Repo: parts[len(parts)-1], URL: id.CanonicalURL, CommitID: strings.Repeat("a", 40)}, nil
+}
+func (r *memoryFollowReader) FetchTree(_ context.Context, _ domain.RepositoryCandidate) ([]domain.DirectoryNode, error) {
+	return []domain.DirectoryNode{{Path: "README.md", Type: "file"}}, nil
+}
+func (r *memoryFollowReader) ExtractRepoFiles(_ context.Context, repo domain.RepositoryCandidate, _ []string) (*domain.ExtractedRepository, error) {
+	id := repo.Owner + "/" + repo.Repo
+	r.reads = append(r.reads, id)
+	text := r.contents[id]
+	if text == "" {
+		text = "# Child\nA different mechanism.\n[Grandchild](https://github.com/grand/child)\n"
+	}
+	return &domain.ExtractedRepository{Ref: domain.CommitRef{Owner: repo.Owner, Repo: repo.Repo, Commit: repo.CommitID}, Files: []domain.ExtractedFile{{Path: "README.md", Content: text}}}, nil
+}
+func followFixture() (*memoryFollowReader, []domain.InsightSiteBinding) {
+	r := &memoryFollowReader{contents: map[string]string{}, fail: map[string]bool{}}
+	root := "# Collection\n"
+	for i := 0; i < 5; i++ {
+		root += fmt.Sprintf("[Path](https://github.com/other/idea%d)\nAn additional possibility.\n", i)
+	}
+	r.contents["org/repo"] = root
+	return r, []domain.InsightSiteBinding{{Connector: &insightSiteFixtureConnector{id: domain.ConnectorGitHubCatalog}, Reader: r, FollowReader: r}}
+}
+func TestInsightFollowupsAdvanceAcrossRunsWithoutRepeatingReadings(t *testing.T) {
+	reader, bindings := followFixture()
+	request := insightSiteRequest()
+	request.Discovery.MaxPassages = 6
+	first, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || len(reader.resolves) != 2 || len(reader.reads) != 3 || len(first.Followups) != 5 || first.ExplorationMemory == nil {
+		t.Fatalf("first exploration %v %+v", err, first.Followups)
+	}
+	if _, err := ValidateInsightExplorationMemory(first.ExplorationMemory); err != nil {
+		t.Fatal("cannot load generated memory", err)
+	}
+	collected := map[string]bool{}
+	for _, f := range first.Followups {
+		if f.Bundle != nil {
+			collected[f.Identity.ExternalID] = true
+			if len(f.Cards) != 1 {
+				t.Fatal("followup card missing")
+			}
+		}
+	}
+	if len(collected) != 2 || len(first.ReferenceLeads) != 5 || len(first.ExplorationMemory.Entries) != 6 {
+		t.Fatal("recursion or scope changed")
+	}
+	request.Memory = first.ExplorationMemory
+	reader.reads = nil
+	reader.resolves = nil
+	second, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || len(reader.reads) != 2 || second.Readmes[0].Status != "PREVIOUSLY_EXAMINED" {
+		t.Fatal("second run reread root or stalled", err, reader.reads)
+	}
+	for _, id := range reader.reads {
+		if collected[id] || id == "grand/child" {
+			t.Fatal("repeated/recursive read", id)
+		}
+	}
+	if len(second.Tasks[0].MemoryEntryRefs) != 6 || len(second.Tasks[0].ReadingCardRefs) != 2 {
+		t.Fatal("history and current reading references missing")
+	}
+}
+func TestInsightFollowupsDiscardReopenFailuresAndSourceRestrictions(t *testing.T) {
+	reader, bindings := followFixture()
+	request := insightSiteRequest()
+	zero := 0
+	request.FollowLinks = &zero
+	first, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target := first.ReferenceLeads[0].Target
+	memory, err := UpdateInsightExplorationMemory(*first.ExplorationMemory, target.CanonicalURL, "discarded", "Investigated elsewhere")
+	if err != nil {
+		t.Fatal(err)
+	}
+	two := 2
+	request.FollowLinks = &two
+	request.Memory = &memory
+	reader.reads = nil
+	result, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range reader.reads {
+		if id == target.ExternalID {
+			t.Fatal("discarded target read")
+		}
+	}
+	reopened, err := UpdateInsightExplorationMemory(memory, target.CanonicalURL, "pending", "Inspect new angle")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range reopened.Entries {
+		if entry.State == "PENDING" && entry.Identity != target {
+			reopened, err = UpdateInsightExplorationMemory(reopened, entry.Identity.CanonicalURL, "discarded", "Focus this test on the reopened path")
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	reader.fail[target.ExternalID] = true
+	request.Memory = &reopened
+	result, err = DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry := insightMemoryFind(result.ExplorationMemory, target)
+	if entry.State != "PENDING" || entry.LastStatus != "AUTH_REQUIRED" || entry.ReadAttempts != 1 {
+		t.Fatal("failure promoted/discarded", entry)
+	}
+	before := len(reader.resolves)
+	bindings[0].FollowReader = nil
+	_, err = DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || len(reader.resolves) != before {
+		t.Fatal("unbound reader caused effect")
+	}
+}
+func TestInsightFollowupsPreservePartialOnCancellationAndShareCardBudget(t *testing.T) {
+	reader, bindings := followFixture()
+	request := insightSiteRequest()
+	request.Discovery.MaxPassages = 1
+	report, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || len(report.Tasks[0].ReadingCardRefs) != 1 {
+		t.Fatal("card budget exceeded")
+	}
+	ctx, cancel := context.WithCancel(t.Context())
+	reader.hook = cancel
+	report, err = DiscoverInsightSites(domain.WithExecutionRuntime(ctx, &insightTestRuntime{}), request, bindings)
+	if err == nil || report.Status != "CANCELLED" || len(report.Bundles) != 1 || report.ExplorationMemory == nil {
+		t.Fatal("partial report lost on cancel")
+	}
+}
+
+func TestInsightFollowupsShareByteBudgetAndRespectSources(t *testing.T) {
+	reader, bindings := followFixture()
+	request := insightSiteRequest()
+	two := 2
+	request.FollowLinks = &two
+	root := "# Collection\n[Codeberg](https://codeberg.org/other/idea)\nAnother possibility.\n"
+	root += strings.Repeat("x", (32<<10)-len(root))
+	reader.contents["org/repo"] = root
+	report, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || len(reader.resolves) != 0 || len(report.Followups) != 1 || report.Followups[0].Status != "SOURCE_NOT_SELECTED" {
+		t.Fatal("source boundary crossed", err)
+	}
+	// Fill the existing primary document budget before planning followups.
+	base := insightLeadFixture("[Next](https://github.com/other/idea)\nPossibility.\n")
+	beginInsightExplorationMemory(&base)
+	addInsightReferenceLeads(&base)
+	base.Plan.Sources = []domain.DiscoveryConnectorCapabilities{{ID: domain.ConnectorGitHubCatalog}}
+	base.Plan.Request.FollowLinks = &two
+	base.Plan.Request.Discovery.MaxPassages = 8
+	original := base.Bundles[0]
+	base.Bundles = make([]domain.EvidenceBundle, 8)
+	for i := range base.Bundles {
+		base.Bundles[i] = original
+	}
+	_, err = runInsightFollowups(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), &base, map[string]domain.InsightSiteBinding{domain.ConnectorGitHubCatalog: bindings[0]})
+	if err != nil || base.Followups[0].Status != "DOCUMENT_BUDGET" {
+		t.Fatal("document cap exceeded")
+	}
+}
+
+type byteBudgetCatalog struct{}
+
+func (byteBudgetCatalog) Capabilities() domain.DiscoveryConnectorCapabilities {
+	return (&insightSiteFixtureConnector{id: domain.ConnectorGitHubCatalog}).Capabilities()
+}
+func (byteBudgetCatalog) Discover(context.Context, domain.MarketDiscoveryRequest) (domain.ConnectorDiscovery, error) {
+	values := []domain.ProductCandidate{}
+	for i := 0; i < 4; i++ {
+		p := insightSiteProduct(domain.ConnectorGitHubCatalog)
+		p.Identity.ExternalID = fmt.Sprintf("org/repo%d", i)
+		p.Identity.CanonicalURL = "https://github.com/" + p.Identity.ExternalID
+		p.RepositoryLinks[0].OwnerRepo = p.Identity.ExternalID
+		values = append(values, p)
+	}
+	return domain.ConnectorDiscovery{Status: domain.AttemptSucceeded, Candidates: values}, nil
+}
+func TestInsightFollowupsDoNotExceedAggregateByteBudget(t *testing.T) {
+	reader := &memoryFollowReader{contents: map[string]string{}, fail: map[string]bool{}}
+	text := "# Roots\n[One](https://github.com/other/one)\n[Two](https://github.com/other/two)\n"
+	text += strings.Repeat("a", (30<<10)-len(text))
+	for i := 0; i < 4; i++ {
+		reader.contents[fmt.Sprintf("org/repo%d", i)] = text
+	}
+	reader.contents["other/one"] = strings.Repeat("b", 6<<10)
+	reader.contents["other/two"] = strings.Repeat("c", 6<<10)
+	request := insightSiteRequest()
+	request.Discovery.MaxPerQuery = 4
+	request.Discovery.MaxReferences = 4
+	report, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, []domain.InsightSiteBinding{{Connector: byteBudgetCatalog{}, Reader: reader, FollowReader: reader}})
+	if err != nil || len(report.Followups) != 2 {
+		t.Fatal("fixture failed", err)
+	}
+	total := 0
+	for _, b := range report.Bundles {
+		total += int(b.BytesRead)
+	}
+	success, rejected := 0, 0
+	for _, f := range report.Followups {
+		if f.Bundle != nil {
+			total += int(f.Bundle.BytesRead)
+			success++
+		}
+		if f.Status == "CONTENT_BUDGET" {
+			rejected++
+		}
+	}
+	if total > 128<<10 || success != 1 || rejected != 1 {
+		t.Fatal("admission byte cap failed", total, success, rejected)
+	}
+}
+
+func TestInsightFollowupsCanContinueMemoryWhenCatalogIsUnavailable(t *testing.T) {
+	reader, bindings := followFixture()
+	request := insightSiteRequest()
+	zero := 0
+	request.FollowLinks = &zero
+	first, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Memory = first.ExplorationMemory
+	two := 2
+	request.FollowLinks = &two
+	bindings[0].Connector = &insightSiteFixtureConnector{id: domain.ConnectorGitHubCatalog, auth: true}
+	reader.resolves = nil
+	next, err := DiscoverInsightSites(domain.WithExecutionRuntime(t.Context(), &insightTestRuntime{}), request, bindings)
+	if err != nil || next.Status != "PARTIAL" || len(reader.resolves) != 2 || next.Followups[0].Bundle == nil {
+		t.Fatal("catalog failure erased memory progress", err, next.Status)
+	}
+}

@@ -268,3 +268,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0163 — Fechar completude, bytes e admissão de lotes](0163-fechar-completude-bytes-e-admissao-de-lotes.md) — tamanhos no coletor geral, classificação de omissão/truncamento por bytes e rejeição prévia de origens repetidas, sem reescrever históricos.
 
 - [0164 — Preservar UTF-8 no truncamento e replay](0164-preservar-utf8-no-truncamento-e-replay.md) — prefixos válidos dentro do orçamento, rejeição de codificação inválida e regressões de serialização/reabertura, preservando históricos.
+
+- [0165 — Contar execução agregada de targets](0165-contar-execucao-agregada-de-targets.md) — métricas de paths derivados sem perder leituras anteriores ou bloquear retomada, preservando históricos.

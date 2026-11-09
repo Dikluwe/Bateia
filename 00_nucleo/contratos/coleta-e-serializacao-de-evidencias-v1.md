@@ -77,3 +77,11 @@ O [passo0164](../passos/0164-preservar-utf8-no-truncamento-e-replay.md) exige UT
 Truncamento conserva o maior prefixo terminado em fronteira de caractere UTF-8 dentro do saldo. BytesRead, Target.Bytes e ContentHash descrevem os bytes efetivamente preservados. Sem espaço para o primeiro caractere, omitir com SKIPPED_BUDGET/Bytes0, sem item vazio e sem cobrar bytes descartados; o saldo restante pode atender outro arquivo. Preservar incompletude, cobertura, métricas e retomada0163. Não alterar ASCII ou arquivos completos, normalizar texto nem emitir U+FFFD para reparar bytes.
 
 Após serializar/reabrir um bundle novo, conteúdo e hashes devem continuar coerentes e aceitos pela reavaliação, inclusive fragmentos. Registros e hashes antigos permanecem intactos. EVD-18 (prefixo íntegro/replay) é consumido pelas [regressões UTF-8](../../01_core/usecase/evidence_utf8_roundtrip_regression_test.go). A fronteira de caractere não comprova completude semântica do trecho.
+
+## Execução agregada de targets — 0165
+
+O [passo0165](../passos/0165-contar-execucao-agregada-de-targets.md) explicita a agregação de TargetsExecuted: cada target do plano conta no máximo uma vez quando qualquer resultado correspondente da coleta da rodada é COLLECTED/NOT_FOUND/FAILED ou SKIPPED_BUDGET com Bytes>0. Um target derivado pode produzir vários paths; a omissão de um deles não apaga a execução observada de outro. Somente omissões integrais/UNSUPPORTED não contam. Preservar o testemunho legado na ausência de resultado correspondente e não contar conteúdo original como execução da rodada.
+
+A métrica agregada não altera a projeção de histórico 0161: a última ocorrência correspondente continua governando a retomada, inclusive quando outro path foi lido. Preservar schemas, identidade do target, bytes, chamadas reais e limites de força de evidência. Registros, hashes e testes anteriores permanecem intactos.
+
+EVD-19 (execução agregada sem bloquear retomada) é consumido pelas [regressões de métricas derivadas](../../01_core/usecase/evidence_recovery_metrics_regression_test.go), com controles de saldo adjacentes, omissão integral e leitura completa.

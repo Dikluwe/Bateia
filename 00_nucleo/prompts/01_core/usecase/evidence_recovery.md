@@ -27,3 +27,7 @@ Aplicar EVD-13 do [contrato](../../../contratos/coleta-e-serializacao-de-evidenc
 ## 0163 — Fragmento e retomada
 
 Aplicar EVD-16 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#completude-geral-saldo-e-unicidade-de-lotes--0163). Histórico ativo não bloqueia target SKIPPED_BUDGET, inclusive fragmento. TargetsExecuted registra tentativa com Bytes>0 mesmo quando o fragmento não conclui a admissão; omissão integral não conta. Preservar contagem de portas e consumidores anteriores. Origem ex-ante: [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md).
+
+## 0165 — Execução agregada de target derivado
+
+Aplicar EVD-19 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#execução-agregada-de-targets--0165), conforme [passo0165](../../../passos/0165-contar-execucao-agregada-de-targets.md). TargetsExecuted conta cada target planejado no máximo uma vez quando qualquer resultado correspondente da coleta da rodada testemunha COLLECTED/NOT_FOUND/FAILED ou fragmento SKIPPED_BUDGET com Bytes>0. Uma omissão posterior de outro path derivado não apaga execução anterior. Omissões integrais e UNSUPPORTED isolados continuam sem execução. Preservar fallback legado sem resultado, identidade, bytes e contagem real de portas. Histórico de retomada continua usando a última ocorrência correspondente, conforme 0161; agregar métricas não bloqueia tentativa dos paths omitidos. Não usar bundles históricos unidos para fabricar execução nova nem modificar registros/hashes anteriores.

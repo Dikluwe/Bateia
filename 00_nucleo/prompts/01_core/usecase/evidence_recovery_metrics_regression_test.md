@@ -1,0 +1,5 @@
+# Regressões de métricas de targets derivados
+
+L1. Origem ex-ante: [passo0165](../../../passos/0165-contar-execucao-agregada-de-targets.md), EVD-19 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#execução-agregada-de-targets--0165).
+
+Usar API pública ExecuteEvidenceRecovery com portas puras contadas, um target derivado e dois arquivos correspondentes. Orçamento que admite integralmente o primeiro e omite o segundo deve contar um target executado. Controles com um byte a menos/a mais, saldo suficiente para ambos e omissão integral por saldo/quantidade. Construir esperados independentes de helpers de produção, verificar bytes/status/conteúdo/hash, chamadas, teto e no máximo uma execução por target. Conteúdo histórico não conta como execução nova; conferir inputs intactos. A projeção ExecutedRecoveryTargets conserva a regra da última ocorrência e permite novo plano quando há omissão posterior. Testes anteriores, registros e hashes históricos não são alterados; sem I/O concreto.

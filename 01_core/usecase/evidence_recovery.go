@@ -331,7 +331,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 			resolved[p.Repository.Owner+"/"+p.Repository.Repo] = true
 		}
 		for _, target := range groupPlan.Targets {
-			if recoveryTargetAttempted(target, b) || recoveryTargetPartiallyRead(target, b) {
+			if recoveryTargetExecuted(target, b) {
 				executedTargets++
 			}
 		}
@@ -683,11 +683,13 @@ func AttemptedOriginalRecoveryTargets(bundles []domain.EvidenceBundle) []domain.
 func recoveryTargetResultMatches(target domain.RecoveryTarget, result domain.CollectionTargetResult) bool {
 	return (target.FindingID != "" && result.Target.Reason == "recovery "+target.FindingID) || (target.Path != "" && result.Target.Path == target.Path) || (target.Path == "" && result.Target.Kind == target.Kind && recoveryPathMatches(result.Target.Path, target))
 }
-func recoveryTargetPartiallyRead(target domain.RecoveryTarget, bundle domain.EvidenceBundle) bool {
+
+// Metrics aggregate the current collection; retry history keeps its latest-outcome rule.
+func recoveryTargetExecuted(target domain.RecoveryTarget, bundle domain.EvidenceBundle) bool {
 	for _, result := range bundle.Targets {
-		if result.Status == domain.TargetSkippedBudget && result.Bytes > 0 && recoveryTargetResultMatches(target, result) {
+		if recoveryTargetResultMatches(target, result) && (recoveryAttemptStatus(result.Status) || (result.Status == domain.TargetSkippedBudget && result.Bytes > 0)) {
 			return true
 		}
 	}
-	return false
+	return recoveryTargetAttempted(target, bundle)
 }

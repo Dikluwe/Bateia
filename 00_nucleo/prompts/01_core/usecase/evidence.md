@@ -101,3 +101,7 @@ Aplicar EVD-13 do [contrato ativo](../../../contratos/coleta-e-serializacao-de-e
 ## 0163 — Completude e estado do saldo
 
 Aplicar EVD-15/16 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#completude-geral-saldo-e-unicidade-de-lotes--0163), conforme [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md). Confrontar tamanhos conhecidos e conflitos da árvore com bytes brutos antes de truncar/hash; zero desconhecido permanece compatível. Arquivo divergente recebe FAILED/falha e não é admitido. Omitidos/truncados por saldo recebem SKIPPED_BUDGET e Bytes admitidos, mantendo incompletude/cobertura e permitindo retomada; NOT_FOUND só para ausência real. Reutilizar predicado de tamanho na releitura técnica. Preservar schemas, quotas e hashes históricos.
+
+## 0164 — Truncamento UTF-8 serializável
+
+Aplicar EVD-18 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#prefixos-utf-8-e-replay--0164), sob [passo0164](../../../passos/0164-preservar-utf8-no-truncamento-e-replay.md). Recusar conteúdo textual bruto UTF-8 inválido com FAILED/falha, sem substituir bytes. Para saldo insuficiente, recuar o corte até a maior fronteira UTF-8 dentro do limite antes do hash/contabilização. Prefixo vazio por falta de espaço não cria item nem consome saldo, mantendo SKIPPED_BUDGET/Bytes0; fragmentos continuam incompletos. JSON salvo/reaberto deve preservar bytes/hashes e passar na reavaliação. Preservar tamanho bruto, ASCII/completos, critérios anteriores e registros históricos.

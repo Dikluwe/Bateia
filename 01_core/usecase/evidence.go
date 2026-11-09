@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 
 	"bateia/01_core/domain"
 )
@@ -884,6 +885,13 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "content_size", Message: message})
 			continue
 		}
+		if !utf8.ValidString(file.Content) {
+			bundle.Complete = false
+			message := "conteúdo extraído não é UTF-8 válido"
+			outcomes[path] = domain.CollectionTargetResult{Status: domain.TargetFailed, Message: message}
+			bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "content_encoding", Message: message})
+			continue
+		}
 		content := file.Content
 		remaining := plan.Budget.TotalBytes - bundle.BytesRead
 		if remaining <= 0 {
@@ -893,10 +901,17 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		}
 		completeContent := true
 		if int64(len(content)) > remaining {
-			content = content[:remaining]
+			cut := int(remaining)
+			for cut > 0 && !utf8.RuneStart(content[cut]) {
+				cut--
+			}
+			content = content[:cut]
 			bundle.Complete = false
 			completeContent = false
 			outcomes[path] = domain.CollectionTargetResult{Status: domain.TargetSkippedBudget, Message: "conteúdo truncado pelo orçamento de bytes"}
+			if content == "" {
+				continue
+			}
 		}
 		hash := contentHash(content)
 		if seenContent[hash] {

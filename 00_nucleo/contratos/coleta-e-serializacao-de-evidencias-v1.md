@@ -69,3 +69,11 @@ Arquivo devolvido mas limitado por saldo gera SKIPPED_BUDGET, nunca NOT_FOUND: B
 A coleta coordenada recusa origens planejadas repetidas antes de qualquer porta, com ErrInvalidRunInput e relatório vazio. Chave usa owner/repo sem distinção de caixa e commit; vazio/HEAD são a mesma origem não resolvida. Não unir implicitamente planos ou quotas. Pins distintos permanecem válidos; colisão descoberta só ao resolver HEAD pode ser rejeitada depois dos efeitos necessários para conhecê-la.
 
 EVD-15 (tamanho na coleta geral), EVD-16 (saldo/diagnóstico/histórico) e EVD-17 (unicidade prévia) são consumidos pelas [regressões de completude e lotes](../../01_core/usecase/evidence_completeness_batch_regression_test.go). Registros e hashes já emitidos permanecem intactos.
+
+## Prefixos UTF-8 e replay — 0164
+
+O [passo0164](../passos/0164-preservar-utf8-no-truncamento-e-replay.md) exige UTF-8 válido no conteúdo textual bruto admitido. Arquivo recebido inválido gera FAILED/falha de codificação, sem substituir bytes ou criar item. A comparação de tamanhos brutos permanece anterior ao corte.
+
+Truncamento conserva o maior prefixo terminado em fronteira de caractere UTF-8 dentro do saldo. BytesRead, Target.Bytes e ContentHash descrevem os bytes efetivamente preservados. Sem espaço para o primeiro caractere, omitir com SKIPPED_BUDGET/Bytes0, sem item vazio e sem cobrar bytes descartados; o saldo restante pode atender outro arquivo. Preservar incompletude, cobertura, métricas e retomada0163. Não alterar ASCII ou arquivos completos, normalizar texto nem emitir U+FFFD para reparar bytes.
+
+Após serializar/reabrir um bundle novo, conteúdo e hashes devem continuar coerentes e aceitos pela reavaliação, inclusive fragmentos. Registros e hashes antigos permanecem intactos. EVD-18 (prefixo íntegro/replay) é consumido pelas [regressões UTF-8](../../01_core/usecase/evidence_utf8_roundtrip_regression_test.go). A fronteira de caractere não comprova completude semântica do trecho.

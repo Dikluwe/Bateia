@@ -276,3 +276,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0167 — Isolar calibração e validar fontes de síntese](0167-isolar-calibracao-e-validar-fontes-de-sintese.md) — identidades de ideias únicas, conexões repetidas coerentes, identidade de execução e paginação sem revisitas, preservando históricos.
 
 - [0168 — Preservar integridade e determinismo do oráculo](0168-preservar-integridade-e-determinismo-do-oraculo.md) — selo/variantes/gates/grounding, escalas finitas extremas e consolidação estável, preservando históricos.
+
+- [0169 — Canonicalizar descoberta e validar manifestos](0169-canonicalizar-descoberta-e-validar-manifestos.md) — união completa e determinística, hashes obrigatórios para publicação, locales canônicos e catálogo consistente, preservando históricos.

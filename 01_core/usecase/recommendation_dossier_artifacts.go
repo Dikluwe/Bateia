@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/recommendation_dossier_artifacts.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -12,6 +12,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"sort"
+	"strings"
 )
 
 type evidenceInputs struct {
@@ -41,7 +43,11 @@ type DossierReplayEvidenceIdentity struct {
 func DossierEvidenceInputHash(req domain.IdeaRunRequest, local []domain.RepositoryCandidate, files interface {
 	ReplayEvidenceIdentity(string) (DossierReplayEvidenceIdentity, error)
 }) (string, error) {
-	inputs := evidenceInputs{Idea: req.Idea, Mode: req.Mode, Strategy: req.Strategy, Provider: req.Provider, Language: req.Language, SearchLocales: append([]string(nil), req.SearchLocales...), MaxPerQuery: req.MaxPerQuery, MaxCandidates: req.MaxCandidates}
+	locales, err := canonicalizeSearchLocales(req.SearchLocales)
+	if err != nil {
+		return "", err
+	}
+	inputs := evidenceInputs{Idea: req.Idea, Mode: req.Mode, Strategy: req.Strategy, Provider: req.Provider, Language: req.Language, SearchLocales: locales, MaxPerQuery: req.MaxPerQuery, MaxCandidates: req.MaxCandidates}
 	for _, candidate := range local {
 		inputs.LocalCandidates = append(inputs.LocalCandidates, localEvidenceInput{URL: candidate.URL, CommitID: candidate.CommitID})
 	}
@@ -56,17 +62,24 @@ func DossierEvidenceInputHash(req domain.IdeaRunRequest, local []domain.Reposito
 }
 
 func BuildRecommendationRunStages(files EvidenceCheckpointReader, r domain.IdeaRunResult, alternatives ...domain.SoftwareAlternativeReport) []domain.IdeaRunStage {
+	hashArtifact := func(path string) string {
+		hash, err := files.ArtifactSHA256(path)
+		if err != nil {
+			return ""
+		}
+		return hash
+	}
 	defs := []struct {
 		name, path string
 		count      int64
 	}{{"expand", "expansion-plan.json", int64(len(r.Expansion.Expansions))}, {"discover", "discovery-snapshot.json", int64(len(r.Discovery.Candidates))}, {"screen", "screening-report.json", int64(len(r.Screening.Decisions))}, {"collect", "evidence/bundles.json", int64(len(r.Bundles))}, {"assess", "assessment-report.json", int64(len(r.Assessment.Assessments))}, {"decide", "reuse-decision.json", 1}}
 	out := make([]domain.IdeaRunStage, 0, len(defs))
-	ideaHash, _ := files.ArtifactSHA256("idea.json")
+	ideaHash := hashArtifact("idea.json")
 	prev := map[string]string{"idea.json": ideaHash}
 	for _, d := range defs {
-		hash, _ := files.ArtifactSHA256(d.path)
+		hash := hashArtifact(d.path)
 		if d.name == "decide" {
-			policyHash, _ := files.ArtifactSHA256("reuse-policy.json")
+			policyHash := hashArtifact("reuse-policy.json")
 			prev["reuse-policy.json"] = policyHash
 		}
 		out = append(out, domain.IdeaRunStage{Name: d.name, ContractVersion: "1", Status: domain.IdeaStageComplete, InputHashes: prev, Outputs: []domain.IdeaRunArtifact{{Path: d.path, Hash: hash}}, Counts: map[string]int64{"items": d.count}})
@@ -74,11 +87,11 @@ func BuildRecommendationRunStages(files EvidenceCheckpointReader, r domain.IdeaR
 		prev = map[string]string{d.path: hash}
 	}
 	if len(alternatives) > 0 {
-		jsonHash, _ := files.ArtifactSHA256("alternatives.json")
-		markdownHash, _ := files.ArtifactSHA256("alternatives.md")
-		assessmentHash, _ := files.ArtifactSHA256("assessment-report.json")
-		discoveryHash, _ := files.ArtifactSHA256("discovery-snapshot.json")
-		policyHash, _ := files.ArtifactSHA256("reuse-policy.json")
+		jsonHash := hashArtifact("alternatives.json")
+		markdownHash := hashArtifact("alternatives.md")
+		assessmentHash := hashArtifact("assessment-report.json")
+		discoveryHash := hashArtifact("discovery-snapshot.json")
+		policyHash := hashArtifact("reuse-policy.json")
 		out = append(out, domain.IdeaRunStage{
 			Name:            "alternatives",
 			ContractVersion: "1",
@@ -93,6 +106,27 @@ func BuildRecommendationRunStages(files EvidenceCheckpointReader, r domain.IdeaR
 			Counts:         map[string]int64{"items": int64(len(alternatives[0].Alternatives) + len(alternatives[0].Excluded))},
 			DurationMillis: r.StageDurations["alternatives"],
 		})
+	}
+
+	for i := range out {
+		stage := &out[i]
+		missing := []string{}
+		for path, hash := range stage.InputHashes {
+			if strings.TrimSpace(hash) == "" {
+				missing = append(missing, path)
+			}
+		}
+		for _, artifact := range stage.Outputs {
+			if strings.TrimSpace(artifact.Hash) == "" {
+				missing = append(missing, artifact.Path)
+			}
+		}
+		if len(missing) > 0 {
+			sort.Strings(missing)
+			stage.Status = domain.IdeaStageFailed
+			stage.Outputs = nil
+			stage.Message = "hash de artefato indisponível: " + strings.Join(missing, ", ")
+		}
 	}
 	return out
 }

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/idea_discovery.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -104,6 +104,9 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 				request.RegionalProposalID = currentExpansion.Regional.ProposalID
 			}
 			result, err := provider.Discover(ctx, request)
+			if result.Attempts != nil {
+				result.Attempts = append([]domain.ProviderAttempt{}, result.Attempts...)
+			}
 			for attemptIndex := range result.Attempts {
 				if result.Attempts[attemptIndex].SearchLocale == "" {
 					result.Attempts[attemptIndex].SearchLocale = request.SearchLocale
@@ -145,6 +148,7 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 		if outcome.discovery.Expansion.ID == "" {
 			continue
 		}
+		canonicalizeDiscoveryProvider(&outcome.discovery.Provider)
 		snapshot.PerExpansion = append(snapshot.PerExpansion, outcome.discovery)
 		if outcome.failure != nil {
 			failures++
@@ -158,20 +162,25 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 			if key == "/" {
 				continue
 			}
-			origin := candidateOrigin(outcome.discovery, candidate)
-			if err := domain.ValidateRegionalCandidateOrigin(origin); err != nil {
-				return domain.DiscoverySnapshot{}, err
+			origins := candidateOrigins(outcome.discovery, candidate)
+			for _, origin := range origins {
+				if err := domain.ValidateRegionalCandidateOrigin(origin); err != nil {
+					return domain.DiscoverySnapshot{}, err
+				}
 			}
 			if existingIndex, exists := candidateIndexes[key]; exists {
 				existing := &snapshot.Candidates[existingIndex]
 				existing.ExpansionIDs = appendUnique(existing.ExpansionIDs, outcome.discovery.Expansion.ID)
 				existing.Queries = appendUnique(existing.Queries, outcome.discovery.Expansion.Query)
-				existing.Origins = append(existing.Origins, origin)
+				existing.Origins = append(existing.Origins, origins...)
+				if directCandidateMetadataLess(candidate, existing.Repository) {
+					existing.Repository = candidate
+				}
 				continue
 			}
 			candidateIndexes[key] = len(snapshot.Candidates)
 			snapshot.Candidates = append(snapshot.Candidates, domain.DiscoveredCandidate{
-				Repository: candidate, ExpansionIDs: []string{outcome.discovery.Expansion.ID}, Queries: []string{outcome.discovery.Expansion.Query}, Origins: []domain.CandidateOrigin{origin},
+				Repository: candidate, ExpansionIDs: []string{outcome.discovery.Expansion.ID}, Queries: []string{outcome.discovery.Expansion.Query}, Origins: origins,
 			})
 		}
 	}
@@ -196,15 +205,7 @@ func DiscoverExpansionPlanWithPolicy(ctx context.Context, plan domain.ExpansionP
 
 func canonicalizeDirectDiscoverySnapshot(snapshot *domain.DiscoverySnapshot) {
 	for index := range snapshot.PerExpansion {
-		provider := &snapshot.PerExpansion[index].Provider
-		sort.Slice(provider.Candidates, func(left, right int) bool {
-			return candidateMetadataLess(provider.Candidates[left], provider.Candidates[right])
-		})
-		sort.Slice(provider.Matches, func(left, right int) bool {
-			leftJSON, _ := json.Marshal(provider.Matches[left])
-			rightJSON, _ := json.Marshal(provider.Matches[right])
-			return string(leftJSON) < string(rightJSON)
-		})
+		canonicalizeDiscoveryProvider(&snapshot.PerExpansion[index].Provider)
 	}
 	sort.Slice(snapshot.Candidates, func(left, right int) bool {
 		return discoveredCandidateLess(snapshot.Candidates[left], snapshot.Candidates[right])
@@ -315,4 +316,60 @@ func candidateOrigin(discovery domain.ExpansionDiscovery, candidate domain.Repos
 		}
 	}
 	return origin
+}
+
+// Preserve the established metadata order, with a complete declaration tie-breaker.
+func directCandidateMetadataLess(left, right domain.RepositoryCandidate) bool {
+	if candidateMetadataLess(left, right) {
+		return true
+	}
+	if candidateMetadataLess(right, left) {
+		return false
+	}
+	a, _ := json.Marshal(left)
+	b, _ := json.Marshal(right)
+	return string(a) < string(b)
+}
+func canonicalizeDiscoveryProvider(provider *domain.ProviderDiscovery) {
+	if provider.Candidates != nil {
+		provider.Candidates = append([]domain.RepositoryCandidate{}, provider.Candidates...)
+	}
+	sort.Slice(provider.Candidates, func(i, j int) bool {
+		return directCandidateMetadataLess(provider.Candidates[i], provider.Candidates[j])
+	})
+	if provider.Matches != nil {
+		provider.Matches = append([]domain.ProviderCandidateMatch{}, provider.Matches...)
+	}
+	for i := range provider.Matches {
+		evidence := provider.Matches[i].Evidence
+		if evidence != nil {
+			evidence = append([]domain.MatchEvidence{}, evidence...)
+		}
+		sort.Slice(evidence, func(i, j int) bool {
+			a, _ := json.Marshal(evidence[i])
+			b, _ := json.Marshal(evidence[j])
+			return string(a) < string(b)
+		})
+		provider.Matches[i].Evidence = evidence
+	}
+	sort.Slice(provider.Matches, func(i, j int) bool {
+		a, _ := json.Marshal(provider.Matches[i])
+		b, _ := json.Marshal(provider.Matches[j])
+		return string(a) < string(b)
+	})
+}
+func candidateOrigins(discovery domain.ExpansionDiscovery, candidate domain.RepositoryCandidate) []domain.CandidateOrigin {
+	var origins []domain.CandidateOrigin
+	for _, match := range discovery.Provider.Matches {
+		if strings.ToLower(strings.TrimSpace(match.Repository)) != repositoryKey(candidate) {
+			continue
+		}
+		single := discovery
+		single.Provider.Matches = []domain.ProviderCandidateMatch{match}
+		origins = append(origins, candidateOrigin(single, candidate))
+	}
+	if len(origins) == 0 {
+		origins = append(origins, candidateOrigin(discovery, candidate))
+	}
+	return canonicalRegionalOrigins(origins)
 }

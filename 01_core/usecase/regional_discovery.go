@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/regional_discovery.md
  * @layer L1
- * @updated 2026-09-01
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -89,7 +89,7 @@ func validateRegionalCatalog(catalog domain.RegionalQueryCatalog) error {
 	concepts := map[string]bool{}
 	for _, concept := range catalog.Concepts {
 		key := strings.TrimSpace(concept.Concept)
-		if key == "" || concepts[key] || strings.TrimSpace(concept.RuleID) == "" || strings.TrimSpace(concept.SourceQuery) == "" || strings.TrimSpace(concept.DerivationStrategy) == "" {
+		if key == "" || key != concept.Concept || concepts[key] || strings.TrimSpace(concept.RuleID) == "" || strings.TrimSpace(concept.SourceQuery) == "" || strings.TrimSpace(concept.DerivationStrategy) == "" {
 			return fmt.Errorf("conceito regional inconsistente %q", concept.Concept)
 		}
 		concepts[key] = true

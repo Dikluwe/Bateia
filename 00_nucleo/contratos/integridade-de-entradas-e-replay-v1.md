@@ -61,3 +61,21 @@ Manter a fórmula existente para spans finitos. Quando a diferença de extremos 
 Para a mesma identidade exata connector_id/external_id, escolher a ocorrência de menor JSON canônico após canonicalização; não usar ordem de chegada. Preservar seus metadados escalares/ponteiros como conjunto, sem fabricar combinação semântica. Agregar conjuntos declarados de locales, mercados, países, repo links, origens e witnesses de todas as ocorrências, com cópias, desduplicação e ordem total. Witnesses canonicalizam ConnectorIDs e ordenam pela declaração completa; origens/repo links mantêm a ordenação anterior com desempate pela declaração completa. Duplicata continua SAME; ocorrência única conserva sua resolução padrão. Não ampliar equivalência entre conectores nem promover metadado a evidência verificada.
 
 Consumidor: [regressões de consolidação](../../01_core/usecase/market_consolidation_order_regression_test.go). Manter inputs e hashes dos controles canônicos, e preservar todos os registros/recibos históricos. Os seis critérios0168 regem novas execuções, sem reparar resultados antigos.
+
+## DSC-01 — União direta antes da escolha
+
+O [passo0169](../passos/0169-canonicalizar-descoberta-e-validar-manifestos.md) canonicaliza cópias dos candidatos/matches antes da união. Representante mínimo pela ordem anterior de metadados, com desempate pelo JSON completo; conservar o representante inteiro, sem fabricar combinação de campos. Agregar todos os matches do repositório como origens, com evidências ordenadas por declaração completa e origens desduplicadas/ordenadas pela regra regional existente. Não descartar matches por serem do mesmo repo/attempt/query. Sem match, preservar fallback; match único mantém a projeção canônica anterior. Slices da porta não são modificadas; nil e listas vazias conservam sua representação. Não modificar snapshots antigos nem políticas de elegibilidade.
+
+## DOS-01 — Hash obrigatório antes de anunciar estágio
+
+BuildRecommendationRunStages mantém a assinatura pública. Erro do leitor de hashes ou hash vazio/em branco torna a entrada/saída indisponível: estágio afetado fica FAILED, sem Outputs, com motivo determinístico. Nenhum estágio com entrada/saída indisponível pode ser COMPLETE. A fachada grava manifesto FAILED e falhas por estágio, retorna erro e não chama Announce nem devolve Published=true. Erro ao persistir manifesto também retorna erro. Caminho válido conserva ordem, campos, versões e hashes anteriores; status operacional não promove evidência.
+
+## DOS-02 — Locales canônicos antes da identidade
+
+DossierEvidenceInputHash e RunRecommendationDossier canonicalizam SearchLocales antes de pré-imagens/identidade/checkpoint. Permutações, repetições e all equivalentes geram os mesmos hashes e RunID; locale inválido falha antes de Prepare ou publicação. Não modificar a entrada do caller. Perfil vazio continua omitido, com hash histórico intacto. A CLI já normaliza seus locales; a regra também pertence à admissão pública em L1.
+
+## REG-01 — Chave de catálogo consistente
+
+Concept deve ser não vazio, único e idêntico ao próprio TrimSpace. Chave com espaços nas extremidades é catálogo inconsistente, rejeitado antes do lookup; não reparar nem converter a inconsistência em lacuna. Tradução controlada realmente ausente para conceito válido continua Unknown. Nenhuma consulta livre ou promoção de cobertura é adicionada.
+
+Consumidores DSC-01/REG-01: [regressões da descoberta](../../01_core/usecase/discovery_canonical_response_regression_test.go). DOS-01/02: [regressões do dossiê](../../01_core/usecase/dossier_integrity_regression_test.go), com falhas em todos os hashes obrigatórios, equivalência/retomada pela fachada e controles congelados de snapshot, pré-imagem, RunID e estágios. Regras0169 valem para novas execuções; registros, selos e hashes históricos não são recalculados.

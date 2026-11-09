@@ -10,3 +10,8 @@ A publicação da mensagem legível usa callback de apresentação antes do clea
 ## Diagnóstico — 0132
 
 Expor Checkpoint opcional no resultado em memória. Apenas req.Resume solicita avaliação: ler run.json uma vez; erro produz MANIFEST_UNAVAILABLE/run.json; sucesso usa EvaluateEvidenceCheckpoint uma vez. Reusable dessa avaliação escolhe a fonte. Preservar diagnóstico no retorno e no anúncio final, inclusive se uma etapa posterior falhar. Não persistir diagnóstico nem incluir em identidade/versões/artefatos; sem flag manter nil. Aplicar contrato do passo 0132 e preservar o callback de apresentação somente após publicação final.
+
+
+## Integridade 0169
+
+Canonicalizar SearchLocales na admissão, antes de efeitos, identidade ou retomada. Manifesto com estágio FAILED por hash deve ser persistido como FAILED, retornar erro e não anunciar publicação. Não alterar registro histórico ou semântica do resultado de negócio.

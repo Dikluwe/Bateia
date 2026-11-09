@@ -41,3 +41,10 @@ discriminadores nem avaliar capacidade em L1.
 ## Fronteiras explícitas — 0129
 
 Delegar efeitos concretos às portas de runtime/arquivos do ADR-0012. Preservar formatos, erro, validações, limites e ordens de chamadas/cleanup. Configuração real em L4; nenhum fallback de I/O concreto em L1/L2. Testes de integração fornecem host explicitamente.
+
+
+## Integridade 0169
+
+Antes de unir candidatos, copiar e ordenar respostas com ordem total: comparador de metadados existente e desempate pelo JSON completo. Escolher o menor representante por essa ordem, sem combinar campos. Preservar todos os matches como origens distintas, ordenadas/desduplicadas; match único e fallback sem match mantêm a projeção anterior. Não modificar slices da porta. Evidências de cada match têm ordem total por JSON. Não reescrever snapshots históricos.
+
+Copiar também Attempts antes de preencher procedência regional; enriquecimento não modifica a resposta retida pela porta.

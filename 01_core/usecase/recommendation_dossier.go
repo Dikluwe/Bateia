@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/recommendation_dossier.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -63,6 +63,11 @@ func (f dossierIdentityLookup) RepositoryIdentities(url string) []domain.Reposit
 }
 func RunRecommendationDossier(ctx context.Context, input RecommendationDossierInput, files RecommendationDossierFiles) (out RecommendationDossierOutput, returnErr error) {
 	req := input.Request
+	locales, localeErr := canonicalizeSearchLocales(req.SearchLocales)
+	if localeErr != nil {
+		return out, localeErr
+	}
+	req.SearchLocales = locales
 	idea, policy, target := req.Idea, req.Policy, input.Target
 	targetRepository := target.Repository
 	evidenceRules := input.Rules
@@ -276,6 +281,22 @@ func RunRecommendationDossier(ctx context.Context, input RecommendationDossierIn
 	manifest.DecisionPath = "reuse-decision.json"
 	manifest.Failures = append(manifest.Failures, result.Failures...)
 	manifest.Stages = BuildRecommendationRunStages(files, result, alternatives)
+	stageHashFailure := false
+	for _, stage := range manifest.Stages {
+		if stage.Status != domain.IdeaStageFailed {
+			continue
+		}
+		stageHashFailure = true
+		manifest.Status = domain.IdeaRunFailed
+		manifest.Failures = append(manifest.Failures, domain.ExecutionFailure{Scope: "run", Stage: stage.Name, Message: stage.Message})
+	}
+	if stageHashFailure {
+		if err = files.WriteJSON("run.json", manifest); err != nil {
+			return out, err
+		}
+		out.Manifest = manifest
+		return out, fmt.Errorf("dossiê sem hashes obrigatórios para publicação")
+	}
 	if traceGraph != nil {
 		stage, err := BuildRecommendationTraceStage(files, *traceGraph, traceIndex, ruleVersions)
 		if err != nil {

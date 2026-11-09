@@ -96,3 +96,8 @@ Esta projeção cobre somente descoberta regional controlada do conceito congela
 propagação determinística. Não afirma tradução geral, cobertura de lojas proprietárias,
 compreensão automática de documentação multilíngue, paridade entre mercados ou adequação
 funcional das alternativas encontradas.
+
+
+## Integridade 0169
+
+Rejeitar Concept com espaços nas extremidades como catálogo inconsistente, antes do lookup. Unknown fica reservado à lacuna legítima. Preservar catálogo canônico e consultas anteriores.

@@ -264,3 +264,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0161 — Corrigir transições, histórico e revalidação](0161-corrigir-transicoes-historico-e-revalidacao.md) — resolução ativa de HEAD, histórico de tentativas, identidade AST e contagem real de portas, preservando registros anteriores.
 
 - [0162 — Aplicar quotas e coerência de fontes](0162-aplicar-quotas-e-coerencia-de-fontes.md) — limites de paths explícitos/derivados, perfil textual compartilhado e tamanhos coerentes na releitura, preservando históricos.
+
+- [0163 — Fechar completude, bytes e admissão de lotes](0163-fechar-completude-bytes-e-admissao-de-lotes.md) — tamanhos no coletor geral, classificação de omissão/truncamento por bytes e rejeição prévia de origens repetidas, sem reescrever históricos.

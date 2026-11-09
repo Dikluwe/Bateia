@@ -23,3 +23,7 @@ Aplicar EVD-10–12 do [contrato ativo](../../../contratos/coleta-e-serializacao
 ## 0162 — Omissões por quota
 
 Aplicar EVD-13 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#quotas-de-caminhos-e-completude-técnica--0162): paths derivados congelados continuam sujeitos às quotas do coletor. Usar resultados observados para TargetsExecuted, excluindo targets omitidos por quantidade/profundidade e preservando identidade do plano. Manter saldo de bytes, métricas de portas e histórico0160/0161. Origem: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).
+
+## 0163 — Fragmento e retomada
+
+Aplicar EVD-16 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#completude-geral-saldo-e-unicidade-de-lotes--0163). Histórico ativo não bloqueia target SKIPPED_BUDGET, inclusive fragmento. TargetsExecuted registra tentativa com Bytes>0 mesmo quando o fragmento não conclui a admissão; omissão integral não conta. Preservar contagem de portas e consumidores anteriores. Origem ex-ante: [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md).

@@ -97,3 +97,7 @@ Aplicar EVD-07/09 do [contrato de coleta](../../../contratos/coleta-e-serializac
 ## 0162 — Quotas antes da extração
 
 Aplicar EVD-13 do [contrato ativo](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#quotas-de-caminhos-e-completude-técnica--0162). Targets explícitos e congelados respeitam quantidade/profundidade, com omissão SKIPPED_BUDGET e incompletude, sem readmissão por árvore/reserva/extras. Documents compartilha documentação/licença; Tests compartilha teste/exemplo; demais grupos conforme contrato. Duplicatas por path não consomem duas vezes; hash igual entre paths não autoriza ultrapassar quota. Sem paths não iniciar extração vazia. Preservar prioridade dos explícitos e o modo geral dentro dos limites. Origem ex-ante: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).
+
+## 0163 — Completude e estado do saldo
+
+Aplicar EVD-15/16 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#completude-geral-saldo-e-unicidade-de-lotes--0163), conforme [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md). Confrontar tamanhos conhecidos e conflitos da árvore com bytes brutos antes de truncar/hash; zero desconhecido permanece compatível. Arquivo divergente recebe FAILED/falha e não é admitido. Omitidos/truncados por saldo recebem SKIPPED_BUDGET e Bytes admitidos, mantendo incompletude/cobertura e permitindo retomada; NOT_FOUND só para ausência real. Reutilizar predicado de tamanho na releitura técnica. Preservar schemas, quotas e hashes históricos.

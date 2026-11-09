@@ -59,3 +59,13 @@ O [passo0162](../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md) aplica qua
 Na releitura técnica, tamanhos positivos conhecidos da árvore/extração devem coincidir com len(Content). Zero preserva compatibilidade desconhecida. Tamanho negativo ou declarações positivas conflitantes tornam o bundle incompleto; não admitir o arquivo divergente nem promover licença/SBOM a VERIFIED. Não exigir tamanho conhecido onde não foi informado. Preservar refs, hashes históricos e os demais limites.
 
 EVD-13 (quotas de paths/recuperação) e EVD-14 (tamanhos técnicos) são consumidos pelas [regressões de quotas e tamanhos](../../01_core/usecase/evidence_limits_profile_regression_test.go). O perfil textual das fontes usa o [contrato de exploração](exploracao-de-vizinhancas-v1.md#perfil-textual-compartilhado--0162).
+
+## Completude geral, saldo e unicidade de lotes — 0163
+
+O [passo0163](../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md) estende a coerência de tamanhos ao coletor geral. Conferir bytes brutos contra tamanho positivo da extração/árvore antes do corte por orçamento. Zero é desconhecido; negativo ou conflito positivo invalida o arquivo. Conservar conflitos da árvore antes de canonicalizá-la. Omitir arquivo divergente com FAILED/falha e Complete=false, sem licença PROVEN ou cobertura examinada. O predicado de comparação é compartilhado com a releitura técnica.
+
+Arquivo devolvido mas limitado por saldo gera SKIPPED_BUDGET, nunca NOT_FOUND: Bytes0 na omissão integral e Bytes admitidos no truncamento. Fragmento pode permanecer como dado incompleto com seu hash, sem promoção de força. Ambos mantêm cobertura incompleta e causa de orçamento; o histórico ativo admite nova tentativa. TargetsExecuted inclui fragmento admitido com Bytes>0 e exclui omissão integral. NOT_FOUND é reservado ao arquivo que realmente faltou na resposta.
+
+A coleta coordenada recusa origens planejadas repetidas antes de qualquer porta, com ErrInvalidRunInput e relatório vazio. Chave usa owner/repo sem distinção de caixa e commit; vazio/HEAD são a mesma origem não resolvida. Não unir implicitamente planos ou quotas. Pins distintos permanecem válidos; colisão descoberta só ao resolver HEAD pode ser rejeitada depois dos efeitos necessários para conhecê-la.
+
+EVD-15 (tamanho na coleta geral), EVD-16 (saldo/diagnóstico/histórico) e EVD-17 (unicidade prévia) são consumidos pelas [regressões de completude e lotes](../../01_core/usecase/evidence_completeness_batch_regression_test.go). Registros e hashes já emitidos permanecem intactos.

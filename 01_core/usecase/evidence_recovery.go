@@ -330,7 +330,11 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		if e == nil && mutableIdeaRunCommit(p.Repository.Commit) && immutableCommitPattern.MatchString(b.Repository.Commit) {
 			resolved[p.Repository.Owner+"/"+p.Repository.Repo] = true
 		}
-		executedTargets += len(ExecutedRecoveryTargets(groupPlan, []domain.EvidenceBundle{b}))
+		for _, target := range groupPlan.Targets {
+			if recoveryTargetAttempted(target, b) || recoveryTargetPartiallyRead(target, b) {
+				executedTargets++
+			}
+		}
 		remaining -= b.BytesRead
 		collected = append(collected, b)
 	}
@@ -614,7 +618,7 @@ func recoveryAttemptStatus(status domain.CollectionTargetStatus) bool {
 func recoveryTargetAttempted(target domain.RecoveryTarget, bundle domain.EvidenceBundle) bool {
 	for i := len(bundle.Targets) - 1; i >= 0; i-- {
 		result := bundle.Targets[i]
-		if (target.FindingID != "" && result.Target.Reason == "recovery "+target.FindingID) || (target.Path != "" && result.Target.Path == target.Path) || (target.Path == "" && result.Target.Kind == target.Kind && recoveryPathMatches(result.Target.Path, target)) {
+		if recoveryTargetResultMatches(target, result) {
 			return recoveryAttemptStatus(result.Status)
 		}
 	}
@@ -674,4 +678,16 @@ func AttemptedOriginalRecoveryTargets(bundles []domain.EvidenceBundle) []domain.
 		observed = append(observed, filtered)
 	}
 	return OriginalRecoveryTargets(observed)
+}
+
+func recoveryTargetResultMatches(target domain.RecoveryTarget, result domain.CollectionTargetResult) bool {
+	return (target.FindingID != "" && result.Target.Reason == "recovery "+target.FindingID) || (target.Path != "" && result.Target.Path == target.Path) || (target.Path == "" && result.Target.Kind == target.Kind && recoveryPathMatches(result.Target.Path, target))
+}
+func recoveryTargetPartiallyRead(target domain.RecoveryTarget, bundle domain.EvidenceBundle) bool {
+	for _, result := range bundle.Targets {
+		if result.Status == domain.TargetSkippedBudget && result.Bytes > 0 && recoveryTargetResultMatches(target, result) {
+			return true
+		}
+	}
+	return false
 }

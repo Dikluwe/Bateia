@@ -22,3 +22,7 @@ Aplicar o [passo0159](../../../passos/0159-fechar-cancelamento-escopo-e-recibos.
 ## 0162 — Tamanhos coerentes
 
 Aplicar EVD-14 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#quotas-de-caminhos-e-completude-técnica--0162). Tamanhos positivos conhecidos da árvore e da extração devem coincidir com bytes entregues; zero é desconhecido legado. Negativos, conflitos positivos e divergências impedem completude/promoção, sem admitir arquivo divergente. Conferir paths solicitados e licenças adicionais. Preservar budgets, origem observada, schemas e hashes anteriores. Origem: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).
+
+## 0163 — Predicado compartilhado de tamanhos
+
+Reutilizar a mesma comparação pura de tamanho dos bytes brutos aplicada no coletor geral, preservando EVD-14 e seus testes de zero/exato/negativos/conflitos. A nova obrigação EVD-15 pertence à coleta geral; não afrouxar a releitura técnica. Origem ex-ante: [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md).

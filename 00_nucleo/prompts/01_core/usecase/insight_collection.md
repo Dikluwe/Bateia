@@ -9,3 +9,7 @@ Identidades cuja resolução não fixou commit imutável permanecem nos bundles/
 Aplicar o [contrato0158](../../../passos/0158-validar-origem-e-estabilizar-bundles.md) e o [ADR0022](../../../ADR/ADR-0022-integridade-de-coleta-e-serializacao-estavel.md). Domínio estabiliza requirement_coverage nil/vazio como array e preserva bytes populados, sem mutação. Coleta genérica compartilha admissão, conserva pin do plano e confronta identidade de metadados e Ref de extração antes de admitir conteúdo. Coleta coordenada valida todos os schemas1 antes de efeitos e propaga ErrIntegrity sem relatório útil. Somente a API genérica conserva schema ausente legado. Não recalcular registros/hashes históricos; representações instáveis passam à forma corrigida apenas em novas serializações.
 
 Critérios compartilhados vigentes: [EVD-01–05](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#aceitação).
+
+## 0163 — Unicidade do lote antes de efeitos
+
+Aplicar EVD-17 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#completude-geral-saldo-e-unicidade-de-lotes--0163): além da validade individual, recusar origem planejada repetida antes de qualquer porta com ErrInvalidRunInput e relatório vazio. Comparar owner/repo sem distinção de caixa e commit, unificando vazio/HEAD; manter pins distintos. Não consolidar targets/quotas implicitamente. Colisões não previsíveis de resolução continuam sujeitas à normalização posterior. Preservar schemas e registros históricos. Origem: [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md).

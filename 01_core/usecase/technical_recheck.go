@@ -163,8 +163,7 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 						continue
 					}
 					seen[file.Path] = true
-					size := int64(len(file.Content))
-					if file.Size < 0 || (file.Size > 0 && file.Size != size) || (sizes[file.Path] > 0 && sizes[file.Path] != size) {
+					if !validEvidenceFileSize(file, sizes[file.Path]) {
 						fail("tamanho declarado diverge dos bytes extraídos")
 						continue
 					}

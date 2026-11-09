@@ -688,6 +688,25 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	if contextErr := ctx.Err(); contextErr != nil {
 		return domain.EvidenceBundle{}, contextErr
 	}
+	treeSizes := map[string]int64{}
+	sizeConflicts := map[string]bool{}
+	if err == nil {
+		for _, node := range tree {
+			if node.Type != "file" {
+				continue
+			}
+			path := slashPath(strings.TrimPrefix(node.Path, "./"))
+			if node.Size < 0 {
+				sizeConflicts[path] = true
+			}
+			if node.Size > 0 {
+				if treeSizes[path] > 0 && treeSizes[path] != node.Size {
+					sizeConflicts[path] = true
+				}
+				treeSizes[path] = node.Size
+			}
+		}
+	}
 	if err != nil {
 		bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "tree", Message: err.Error()})
 		bundle.Complete = false
@@ -852,15 +871,24 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	collectedPaths := map[string]int64{}
 	fullyExamined := map[string]bool{}
 	seenContent := map[string]bool{}
+	outcomes := map[string]domain.CollectionTargetResult{}
 	for _, path := range extractionPaths {
 		file, ok := filesByPath[slashPath(path)]
 		if !ok {
+			continue
+		}
+		if sizeConflicts[path] || !validEvidenceFileSize(file, treeSizes[path]) {
+			bundle.Complete = false
+			message := "tamanho declarado diverge dos bytes brutos extraídos"
+			outcomes[path] = domain.CollectionTargetResult{Status: domain.TargetFailed, Message: message}
+			bundle.Failures = append(bundle.Failures, domain.ExecutionFailure{Scope: plan.Repository.Key(), Stage: "content_size", Message: message})
 			continue
 		}
 		content := file.Content
 		remaining := plan.Budget.TotalBytes - bundle.BytesRead
 		if remaining <= 0 {
 			bundle.Complete = false
+			outcomes[path] = domain.CollectionTargetResult{Status: domain.TargetSkippedBudget, Message: "saldo de bytes esgotado antes da admissão do arquivo"}
 			continue
 		}
 		completeContent := true
@@ -868,6 +896,7 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			content = content[:remaining]
 			bundle.Complete = false
 			completeContent = false
+			outcomes[path] = domain.CollectionTargetResult{Status: domain.TargetSkippedBudget, Message: "conteúdo truncado pelo orçamento de bytes"}
 		}
 		hash := contentHash(content)
 		if seenContent[hash] {
@@ -887,7 +916,10 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	}
 	for _, path := range paths {
 		result := domain.CollectionTargetResult{Target: targetByPath[path], Status: domain.TargetCollected, Bytes: collectedPaths[path]}
-		if _, ok := collectedPaths[path]; !ok {
+		if outcome, ok := outcomes[path]; ok {
+			result.Status = outcome.Status
+			result.Message = outcome.Message
+		} else if _, ok := collectedPaths[path]; !ok {
 			result.Status = domain.TargetNotFound
 			result.Message = "provedor não devolveu o alvo solicitado"
 			if len(result.Target.Capabilities) > 0 {
@@ -895,6 +927,13 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			}
 		}
 		bundle.Targets = append(bundle.Targets, result)
+	}
+	for _, path := range extraPaths {
+		if outcome, ok := outcomes[path]; ok {
+			outcome.Target = domain.ExtractionTarget{Path: path, Kind: kinds[path]}
+			outcome.Bytes = collectedPaths[path]
+			bundle.Targets = append(bundle.Targets, outcome)
+		}
 	}
 	bundle.RequirementCoverage = finalizeRequirementCoverage(requirementSelections, bundle.TreeComplete, fullyExamined)
 	if bundle.ImplementationSearch != nil {
@@ -2396,4 +2435,10 @@ func assessmentHasComponent(assessment domain.CandidateAssessment, capability st
 		}
 	}
 	return false
+}
+
+// Compare declarations to raw bytes, before any deliberate budget truncation.
+func validEvidenceFileSize(file domain.ExtractedFile, treeSize int64) bool {
+	size := int64(len(file.Content))
+	return file.Size >= 0 && treeSize >= 0 && (file.Size == 0 || file.Size == size) && (treeSize == 0 || treeSize == size)
 }

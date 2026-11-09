@@ -77,6 +77,29 @@ func insightNeighborhoodOrigins(input domain.InsightSiteReport) ([]insightLeadOr
 // validateInsightNeighborhoodReceipts closes the reverse edge of the historical
 // origin validator: every primary collected receipt must own exactly one bundle.
 func validateInsightNeighborhoodReceipts(input domain.InsightSiteReport) error {
+	validText := func(bundle domain.EvidenceBundle) bool {
+		for _, item := range bundle.Items {
+			if !validInsightReadmeText(item.Content) {
+				return false
+			}
+		}
+		return true
+	}
+	for _, bundle := range input.Bundles {
+		if !validText(bundle) {
+			return domain.ErrIntegrity
+		}
+	}
+	for _, scoped := range input.SiteContexts {
+		if !validText(scoped.Bundle) {
+			return domain.ErrIntegrity
+		}
+	}
+	for _, follow := range input.Followups {
+		if follow.Bundle != nil && !validText(*follow.Bundle) {
+			return domain.ErrIntegrity
+		}
+	}
 	type receiptKey struct{ connector, candidate string }
 	seen := map[receiptKey]bool{}
 	for _, r := range input.Readmes {

@@ -57,3 +57,7 @@ O passo0147 fecha a divergência MEM-04 e amplia controles de MEM-02, ORD-02 e S
 ## Ampliação SRC-01 — 0159
 
 O [passo0159](../passos/0159-fechar-cancelamento-escopo-e-recibos.md) acrescenta controles de correspondência um-para-um dos recibos primários: órfãos, duplicados, nil e status divergentes são recusados antes de leituras. Consumidor: [regressões de fronteiras](../../01_core/usecase/investigation_boundaries_regression_test.go). As demais variantes parciais de SRC-01 continuam com os limites registrados acima.
+
+## Ampliação SRC-01 — 0162
+
+[Regressões de perfil textual](../../01_core/usecase/insight_frozen_text_regression_test.go) confrontam origens congeladas GitHub/sítio/followup com o perfil ROOT_README_ONLY: vazio, branco e controles proibidos são recusados antes de leitores mesmo com selos/fingerprints consistentes; texto regular e tab/CR/LF permanecem admitidos. Contrato e limites no [passo0162](../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md). As outras variantes parciais de SRC-01 permanecem abertas.

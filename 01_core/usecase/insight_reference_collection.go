@@ -101,16 +101,11 @@ func collectInsightReadme(ctx context.Context, reference domain.InsightDiscovere
 		receipt.Status = "CONTENT_LIMIT"
 		return receipt, nil
 	}
-	if strings.TrimSpace(content) == "" || !utf8.ValidString(content) {
+	if !validInsightReadmeText(content) {
 		receipt.Status = "INTEGRITY_ERROR"
 		return receipt, nil
 	}
-	for _, r := range content {
-		if unicode.IsControl(r) && r != '\n' && r != '\r' && r != '\t' {
-			receipt.Status = "INTEGRITY_ERROR"
-			return receipt, nil
-		}
-	}
+
 	bundle := &domain.EvidenceBundle{SchemaVersion: "1", Repository: ref, Complete: false, TreeComplete: false, BytesRead: int64(len(content)), Items: []domain.CollectedEvidence{{Kind: domain.EvidenceDocumentation, Ref: ref, Path: paths[0], Content: content, ContentHash: "sha256:" + contentHash(content)}}, Targets: []domain.CollectionTargetResult{{Target: domain.ExtractionTarget{Path: paths[0], Kind: domain.EvidenceDocumentation, Reason: "ROOT_README_ONLY"}, Status: domain.TargetCollected, Bytes: int64(len(content))}}}
 	bundle.Plan = domain.EvidenceExtractionPlan{SchemaVersion: "1", Repository: ref, Candidate: repo, Targets: []domain.ExtractionTarget{{Path: paths[0], Kind: domain.EvidenceDocumentation, Reason: "ROOT_README_ONLY"}}, Budget: domain.ExtractionBudget{Documents: 1, TotalBytes: 32 << 10}}
 	// Coverage concerns this document only, not a software capability or repository audit.
@@ -118,4 +113,17 @@ func collectInsightReadme(ctx context.Context, reference domain.InsightDiscovere
 	receipt.Status = "COLLECTED"
 	receipt.Bytes = len(content)
 	return receipt, bundle
+}
+
+// The same textual profile governs fresh and frozen ROOT_README_ONLY documents.
+func validInsightReadmeText(content string) bool {
+	if strings.TrimSpace(content) == "" || !utf8.ValidString(content) {
+		return false
+	}
+	for _, r := range content {
+		if unicode.IsControl(r) && r != '\n' && r != '\r' && r != '\t' {
+			return false
+		}
+	}
+	return true
 }

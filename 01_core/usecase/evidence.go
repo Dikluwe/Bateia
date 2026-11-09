@@ -663,13 +663,20 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	paths := make([]string, 0)
 	kinds := map[string]domain.EvidenceKind{}
 	targetByPath := map[string]domain.ExtractionTarget{}
+	budgetOmitted := map[string]bool{}
 	for _, target := range plan.Targets {
 		if _, exists := targetByPath[target.Path]; exists {
 			continue
 		}
+		targetByPath[target.Path] = target
+		if pathDepth(target.Path) > plan.Budget.TreeDepth || !withinKindBudget(paths, kinds, target.Kind, plan.Budget) {
+			budgetOmitted[target.Path] = true
+			bundle.Complete = false
+			bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: target, Status: domain.TargetSkippedBudget, Message: "alvo explícito excede profundidade ou quantidade de arquivos"})
+			continue
+		}
 		paths = append(paths, target.Path)
 		kinds[target.Path] = target.Kind
-		targetByPath[target.Path] = target
 	}
 	selectedPaths := map[string]bool{}
 	for _, path := range paths {
@@ -706,7 +713,7 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 			}
 		} else {
 			requirementSelections = buildRequirementPathSelections(tree, plan.RequirementQueries)
-			reserveRequirementPaths(requirementSelections, plan.Budget, &paths, kinds, targetByPath, selectedPaths)
+			reserveRequirementPaths(requirementSelections, plan.Budget, &paths, kinds, targetByPath, selectedPaths, budgetOmitted)
 			tree = prioritizeEvidenceTree(tree, plan.Targets)
 			if _, ok := provider.(domain.ImplementationSearcher); ok {
 				requirements := []string{}
@@ -751,11 +758,12 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 				if kind == domain.EvidenceFile && !isCodePath(node.Path) {
 					continue
 				}
-				if selectedPaths[node.Path] {
+				if selectedPaths[node.Path] || budgetOmitted[node.Path] {
 					continue
 				}
 				target := domain.ExtractionTarget{Path: node.Path, Kind: kind, Capabilities: capabilitiesForPath(node.Path, plan.Targets), Reason: "árvore limitada no commit resolvido"}
 				if pathDepth(node.Path) > plan.Budget.TreeDepth || !withinKindBudget(paths, kinds, kind, plan.Budget) {
+					budgetOmitted[node.Path] = true
 					bundle.Complete = false
 					bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: target, Status: domain.TargetSkippedBudget, Message: "arquivo encontrado, não examinado: limite de profundidade ou quantidade de arquivos"})
 					continue
@@ -780,7 +788,11 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 		bundle.Complete = false
 		return bundle, err
 	}
-	extracted, err := provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
+	extracted := &domain.ExtractedRepository{Ref: plan.Repository, Files: []domain.ExtractedFile{}}
+	err = nil
+	if len(paths) > 0 {
+		extracted, err = provider.ExtractRepoFiles(ctx, plan.Candidate, paths)
+	}
 	if contextErr := ctx.Err(); contextErr != nil {
 		return domain.EvidenceBundle{}, contextErr
 	}
@@ -820,12 +832,23 @@ func collectEvidence(ctx context.Context, plan domain.EvidenceExtractionPlan, pr
 	extractionPaths := append([]string(nil), paths...)
 	extraPaths := []string{}
 	for path := range filesByPath {
-		if !selectedPaths[path] {
+		if !selectedPaths[path] && !budgetOmitted[path] {
 			extraPaths = append(extraPaths, path)
 		}
 	}
 	sort.Strings(extraPaths)
-	extractionPaths = append(extractionPaths, extraPaths...)
+	quotaPaths := append([]string(nil), paths...)
+	for _, path := range extraPaths {
+		kind := classifyEvidencePath(path)
+		if pathDepth(path) > plan.Budget.TreeDepth || !withinKindBudget(quotaPaths, kinds, kind, plan.Budget) {
+			bundle.Complete = false
+			bundle.Targets = append(bundle.Targets, domain.CollectionTargetResult{Target: domain.ExtractionTarget{Path: path, Kind: kind}, Status: domain.TargetSkippedBudget, Message: "resposta extra excede profundidade ou quantidade de arquivos"})
+			continue
+		}
+		kinds[path] = kind
+		quotaPaths = append(quotaPaths, path)
+		extractionPaths = append(extractionPaths, path)
+	}
 	collectedPaths := map[string]int64{}
 	fullyExamined := map[string]bool{}
 	seenContent := map[string]bool{}
@@ -955,7 +978,7 @@ func buildRequirementPathSelections(tree []domain.DirectoryNode, queries []domai
 	return selections
 }
 
-func reserveRequirementPaths(selections []requirementPathSelection, budget domain.ExtractionBudget, paths *[]string, kinds map[string]domain.EvidenceKind, targets map[string]domain.ExtractionTarget, selected map[string]bool) {
+func reserveRequirementPaths(selections []requirementPathSelection, budget domain.ExtractionBudget, paths *[]string, kinds map[string]domain.EvidenceKind, targets map[string]domain.ExtractionTarget, selected map[string]bool, blocked map[string]bool) {
 	quota := budget.RequirementFiles
 	if quota <= 0 {
 		quota = 2
@@ -970,7 +993,7 @@ func reserveRequirementPaths(selections []requirementPathSelection, budget domai
 		for index := range selections {
 			selection := &selections[index]
 			for _, path := range selection.candidates {
-				if selection.selected[path] {
+				if selection.selected[path] || blocked[path] {
 					continue
 				}
 				if pathDepth(path) > budget.TreeDepth {
@@ -984,6 +1007,9 @@ func reserveRequirementPaths(selections []requirementPathSelection, budget domai
 					break
 				}
 				kind := classifyEvidencePath(path)
+				if !withinKindBudget(*paths, kinds, kind, budget) {
+					continue
+				}
 				*paths = append(*paths, path)
 				kinds[path] = kind
 				targets[path] = domain.ExtractionTarget{Path: path, Kind: kind, Capabilities: []string{selection.query.Requirement}, Reason: "recuperação dirigida pela regra " + selection.query.RuleID}
@@ -1196,23 +1222,37 @@ func slashPath(value string) string {
 	return strings.ReplaceAll(value, "\\", "/")
 }
 func withinKindBudget(paths []string, kinds map[string]domain.EvidenceKind, kind domain.EvidenceKind, b domain.ExtractionBudget) bool {
+	group := evidenceBudgetKind(kind)
 	count := 0
 	for _, p := range paths {
-		if kinds[p] == kind {
+		if evidenceBudgetKind(kinds[p]) == group {
 			count++
 		}
 	}
 	limit := b.CodeFiles
-	switch kind {
+	switch group {
 	case domain.EvidenceDocumentation:
 		limit = b.Documents
 	case domain.EvidenceManifest:
 		limit = b.Manifests
-	case domain.EvidenceTest, domain.EvidenceExample:
+	case domain.EvidenceTest:
 		limit = b.Tests
 	}
 	return count < limit
 }
+func evidenceBudgetKind(kind domain.EvidenceKind) domain.EvidenceKind {
+	switch kind {
+	case domain.EvidenceDocumentation, domain.EvidenceLicense:
+		return domain.EvidenceDocumentation
+	case domain.EvidenceManifest:
+		return domain.EvidenceManifest
+	case domain.EvidenceTest, domain.EvidenceExample:
+		return domain.EvidenceTest
+	default:
+		return domain.EvidenceFile
+	}
+}
+
 func contentHash(content string) string {
 	h := sha256.Sum256([]byte(content))
 	return hex.EncodeToString(h[:])

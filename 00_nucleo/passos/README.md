@@ -262,3 +262,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0160 — Preservar revisões e orçamentos de coleta](0160-preservar-revisoes-e-orcamentos-de-coleta.md) — separação repo@commit, interrupção entre portas, saldo por rodada e metadados dentro do teto; regressões sem reescrever históricos.
 
 - [0161 — Corrigir transições, histórico e revalidação](0161-corrigir-transicoes-historico-e-revalidacao.md) — resolução ativa de HEAD, histórico de tentativas, identidade AST e contagem real de portas, preservando registros anteriores.
+
+- [0162 — Aplicar quotas e coerência de fontes](0162-aplicar-quotas-e-coerencia-de-fontes.md) — limites de paths explícitos/derivados, perfil textual compartilhado e tamanhos coerentes na releitura, preservando históricos.

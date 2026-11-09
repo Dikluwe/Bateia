@@ -93,3 +93,7 @@ Aplicar o [passo0159](../../../passos/0159-fechar-cancelamento-escopo-e-recibos.
 ## 0160 — Interrupção e teto de metadados
 
 Aplicar EVD-07/09 do [contrato de coleta](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#revisões-interrupção-e-orçamento--0160). Conferir contexto imediatamente após árvore e antes/depois da busca de implementação. TotalBytes inclui metadados: admitir JSON integral apenas se couber; omitir com SKIPPED_BUDGET e incompletude quando exceder, sem truncar JSON. Preservar regras de seleção, força de evidência e registros históricos. Origem ex-ante: [passo0160](../../../passos/0160-preservar-revisoes-e-orcamentos-de-coleta.md).
+
+## 0162 — Quotas antes da extração
+
+Aplicar EVD-13 do [contrato ativo](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#quotas-de-caminhos-e-completude-técnica--0162). Targets explícitos e congelados respeitam quantidade/profundidade, com omissão SKIPPED_BUDGET e incompletude, sem readmissão por árvore/reserva/extras. Documents compartilha documentação/licença; Tests compartilha teste/exemplo; demais grupos conforme contrato. Duplicatas por path não consomem duas vezes; hash igual entre paths não autoriza ultrapassar quota. Sem paths não iniciar extração vazia. Preservar prioridade dos explícitos e o modo geral dentro dos limites. Origem ex-ante: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).

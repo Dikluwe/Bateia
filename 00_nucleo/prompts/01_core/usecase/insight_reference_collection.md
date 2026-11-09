@@ -12,3 +12,7 @@ Aplicar o passo0139: RepositoryReader opcional exclusivo Gitee/AtomGit, resoluç
 
 ## 0154 — Descoberta contextual
 Se a referência não tem pin e não há conflito, tentar porta InsightSiteRepositoryReader quando disponível. Exigir identidade, URL canônica e commit imutável antes de ler; preservar metadados originais e inserir apenas pin resolvido. Falha explícita, sem bypass. Reader sem resolver mantém OPAQUE_REVISION. Nenhuma resolução por referência com conflito.
+
+## 0162 — Perfil textual reutilizado
+
+Extrair o predicado puro de texto UTF-8 não branco, sem controles exceto tab/CR/LF, sem mudar o comportamento da coleta. A admissão de origens congeladas reutiliza esse mesmo perfil conforme o [contrato](../../../contratos/exploracao-de-vizinhancas-v1.md#perfil-textual-compartilhado--0162). Preservar limites, hashes e erros históricos. Origem ex-ante: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).

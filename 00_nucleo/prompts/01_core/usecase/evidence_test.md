@@ -23,3 +23,7 @@ O caso de README declarando execução local exige PARTIAL (declaração), não 
 ## 0158 — Double de conteúdo com identidade
 
 No recorte de integridade0158, os doubles que retornam extração bem-sucedida devem preencher Ref com owner/repo/commit do candidato efetivamente solicitado. Conservar conteúdo, falhas, quotas, testemunhos, mutantes e assertivas funcionais anteriores. Ref ausente ou divergente passa a ser controle negativo explícito nos testes próprios de integridade, sem dispensar a validação produtiva.
+
+## 0162 — Preparação explícita do controle de deduplicação
+
+O cenário TestCollectDeduplicatesByHashAndPreservesPartialFailure deve declarar os targets README.md/COPY.md no plano: sua árvore falha deliberadamente, e lista vazia não deve iniciar extração sob o contrato0162. Conservar a falha de árvore, os bytes iguais e todas as assertivas de deduplicação/incompletude. Ajustar somente essa preparação; não restaurar extração vazia na produção para atender ao double legado. Origem ex-ante: [passo0162](../../../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md).

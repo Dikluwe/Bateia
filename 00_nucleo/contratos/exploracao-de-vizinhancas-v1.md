@@ -108,3 +108,7 @@ Expand exige input e output; aceita memory, focus, all-trails, follow-links, max
 Memory aceita snapshot autônomo ou relatório contendo memória, valida pelo core e publica somente o snapshot atualizado. Target/state/reason são obrigatórios semanticamente. Não busca rede nem precisa de factory de pesquisa. Extrair memória de relatório não autentica o relatório inteiro; expand verifica o selo e as fontes da entrada original.
 
 Publicação usa o host e proteção de escrita existentes, sem ecoar segredos. Relatório selado de falha parcial deve ser publicado antes de devolver erro sanitizado. Erro de admissão sem ID não publica. Um único relatório contém estado e conteúdo da chamada; persistência, sinais e efeitos concretos permanecem em L3.
+
+## Perfil textual compartilhado — 0162
+
+Fontes congeladas ROOT_README_ONLY devem cumprir o perfil da coleta atual: texto UTF-8 não branco, sem controles exceto tab/CR/LF. A guarda de fontes usa o mesmo predicado puro da coleta antes de leitores, além de recibos/hash/LastRead e limites existentes. Vazio, espaços e NUL não se tornam origem válida por recalcular selos. Esta é coerência dos dados declarados, sem autenticação remota. O corpo histórico0145 de insightNeighborhoodOrigins permanece intacto. Origem: [passo0162](../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md); consumidor: [regressões de perfil](../../01_core/usecase/insight_frozen_text_regression_test.go). SRC-01 ganha estes controles sem declarar cobertura integral das demais combinações.

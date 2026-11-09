@@ -51,3 +51,11 @@ Histórico de execução inclui COLLECTED/NOT_FOUND/FAILED, exclui SKIPPED_BUDGE
 ProviderCalls contabiliza cada chamada real a ContentProvider, inclusive falhas e preparação de padrões; grupo omitido não chama porta nem aumenta contador. A métrica não mede requisições internas do adaptador ou custo financeiro.
 
 Critérios EVD-10 (transição de origem), EVD-11 (histórico de tentativas) e EVD-12 (chamadas reais) são consumidos pelas [regressões de recuperação](../../01_core/usecase/evidence_recovery_followup_regression_test.go) e [retomada CLI](../../02_shell/cli/idea_recover_history_regression_test.go). A integridade de declarações na busca possui [contrato próprio](revalidacao-de-declaracoes-v1.md).
+
+## Quotas de caminhos e completude técnica — 0162
+
+O [passo0162](../passos/0162-aplicar-quotas-e-coerencia-de-fontes.md) aplica quantidade/profundidade aos targets explícitos, derivados congelados e amostra, antes de solicitar arquivos. Documents compartilha documentação/licença; Tests compartilha testes/exemplos; Manifests é próprio e demais arquivos usam CodeFiles. Contar paths únicos, mesmo com conteúdo igual. Zero desabilita a categoria; profundidade raiz é1. Omitidos recebem SKIPPED_BUDGET e Complete=false, sem readmissão por árvore/reserva/extras. Extras do modo geral respeitam as quotas; extras fora da seleção congelada continuam ErrIntegrity. Lista vazia não inicia extração. Métricas de execução usam os resultados de tentativa, excluindo omissões.
+
+Na releitura técnica, tamanhos positivos conhecidos da árvore/extração devem coincidir com len(Content). Zero preserva compatibilidade desconhecida. Tamanho negativo ou declarações positivas conflitantes tornam o bundle incompleto; não admitir o arquivo divergente nem promover licença/SBOM a VERIFIED. Não exigir tamanho conhecido onde não foi informado. Preservar refs, hashes históricos e os demais limites.
+
+EVD-13 (quotas de paths/recuperação) e EVD-14 (tamanhos técnicos) são consumidos pelas [regressões de quotas e tamanhos](../../01_core/usecase/evidence_limits_profile_regression_test.go). O perfil textual das fontes usa o [contrato de exploração](exploracao-de-vizinhancas-v1.md#perfil-textual-compartilhado--0162).

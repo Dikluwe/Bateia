@@ -167,6 +167,7 @@ func (p evidenceProvider) FetchRepoMetadata(_ context.Context, candidate domain.
 
 func TestCollectDeduplicatesByHashAndPreservesPartialFailure(t *testing.T) {
 	plan := domain.EvidenceExtractionPlan{Repository: domain.CommitRef{Owner: "org", Repo: "repo", Commit: "abc"}, Candidate: domain.RepositoryCandidate{Owner: "org", Repo: "repo", CommitID: "abc"}, Budget: defaultEvidenceBudget}
+	plan.Targets = []domain.ExtractionTarget{{Path: "README.md", Kind: domain.EvidenceDocumentation}, {Path: "COPY.md", Kind: domain.EvidenceDocumentation}}
 	p := evidenceProvider{treeErr: errors.New("tree unavailable"), files: []domain.ExtractedFile{{Path: "README.md", Content: "same"}, {Path: "COPY.md", Content: "same"}}}
 	b, err := CollectEvidence(context.Background(), plan, p)
 	if err != nil {

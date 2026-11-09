@@ -1,0 +1,33 @@
+# 0162 — Aplicar quotas e coerência de fontes
+
+## Intenção anterior à materialização
+
+Corrigir os três contraexemplos da revisão de846e50e. Responsáveis L1: evidence/evidence_recovery para quotas, insight_reference_collection/insight_neighborhood_sources para perfil textual compartilhado e technical_recheck para completude dos bytes. Preservar schemas, critérios de evidência, registros/hashes e assertivas dos testes anteriores, admitindo apenas a adaptação de preparação explicitada abaixo. Não alterar a gravidade Tekt ou reproduzir gates selados como evidência nova.
+
+## Comportamento esperado
+
+Aplicar limites de quantidade e profundidade a todos os caminhos, inclusive targets explícitos e os derivados congelados pela recuperação, antes de solicitar extração. Ordem dos explícitos mantém prioridade recebida e primeira ocorrência por path; depois vêm seleção dirigida/amostra existentes. Documents agrupa documentação/licença, Tests agrupa teste/exemplo, Manifests possui quota própria e demais arquivos usam CodeFiles. Contar paths solicitados, não hashes únicos. Zero proíbe a categoria; arquivo raiz tem profundidade1. Target omitido registra SKIPPED_BUDGET e Complete=false e não é readmitido por árvore, reserva dirigida ou resposta extra do provedor. Extras legados do modo geral permanecem admissíveis somente dentro das mesmas quotas; o modo congelado continua rejeitando resposta fora da seleção. Sem path admitido, não invocar ExtractRepoFiles com lista vazia. Metadados/enumeração conservam seus escopos e orçamento de bytes anterior. TargetsExecuted da recuperação deve respeitar as omissões observadas.
+
+Fontes congeladas de vizinhança precisam cumprir o mesmo perfil de texto da coleta ROOT_README_ONLY: UTF-8 válido, não vazio/branco, sem controles exceto tab/CR/LF. Compartilhar o predicado puro com a coleta. Recusar antes dos leitores, mesmo com recibos/hash/LastRead/selos consistentes. Manter íntegro o corpo histórico0145 de insightNeighborhoodOrigins; inserir a guarda no responsável ativo de fontes. Não mudar a interpretação de história declarada para autenticação remota.
+
+Na releitura técnica, tamanho0 é desconhecido legado; tamanho positivo da árvore ou do arquivo extraído deve coincidir com os bytes entregues. Tamanho negativo ou declarações positivas conflitantes tornam a coleta incompleta. Arquivo com tamanho divergente não entra nos itens nem pode promover licença/SBOM a VERIFIED. Conferir tamanhos dos paths solicitados e licenças adicionais, sem inventar tamanho de entrada ausente da árvore. Manter quotas/cancelamento/refs/stale e demais critérios anteriores.
+
+## Aceitação e preservação
+
+Regressões públicas de quotas0/1, profundidade exata/excedida, duplicatas/hash iguais, categorias compartilhadas, omissões sem extração, resposta que tenta readmitir path omitido e recuperação derivada com mais matches que a quota. Fontes GitHub/sítio/followup com vazio, espaços, NUL/DEL e controles positivos, após selos coerentes; recusa antes das portas. Recheck com tamanho desconhecido/exato, maior/menor/negativo, divergência somente na árvore ou extração e conflitos declarados, mantendo template MIT como controle positivo. Demonstrar falhas antes e passagem depois.
+
+Atualizar prompts/contratos e índice. Executar make verify com V0–V27 selecionadas, disabledRules vazio e analysisComplete=true. Conferir SHA256 do acervo, corpo congelado, links/linhagem e diff. Se um double antigo devolve arquivos fora da seleção ou declara quota incompatível, ajustar somente sua preparação declarada e preservar assertivas funcionais; registrar qualquer adaptação. Logs e programas diagnósticos pertencem ao /tmp; não atualizar hashes de resultados antigos.
+
+## Resultado e verificação
+
+Os três contraexemplos falharam antes do patch e passaram após a correção. Regressões cobrem quotas0/1, profundidade, prioridade e deduplicação de paths, grupos compartilhados, extras que tentam readmitir omitidos, reserva dirigida de testes e recuperação derivada. Omissões são SKIPPED_BUDGET e incompletas; sem paths não há extração. TargetsExecuted usa o testemunho dos resultados, sem contar alvo totalmente omitido por quota.
+
+O predicado textual da coleta é compartilhado com a guarda ativa de fontes; origens GitHub/sítio/followup brancas, vazias ou com controles são recusadas antes de leitores mesmo com selos e fingerprints consistentes. Texto normal e tab/CR/LF permanecem válidos. O corpo congelado0145 de insightNeighborhoodOrigins foi comparado byte a byte com846e50e e permanece intacto. Tamanhos conhecidos maiores/menores/negativos, conflitos da árvore e divergências isoladas impedem completude/promoção; tamanho0/exato conserva o controle VERIFIED.
+
+Foi necessária uma adaptação na preparação de TestCollectDeduplicatesByHashAndPreservesPartialFailure: declarar README.md e COPY.md como targets, pois sua árvore falha deliberadamente e extração vazia não é mais iniciada. Conteúdo igual, falha da árvore e todas as assertivas anteriores ficaram intactos; o prompt proprietário foi atualizado antes dessa preparação. Nenhum gate ou recibo histórico foi modificado para atender à implementação.
+
+make verify passou em lint, arquitetura, go test ./..., go vet ./..., build e diff-check, com loopback autorizado para fixtures HTTP e assinatura Git desativada somente no processo de fixtures pelo runner canônico. Logs finais/binário em /tmp/bateia-0162-verification. Registros temporários das regressões em /tmp/bateia-0162-before.log, /tmp/bateia-0162-focused.log e /tmp/bateia-0162-core.log; reaplicação dos probes da revisão em /tmp/bateia-0162-after-probes.log. A quota0 deixou de solicitar arquivo, a recuperação limitada a1 solicitou somente graph1.go, texto inválido passou a ErrIntegrity e tamanho1160 com1060 bytes ficou incompleto/UNVERIFIED. Esses logs são diagnósticos locais, não novos recibos selados.
+
+O alcance efetivo confirmou V0–V27 selecionadas, disabledRules vazio, analysisComplete=true e zero violações/erros de leitura/sintaxe. Os 11 controles do parser e dois controles V3 ligado/desligado passaram; as exclusões históricas explícitas não mudaram. Passagem estrutural não autentica provedores nem comprova efeitos dos insights.
+
+A comparação SHA256 confirmou 4.689 arquivos históricos de Lab, passos e laudos intactos; o índice ativo de passos foi a única exclusão dessa contagem por fazer parte da atualização. Fontes/patches do linter e acervo de gates mantiveram seus hashes. O diff da preparação antiga foi conferido para preservar assertivas e o corpo de origens foi comparado separadamente. Links locais e linhagem foram conferidos. Não se recalcularam hashes/snapshots antigos nem se reproduziram módulos selados como resultados novos.

@@ -103,6 +103,7 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 		}
 		// Inspect the full tree so another root license cannot be omitted from
 		// the fresh bundle to manufacture an unambiguous adoption gate.
+		sizes := map[string]int64{}
 		tree, treeErr := provider.FetchTree(ctx, c)
 		if err := ctx.Err(); err != nil {
 			return domain.TechnicalSourceRecheckReport{}, err
@@ -111,13 +112,26 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 			fail("não foi possível conferir árvore da revisão: " + treeErr.Error())
 		} else {
 			for _, node := range tree {
-				if !needsLicense || !authoritativeLicensePath(node.Path) {
+				_, requested := paths[node.Path]
+				licensePath := needsLicense && authoritativeLicensePath(node.Path)
+				if !requested && !licensePath {
 					continue
 				}
-				if node.Type == "file" {
+				if node.Type != "file" {
+					fail("documento solicitado não regular exige revisão de escopo")
+					continue
+				}
+				if node.Size < 0 {
+					fail("árvore declara tamanho negativo")
+				}
+				if node.Size > 0 {
+					if sizes[node.Path] > 0 && sizes[node.Path] != node.Size {
+						fail("árvore declara tamanhos conflitantes")
+					}
+					sizes[node.Path] = node.Size
+				}
+				if licensePath {
 					paths[node.Path] = domain.EvidenceLicense
-				} else {
-					fail("documento raiz de licença não regular exige revisão de escopo")
 				}
 			}
 		}
@@ -149,6 +163,11 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 						continue
 					}
 					seen[file.Path] = true
+					size := int64(len(file.Content))
+					if file.Size < 0 || (file.Size > 0 && file.Size != size) || (sizes[file.Path] > 0 && sizes[file.Path] != size) {
+						fail("tamanho declarado diverge dos bytes extraídos")
+						continue
+					}
 					totalBytes += len(file.Content)
 					if totalBytes > technicalRecheckMaxBytes {
 						fail("conteúdo excede limite total de 4 MiB")

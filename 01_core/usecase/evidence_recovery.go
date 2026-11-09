@@ -311,9 +311,10 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		}
 		p = prepared
 		p.Budget.TotalBytes = remaining
+		groupPlan := domain.EvidenceRecoveryPlan{}
 		for _, target := range plan.Targets {
 			if target.Candidate == p.Repository {
-				executedTargets++
+				groupPlan.Targets = append(groupPlan.Targets, target)
 			}
 		}
 		b, e := collectEvidence(ctx, p, observed, true)
@@ -329,6 +330,7 @@ func ExecuteEvidenceRecovery(ctx context.Context, idea domain.IdeaSpec, screenin
 		if e == nil && mutableIdeaRunCommit(p.Repository.Commit) && immutableCommitPattern.MatchString(b.Repository.Commit) {
 			resolved[p.Repository.Owner+"/"+p.Repository.Repo] = true
 		}
+		executedTargets += len(ExecutedRecoveryTargets(groupPlan, []domain.EvidenceBundle{b}))
 		remaining -= b.BytesRead
 		collected = append(collected, b)
 	}

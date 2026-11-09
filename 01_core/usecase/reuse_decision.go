@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
  * @layer L1
- * @updated 2026-11-08
+ * @updated 2026-11-09
  */
 
 package usecase
@@ -19,14 +19,15 @@ import (
 )
 
 type decisionCandidate struct {
-	a         domain.CandidateAssessment
-	key       string
-	coverage  float64
-	covered   map[string]bool
-	evidence  []domain.EvidenceSource
-	blockers  []domain.DecisionReason
-	ambiguous bool
-	useful    bool
+	compositionParts []domain.ReusableComponent
+	a                domain.CandidateAssessment
+	key              string
+	coverage         float64
+	covered          map[string]bool
+	evidence         []domain.EvidenceSource
+	blockers         []domain.DecisionReason
+	ambiguous        bool
+	useful           bool
 }
 
 func DecideReuse(req domain.ReuseDecisionRequest) (result domain.ReuseDecisionReport, err error) {
@@ -83,11 +84,14 @@ func decideReuseProjected(req domain.ReuseDecisionRequest, projection decisionAs
 	sort.Slice(assessments, func(i, j int) bool { return assessments[i].Repository.Key() < assessments[j].Repository.Key() })
 	candidates := make([]decisionCandidate, 0, len(assessments))
 	for _, a := range assessments {
+		originalParts := a.ReusableParts
 		a = SanitizeAssessmentEvidence(a)
 		if projection != nil {
 			a = projection(a)
 		}
-		candidates = append(candidates, inspectPreparedCandidate(a, capabilities, req.Policy))
+		candidate := inspectPreparedCandidate(a, capabilities, req.Policy)
+		candidate.compositionParts = originalParts
+		candidates = append(candidates, candidate)
 	}
 	report.Matrix = buildDecisionMatrix(capabilities, candidates)
 	composition, err := analyzeCompositions(candidates, capabilities, req.Policy, req.Composition)

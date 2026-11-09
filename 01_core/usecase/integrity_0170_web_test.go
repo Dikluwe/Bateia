@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/integrity_0170_web_test.md
  * @layer L1
- * @updated 2026-11-08
+ * @updated 2026-11-09
  */
 package usecase
 
@@ -45,7 +45,7 @@ func (r integrity0170Reader) PreviousSnapshot(arm string) (domain.WebSearchSnaps
 	return s, nil
 }
 func integrity0170Input() WebExperimentInput {
-	in := WebExperimentInput{Authenticated: true, SafeRemaining: 100, MaxPerQuery: 5, Authorization: &domain.WebExperimentAuthorization{Provider: "github", Purpose: "public_repository_search", Authentication: "read_only_token", PlannedQueries: 36, Authorized: true}}
+	in := WebExperimentInput{Authenticated: true, SafeRemaining: 100, MaxPerQuery: 10, Authorization: &domain.WebExperimentAuthorization{Provider: "github", Purpose: "public_repository_search", Authentication: "read_only_token", PlannedQueries: 36, Authorized: true}}
 	for _, name := range []string{"N", "F1", "F2"} {
 		a := WebExperimentArm{Name: name, Expansion: domain.FunctionalGrammarExpansion{SchemaVersion: "2", GrammarHash: "grammar-" + name}}
 		for i := 12; i >= 1; i-- {

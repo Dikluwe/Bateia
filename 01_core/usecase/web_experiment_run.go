@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/web_experiment_run.md
  * @layer L1
- * @updated 2026-11-08
+ * @updated 2026-11-09
  */
 package usecase
 
@@ -48,6 +48,9 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 		if err := ValidateWebExperimentAuthorizationValue(input.Authorization); err != nil {
 			return WebExperimentOutput{}, err
 		}
+	}
+	if err := validateWebExperimentLimits(input.Authenticated, input.SafeRemaining, input.MaxPerQuery); err != nil {
+		return WebExperimentOutput{}, err
 	}
 	if input.Resume && resume == nil {
 		return WebExperimentOutput{}, fmt.Errorf("retomada exige leitor de snapshots")
@@ -134,6 +137,17 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 	}
 	receipt := domain.WebExperimentReceipt{SchemaVersion: "1", RunID: runID, Planned: 36}
 	stopForBudget := false
+	var now time.Time
+	if len(resumed) > 0 {
+		now = domain.RuntimeNow(ctx)
+	}
+	for _, response := range resumed {
+		rate := response.Receipt.RateLimit
+		if rate.Remaining != nil && *rate.Remaining <= int64(input.SafeRemaining) && (now.IsZero() || rate.Reset == nil || *rate.Reset > now.Unix()) {
+			stopForBudget = true
+			receipt.StopReason = "SAFE_RATE_LIMIT_MARGIN"
+		}
+	}
 	for pos := 0; pos < 12; pos++ {
 		for armIndex := 0; armIndex < 3; armIndex++ {
 			q := arms[armIndex].exp.Queries[pos]
@@ -351,14 +365,25 @@ func ValidateWebExperimentAdmission(admission WebExperimentAdmission) error {
 		if !admission.AuthenticatedFlag || admission.NoToken {
 			return fmt.Errorf("authenticated-experiment exige --authenticated e proíbe --no-token")
 		}
-		if !admission.HasAuthorization || admission.SafeRemaining < 1 {
+		if !admission.HasAuthorization {
 			return fmt.Errorf("authenticated-experiment exige authorization e safe-remaining positivo")
-		}
-		if admission.MaxPerQuery != 10 {
-			return fmt.Errorf("authenticated-experiment fixa max-per-query em 10")
 		}
 	} else if !admission.NoToken {
 		return fmt.Errorf("experiment exige --no-token")
+	}
+	return validateWebExperimentLimits(admission.Authenticated, admission.SafeRemaining, admission.MaxPerQuery)
+}
+
+func validateWebExperimentLimits(authenticated bool, safeRemaining, maxPerQuery int) error {
+	if authenticated {
+		if safeRemaining < 1 {
+			return fmt.Errorf("authenticated-experiment exige authorization e safe-remaining positivo")
+		}
+		if maxPerQuery != 10 {
+			return fmt.Errorf("authenticated-experiment fixa max-per-query em 10")
+		}
+	} else if maxPerQuery <= 0 {
+		return fmt.Errorf("experiment exige max-per-query positivo")
 	}
 	return nil
 }

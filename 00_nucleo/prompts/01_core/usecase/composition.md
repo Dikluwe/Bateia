@@ -9,3 +9,7 @@ Uma parte só herda capacidade PROVEN do assessment quando pelo menos uma fonte 
 ## 0167 — Conexões repetidas
 
 Aplicar CMP-01 do [contrato](../../../contratos/integridade-de-entradas-e-replay-v1.md#cmp-01--conexões-repetidas-sem-escolha-implícita), conforme [passo0167](../../../passos/0167-isolar-calibracao-e-validar-fontes-de-sintese.md). Por par ordenado From/To, permitir somente duplicatas estruturalmente idênticas (status, fontes ordenadas e custo com ausência/unidade/intervalo). Rejeitar divergentes antes de enumerar, sem escolher custo por ordem ou mínimo. Preservar controle único, idempotência de duplicatas idênticas, custo desconhecido, direção oposta e inputs/registros anteriores.
+
+## Admissão de partes repetidas — 0171
+
+Antes de projetar as capacidades comprovadas de partes válidas/admissíveis, conferir a declaração completa por compositionMemberID. Duplicata estruturalmente idêntica é idempotente; declaração distinta do mesmo ID é erro, independentemente da ordem. Não unir capacidades/evidências, acrescentá-las à identidade nem escolher representante por chegada ou menor JSON. A comparação inclui Capabilities, Evidence, Caveats e demais campos, na ordem declarada de seus vetores. Preservar identidade existente, guardas de fontes/partes, caller e hashes de controles únicos/idênticos. DecideReuse e AnalyzeMulticriteriaDecision não devolvem relatório útil para ambiguidade admitida.

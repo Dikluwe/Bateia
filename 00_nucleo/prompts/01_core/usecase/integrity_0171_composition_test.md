@@ -1,0 +1,3 @@
+# Admissão de declarações de componentes repetidas
+
+L1, testes via DecideReuse e AnalyzeMulticriteriaDecision, usando fixtures públicas válidas e sem I/O. A mesma identidade de componente admite apenas declarações completas estruturalmente iguais. Rejeitar, em ambas as ordens, capacidades export versus export+sync, capacidade extra sem ligação, ordem diferente de capacidades/evidências, evidência adicional e caveats divergentes. Comparar antes da redução para capacidades comprovadas. Falha retorna erro e relatório zero, sem mutar entrada. Duplicatas idênticas são idempotentes na decisão, membros, evidência, custo e relatório MCDA; parte com fontes inadmissíveis permanece ignorada pelas guardas anteriores. Preservar controles únicos e seus IDs.

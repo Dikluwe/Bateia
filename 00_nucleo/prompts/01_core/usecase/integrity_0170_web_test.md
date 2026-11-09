@@ -26,3 +26,5 @@ snapshots/selos no controle autenticado completo. Recusar nomes de braço
 repetidos/desconhecidos e IDs repetidos/vazios ou texto vazio antes de buscar.
 Ordenar cópias: nenhum pedido válido ou inválido pode modificar as queries do
 chamador. Os testes não mudam rubrica, política, formatos ou hashes históricos.
+
+Precondição vigente de admissão: a fixture positiva autenticada fornece MaxPerQuery=10 e margem positiva; as assertivas de integridade0170 permanecem iguais. Valores autenticados diferentes de10 são entradas inválidas e têm cobertura própria em integrity_0171_web_test.

@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/multicriteria_composition.md
  * @layer L1
- * @updated 2026-09-24
+ * @updated 2026-11-09
  */
 
 package usecase
@@ -13,7 +13,9 @@ func multicriteriaCompositions(request domain.MulticriteriaDecisionRequest) (dom
 	capabilities := normalizedSorted(request.Idea.Capabilities)
 	candidates := make([]decisionCandidate, 0, len(request.Assessment.Assessments))
 	for _, assessment := range request.Assessment.Assessments {
-		candidates = append(candidates, inspectPreparedCandidate(SanitizeAssessmentEvidence(assessment), capabilities, request.Policy))
+		candidate := inspectPreparedCandidate(SanitizeAssessmentEvidence(assessment), capabilities, request.Policy)
+		candidate.compositionParts = assessment.ReusableParts
+		candidates = append(candidates, candidate)
 	}
 	return analyzeCompositions(candidates, capabilities, request.Policy, request.Composition)
 }

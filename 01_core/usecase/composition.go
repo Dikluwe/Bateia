@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/composition.md
  * @layer L1
- * @updated 2026-11-08
+ * @updated 2026-11-09
  */
 
 package usecase
@@ -54,10 +54,25 @@ func partCapabilityLinked(assessment domain.CandidateAssessment, part domain.Reu
 func analyzeCompositions(cs []decisionCandidate, caps []string, policy domain.ReuseDecisionPolicy, input *domain.CompositionInput) (domain.CompositionReport, error) {
 	report := domain.CompositionReport{SchemaVersion: "1", Method: "BOUNDED_SUBSET_CONSTRAINT_SEARCH_V1", Candidates: []domain.CompositionCandidate{}}
 	members := make([]domain.CompositionMember, 0)
-	seen := map[string]bool{}
+	seen := map[string]domain.ReusableComponent{}
+	added := map[string]bool{}
 	for _, candidate := range cs {
 		if len(candidate.blockers) > 0 || candidate.ambiguous {
 			continue
+		}
+		originalParts := candidate.compositionParts
+		if originalParts == nil {
+			originalParts = candidate.a.ReusableParts
+		}
+		for _, part := range validParts(originalParts) {
+			if !EvidenceSourcesAdmissible(candidate.a.Repository, part.Evidence, true) {
+				continue
+			}
+			id := compositionMemberID(candidate.a.Repository, part)
+			if previous, exists := seen[id]; exists && !reflect.DeepEqual(previous, part) {
+				return domain.CompositionReport{}, fmt.Errorf("composition possui declarações divergentes para o mesmo membro")
+			}
+			seen[id] = part
 		}
 		for _, part := range validParts(candidate.a.ReusableParts) {
 			if !EvidenceSourcesAdmissible(candidate.a.Repository, part.Evidence, false) {
@@ -75,10 +90,10 @@ func analyzeCompositions(cs []decisionCandidate, caps []string, policy domain.Re
 			}
 			part.Capabilities = proven
 			id := compositionMemberID(candidate.a.Repository, part)
-			if seen[id] {
+			if added[id] {
 				continue
 			}
-			seen[id] = true
+			added[id] = true
 			members = append(members, domain.CompositionMember{ID: id, Repository: candidate.a.Repository, Component: part})
 		}
 	}

@@ -106,3 +106,24 @@ TrueProven conta somente Expected e Observed PROVEN com validImmutableCalibratio
 RankSoftwareAlternatives usa ordem total dos snapshots: precedência de candidateMetadataLess seguida pelo JSON completo, conforme directCandidateMetadataLess. Escolher representante inteiro sem combinar campos e manter duplicatas INCONCLUSIVE. Stale/Archived e demais campos antes omitidos do comparador não podem alterar motivos ou hash pela ordem de chegada. Preservar política, inputs e controles únicos anteriores.
 
 Consumidores de ASS-05/WEB-01: [integração e retomada web](../../01_core/usecase/integrity_0170_web_test.go). ASS-06: [históricos e ambiguidades](../../01_core/usecase/integrity_0170_judgment_test.go). CAL-02/ALT-01: [métricas e ordem de metadados](../../01_core/usecase/integrity_0170_metrics_test.go). Esses critérios regem novas execuções; não alteram registros, hashes, schemas publicados ou recibos de gates anteriores.
+
+
+## CMP-02 — Declarações de partes sem escolha por chegada
+
+Por compositionMemberID, comparar a declaração completa da parte válida/admissível antes de projetar capacidades comprovadas. Repetição estruturalmente idêntica é idempotente; declaração distinta é erro antes da enumeração, sem relatório útil nas APIs de decisão/multicritério. Capabilities, Evidence, Caveats e demais campos participam da comparação, preservando ordem declarada dos vetores. Não adicionar campos à identidade, unir alegações ou escolher representante por menor JSON/chegada. Preservar guardas de partes/fontes, caso único, inputs, IDs, custo e hashes do controle válido. A regra rege novas entradas, sem reparar composições históricas.
+
+## WEB-02 — Margem persistida antes de novas buscas
+
+Após admitir integralmente os snapshots da retomada, qualquer resposta admitida com Remaining<=SafeRemaining e reset não demonstradamente expirado impede novas buscas. Reset ausente ou relógio RuntimeNow zero não demonstram expiração. Com relógio conhecido, Reset<=Now.Unix já expirou. Conferir todas as respostas admitidas, inclusive Unknown, sem depender de sua ordem; não inferir quota nem chamar rede/espera para restaurá-la.
+
+Preservar SUCCESS/EMPTY reutilizadas e não as repetir. Com restrição vigente, as demais queries ficam SKIPPED_BUDGET, Started/Retried=0 e StopReason=SAFE_RATE_LIMIT_MARGIN, com contagens reais e snapshots replayáveis. Após reset comprovado, faltantes/Unknown seguem o contrato de busca anterior. WEB-01 precede esta classificação: snapshot inválido retorna erro/output zero, mesmo diante de quota esgotada. Nenhum selo ou registro anterior é modificado.
+
+## WEB-03 — Admissão dos limites na API
+
+ExecuteWebExperiment admite limites antes de Capabilities, PreviousSnapshot e SearchOne. Autenticado exige MaxPerQuery=10 e SafeRemaining>=1, além da autorização válida; não autenticado exige limite positivo e conserva clamp de positivos acima10 para10. Erro retorna output zero e nenhuma chamada a portas. Compartilhar a política sem exigir flags de CLI na API. Preservar defaults e formatos dos pedidos válidos; helper de transporte não substitui a admissão de L1.
+
+## ASS-07 — Métricas exigem revisão válida
+
+Uma regra pura compartilhada governa efetivação e elegibilidade das métricas: CONFIRMED é válida e mantém o julgamento da IA; OVERRIDDEN/RESOLVED exigem veredito aceito pela rubrica e motivo não vazio após TrimSpace. Ação desconhecida é inválida. Revisão inválida não incrementa Reviewed, DefinitiveReviewed, DefinitiveAgreements, DefinitiveOverrides ou ResolvedUncertain; UNKNOWN não é acordo/override/resolução. Grounding e Escalated permanecem independentes; ambiguidades ASS-06 continuam excluídas e repetições idênticas válidas são idempotentes. Preservar histórias, precedência de falhas, efetivo, controles/hash válidos e resultados históricos.
+
+Consumidores de CMP-02: [regressões de partes e integração com multicritério](../../01_core/usecase/integrity_0171_composition_test.go). WEB-02/03: [quota persistida e admissão da API](../../01_core/usecase/integrity_0171_web_test.go). ASS-07: [validade e denominadores de revisão](../../01_core/usecase/integrity_0171_metrics_test.go). As fixtures positivas ativas seguem os limites vigentes; registros e hashes publicados antes desta revisão permanecem inalterados.

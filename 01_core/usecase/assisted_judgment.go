@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/assisted_judgment.md
  * @layer L1
- * @updated 2026-11-08
+ * @updated 2026-11-09
  */
 package usecase
 
@@ -215,23 +215,10 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 		judgment := history[0]
 		if len(humanHistory) > 0 {
 			review := humanHistory[0]
-			switch review.Action {
-			case "CONFIRMED":
-				record.Effective = judgment.Verdict
-			case "OVERRIDDEN", "RESOLVED":
-				if validAssistedVerdict(review.Verdict) && strings.TrimSpace(review.Reason) != "" {
-					record.Effective = review.Verdict
-				} else {
-					record.Effective = "UNKNOWN"
-					if result.Verdict == "ORACLE_ACCEPTED" {
-						result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
-					}
-				}
-			default:
-				record.Effective = "UNKNOWN"
-				if result.Verdict == "ORACLE_ACCEPTED" {
-					result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
-				}
+			var valid bool
+			record.Effective, valid = assistedReviewEffective(judgment.Verdict, review)
+			if !valid && result.Verdict == "ORACLE_ACCEPTED" {
+				result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
 			}
 		} else if record.Escalated {
 			record.Effective = "UNKNOWN"
@@ -249,6 +236,18 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 		result.Verdict = "FAIL_AI_RELIABILITY"
 	}
 	return result
+}
+
+func assistedReviewEffective(ai string, review domain.HumanReview) (string, bool) {
+	switch review.Action {
+	case "CONFIRMED":
+		return ai, true
+	case "OVERRIDDEN", "RESOLVED":
+		if validAssistedVerdict(review.Verdict) && strings.TrimSpace(review.Reason) != "" {
+			return review.Verdict, true
+		}
+	}
+	return "UNKNOWN", false
 }
 
 func assistedOracleMetrics(records []domain.AssistedOracleRecord, candidates map[string]domain.BlindCandidate) domain.AssistedOracleMetrics {
@@ -271,9 +270,13 @@ func assistedOracleMetrics(records []domain.AssistedOracleRecord, candidates map
 		if len(record.HumanHistory) == 0 || len(record.AIHistory) == 0 || assistedDeclarationsAmbiguous(record.AIHistory) || assistedDeclarationsAmbiguous(record.HumanHistory) {
 			continue
 		}
-		metrics.Reviewed++
 		ai := record.AIHistory[0].Verdict
 		review := record.HumanHistory[0]
+		effective, valid := assistedReviewEffective(ai, review)
+		if !valid || effective == "UNKNOWN" {
+			continue
+		}
+		metrics.Reviewed++
 		if ai == "UNCERTAIN" || ai == "CONFLICT" {
 			if record.Effective != "UNKNOWN" {
 				metrics.ResolvedUncertain++

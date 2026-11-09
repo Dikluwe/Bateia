@@ -21,3 +21,7 @@ Substituir seleção gulosa por candidatas de composição. Cobertura complement
 ## 0166 — Limiares finitos
 
 Aplicar DEC-01 do [contrato de integridade](../../../contratos/integridade-de-entradas-e-replay-v1.md#dec-01--política-finita-e-hash-serializável), conforme [passo0166](../../../passos/0166-validar-bytes-testemunhos-e-politicas.md). Rejeitar NaN/infinitos em ambos os limiares, mantendo (0,1] para finitos; tratar falha ao serializar política, sem relatório útil/hash vazio. Preservar hashes, regras e avaliações válidas e registros históricos.
+
+## Declarações originais de partes — 0171
+
+Transportar por estado privado somente de leitura as partes originais até a guarda CMP-02 da composição, antes de a sanitização apagar diferenças declaradas. Não mutar inputs nem reautorizar evidência/capacidade removida: a enumeração e decisão continuam usando partes sanitizadas e os gates anteriores. Nenhuma API pública, schema, identidade ou hash de controle válido muda; declarações originais válidas/admissíveis contraditórias do mesmo ID retornam erro em vez de seleção por ordem.

@@ -5,3 +5,7 @@ Enumerar conjuntos de componentes válidos com limites explícitos, ordem canôn
 O estado VERIFIED significa atestado externo admissível de execução e aprovação, não que o Bateia executou o ensaio. Testemunhos de interface devem ser de teste de implementação. Custo desconhecido não se torna zero.
 
 Uma parte só herda capacidade PROVEN do assessment quando pelo menos uma fonte da parte coincide com o testemunho daquela capacidade; prova em outro módulo não basta.
+
+## 0167 — Conexões repetidas
+
+Aplicar CMP-01 do [contrato](../../../contratos/integridade-de-entradas-e-replay-v1.md#cmp-01--conexões-repetidas-sem-escolha-implícita), conforme [passo0167](../../../passos/0167-isolar-calibracao-e-validar-fontes-de-sintese.md). Por par ordenado From/To, permitir somente duplicatas estruturalmente idênticas (status, fontes ordenadas e custo com ausência/unidade/intervalo). Rejeitar divergentes antes de enumerar, sem escolher custo por ordem ou mínimo. Preservar controle único, idempotência de duplicatas idênticas, custo desconhecido, direção oposta e inputs/registros anteriores.

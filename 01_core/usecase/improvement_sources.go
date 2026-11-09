@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/improvement_sources.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -34,6 +34,9 @@ func resolveSynthesisSources(ctx context.Context, reader synthesisArtifactReader
 		run, err := reader.Get(ctx, source.RunID)
 		if err != nil {
 			return resolvedSynthesisSources{}, err
+		}
+		if run.RunID != source.RunID {
+			return resolvedSynthesisSources{}, domain.ErrIntegrity
 		}
 		if effectiveRunKind(run) != source.RunKind {
 			return resolvedSynthesisSources{}, domain.ErrInvalidRunInput
@@ -111,6 +114,7 @@ func publishedArtifactIndex(run domain.RecommendationRun, name domain.RunArtifac
 
 func readAllSynthesisArtifactEntries(ctx context.Context, reader synthesisArtifactReader, source domain.SourceArtifactRef, expectedHash string) ([][]byte, error) {
 	cursor := ""
+	seenCursors := map[string]bool{}
 	entries := [][]byte{}
 	for pageNumber := 0; pageNumber < 1000; pageNumber++ {
 		page, err := reader.ReadArtifact(ctx, domain.ArtifactReadRequest{RunID: source.RunID, Artifact: source.Artifact, Cursor: cursor, Limit: 50})
@@ -129,9 +133,10 @@ func readAllSynthesisArtifactEntries(ctx context.Context, reader synthesisArtifa
 		if page.NextCursor == nil {
 			return entries, nil
 		}
-		if *page.NextCursor == "" || *page.NextCursor == cursor {
+		if *page.NextCursor == "" || seenCursors[*page.NextCursor] {
 			return nil, domain.ErrIntegrity
 		}
+		seenCursors[*page.NextCursor] = true
 		cursor = *page.NextCursor
 	}
 	return nil, domain.ErrIntegrity

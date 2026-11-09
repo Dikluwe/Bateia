@@ -10,4 +10,6 @@ O [contrato de coleta e serialização de evidências v1](coleta-e-serializacao-
 
 O [contrato de integridade de entradas e replay v1](integridade-de-entradas-e-replay-v1.md) declara ALG-01/DEC-01 do [passo0166](../passos/0166-validar-bytes-testemunhos-e-politicas.md): bytes originais na formulação e política de reúso finita. EVD-20/21 ampliam o contrato de coleta para testemunhos pertinentes e codificação da releitura técnica, preservando registros anteriores.
 
+O [passo0167](../passos/0167-isolar-calibracao-e-validar-fontes-de-sintese.md) amplia esse contrato com CAL-01 (isolamento das ideias), CMP-01 (conexões repetidas), SYN-01 (identidade da execução) e SYN-02 (cursores não revisitados), sem modificar recibos históricos.
+
 O sufixo v1 identifica o recorte dos formatos públicos existentes; não cria um novo schema. Consolidar texto não prova que todo o código nasceu desse texto ou que todos os critérios estão cobertos. Divergências conhecidas devem aparecer no contrato e na matriz. Novas mudanças de comportamento exigem intenção ex-ante e verificação próprias. Consulte o [guia de prompts](../documentacao/escrever-prompts.md).

@@ -9,3 +9,7 @@ Possuir resolvedSynthesisSources e as funções de resolução, leitura paginada
 Extrair o comportamento vigente de improvement_synthesis.go sem redesenhar validações: conferir identidade, tipo de run, terminalidade e hash do índice; ler páginas de 50 até 1000, conferir RunID/Artifact/ArtifactHash em todas as páginas; validar JSON, copiar bytes e recusar cursor vazio/repetido. Preservar erros das portas. Indexar mecanismos sem duplicidade, gaps e observações; marcar como degradada fonte terminal sem SUCCEEDED. Validar referências de propostas contra o estado resolvido.
 
 Não normalizar pedidos ou calcular hash causal, não derivar hipóteses e não gerenciar lifecycle. Os dois consumidores no protocolo durável usam a mesma função de resolução. Preservar enums e estruturas públicas; a porta e o estado deste componente são internos ao pacote.
+
+## 0167 — Identidade e cursores
+
+Aplicar SYN-01/02 do [contrato](../../../contratos/integridade-de-entradas-e-replay-v1.md#syn-01--identidade-exata-da-execução-lida), conforme [passo0167](../../../passos/0167-isolar-calibracao-e-validar-fontes-de-sintese.md). Conferir run.RunID == source.RunID imediatamente após Get; vazio/divergente é ErrIntegrity antes de páginas/idempotência/fila. Lembrar cursores vistos por artefato e recusar vazio/repetição mesmo não consecutiva antes da releitura. Manter50/1000, hashes, erros, base zero em falha e registros históricos. Os dois consumidores continuam delegando ao mesmo resolvedor.

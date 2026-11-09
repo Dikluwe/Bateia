@@ -272,3 +272,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0165 — Contar execução agregada de targets](0165-contar-execucao-agregada-de-targets.md) — métricas de paths derivados sem perder leituras anteriores ou bloquear retomada, preservando históricos.
 
 - [0166 — Validar bytes, testemunhos e políticas](0166-validar-bytes-testemunhos-e-politicas.md) — bytes originais na formulação, histórico pertinente, replay técnico e limiares finitos, sem reescrever históricos.
+
+- [0167 — Isolar calibração e validar fontes de síntese](0167-isolar-calibracao-e-validar-fontes-de-sintese.md) — identidades de ideias únicas, conexões repetidas coerentes, identidade de execução e paginação sem revisitas, preservando históricos.

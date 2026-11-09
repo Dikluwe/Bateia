@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/composition.md
  * @layer L1
- * @updated 2026-09-24
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -170,6 +171,7 @@ func validateCompositionInput(input *domain.CompositionInput, members []domain.C
 	for _, member := range members {
 		known[member.ID] = true
 	}
+	connections := map[[2]string]domain.CompositionConnection{}
 	for _, edge := range input.Connections {
 		if !known[edge.From] || !known[edge.To] || edge.From == edge.To {
 			return fmt.Errorf("composition.connections referencia membros desconhecidos ou idênticos")
@@ -180,6 +182,11 @@ func validateCompositionInput(input *domain.CompositionInput, members []domain.C
 		if edge.Cost != nil && (!finite(edge.Cost.Low) || !finite(edge.Cost.High) || edge.Cost.Low < 0 || edge.Cost.High < edge.Cost.Low || strings.TrimSpace(edge.Cost.Unit) == "") {
 			return fmt.Errorf("composition.connections possui custo inválido")
 		}
+		key := [2]string{edge.From, edge.To}
+		if previous, exists := connections[key]; exists && !reflect.DeepEqual(previous, edge) {
+			return fmt.Errorf("composition.connections possui declarações divergentes para o mesmo par ordenado")
+		}
+		connections[key] = edge
 	}
 	for _, exclusion := range input.Exclusions {
 		if !known[exclusion.Left] || !known[exclusion.Right] || exclusion.Left == exclusion.Right {

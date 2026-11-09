@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/screening_calibration.md
  * @layer L1
- * @updated 2026-08-24
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -211,6 +211,14 @@ func buildCalibrationBins(values []predictedObservation) []domain.CalibrationBin
 func CalibrateScreening(groups []domain.ScreeningDatasetGroup, base domain.ScreeningModel) (domain.CalibrationReport, error) {
 	if len(groups) < 2 {
 		return domain.CalibrationReport{}, fmt.Errorf("calibração exige ao menos duas ideias")
+	}
+	seenIdeas := map[string]bool{}
+	for _, group := range groups {
+		id := group.IdeaID
+		if id == "" || id != strings.TrimSpace(id) || seenIdeas[id] {
+			return domain.CalibrationReport{}, fmt.Errorf("calibração exige idea_id não vazio, sem espaços nas extremidades e único por grupo")
+		}
+		seenIdeas[id] = true
 	}
 	report := domain.CalibrationReport{SchemaVersion: "1", Status: "uncalibrated"}
 	weightedModel, weightedBaseline, weightedLoss, totalTest := 0.0, 0.0, 0.0, 0

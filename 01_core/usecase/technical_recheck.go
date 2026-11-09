@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"bateia/01_core/domain"
 )
@@ -165,6 +166,10 @@ func RecheckTechnicalSources(ctx context.Context, req domain.TechnicalSourceRech
 					seen[file.Path] = true
 					if !validEvidenceFileSize(file, sizes[file.Path]) {
 						fail("tamanho declarado diverge dos bytes extraídos")
+						continue
+					}
+					if !utf8.ValidString(file.Content) {
+						fail("conteúdo extraído não é UTF-8 válido")
 						continue
 					}
 					totalBytes += len(file.Content)

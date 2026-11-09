@@ -623,7 +623,13 @@ func recoveryTargetAttempted(target domain.RecoveryTarget, bundle domain.Evidenc
 		}
 	}
 	for _, item := range bundle.Items {
-		if item.Path == target.Path || (target.Path == "" && (item.Path == "@repository-metadata" || recoveryPathMatches(item.Path, target))) {
+		if item.Path == "@repository-metadata" {
+			if target.Path == item.Path || (target.Path == "" && target.Kind == domain.EvidenceRepository) {
+				return true
+			}
+			continue
+		}
+		if item.Path == target.Path || (target.Path == "" && recoveryPathMatches(item.Path, target)) {
 			return true
 		}
 	}

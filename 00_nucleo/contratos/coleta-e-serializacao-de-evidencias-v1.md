@@ -85,3 +85,9 @@ O [passo0165](../passos/0165-contar-execucao-agregada-de-targets.md) explicita a
 A métrica agregada não altera a projeção de histórico 0161: a última ocorrência correspondente continua governando a retomada, inclusive quando outro path foi lido. Preservar schemas, identidade do target, bytes, chamadas reais e limites de força de evidência. Registros, hashes e testes anteriores permanecem intactos.
 
 EVD-19 (execução agregada sem bloquear retomada) é consumido pelas [regressões de métricas derivadas](../../01_core/usecase/evidence_recovery_metrics_regression_test.go), com controles de saldo adjacentes, omissão integral e leitura completa.
+
+## Testemunhos pertinentes e codificação técnica — 0166
+
+O [passo0166](../passos/0166-validar-bytes-testemunhos-e-politicas.md) limita o fallback sem resultado da recuperação: @repository-metadata só testemunha target que pede metadados ou é de espécie repository; não substitui caminho pertinente de código/teste derivado. Sem resultado nem arquivo correspondente, não registrar execução nem bloquear retomada. Preservar itens legados pertinentes, resultados explícitos NOT_FOUND/FAILED, última ocorrência e agregação0165; OriginalRecoveryTargets mantém a projeção legada. EVD-20 é consumido pelas [regressões de testemunhos](../../01_core/usecase/evidence_recovery_witness_regression_test.go).
+
+RecheckTechnicalSources exige UTF-8 válido nos bytes brutos antes de criar item/hash. Arquivo inválido gera falha e Complete=false, sem item ou IntegrityVerified/VERIFIED; não substituir bytes nem recalcular hash de conteúdo reparado. Fontes válidas, inclusive U+FFFD literal, conservam bytes/hashes e resultado de integridade após JSON. Manter tamanho bruto, limites e cancelamento. EVD-21 é consumido pelas [regressões de codificação técnica](../../01_core/usecase/technical_recheck_encoding_regression_test.go). O novo recorte não altera bundles históricos.

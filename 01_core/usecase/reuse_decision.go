@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/reuse_decision.md
  * @layer L1
- * @updated 2026-09-24
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -47,7 +47,10 @@ func decideReuseProjected(req domain.ReuseDecisionRequest, projection decisionAs
 	if err := validateDecisionRequest(req); err != nil {
 		return domain.ReuseDecisionReport{}, err
 	}
-	policyJSON, _ := json.Marshal(req.Policy)
+	policyJSON, err := json.Marshal(req.Policy)
+	if err != nil {
+		return domain.ReuseDecisionReport{}, fmt.Errorf("não foi possível serializar a política: %w", err)
+	}
 	h := sha256.Sum256(policyJSON)
 	report := domain.ReuseDecisionReport{SchemaVersion: "1", Policy: req.Policy, PolicyHash: hex.EncodeToString(h[:]), Alternatives: []domain.DecisionAlternative{}}
 	capabilities := normalizedSorted(req.Idea.Capabilities)
@@ -268,7 +271,7 @@ func validateDecisionRequest(req domain.ReuseDecisionRequest) error {
 	if req.Policy.MaxComponents < 2 {
 		return fmt.Errorf("policy.max_components deve ser ao menos 2")
 	}
-	if req.Policy.ExtendMinCoverage <= 0 || req.Policy.ExtendMinCoverage > 1 || req.Policy.IntegrationMinValue <= 0 || req.Policy.IntegrationMinValue > 1 {
+	if !(req.Policy.ExtendMinCoverage > 0 && req.Policy.ExtendMinCoverage <= 1) || !(req.Policy.IntegrationMinValue > 0 && req.Policy.IntegrationMinValue <= 1) {
 		return fmt.Errorf("limiares da política devem estar em (0,1]")
 	}
 	return nil

@@ -31,3 +31,7 @@ Aplicar EVD-16 do [contrato](../../../contratos/coleta-e-serializacao-de-evidenc
 ## 0165 — Execução agregada de target derivado
 
 Aplicar EVD-19 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#execução-agregada-de-targets--0165), conforme [passo0165](../../../passos/0165-contar-execucao-agregada-de-targets.md). TargetsExecuted conta cada target planejado no máximo uma vez quando qualquer resultado correspondente da coleta da rodada testemunha COLLECTED/NOT_FOUND/FAILED ou fragmento SKIPPED_BUDGET com Bytes>0. Uma omissão posterior de outro path derivado não apaga execução anterior. Omissões integrais e UNSUPPORTED isolados continuam sem execução. Preservar fallback legado sem resultado, identidade, bytes e contagem real de portas. Histórico de retomada continua usando a última ocorrência correspondente, conforme 0161; agregar métricas não bloqueia tentativa dos paths omitidos. Não usar bundles históricos unidos para fabricar execução nova nem modificar registros/hashes anteriores.
+
+## 0166 — Espécie do testemunho
+
+Aplicar EVD-20 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#testemunhos-pertinentes-e-codificação-técnica--0166), conforme [passo0166](../../../passos/0166-validar-bytes-testemunhos-e-politicas.md). Metadados sem resultado pertinente não testemunham código/teste derivado. Preservar target real de metadados, itens legados pertinentes, resultados explícitos, última ocorrência e agregação0165. Não fabricar NOT_FOUND para justificar execução; sem testemunho pertinente, manter retomada.

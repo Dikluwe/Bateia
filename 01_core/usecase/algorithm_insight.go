@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 // FormulateAlgorithmInsights binds declared reasoning to source and target bytes.
@@ -30,12 +31,15 @@ func FormulateAlgorithmInsights(ctx context.Context, request domain.AlgorithmIns
 	if err != nil || len(raw) > 4<<20 || request.SchemaVersion != "1" || len(request.Ideas) < 1 || len(request.Ideas) > 8 || len(request.Sources) < 1 {
 		return invalid()
 	}
-	// Own nested slices before canonicalizing or sorting caller-supplied evidence.
-	var owned domain.AlgorithmInsightRequest
-	if err = json.Unmarshal(raw, &owned); err != nil {
-		return invalid()
+	// Measure JSON above, but validate original bytes rather than a repaired JSON copy.
+	for _, bundle := range append([]domain.EvidenceBundle{request.Target}, request.Sources...) {
+		for _, item := range bundle.Items {
+			if !utf8.ValidString(item.Content) {
+				return domain.AlgorithmInsightReport{}, domain.ErrIntegrity
+			}
+		}
 	}
-	request = owned
+	request.Ideas = append([]domain.AlgorithmIdea(nil), request.Ideas...)
 	sources, err := normalizeInsightExploration(domain.InsightExplorationRequest{SchemaVersion: "1", Question: request.Question, Bundles: request.Sources})
 	if err != nil {
 		return domain.AlgorithmInsightReport{}, err
@@ -52,6 +56,7 @@ func FormulateAlgorithmInsights(ctx context.Context, request domain.AlgorithmIns
 			return domain.AlgorithmInsightReport{}, err
 		}
 		idea := &request.Ideas[i]
+		idea.Steps = append([]string(nil), idea.Steps...)
 		for _, entry := range []struct {
 			value   *string
 			maximum int
@@ -112,6 +117,7 @@ func bindAlgorithmEvidence(ctx context.Context, references []domain.AlgorithmIde
 	if len(references) < 1 || len(references) > 8 {
 		return nil, domain.ErrInvalidRunInput
 	}
+	references = append([]domain.AlgorithmIdeaEvidence(nil), references...)
 	type evidenceKey struct {
 		Source domain.ImmutableCandidateRef
 		Path   string

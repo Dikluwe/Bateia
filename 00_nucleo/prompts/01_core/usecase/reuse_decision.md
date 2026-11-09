@@ -17,3 +17,7 @@ Aplicar o contrato comum de evidence_authority antes de autorizar capacidade ou 
 ## Passo 0088 — composição verificável
 
 Substituir seleção gulosa por candidatas de composição. Cobertura complementar sem conexões admissíveis e ensaio executado do conjunto exato retorna INCONCLUSIVE, nunca COMPOSE. Incompatibilidades e truncamento são explícitos; não transformar ausência de composição encontrada em BUILD quando o limite foi atingido.
+
+## 0166 — Limiares finitos
+
+Aplicar DEC-01 do [contrato de integridade](../../../contratos/integridade-de-entradas-e-replay-v1.md#dec-01--política-finita-e-hash-serializável), conforme [passo0166](../../../passos/0166-validar-bytes-testemunhos-e-politicas.md). Rejeitar NaN/infinitos em ambos os limiares, mantendo (0,1] para finitos; tratar falha ao serializar política, sem relatório útil/hash vazio. Preservar hashes, regras e avaliações válidas e registros históricos.

@@ -270,3 +270,5 @@ As entradas abaixo completam a navegação para passos, adendos e verificações
 - [0164 — Preservar UTF-8 no truncamento e replay](0164-preservar-utf8-no-truncamento-e-replay.md) — prefixos válidos dentro do orçamento, rejeição de codificação inválida e regressões de serialização/reabertura, preservando históricos.
 
 - [0165 — Contar execução agregada de targets](0165-contar-execucao-agregada-de-targets.md) — métricas de paths derivados sem perder leituras anteriores ou bloquear retomada, preservando históricos.
+
+- [0166 — Validar bytes, testemunhos e políticas](0166-validar-bytes-testemunhos-e-politicas.md) — bytes originais na formulação, histórico pertinente, replay técnico e limiares finitos, sem reescrever históricos.

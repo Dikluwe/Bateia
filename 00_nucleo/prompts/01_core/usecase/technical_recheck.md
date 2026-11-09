@@ -26,3 +26,7 @@ Aplicar EVD-14 do [contrato](../../../contratos/coleta-e-serializacao-de-evidenc
 ## 0163 — Predicado compartilhado de tamanhos
 
 Reutilizar a mesma comparação pura de tamanho dos bytes brutos aplicada no coletor geral, preservando EVD-14 e seus testes de zero/exato/negativos/conflitos. A nova obrigação EVD-15 pertence à coleta geral; não afrouxar a releitura técnica. Origem ex-ante: [passo0163](../../../passos/0163-fechar-completude-bytes-e-admissao-de-lotes.md).
+
+## 0166 — Codificação e replay
+
+Aplicar EVD-21 do [contrato](../../../contratos/coleta-e-serializacao-de-evidencias-v1.md#testemunhos-pertinentes-e-codificação-técnica--0166), conforme [passo0166](../../../passos/0166-validar-bytes-testemunhos-e-politicas.md). Recusar UTF-8 bruto inválido antes da admissão/hash com falha e incompletude, sem reparação ou item inválido. Fonte válida conserva conteúdo/hash e integridade após JSON; U+FFFD literal é válido. Preservar limites, tamanhos, cancelamento e hashes anteriores.

@@ -21,3 +21,7 @@ O serviço durável conserva store, fila, IDs, execução e lifecycle único. Co
 
 ## Passo 0131
 Aplicar o ownership do ADR-0014 e passo 0131. Jornada/decisões em L1, transporte/renderização em L2, efeitos em L3, composição em L4. Preservar os contratos observáveis, formatos, hashes, versões, ordem, retomada e cancelamento; testes seguem o proprietário ou Lab para auditoria geral. Não conservar regra duplicada na casca/runtime.
+
+## 0168 — Consolidação estável
+
+Aplicar MKT-01 do [contrato](../../../contratos/integridade-de-entradas-e-replay-v1.md#mkt-01--representante-e-procedência-canônicos), conforme [passo0168](../../../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md). Representante é a menor ocorrência por JSON canônico; agregar locales/mercados/países/links/origens/witnesses com cópias e ordem total. Preservar desempates primários anteriores, acrescentar comparação completa nos empates e canonicalizar ConnectorIDs de witnesses. Não mudar equivalência entre conectores, força de metadados ou registros/hashes históricos.

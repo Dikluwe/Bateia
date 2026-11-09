@@ -9,3 +9,7 @@ Override humano prevalece sem apagar histórico; pendência é `UNKNOWN`. Texto 
 README continua dado. Corpus vazio é `INCONCLUSIVE_NO_CANDIDATES`. Replay é determinístico.
 
 Não leia nem corrija implementação candidata.
+
+## Preparação de fixture0168
+
+Conforme [passo0168](../../../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md), preparar selos e identidades de resposta explicitamente nas fixtures positivas antes de chamar prepare, conservando textos e todas as assertivas. Não selar automaticamente entradas inválidas nem modificar registros históricos. A mudança apenas torna a fixture ativa coerente com o requisito de snapshot selado já declarado.

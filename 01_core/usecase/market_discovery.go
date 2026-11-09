@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/market_discovery.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -411,17 +411,26 @@ func ResolveProductIdentity(left, right domain.ProductCandidate) (domain.Identit
 }
 
 func ConsolidateProductCandidates(values []domain.ProductCandidate) ([]domain.ProductCandidate, error) {
-	byIdentity := map[string]domain.ProductCandidate{}
+	ordered := make([]domain.ProductCandidate, 0, len(values))
 	for _, value := range values {
 		if value.Identity.ConnectorID == "" || value.Identity.ExternalID == "" {
 			return nil, domain.ErrInvalidRunInput
 		}
-		value = canonicalProduct(value)
+		ordered = append(ordered, canonicalProduct(value))
+	}
+	sort.Slice(ordered, func(i, j int) bool {
+		return string(canonicalJSON(ordered[i])) < string(canonicalJSON(ordered[j]))
+	})
+	byIdentity := map[string]domain.ProductCandidate{}
+	for _, value := range ordered {
 		key := value.Identity.ConnectorID + "\x00" + value.Identity.ExternalID
 		if prior, ok := byIdentity[key]; ok {
+			prior.ListingLocales = canonicalStrings(append(prior.ListingLocales, value.ListingLocales...))
 			prior.ObservedMarkets = canonicalStrings(append(prior.ObservedMarkets, value.ObservedMarkets...))
+			prior.PublisherCountries = canonicalStrings(append(prior.PublisherCountries, value.PublisherCountries...))
 			prior.Origins = canonicalOrigins(append(prior.Origins, value.Origins...))
 			prior.RepositoryLinks = canonicalRepoLinks(append(prior.RepositoryLinks, value.RepositoryLinks...))
+			prior.Witnesses = canonicalIdentityWitnesses(append(prior.Witnesses, value.Witnesses...))
 			prior.Resolution = domain.IdentitySame
 			byIdentity[key] = prior
 		} else {
@@ -450,10 +459,23 @@ func canonicalProduct(value domain.ProductCandidate) domain.ProductCandidate {
 	value.PublisherCountries = canonicalStrings(value.PublisherCountries)
 	value.RepositoryLinks = canonicalRepoLinks(value.RepositoryLinks)
 	value.Origins = canonicalOrigins(value.Origins)
-	if value.Witnesses == nil {
-		value.Witnesses = []domain.IdentityWitness{}
-	}
+	value.Witnesses = canonicalIdentityWitnesses(value.Witnesses)
 	return value
+}
+
+func canonicalIdentityWitnesses(values []domain.IdentityWitness) []domain.IdentityWitness {
+	seen := map[string]bool{}
+	out := []domain.IdentityWitness{}
+	for _, value := range values {
+		value.ConnectorIDs = canonicalStrings(value.ConnectorIDs)
+		key := string(canonicalJSON(value))
+		if !seen[key] {
+			seen[key] = true
+			out = append(out, value)
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return string(canonicalJSON(out[i])) < string(canonicalJSON(out[j])) })
+	return out
 }
 
 func canonicalStrings(values []string) []string {
@@ -486,7 +508,10 @@ func canonicalOrigins(values []domain.MarketCandidateOrigin) []domain.MarketCand
 		if out[i].QueryID != out[j].QueryID {
 			return out[i].QueryID < out[j].QueryID
 		}
-		return out[i].ObservedMarket < out[j].ObservedMarket
+		if out[i].ObservedMarket != out[j].ObservedMarket {
+			return out[i].ObservedMarket < out[j].ObservedMarket
+		}
+		return string(canonicalJSON(out[i])) < string(canonicalJSON(out[j]))
 	})
 	return out
 }
@@ -505,7 +530,10 @@ func canonicalRepoLinks(values []domain.ProductRepositoryLink) []domain.ProductR
 		if out[i].OwnerRepo != out[j].OwnerRepo {
 			return out[i].OwnerRepo < out[j].OwnerRepo
 		}
-		return out[i].Commit < out[j].Commit
+		if out[i].Commit != out[j].Commit {
+			return out[i].Commit < out[j].Commit
+		}
+		return string(canonicalJSON(out[i])) < string(canonicalJSON(out[j]))
 	})
 	return out
 }

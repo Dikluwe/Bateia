@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/multicriteria_decision.md
  * @layer L1
- * @updated 2026-09-24
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -377,6 +377,12 @@ func evaluatePreferenceScenario(scenario domain.PreferenceScenario, candidates [
 
 func normalizeCriterionUtility(interval domain.CriterionInterval, criterion domain.MulticriteriaCriterion) domain.CriterionInterval {
 	span := criterion.ScaleMax - criterion.ScaleMin
+	if math.IsInf(span, 0) {
+		// Finite opposite extremes can overflow their difference; rescale first.
+		interval.Low, interval.High = interval.Low/2, interval.High/2
+		criterion.ScaleMin, criterion.ScaleMax = criterion.ScaleMin/2, criterion.ScaleMax/2
+		span = criterion.ScaleMax - criterion.ScaleMin
+	}
 	if criterion.Direction == domain.CriterionMaximize {
 		return domain.CriterionInterval{Low: (interval.Low - criterion.ScaleMin) / span, High: (interval.High - criterion.ScaleMin) / span}
 	}

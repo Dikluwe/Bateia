@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/assisted_judgment.md
  * @layer L1
- * @updated 2026-08-31
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -21,6 +21,10 @@ const AssistedRubricVersion = "step0021-v1"
 func PrepareBlindCandidateUnion(snapshots []domain.WebSearchSnapshot) (domain.BlindCandidatePackage, error) {
 	byID := map[string]domain.BlindCandidate{}
 	for _, snapshot := range snapshots {
+		replay, err := ReplayWebSnapshot(snapshot)
+		if snapshot.SchemaVersion != "1" || err != nil || !replay.Replayable || len(replay.MissingFields) != 0 {
+			return domain.BlindCandidatePackage{}, domain.ErrIntegrity
+		}
 		for _, response := range snapshot.Responses {
 			for _, hit := range response.Results {
 				canonical := CanonicalizeURL(hit.CanonicalURL)
@@ -32,18 +36,47 @@ func PrepareBlindCandidateUnion(snapshots []domain.WebSearchSnapshot) (domain.Bl
 				}
 				h := sha256.Sum256([]byte(canonical))
 				id := "candidate-" + hex.EncodeToString(h[:12])
-				candidate := domain.BlindCandidate{CandidateID: id, Fragments: []domain.BlindEvidenceFragment{{FragmentID: "title", Content: strings.TrimSpace(hit.Title)}, {FragmentID: "description", Content: strings.TrimSpace(hit.Snippet)}}}
+				candidate := byID[id]
+				candidate.CandidateID = id
+				candidate.Fragments = append(candidate.Fragments, domain.BlindEvidenceFragment{FragmentID: "title", Content: strings.TrimSpace(hit.Title)}, domain.BlindEvidenceFragment{FragmentID: "description", Content: strings.TrimSpace(hit.Snippet)})
 				byID[id] = candidate
 			}
 		}
 	}
 	out := domain.BlindCandidatePackage{SchemaVersion: "1", RubricVersion: AssistedRubricVersion}
 	for _, candidate := range byID {
+		candidate.Fragments = canonicalBlindFragments(candidate.Fragments)
 		out.Candidates = append(out.Candidates, candidate)
 	}
 	sort.Slice(out.Candidates, func(i, j int) bool { return out.Candidates[i].CandidateID < out.Candidates[j].CandidateID })
 	out.PackageHash = blindPackageHash(out)
 	return out, nil
+}
+
+func canonicalBlindFragments(input []domain.BlindEvidenceFragment) []domain.BlindEvidenceFragment {
+	out := []domain.BlindEvidenceFragment{}
+	for _, field := range []string{"title", "description"} {
+		seen := map[string]bool{}
+		for _, fragment := range input {
+			if fragment.FragmentID == field {
+				seen[fragment.Content] = true
+			}
+		}
+		contents := make([]string, 0, len(seen))
+		for content := range seen {
+			contents = append(contents, content)
+		}
+		sort.Strings(contents)
+		for i, content := range contents {
+			id := field
+			if i > 0 {
+				digest := sha256.Sum256([]byte(content))
+				id += "-" + hex.EncodeToString(digest[:])
+			}
+			out = append(out, domain.BlindEvidenceFragment{FragmentID: id, Content: content})
+		}
+	}
+	return out
 }
 
 func blindPackageHash(pkg domain.BlindCandidatePackage) string {
@@ -160,11 +193,15 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 					record.Effective = review.Verdict
 				} else {
 					record.Effective = "UNKNOWN"
-					result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
+					if result.Verdict == "ORACLE_ACCEPTED" {
+						result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
+					}
 				}
 			default:
 				record.Effective = "UNKNOWN"
-				result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
+				if result.Verdict == "ORACLE_ACCEPTED" {
+					result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
+				}
 			}
 		} else if record.Escalated {
 			record.Effective = "UNKNOWN"
@@ -177,18 +214,18 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 		result.Records = append(result.Records, record)
 	}
 	sort.Slice(result.Records, func(i, j int) bool { return result.Records[i].CandidateID < result.Records[j].CandidateID })
-	result.Metrics = assistedOracleMetrics(result.Records)
+	result.Metrics = assistedOracleMetrics(result.Records, candidateByID)
 	if result.Verdict == "ORACLE_ACCEPTED" && result.Metrics.DefinitiveReviewed > 0 && (result.Metrics.RawAgreementRate < .8 || result.Metrics.OverrideRate > .2) {
 		result.Verdict = "FAIL_AI_RELIABILITY"
 	}
 	return result
 }
 
-func assistedOracleMetrics(records []domain.AssistedOracleRecord) domain.AssistedOracleMetrics {
+func assistedOracleMetrics(records []domain.AssistedOracleRecord, candidates map[string]domain.BlindCandidate) domain.AssistedOracleMetrics {
 	metrics := domain.AssistedOracleMetrics{}
 	grounded := 0
 	for _, record := range records {
-		if len(record.AIHistory) > 0 {
+		if len(record.AIHistory) > 0 && judgmentEvidenceValid(candidates[record.CandidateID], record.AIHistory[0]) {
 			grounded++
 		}
 		if !record.Escalated {

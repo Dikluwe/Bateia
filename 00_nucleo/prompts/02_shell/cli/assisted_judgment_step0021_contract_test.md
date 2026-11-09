@@ -7,3 +7,7 @@ corpus vazio resulta em `INCONCLUSIVE_NO_CANDIDATES` e que duas execuções equi
 produzem bytes idênticos. Entradas inválidas não devem produzir artefato.
 
 Não leia nem corrija implementação candidata.
+
+## Preparação de fixture0168
+
+O [passo0168](../../../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md) exige selo explícito na fixture positiva de prepare antes de escrevê-la. Manter as assertivas de cegamento/determinismo e os textos de entrada; não reparar entradas negativas no helper de escrita nem alterar registros históricos.

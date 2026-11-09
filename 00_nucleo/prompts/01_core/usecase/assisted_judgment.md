@@ -52,3 +52,7 @@ fabricado. `UNKNOWN` nunca conta como acerto.
 Calcule concordância e override sobre julgamentos definitivos revisados. Uma
 revisão que resolve `UNCERTAIN` ou `CONFLICT` é contabilizada separadamente como
 resolução de dúvida, sem fabricar concordância nem override definitivo.
+
+## 0168 — Integridade, variantes e grounding
+
+Aplicar ASS-01–04 do [contrato](../../../contratos/integridade-de-entradas-e-replay-v1.md#ass-01--snapshot-íntegro-antes-da-união-cega), conforme [passo0168](../../../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md). Exigir schema1/replay íntegro antes da união e pacote zero em falha. Preservar variantes por campo/texto ordenado: IDs legados no primeiro conteúdo e campo-SHA256 nos adicionais, sem vazar procedência. Falha de evidência prevalece sobre revisão inválida; grounding usa a validação de vínculo contra o pacote. Manter históricos, corpus vazio e controles canônicos anteriores; não autenticar conteúdo nem reparar selos antigos.

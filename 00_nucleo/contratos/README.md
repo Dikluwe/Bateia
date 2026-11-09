@@ -12,4 +12,6 @@ O [contrato de integridade de entradas e replay v1](integridade-de-entradas-e-re
 
 O [passo0167](../passos/0167-isolar-calibracao-e-validar-fontes-de-sintese.md) amplia esse contrato com CAL-01 (isolamento das ideias), CMP-01 (conexões repetidas), SYN-01 (identidade da execução) e SYN-02 (cursores não revisitados), sem modificar recibos históricos.
 
+O [passo0168](../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md) acrescenta ASS-01–04 (selo/variantes/gates/grounding do oráculo), MCDA-01 (escalas extremas) e MKT-01 (consolidação estável), preservando o acervo histórico.
+
 O sufixo v1 identifica o recorte dos formatos públicos existentes; não cria um novo schema. Consolidar texto não prova que todo o código nasceu desse texto ou que todos os critérios estão cobertos. Divergências conhecidas devem aparecer no contrato e na matriz. Novas mudanças de comportamento exigem intenção ex-ante e verificação próprias. Consulte o [guia de prompts](../documentacao/escrever-prompts.md).

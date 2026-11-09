@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"math"
 	"sort"
 	"strings"
@@ -22,7 +23,7 @@ func PrepareBlindCandidateUnion(snapshots []domain.WebSearchSnapshot) (domain.Bl
 	byID := map[string]domain.BlindCandidate{}
 	for _, snapshot := range snapshots {
 		replay, err := ReplayWebSnapshot(snapshot)
-		if snapshot.SchemaVersion != "1" || err != nil || !replay.Replayable || len(replay.MissingFields) != 0 {
+		if (snapshot.SchemaVersion != "1" && snapshot.SchemaVersion != "2") || err != nil || !replay.Replayable || len(replay.MissingFields) != 0 {
 			return domain.BlindCandidatePackage{}, domain.ErrIntegrity
 		}
 		for _, response := range snapshot.Responses {
@@ -92,11 +93,16 @@ func DetermineHumanEscalations(pkg domain.BlindCandidatePackage, judgments []dom
 		candidateByID[candidate.CandidateID] = candidate
 	}
 	mandatory := map[string]bool{}
-	judgmentByID := map[string]domain.AssistedJudgment{}
+	judgmentByID := map[string][]domain.AssistedJudgment{}
 	for _, judgment := range judgments {
-		judgmentByID[judgment.CandidateID] = judgment
+		judgmentByID[judgment.CandidateID] = append(judgmentByID[judgment.CandidateID], judgment)
 		if judgment.Confidence < .8 || math.IsNaN(judgment.Confidence) || math.IsInf(judgment.Confidence, 0) || judgment.Confidence > 1 || judgment.Verdict == "UNCERTAIN" || judgment.Verdict == "CONFLICT" || !judgmentEvidenceValid(candidateByID[judgment.CandidateID], judgment) {
 			mandatory[judgment.CandidateID] = true
+		}
+	}
+	for id, history := range judgmentByID {
+		if assistedDeclarationsAmbiguous(history) {
+			mandatory[id] = true
 		}
 	}
 	var control []string
@@ -152,30 +158,53 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 	for _, candidate := range pkg.Candidates {
 		candidateByID[candidate.CandidateID] = candidate
 	}
-	judgmentByID := map[string]domain.AssistedJudgment{}
+	judgmentByID := map[string][]domain.AssistedJudgment{}
 	for _, judgment := range judgments {
 		candidate := candidateByID[judgment.CandidateID]
 		if !judgmentEvidenceValid(candidate, judgment) {
 			result.Verdict = "FAIL_EVIDENCE_GROUNDING"
 		}
-		judgmentByID[judgment.CandidateID] = judgment
+		judgmentByID[judgment.CandidateID] = append(judgmentByID[judgment.CandidateID], judgment)
 	}
 	escalated := map[string]bool{}
 	for _, id := range DetermineHumanEscalations(pkg, judgments) {
 		escalated[id] = true
 	}
-	reviewByID := map[string]domain.HumanReview{}
+	reviewByID := map[string][]domain.HumanReview{}
 	for _, review := range reviews {
-		reviewByID[review.CandidateID] = review
+		reviewByID[review.CandidateID] = append(reviewByID[review.CandidateID], review)
 	}
 	if result.Verdict == "" {
 		result.Verdict = "ORACLE_ACCEPTED"
 	}
 	for _, candidate := range pkg.Candidates {
-		judgment, hasJudgment := judgmentByID[candidate.CandidateID]
+		history := append([]domain.AssistedJudgment(nil), judgmentByID[candidate.CandidateID]...)
+		humanHistory := append([]domain.HumanReview(nil), reviewByID[candidate.CandidateID]...)
+		sort.Slice(history, func(i, j int) bool { return assistedDeclarationKey(history[i]) < assistedDeclarationKey(history[j]) })
+		sort.Slice(humanHistory, func(i, j int) bool {
+			return assistedDeclarationKey(humanHistory[i]) < assistedDeclarationKey(humanHistory[j])
+		})
+		hasJudgment := len(history) > 0
+		if !hasJudgment {
+			result.Verdict = "FAIL_EVIDENCE_GROUNDING"
+		}
 		record := domain.AssistedOracleRecord{CandidateID: candidate.CandidateID, Escalated: escalated[candidate.CandidateID]}
-		if hasJudgment {
-			record.AIHistory = []domain.AssistedJudgment{judgment}
+		record.AIHistory = history
+		record.HumanHistory = humanHistory
+		if assistedDeclarationsAmbiguous(history) {
+			record.EscalationCauses = append(record.EscalationCauses, "AMBIGUOUS_AI_JUDGMENTS")
+		}
+		if assistedDeclarationsAmbiguous(humanHistory) {
+			record.EscalationCauses = append(record.EscalationCauses, "AMBIGUOUS_HUMAN_REVIEWS")
+		}
+		if len(record.EscalationCauses) > 0 {
+			record.Escalated = true
+			record.Effective = "UNKNOWN"
+			if result.Verdict == "ORACLE_ACCEPTED" {
+				result.Verdict = "INCONCLUSIVE_HUMAN_REVIEW"
+			}
+			result.Records = append(result.Records, record)
+			continue
 		}
 		if !hasJudgment {
 			record.Effective = "UNKNOWN"
@@ -183,8 +212,9 @@ func ValidateAssistedJudgments(pkg domain.BlindCandidatePackage, judgments []dom
 			result.Records = append(result.Records, record)
 			continue
 		}
-		if review, ok := reviewByID[candidate.CandidateID]; ok {
-			record.HumanHistory = []domain.HumanReview{review}
+		judgment := history[0]
+		if len(humanHistory) > 0 {
+			review := humanHistory[0]
 			switch review.Action {
 			case "CONFIRMED":
 				record.Effective = judgment.Verdict
@@ -225,14 +255,20 @@ func assistedOracleMetrics(records []domain.AssistedOracleRecord, candidates map
 	metrics := domain.AssistedOracleMetrics{}
 	grounded := 0
 	for _, record := range records {
-		if len(record.AIHistory) > 0 && judgmentEvidenceValid(candidates[record.CandidateID], record.AIHistory[0]) {
+		allGrounded := len(record.AIHistory) > 0
+		for _, judgment := range record.AIHistory {
+			if !judgmentEvidenceValid(candidates[record.CandidateID], judgment) {
+				allGrounded = false
+			}
+		}
+		if allGrounded {
 			grounded++
 		}
 		if !record.Escalated {
 			continue
 		}
 		metrics.Escalated++
-		if len(record.HumanHistory) == 0 {
+		if len(record.HumanHistory) == 0 || len(record.AIHistory) == 0 || assistedDeclarationsAmbiguous(record.AIHistory) || assistedDeclarationsAmbiguous(record.HumanHistory) {
 			continue
 		}
 		metrics.Reviewed++
@@ -263,4 +299,26 @@ func assistedOracleMetrics(records []domain.AssistedOracleRecord, candidates map
 
 func ReplayAssistedOracle(pkg domain.BlindCandidatePackage, judgments []domain.AssistedJudgment, reviews []domain.HumanReview) domain.AssistedOracleReport {
 	return ValidateAssistedJudgments(pkg, judgments, reviews)
+}
+
+// JSON orders the full frozen declaration, rather than selecting the last input.
+func assistedDeclarationKey(value any) string {
+	encoded, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Sprintf("%#v", value)
+	}
+	return string(encoded)
+}
+
+func assistedDeclarationsAmbiguous[T any](history []T) bool {
+	if len(history) < 2 {
+		return false
+	}
+	first := assistedDeclarationKey(history[0])
+	for _, value := range history[1:] {
+		if assistedDeclarationKey(value) != first {
+			return true
+		}
+	}
+	return false
 }

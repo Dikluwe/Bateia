@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/web_experiment_run.md
  * @layer L1
- * @updated 2026-10-28
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -14,8 +14,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -55,13 +57,26 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 		name string
 		exp  domain.FunctionalGrammarExpansion
 	}, len(input.Arms))
+	seenArms := map[string]bool{}
 	for i, arm := range input.Arms {
+		if (arm.Name != "N" && arm.Name != "F1" && arm.Name != "F2") || seenArms[arm.Name] {
+			return WebExperimentOutput{}, fmt.Errorf("braço inválido ou duplicado: %s", arm.Name)
+		}
+		seenArms[arm.Name] = true
 		arms[i].name = arm.Name
 		arms[i].exp = arm.Expansion
+		arms[i].exp.Queries = append([]domain.RealizedFunctionalQuery(nil), arm.Expansion.Queries...)
 	}
 	for i := range arms {
 		if len(arms[i].exp.Queries) != 12 {
 			return WebExperimentOutput{}, fmt.Errorf("braço %s possui %d queries; esperado 12", arms[i].name, len(arms[i].exp.Queries))
+		}
+		seenQueries := map[string]bool{}
+		for _, query := range arms[i].exp.Queries {
+			if strings.TrimSpace(query.ID) == "" || seenQueries[query.ID] || strings.TrimSpace(query.Text) == "" {
+				return WebExperimentOutput{}, fmt.Errorf("query inválida ou duplicada no braço %s", arms[i].name)
+			}
+			seenQueries[query.ID] = true
 		}
 		sort.SliceStable(arms[i].exp.Queries, func(a, b int) bool {
 			return naturalQueryPosition(arms[i].exp.Queries[a].ID) < naturalQueryPosition(arms[i].exp.Queries[b].ID)
@@ -86,6 +101,10 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 		}
 		snapshots[i] = domain.WebSearchSnapshot{SchemaVersion: schema, RunID: runID, Arm: arm.name, GrammarHash: arm.exp.GrammarHash, QuerySetHash: WebExperimentQuerySetHash(arm.exp.Queries), Provider: capabilities.Provider, Authorization: input.Authorization, Budget: budget}
 	}
+	limit := input.MaxPerQuery
+	if limit > 10 {
+		limit = 10
+	}
 	resumed := map[string]domain.RawWebResponse{}
 	if input.Authenticated && input.Resume {
 		for i, arm := range arms {
@@ -93,19 +112,15 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 			var readErr error
 			previous, readErr = resume.PreviousSnapshot(arm.name)
 			if err := readErr; err != nil {
-				return WebExperimentOutput{}, fmt.Errorf("retomada inválida para %s: %w", arm.name, err)
+				return WebExperimentOutput{}, fmt.Errorf("retomada sem integridade/reprodutibilidade para %s: %w", arm.name, err)
 			}
-			if previous.Arm != arm.name || previous.QuerySetHash != snapshots[i].QuerySetHash {
-				return WebExperimentOutput{}, fmt.Errorf("retomada diverge do braço/query set %s", arm.name)
+			if err := validateWebExperimentResume(previous, snapshots[i], arm.exp.Queries, i, limit); err != nil {
+				return WebExperimentOutput{}, fmt.Errorf("retomada sem integridade/reprodutibilidade para %s: %w", arm.name, err)
 			}
 			for _, response := range previous.Responses {
 				resumed[arm.name+"|"+response.QueryID] = response
 			}
 		}
-	}
-	limit := input.MaxPerQuery
-	if limit > 10 {
-		limit = 10
 	}
 	totalCtx := ctx
 	var totalCancel context.CancelFunc
@@ -183,6 +198,45 @@ func ExecuteWebExperiment(ctx context.Context, input WebExperimentInput, provide
 	}
 	return WebExperimentOutput{Snapshots: snapshots, Receipt: receipt}, nil
 }
+
+// Admission checks the frozen snapshot against the current plan without resealing it.
+func validateWebExperimentResume(previous, planned domain.WebSearchSnapshot, queries []domain.RealizedFunctionalQuery, armIndex, limit int) error {
+	if previous.SchemaVersion != "1" && previous.SchemaVersion != "2" {
+		return domain.ErrIntegrity
+	}
+	replay, err := ReplayWebSnapshot(previous)
+	if err != nil || !replay.Replayable || len(replay.MissingFields) != 0 {
+		return domain.ErrIntegrity
+	}
+	if previous.RunID != planned.RunID || previous.Arm != planned.Arm || previous.Provider != planned.Provider || previous.GrammarHash != planned.GrammarHash || previous.QuerySetHash != planned.QuerySetHash {
+		return domain.ErrIntegrity
+	}
+	if (previous.SchemaVersion == "2" || previous.Authorization != nil) && !reflect.DeepEqual(previous.Authorization, planned.Authorization) {
+		return domain.ErrIntegrity
+	}
+	if (previous.SchemaVersion == "2" || previous.Budget != nil) && !reflect.DeepEqual(previous.Budget, planned.Budget) {
+		return domain.ErrIntegrity
+	}
+	positions := map[string]int{}
+	for pos, query := range queries {
+		positions[query.ID] = pos
+	}
+	seen := map[string]bool{}
+	for _, response := range previous.Responses {
+		pos, known := positions[response.QueryID]
+		if !known || seen[response.QueryID] {
+			return domain.ErrIntegrity
+		}
+		seen[response.QueryID] = true
+		query := queries[pos]
+		expected := domain.ObservableWebRequest{RequestID: fmt.Sprintf("0020-%02d-%s", pos+1, planned.Arm), QueryID: query.ID, Query: query.Text, MaxResults: limit, Locale: "en-US"}
+		if response.Request != expected || response.RequestID != expected.RequestID || response.Provider != planned.Provider || response.Arm != planned.Arm || response.Position != pos*3+armIndex+1 || response.AttemptNumber != 1 {
+			return domain.ErrIntegrity
+		}
+	}
+	return nil
+}
+
 func ValidateWebExperimentAuthorization(a domain.WebExperimentAuthorization) error {
 	if a.Provider != "github" || a.Purpose != "public_repository_search" || a.Authentication != "read_only_token" || a.PrivateRepositoriesAllowed || a.PlannedQueries != 36 || !a.Authorized {
 		return fmt.Errorf("autorização do Passo 0020 inválida")

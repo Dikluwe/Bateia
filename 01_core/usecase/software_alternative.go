@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/software_alternative.md
  * @layer L1
- * @updated 2026-09-16
+ * @updated 2026-11-08
  */
 
 package usecase
@@ -166,7 +166,7 @@ func ensureAlternativeGroup(groups map[string]*alternativeGroup, key string) *al
 }
 
 func inspectSoftwareAlternative(group alternativeGroup, required []string, filters domain.SoftwareAlternativeFilters, target domain.SoftwareAlternativeTarget) domain.SoftwareAlternative {
-	sort.Slice(group.snapshots, func(i, j int) bool { return candidateMetadataLess(group.snapshots[i], group.snapshots[j]) })
+	sort.Slice(group.snapshots, func(i, j int) bool { return directCandidateMetadataLess(group.snapshots[i], group.snapshots[j]) })
 	sort.Slice(group.assessments, func(i, j int) bool {
 		return commitRefLess(group.assessments[i].Repository, group.assessments[j].Repository)
 	})

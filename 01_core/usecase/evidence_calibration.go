@@ -2,7 +2,7 @@
  * Crystalline Lineage
  * @prompt 00_nucleo/prompts/01_core/usecase/evidence_calibration.md
  * @layer L1
- * @updated 2026-08-31
+ * @updated 2026-11-08
  */
 package usecase
 
@@ -52,7 +52,7 @@ func accumulateCalibration(metrics *domain.EvidenceCalibrationMetrics, observati
 	}
 	if observation.Observed.Status == domain.EvidenceProven {
 		metrics.ObservedProven++
-		if observation.Expected == domain.EvidenceProven {
+		if observation.Expected == domain.EvidenceProven && validImmutableCalibrationSources(observation.Observed.Sources, observation.Evidence) {
 			metrics.TrueProven++
 		}
 		if observation.Expected == domain.EvidenceInconclusive {

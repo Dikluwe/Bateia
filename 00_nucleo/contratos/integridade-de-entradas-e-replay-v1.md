@@ -38,7 +38,7 @@ SYN-01/02 são consumidos pelas [regressões de identidade e paginação](../../
 
 ## ASS-01 — Snapshot íntegro antes da união cega
 
-O [passo0168](../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md) exige schema1 e replay íntegro de cada snapshot antes de admitir conteúdo: ReplayWebSnapshot sem erro, Replayable e sem MissingFields. Selo ausente/divergente, resposta adulterada ou material inválido gera ErrIntegrity e pacote zero; não reparar selos na admissão. Lista de snapshots vazia mantém o pacote vazio anterior. Fixtures positivas ativas antes não seladas passam a ser seladas explicitamente na preparação, sem alterar assertivas ou acervo histórico.
+O [passo0168](../passos/0168-preservar-integridade-e-determinismo-do-oraculo.md) introduziu admissão com replay íntegro de cada snapshot antes de admitir conteúdo: ReplayWebSnapshot sem erro, Replayable e sem MissingFields. Selo ausente/divergente, resposta adulterada ou material inválido gera ErrIntegrity e pacote zero; não reparar selos na admissão. Lista de snapshots vazia mantém o pacote vazio anterior. Fixtures positivas ativas antes não seladas passam a ser seladas explicitamente na preparação, sem alterar assertivas ou acervo histórico.
 
 ## ASS-02 — Variantes cegas sem sobrescrita
 
@@ -79,3 +79,30 @@ DossierEvidenceInputHash e RunRecommendationDossier canonicalizam SearchLocales 
 Concept deve ser não vazio, único e idêntico ao próprio TrimSpace. Chave com espaços nas extremidades é catálogo inconsistente, rejeitado antes do lookup; não reparar nem converter a inconsistência em lacuna. Tradução controlada realmente ausente para conceito válido continua Unknown. Nenhuma consulta livre ou promoção de cobertura é adicionada.
 
 Consumidores DSC-01/REG-01: [regressões da descoberta](../../01_core/usecase/discovery_canonical_response_regression_test.go). DOS-01/02: [regressões do dossiê](../../01_core/usecase/dossier_integrity_regression_test.go), com falhas em todos os hashes obrigatórios, equivalência/retomada pela fachada e controles congelados de snapshot, pré-imagem, RunID e estágios. Regras0169 valem para novas execuções; registros, selos e hashes históricos não são recalculados.
+
+
+## ASS-05 — Compatibilidade entre produtor e consumidor
+
+A regra vigente admite WebSearchSnapshot schemas1 e2 em PrepareBlindCandidateUnion, mantendo replay íntegro, sem MissingFields e pacote zero/ErrIntegrity em falha. Schema2 é a saída do experimento autenticado0020; a restrição a schema1 introduzida em0168 interrompia a jornada0020→0021. O pacote cego permanece schema1. Não converter versões nem reparar selos existentes. Testar a ligação com saída real de ExecuteWebExperiment, incluindo hits públicos, e preservar controles schema1.
+
+## WEB-01 — Retomada vinculada ao plano e aos selos
+
+Validar toda a entrada de retomada antes de SearchOne: schemas1/2, replay íntegro, campos materiais, RunID/Arm/Provider/GrammarHash/QuerySetHash esperados. Schema2 exige Authorization/Budget iguais aos atuais; schema1 permite ausência legada desses dois metadados, mas exige igualdade se presentes. Respostas têm QueryID único conhecido, request exatamente igual ao planejado, Provider/Arm/Position corretos e AttemptNumber1. Hash recalculado não demonstra vínculo à consulta do plano. Braços N/F1/F2 são únicos; query IDs são não vazios/únicos por braço, textos não vazios. A entrada é copiada antes de ordenar.
+
+Falha retorna erro de integridade/reprodutibilidade e resultado zero, sem busca adicional nem publicação. Subconjuntos válidos retomam SUCCESS/EMPTY, preservando buscas de ausentes/Unknown, sequência, limites e contadores. Não promover Unknown nem reescrever snapshots. O contrato protege a ligação declarada, sem autenticar resposta externa.
+
+## ASS-06 — Históricos completos sem precedência implícita
+
+Preservar todas as declarações de IA e revisão do candidato em ordem determinística pela declaração completa. Repetições idênticas são idempotentes para efetivo/métricas, mas permanecem auditáveis no histórico. Declarações distintas de qualquer dos dois tipos tornam o candidato ambíguo: escalonar, Effective=UNKNOWN e INCONCLUSIVE_HUMAN_REVIEW, com causas AMBIGUOUS_AI_JUDGMENTS/AMBIGUOUS_HUMAN_REVIEWS no campo existente. Qualquer vínculo inválido conserva precedência FAIL_EVIDENCE_GROUNDING.
+
+Não atribuir cronologia a arrays sem prioridade/timestamp contratados. Ambiguidade não incrementa Reviewed, DefinitiveReviewed, DefinitiveAgreements, DefinitiveOverrides ou ResolvedUncertain; Escalated conta o caso. Grounding exige todos os julgamentos do candidato válidos. Preservar rubrica, amostra residual, formato e controles únicos; não alterar históricos já publicados.
+
+## CAL-02 — Verdadeiro positivo exige fonte válida
+
+TrueProven conta somente Expected e Observed PROVEN com validImmutableCalibrationSources aprovado. Manter denominadores de estados esperados/observados, InvalidSources e regras de veredito/diagnóstico. Fonte ausente ou de outro commit reduz precisão/recall no split e agregado; não fabricar100% de acerto numa avaliação inválida. Não recalcular métricas de registros históricos.
+
+## ALT-01 — Diagnóstico estável em empates de metadados
+
+RankSoftwareAlternatives usa ordem total dos snapshots: precedência de candidateMetadataLess seguida pelo JSON completo, conforme directCandidateMetadataLess. Escolher representante inteiro sem combinar campos e manter duplicatas INCONCLUSIVE. Stale/Archived e demais campos antes omitidos do comparador não podem alterar motivos ou hash pela ordem de chegada. Preservar política, inputs e controles únicos anteriores.
+
+Consumidores de ASS-05/WEB-01: [integração e retomada web](../../01_core/usecase/integrity_0170_web_test.go). ASS-06: [históricos e ambiguidades](../../01_core/usecase/integrity_0170_judgment_test.go). CAL-02/ALT-01: [métricas e ordem de metadados](../../01_core/usecase/integrity_0170_metrics_test.go). Esses critérios regem novas execuções; não alteram registros, hashes, schemas publicados ou recibos de gates anteriores.
